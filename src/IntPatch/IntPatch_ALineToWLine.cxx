@@ -29,7 +29,7 @@
 //function : AddPointIntoLine
 //purpose  : 
 //=======================================================================
-static inline void AddPointIntoLine(Handle(IntSurf_LineOn2S) theLine,
+static inline void AddPointIntoLine(Handle(IntSurf_LineOn2S)& theLine,
                                     const Standard_Real* const theArrPeriods,
                                     IntSurf_PntOn2S &thePoint,
                                     IntPatch_Point* theVertex = 0)
@@ -253,6 +253,69 @@ void IntPatch_ALineToWLine::SetTolOpenDomain(const Standard_Real aTol)
 }
 
 //=======================================================================
+//function : CorrectEndPoint
+//purpose  : 
+//=======================================================================
+void IntPatch_ALineToWLine::CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
+                                            const Standard_Integer    theIndex) const
+{
+  const Standard_Real aTol = 1.e-5;
+  const Standard_Real aSqTol = 1.e-10;
+
+  //Perform linear extrapolation from two previous points
+  Standard_Integer anIndFirst, anIndSecond;
+  if (theIndex == 1)
+  {
+    anIndFirst  = 3;
+    anIndSecond = 2;
+  }
+  else
+  {
+    anIndFirst  = theIndex - 2;
+    anIndSecond = theIndex - 1;
+  }
+  IntSurf_PntOn2S aPntOn2S = theLine->Value(theIndex);
+  
+  for (Standard_Integer ii = 1; ii <= 2; ii++)
+  {
+    Standard_Boolean anIsOnFirst = (ii == 1);
+    
+    const IntSurf_Quadric& aQuad = (ii == 1)? myQuad1 : myQuad2;
+    if (aQuad.TypeQuadric() == GeomAbs_Cone)
+    {
+      const gp_Cone aCone = aQuad.Cone();
+      const gp_Pnt anApex = aCone.Apex();
+      if (anApex.SquareDistance (aPntOn2S.Value()) > aSqTol)
+        continue;
+    }
+    else if (aQuad.TypeQuadric() == GeomAbs_Sphere)
+    {
+      Standard_Real aU, aV;
+      aPntOn2S.ParametersOnSurface(anIsOnFirst, aU, aV);
+      if (Abs(aV - M_PI/2) > aTol &&
+          Abs(aV + M_PI/2) > aTol)
+        continue;
+    }
+    else
+      continue;
+    
+    gp_Pnt2d PrevPrevP2d = theLine->Value(anIndFirst).ValueOnSurface(anIsOnFirst);
+    gp_Pnt2d PrevP2d     = theLine->Value (anIndSecond).ValueOnSurface(anIsOnFirst);
+    gp_Dir2d aDir = gp_Vec2d(PrevPrevP2d, PrevP2d);
+    Standard_Real aX0 = PrevPrevP2d.X(), aY0 = PrevPrevP2d.Y();
+    Standard_Real aXend, aYend;
+    aPntOn2S.ParametersOnSurface(anIsOnFirst, aXend, aYend);
+
+    if (Abs(aDir.Y()) < gp::Resolution())
+      continue;
+    
+    Standard_Real aNewXend = aDir.X()/aDir.Y() * (aYend - aY0) + aX0;
+
+    theLine->SetUV (theIndex, anIsOnFirst, aNewXend, aYend);
+  }
+}
+
+//=======================================================================
 //function : GetSectionRadius
 //purpose  : 
 //=======================================================================
@@ -331,24 +394,27 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 #if 0
   //To draw ALine as a wire DRAW-object use the following code.
   {
-    static int zzz = 0;
-    zzz++;
+    static int ind = 0;
+    ind++;
 
-    bool flShow = /*(zzz == 1)*/false;
+    bool flShow = true;
 
     if (flShow)
     {
       std::cout << " +++ DUMP ALine (begin) +++++" << std::endl;
-      Standard_Integer aI = 0;
-      const Standard_Real aStep = (theLPar - theFPar) / 9999.0;
-      for (Standard_Real aPrm = theFPar; aPrm < theLPar; aPrm += aStep)
+      const Standard_Integer NbSamples = 20;
+      const Standard_Real aStep = (theLPar - theFPar) / NbSamples;
+      char* name = new char[100];
+      
+      for (Standard_Integer ii = 0; ii <= NbSamples; ii++)
       {
+        Standard_Real aPrm = theFPar + ii * aStep;
         const gp_Pnt aPP(theALine->Value(aPrm));
-        std::cout << "vertex v" << ++aI << " " << aPP.X() << " " << aPP.Y() << " " << aPP.Z() << std::endl;
-      }
+        std::cout << "vertex v" << ii << " " << aPP.X() << " " << aPP.Y() << " " << aPP.Z() << std::endl;
 
-      gp_Pnt aPP(theALine->Value(theLPar));
-      std::cout << "vertex v" << ++aI << " " << aPP.X() << " " << aPP.Y() << " " << aPP.Z() << std::endl;
+        sprintf(name, "p%d_%d", ii, ind);
+        Draw::Set(name, aPP);
+      }
       std::cout << " --- DUMP ALine (end) -----" << std::endl;
     }
   }
@@ -435,6 +501,8 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
     Standard_Integer aNewVertID = 0;
     aLinOn2S = new IntSurf_LineOn2S;
+    Standard_Boolean anIsFirstDegenerated = Standard_False,
+      anIsLastDegenerated = Standard_False;
     
     const Standard_Real aStepMin = 0.1*aStep, aStepMax = 10.0*aStep;
 
@@ -467,6 +535,9 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         {
           // We cannot compute 2D-parameters of
           // aPOn2S correctly.
+          
+          if (anIsLastDegenerated) //the current last point is wrong
+            aLinOn2S->RemovePoint (aLinOn2S->NbPoints());
 
           isPointValid = Standard_False;
         }
@@ -591,6 +662,27 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
           AddPointIntoLine(aLinOn2S, anArrPeriods, aPOn2S);
           aPrevLPoint = aPOn2S;
         }
+        else
+        {
+          //add point, set correxponding status: to be corrected later
+          Standard_Boolean ToAdd = Standard_False;
+          if (aLinOn2S->NbPoints() == 0)
+          {
+            anIsFirstDegenerated = Standard_True;
+            ToAdd = Standard_True;
+          }
+          else if (aLinOn2S->NbPoints() > 1)
+          {
+            anIsLastDegenerated = Standard_True;
+            ToAdd = Standard_True;
+          }
+
+          if (ToAdd)
+          {
+            AddPointIntoLine(aLinOn2S, anArrPeriods, aPOn2S);
+            aPrevLPoint = aPOn2S;
+          }
+        }
 
         continue;
       }
@@ -630,6 +722,15 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
 
       aPrePointExist = IsPoleOrSeam(myS1, myS2, aPrefIso, aLinOn2S, aVtx,
                                 anArrPeriods, aTol, aSingularSurfaceID);
+      if (aPrePointExist == IntPatch_SPntPole ||
+          aPrePointExist == IntPatch_SPntPoleSeamU)
+      {
+        //set correxponding status: to be corrected later
+        if (aLinOn2S->NbPoints() == 1)
+          anIsFirstDegenerated = Standard_True;
+        else
+          anIsLastDegenerated  = Standard_True;
+      }
 
       const Standard_Real aCurVertParam = aVtx.ParameterOnLine();
       if(aPrePointExist != IntPatch_SPntNone)
@@ -700,6 +801,15 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
     {
       aParameter += aStep;
       continue;
+    }
+
+    //Correct first and last points if needed
+    if (aLinOn2S->NbPoints() >= 3)
+    {
+      if (anIsFirstDegenerated)
+        CorrectEndPoint (aLinOn2S, 1);
+      if (anIsLastDegenerated)
+        CorrectEndPoint (aLinOn2S, aLinOn2S->NbPoints());
     }
 
     //-----------------------------------------------------------------

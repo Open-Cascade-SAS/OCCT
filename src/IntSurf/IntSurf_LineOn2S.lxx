@@ -38,6 +38,12 @@ inline void IntSurf_LineOn2S::Value(const Standard_Integer Index,
   mySeq(Index) = P;
 }
 
+inline void IntSurf_LineOn2S::SetPoint(const Standard_Integer Index,
+                                       const gp_Pnt& thePnt)
+{
+  mySeq(Index).SetValue (thePnt);
+}
+
 inline void IntSurf_LineOn2S::Clear ()
 {
   mySeq.Clear();

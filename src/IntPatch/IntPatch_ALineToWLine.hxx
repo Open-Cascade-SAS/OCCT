@@ -20,6 +20,7 @@
 #include <Adaptor3d_Surface.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
 #include <IntSurf_Quadric.hxx>
+#include <IntSurf_LineOn2S.hxx>
 
 class IntPatch_ALine;
 class IntSurf_PntOn2S;
@@ -89,6 +90,13 @@ protected:
   //! for both quadrics and minimal value is returned.
   //! This check is made for cone and sphere only.
   Standard_EXPORT Standard_Real GetSectionRadius(const gp_Pnt& thePnt3d) const;
+
+  //! Corrects the U-parameter of an end point (first or last) of the line
+  //! if this end point is a pole.
+  //! The line must contain at least 3 points.
+  //! This is made for cone and sphere only.
+  Standard_EXPORT void CorrectEndPoint(Handle(IntSurf_LineOn2S)& theLine,
+                                       const Standard_Integer    theIndex) const;
 
 private:
 

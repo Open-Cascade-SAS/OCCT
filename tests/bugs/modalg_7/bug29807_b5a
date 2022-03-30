@@ -3,9 +3,6 @@ puts "0029807: Impossible to cut cone from prism"
 puts "========"
 puts ""
 
-puts "TODO OCC29860 ALL: Error :  is WRONG because number of WIRE entities in shape \"result\" is 10"
-puts "TODO OCC29860 ALL: Error :  is WRONG because number of FACE entities in shape \"result\" is 10"
-
 restore [locate_data_file bug29807-obj.brep] b1
 restore [locate_data_file bug29807-tool.brep] b2
 
