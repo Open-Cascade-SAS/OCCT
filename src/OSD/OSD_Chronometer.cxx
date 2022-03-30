@@ -14,8 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <OSD_Chronometer.hxx>
+
+#include <Standard_ProgramError.hxx>
 #include <Standard_Stream.hxx>
 
 #ifndef _WIN32
@@ -180,6 +181,19 @@ OSD_Chronometer::OSD_Chronometer (Standard_Boolean theThisThreadOnly)
 //=======================================================================
 OSD_Chronometer::~OSD_Chronometer()
 {
+}
+
+//=======================================================================
+//function : SetThisThreadOnly
+//purpose  :
+//=======================================================================
+void OSD_Chronometer::SetThisThreadOnly (Standard_Boolean theIsThreadOnly)
+{
+  if (!myIsStopped)
+  {
+    throw Standard_ProgramError ("OSD_Chronometer::SetThreadOnly() called for started Timer");
+  }
+  myIsThreadOnly = theIsThreadOnly;
 }
 
 //=======================================================================

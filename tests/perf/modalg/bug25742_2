@@ -35,18 +35,18 @@ donly b1_4
 fit
 display b2_1
 
-dchrono h restart
+dchrono h -restart
 bopcurves b1_4 b2_1 -2d
-dchrono h stop bopcurves counter bopcurves
+dchrono h -stop -counter bopcurves
 
 checkview -screenshot -2d -path ${imagedir}/${test_image}_1.png
 
 mksurface s1 b1_4
 mksurface s2 b2_1
 
-dchrono h2 restart
+dchrono h2 -restart
 set CurveNumb [intersect resi s1 s2]
-dchrono h2 stop counter CurveNumb
+dchrono h2 -stop -counter CurveNumb
 
 if { [llength ${CurveNumb}] < 1 } {
     puts "Error : Bad intersection"

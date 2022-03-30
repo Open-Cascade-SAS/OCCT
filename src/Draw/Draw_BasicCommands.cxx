@@ -75,145 +75,149 @@ static OSD_Timer aTimer;
 
 extern Standard_Boolean Draw_Chrono;
 
-static Standard_Integer chronom(Draw_Interpretor& di,
-				Standard_Integer n,const char** a)
+static Standard_Integer dchronom (Draw_Interpretor& theDI,
+                                  Standard_Integer theNbArgs,
+                                  const char** theArgVec)
 {
-  if ((n == 1) || (*a[1] == '0') || (*a[1] == '1')) {
-    if (n == 1)
+  if (theNbArgs == 1
+   || (theNbArgs == 2
+    && (*theArgVec[1] == '0'
+     || *theArgVec[1] == '1')))
+  {
+    if (theNbArgs == 1)
+    {
       Draw_Chrono = !Draw_Chrono;
+    }
     else
-      Draw_Chrono = (*a[1] == '1');
+    {
+      Draw_Chrono = (*theArgVec[1] == '1');
+    }
 
-    if (Draw_Chrono) di << "Chronometers activated.\n";
-    else di << "Chronometers deactivated.\n";
+    theDI << (Draw_Chrono
+           ? "Chronometers activated.\n"
+           : "Chronometers deactivated.\n");
+    return 0;
   }
-  else {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
-    Handle(Draw_Chronometer) C;
-    if (!D.IsNull()) {
-      C = Handle(Draw_Chronometer)::DownCast(D);
-    }
-    if (C.IsNull()) {
-      C = new Draw_Chronometer();
-    Draw::Set(a[1],C,Standard_False);
-    }
-    if (n <= 2) {
-      C->Timer().Reset();
-    }
-    else {
-      for (Standard_Integer anIter = 2; anIter < n; ++anIter)
-      {
-        TCollection_AsciiString anArg (a[anIter]);
-        anArg.LowerCase();
 
-        if (anArg == "reset")
-        {
-          C->Timer().Reset();
-        }
-        else if (anArg == "restart")
-        {
-          C->Timer().Restart();
-        }
-        else if (anArg == "start")
-        {
-          C->Timer().Start();
-        }
-        else if (anArg == "stop")
-        {
-          C->Timer().Stop();
-        }
-        else if (anArg == "show")
-        {
-          C->Timer().Show();
-        }
-        else if (anArg == "counter")
-        {
-          Standard_Real aSeconds,aCPUtime;
-          Standard_Integer aMinutes, aHours;
-          C->Timer().Show(aSeconds,aMinutes,aHours,aCPUtime);
-          std::cout << "COUNTER " << a[++anIter] << ": " << aCPUtime << "\n";
-        }
-        else
-        {
-          std::cerr << "Unknown argument '" << a[anIter] << "'!\n";
-        }
+  const char* aTimerName = theArgVec[1];
+  Handle(Draw_Chronometer) aChronom;
+  if (Handle(Draw_Drawable3D) aDrawable = Draw::Get (aTimerName))
+  {
+    aChronom = Handle(Draw_Chronometer)::DownCast (aDrawable);
+  }
+  if (aChronom.IsNull())
+  {
+    aChronom = new Draw_Chronometer();
+    Draw::Set (aTimerName, aChronom, false);
+  }
+
+  if (theNbArgs <= 2)
+  {
+    aChronom->Timer().Reset();
+    return 0;
+  }
+
+  const bool toShowCout = (TCollection_AsciiString (theArgVec[0]) == "chrono");
+  int aNbPuts = false;
+  for (Standard_Integer anIter = 2; anIter < theNbArgs; ++anIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anIter]);
+    anArg.LowerCase();
+    if (anArg == "-reset"
+     || anArg == "reset")
+    {
+      aChronom->Timer().Reset();
+    }
+    else if (anArg == "-restart"
+          || anArg == "restart")
+    {
+      aChronom->Timer().Restart();
+    }
+    else if (anArg == "-start"
+          || anArg == "-resume"
+          || anArg == "start")
+    {
+      aChronom->Timer().Start();
+    }
+    else if (anArg == "-stop"
+          || anArg == "-pause"
+          || anArg == "stop")
+    {
+      aChronom->Timer().Stop();
+    }
+    else if (anArg == "-show"
+          || anArg == "show")
+    {
+      if (toShowCout)
+      {
+        aChronom->Timer().Show (std::cout);
       }
+      else
+      {
+        Standard_SStream aStream;
+        aChronom->Timer().Show (aStream);
+        theDI << aStream;
+      }
+    }
+    else if (anIter + 1 < theNbArgs
+          && (anArg == "-counter"
+           || anArg == "counter"))
+    {
+      Standard_Real aSeconds = 0.0, aCPUtime = 0.0;
+      Standard_Integer aMinutes = 0, aHours = 0;
+      aChronom->Timer().Show (aSeconds, aMinutes, aHours, aCPUtime);
+      if (toShowCout)
+      {
+        std::cout << "COUNTER " << theArgVec[++anIter] << ": " << aCPUtime << "\n";
+      }
+      else
+      {
+        theDI << "COUNTER " << theArgVec[++anIter] << ": " << aCPUtime << "\n";
+      }
+    }
+    else if (anArg == "-elapsed")
+    {
+      if (++aNbPuts > 1) { theDI << " "; }
+      theDI << aChronom->Timer().ElapsedTime();
+    }
+    else if (anArg == "-cpu"
+          || anArg == "-usercpu"
+          || anArg == "-cpuuser")
+    {
+      if (++aNbPuts > 1) { theDI << " "; }
+      theDI << aChronom->Timer().UserTimeCPU();
+    }
+    else if (anArg == "-systemcpu"
+          || anArg == "-syscpu"
+          || anArg == "-cpusystem"
+          || anArg == "-cpusys")
+    {
+      if (++aNbPuts > 1) { theDI << " "; }
+      theDI << aChronom->Timer().SystemTimeCPU();
+    }
+    else if (anArg == "-thread"
+          || anArg == "-threadonly")
+    {
+      bool isThreadOnly = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anIter);
+      aChronom->Timer().Stop();
+      aChronom->Timer().Reset();
+      aChronom->Timer().SetThisThreadOnly (isThreadOnly);
+    }
+    else if (anArg == "-process")
+    {
+      bool isProcessTime = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anIter);
+      aChronom->Timer().Stop();
+      aChronom->Timer().Reset();
+      aChronom->Timer().SetThisThreadOnly (!isProcessTime);
+    }
+    else
+    {
+      theDI << "Syntax error at '" << theArgVec[anIter] << "'\n";
+      return 1;
     }
   }
   return 0;
 }
-
-static Standard_Integer dchronom(Draw_Interpretor& theDI,
-				 Standard_Integer n,const char** a)
-{
-  if ((n == 1) || (*a[1] == '0') || (*a[1] == '1')) {
-    if (n == 1)
-      Draw_Chrono = !Draw_Chrono;
-    else
-      Draw_Chrono = (*a[1] == '1');
-
-    if (Draw_Chrono) theDI << "Chronometers activated.\n";
-    else theDI << "Chronometers deactivated.\n";
-  }
-  else {
-    Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
-    Handle(Draw_Chronometer) C;
-    if (!D.IsNull()) {
-      C = Handle(Draw_Chronometer)::DownCast(D);
-    }
-    if (C.IsNull()) {
-      C = new Draw_Chronometer();
-      Draw::Set(a[1],C,Standard_False);
-    }
-    if (n <= 2) {
-      C->Timer().Reset();
-    }
-    else {
-      for (Standard_Integer anIter = 2; anIter < n; ++anIter)
-      {
-        TCollection_AsciiString anArg (a[anIter]);
-        anArg.LowerCase();
-
-        if (anArg == "reset")
-        {
-          C->Timer().Reset();
-        }
-        else if (anArg == "restart")
-        {
-          C->Timer().Restart();
-        }
-        else if (anArg == "start")
-        {
-          C->Timer().Start();
-        }
-        else if (anArg == "stop")
-        {
-          C->Timer().Stop();
-        }
-        else if (anArg == "show")
-        {
-          Standard_SStream ss;
-          C->Timer().Show(ss);
-          theDI << ss;
-        }
-        else if (anArg == "counter")
-        {
-          Standard_Real aSeconds,aCPUtime;
-          Standard_Integer aMinutes, aHours;
-          C->Timer().Show(aSeconds,aMinutes,aHours,aCPUtime);
-          theDI << "COUNTER " << a[++anIter] << ": " << aCPUtime << "\n";
-        }
-        else
-        {
-          theDI << "Unknown argument '" << a[anIter] << "'!\n";
-        }
-      }
-    }
-  }
-  return 0;
-}
-
-
 
 //=======================================================================
 //function : ifbatch
@@ -878,7 +882,8 @@ static int dmeminfo (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cerr << "Unknown argument '" << theArgVec[anIter] << "'!\n";
+      theDI << "Syntax error at '" << theArgVec[anIter] << "'!\n";
+      return 1;
     }
   }
 
@@ -1304,11 +1309,33 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,Draw_wait,g);
   theCommands.Add("cpulimit","cpulimit [nbseconds], no args remove limits",
 		  __FILE__,cpulimit,g);
-  theCommands.Add("chrono","chrono [name action [action...]] \n  Operates named timer.\n"
-                           "  Supported actions: reset, start, stop, restart, show, counter [text].\n"
-                           "  Without arguments enables / disables global timer for all DRAW commands.",
-		  __FILE__,chronom,g);
-  theCommands.Add("dchrono","see help of chrono command",
+
+  const char* aChronoHelp =
+            "chrono Name [-start] [-stop] [-reset] [-restart] [-counter Text]"
+    "\n\t\t:             [-show] [-elapsed] [-userCPU] [-sysCPU]"
+    "\n\t\t:             [-thread|-process {0|1}]"
+    "\n\t\t: Operates named timer:"
+    "\n\t\t:   -start   starts (resumes) timer"
+    "\n\t\t:   -stop    stops  (pauses)  timer"
+    "\n\t\t:   -reset   resets timer progress"
+    "\n\t\t:   -restart resets and starts timer"
+    "\n\t\t:   -show    prints timer progress"
+    "\n\t\t:           ('dchrono' puts into Tcl, 'chrono' puts into std::cout)"
+    "\n\t\t:   -elapsed prints elapsed    time in seconds"
+    "\n\t\t:   -userCPU prints user   CPU time in seconds"
+    "\n\t\t:   -sysCPU  prints system CPU time in seconds"
+    "\n\t\t:   -counter prints 'COUNTER <Text>'"
+    "\n\t\t:   -thread  stops timer and sets measuring of CPU time for this thread only (FALSE by default)"
+    "\n\t\t:   -process stops timer and sets measuring of CPU time for all  threads (TRUE by default)"
+    "\n\t\t: Without arguments enables / disables global timer for all DRAW commands."
+    "\n\t\t:   chrono {0|1}"
+    "\n\t\t: Typical usage:"
+    "\n\t\t:   chrono t -restart"
+    "\n\t\t:   <algorithm>"
+    "\n\t\t:   chrono t -stop -show";
+  theCommands.Add("chrono", aChronoHelp,
+		  __FILE__,dchronom,g);
+  theCommands.Add("dchrono", aChronoHelp,
 		  __FILE__,dchronom,g);
   theCommands.Add("mallochook",
                   "debug memory allocation/deallocation, w/o args for help",

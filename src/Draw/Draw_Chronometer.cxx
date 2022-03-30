@@ -14,68 +14,49 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draw_Chronometer.hxx>
-#include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <OSD_Timer.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Draw_Chronometer,Draw_Drawable3D)
+#include <Draw_Display.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(Draw_Chronometer, Draw_Drawable3D)
 
 //=======================================================================
 //function : Draw_Chronometer
-//purpose  : 
+//purpose  :
 //=======================================================================
 Draw_Chronometer::Draw_Chronometer() 
 {
+  //
 }
-
-
-//=======================================================================
-//function : Timer
-//purpose  : 
-//=======================================================================
-
-OSD_Timer&  Draw_Chronometer::Timer()
-{
-  return myTimer;
-}
-
-
 
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  Draw_Chronometer::DrawOn(Draw_Display&)const 
+void Draw_Chronometer::DrawOn (Draw_Display& ) const
 {
+  //
 }
-
 
 //=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Draw_Drawable3D)  Draw_Chronometer::Copy()const 
+Handle(Draw_Drawable3D) Draw_Chronometer::Copy() const
 {
   Handle(Draw_Chronometer) C = new Draw_Chronometer();
   return C;
 }
 
-
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  Draw_Chronometer::Dump(Standard_OStream& S)const 
+void  Draw_Chronometer::Dump (Standard_OStream& S) const
 {
-  S << "Chronometer : ";
+  S << "Chronometer, ";
+  myTimer.Show (S);
 }
-
 
 //=======================================================================
 //function : Whatis

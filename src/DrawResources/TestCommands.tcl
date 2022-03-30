@@ -1402,10 +1402,10 @@ proc _run_test {scriptsdir group gridname casefile echo} {
         append stats "MEMORY DELTA: [expr ($memuse - $membase) / 1024] KiB\n"
     }
     uplevel dchrono _timer stop
-    set time [uplevel dchrono _timer show]
-    if { [regexp -nocase {CPU user time:[ \t]*([0-9.e-]+)} $time res cpu_usr] } {
-        append stats "TOTAL CPU TIME: $cpu_usr sec\n"
-    }
+    set cpu_usr [uplevel dchrono _timer -userCPU]
+    set elps    [uplevel dchrono _timer -elapsed]
+    append stats "TOTAL CPU TIME: $cpu_usr sec\n"
+    append stats "ELAPSED TIME: $elps sec\n"
     if { $dlog_exists && ! $echo } {
         dlog add $stats
     } else {

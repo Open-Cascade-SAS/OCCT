@@ -91,6 +91,14 @@ public:
     return aSysTime;
   }
 
+  //! Return TRUE if current thread CPU time should be measured,
+  //! and FALSE to measure all threads CPU time; FALSE by default,
+  Standard_Boolean IsThisThreadOnly() const { return myIsThreadOnly; }
+
+  //! Set if current thread (TRUE) or all threads (FALSE) CPU time should be measured.
+  //! Will raise exception if Timer is in started state.
+  Standard_EXPORT void SetThisThreadOnly (Standard_Boolean theIsThreadOnly);
+
   //! Returns the current CPU user time in a variable.
   //! The chronometer can be running (laps Time) or stopped.
   void Show (Standard_Real& theUserSeconds) const { theUserSeconds = UserTimeCPU(); }
