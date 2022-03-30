@@ -118,12 +118,19 @@ protected:
   //! iteration over objects subject to parallel processing.
   //! It stores pointer to instance of polymorphic iterator inheriting from 
   //! IteratorInterface, which contains actual type-specific iterator.
-  class UniversalIterator : 
+  class UniversalIterator
     // Note that TBB requires that value_type of iterator be copyable, 
     // thus we use its own type for that
-    public std::iterator<std::forward_iterator_tag, UniversalIterator, ptrdiff_t, UniversalIterator*, UniversalIterator&>
   {
   public:
+
+    // Since C++20 inheritance from std::iterator is deprecated, so define predefined types manually:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type = UniversalIterator;
+    using difference_type = ptrdiff_t;
+    using pointer = UniversalIterator*;
+    using reference = UniversalIterator&;
+
     UniversalIterator() {}
 
     UniversalIterator(IteratorInterface* theOther)

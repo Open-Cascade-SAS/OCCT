@@ -26,12 +26,16 @@
 //! iterator requires Offset and Differ methods. See NCollection_Vector as
 //! example of declaring custom STL iterators.
 template<class Category, class BaseIterator, class ItemType, bool IsConstant>
-class NCollection_StlIterator :
-  public std::iterator<Category, ItemType, ptrdiff_t,
-                       typename std::conditional<IsConstant, const ItemType*, ItemType*>::type,
-                       typename std::conditional<IsConstant, const ItemType&, ItemType&>::type>
+class NCollection_StlIterator
 {
 public:
+
+  // Since C++20 inheritance from std::iterator is deprecated, so define predefined types manually:
+  using iterator_category = Category;
+  using value_type = ItemType;
+  using difference_type = ptrdiff_t;
+  using pointer = typename std::conditional<IsConstant, const ItemType*, ItemType*>::type;
+  using reference = typename std::conditional<IsConstant, const ItemType&, ItemType&>::type;
 
   //! Default constructor
   NCollection_StlIterator () {}
