@@ -3,8 +3,6 @@ puts "0029807: Impossible to cut cone from prism"
 puts "========"
 puts ""
 
-puts "TODO OCC29922 ALL: Error: Degenerated edge is not found"
-
 restore [locate_data_file bug29807-obj.brep] b1
 restore [locate_data_file bug29807-tool.brep] b2
 
