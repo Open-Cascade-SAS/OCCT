@@ -40,7 +40,8 @@
 #include <XSDRAW.hxx>
 #include <XSDRAW_Vars.hxx>
 
-#include <stdio.h>
+#include <iostream>
+#include <string>
 //#include <XSDRAW_Shape.hxx>
 static int deja = 0, dejald = 0;
 //unused variable 
@@ -256,16 +257,23 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
     Handle(TColStd_HSequenceOfTransient)  XSDRAW::GetList
   (const Standard_CString first, const Standard_CString second)
 {
-  Handle(TColStd_HSequenceOfTransient) list;
-  if (!first || first[0] == '\0') {
-    char ligne[80];  ligne[0] = '\0'; char truc;
-//    std::cin.clear();  std::cin.get (ligne,79,'\n');
-    std::cin >> ligne;  Standard_Size ln = strlen(ligne);
-    char *ff = &ligne[0], *ss = NULL;
-    std::cin.get(truc);  if (truc != '\n') { std::cin>>&ligne[ln+1]; ss = &ligne[ln+1]; }
-    return  XSDRAW::GetList (ff,ss);
+  if ( !first || first[0] == '\0' )
+  {
+    std::string aLineFirst;
+    std::cin >> aLineFirst;
+    
+    char terminateSymbol = '\0';
+    std::cin.get(terminateSymbol);
+
+    if ( terminateSymbol == '\n' )
+      return XSDRAW::GetList (aLineFirst.c_str(), nullptr);
+    else
+    {
+      std::string aLineSecond;
+      std::cin >> aLineSecond;
+      return XSDRAW::GetList (aLineFirst.c_str(), aLineSecond.c_str());
+    }
   }
-//  return IFSelect_Functions::GiveList (Session(),first,second);
   return IFSelect_Functions::GiveList (Session(),first,second);
 }
 
