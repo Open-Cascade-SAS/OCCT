@@ -96,7 +96,7 @@ public:
   void Orientation (const Standard_Integer I, const TopAbs_Orientation Or)
   {
     myFlags(I) &= ~EMaskOrient;
-    myFlags(I) |= (Or & EMaskOrient);
+    myFlags(I) |= ((Standard_Integer)Or & (Standard_Integer)EMaskOrient);
   }
 
   TopAbs_Orientation Orientation (const Standard_Integer I) const

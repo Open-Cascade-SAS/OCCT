@@ -117,24 +117,37 @@ AIS_ViewController::AIS_ViewController()
   myRubberBand->SetDisplayMode (0);
   myRubberBand->SetMutable (true);
 
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton,                           AIS_MouseGesture_RotateOrbit);
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_CTRL,   AIS_MouseGesture_Zoom);
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_SHIFT,  AIS_MouseGesture_Pan);
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT,    AIS_MouseGesture_SelectRectangle);
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT | Aspect_VKeyFlags_SHIFT, AIS_MouseGesture_SelectRectangle);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton,
+                          AIS_MouseGesture_RotateOrbit);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_CTRL,
+                          AIS_MouseGesture_Zoom);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
+                          AIS_MouseGesture_Pan);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_ALT,
+                          AIS_MouseGesture_SelectRectangle);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_ALT | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
+                          AIS_MouseGesture_SelectRectangle);
 
-  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton,                          AIS_SelectionScheme_Replace);
-  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT,   AIS_SelectionScheme_Replace);
-  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_SHIFT, AIS_SelectionScheme_XOR);
-  myMouseSelectionSchemes.Bind (Aspect_VKeyMouse_LeftButton | Aspect_VKeyFlags_ALT | Aspect_VKeyFlags_SHIFT, AIS_SelectionScheme_XOR);
+  myMouseSelectionSchemes.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton,
+                                AIS_SelectionScheme_Replace);
+  myMouseSelectionSchemes.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_ALT,
+                                AIS_SelectionScheme_Replace);
+  myMouseSelectionSchemes.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
+                                AIS_SelectionScheme_XOR);
+  myMouseSelectionSchemes.Bind ((Standard_UInteger )Aspect_VKeyMouse_LeftButton | (Standard_UInteger )Aspect_VKeyFlags_ALT | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
+                                AIS_SelectionScheme_XOR);
 
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_RightButton,                          AIS_MouseGesture_Zoom);
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_RightButton | Aspect_VKeyFlags_CTRL,  AIS_MouseGesture_RotateOrbit);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_RightButton,
+                          AIS_MouseGesture_Zoom);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_RightButton | (Standard_UInteger )Aspect_VKeyFlags_CTRL,
+                          AIS_MouseGesture_RotateOrbit);
 
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_MiddleButton,                         AIS_MouseGesture_Pan);
-  myMouseGestureMap.Bind (Aspect_VKeyMouse_MiddleButton | Aspect_VKeyFlags_CTRL, AIS_MouseGesture_Pan);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_MiddleButton,
+                          AIS_MouseGesture_Pan);
+  myMouseGestureMap.Bind ((Standard_UInteger )Aspect_VKeyMouse_MiddleButton | (Standard_UInteger )Aspect_VKeyFlags_CTRL,
+                          AIS_MouseGesture_Pan);
 
-  myMouseGestureMapDrag.Bind (Aspect_VKeyMouse_LeftButton,  AIS_MouseGesture_Drag);
+  myMouseGestureMapDrag.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Drag);
 
   myXRTeleportHaptic.Duration  = 3600.0f;
   myXRTeleportHaptic.Frequency = 0.1f;

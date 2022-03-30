@@ -31,86 +31,84 @@
  *
  * The flags are grouped in semantic groups: 
  * - No flags means nothing done
- * - Done flags correspond to some operation succesffuly completed
+ * - Done flags correspond to some operation successfully completed
  * - Warning flags correspond to warning messages on some 
  *   potentially wrong situation, not harming algorithm execution
  * - Alarm flags correspond to more severe warnings about incorrect
  *   user data, while not breaking algorithm execution
  * - Fail flags correspond to cases when algorithm failed to complete
  */
-
 class Message_ExecStatus
 {
-
- private:
+private:
 
   //! Mask to separate bits indicating status type and index within the type  
-  enum StatusMask {
-    MType         = 0x0000ff00,
-    MIndex        = 0x000000ff
-  };
-  static inline int getBitFlag (int status)
+  enum StatusMask
   {
-    return 0x1 << (status & MIndex);
+    MType  = 0x0000ff00,
+    MIndex = 0x000000ff
+  };
+
+  static inline int getBitFlag (int theStatus)
+  {
+    return 0x1 << (theStatus & MIndex);
   }
-  
- public:
+
+public:
   //!@name Creation and simple operations with statuses
   //!@{
 
   //! Create empty execution status
-  Message_ExecStatus () 
-    : myDone( Message_None),  myWarn( Message_None),
-      myAlarm( Message_None), myFail( Message_None)
+  Message_ExecStatus()
+  : myDone  (Message_None), myWarn (Message_None),
+    myAlarm (Message_None), myFail (Message_None)
   {}
 
   //! Initialise the execution status
-  Message_ExecStatus ( Message_Status status )
-    : myDone( Message_None),  myWarn( Message_None),
-      myAlarm( Message_None), myFail( Message_None)
+  Message_ExecStatus (Message_Status theStatus)
+  : myDone  (Message_None), myWarn (Message_None),
+    myAlarm (Message_None), myFail (Message_None)
   {
-    Set( status );
+    Set (theStatus);
   }
 
   //! Sets a status flag
-  void Set (Message_Status status)
-  { 
-    switch( status & MType )
+  void Set (Message_Status theStatus)
+  {
+    switch (TypeOfStatus (theStatus))
     {
-    case Message_DONE: myDone  |= (getBitFlag( status )); break;
-    case Message_WARN: myWarn  |= (getBitFlag( status )); break;
-    case Message_ALARM:myAlarm |= (getBitFlag( status )); break;
-    case Message_FAIL: myFail  |= (getBitFlag( status )); break;
-    default: break;
+      case Message_DONE:  myDone  |= (getBitFlag (theStatus)); break;
+      case Message_WARN:  myWarn  |= (getBitFlag (theStatus)); break;
+      case Message_ALARM: myAlarm |= (getBitFlag (theStatus)); break;
+      case Message_FAIL:  myFail  |= (getBitFlag (theStatus)); break;
     }
   }
 
   //! Check status for being set
-  Standard_Boolean IsSet (Message_Status status) const
+  Standard_Boolean IsSet (Message_Status theStatus) const
   { 
-    switch( status & MType )
+    switch (TypeOfStatus (theStatus))
     {
-    case Message_DONE: return ( myDone  & getBitFlag( status ) ? Standard_True : Standard_False );
-    case Message_WARN: return ( myWarn  & getBitFlag( status ) ? Standard_True : Standard_False );
-    case Message_ALARM:return ( myAlarm & getBitFlag( status ) ? Standard_True : Standard_False );
-    case Message_FAIL: return ( myFail  & getBitFlag( status ) ? Standard_True : Standard_False );
-    default:           return Standard_False;
+      case Message_DONE:  return (myDone  & getBitFlag (theStatus)) != 0;
+      case Message_WARN:  return (myWarn  & getBitFlag (theStatus)) != 0;
+      case Message_ALARM: return (myAlarm & getBitFlag (theStatus)) != 0;
+      case Message_FAIL:  return (myFail  & getBitFlag (theStatus)) != 0;
     }
+    return Standard_False;
   }
-  
+
   //! Clear one status
-  void Clear (Message_Status status)
+  void Clear (Message_Status theStatus)
   {
-    switch( status & MType )
+    switch (TypeOfStatus (theStatus))
     {
-    case Message_DONE: myDone  &= ~(getBitFlag( status )); return;
-    case Message_WARN: myWarn  &= ~(getBitFlag( status )); return;
-    case Message_ALARM:myAlarm &= ~(getBitFlag( status )); return;
-    case Message_FAIL: myFail  &= ~(getBitFlag( status )); return;
-    default: return;
+      case Message_DONE: myDone  &= ~(getBitFlag (theStatus)); return;
+      case Message_WARN: myWarn  &= ~(getBitFlag (theStatus)); return;
+      case Message_ALARM:myAlarm &= ~(getBitFlag (theStatus)); return;
+      case Message_FAIL: myFail  &= ~(getBitFlag (theStatus)); return;
     }
   }
-  
+
   //!@}
 
   //!@name Advanced: Group operations (useful for analysis)
@@ -121,7 +119,7 @@ class Message_ExecStatus
   Standard_Boolean IsFail  () const { return myFail  != Message_None;  }
   Standard_Boolean IsWarn  () const { return myWarn  != Message_None;  }
   Standard_Boolean IsAlarm () const { return myAlarm != Message_None;  }
-  
+
   //! Set all statuses of each type
   void SetAllDone   () { myDone  = ~0; }
   void SetAllWarn   () { myWarn  = ~0; }
@@ -139,7 +137,7 @@ class Message_ExecStatus
   { 
     myDone = myWarn = myAlarm = myFail = Message_None;
   }
-  
+
   //! Add statuses to me from theOther execution status
   void Add ( const Message_ExecStatus& theOther )
   {
@@ -164,11 +162,11 @@ class Message_ExecStatus
 
   //@}
 
- public:
+public:
 
   //!@name Advanced: Iteration and analysis of status flags
   //!@{
-  
+
   //! Definitions of range of available statuses
   enum StatusRange
   {
@@ -179,29 +177,29 @@ class Message_ExecStatus
   };
 
   //! Returns index of status in whole range [FirstStatus, LastStatus]
-  static Standard_Integer StatusIndex( Message_Status status )
+  static Standard_Integer StatusIndex (Message_Status theStatus)
   {
-    switch( status & MType )
+    switch (TypeOfStatus (theStatus))
     {
-    case Message_DONE:  return 0 * StatusesPerType + LocalStatusIndex(status);
-    case Message_WARN:  return 1 * StatusesPerType + LocalStatusIndex(status);
-    case Message_ALARM: return 2 * StatusesPerType + LocalStatusIndex(status);
-    case Message_FAIL:  return 3 * StatusesPerType + LocalStatusIndex(status);
-    default: return 0;
+      case Message_DONE:  return 0 * StatusesPerType + LocalStatusIndex(theStatus);
+      case Message_WARN:  return 1 * StatusesPerType + LocalStatusIndex(theStatus);
+      case Message_ALARM: return 2 * StatusesPerType + LocalStatusIndex(theStatus);
+      case Message_FAIL:  return 3 * StatusesPerType + LocalStatusIndex(theStatus);
     }
+    return 0;
   }
 
   //! Returns index of status inside type of status (Done or Warn or, etc) 
   //! in range [1, StatusesPerType]
-  static Standard_Integer LocalStatusIndex( Message_Status status )
+  static Standard_Integer LocalStatusIndex (Message_Status theStatus)
   {
-    return (status & MIndex) + 1;
+    return ((Standard_UInteger )theStatus & (Standard_UInteger )MIndex) + 1;
   }
 
   //! Returns status type (DONE, WARN, ALARM, or FAIL) 
-  static Message_StatusType TypeOfStatus( Message_Status status )
+  static Message_StatusType TypeOfStatus (Message_Status theStatus)
   {
-    return (Message_StatusType)(status & MType);
+    return (Message_StatusType )((Standard_UInteger )theStatus & (Standard_UInteger )MType);
   }
 
   //! Returns status with index theIndex in whole range [FirstStatus, LastStatus]
@@ -221,8 +219,7 @@ class Message_ExecStatus
 
   //!@}
 
- private:
-  // ---------- PRIVATE FIELDS ----------
+private:
   Standard_Integer myDone;
   Standard_Integer myWarn;
   Standard_Integer myAlarm;

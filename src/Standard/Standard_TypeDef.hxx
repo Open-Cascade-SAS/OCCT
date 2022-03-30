@@ -59,6 +59,7 @@
 #include <Standard_Macro.hxx>
 
 typedef int           Standard_Integer;
+typedef unsigned int  Standard_UInteger;
 typedef double        Standard_Real;
 typedef bool          Standard_Boolean;
 typedef float         Standard_ShortReal;

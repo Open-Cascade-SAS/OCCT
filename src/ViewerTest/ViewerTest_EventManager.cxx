@@ -88,27 +88,37 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
 {
   myViewAnimation = GlobalViewAnimation();
 
-  addActionHotKeys (Aspect_VKey_NavForward,        Aspect_VKey_W, Aspect_VKey_W | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavBackward ,      Aspect_VKey_S, Aspect_VKey_S | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideLeft,      Aspect_VKey_A, Aspect_VKey_A | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideRight,     Aspect_VKey_D, Aspect_VKey_D | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavRollCCW,        Aspect_VKey_Q, Aspect_VKey_Q | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavRollCW,         Aspect_VKey_E, Aspect_VKey_E | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavForward,        (Standard_UInteger )Aspect_VKey_W,
+                                                   (Standard_UInteger )Aspect_VKey_W | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavBackward ,      (Standard_UInteger )Aspect_VKey_S,
+                                                   (Standard_UInteger )Aspect_VKey_S | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideLeft,      (Standard_UInteger )Aspect_VKey_A,
+                                                   (Standard_UInteger )Aspect_VKey_A | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideRight,     (Standard_UInteger )Aspect_VKey_D,
+                                                   (Standard_UInteger )Aspect_VKey_D | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavRollCCW,        (Standard_UInteger )Aspect_VKey_Q,
+                                                   (Standard_UInteger )Aspect_VKey_Q | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavRollCW,         (Standard_UInteger )Aspect_VKey_E,
+                                                   (Standard_UInteger )Aspect_VKey_E | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
 
-  addActionHotKeys (Aspect_VKey_NavSpeedIncrease,  Aspect_VKey_Plus,  Aspect_VKey_Plus  | Aspect_VKeyFlags_SHIFT,
-                                                   Aspect_VKey_Equal,
-                                                   Aspect_VKey_NumpadAdd, Aspect_VKey_NumpadAdd | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSpeedDecrease,  Aspect_VKey_Minus, Aspect_VKey_Minus | Aspect_VKeyFlags_SHIFT,
-                                                   Aspect_VKey_NumpadSubtract, Aspect_VKey_NumpadSubtract | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSpeedIncrease,  (Standard_UInteger )Aspect_VKey_Plus,
+                                                   (Standard_UInteger )Aspect_VKey_Plus | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
+                                                   (Standard_UInteger )Aspect_VKey_Equal,
+                                                   (Standard_UInteger )Aspect_VKey_NumpadAdd,
+                                                   (Standard_UInteger )Aspect_VKey_NumpadAdd | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSpeedDecrease,  (Standard_UInteger )Aspect_VKey_Minus,
+                                                   (Standard_UInteger )Aspect_VKey_Minus | (Standard_UInteger )Aspect_VKeyFlags_SHIFT,
+                                                   (Standard_UInteger )Aspect_VKey_NumpadSubtract,
+                                                   (Standard_UInteger )Aspect_VKey_NumpadSubtract | (Standard_UInteger )Aspect_VKeyFlags_SHIFT);
 
-  addActionHotKeys (Aspect_VKey_NavLookUp,         Aspect_VKey_Up);
-  addActionHotKeys (Aspect_VKey_NavLookDown,       Aspect_VKey_Down);
-  addActionHotKeys (Aspect_VKey_NavLookLeft,       Aspect_VKey_Left);
-  addActionHotKeys (Aspect_VKey_NavLookRight,      Aspect_VKey_Right);
-  addActionHotKeys (Aspect_VKey_NavSlideLeft,      Aspect_VKey_Left  | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideRight,     Aspect_VKey_Right | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideUp,        Aspect_VKey_Up    | Aspect_VKeyFlags_SHIFT);
-  addActionHotKeys (Aspect_VKey_NavSlideDown,      Aspect_VKey_Down  | Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavLookUp,         (Standard_UInteger )Aspect_VKey_Up);
+  addActionHotKeys (Aspect_VKey_NavLookDown,       (Standard_UInteger )Aspect_VKey_Down);
+  addActionHotKeys (Aspect_VKey_NavLookLeft,       (Standard_UInteger )Aspect_VKey_Left);
+  addActionHotKeys (Aspect_VKey_NavLookRight,      (Standard_UInteger )Aspect_VKey_Right);
+  addActionHotKeys (Aspect_VKey_NavSlideLeft,      (Standard_UInteger )Aspect_VKey_Left  | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideRight,     (Standard_UInteger )Aspect_VKey_Right | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideUp,        (Standard_UInteger )Aspect_VKey_Up    | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
+  addActionHotKeys (Aspect_VKey_NavSlideDown,      (Standard_UInteger )Aspect_VKey_Down  | (Standard_UInteger)Aspect_VKeyFlags_SHIFT);
 
   // window could be actually not yet set to the View
   //SetupWindowCallbacks (theView->Window());
@@ -508,11 +518,11 @@ void ViewerTest_EventManager::ProcessKeyPress (Aspect_VKey theKey)
       myCtx->UpdateCurrentViewer();
       break;
     }
-    case Aspect_VKey_S | Aspect_VKeyFlags_CTRL:
-    case Aspect_VKey_W | Aspect_VKeyFlags_CTRL:
+    case (Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_CTRL:
+    case (Standard_UInteger)Aspect_VKey_W | (Standard_UInteger)Aspect_VKeyFlags_CTRL:
     {
       Standard_Integer aDispMode = AIS_Shaded;
-      if (theKey == (Aspect_VKey_S | Aspect_VKeyFlags_CTRL))
+      if (theKey == ((Standard_UInteger)Aspect_VKey_S | (Standard_UInteger)Aspect_VKeyFlags_CTRL))
       {
         aDispMode = AIS_Shaded;
         std::cout << "setup Shaded display mode\n";
