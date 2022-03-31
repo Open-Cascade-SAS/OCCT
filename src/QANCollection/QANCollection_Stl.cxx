@@ -1115,7 +1115,7 @@ void TestPerformanceMapAccess(Draw_Interpretor& di)
     aTimer.Reset();
     aTimer.Start();
     {
-      for (Standard_Integer anIdx = 0; anIdx < 10000; ++anIdx)
+      for (size_t anIdx = 0; anIdx < 10000; ++anIdx)
       {
         if (aSet.find (aVec[anIdx + 1000]) == aSet.end())
           aResult = Standard_False;
@@ -1136,7 +1136,7 @@ void TestPerformanceMapAccess(Draw_Interpretor& di)
     aTimer.Reset();
     aTimer.Start();
     {
-      for (Standard_Integer anIdx = 0; anIdx < 10000; ++anIdx)
+      for (size_t anIdx = 0; anIdx < 10000; ++anIdx)
       {
         if (!aCollec->Contains (aVec[anIdx + 1000]))
           aResult = Standard_False;
