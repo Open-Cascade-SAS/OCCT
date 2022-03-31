@@ -25,6 +25,9 @@ if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 
 if (MSVC)
+  # suppress C26812 on VS2019/C++20 (prefer 'enum class' over 'enum')
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:precise /wd\"26812\"")
+  # suppress warning on using portable non-secure functions in favor of non-portable secure ones
   add_definitions (-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
 else()
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -fPIC")
