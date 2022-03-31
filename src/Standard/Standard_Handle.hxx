@@ -71,7 +71,7 @@ namespace opencascade {
     }
 
     //! Move constructor
-    handle (handle&& theHandle) : entity(theHandle.entity)
+    handle (handle&& theHandle) noexcept : entity(theHandle.entity)
     {
       theHandle.entity = 0;
     }
@@ -112,7 +112,7 @@ namespace opencascade {
     }
 
     //! Move operator
-    handle& operator= (handle&& theHandle)
+    handle& operator= (handle&& theHandle) noexcept
     {
       std::swap (this->entity, theHandle.entity);
       return *this;

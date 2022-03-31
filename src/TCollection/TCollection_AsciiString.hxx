@@ -77,7 +77,7 @@ public:
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& astring);
 
   //! Move constructor
-  TCollection_AsciiString (TCollection_AsciiString&& theOther)
+  TCollection_AsciiString (TCollection_AsciiString&& theOther) noexcept
   : mystring (theOther.mystring),
     mylength (theOther.mylength)
   {
@@ -279,7 +279,7 @@ void operator = (const TCollection_AsciiString& fromwhere)
   Standard_EXPORT void Swap (TCollection_AsciiString& theOther);
 
   //! Move assignment operator
-  TCollection_AsciiString& operator= (TCollection_AsciiString&& theOther) { Swap (theOther); return *this; }
+  TCollection_AsciiString& operator= (TCollection_AsciiString&& theOther) noexcept { Swap (theOther); return *this; }
 
   //! Frees memory allocated by AsciiString.
   Standard_EXPORT ~TCollection_AsciiString();

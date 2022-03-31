@@ -98,7 +98,7 @@ public:
   Standard_EXPORT TCollection_ExtendedString(const TCollection_ExtendedString& astring);
 
   //! Move constructor
-  TCollection_ExtendedString (TCollection_ExtendedString&& theOther)
+  TCollection_ExtendedString (TCollection_ExtendedString&& theOther) noexcept
   : mystring (theOther.mystring),
     mylength (theOther.mylength)
   {
@@ -153,7 +153,7 @@ void operator = (const TCollection_ExtendedString& fromwhere)
   Standard_EXPORT void Swap (TCollection_ExtendedString& theOther);
 
   //! Move assignment operator
-  TCollection_ExtendedString& operator= (TCollection_ExtendedString&& theOther) { Swap (theOther); return *this; }
+  TCollection_ExtendedString& operator= (TCollection_ExtendedString&& theOther) noexcept { Swap (theOther); return *this; }
 
   //! Frees memory allocated by ExtendedString.
   Standard_EXPORT ~TCollection_ExtendedString();

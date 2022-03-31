@@ -70,13 +70,13 @@ public:
   }
   
   //! Move constructor
-  TopLoc_SListOfItemLocation (TopLoc_SListOfItemLocation&& theOther)
+  TopLoc_SListOfItemLocation (TopLoc_SListOfItemLocation&& theOther) noexcept
     : myNode(std::move (theOther.myNode))
   {
   }
 
   //! Move operator
-  TopLoc_SListOfItemLocation& operator= (TopLoc_SListOfItemLocation&& theOther)
+  TopLoc_SListOfItemLocation& operator= (TopLoc_SListOfItemLocation&& theOther) noexcept
   {
     myNode = std::move (theOther.myNode);
     return *this;

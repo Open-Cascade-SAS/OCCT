@@ -65,7 +65,7 @@ public:
   }
 
   //! Move constructor
-  NCollection_AliasedArray (NCollection_AliasedArray&& theOther)
+  NCollection_AliasedArray (NCollection_AliasedArray&& theOther) noexcept
   : myData (theOther.myData), myStride (theOther.myStride), mySize (theOther.mySize), myDeletable (theOther.myDeletable)
   {
     theOther.myDeletable = false;
