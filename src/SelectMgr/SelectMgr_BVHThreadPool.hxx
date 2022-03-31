@@ -42,6 +42,8 @@ public:
 
     BVHThread()
       : OSD_Thread(),
+      myPool(nullptr),
+      myMutex(),
       myToCatchFpe (Standard_False)
     {
 

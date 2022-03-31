@@ -69,7 +69,8 @@ protected:
   {
   protected:
     Iterator()
-    : myICurBlock (0),
+    : myVector    (nullptr),
+      myICurBlock (0),
       myIEndBlock (0),
       myCurIndex  (0),
       myEndIndex  (0) {}
