@@ -43,12 +43,14 @@
 
 #ifdef HAVE_RAPIDJSON
   //#define RAPIDJSON_ASSERT
+  #include <Standard_WarningsDisable.hxx>
   #include <rapidjson/document.h>
   #include <rapidjson/prettywriter.h>
   #include <rapidjson/stringbuffer.h>
   #include <rapidjson/istreamwrapper.h>
   #include <rapidjson/ostreamwrapper.h>
-
+  #include <Standard_WarningsRestore.hxx>
+  
   typedef rapidjson::Document::ValueType RWGltf_JsonValue;
 #endif
 
