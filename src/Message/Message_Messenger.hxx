@@ -72,7 +72,7 @@ public:
     void Flush(Standard_Boolean doForce = Standard_False)
     {
       myStream.flush();
-      if (doForce || myStream.rdbuf()->in_avail() > 0)
+      if (doForce || myStream.tellp() != std::streampos(0))
       {
         if (myMessenger)
         {
