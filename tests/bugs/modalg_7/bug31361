@@ -1,0 +1,11 @@
+puts "================================================="
+puts "0031361: Modeling algorithms - A crash arise when building tube"
+puts "================================================="
+puts ""
+
+puts "REQUIRED ALL: Error: GeomFill_Pipe cannot make a surface"
+
+circle c1 0 0 0 10
+circle c2 0 100 0 10
+beziercurve curve 4 0 0 0 100 0 0 100 100 0 0 100 0
+tuyau t curve c1 c2

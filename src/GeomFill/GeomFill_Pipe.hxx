@@ -21,6 +21,7 @@
 #include <GeomFill_Trihedron.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
+#include <GeomFill_PipeError.hxx>
 
 class Geom_Surface;
 class GeomFill_LocationLaw;
@@ -249,7 +250,11 @@ public:
   //! Returns whether approximation was done.
     Standard_Boolean IsDone() const;
 
-
+  //! Returns execution status
+  GeomFill_PipeError GetStatus() const
+  {
+    return myStatus;
+  }
 
 protected:
 
@@ -271,8 +276,7 @@ private:
   
   Standard_EXPORT Standard_Boolean KPartT4();
 
-
-  Standard_Boolean myIsDone;
+  GeomFill_PipeError myStatus;//!< Execution status
   Standard_Real myRadius;
   Standard_Real myError;
   Handle(Adaptor3d_Curve) myAdpPath;
@@ -285,8 +289,6 @@ private:
   Standard_Boolean myExchUV;
   Standard_Boolean myKPart;
   Standard_Boolean myPolynomial;
-
-
 };
 
 

@@ -61,33 +61,36 @@ Handle(GeomFill_TrihedronLaw) GeomFill_DiscreteTrihedron::Copy() const
 //purpose  : 
 //=======================================================================
 
-void GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+Standard_Boolean GeomFill_DiscreteTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   GeomFill_TrihedronLaw::SetCurve(C);
-  if (! C.IsNull()) {
+  if (! C.IsNull()) 
+  {
     GeomAbs_CurveType type;
     type = C->GetType();
-    switch  (type) {
+    switch  (type) 
+    {
     case GeomAbs_Circle:
     case GeomAbs_Ellipse:
     case GeomAbs_Hyperbola:
     case GeomAbs_Parabola:
     case GeomAbs_Line:
-      {
-	// No problem
-	myUseFrenet = Standard_True;
-        myFrenet->SetCurve(C);
-        break;
-      }
+    {
+      // No problem
+      myUseFrenet = Standard_True;
+      myFrenet->SetCurve(C);
+      break;
+    }
     default :
-      {
-        myUseFrenet = Standard_False;
-        // We have to fill <myKnots> and <myTrihedrons>
-        Init();
-        break;
-      }
+    {
+      myUseFrenet = Standard_False;
+      // We have to fill <myKnots> and <myTrihedrons>
+      Init();
+      break;
+    }
     }
   }
+  return myUseFrenet;
 }
 
 //=======================================================================

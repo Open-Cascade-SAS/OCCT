@@ -44,7 +44,9 @@ public:
   
   Standard_EXPORT GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_Curve)& guide);
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
+  //! initialize curve of trihedron law
+  //! @return Standard_True
+  Standard_EXPORT virtual Standard_Boolean SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(GeomFill_TrihedronLaw) Copy() const Standard_OVERRIDE;
   

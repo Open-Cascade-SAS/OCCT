@@ -56,7 +56,9 @@ public:
   
   Standard_EXPORT void EraseRotation();
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
+  //! calculating poles on a surface (courbe guide / the surface of rotation in points myNbPts)
+  //! @return Standard_True
+  Standard_EXPORT virtual Standard_Boolean SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
   Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
   

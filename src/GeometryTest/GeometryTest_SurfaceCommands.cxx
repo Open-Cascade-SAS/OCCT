@@ -237,8 +237,8 @@ static Standard_Integer tuyau (Draw_Interpretor& di,
 
   Pipe.Perform(1.e-4, Standard_False,  Cont);
   if (!Pipe.IsDone()) {
-    di << "GeomFill_Pipe cannot make a surface\n";
-    return 1;
+    di << "Error: GeomFill_Pipe cannot make a surface\n";
+    return 0;
   }
 
   Standard_Real Accuracy = Pipe.ErrorOnSurf();

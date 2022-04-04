@@ -63,11 +63,11 @@ Handle(GeomFill_LocationLaw) GeomFill_CurveAndTrihedron::Copy() const
 //Function: SetCurve
 //Purpose :
 //==================================================================
- void GeomFill_CurveAndTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+ Standard_Boolean GeomFill_CurveAndTrihedron::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   myCurve = C;
   myTrimmed = C;
-  myLaw->SetCurve(C); 
+  return myLaw->SetCurve(C);
 }
 
  const Handle(Adaptor3d_Curve)& GeomFill_CurveAndTrihedron::GetCurve() const

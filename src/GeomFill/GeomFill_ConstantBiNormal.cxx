@@ -66,12 +66,14 @@ GeomFill_ConstantBiNormal::GeomFill_ConstantBiNormal(const gp_Dir& BiNormal) : B
   return copy;
 }
 
- void GeomFill_ConstantBiNormal::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+ Standard_Boolean GeomFill_ConstantBiNormal::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
+  Standard_Boolean isOK = Standard_False;
   GeomFill_TrihedronLaw::SetCurve(C);
-    if (! C.IsNull()) { 
-    frenet->SetCurve(C);
+  if (! C.IsNull()) { 
+    isOK = frenet->SetCurve(C);
   }
+  return isOK;
 }
 
  Standard_Boolean GeomFill_ConstantBiNormal::D0(const Standard_Real Param,gp_Vec& Tangent,gp_Vec& Normal,gp_Vec& BiNormal) 

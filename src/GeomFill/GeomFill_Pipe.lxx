@@ -70,6 +70,5 @@ inline Standard_Real GeomFill_Pipe::ErrorOnSurf() const
 //=======================================================================
 inline Standard_Boolean GeomFill_Pipe::IsDone() const
 {
-  return myIsDone;
+  return myStatus == GeomFill_PipeOk;
 }
-

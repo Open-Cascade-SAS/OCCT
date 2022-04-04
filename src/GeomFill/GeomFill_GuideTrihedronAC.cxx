@@ -292,7 +292,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_Curv
 //function : SetCurve
 //purpose  : 
 //=======================================================================
- void GeomFill_GuideTrihedronAC::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+ Standard_Boolean GeomFill_GuideTrihedronAC::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   myCurve = C;
   myTrimmed = C;
@@ -301,6 +301,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_Curv
     L = myCurveAC->GetLength();
 //    CorrectOrient(myGuide);
   }
+  return Standard_True;
 }
 
 

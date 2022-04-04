@@ -46,7 +46,9 @@ public:
   
   Standard_EXPORT void SetAngle (const Standard_Real Angle);
   
-  Standard_EXPORT virtual void SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
+  //! calculation of poles on locking surfaces (the intersection between the generatrixand the surface at the cross - section points myNbPts)
+  //! @return Standard_True in case if execution end correctly
+  Standard_EXPORT virtual Standard_Boolean SetCurve (const Handle(Adaptor3d_Curve)& C) Standard_OVERRIDE;
   
   Standard_EXPORT virtual const Handle(Adaptor3d_Curve)& GetCurve() const Standard_OVERRIDE;
   

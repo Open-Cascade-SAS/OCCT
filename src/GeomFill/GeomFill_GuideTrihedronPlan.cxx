@@ -197,10 +197,11 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
 //function : SetCurve
 //purpose  : calculation of trihedron
 //=======================================================================
-void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_Curve)& C)
+Standard_Boolean GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_Curve)& C)
 {
   myCurve = C;
   if (!myCurve.IsNull()) Init();
+  return Standard_True;
 }
 
 //=======================================================================

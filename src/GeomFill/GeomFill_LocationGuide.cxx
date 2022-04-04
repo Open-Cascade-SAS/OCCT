@@ -537,7 +537,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 //Purpose : Calcul des poles sur la surface d'arret (intersection 
 // courbe guide / surface de revolution en myNbPts points)
 //==================================================================
- void GeomFill_LocationGuide::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+Standard_Boolean GeomFill_LocationGuide::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   Standard_Real LastAngle;
   myCurve = C;
@@ -550,6 +550,7 @@ static void InGoodPeriod(const Standard_Real Prec,
     
     if (rotation) SetRotation(myPoles2d->Value(1,1).X(), LastAngle);
   }
+  return myStatus == GeomFill_PipeOk;
 }
 
 //==================================================================

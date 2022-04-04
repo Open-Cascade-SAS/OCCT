@@ -24,10 +24,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomFill_TrihedronLaw,Standard_Transient)
 
-void GeomFill_TrihedronLaw::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+Standard_Boolean GeomFill_TrihedronLaw::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   myCurve = C;
   myTrimmed = myCurve;
+  return Standard_True;
 }
 
 //==================================================================

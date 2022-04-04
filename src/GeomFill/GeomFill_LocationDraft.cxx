@@ -105,13 +105,14 @@ GeomFill_LocationDraft::GeomFill_LocationDraft
 //Purpose : Calcul des poles sur la surfaces d'arret (intersection 
 // entre la generatrice et la surface en myNbPts points de la section)
 //==================================================================
- void GeomFill_LocationDraft::SetCurve(const Handle(Adaptor3d_Curve)& C) 
+ Standard_Boolean GeomFill_LocationDraft::SetCurve(const Handle(Adaptor3d_Curve)& C) 
 {
   myCurve = C;
   myTrimmed = C;
-  myLaw->SetCurve(C);
+  Standard_Boolean isOK = myLaw->SetCurve(C);
 
   Prepare(); 
+  return isOK;
 }
 
 //==================================================================
