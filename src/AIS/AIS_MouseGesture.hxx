@@ -34,6 +34,8 @@ enum AIS_MouseGesture
   AIS_MouseGesture_Pan,             //!< view panning gesture
   AIS_MouseGesture_RotateOrbit,     //!< orbit rotation gesture
   AIS_MouseGesture_RotateView,      //!< view  rotation gesture
+  AIS_MouseGesture_Drag,            //!< object dragging;
+                                    //!  press button to start, move mouse to define rectangle, release to finish
 };
 
 //! Map defining mouse gestures.

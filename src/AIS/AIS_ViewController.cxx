@@ -92,6 +92,7 @@ AIS_ViewController::AIS_ViewController()
   myTouchPanThresholdPx      (4.0f),
   myTouchZoomThresholdPx     (6.0f),
   myTouchZoomRatio           (0.13f),
+  myTouchDraggingThresholdPx (6.0f),
   //
   myNbTouchesLast (0),
   myUpdateStartPointPan  (true),
@@ -132,6 +133,8 @@ AIS_ViewController::AIS_ViewController()
 
   myMouseGestureMap.Bind (Aspect_VKeyMouse_MiddleButton,                         AIS_MouseGesture_Pan);
   myMouseGestureMap.Bind (Aspect_VKeyMouse_MiddleButton | Aspect_VKeyFlags_CTRL, AIS_MouseGesture_Pan);
+
+  myMouseGestureMapDrag.Bind (Aspect_VKeyMouse_LeftButton,  AIS_MouseGesture_Drag);
 
   myXRTeleportHaptic.Duration  = 3600.0f;
   myXRTeleportHaptic.Frequency = 0.1f;
@@ -261,12 +264,21 @@ void AIS_ViewController::flushBuffers (const Handle(AIS_InteractiveContext)& ,
     myUI.Dragging.ToStop = false;
     myGL.Dragging.ToStop = true;
   }
-  else if (myUI.Dragging.ToStart)
+  else
   {
-    myUI.Dragging.ToStart = false;
-    myGL.Dragging.ToStart = true;
-    myGL.Dragging.PointStart = myUI.Dragging.PointStart;
+    if (myUI.Dragging.ToStart)
+    {
+      myUI.Dragging.ToStart = false;
+      myGL.Dragging.ToStart = true;
+      myGL.Dragging.PointStart = myUI.Dragging.PointStart;
+    }
+    if (myUI.Dragging.ToMove)
+    {
+      myUI.Dragging.ToMove = false;
+      myGL.Dragging.ToMove = true;
+    }
   }
+
   myGL.Dragging.PointTo = myUI.Dragging.PointTo;
 
   if (myUI.OrbitRotation.ToStart)
@@ -351,6 +363,7 @@ void AIS_ViewController::flushGestures (const Handle(AIS_InteractiveContext)& ,
         const Graphic3d_Vec2d aRotDelta = aTouch.To - myGL.OrbitRotation.PointStart;
         myGL.OrbitRotation.ToRotate = true;
         myGL.OrbitRotation.PointTo  = myGL.OrbitRotation.PointStart + aRotDelta * aRotAccel;
+        myGL.Dragging.ToMove = true;
         myGL.Dragging.PointTo.SetValues ((int )aTouch.To.x(), (int )aTouch.To.y());
       }
       else
@@ -358,6 +371,7 @@ void AIS_ViewController::flushGestures (const Handle(AIS_InteractiveContext)& ,
         const Graphic3d_Vec2d aRotDelta = aTouch.To - myGL.ViewRotation.PointStart;
         myGL.ViewRotation.ToRotate = true;
         myGL.ViewRotation.PointTo = myGL.ViewRotation.PointStart + aRotDelta * aRotAccel;
+        myGL.Dragging.ToMove = true;
         myGL.Dragging.PointTo.SetValues ((int )aTouch.To.x(), (int )aTouch.To.y());
       }
 
@@ -780,6 +794,19 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
           UpdatePolySelection (thePoint, true);
           break;
         }
+        case AIS_MouseGesture_Drag:
+        {
+          if (myToAllowDragging)
+          {
+            myUI.Dragging.ToStart = true;
+            myUI.Dragging.PointStart = thePoint;
+          }
+          else
+          {
+            myMouseActiveGesture = AIS_MouseGesture_NONE;
+          }
+          break;
+        }
         case AIS_MouseGesture_NONE:
         {
           break;
@@ -787,12 +814,19 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
       }
     }
 
-    if (theButtons == Aspect_VKeyMouse_LeftButton
-     && theModifiers == Aspect_VKeyFlags_NONE
-     && myToAllowDragging)
+    AIS_MouseGesture aSecGesture = AIS_MouseGesture_NONE;
+    if (myMouseGestureMapDrag.Find (theButtons | theModifiers, aSecGesture))
     {
-      myUI.Dragging.ToStart = true;
-      myUI.Dragging.PointStart = thePoint;
+      if (aSecGesture == AIS_MouseGesture_Drag
+       && myToAllowDragging)
+      {
+        myUI.Dragging.ToStart = true;
+        myUI.Dragging.PointStart = thePoint;
+        if (myMouseActiveGesture == AIS_MouseGesture_NONE)
+        {
+          myMouseActiveGesture = aSecGesture;
+        }
+      }
     }
   }
 
@@ -932,6 +966,8 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
           myUI.ViewRotation.PointTo = Graphic3d_Vec2d (myMousePressPoint.x(), myMousePressPoint.y())
                                     + Graphic3d_Vec2d (aRotDelta.x(), aRotDelta.y()) * aRotAccel;
         }
+
+        myUI.Dragging.ToMove  = true;
         myUI.Dragging.PointTo = thePoint;
 
         myMouseProgressPoint = thePoint;
@@ -987,6 +1023,31 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
           myUI.Panning.ToPan = true;
           myUI.Panning.Delta = aDelta;
         }
+        toUpdateView = true;
+      }
+      break;
+    }
+    case AIS_MouseGesture_Drag:
+    {
+      if (!myToAllowDragging)
+      {
+        break;
+      }
+
+      const double aDragTol = theIsEmulated
+                            ? double(myTouchToleranceScale) * myTouchDraggingThresholdPx
+                            : 0.0;
+      if (double (Abs (aDelta.x()) + Abs (aDelta.y())) > aDragTol)
+      {
+        const double aRotAccel = myNavigationMode == AIS_NavigationMode_FirstPersonWalk ? myMouseAccel : myOrbitAccel;
+        const Graphic3d_Vec2i aRotDelta = thePoint - myMousePressPoint;
+        myUI.ViewRotation.ToRotate = true;
+        myUI.ViewRotation.PointTo = Graphic3d_Vec2d (myMousePressPoint.x(), myMousePressPoint.y())
+                                  + Graphic3d_Vec2d (aRotDelta.x(), aRotDelta.y()) * aRotAccel;
+        myUI.Dragging.ToMove  = true;
+        myUI.Dragging.PointTo = thePoint;
+
+        myMouseProgressPoint = thePoint;
         toUpdateView = true;
       }
       break;
@@ -2913,8 +2974,7 @@ void AIS_ViewController::handleDynamicHighlight (const Handle(AIS_InteractiveCon
       myGL.OrbitRotation.ToRotate = false;
       myGL.ViewRotation .ToRotate = false;
     }
-    else if (myGL.OrbitRotation.ToRotate
-          || myGL.ViewRotation.ToRotate)
+    else if (myGL.Dragging.ToMove)
     {
       OnObjectDragged (theCtx, theView, AIS_DragAction_Update);
       myGL.OrbitRotation.ToRotate = false;

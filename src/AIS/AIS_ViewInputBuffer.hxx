@@ -87,12 +87,13 @@ public:
   struct _draggingParams
   {
     bool            ToStart;    //!< start dragging
+    bool            ToMove;     //!< perform dragging
     bool            ToStop;     //!< stop  dragging
     bool            ToAbort;    //!< abort dragging (restore previous position)
     Graphic3d_Vec2i PointStart; //!< drag start point
     Graphic3d_Vec2i PointTo;    //!< drag end point
 
-    _draggingParams() : ToStart (false), ToStop (false), ToAbort (false) {}
+    _draggingParams() : ToStart (false), ToMove (false), ToStop (false), ToAbort (false) {}
   } Dragging;
 
   struct _orbitRotation
@@ -141,6 +142,7 @@ public:
     Panning.ToStart  = false;
     Panning.ToPan    = false;
     Dragging.ToStart = false;
+    Dragging.ToMove  = false;
     Dragging.ToStop  = false;
     Dragging.ToAbort = false;
     OrbitRotation.ToStart  = false;

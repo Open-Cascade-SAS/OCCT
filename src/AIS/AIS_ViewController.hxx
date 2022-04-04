@@ -757,6 +757,7 @@ protected: //! @name mouse input variables
   Standard_ShortReal  myScrollZoomRatio;          //!< distance ratio for mapping mouse scroll event to zoom; 15.0 by default
 
   AIS_MouseGestureMap myMouseGestureMap;          //!< map defining mouse gestures
+  AIS_MouseGestureMap myMouseGestureMapDrag;      //!< secondary map defining mouse gestures for dragging
   AIS_MouseGesture    myMouseActiveGesture;       //!< initiated mouse gesture (by pressing mouse button)
   AIS_MouseSelectionSchemeMap
                       myMouseSelectionSchemes;    //!< map defining selection schemes bound to mouse + modifiers
@@ -777,6 +778,7 @@ protected: //! @name multi-touch input variables
   Standard_ShortReal  myTouchPanThresholdPx;      //!< threshold for starting two-touch panning      gesture in pixels;  4 by default
   Standard_ShortReal  myTouchZoomThresholdPx;     //!< threshold for starting two-touch zoom (pitch) gesture in pixels;  6 by default
   Standard_ShortReal  myTouchZoomRatio;           //!< distance ratio for mapping two-touch zoom (pitch) gesture from pixels to zoom; 0.13 by default
+  Standard_ShortReal  myTouchDraggingThresholdPx; //!< distance for starting one-touch dragging gesture in pixels;  6 by default
 
   Aspect_Touch        myTouchClick;               //!< single touch position for handling clicks
   OSD_Timer           myTouchDoubleTapTimer;      //!< timer for handling double tap
