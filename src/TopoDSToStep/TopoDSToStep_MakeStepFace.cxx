@@ -189,6 +189,18 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   // -----------------
   
   Handle(Geom_Surface) Su = BRep_Tool::Surface(ForwardFace);
+
+  if (Su.IsNull()) 
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "Warning : Face without geometry not mapped";
+#endif
+    FP->AddWarning(errShape, " Face without geometry not mapped");
+    myError = TopoDSToStep_FaceOther;
+    done = Standard_False;
+    return;
+  }
+
 //  CKY  23 SEP 1996 : une FACE de Step n a pas droit a RECTANGULAR_TRIMMED...
 //  Il faut donc d abord "demonter" la RectangularTrimmedSurface pour
 //  passer la Surface de base

@@ -16,12 +16,15 @@
 
 
 #include <BRepClass3d.hxx>
+#include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_HArray1OfFace.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
 #include <StepShape_OpenShell.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
@@ -32,30 +35,35 @@
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 
-static Handle(StepShape_ManifoldSolidBrep) MakeManifoldSolidBrep (const TopoDS_Shell& aShell,
-                                                                  const Handle(Transfer_FinderProcess)& FP,
-                                                                  const Message_ProgressRange& theProgress)
+static std::pair<Handle(StepShape_ManifoldSolidBrep), Handle(StepVisual_TessellatedItem)>
+MakeManifoldSolidBrep(const TopoDS_Shell& aShell,
+                      const Handle(Transfer_FinderProcess)& FP,
+                      const Message_ProgressRange& theProgress)
 {
   Handle(StepShape_ManifoldSolidBrep) theManifoldSolidBrep;
+  Handle(StepVisual_TessellatedItem) aTessItem;
 
   MoniTool_DataMapOfShapeTransient aMap;
   TopoDSToStep_Tool aTool(aMap, Standard_False);
-  
-  TopoDSToStep_Builder StepB(aShell, aTool, FP, theProgress);
+
+  const Standard_Integer aWriteTessGeom = Interface_Static::IVal("write.step.tessellated");
+
+  TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theProgress);
   if (theProgress.UserBreak())
-    return theManifoldSolidBrep;
+    return std::make_pair(theManifoldSolidBrep, aTessItem);
 
   TopoDSToStep::AddResult(FP, aTool);
 
   if (StepB.IsDone()) {
+    aTessItem = StepB.TessellatedValue();
     Handle(StepShape_ClosedShell) aCShell = Handle(StepShape_ClosedShell)::DownCast(StepB.Value());
     // si OPEN on le force a CLOSED mais que c est une honte !
     if (aCShell.IsNull()) {
       Handle(StepShape_OpenShell) aOShell = Handle(StepShape_OpenShell)::DownCast(StepB.Value());
-      if (aOShell.IsNull()) return theManifoldSolidBrep;
+      if (aOShell.IsNull()) return std::make_pair(theManifoldSolidBrep, aTessItem);
       else {
-	aCShell = new StepShape_ClosedShell;
-	aCShell->Init(aOShell->Name(),aOShell->CfsFaces());
+        aCShell = new StepShape_ClosedShell;
+        aCShell->Init(aOShell->Name(), aOShell->CfsFaces());
       }
     }
     theManifoldSolidBrep = new StepShape_ManifoldSolidBrep();
@@ -63,7 +71,7 @@ static Handle(StepShape_ManifoldSolidBrep) MakeManifoldSolidBrep (const TopoDS_S
     theManifoldSolidBrep->Init(aName, aCShell);
   }
 
-  return theManifoldSolidBrep;
+  return std::make_pair(theManifoldSolidBrep, aTessItem);
 }
 
 //=============================================================================
@@ -75,9 +83,16 @@ TopoDSToStep_MakeManifoldSolidBrep::
                                      const Handle(Transfer_FinderProcess)& FP,
                                      const Message_ProgressRange& theProgress)
 {
-  theManifoldSolidBrep = MakeManifoldSolidBrep(aShell, FP, theProgress);
-  done = !theManifoldSolidBrep.IsNull();
-  if (!done && !theProgress.UserBreak()) {
+  std::pair<Handle(StepShape_ManifoldSolidBrep), Handle(StepVisual_TessellatedItem)>
+    aResult = MakeManifoldSolidBrep(aShell, FP, theProgress);
+  done = !aResult.first.IsNull() || !aResult.second.IsNull();
+  if (done) 
+  {
+    theManifoldSolidBrep = aResult.first;
+    theTessellatedItem = aResult.second;
+  }
+  if (!done && !theProgress.UserBreak()) 
+  {
     Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aShell);
     FP->AddWarning(errShape, " Closed Shell not mapped to ManifoldSolidBrep");
   }
@@ -94,16 +109,37 @@ TopoDSToStep_MakeManifoldSolidBrep::
                                      const Message_ProgressRange& theProgress)
 {
   TopoDS_Shell aOuterShell = BRepClass3d::OuterShell(aSolid);
-  if (!aOuterShell.IsNull()) {
-
-    theManifoldSolidBrep = MakeManifoldSolidBrep(aOuterShell, FP, theProgress);
-    done = !theManifoldSolidBrep.IsNull();
-    if (!done && !theProgress.UserBreak()) {
+  if (!aOuterShell.IsNull())
+  {
+    std::pair<Handle(StepShape_ManifoldSolidBrep), Handle(StepVisual_TessellatedItem)>
+      aResult = MakeManifoldSolidBrep(aOuterShell, FP, theProgress);
+    done = !aResult.first.IsNull() || !aResult.second.IsNull();
+    if (done) 
+    {
+      theManifoldSolidBrep = aResult.first;
+      if (!aResult.second.IsNull()) {
+        Handle(StepVisual_TessellatedSolid) aTessSolid = new StepVisual_TessellatedSolid();
+        Handle(StepVisual_TessellatedShell) aTessShell = Handle(StepVisual_TessellatedShell)::DownCast(aResult.second);
+        Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
+        Handle(StepVisual_HArray1OfTessellatedStructuredItem) anItems
+          = new StepVisual_HArray1OfTessellatedStructuredItem(1, aTessShell->NbItems());
+        for (Standard_Integer i = 1; i <= aTessShell->NbItems(); ++i) 
+        {
+          anItems->SetValue(i, aTessShell->ItemsValue(i));
+        }
+        Standard_Boolean aHasGeomLink = !theManifoldSolidBrep.IsNull();
+        aTessSolid->Init(aName, anItems, aHasGeomLink, theManifoldSolidBrep);
+        theTessellatedItem = aTessSolid;
+      }
+    }
+    if (!done && !theProgress.UserBreak()) 
+    {
       Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aOuterShell);
       FP->AddWarning(errShape, " Outer Shell of Solid not mapped to ManifoldSolidBrep");
     }
   }
-  else {
+  else
+  {
     Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aOuterShell);
     FP->AddWarning(errShape, " Outer Shell is null; not mapped to ManifoldSolidBrep ");
     done = Standard_False;
@@ -119,4 +155,16 @@ const Handle(StepShape_ManifoldSolidBrep) &
 {
   StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeManifoldSolidBrep::Value() - no result");
   return theManifoldSolidBrep;
+}
+
+// ============================================================================
+// Method  : TopoDSToStep_MakeManifoldSolidBrep::TessellatedValue
+// Purpose : Returns TessellatedItem as the optional result
+// ============================================================================
+
+const Handle(StepVisual_TessellatedItem)& 
+TopoDSToStep_MakeManifoldSolidBrep::TessellatedValue() const
+{
+  StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeManifoldSolidBrep::TessellatedValue() - no result");
+  return theTessellatedItem;
 }

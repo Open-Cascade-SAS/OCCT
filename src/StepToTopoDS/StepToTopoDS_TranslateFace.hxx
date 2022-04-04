@@ -24,10 +24,13 @@
 #include <StepToTopoDS_TranslateFaceError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
+class Poly_Triangulation;
 class StepShape_FaceSurface;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
-
+class StepVisual_TessellatedFace;
+class StepVisual_TriangulatedFace;
+class StepVisual_ComplexTriangulatedFace;
 
 
 class StepToTopoDS_TranslateFace  : public StepToTopoDS_Root
@@ -41,7 +44,19 @@ public:
   
   Standard_EXPORT StepToTopoDS_TranslateFace(const Handle(StepShape_FaceSurface)& FS, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool);
   
+  Standard_EXPORT StepToTopoDS_TranslateFace(const Handle(StepVisual_TessellatedFace)& theTF, 
+                                             StepToTopoDS_Tool& theTool,
+                                             StepToTopoDS_NMTool& theNMTool,
+                                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                             Standard_Boolean& theHasGeom);
+  
   Standard_EXPORT void Init (const Handle(StepShape_FaceSurface)& FS, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool);
+  
+  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedFace)& theTF,
+                             StepToTopoDS_Tool& theTool,
+                             StepToTopoDS_NMTool& theNMTool,
+                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                             Standard_Boolean& theHasGeom);
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   
@@ -58,6 +73,8 @@ protected:
 
 private:
 
+  Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_TriangulatedFace)& theTF) const;
+  Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_ComplexTriangulatedFace)& theTF) const;
 
 
   StepToTopoDS_TranslateFaceError myError;

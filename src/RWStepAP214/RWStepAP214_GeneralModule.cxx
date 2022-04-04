@@ -1527,6 +1527,37 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <StepKinematics_UniversalPairValue.hxx>
 #include <StepKinematics_UniversalPairWithRange.hxx>
 
+#include <StepVisual_TessellatedConnectingEdge.hxx>
+#include <StepVisual_TessellatedEdge.hxx>
+#include <StepVisual_TessellatedPointSet.hxx>
+#include <StepVisual_TessellatedShapeRepresentation.hxx>
+#include <StepVisual_TessellatedShapeRepresentationWithAccuracyParameters.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedVertex.hxx>
+#include <StepVisual_TessellatedWire.hxx>
+#include <StepVisual_TriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
+#include <StepVisual_CubicBezierTessellatedEdge.hxx>
+#include <StepVisual_CubicBezierTriangulatedFace.hxx>
+
+#include <RWStepVisual_RWTessellatedConnectingEdge.hxx>
+#include <RWStepVisual_RWTessellatedEdge.hxx>
+#include <RWStepVisual_RWTessellatedPointSet.hxx>
+#include <RWStepVisual_RWTessellatedShapeRepresentation.hxx>
+#include <RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters.hxx>
+#include <RWStepVisual_RWTessellatedShell.hxx>
+#include <RWStepVisual_RWTessellatedSolid.hxx>
+#include <RWStepVisual_RWTessellatedStructuredItem.hxx>
+#include <RWStepVisual_RWTessellatedVertex.hxx>
+#include <RWStepVisual_RWTessellatedWire.hxx>
+#include <RWStepVisual_RWTriangulatedFace.hxx>
+#include <RWStepVisual_RWComplexTriangulatedFace.hxx>
+#include <RWStepVisual_RWComplexTriangulatedSurfaceSet.hxx>
+#include <RWStepVisual_RWCubicBezierTessellatedEdge.hxx>
+#include <RWStepVisual_RWCubicBezierTriangulatedFace.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -5901,8 +5932,113 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
     aTool.Share(anEnt, iter);
     break;
   }
-    default : break;
-    }
+  case 804:
+  {
+    DeclareAndCast(StepVisual_TessellatedConnectingEdge, anEnt, ent);
+    RWStepVisual_RWTessellatedConnectingEdge aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 805:
+  {
+    DeclareAndCast(StepVisual_TessellatedEdge, anEnt, ent);
+    RWStepVisual_RWTessellatedEdge aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 806:
+  {
+    DeclareAndCast(StepVisual_TessellatedPointSet, anEnt, ent);
+    RWStepVisual_RWTessellatedPointSet aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 807:
+  {
+    DeclareAndCast(StepVisual_TessellatedShapeRepresentation, anEnt, ent);
+    RWStepVisual_RWTessellatedShapeRepresentation aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 808:
+  {
+    DeclareAndCast(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters, anEnt, ent);
+    RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 809:
+  {
+    DeclareAndCast(StepVisual_TessellatedShell, anEnt, ent);
+    RWStepVisual_RWTessellatedShell aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 810:
+  {
+    DeclareAndCast(StepVisual_TessellatedSolid, anEnt, ent);
+    RWStepVisual_RWTessellatedSolid aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 811:
+  {
+    DeclareAndCast(StepVisual_TessellatedStructuredItem, anEnt, ent);
+    RWStepVisual_RWTessellatedStructuredItem aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 812:
+  {
+    DeclareAndCast(StepVisual_TessellatedVertex, anEnt, ent);
+    RWStepVisual_RWTessellatedVertex aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 813:
+  {
+    DeclareAndCast(StepVisual_TessellatedWire, anEnt, ent);
+    RWStepVisual_RWTessellatedWire aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 814:
+  {
+    DeclareAndCast(StepVisual_TriangulatedFace, anEnt, ent);
+    RWStepVisual_RWTriangulatedFace aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 815:
+  {
+    DeclareAndCast(StepVisual_ComplexTriangulatedFace, anEnt, ent);
+    RWStepVisual_RWComplexTriangulatedFace aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 816:
+  {
+    DeclareAndCast(StepVisual_ComplexTriangulatedSurfaceSet, anEnt, ent);
+    RWStepVisual_RWComplexTriangulatedSurfaceSet aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 817:
+  {
+    DeclareAndCast(StepVisual_CubicBezierTessellatedEdge, anEnt, ent);
+    RWStepVisual_RWCubicBezierTessellatedEdge aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  case 818:
+  {
+    DeclareAndCast(StepVisual_CubicBezierTriangulatedFace, anEnt, ent);
+    RWStepVisual_RWCubicBezierTriangulatedFace aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
+  default : break;
+  }
 }
 
 
@@ -8162,7 +8298,52 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
    case 803:
      ent = new StepVisual_RepositionedTessellatedItem;
      break;
-    
+   case 804:
+     ent = new StepVisual_TessellatedConnectingEdge;
+     break;
+   case 805:
+     ent = new StepVisual_TessellatedEdge;
+     break;
+   case 806:
+     ent = new StepVisual_TessellatedPointSet;
+     break;
+   case 807:
+     ent = new StepVisual_TessellatedShapeRepresentation;
+     break;
+   case 808:
+     ent = new StepVisual_TessellatedShapeRepresentationWithAccuracyParameters;
+     break;
+   case 809:
+     ent = new StepVisual_TessellatedShell;
+     break;
+   case 810:
+     ent = new StepVisual_TessellatedSolid;
+     break;
+   case 811:
+     ent = new StepVisual_TessellatedStructuredItem;
+     break;
+   case 812:
+     ent = new StepVisual_TessellatedVertex;
+     break;
+   case 813:
+     ent = new StepVisual_TessellatedWire;
+     break;
+   case 814:
+     ent = new StepVisual_TriangulatedFace;
+     break;
+   case 815:
+     ent = new StepVisual_ComplexTriangulatedFace;
+     break;
+   case 816:
+     ent = new StepVisual_ComplexTriangulatedSurfaceSet;
+     break;
+   case 817:
+     ent = new StepVisual_CubicBezierTessellatedEdge;
+     break;
+   case 818:
+     ent = new StepVisual_CubicBezierTriangulatedFace;
+     break;
+
   default: 
     return Standard_False;
   }
@@ -8844,6 +9025,21 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 801: return cataux;
   case 802: return cataux;
   case 803: return cataux;
+  case 804: return cataux;
+  case 805: return cataux;
+  case 806: return cataux;
+  case 807: return cataux;
+  case 808: return cataux;
+  case 809: return cataux;
+  case 810: return cataux;
+  case 811: return cataux;
+  case 812: return cataux;
+  case 813: return cataux;
+  case 814: return cataux;
+  case 815: return cataux;
+  case 816: return cataux;
+  case 817: return cataux;
+  case 818: return cataux;
   default : break;
   }
   return 0;

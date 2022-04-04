@@ -16,11 +16,14 @@
 
 
 #include <BRepClass3d.hxx>
+#include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_FacetedBrep.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
@@ -43,9 +46,11 @@ TopoDSToStep_MakeFacetedBrep::
   if (aShell.Closed()) {
     Handle(StepShape_TopologicalRepresentationItem) aItem;
     MoniTool_DataMapOfShapeTransient aMap;
-    
+
+    const Standard_Integer aWriteTessGeom = Interface_Static::IVal("write.step.tessellated");
+
     TopoDSToStep_Tool    aTool(aMap, Standard_True);
-    TopoDSToStep_Builder StepB(aShell, aTool, FP, theProgress);
+    TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theProgress);
     if (theProgress.UserBreak())
       return;
     TopoDSToStep::AddResult ( FP, aTool );
@@ -55,23 +60,24 @@ TopoDSToStep_MakeFacetedBrep::
       Handle(StepShape_ClosedShell) aCShell;
       aCShell = Handle(StepShape_ClosedShell)::DownCast(aItem);
       theFacetedBrep = new StepShape_FacetedBrep();
-      Handle(TCollection_HAsciiString) aName = 
-	new TCollection_HAsciiString("");
+      Handle(TCollection_HAsciiString) aName =
+        new TCollection_HAsciiString("");
       theFacetedBrep->Init(aName, aCShell);
+      theTessellatedItem = StepB.TessellatedValue();
       done = Standard_True;
     }
     else {
       done = Standard_False;
       Handle(TransferBRep_ShapeMapper) errShape =
-	new TransferBRep_ShapeMapper(aShell);
-      FP->AddWarning(errShape," Closed Shell not mapped to FacetedBrep");
+        new TransferBRep_ShapeMapper(aShell);
+      FP->AddWarning(errShape, " Closed Shell not mapped to FacetedBrep");
     }
   }
   else {
     done = Standard_False;
     Handle(TransferBRep_ShapeMapper) errShape =
       new TransferBRep_ShapeMapper(aShell);
-    FP->AddWarning(errShape," Shell not closed; not mapped to FacetedBrep");
+    FP->AddWarning(errShape, " Shell not closed; not mapped to FacetedBrep");
   }
 }
 
@@ -94,42 +100,60 @@ TopoDSToStep_MakeFacetedBrep::
     if (aOuterShell.Closed()) {
       Handle(StepShape_TopologicalRepresentationItem) aItem;
       MoniTool_DataMapOfShapeTransient aMap;
-      
+
+      const Standard_Integer aWriteTessGeom = Interface_Static::IVal("write.step.tessellated");
+
       TopoDSToStep_Tool    aTool(aMap, Standard_True);
-      TopoDSToStep_Builder StepB(aOuterShell, aTool, FP, theProgress);
+      TopoDSToStep_Builder StepB(aOuterShell, aTool, FP, aWriteTessGeom, theProgress);
       if (theProgress.UserBreak())
         return;
       TopoDSToStep::AddResult ( FP, aTool );
       
       if (StepB.IsDone()) {
-	aItem = StepB.Value();
-	Handle(StepShape_ClosedShell) aCShell;
-	aCShell = Handle(StepShape_ClosedShell)::DownCast(aItem);
-	theFacetedBrep = new StepShape_FacetedBrep();
-	Handle(TCollection_HAsciiString) aName = 
-	  new TCollection_HAsciiString("");
-	theFacetedBrep->Init(aName, aCShell);
-	done = Standard_True;
+        aItem = StepB.Value();
+        Handle(StepShape_ClosedShell) aCShell;
+        aCShell = Handle(StepShape_ClosedShell)::DownCast(aItem);
+        theFacetedBrep = new StepShape_FacetedBrep();
+        Handle(TCollection_HAsciiString) aName =
+          new TCollection_HAsciiString("");
+        theFacetedBrep->Init(aName, aCShell);
+        done = Standard_True;
+        if (!StepB.TessellatedValue()) 
+        {
+          Handle(StepVisual_TessellatedSolid) aTessSolid = new StepVisual_TessellatedSolid();
+          Handle(StepVisual_TessellatedShell) aTessShell 
+            = Handle(StepVisual_TessellatedShell)::DownCast(StepB.TessellatedValue());
+          Handle(TCollection_HAsciiString) aTessName = new TCollection_HAsciiString("");
+          Handle(StepVisual_HArray1OfTessellatedStructuredItem) anItems
+            = new StepVisual_HArray1OfTessellatedStructuredItem(1, aTessShell->NbItems());
+          for (Standard_Integer i = 1; i <= aTessShell->NbItems(); ++i) 
+          {
+            anItems->SetValue(i, aTessShell->ItemsValue(i));
+          }
+          Standard_Boolean aHasGeomLink = !theFacetedBrep.IsNull();
+          aTessSolid->Init(aTessName, anItems, aHasGeomLink, theFacetedBrep);
+          theTessellatedItem = aTessSolid;
+        }
       }
       else {
-	done = Standard_False;
-	Handle(TransferBRep_ShapeMapper) errShape =
-	  new TransferBRep_ShapeMapper(aOuterShell);
-	FP->AddWarning(errShape," Closed Outer Shell from Solid not mapped to FacetedBrep");
+        done = Standard_False;
+        Handle(TransferBRep_ShapeMapper) errShape =
+          new TransferBRep_ShapeMapper(aOuterShell);
+        FP->AddWarning(errShape, " Closed Outer Shell from Solid not mapped to FacetedBrep");
       }
     }
     else {
       done = Standard_False; 
       Handle(TransferBRep_ShapeMapper) errShape =
-	new TransferBRep_ShapeMapper(aOuterShell);
-      FP->AddWarning(errShape," Shell not closed; not mapped to FacetedBrep");
+        new TransferBRep_ShapeMapper(aOuterShell);
+      FP->AddWarning(errShape, " Shell not closed; not mapped to FacetedBrep");
     }
   }
   else {
     done = Standard_False; 
     Handle(TransferBRep_ShapeMapper) errShape =
       new TransferBRep_ShapeMapper(aOuterShell);
-    FP->AddWarning(errShape," Solid contains no Outer Shell to be mapped to FacetedBrep");
+    FP->AddWarning(errShape, " Solid contains no Outer Shell to be mapped to FacetedBrep");
   }
 }
 
@@ -142,4 +166,16 @@ const Handle(StepShape_FacetedBrep) &
 {
   StdFail_NotDone_Raise_if (!done, "TopoDSToStep_MakeFacetedBrep::Value() - no result");
   return theFacetedBrep;
+}
+
+// ============================================================================
+// Method  : TopoDSToStep_MakeFacetedBrep::TessellatedValue
+// Purpose : Returns TessellatedItem as the optional result
+// ============================================================================
+
+const Handle(StepVisual_TessellatedItem) &
+TopoDSToStep_MakeFacetedBrep::TessellatedValue() const
+{
+  StdFail_NotDone_Raise_if(!done, "TopoDSToStep_MakeFacetedBrep::TessellatedValue() - no result");
+  return theTessellatedItem;
 }

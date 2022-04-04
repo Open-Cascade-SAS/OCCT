@@ -66,6 +66,9 @@
 #include <StepShape_OrientedClosedShell.hxx>
 #include <StepShape_Shell.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepVisual_TessellatedFace.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_Builder.hxx>
 #include <StepToTopoDS_DataMapOfTRI.hxx>
@@ -76,6 +79,7 @@
 #include <StepToTopoDS_TranslateEdge.hxx>
 #include <StepToTopoDS_TranslateFace.hxx>
 #include <StepToTopoDS_TranslateShell.hxx>
+#include <StepToTopoDS_TranslateSolid.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -805,6 +809,120 @@ void StepToTopoDS_Builder::Init
 }
 // ***end DTH Apr/6 
 
+// ============================================================================
+// Method  : StepToTopoDS_Builder::Init
+// Purpose : Builds a TopoDS_Solid from StepVisual_TessellatedSolid
+// ============================================================================
+
+void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedSolid)& theTSo,
+                                const Handle(Transfer_TransientProcess)& theTP,
+                                const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                Standard_Boolean& theHasGeom,
+                                const Message_ProgressRange& theProgress)
+{
+  StepToTopoDS_TranslateSolid aTranSolid;
+  aTranSolid.SetPrecision(Precision());
+  aTranSolid.SetMaxTol(MaxTol());
+
+  StepToTopoDS_Tool aTool;
+  StepToTopoDS_DataMapOfTRI aMap;
+  aTool.Init(aMap, theTP);
+
+  StepToTopoDS_NMTool dummyNMTool;
+  aTranSolid.Init(theTSo, theTP, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, 
+                  theHasGeom, theProgress);
+
+  if (aTranSolid.IsDone()) 
+  {
+    TopoDS_Shape aS = aTranSolid.Value();
+    TransferBRep::SetShapeResult(theTP, theTSo, aS);
+    myResult = TopoDS::Solid(aS);
+    myError = StepToTopoDS_BuilderDone;
+    done = Standard_True;
+  }
+  else
+  {
+    theTP->AddWarning(theTSo, " TessellatedSolid not mapped to TopoDS");
+    myError = StepToTopoDS_BuilderOther;
+    done = Standard_True;
+  }
+}
+
+// ============================================================================
+// Method  : StepToTopoDS_Builder::Init
+// Purpose : Builds a TopoDS_Shell from StepVisual_TessellatedShell
+// ============================================================================
+
+void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedShell)& theTSh,
+                                const Handle(Transfer_TransientProcess)& theTP,
+                                const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                Standard_Boolean& theHasGeom,
+                                const Message_ProgressRange& theProgress)
+{
+  StepToTopoDS_TranslateShell aTranShell;
+  aTranShell.SetPrecision(Precision());
+  aTranShell.SetMaxTol(MaxTol());
+
+  StepToTopoDS_Tool aTool;
+  StepToTopoDS_DataMapOfTRI aMap;
+  aTool.Init(aMap, theTP);
+
+  StepToTopoDS_NMTool dummyNMTool;
+  aTranShell.Init(theTSh, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, 
+                  theHasGeom, theProgress);
+
+  if (aTranShell.IsDone()) 
+  {
+    TopoDS_Shape aS = aTranShell.Value();
+    TransferBRep::SetShapeResult(theTP, theTSh, aS);
+    myResult = TopoDS::Shell(aS);
+    myError = StepToTopoDS_BuilderDone;
+    done = Standard_True;
+  }
+  else 
+  {
+    theTP->AddWarning(theTSh, " TessellatedShell not mapped to TopoDS");
+    myError = StepToTopoDS_BuilderOther;
+    done = Standard_True;
+  }
+}
+
+// ============================================================================
+// Method  : StepToTopoDS_Builder::Init
+// Purpose : Builds a TopoDS_Face from StepVisual_TessellatedFace
+// ============================================================================
+
+void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedFace)& theTF,
+                                const Handle(Transfer_TransientProcess)& theTP,
+                                const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                Standard_Boolean& theHasGeom)
+{
+  StepToTopoDS_TranslateFace aTranFace;
+  aTranFace.SetPrecision(Precision());
+  aTranFace.SetMaxTol(MaxTol());
+
+  StepToTopoDS_Tool aTool;
+  StepToTopoDS_DataMapOfTRI aMap;
+  aTool.Init(aMap, theTP);
+
+  StepToTopoDS_NMTool dummyNMTool;
+  aTranFace.Init(theTF, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, theHasGeom);
+
+  if (aTranFace.IsDone()) 
+  {
+    TopoDS_Shape aS = aTranFace.Value();
+    TransferBRep::SetShapeResult(theTP, theTF, aS);
+    myResult = TopoDS::Face(aS);
+    myError = StepToTopoDS_BuilderDone;
+    done = Standard_True;
+  }
+  else 
+  {
+    theTP->AddWarning(theTF, " TessellatedFace not mapped to TopoDS");
+    myError = StepToTopoDS_BuilderOther;
+    done = Standard_True;
+  }
+}
 
 // ============================================================================
 // Method  : Value

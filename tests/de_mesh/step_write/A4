@@ -1,0 +1,8 @@
+
+# load from mesh (STL) format
+
+readstl S [locate_data_file "OCC6652.stl"]
+
+set nb_faces     1
+set nb_nodes     13441
+set nb_triangles 26966

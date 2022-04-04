@@ -36,3 +36,5 @@ TopoDSToStep_Tool.cxx
 TopoDSToStep_Tool.hxx
 TopoDSToStep_WireframeBuilder.cxx
 TopoDSToStep_WireframeBuilder.hxx
+TopoDSToStep_MakeTessellatedItem.cxx
+TopoDSToStep_MakeTessellatedItem.hxx

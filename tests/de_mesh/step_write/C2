@@ -1,0 +1,11 @@
+
+# simple meshed box (mesh with brep)
+
+param write.step.tessellated OnNoBRep
+
+box S 1 1 1
+incmesh S 0.1
+
+set nb_faces     6
+set nb_nodes     0
+set nb_triangles 0

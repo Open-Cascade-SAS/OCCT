@@ -27,9 +27,9 @@
 #include <Message_ProgressRange.hxx>
 
 class StepShape_ConnectedFaceSet;
+class StepVisual_TessellatedShell;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
-
 
 
 class StepToTopoDS_TranslateShell  : public StepToTopoDS_Root
@@ -44,6 +44,13 @@ public:
   Standard_EXPORT void Init (const Handle(StepShape_ConnectedFaceSet)& CFS,
                              StepToTopoDS_Tool& T,
                              StepToTopoDS_NMTool& NMTool,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  
+  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedShell)& theTSh,
+                             StepToTopoDS_Tool& theTool,
+                             StepToTopoDS_NMTool& theNMTool,
+                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                             Standard_Boolean& theHasGeom,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;

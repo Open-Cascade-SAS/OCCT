@@ -94,6 +94,7 @@ The types of STEP representation entities that are recognized are:
   * geometrically_bounded_wireframe_shape_representation 
   * geometrically_bounded_surface_shape_representation 
   * hybrid representations (shape_representation containing models of different type) 
+  * tessellated_shape_representation
   
 @subsubsection occt_step_2_2_3 Topological entities
 The types of STEP topological entities that can be translated are: 
@@ -112,6 +113,7 @@ The types of STEP geometrical entities that can be translated are:
   * directions 
   * curves 
   * surfaces 
+  * triangulations
   
 For further information see 2.4 Mapping STEP entities to Open CASCADE Technology shapes. 
 
@@ -337,7 +339,7 @@ Specifies preferred type of representation of the shape of the product, in case 
 * 4 (GBSSR) --   Prefer GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION 
 * 5 (FBSR) --      Prefer FACETTED_BREP_SHAPE_REPRESENTATION 
 * 6 (EBWSR) --   Prefer EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION 
-* 7 (GBWSR) --   Prefer GEOMETRICALLY_BOUNDED_WIREFRAME _SHAPE_REPRESENTATION  
+* 7 (GBWSR) --   Prefer GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION  
 
 When this option is not equal to 1, for products with multiple representations the representation having a type closest to the selected one in this list will be translated. 
 
@@ -447,6 +449,34 @@ of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follow
   }
 ~~~~
 
+<h4>read.step.tessellated:</h4>
+
+Boolean flag regulating translation of entities that define tessellated geometry:
+
+* TESSELLATED_SHAPE_REPRESENTATION
+* TESSELLATED_SHELL
+* TESSELLATED_SOLID
+* TRIANGULATED_FACE
+* COMPLEX_TRIANGULATED_FACE
+
+Tesselated geometry is attached to shapes as objects of <i>Poly_Triangulation</i> type using STEP links.
+
+* 0 (Off) -- do not translate 
+* 1 (On) --  translate 
+* 2 (OnNoBRep) - tessellation is read only for entities for which there is no BRep representation
+
+Read this parameter with: 
+~~~~{.cpp}
+Standard_Integer ic = Interface_Static::IVal("read.step.tessellated"); 
+~~~~
+
+Modify this parameter with: 
+~~~~{.cpp}
+if(!Interface_Static::SetIVal("read.step.tessellated",1))  
+.. error .. 
+~~~~
+Default value is 0 (On). 
+
 @subsubsection occt_step_2_3_4 Performing the STEP file translation
 
 Perform the translation according to what you want to translate. You can choose either root entities (all or selected by the number of root), or select any entity by its number in the STEP file. There is a limited set of types of entities that can be used as starting entities for translation. Only the following entities are recognized as transferable: 
@@ -464,6 +494,11 @@ Perform the translation according to what you want to translate. You can choose 
   * subtypes of face_surface (including advanced_face)
   * subtypes of shape_representation_relationship
   * context_dependent_shape_representation
+  * tessellated_shape_representation
+  * tessellated_shell
+  * tessellated_solid
+  * triangulated_face
+  * complex_triangulated_face
   
 The following methods are used for translation:
 
@@ -683,6 +718,10 @@ Not all entities defining the assembly structure in the STEP file are translated
 | | quasi_uniform_surface | Geom_BSplineSurface | | 
 | | rectangular_composite_surface | TopoDS_Compound | Contains *TopoDS_Faces* |
 | | curve_bounded_surface | TopoDS_Face | |
+| Tessellations | tessellated_shell | TopoDS_Shell | |
+| | tessellated_solid | TopoDS_Solid | |
+| | triangulated_face | TopoDS_Face | Contains *Poly_Triangulation* |
+| | complex_triangulated_face | TopoDS_Face | Contains *Poly_Triangulation* |
 
 
 @subsection occt_step_2_5 Tolerance management
@@ -745,6 +784,7 @@ The following default tolerances are used when creating shapes and how they are 
 * *StepToTopoDS_TranslatePolyLoop* constructs *TopoDS_Edges* in *TopoDS_Wire* with help of class *StepToTopoDS_TranslateEdge*. Their tolerances are not modified inside this method. 
 * *StepToTopoDS_TranslateFace* constructs *TopoDS_Face* with the initial value of tolerance. *TopoDS_Wire* on *TopoDS_Face* is constructed with the help of classes *StepToTopoDS_TranslatePolyLoop, StepToTopoDS_TranslateEdgeLoop* or *StepToTopoDS_TranslateVertexLoop*.  
 * *StepToTopoDS_TranslateShell* calls *StepToTopoDS_TranslateFace::Init* for each face. This class does not modify the tolerance value. 
+* *StepToTopoDS_TranslateSolid* calls *StepToTopoDS_TranslateFace::Init* for each face. This class does not modify the tolerance value. 
 * *StepToTopoDS_TranslateCompositeCurve* constructs *TopoDS_Edges* in *TopoDS_Wire* with help of class *BRepAPI_MakeEdge* and have a tolerance 10-7. Pcurves from a STEP file are translated if they are present and if *read.surfacecurve.mode* is not -3. The connection between segments of a composite curve (edges in the wire) is provided by calling method *ShapeFix_Wire::FixConnected()\** with a precision equal to the initial value of tolerance.
 * *StepToTopoDS_TranslateCurveBoundedSurface* constructs *TopoDS_Face* with tolerance *Precision::Confusion()*. *TopoDS_Wire* on *TopoDS_Face* is constructed with the help of class *StepToTopoDS_TranslateCompositeCurve*. Missing pcurves are computed using projection algorithm with the help of method *ShapeFix_Face::FixPcurves()*. For resulting face method *ShapeFix::SameParameter()* is called. It calls standard *BRepLib::SameParameter* for each edge in each wire, which can either increase or decrease the tolerances of the edges and vertices. *SameParameter* writes the tolerance corresponding to the real deviation of pcurves from 3D curve which can be less or greater than the tolerance in a STEP file. 
 * *StepToTopoDS_Builder* a high level class. Its methods perform translation with the help of the classes listed above. If the value of *read.maxprecision.mode* is set to 1 then the tolerance of subshapes of the resulting shape is limited by 0 and *read.maxprecision.val*. Else this class does not change the tolerance value. 
@@ -971,6 +1011,34 @@ if(!Interface_Static::SetIVal("write.step.vertex.mode",1))
 ~~~~
 Default value is 0. 
  
+<h4>write.step.tessellated:</h4>
+
+Boolean flag regulating writing of entities that define tessellated geometry:
+
+* TESSELLATED_SHAPE_REPRESENTATION
+* TESSELLATED_SHELL
+* TESSELLATED_SOLID
+* TRIANGULATED_FACE
+
+Tesselated geometry is taken as objects of <i>Poly_Triangulation type</i> from the active <i>TopoDS_Face</i> triangulation.
+
+* 0 (Off) -- do not write 
+* 1 (On) --  write 
+* 2 (OnNoBRep) - tessellation is written only for entities for which there is no BRep representation
+
+Read this parameter with: 
+~~~~{.cpp}
+Standard_Integer ic = Interface_Static::IVal("write.step.tessellated"); 
+~~~~
+
+Modify this parameter with: 
+~~~~{.cpp}
+if(!Interface_Static::SetIVal("write.step.tessellated",1))  
+.. error .. 
+~~~~
+
+Default value is 2 (OnNoBep). 
+ 
 @subsubsection occt_step_3_3_3 Performing the Open CASCADE Technology shape translation
 An OCCT shape can be translated to STEP using one of the following models (shape_representations): 
   * manifold_solid_brep (advanced_brep_shape_representation) 
@@ -1094,6 +1162,7 @@ The table below describes STEP entities, which are created when the assembly str
 | | Geom_ToroidalSurface | toroidal_surface or degenerate_toroidal_surface |   *degenerate_toroidal_surface* is produced if the minor radius is greater then the major one |
 | | Geom_BezierSurface | b_spline_surface_with_knots | | 
 | | Geom_BsplineSurface | b_spline_surface_with_knots or rational_b_spline_surface |  *rational_b_spline_surface* is produced if *Geom_BSplineSurface* is a rational Bspline |
+| Triangulations | Poly_Triangulation | *triangulated_face* is produced for face active triangulation | |
 
 
 @subsection occt_step_3_5 Tolerance management

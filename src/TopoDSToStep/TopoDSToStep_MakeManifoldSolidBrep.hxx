@@ -25,6 +25,7 @@
 #include <Message_ProgressRange.hxx>
 
 class StepShape_ManifoldSolidBrep;
+class StepVisual_TessellatedItem;
 class TopoDS_Shell;
 class Transfer_FinderProcess;
 class TopoDS_Solid;
@@ -50,6 +51,7 @@ public:
                                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const Handle(StepShape_ManifoldSolidBrep)& Value() const;
+  Standard_EXPORT const Handle(StepVisual_TessellatedItem)& TessellatedValue() const;
 
 
 
@@ -65,6 +67,7 @@ private:
 
 
   Handle(StepShape_ManifoldSolidBrep) theManifoldSolidBrep;
+  Handle(StepVisual_TessellatedItem) theTessellatedItem;
 
 
 };

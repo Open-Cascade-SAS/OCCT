@@ -836,6 +836,22 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_SurfaceStyleRendering.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
+#include <StepVisual_TessellatedConnectingEdge.hxx>
+#include <StepVisual_TessellatedEdge.hxx>
+#include <StepVisual_TessellatedPointSet.hxx>
+#include <StepVisual_TessellatedShapeRepresentation.hxx>
+#include <StepVisual_TessellatedShapeRepresentationWithAccuracyParameters.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedVertex.hxx>
+#include <StepVisual_TessellatedWire.hxx>
+#include <StepVisual_TriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
+#include <StepVisual_CubicBezierTessellatedEdge.hxx>
+#include <StepVisual_CubicBezierTriangulatedFace.hxx>
+
 static int THE_StepAP214_Protocol_init = 0;
 static Interface_DataMapOfTransientInteger types(803);
 
@@ -1630,6 +1646,21 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind(STANDARD_TYPE(StepKinematics_MechanismStateRepresentation), 801);
   types.Bind(STANDARD_TYPE(StepVisual_RepositionedTessellatedGeometricSet), 802);
   types.Bind(STANDARD_TYPE(StepVisual_RepositionedTessellatedItem), 803);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedConnectingEdge), 804);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedEdge), 805);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedPointSet), 806);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedShapeRepresentation), 807);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters), 808);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedShell), 809);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedSolid), 810);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedStructuredItem), 811);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedVertex), 812);
+  types.Bind(STANDARD_TYPE(StepVisual_TessellatedWire), 813);
+  types.Bind(STANDARD_TYPE(StepVisual_TriangulatedFace), 814);
+  types.Bind(STANDARD_TYPE(StepVisual_ComplexTriangulatedFace), 815);
+  types.Bind(STANDARD_TYPE(StepVisual_ComplexTriangulatedSurfaceSet), 816);
+  types.Bind(STANDARD_TYPE(StepVisual_CubicBezierTessellatedEdge), 817);
+  types.Bind(STANDARD_TYPE(StepVisual_CubicBezierTriangulatedFace), 818);
 }
 
 

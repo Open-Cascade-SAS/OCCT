@@ -1,0 +1,16 @@
+
+box S -min -5 -5 -5 -max 5 5 5
+
+incmesh S 0.1
+
+stepwrite a S "${imagedir}/${casename}.stp"
+
+param read.step.tessellated OnNoBRep
+
+ReadStep D "${imagedir}/${casename}.stp"
+
+XGetOneShape S D
+
+set nb_faces     6
+set nb_nodes     0
+set nb_triangles 0

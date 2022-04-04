@@ -37,6 +37,9 @@ class StepToTopoDS_NMTool;
 class StepShape_GeometricSet;
 class StepShape_EdgeBasedWireframeModel;
 class StepShape_FaceBasedSurfaceModel;
+class StepVisual_TessellatedFace;
+class StepVisual_TessellatedShell;
+class StepVisual_TessellatedSolid;
 class Transfer_ActorOfTransientProcess;
 
 
@@ -82,6 +85,23 @@ public:
                              const Handle(Transfer_ActorOfTransientProcess)& RA = NULL,
                              const Standard_Boolean isManifold = Standard_False,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
+  
+  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedSolid)& theTSo,
+                             const Handle(Transfer_TransientProcess)& theTP,
+                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                             Standard_Boolean& theHasGeom,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  
+  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedShell)& theTSh,
+                             const Handle(Transfer_TransientProcess)& theTP,
+                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                             Standard_Boolean& theHasGeom,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  
+  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedFace)& theTF,
+                             const Handle(Transfer_TransientProcess)& theTP,
+                             const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                             Standard_Boolean& theHasGeom);
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

@@ -51,6 +51,9 @@ StepToTopoDS_TranslatePolyLoopError.hxx
 StepToTopoDS_TranslateShell.cxx
 StepToTopoDS_TranslateShell.hxx
 StepToTopoDS_TranslateShellError.hxx
+StepToTopoDS_TranslateSolid.cxx
+StepToTopoDS_TranslateSolid.hxx
+StepToTopoDS_TranslateSolidError.hxx
 StepToTopoDS_TranslateVertex.cxx
 StepToTopoDS_TranslateVertex.hxx
 StepToTopoDS_TranslateVertexError.hxx

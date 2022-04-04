@@ -1,0 +1,8 @@
+
+# load from mesh (STL) format
+
+readstl S [locate_data_file "model_stl_001.stl"]
+
+set nb_faces     1
+set nb_nodes     1807
+set nb_triangles 3609

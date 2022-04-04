@@ -25,11 +25,14 @@
 #include <StepToTopoDS_Tool.hxx>
 #include <StepToTopoDS_TranslateFace.hxx>
 #include <StepToTopoDS_TranslateShell.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TriangulatedFace.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
 
 // ============================================================================
 // Method  : StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell
@@ -106,6 +109,88 @@ void StepToTopoDS_TranslateShell::Init
     myError  = StepToTopoDS_TranslateShellDone;
     done     = Standard_True;
   }
+}
+
+// ============================================================================
+// Method  : Init
+// Purpose : Init with a ConnectedFaceSet and a Tool
+// ============================================================================
+
+void StepToTopoDS_TranslateShell::Init(const Handle(StepVisual_TessellatedShell)& theTSh,
+                                       StepToTopoDS_Tool& theTool,
+                                       StepToTopoDS_NMTool& theNMTool,
+                                       const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                       Standard_Boolean& theHasGeom,
+                                       const Message_ProgressRange& theProgress)
+{
+  if (theTSh.IsNull())
+    return;
+
+  BRep_Builder aB;
+  TopoDS_Shell aSh;
+
+  Standard_Integer aNb = theTSh->NbItems();
+  Message_ProgressScope aPS(theProgress, "Face", theTSh->HasTopologicalLink() ? aNb + 1 : aNb);
+
+  Handle(Transfer_TransientProcess) aTP = theTool.TransientProcess();
+
+  if (theTSh->HasTopologicalLink()) 
+  {
+    Handle(TransferBRep_ShapeBinder) aBinder
+      = Handle(TransferBRep_ShapeBinder)::DownCast(aTP->Find(theTSh->TopologicalLink()));
+    if (aBinder.IsNull()) 
+    {
+      aSh = aBinder->Shell();
+      theHasGeom = Standard_True;
+    }
+  }
+
+  Standard_Boolean aNewShell = Standard_False;
+  if (aSh.IsNull()) 
+  {
+    aB.MakeShell(aSh);
+    aNewShell = Standard_True;
+    theHasGeom = Standard_False;
+  }
+
+  StepToTopoDS_TranslateFace aTranTF;
+  aTranTF.SetPrecision(Precision());
+  aTranTF.SetMaxTol(MaxTol());
+
+  for (Standard_Integer i = 1; i <= aNb && aPS.More(); i++, aPS.Next()) 
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "Processing Face : " << i << std::endl;
+#endif
+    Handle(StepVisual_TessellatedStructuredItem) anItem = theTSh->ItemsValue(i);
+    if (anItem->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace))) 
+    {
+      Handle(StepVisual_TessellatedFace) aTFace = Handle(StepVisual_TessellatedFace)::DownCast(anItem);
+      Standard_Boolean aHasFaceGeom = Standard_False;
+      aTranTF.Init(aTFace, theTool, theNMTool, theReadTessellatedWhenNoBRepOnly, aHasFaceGeom);
+      if (aTranTF.IsDone()) 
+      {
+        if (aNewShell) 
+        {
+          aB.Add(aSh, TopoDS::Face(aTranTF.Value()));
+        }
+        theHasGeom &= aHasFaceGeom;
+      }
+      else 
+      {
+        aTP->AddWarning(anItem, " Triangulated face if not mapped to TopoDS");
+      }
+    }
+    else 
+    {
+      aTP->AddWarning(anItem, " Face is not of TriangulatedFace Type; not mapped to TopoDS");
+    }
+  }
+
+  aSh.Closed(BRep_Tool::IsClosed(aSh));
+  myResult = aSh;
+  myError = StepToTopoDS_TranslateShellDone;
+  done = Standard_True;
 }
 
 // ============================================================================

@@ -440,6 +440,38 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepVisual_SurfaceStyleRendering.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
+#include <StepVisual_TessellatedConnectingEdge.hxx>
+#include <StepVisual_TessellatedEdge.hxx>
+#include <StepVisual_TessellatedPointSet.hxx>
+#include <StepVisual_TessellatedShapeRepresentation.hxx>
+#include <StepVisual_TessellatedShapeRepresentationWithAccuracyParameters.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
+#include <StepVisual_TessellatedStructuredItem.hxx>
+#include <StepVisual_TessellatedVertex.hxx>
+#include <StepVisual_TessellatedWire.hxx>
+#include <StepVisual_TriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
+#include <StepVisual_CubicBezierTessellatedEdge.hxx>
+#include <StepVisual_CubicBezierTriangulatedFace.hxx>
+
+#include <RWStepVisual_RWTessellatedConnectingEdge.hxx>
+#include <RWStepVisual_RWTessellatedEdge.hxx>
+#include <RWStepVisual_RWTessellatedPointSet.hxx>
+#include <RWStepVisual_RWTessellatedShapeRepresentation.hxx>
+#include <RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters.hxx>
+#include <RWStepVisual_RWTessellatedShell.hxx>
+#include <RWStepVisual_RWTessellatedSolid.hxx>
+#include <RWStepVisual_RWTessellatedStructuredItem.hxx>
+#include <RWStepVisual_RWTessellatedVertex.hxx>
+#include <RWStepVisual_RWTessellatedWire.hxx>
+#include <RWStepVisual_RWTriangulatedFace.hxx>
+#include <RWStepVisual_RWComplexTriangulatedFace.hxx>
+#include <RWStepVisual_RWComplexTriangulatedSurfaceSet.hxx>
+#include <RWStepVisual_RWCubicBezierTessellatedEdge.hxx>
+#include <RWStepVisual_RWCubicBezierTriangulatedFace.hxx>
+
 #include <RWStepBasic_RWAddress.hxx>
 #include <RWStepShape_RWAdvancedBrepShapeRepresentation.hxx>
 #include <RWStepShape_RWAdvancedFace.hxx>
@@ -2302,6 +2334,22 @@ static TCollection_AsciiString Reco_UniversalPairWithRange("UNIVERSAL_PAIR_WITH_
 static TCollection_AsciiString Reco_KinematicPair("KINEMATIC_PAIR");
 static TCollection_AsciiString Reco_MechanismStateRepresentation("MECHANISM_STATE_REPRESENTATION");
 
+static TCollection_AsciiString Reco_TessellatedConnectingEdge("TESSELLATED_CONNECTING_EDGE");
+static TCollection_AsciiString Reco_TessellatedEdge("TESSELLATED_EDGE");
+static TCollection_AsciiString Reco_TessellatedPointSet("TESSELLATED_POINT_SET");
+static TCollection_AsciiString Reco_TessellatedShapeRepresentation("TESSELLATED_SHAPE_REPRESENTATION");
+static TCollection_AsciiString Reco_TessellatedShapeRepresentationWithAccuracyParameters("TESSELLATED_SHAPE_REPRESENTATION_WITH_ACCURACY_PARAMETERS");
+static TCollection_AsciiString Reco_TessellatedShell("TESSELLATED_SHELL");
+static TCollection_AsciiString Reco_TessellatedSolid("TESSELLATED_SOLID");
+static TCollection_AsciiString Reco_TessellatedStructuredItem("TESSELLATED_STRUCTURED_ITEM");
+static TCollection_AsciiString Reco_TessellatedVertex("TESSELLATED_VERTEX");
+static TCollection_AsciiString Reco_TessellatedWire("TESSELLATED_WIRE");
+static TCollection_AsciiString Reco_TriangulatedFace("TRIANGULATED_FACE");
+static TCollection_AsciiString Reco_ComplexTriangulatedFace("COMPLEX_TRIANGULATED_FACE");
+static TCollection_AsciiString Reco_ComplexTriangulatedSurfaceSet("COMPLEX_TRIANGULATED_SURFACE_SET");
+static TCollection_AsciiString Reco_CubicBezierTessellatedEdge("CUBIC_BEZIER_TESSELLATED_EDGE");
+static TCollection_AsciiString Reco_CubicBezierTriangulatedFace("CUBIC_BEZIER_TRIANGULATED_FACE");
+
 // -- Definition of the libraries --
 
 static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> typenums;
@@ -3042,6 +3090,21 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind(Reco_KinematicPair, 799);
   typenums.Bind(Reco_MechanismStateRepresentation, 801);
   typenums.Bind(Reco_RepositionedTessellatedItem, 803);
+  typenums.Bind(Reco_TessellatedConnectingEdge, 804);
+  typenums.Bind(Reco_TessellatedEdge, 805);
+  typenums.Bind(Reco_TessellatedPointSet, 806);
+  typenums.Bind(Reco_TessellatedShapeRepresentation, 807);
+  typenums.Bind(Reco_TessellatedShapeRepresentationWithAccuracyParameters, 808);
+  typenums.Bind(Reco_TessellatedShell, 809);
+  typenums.Bind(Reco_TessellatedSolid, 810);
+  typenums.Bind(Reco_TessellatedStructuredItem, 811);
+  typenums.Bind(Reco_TessellatedVertex, 812);
+  typenums.Bind(Reco_TessellatedWire, 813);
+  typenums.Bind(Reco_TriangulatedFace, 814);
+  typenums.Bind(Reco_ComplexTriangulatedFace, 815);
+  typenums.Bind(Reco_ComplexTriangulatedSurfaceSet, 816);
+  typenums.Bind(Reco_CubicBezierTessellatedEdge, 817);
+  typenums.Bind(Reco_CubicBezierTriangulatedFace, 818);
 
   
 //    SHORT NAMES
@@ -5014,6 +5077,21 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 799: return Reco_KinematicPair;
   case 801: return Reco_MechanismStateRepresentation;
   case 803: return Reco_RepositionedTessellatedItem;
+  case 804: return Reco_TessellatedConnectingEdge;
+  case 805: return Reco_TessellatedEdge;
+  case 806: return Reco_TessellatedPointSet;
+  case 807: return Reco_TessellatedShapeRepresentation;
+  case 808: return Reco_TessellatedShapeRepresentationWithAccuracyParameters;
+  case 809: return Reco_TessellatedShell;
+  case 810: return Reco_TessellatedSolid;
+  case 811: return Reco_TessellatedStructuredItem;
+  case 812: return Reco_TessellatedVertex;
+  case 813: return Reco_TessellatedWire;
+  case 814: return Reco_TriangulatedFace;
+  case 815: return Reco_ComplexTriangulatedFace;
+  case 816: return Reco_ComplexTriangulatedSurfaceSet;
+  case 817: return Reco_CubicBezierTessellatedEdge;
+  case 818: return Reco_CubicBezierTriangulatedFace;
   default : return PasReco;
   }
 }
@@ -10511,7 +10589,111 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     aTool.ReadStep(data, num, ach, anEnt);
     break;
   }
-
+  case 804:
+  {
+    DeclareAndCast(StepVisual_TessellatedConnectingEdge, anEnt, ent);
+    RWStepVisual_RWTessellatedConnectingEdge aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 805:
+  {
+    DeclareAndCast(StepVisual_TessellatedEdge, anEnt, ent);
+    RWStepVisual_RWTessellatedEdge aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 806:
+  {
+    DeclareAndCast(StepVisual_TessellatedPointSet, anEnt, ent);
+    RWStepVisual_RWTessellatedPointSet aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 807:
+  {
+    DeclareAndCast(StepVisual_TessellatedShapeRepresentation, anEnt, ent);
+    RWStepVisual_RWTessellatedShapeRepresentation aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 808:
+  {
+    DeclareAndCast(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters, anEnt, ent);
+    RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 809:
+  {
+    DeclareAndCast(StepVisual_TessellatedShell, anEnt, ent);
+    RWStepVisual_RWTessellatedShell aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 810:
+  {
+    DeclareAndCast(StepVisual_TessellatedSolid, anEnt, ent);
+    RWStepVisual_RWTessellatedSolid aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 811:
+  {
+    DeclareAndCast(StepVisual_TessellatedStructuredItem, anEnt, ent);
+    RWStepVisual_RWTessellatedStructuredItem aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 812:
+  {
+    DeclareAndCast(StepVisual_TessellatedVertex, anEnt, ent);
+    RWStepVisual_RWTessellatedVertex aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 813:
+  {
+    DeclareAndCast(StepVisual_TessellatedWire, anEnt, ent);
+    RWStepVisual_RWTessellatedWire aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 814:
+  {
+    DeclareAndCast(StepVisual_TriangulatedFace, anEnt, ent);
+    RWStepVisual_RWTriangulatedFace aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 815:
+  {
+    DeclareAndCast(StepVisual_ComplexTriangulatedFace, anEnt, ent);
+    RWStepVisual_RWComplexTriangulatedFace aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 816:
+  {
+    DeclareAndCast(StepVisual_ComplexTriangulatedSurfaceSet, anEnt, ent);
+    RWStepVisual_RWComplexTriangulatedSurfaceSet aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 817:
+  {
+    DeclareAndCast(StepVisual_CubicBezierTessellatedEdge, anEnt, ent);
+    RWStepVisual_RWCubicBezierTessellatedEdge aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 818:
+  {
+    DeclareAndCast(StepVisual_CubicBezierTriangulatedFace, anEnt, ent);
+    RWStepVisual_RWCubicBezierTriangulatedFace aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
   }
@@ -15948,7 +16130,115 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     aTool.WriteStep(SW, anEnt);
     break;
   }
-  default: 
+
+  // --------------------------------------------------------------------
+
+  case 804:
+  {
+    DeclareAndCast(StepVisual_TessellatedConnectingEdge, anEnt, ent);
+    RWStepVisual_RWTessellatedConnectingEdge aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 805:
+  {
+    DeclareAndCast(StepVisual_TessellatedEdge, anEnt, ent);
+    RWStepVisual_RWTessellatedEdge aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 806:
+  {
+    DeclareAndCast(StepVisual_TessellatedPointSet, anEnt, ent);
+    RWStepVisual_RWTessellatedPointSet aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 807:
+  {
+    DeclareAndCast(StepVisual_TessellatedShapeRepresentation, anEnt, ent);
+    RWStepVisual_RWTessellatedShapeRepresentation aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 808:
+  {
+    DeclareAndCast(StepVisual_TessellatedShapeRepresentationWithAccuracyParameters, anEnt, ent);
+    RWStepVisual_RWTessellatedShapeRepresentationWithAccuracyParameters aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 809:
+  {
+    DeclareAndCast(StepVisual_TessellatedShell, anEnt, ent);
+    RWStepVisual_RWTessellatedShell aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 810:
+  {
+    DeclareAndCast(StepVisual_TessellatedSolid, anEnt, ent);
+    RWStepVisual_RWTessellatedSolid aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 811:
+  {
+    DeclareAndCast(StepVisual_TessellatedStructuredItem, anEnt, ent);
+    RWStepVisual_RWTessellatedStructuredItem aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 812:
+  {
+    DeclareAndCast(StepVisual_TessellatedVertex, anEnt, ent);
+    RWStepVisual_RWTessellatedVertex aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 813:
+  {
+    DeclareAndCast(StepVisual_TessellatedWire, anEnt, ent);
+    RWStepVisual_RWTessellatedWire aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 814:
+  {
+    DeclareAndCast(StepVisual_TriangulatedFace, anEnt, ent);
+    RWStepVisual_RWTriangulatedFace aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 815:
+  {
+    DeclareAndCast(StepVisual_ComplexTriangulatedFace, anEnt, ent);
+    RWStepVisual_RWComplexTriangulatedFace aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 816:
+  {
+    DeclareAndCast(StepVisual_ComplexTriangulatedSurfaceSet, anEnt, ent);
+    RWStepVisual_RWComplexTriangulatedSurfaceSet aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 817:
+  {
+    DeclareAndCast(StepVisual_CubicBezierTessellatedEdge, anEnt, ent);
+    RWStepVisual_RWCubicBezierTessellatedEdge aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 818:
+  {
+    DeclareAndCast(StepVisual_CubicBezierTriangulatedFace, anEnt, ent);
+    RWStepVisual_RWCubicBezierTriangulatedFace aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  default:
     return;
   }
 }

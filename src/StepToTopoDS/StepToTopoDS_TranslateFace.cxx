@@ -41,6 +41,7 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <MoniTool_Macros.hxx>
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
@@ -77,8 +78,11 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <TransferBRep_ShapeBinder.hxx>
 #include <StepGeom_RectangularTrimmedSurface.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
+#include <StepVisual_TriangulatedFace.hxx>
+#include <StepVisual_ComplexTriangulatedFace.hxx>
 
 //#3 rln 16/02/98
 //#include <GeomAdaptor_Curve.hxx>
@@ -109,6 +113,21 @@ StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace
 (const Handle(StepShape_FaceSurface)& FS, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool)
 {
   Init(FS, T, NMTool);
+}
+
+// ============================================================================
+// Method  : StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace
+// Purpose : Constructor with either TriangulatedFace or 
+//           ComplexTriangulatedFace and a Tool
+// ============================================================================
+
+StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace(const Handle(StepVisual_TessellatedFace)& theTF,
+                                                       StepToTopoDS_Tool& theTool,
+                                                       StepToTopoDS_NMTool& theNMTool,
+                                                       const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                                       Standard_Boolean& theHasGeom)
+{
+  Init(theTF, theTool, theNMTool, theReadTessellatedWhenNoBRepOnly, theHasGeom);
 }
 
 // ============================================================================
@@ -381,6 +400,237 @@ void StepToTopoDS_TranslateFace::Init
   done     = Standard_True;
 }
 
+// ============================================================================
+// Method  : Init
+// Purpose : Init with either StepVisual_TriangulatedFace or 
+//           StepVisual_ComplexTriangulatedFace and a Tool
+// ============================================================================
+
+void StepToTopoDS_TranslateFace::Init(const Handle(StepVisual_TessellatedFace)& theTF,
+                                      StepToTopoDS_Tool& theTool,
+                                      StepToTopoDS_NMTool& theNMTool,
+                                      const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
+                                      Standard_Boolean& theHasGeom)
+{
+  if (theTF.IsNull())
+    return;
+
+  Handle(Transfer_TransientProcess) aTP = theTool.TransientProcess();
+
+  BRep_Builder aB;
+  TopoDS_Face aF;
+
+  if (theTF->HasGeometricLink()) 
+  {
+    Handle(TransferBRep_ShapeBinder) aBinder
+      = Handle(TransferBRep_ShapeBinder)::DownCast(aTP->Find(theTF->GeometricLink().Face()));
+    if (aBinder) 
+    {
+      aF = aBinder->Face();
+      theHasGeom = Standard_True;
+    }
+    if (!aF.IsNull() && !BRep_Tool::Surface(aF).IsNull() && theReadTessellatedWhenNoBRepOnly)
+    {
+      // Face has BRep but OnNoBRep param is specified
+      return;
+    }
+  }
+
+  if (aF.IsNull()) 
+  {
+    aB.MakeFace(aF);
+    theHasGeom = Standard_False;
+  }
+
+  Handle(Poly_Triangulation) aMesh;
+  if (DeclareAndCast(StepVisual_TriangulatedFace, aTriaF, theTF))
+  {
+    aMesh = createMesh(aTriaF);
+  }
+  else if (DeclareAndCast(StepVisual_ComplexTriangulatedFace, aCompTriaF, theTF))
+  {
+    aMesh = createMesh(aCompTriaF);
+  }
+  else
+  {
+    aTP->AddWarning(theTF, " Triangulated or ComplexTriangulated entity is supported only.");
+    return;
+  }
+  
+  if (aMesh.IsNull())
+  {
+    aTP->AddWarning(theTF, " Poly triangulation is not set to TopoDS face.");
+    return;
+  }
+
+  aB.UpdateFace(aF, aMesh);
+
+  if (theNMTool.IsActive())
+    theNMTool.Bind(theTF, aF);
+
+  myResult = aF;
+  myError = StepToTopoDS_TranslateFaceDone;
+  done = Standard_True;
+}
+
+// ============================================================================
+// Method  : createMesh 
+// Purpose : creates a Poly_Triangulation from TriangulatedFace
+// ============================================================================
+
+Handle(Poly_Triangulation) 
+StepToTopoDS_TranslateFace::createMesh(const Handle(StepVisual_TriangulatedFace)& theTF) const
+{
+  Handle(StepVisual_CoordinatesList) aCoords = theTF->Coordinates();
+  Handle(TColgp_HArray1OfXYZ) aNodes = aCoords->Points();
+  Handle(TColStd_HArray2OfInteger) aTriangles = theTF->Triangles();
+  const Standard_Boolean aHasUVNodes = Standard_False;
+  const Standard_Boolean aHasNormals = (theTF->NbNormals() > 0);
+  Handle(Poly_Triangulation) aMesh = new Poly_Triangulation(theTF->NbPnindex(), theTF->NbTriangles(), aHasUVNodes, aHasNormals);
+
+  for (Standard_Integer j = 1; j <= theTF->NbPnindex(); ++j)
+  {
+    aMesh->SetNode(j, aNodes->Value(theTF->PnindexValue(j)));
+  }
+
+  for (Standard_Integer k = 1; k <= theTF->NbTriangles(); ++k)
+  {
+    aMesh->SetTriangle(k, Poly_Triangle(aTriangles->Value(k, 1), aTriangles->Value(k, 2), aTriangles->Value(k, 3)));
+  }
+
+  if (aHasNormals) 
+  {
+    Handle(TColStd_HArray2OfReal) aNormals = theTF->Normals();
+    gp_XYZ aNorm;
+    if (theTF->NbNormals() == 1)
+    {
+      aNorm.SetX(aNormals->Value(1, 1));
+      aNorm.SetY(aNormals->Value(1, 2));
+      aNorm.SetZ(aNormals->Value(1, 3));
+      for (Standard_Integer i = 1; i <= theTF->NbPnindex(); ++i)
+      {
+        aMesh->SetNormal(i, aNorm);
+      }
+    }
+    else
+    {
+      for (Standard_Integer i = 1; i <= theTF->NbNormals(); ++i)
+      {
+        aNorm.SetX(aNormals->Value(i, 1));
+        aNorm.SetY(aNormals->Value(i, 2));
+        aNorm.SetZ(aNormals->Value(i, 3));
+        aMesh->SetNormal(i, aNorm);
+      }
+    }
+  }
+
+  return aMesh;
+}
+
+// ============================================================================
+// Method  : createMesh 
+// Purpose : creates a Poly_Triangulation from ComplexTriangulatedFace
+// ============================================================================
+
+Handle(Poly_Triangulation) 
+StepToTopoDS_TranslateFace::createMesh(const Handle(StepVisual_ComplexTriangulatedFace)& theTF) const
+{
+  Handle(StepVisual_CoordinatesList) aCoords = theTF->Coordinates();
+  Handle(TColgp_HArray1OfXYZ) aNodes = aCoords->Points();
+  Handle(TColStd_HArray2OfInteger) aTriaStrips = theTF->TriangleStrips();
+  Handle(TColStd_HArray2OfInteger) aTriaFans = theTF->TriangleFans();
+  const Standard_Boolean aHasUVNodes = Standard_False;
+  const Standard_Boolean aHasNormals = (theTF->NbNormals() > 0);
+
+  Standard_Integer aNbTriaStrips = 0;
+  for (Standard_Integer i = 1; i <= theTF->NbTriangleStrips(); ++i)
+  {
+    for (Standard_Integer j = 3; j <= aTriaStrips->UpperCol(); j += 2)
+    {
+      if (aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 2) &&
+        aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 1))
+        ++aNbTriaStrips;
+    }
+    for (Standard_Integer j = 4; j <= aTriaStrips->UpperCol(); j += 2)
+    {
+      if (aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 2) &&
+        aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 1))
+        ++aNbTriaStrips;
+    }
+  }
+
+  Standard_Integer aNbTriaFans = 0;
+  for (Standard_Integer i = 1; i <= theTF->NbTriangleFans(); ++i)
+  {
+    Standard_Integer v1 = aTriaStrips->Value(i, 1);
+    for (Standard_Integer j = 3; j <= aTriaStrips->UpperCol(); ++j)
+    {
+      if (aTriaStrips->Value(i, j) != v1 && aTriaStrips->Value(i, j - 1) != v1)
+        ++aNbTriaFans;
+    }
+  }
+
+  Handle(Poly_Triangulation) aMesh = new Poly_Triangulation(theTF->NbPnindex(), 
+    aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
+
+  for (Standard_Integer j = 1; j <= theTF->NbPnindex(); ++j)
+  {
+    aMesh->SetNode(j, aNodes->Value(theTF->PnindexValue(j)));
+  }
+
+  Standard_Integer k = 1;
+  for (Standard_Integer i = 1; i <= theTF->NbTriangleStrips(); ++i)
+  {
+    for (Standard_Integer j = 3; j <= aTriaStrips->UpperCol(); j += 2)
+    {
+      if (aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 2) &&
+        aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 1))
+      {
+        aMesh->SetTriangle(k++, Poly_Triangle(aTriaStrips->Value(i, j - 2), 
+                                              aTriaStrips->Value(i, j), 
+                                              aTriaStrips->Value(i, j - 1)));
+      }
+    }
+    for (Standard_Integer j = 4; j <= aTriaStrips->UpperCol(); j += 2)
+    {
+      if (aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 2) &&
+        aTriaStrips->Value(i, j) != aTriaStrips->Value(i, j - 1))
+      {
+        aMesh->SetTriangle(k++, Poly_Triangle(aTriaStrips->Value(i, j - 2),
+                                              aTriaStrips->Value(i, j - 1),
+                                              aTriaStrips->Value(i, j)));
+      }
+    }
+  }
+
+  if (aHasNormals)
+  {
+    Handle(TColStd_HArray2OfReal) aNormals = theTF->Normals();
+    gp_XYZ aNorm;
+    if (theTF->NbNormals() == 1)
+    {
+      aNorm.SetX(aNormals->Value(1, 1));
+      aNorm.SetY(aNormals->Value(1, 2));
+      aNorm.SetZ(aNormals->Value(1, 3));
+      for (Standard_Integer i = 1; i <= theTF->NbPnindex(); ++i)
+      {
+        aMesh->SetNormal(i, aNorm);
+      }
+    }
+    else
+    {
+      for (Standard_Integer i = 1; i <= theTF->NbNormals(); ++i)
+      {
+        aNorm.SetX(aNormals->Value(i, 1));
+        aNorm.SetY(aNormals->Value(i, 2));
+        aNorm.SetZ(aNormals->Value(i, 3));
+        aMesh->SetNormal(i, aNorm);
+      }
+    }
+  }
+
+  return aMesh;
+}
 
 // ============================================================================
 // Method  : Value 

@@ -88,6 +88,10 @@
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
+#include <StepVisual_TriangulatedFace.hxx>
+#include <StepVisual_TessellatedShell.hxx>
+#include <StepVisual_TessellatedShapeRepresentation.hxx>
+#include <StepVisual_TessellatedSolid.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_Builder.hxx>
 #include <StepToTopoDS_DataMapOfTRI.hxx>
@@ -95,6 +99,7 @@
 #include <StepToTopoDS_Tool.hxx>
 #include <StepToTopoDS_TranslateFace.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -103,6 +108,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -209,6 +215,7 @@ STEPControl_ActorRead::STEPControl_ActorRead()
   myMaxTol(0.0)
 {
 }
+
 // ============================================================================
 // Method  : STEPControl_ActorRead::Recognize
 // Purpose : tells if an entity is valid for transfer by this Actor
@@ -236,6 +243,8 @@ Standard_Boolean  STEPControl_ActorRead::Recognize
     return Standard_False;
   }
 
+  const Standard_Boolean aCanReadTessGeom = (Interface_Static::IVal("read.step.tessellated") != 0);
+
   if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrep))) return Standard_True;
   if (start->IsKind(STANDARD_TYPE(StepShape_BrepWithVoids))) return Standard_True;
   if (start->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep))) return Standard_True;
@@ -246,6 +255,10 @@ Standard_Boolean  STEPControl_ActorRead::Recognize
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceSurface))) return Standard_True;
   if (start->IsKind(STANDARD_TYPE(StepShape_EdgeBasedWireframeModel))) return Standard_True;
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceBasedSurfaceModel))) return Standard_True;
+  if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace))) return Standard_True;
+  if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShell))) return Standard_True;
+  if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSolid))) return Standard_True;
+  if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShapeRepresentation))) return Standard_True;
 
 
 //  REPRESENTATION_RELATIONSHIP et consorts : on regarde le contenu ...
@@ -859,6 +872,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
   gp_Trsf aTrsf;
   Message_ProgressScope aPSRoot(theProgress, "Sub-assembly", isManifold ? 1 : 2);
   Message_ProgressScope aPS (aPSRoot.Next(), "Transfer", nb);
+  TopTools_IndexedMapOfShape aCompoundedShapes;
   for (Standard_Integer i = 1; i <= nb && aPS.More(); i ++)
   {
     Message_ProgressRange aRange = aPS.Next();
@@ -915,8 +929,13 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     TopoDS_Shape theResult = TransferBRep::ShapeResult (binder);
     if (!theResult.IsNull()) {
       OneResult = theResult;
-      B.Add(comp, theResult);
-      nsh ++;
+      if (!aCompoundedShapes.Contains(theResult)) 
+      {
+        aCompoundedShapes.Add(theResult);
+        TopExp::MapShapes(theResult, aCompoundedShapes, Standard_False, Standard_False);
+        B.Add(comp, theResult);
+        nsh++;
+      }
     }
   }
 
@@ -1396,6 +1415,8 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
   // Start progress scope (no need to check if progress exists -- it is safe)
   Message_ProgressScope aPS(theProgress, "Transfer stage", isManifold ? 2 : 1);
 
+  const Standard_Boolean aReadTessellatedWhenNoBRepOnly = (Interface_Static::IVal("read.step.tessellated") == 2);
+  Standard_Boolean aHasGeom = Standard_True;
   try {
     OCC_CATCH_SIGNALS
     Message_ProgressRange aRange = aPS.Next();
@@ -1431,6 +1452,27 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
       myShapeBuilder.Init(GetCasted(StepShape_FaceBasedSurfaceModel, start), TP);
       found = Standard_True;
     }
+    // TODO: Normally, StepVisual_Tessellated* entities should be processed after
+    //       StepShape_* entities in order to resolve links to BRep topological objects.
+    //       Currently it is not guaranteed and might require changes in the processing order.
+    else if (start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSolid))) 
+    {
+      myShapeBuilder.Init(GetCasted(StepVisual_TessellatedSolid, start), TP, 
+                          aReadTessellatedWhenNoBRepOnly, aHasGeom, aRange);
+      found = Standard_True;
+    }
+    else if (start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShell))) 
+    {
+      myShapeBuilder.Init(GetCasted(StepVisual_TessellatedShell, start), TP, 
+                          aReadTessellatedWhenNoBRepOnly, aHasGeom, aRange);
+      found = Standard_True;
+    }
+    else if (start->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace))) 
+    {
+      myShapeBuilder.Init(GetCasted(StepVisual_TessellatedFace, start), TP, 
+                          aReadTessellatedWhenNoBRepOnly, aHasGeom);
+      found = Standard_True;
+    }
   }
   catch(Standard_Failure const&) {
     TP->AddFail(start,"Exception is raised. Entity was not translated.");
@@ -1444,7 +1486,8 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
   if (found && myShapeBuilder.IsDone()) {
     mappedShape = myShapeBuilder.Value();
     // Apply ShapeFix (on manifold shapes only. Non-manifold topology is processed separately: ssv; 13.11.2010)
-    if (isManifold) {
+    if (isManifold && aHasGeom) 
+    {
       Handle(Standard_Transient) info;
       mappedShape = 
         XSAlgo::AlgoContainer()->ProcessShape( mappedShape, myPrecision, myMaxTol,
