@@ -214,9 +214,9 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage (const Handle(Image_Support
 void Graphic3d_TextureRoot::convertToCompatible (const Handle(Image_SupportedFormats)& theSupported,
                                                  const Handle(Image_PixMap)& theImage)
 {
-  if (theSupported.IsNull()
-   || theSupported->IsSupported (theImage->Format())
-   || theImage.IsNull())
+  if (theImage.IsNull()
+   || theSupported.IsNull()
+   || theSupported->IsSupported (theImage->Format()))
   {
     return;
   }
