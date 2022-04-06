@@ -53,7 +53,7 @@ set quater_time [action_time -read0:2]
 puts "Quater of document open time $quater_time mcs"
 
 # Check that open of quater of the document is significantly faster than open of whole.
-if { [expr $quater_time * 1.75] > $whole_time } {
+if { [expr $quater_time * 1.5] > $whole_time } {
   puts "Error : loading of quater of the document content too slow relatively to the whole document load"
 }
 
