@@ -1,0 +1,16 @@
+puts "========"
+puts "bug32809: Sweep algorithm with Round Corner doesnot work"
+puts "========"
+puts ""
+
+restore [locate_data_file bug32809_path.brep] p
+restore [locate_data_file bug32809_profile.brep] pr
+
+mksweep p
+setsweep -CF
+addsweep pr
+
+buildsweep result -R -S
+
+checkshape result
+checknbshapes result -vertex 140 -edge 285 -wire 140 -face 140 -shell 1

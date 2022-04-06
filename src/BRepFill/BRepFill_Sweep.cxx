@@ -861,7 +861,8 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
   Prof2 = BRep_Tool::Curve(E2, f2, l2);
 
   // Indeed, both Prof1 and Prof2 are the same curves but in different positions
-
+  // Prof1's param domain may equals to Prof2's param domain *(-1), which means EF.Orientation() == EL.Orientation()
+  Standard_Boolean bSameCurveDomain = EF.Orientation() != EL.Orientation();
   gp_Pnt P1, P2, P;
 
   // Choose the angle of opening
@@ -887,7 +888,8 @@ static Standard_Boolean Filling(const TopoDS_Shape& EF,
     }
   }
 
-  const gp_Pnt aP2 = Prof2->Value(aPrm[aMaxIdx]).Transformed(aTf);
+  const Standard_Real aPrm2[] = { f2, 0.5*(f2 + l2), l2 };
+  const gp_Pnt aP2 = Prof2->Value(aPrm2[bSameCurveDomain ? aMaxIdx : 2 - aMaxIdx]).Transformed(aTf);
   const gp_Vec2d aV1(aP1[aMaxIdx].Z(), aP1[aMaxIdx].X());
   const gp_Vec2d aV2(aP2.Z(), aP2.X());
   if (aV1.SquareMagnitude() <= gp::Resolution() ||

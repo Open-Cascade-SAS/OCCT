@@ -1,4 +1,4 @@
-puts "TODO OCC24909 ALL: TEST INCOMPLETE"
+puts "TODO OCC24909 ALL: Error: sweep failed"
 
 puts "========"
 puts "OCC24909"
@@ -28,4 +28,8 @@ trotate Circle001 0 0 0 0.577350269189625731 0.577350269189625731 0.577350269189
 ttranslate Circle001 0 -71 203.5
 addsweep Circle001
 
-buildsweep Sweep001 -C -S
+set result [buildsweep Sweep001 -C -S]
+
+if {[regexp "Not Done" $result]} {
+  puts "Error: sweep failed"
+}
