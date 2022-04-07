@@ -602,6 +602,9 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
     const Bnd_Range aRange(theUt21, theUt22);
     Bnd_Range aProjRng1;
 
+    // Precision of the calculation depends on circles radii
+    const Standard_Real aPrecision = Max(Epsilon(myC[0]->Circle().Radius()), Epsilon(myC[1]->Circle().Radius()));
+
     // Project arc of the 1st circle between points theUt11 and theUt12 to the
     // 2nd circle. It is necessary to chose correct arc from two possible ones.
 
@@ -678,7 +681,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
           aMinSqD = Min(aMinSqD, ExtPCir.SquareDistance(anExtID));
         }
 
-        if (aMinSqD <= aMinSquareDist + (1. + aMinSqD) * Epsilon(1. + aMinSqD))
+        if (aMinSqD <= aMinSquareDist + (1. + aMinSqD) * aPrecision)
         {
           ClearSolutions();
           mySqDist.Append(aMinSqD);
@@ -778,7 +781,7 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
             imin = k;
           }
         }
-        if (aDmin <= aMinSquareDist + (1. + aDmin) * Epsilon(1. + aDmin))
+        if (aDmin <= aMinSquareDist + (1. + aDmin) * aPrecision)
         {
           if (imin == 0)
           {

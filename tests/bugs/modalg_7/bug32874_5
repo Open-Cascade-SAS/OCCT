@@ -1,0 +1,30 @@
+puts "================================================="
+puts "0032874: IsParallel() method of Extrema_ExtCC does not give same results in OCC 7.6.0 vs OCC 7.5.0"
+puts "================================================="
+puts ""
+
+set radius 1000.0
+set distExpected 1.e-5
+circle c1 0 0 0 $radius
+circle c2 0 0 0 $radius-$distExpected
+
+set start {0.0 0.5*pi pi 1.5*pi 2.0*pi}
+set delta {pi/4.0 pi/3.0 pi/2.0 0.55*pi 0.99*pi pi 1.1*pi}
+
+foreach f $start {
+  foreach d $delta {
+    trim cc1 c1 $f $f+$d
+    trim cc2 c2 $f $f+$d
+
+    set extr [extrema cc1 cc2]
+    if {[regexp {Infinite number of extremas, distance = ([-0-9.+eE]+)} $extr full dist]} {
+      if {[expr abs($dist - $distExpected)] < 1.e-7} {
+        puts "OK"
+      } else {
+        puts "Error: wrong distance $dist instead of $distExpected expected"
+      }
+    } else {
+      puts "Error: non-parallel curves"
+    }
+  }
+}
