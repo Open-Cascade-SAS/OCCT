@@ -267,9 +267,9 @@ public:
   //! FixLacking (if wire is ordered)
   Standard_EXPORT Standard_Boolean Perform();
   
-  //! Performs an analysis and reorders edges in the wire using
-  //! class WireOrder
-  Standard_EXPORT Standard_Boolean FixReorder();
+  //! Performs an analysis and reorders edges in the wire using class WireOrder.
+  //! Flag <theModeBoth> determines the use of miscible mode if necessary.
+  Standard_EXPORT Standard_Boolean FixReorder(Standard_Boolean theModeBoth = Standard_False);
   
   //! Applies FixSmall(num) to all edges in the wire
   Standard_EXPORT Standard_Integer FixSmall (const Standard_Boolean lockvtx, const Standard_Real precsmall = 0.0);

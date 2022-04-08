@@ -232,7 +232,8 @@ public:
   //! Analyzes the order of the edges in the wire,
   //! uses class WireOrder for that purpose.
   //! Flag <isClosed> defines if the wire is closed or not
-  //! Flag <mode3d> defines which mode is used (3d or 2d)
+  //! Flag <theMode3D> defines 3D or 2d mode.
+  //! Flag <theModeBoth> defines miscible mode and the flag <theMode3D> is ignored.
   //! Returns False if wire is already ordered (tail-to-head),
   //! True otherwise.
   //! Use returned WireOrder object for deeper analysis.
@@ -243,7 +244,10 @@ public:
   //! DONE3: not the same edges orientation (some need to be reversed)
   //! DONE4: as DONE3 and gaps more than myPrecision
   //! FAIL : algorithm failed (could not detect order)
-  Standard_EXPORT Standard_Boolean CheckOrder (ShapeAnalysis_WireOrder& sawo, const Standard_Boolean isClosed = Standard_True, const Standard_Boolean mode3d = Standard_True);
+  Standard_EXPORT Standard_Boolean CheckOrder(ShapeAnalysis_WireOrder &sawo,
+                                              Standard_Boolean isClosed = Standard_True,
+                                              Standard_Boolean theMode3D = Standard_True,
+                                              Standard_Boolean theModeBoth = Standard_False);
   
   //! Checks connected edges (num-th and preceding).
   //! Tests with starting preci from <SBWD> or  with <prec> if

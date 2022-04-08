@@ -260,7 +260,7 @@ void ShapeAnalysis_Wire::SetSurface (const Handle(Geom_Surface)& surface,
                                                   const Standard_Boolean mode3d) 
 {
   ShapeAnalysis_WireOrder sawo;
-  CheckOrder (sawo, isClosed, mode3d);
+  CheckOrder (sawo, isClosed, mode3d, Standard_False);
   myStatusOrder = myStatus;
   return StatusOrder (ShapeExtend_DONE);
 }
@@ -550,54 +550,94 @@ void ShapeAnalysis_Wire::SetSurface (const Handle(Geom_Surface)& surface,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeAnalysis_Wire::CheckOrder(ShapeAnalysis_WireOrder& sawo,
+Standard_Boolean ShapeAnalysis_Wire::CheckOrder(ShapeAnalysis_WireOrder &sawo,
                                                 const Standard_Boolean isClosed,
-                                                const Standard_Boolean mode3d) 
+                                                const Standard_Boolean theMode3D,
+                                                const Standard_Boolean theModeBoth)
 {
-  if ( ! mode3d && myFace.IsNull() ) {
-    myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2); 
+  if ((!theMode3D || theModeBoth) && myFace.IsNull())
+  {
+    myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
     return Standard_False;
   }
-  
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
-  sawo.SetMode ( mode3d, ( mode3d ? myPrecision : ::Precision::PConfusion() ) );
-  Standard_Integer i, nb = myWire->NbEdges();
+  sawo.SetMode(theMode3D, 0.0, theModeBoth);
+  Standard_Integer nb = myWire->NbEdges();
   ShapeAnalysis_Edge EA;
-  for (i = 1; i <= nb; i ++) {
+  Standard_Boolean isAll2dEdgesOk = Standard_True;
+  for (Standard_Integer i = 1; i <= nb; i++)
+  {
     TopoDS_Edge E = myWire->Edge(i);
-    if ( mode3d ) {
-      TopoDS_Vertex V1 = EA.FirstVertex (E); 
-      TopoDS_Vertex V2 = EA.LastVertex  (E); 
+    gp_XYZ aP1XYZ, aP2XYZ;
+    gp_XY aP1XY, aP2XY;
+    if (theMode3D || theModeBoth)
+    {
+      TopoDS_Vertex V1 = EA.FirstVertex(E);
+      TopoDS_Vertex V2 = EA.LastVertex(E);
       if (V1.IsNull() || V2.IsNull())
       {
         myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
         return Standard_False;
       }
-      gp_Pnt p1 = BRep_Tool::Pnt (V1);
-      gp_Pnt p2 = BRep_Tool::Pnt (V2);
-      sawo.Add (p1.XYZ(),p2.XYZ());
-    }
-    else {
-      Standard_Real f,l;
-      Handle(Geom2d_Curve) c2d;
-      TopoDS_Shape tmpF = myFace.Oriented(TopAbs_FORWARD);
-      if ( ! EA.PCurve(E,TopoDS::Face(tmpF),c2d,f,l) ) {
-        myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
-        return Standard_False;
+      else
+      {
+        aP1XYZ = BRep_Tool::Pnt(V1).XYZ();
+        aP2XYZ = BRep_Tool::Pnt(V2).XYZ();
       }
-      sawo.Add(c2d->Value(f).XY(),c2d->Value(l).XY());
+    }
+    if (!theMode3D || theModeBoth)
+    {
+      Standard_Real f, l;
+      Handle(Geom2d_Curve) c2d;
+      TopoDS_Shape tmpF = myFace.Oriented (TopAbs_FORWARD);
+      if (!EA.PCurve(E, TopoDS::Face (tmpF), c2d, f, l))
+      {
+        // if mode is 2d, then we can nothing to do, else we can switch to 3d mode
+        if (!theMode3D && !theModeBoth)
+        {
+          myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
+          return Standard_False;
+        }
+        else
+        {
+          isAll2dEdgesOk = Standard_False;
+        }
+      }
+      else
+      {
+        aP1XY = c2d->Value(f).XY();
+        aP2XY = c2d->Value(l).XY();
+      }
+    }
+    if (theMode3D && !theModeBoth)
+    {
+      sawo.Add (aP1XYZ, aP2XYZ);
+    }
+    else if (!theMode3D && !theModeBoth)
+    {
+      sawo.Add (aP1XY, aP2XY);
+    }
+    else
+    {
+      sawo.Add (aP1XYZ, aP2XYZ, aP1XY, aP2XY);
     }
   }
-  sawo.Perform(isClosed);
+  // need to switch to 3d mode
+  if (theModeBoth && !isAll2dEdgesOk)
+  {
+    sawo.SetMode (Standard_True, 0.0, Standard_False);
+  }
+  sawo.Perform (isClosed);
   Standard_Integer stat = sawo.Status();
-  switch (stat) {
+  switch (stat)
+  {
   case   0: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);    break;
   case   1: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1); break;
-  case   2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2); break;
+  case   2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2); break; // this value is not returned
   case  -1: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE3); break;
-  case  -2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE4); break;
-  case   3: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE5); break;//only shifted
-  case -10: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL1); break;
+  case  -2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE4); break; // this value is not returned
+  case   3: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE5); break; // only shifted
+  case -10: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL1); break; // this value is not returned
   }
   return LastCheckStatus (ShapeExtend_DONE);
 }

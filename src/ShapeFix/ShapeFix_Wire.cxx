@@ -349,7 +349,7 @@ Standard_Boolean ShapeFix_Wire::Perform()
   // status even if FixReorder should not be called (if it is forbidden)
 
   ShapeAnalysis_WireOrder sawo;
-  Standard_Boolean ReorderOK = ( myAnalyzer->CheckOrder ( sawo, myClosedMode ) ==0 );
+  Standard_Boolean ReorderOK = (myAnalyzer->CheckOrder( sawo, myClosedMode ) == 0 );
   if ( NeedFix ( myFixReorderMode, ! ReorderOK ) ) { 
     if(FixReorder()) Fixed = Standard_True; 
     ReorderOK = ! StatusReorder ( ShapeExtend_FAIL );
@@ -433,51 +433,53 @@ Standard_Boolean ShapeFix_Wire::Perform()
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeFix_Wire::FixReorder() 
+Standard_Boolean ShapeFix_Wire::FixReorder(Standard_Boolean theModeBoth)
 {
-  myStatusReorder = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
-  if ( ! IsLoaded() ) return Standard_False;
-
-  // fix in 3d
-  ShapeAnalysis_WireOrder sawo;
-  myAnalyzer->CheckOrder ( sawo, myClosedMode, Standard_True );
-  
-  //:abv revolCuts.sat -23: in case of bi-periodic surface check case
-  // of reversed wire specifically. This is necessary because degenerated
-  // cases are possible when direct evaluation will give bad result.
-  Standard_Boolean isReorder = Standard_False;
-  if ( sawo.Status() != 0 &&
-       ! myAnalyzer->Surface().IsNull() &&
-       myAnalyzer->Surface()->Surface()->IsUPeriodic() &&
-       myAnalyzer->Surface()->Surface()->IsVPeriodic() ) {
-    Handle(ShapeExtend_WireData) sbwd2 = new ShapeExtend_WireData;
-    for ( Standard_Integer i=WireData()->NbEdges(); i >=1; i-- )
-      sbwd2->Add ( WireData()->Edge(i) );
-    ShapeAnalysis_WireOrder sawo2;
-    ShapeAnalysis_Wire analyzer2 ( sbwd2, myAnalyzer->Face(), Precision() );
-    analyzer2.CheckOrder ( sawo2, myClosedMode, Standard_True );
-    if ( ( sawo2.Status() >=0 && sawo2.Status() < sawo.Status() ) || 
-         ( sawo.Status()   <0 && sawo2.Status() > sawo.Status() ) ) {
-      WireData()->Init ( sbwd2 );
-      sawo = sawo2;
-      isReorder = Standard_True;
-    }
+  myStatusReorder = ShapeExtend::EncodeStatus(ShapeExtend_OK);
+  if (!IsLoaded())
+  {
+    return Standard_False;
   }
-  
-  FixReorder ( sawo );
-  
-  if ( LastFixStatus ( ShapeExtend_FAIL ) )
-    myStatusReorder |= ShapeExtend::EncodeStatus ( LastFixStatus ( ShapeExtend_FAIL1 ) ? 
-			 		         ShapeExtend_FAIL1 : ShapeExtend_FAIL2 );
-  if ( ! LastFixStatus ( ShapeExtend_DONE )&& !isReorder ) return Standard_False;
-  
-  myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
-  if ( sawo.Status() ==2 || sawo.Status() ==-2 ) 
-    myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
-  if ( sawo.Status() <0 ) 
-    myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
-  if ( sawo.Status() == 3)
-    myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );//only shifted
+
+  // fix in Both mode for bi-periodic surface
+  ShapeAnalysis_WireOrder sawo;
+  if (!myAnalyzer->Surface().IsNull() &&
+      myAnalyzer->Surface()->Surface()->IsUPeriodic() &&
+      myAnalyzer->Surface()->Surface()->IsVPeriodic() &&
+      theModeBoth)
+  {
+    myAnalyzer->CheckOrder(sawo, myClosedMode, Standard_True, Standard_True);
+  }
+  else
+  {
+    myAnalyzer->CheckOrder(sawo, myClosedMode, Standard_True, Standard_False);
+  }
+
+  FixReorder(sawo);
+
+  if (LastFixStatus(ShapeExtend_FAIL))
+  {
+    myStatusReorder |= ShapeExtend::EncodeStatus(LastFixStatus(ShapeExtend_FAIL1) ? ShapeExtend_FAIL1 : ShapeExtend_FAIL2);
+  }
+  if (!LastFixStatus(ShapeExtend_DONE))
+  {
+    return Standard_False;
+  }
+
+  myStatusReorder |= ShapeExtend::EncodeStatus(ShapeExtend_DONE1);
+  if (sawo.Status() == 2 || sawo.Status() == -2)
+  {
+    myStatusReorder |= ShapeExtend::EncodeStatus(ShapeExtend_DONE2);
+  }
+  if (sawo.Status() < 0)
+  {
+    myStatusReorder |= ShapeExtend::EncodeStatus(ShapeExtend_DONE3);
+  }
+  if (sawo.Status() == 3)
+  {
+    // only shifted
+    myStatusReorder |= ShapeExtend::EncodeStatus(ShapeExtend_DONE5);
+  }
   return Standard_True;
 }
 
