@@ -388,9 +388,6 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
       }
     }
 
-    Standard_Integer Nelarg=(Poly1.NbSegments()/20);
-    if(Nelarg<2) Nelarg=2;
-
     for(Standard_Integer sp=1; sp <= Nbsp; sp++) {
       if(TriIndex[sp]>0) { 
 	      const Intf_SectionPoint& SPnt = InterPP.PntValue(TriIndex[sp]);
@@ -401,20 +398,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 	      if(Abs(SegIndex1-SegIndex2)>1) { 
 	  
 	        EIP.Perform(Poly1,Poly1,SegIndex1,SegIndex2,ParamOn1,ParamOn2);
-	        if(EIP.NbRoots()==0) {
-	          //-- All neighbor segments are removed 
-	          for(Standard_Integer k=sp+1;k<=Nbsp;k++) { 
-	            Standard_Integer kk=TriIndex[k];
-	            // --- avoid negative indices as well as in outer done
-	            if( kk > 0 ) {
-		            if(   Abs(SegIndex1-PtrSegIndex1[kk])< Nelarg
-		               && Abs(SegIndex2-PtrSegIndex2[kk])< Nelarg) { 
-		              TriIndex[k]=-k;
-		            }
-              }
-	          }
-	        }	  
-	        else if(EIP.NbRoots()>=1) { 
+	        if(EIP.NbRoots()>=1) { 
 	          //--------------------------------------------------------------------
 	          //-- It is checked if the found point is a root
 	          //--------------------------------------------------------------------
