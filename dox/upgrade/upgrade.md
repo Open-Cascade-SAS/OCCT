@@ -2333,3 +2333,8 @@ Applications extending OCCT 3D Viewer and calling OpenGL functions directly (lik
 This header, as well as `OpenGl_GlCore20.hxx` and similar, no more include system OpenGL / OpenGL ES headers to define function table.
 Application code calling OpenGL functions directly should be changed to either use `OpenGl_Context::core11fwd` (as designed)
 or to include system OpenGL headers in advance (with help of `OpenGl_GlNative.hxx`).
+
+@subsection upgrade_occt770_tooltriangulatedshape StdPrs_ToolTriangulatedShape
+
+Method `StdPrs_ToolTriangulatedShape::Normal()` has been removed.
+Please use `BRepLib_ToolTriangulatedShape::ComputeNormals()` to fill in normal attributes in triangulation and fetch them directly using `Poly_Triangulation::Normal()`.

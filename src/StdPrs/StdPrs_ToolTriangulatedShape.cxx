@@ -120,36 +120,6 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::IsClosed (const TopoDS_Shape& the
 }
 
 //=======================================================================
-//function : Normal
-//purpose  :
-//=======================================================================
-void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
-                                           Poly_Connect&       thePolyConnect,
-                                           TColgp_Array1OfDir& theNormals)
-{
-  const Handle(Poly_Triangulation)& aPolyTri = thePolyConnect.Triangulation();
-  if (!aPolyTri->HasNormals())
-  {
-    ComputeNormals (theFace, aPolyTri, thePolyConnect);
-  }
-
-  gp_Vec3f aNormal;
-  for (Standard_Integer aNodeIter = 1; aNodeIter <= aPolyTri->NbNodes(); ++aNodeIter)
-  {
-    aPolyTri->Normal (aNodeIter, aNormal);
-    theNormals.ChangeValue (aNodeIter).SetCoord (aNormal.x(), aNormal.y(), aNormal.z());
-  }
-
-  if (theFace.Orientation() == TopAbs_REVERSED)
-  {
-    for (Standard_Integer aNodeIter = 1; aNodeIter <= aPolyTri->NbNodes(); ++aNodeIter)
-    {
-      theNormals.ChangeValue (aNodeIter).Reverse();
-    }
-  }
-}
-
-//=======================================================================
 //function : GetDeflection
 //purpose  :
 //=======================================================================

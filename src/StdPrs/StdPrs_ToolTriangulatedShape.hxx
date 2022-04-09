@@ -32,14 +32,6 @@ public:
   //! @return true if shape is closed manifold Solid or compound of such Solids. <br>
   Standard_EXPORT static Standard_Boolean IsClosed (const TopoDS_Shape& theShape);
 
-  //! Evaluate normals for a triangle of a face.
-  //! @param[in]  theFace the face.
-  //! @param[in]  thePolyConnect the definition of a face triangulation.
-  //! @param[out] theNormals the array of normals for each triangle.
-  Standard_EXPORT static void Normal (const TopoDS_Face& theFace,
-                                      Poly_Connect& thePolyConnect,
-                                      TColgp_Array1OfDir& theNormals);
-
   //! Computes the absolute deflection value depending on the type of deflection in theDrawer:
   //! <ul>
   //! <li><b>Aspect_TOD_RELATIVE</b>: the absolute deflection is computed using the relative
@@ -49,7 +41,7 @@ public:
   //! In case of the type of deflection in theDrawer computed relative deflection for shape is stored as absolute deflection.
   //! It is necessary to use it later on for sub-shapes.
   //! This function should always be used to compute the deflection value for building
-  //! discrete representations of the shape (triangualtion, wireframe) to avoid incosistencies
+  //! discrete representations of the shape (triangulation, wireframe) to avoid inconsistencies
   //! between different representations of the shape and undesirable visual artifacts.
   Standard_EXPORT static Standard_Real GetDeflection (const TopoDS_Shape& theShape,
                                                       const Handle(Prs3d_Drawer)& theDrawer);
@@ -63,7 +55,7 @@ public:
   //! Validates triangulation within the shape and performs tessellation if necessary.
   //! @param theShape [in] the shape.
   //! @param theDrawer [in] the display settings.
-  //! @return true if tesselation was recomputed and false otherwise.
+  //! @return true if tessellation was recomputed and false otherwise.
   Standard_EXPORT static Standard_Boolean Tessellate (const TopoDS_Shape& theShape,
                                                       const Handle(Prs3d_Drawer)& theDrawer);
 
