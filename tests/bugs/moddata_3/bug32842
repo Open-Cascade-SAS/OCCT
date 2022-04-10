@@ -1,0 +1,17 @@
+puts "==========================================================="
+puts "0032842: Modeling Data - a regression in conversion of a face to bspline"
+puts "==========================================================="
+puts ""
+
+restore [locate_data_file bug32842.brep] s
+nurbsconvert bs s
+explode bs e
+pcurve pc2 bs_2 bs
+bounds pc2 t1 t2
+2dcvalue pc2 t1 x1 y1
+2dcvalue pc2 t2 x2 y2
+mksurface surf bs
+bounds surf u1 u2 v1 v2
+
+checkreal "U21" [dval (u2-x1)] 0 1.e-7 1.e-7
+checkreal "U22" [dval (u2-x2)] 0 1.e-7 1.e-7

@@ -477,7 +477,13 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
         Handle(Geom_ToroidalSurface)::DownCast(Surf);
 
       gp_Torus Tr = TheElSurf->Torus();
-      if (isUClosed) {
+      //
+      // if isUClosed = true and U trim does not coinside with first period of torus, 
+      // method CheckAndSegment shifts position of U seam boundary of surface.
+      // probably bug? So, for this case we must build not periodic surface. 
+      Standard_Boolean isUFirstPeriod = !(UFirst < 0. || ULast > 2.*M_PI);
+      Standard_Boolean isVFirstPeriod = !(VFirst < 0. || VLast > 2.*M_PI);
+      if (isUClosed && isUFirstPeriod) {
         Convert_TorusToBSplineSurface Convert (Tr, VFirst, VLast, 
           Standard_False);
         TheSurface = BSplineSurfaceBuilder (Convert);
@@ -487,7 +493,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
           TheSurface->CheckAndSegment(UFirst, ULast, VFirst, VLast);
         }
       }
-      else if (Strim->IsVClosed()) {
+      else if (Strim->IsVClosed() && isVFirstPeriod) {
         Convert_TorusToBSplineSurface Convert (Tr, UFirst, ULast);
         TheSurface = BSplineSurfaceBuilder (Convert);
         Standard_Integer aNbK = TheSurface->NbVKnots();
