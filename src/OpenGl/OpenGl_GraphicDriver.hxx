@@ -88,7 +88,13 @@ public:
 
   Standard_EXPORT virtual void RemoveView (const Handle(Graphic3d_CView)& theView) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(OpenGl_Window) CreateRenderWindow (const Handle(Aspect_Window)& theWindow, const Aspect_RenderingContext theContext);
+  //! Create OpenGL window from native window.
+  //! @param[in] theNativeWindow native window holder
+  //! @param[in] theSizeWindow object defining window dimensions
+  //! @param[in] theContext existing native rendering context
+  Standard_EXPORT virtual Handle(OpenGl_Window) CreateRenderWindow (const Handle(Aspect_Window)& theNativeWindow,
+                                                                    const Handle(Aspect_Window)& theSizeWindow,
+                                                                    const Aspect_RenderingContext theContext);
 
 public:
 

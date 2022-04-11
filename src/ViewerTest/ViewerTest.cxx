@@ -4776,11 +4776,14 @@ inline Standard_Boolean parseTrsfPersFlag (const TCollection_AsciiString& theFla
   return Standard_True;
 }
 
-//! Auxiliary method to parse transformation persistence flags
-inline Standard_Boolean parseTrsfPersCorner (const TCollection_AsciiString& theString,
-                                             Aspect_TypeOfTriedronPosition& theCorner)
+// =============================================================================
+// function : ParseCorner
+// purpose  :
+// =============================================================================
+Standard_Boolean ViewerTest::ParseCorner (Standard_CString theArg,
+                                          Aspect_TypeOfTriedronPosition& theCorner)
 {
-  TCollection_AsciiString aString (theString);
+  TCollection_AsciiString aString (theArg);
   aString.LowerCase();
   if (aString == "center")
   {
@@ -4806,25 +4809,33 @@ inline Standard_Boolean parseTrsfPersCorner (const TCollection_AsciiString& theS
   }
   else if (aString == "topleft"
         || aString == "leftupper"
-        || aString == "upperleft")
+        || aString == "upperleft"
+        || aString == "left_upper"
+        || aString == "upper_left")
   {
     theCorner = Aspect_TOTP_LEFT_UPPER;
   }
   else if (aString == "bottomleft"
         || aString == "leftlower"
-        || aString == "lowerleft")
+        || aString == "lowerleft"
+        || aString == "left_lower"
+        || aString == "lower_left")
   {
     theCorner = Aspect_TOTP_LEFT_LOWER;
   }
   else if (aString == "topright"
         || aString == "rightupper"
-        || aString == "upperright")
+        || aString == "upperright"
+        || aString == "right_upper"
+        || aString == "upper_right")
   {
     theCorner = Aspect_TOTP_RIGHT_UPPER;
   }
   else if (aString == "bottomright"
         || aString == "lowerright"
-        || aString == "rightlower")
+        || aString == "rightlower"
+        || aString == "right_lower"
+        || aString == "lower_right")
   {
     theCorner = Aspect_TOTP_RIGHT_LOWER;
   }
@@ -4964,7 +4975,7 @@ static int VDisplay2 (Draw_Interpretor& theDI,
       if (anArgIter + 1 < theArgNb)
       {
         Aspect_TypeOfTriedronPosition aCorner = Aspect_TOTP_CENTER;
-        if (parseTrsfPersCorner (theArgVec[anArgIter + 1], aCorner))
+        if (ViewerTest::ParseCorner (theArgVec[anArgIter + 1], aCorner))
         {
           ++anArgIter;
           aTrsfPers->SetCorner2d (aCorner);

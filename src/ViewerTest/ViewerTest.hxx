@@ -18,8 +18,10 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
+#include <Aspect_TypeOfTriedronPosition.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Graphic3d_TypeOfShadingModel.hxx>
+#include <Graphic3d_Vec2.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
@@ -36,6 +38,23 @@ class ViewerTest_EventManager;
 class TopoDS_Shape;
 class WNT_WClass;
 
+//! Parameters for creating new view.
+struct ViewerTest_VinitParams
+{
+  TCollection_AsciiString ViewName;
+  TCollection_AsciiString DisplayName;
+  Handle(V3d_View) ViewToClone;
+  Handle(V3d_View) ParentView;
+  Graphic3d_Vec2d  Offset;
+  Graphic3d_Vec2d  Size;
+  Aspect_TypeOfTriedronPosition Corner;
+  Graphic3d_Vec2i  SubviewMargins;
+  Standard_Boolean IsVirtual;
+  Standard_Boolean IsComposer;
+
+  ViewerTest_VinitParams() : Corner (Aspect_TOTP_LEFT_UPPER), IsVirtual (false), IsComposer (false) {}
+};
+
 class ViewerTest
 {
 public:
@@ -45,25 +64,39 @@ public:
   //! Loads all Draw commands of  V2d & V3d. Used for plugin.
   Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
 
-  //! Creates view with default or custom name
-  //! and adds this name in map to manage multiple views.
+
+
+  //! Creates view with default or custom name and adds this name in map to manage multiple views.
   //! Implemented in ViewerTest_ViewerCommands.cxx.
-  //! @param thePxLeft      left position of newly created window
-  //! @param thePxTop       top  position of newly created window
-  //! @param thePxWidth     width of newly created window
-  //! @param thePxHeight    height of newly created window
-  //! @param theViewName    name of newly created View
-  //! @oaram theDisplayName display name
-  //! @param theViewToClone when specified, the new View will copy properties of existing one
-  //! @param theIsVirtual   force creation of virtual off-screen window within interactive session
-  Standard_EXPORT static TCollection_AsciiString ViewerInit (const Standard_Integer thePxLeft   = 0,
-                                                             const Standard_Integer thePxTop    = 0,
-                                                             const Standard_Integer thePxWidth  = 0,
-                                                             const Standard_Integer thePxHeight = 0,
-                                                             const TCollection_AsciiString& theViewName = "",
-                                                             const TCollection_AsciiString& theDisplayName = "",
-                                                             const Handle(V3d_View)& theViewToClone = Handle(V3d_View)(),
-                                                             const Standard_Boolean theIsVirtual = false);
+  Standard_EXPORT static TCollection_AsciiString ViewerInit (const ViewerTest_VinitParams& theParams);
+
+  //! Creates view.
+  static TCollection_AsciiString ViewerInit (const TCollection_AsciiString& theViewName = "")
+  {
+    ViewerTest_VinitParams aParams;
+    aParams.ViewName = theViewName;
+    return ViewerInit (aParams);
+  }
+
+  //! Creates view.
+  static TCollection_AsciiString ViewerInit (const Standard_Integer thePxLeft,
+                                             const Standard_Integer thePxTop,
+                                             const Standard_Integer thePxWidth,
+                                             const Standard_Integer thePxHeight,
+                                             const TCollection_AsciiString& theViewName,
+                                             const TCollection_AsciiString& theDisplayName = "",
+                                             const Handle(V3d_View)& theViewToClone = Handle(V3d_View)(),
+                                             const Standard_Boolean theIsVirtual = false)
+  {
+    ViewerTest_VinitParams aParams;
+    aParams.Offset.SetValues ((float )thePxLeft, (float)thePxTop);
+    aParams.Size.SetValues ((float)thePxWidth, (float)thePxHeight);
+    aParams.ViewName = theViewName;
+    aParams.DisplayName = theDisplayName;
+    aParams.ViewToClone = theViewToClone;
+    aParams.IsVirtual = theIsVirtual;
+    return ViewerInit (aParams);
+  }
 
   Standard_EXPORT static void RemoveViewName (const TCollection_AsciiString& theName);
 
@@ -71,6 +104,10 @@ public:
                                             const Handle(V3d_View)&        theView);
 
   Standard_EXPORT static TCollection_AsciiString GetCurrentViewName();
+
+  //! Make the view active
+  Standard_EXPORT static void ActivateView (const Handle(V3d_View)& theView,
+                                            Standard_Boolean theToUpdate);
 
   //! Removes view and clear all maps
   //! with information about its resources if necessary
@@ -206,6 +243,10 @@ public:
   {
     return parseZLayer (theArg, true, theLayer);
   }
+
+  //! Auxiliary method to parse transformation persistence flags
+  Standard_EXPORT static Standard_Boolean ParseCorner (Standard_CString theArg,
+                                                       Aspect_TypeOfTriedronPosition& theCorner);
 
 public: //! @name deprecated methods
 

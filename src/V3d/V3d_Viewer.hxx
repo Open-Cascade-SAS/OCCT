@@ -482,7 +482,7 @@ private:
   Standard_EXPORT void AddView (const Handle(V3d_View)& theView);
   
   //! Delete View in Sequence Of Views.
-  Standard_EXPORT void DelView (const Handle(V3d_View)& theView);
+  Standard_EXPORT void DelView (const V3d_View* theView);
   
 private:
 

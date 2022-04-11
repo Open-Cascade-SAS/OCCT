@@ -108,10 +108,20 @@ void ViewerTest_AutoUpdater::Update()
       if (!myContext.IsNull())
       {
         myContext->UpdateCurrentViewer();
+        if (!myView.IsNull()
+          && myView->IsSubview()
+          && myView->ParentView()->Viewer() != myContext->CurrentViewer())
+        {
+          myView->ParentView()->RedrawImmediate();
+        }
       }
       else if (!myView.IsNull())
       {
         myView->Redraw();
+        if (myView->IsSubview())
+        {
+          myView->ParentView()->RedrawImmediate();
+        }
       }
     }
   }

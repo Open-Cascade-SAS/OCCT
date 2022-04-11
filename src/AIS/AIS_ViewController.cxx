@@ -184,6 +184,53 @@ void AIS_ViewController::FlushViewEvents (const Handle(AIS_InteractiveContext)& 
 {
   flushBuffers (theCtx, theView);
   flushGestures(theCtx, theView);
+
+  if (theView->IsSubview())
+  {
+    // move input coordinates inside the view
+    const Graphic3d_Vec2i aDelta = theView->View()->SubviewTopLeft();
+    if (myGL.MoveTo.ToHilight || myGL.Dragging.ToStart)
+    {
+      myGL.MoveTo.Point -= aDelta;
+    }
+    if (myGL.Panning.ToStart)
+    {
+      myGL.Panning.PointStart -= aDelta;
+    }
+    if (myGL.Dragging.ToStart)
+    {
+      myGL.Dragging.PointStart -= aDelta;
+    }
+    if (myGL.Dragging.ToMove)
+    {
+      myGL.Dragging.PointTo -= aDelta;
+    }
+    if (myGL.OrbitRotation.ToStart)
+    {
+      myGL.OrbitRotation.PointStart -= Graphic3d_Vec2d (aDelta);
+    }
+    if (myGL.OrbitRotation.ToRotate)
+    {
+      myGL.OrbitRotation.PointTo -= Graphic3d_Vec2d (aDelta);
+    }
+    if (myGL.ViewRotation.ToStart)
+    {
+      myGL.ViewRotation.PointStart -= Graphic3d_Vec2d (aDelta);
+    }
+    if (myGL.ViewRotation.ToRotate)
+    {
+      myGL.ViewRotation.PointTo -= Graphic3d_Vec2d (aDelta);
+    }
+    for (Graphic3d_Vec2i& aPntIter : myGL.Selection.Points)
+    {
+      aPntIter -= aDelta;
+    }
+    for (Aspect_ScrollDelta& aZoomIter : myGL.ZoomActions)
+    {
+      aZoomIter.Point -= aDelta;
+    }
+  }
+
   if (theToHandle)
   {
     HandleViewEvents (theCtx, theView);
@@ -2628,6 +2675,17 @@ void AIS_ViewController::OnSelectionChanged (const Handle(AIS_InteractiveContext
 }
 
 // =======================================================================
+// function : OnSubviewChanged
+// purpose  :
+// =======================================================================
+void AIS_ViewController::OnSubviewChanged (const Handle(AIS_InteractiveContext)& ,
+                                           const Handle(V3d_View)& ,
+                                           const Handle(V3d_View)& )
+{
+  //
+}
+
+// =======================================================================
 // function : OnObjectDragged
 // purpose  :
 // =======================================================================
@@ -3002,6 +3060,8 @@ void AIS_ViewController::handleMoveTo (const Handle(AIS_InteractiveContext)& the
 void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)& ,
                                            const Handle(V3d_View)& theView)
 {
+  Handle(V3d_View) aParentView = theView->IsSubview() ? theView->ParentView() : theView;
+
   // manage animation state
   if (!myViewAnimation.IsNull()
    && !myViewAnimation->IsStopped())
@@ -3029,31 +3089,82 @@ void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)&
     myToAskNextFrame = true;
   }
 
-  for (V3d_ListOfViewIterator aViewIter (theView->Viewer()->ActiveViewIterator()); aViewIter.More(); aViewIter.Next())
+  for (int aSubViewPass = 0; aSubViewPass < 2; ++aSubViewPass)
   {
-    const Handle(V3d_View)& aView = aViewIter.Value();
-    if (aView->IsInvalidated()
-     || (myToAskNextFrame && aView == theView))
+    const bool isSubViewPass = (aSubViewPass == 0);
+    for (V3d_ListOfViewIterator aViewIter (theView->Viewer()->ActiveViewIterator()); aViewIter.More(); aViewIter.Next())
     {
-      if (aView->ComputedMode())
+      const Handle(V3d_View)& aView = aViewIter.Value();
+      if (isSubViewPass
+      && !aView->IsSubview())
       {
-        aView->Update();
+        for (const Handle(V3d_View)& aSubviewIter : aView->Subviews())
+        {
+          if (aSubviewIter->Viewer() != theView->Viewer())
+          {
+            if (aSubviewIter->IsInvalidated())
+            {
+              if (aSubviewIter->ComputedMode())
+              {
+                aSubviewIter->Update();
+              }
+              else
+              {
+                aSubviewIter->Redraw();
+              }
+            }
+            else if (aSubviewIter->IsInvalidatedImmediate())
+            {
+              aSubviewIter->RedrawImmediate();
+            }
+          }
+        }
+        continue;
       }
-      else
+      else if (!isSubViewPass
+             && aView->IsSubview())
       {
-        aView->Redraw();
+        continue;
+      }
+
+      if (aView->IsInvalidated()
+       || (myToAskNextFrame && aView == theView))
+      {
+        if (aView->ComputedMode())
+        {
+          aView->Update();
+        }
+        else
+        {
+          aView->Redraw();
+        }
+
+        if (aView->IsSubview())
+        {
+          aView->ParentView()->InvalidateImmediate();
+        }
+      }
+      else if (aView->IsInvalidatedImmediate())
+      {
+        if (aView->IsSubview())
+        {
+          aView->ParentView()->InvalidateImmediate();
+        }
+
+        aView->RedrawImmediate();
       }
     }
-    else if (aView->IsInvalidatedImmediate())
-    {
-      aView->RedrawImmediate();
-    }
+  }
+  if (theView->IsSubview()
+   && theView->Viewer() != aParentView->Viewer())
+  {
+    aParentView->RedrawImmediate();
   }
 
   if (myToAskNextFrame)
   {
     // ask more frames
-    theView->Window()->InvalidateContent (Handle(Aspect_DisplayConnection)());
+    aParentView->Window()->InvalidateContent (Handle(Aspect_DisplayConnection)());
   }
 }
 
@@ -3298,6 +3409,36 @@ void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)&
 {
   const bool wasImmediateUpdate = theView->SetImmediateUpdate (false);
 
+  Handle(V3d_View) aPickedView;
+  if (theView->IsSubview()
+  || !theView->Subviews().IsEmpty())
+  {
+    // activate another subview on mouse click
+    bool toPickSubview = false;
+    Graphic3d_Vec2i aClickPoint;
+    if (myGL.Selection.Tool == AIS_ViewSelectionTool_Picking
+    && !myGL.Selection.Points.IsEmpty())
+    {
+      aClickPoint = myGL.Selection.Points.Last();
+      toPickSubview = true;
+    }
+    else if (!myGL.ZoomActions.IsEmpty())
+    {
+      //aClickPoint = myGL.ZoomActions.Last().Point;
+      //toPickSubview = true;
+    }
+
+    if (toPickSubview)
+    {
+      if (theView->IsSubview())
+      {
+        aClickPoint += theView->View()->SubviewTopLeft();
+      }
+      Handle(V3d_View) aParent = !theView->IsSubview() ? theView : theView->ParentView();
+      aPickedView = aParent->PickSubview (aClickPoint);
+    }
+  }
+
   handleViewOrientationKeys (theCtx, theView);
   const AIS_WalkDelta aWalk = handleNavigationKeys (theCtx, theView);
   handleXRInput (theCtx, theView, aWalk);
@@ -3314,6 +3455,12 @@ void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)&
   theView->View()->UnsetXRPosedCamera();
 
   theView->SetImmediateUpdate (wasImmediateUpdate);
+
+  if (!aPickedView.IsNull()
+    && aPickedView != theView)
+  {
+    OnSubviewChanged (theCtx, theView, aPickedView);
+  }
 
   // make sure to not process the same events twice
   myGL.Reset();

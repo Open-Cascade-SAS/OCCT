@@ -868,14 +868,16 @@ void OpenGl_GraphicDriver::RemoveView (const Handle(Graphic3d_CView)& theView)
 }
 
 // =======================================================================
-// function : Window
+// function : CreateRenderWindow
 // purpose  :
 // =======================================================================
-Handle(OpenGl_Window) OpenGl_GraphicDriver::CreateRenderWindow (const Handle(Aspect_Window)&  theWindow,
+Handle(OpenGl_Window) OpenGl_GraphicDriver::CreateRenderWindow (const Handle(Aspect_Window)& theNativeWindow,
+                                                                const Handle(Aspect_Window)& theSizeWindow,
                                                                 const Aspect_RenderingContext theContext)
 {
   Handle(OpenGl_Context) aShareCtx = GetSharedContext();
-  Handle(OpenGl_Window) aWindow = new OpenGl_Window (this, theWindow, theContext, myCaps, aShareCtx);
+  Handle(OpenGl_Window) aWindow = new OpenGl_Window();
+  aWindow->Init (this, theNativeWindow, theSizeWindow, theContext, myCaps, aShareCtx);
   return aWindow;
 }
 

@@ -48,6 +48,7 @@
 #include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>
 
+class Aspect_NeutralWindow;
 class Aspect_XRSession;
 class Graphic3d_CView;
 class Graphic3d_Layer;
@@ -239,7 +240,7 @@ public:
   virtual Standard_Boolean IsInvalidated() = 0;
 
   //! Handle changing size of the rendering window.
-  virtual void Resized() = 0;
+  Standard_EXPORT virtual void Resized() = 0;
 
   //! @param theDrawToFrontBuffer Advanced option to modify rendering mode:
   //! 1. TRUE.  Drawing immediate mode structures directly to the front buffer over the scene image.
@@ -256,10 +257,12 @@ public:
   virtual Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer) = 0;
 
   //! Creates and maps rendering window to the view.
-  //! @param theWindow [in] the window.
-  //! @param theContext [in] the rendering context. If NULL the context will be created internally.
-  virtual void SetWindow (const Handle(Aspect_Window)& theWindow,
-                          const Aspect_RenderingContext theContext = NULL) = 0;
+  //! @param[in] theParentVIew parent view or NULL
+  //! @param[in] theWindow the window
+  //! @param[in] theContext the rendering context; if NULL the context will be created internally
+  virtual void SetWindow (const Handle(Graphic3d_CView)& theParentVIew,
+                          const Handle(Aspect_Window)& theWindow,
+                          const Aspect_RenderingContext theContext) = 0;
 
   //! Returns the window associated to the view.
   virtual Handle(Aspect_Window) Window() const = 0;
@@ -554,6 +557,70 @@ public: //! @name obsolete Graduated Trihedron functionality
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
+public: //! @name subview properties
+
+  //! Return TRUE if this is a subview of another view.
+  bool IsSubview() const { return myParentView != nullptr; }
+
+  //! Return parent View or NULL if this is not a subview.
+  Graphic3d_CView* ParentView() { return myParentView; }
+
+  //! Return TRUE if this is view performs rendering of subviews and nothing else; FALSE by default.
+  //! By default, view with subviews will render main scene and blit subviews on top of it.
+  //! Rendering of main scene might become redundant in case if subviews cover entire window of parent view.
+  //! This flag allows to disable rendering of the main scene in such scenarios
+  //! without creation of a dedicated V3d_Viewer instance just for composing subviews.
+  bool IsSubviewComposer() const { return myIsSubviewComposer; }
+
+  //! Set if this view should perform composing of subviews and nothing else.
+  void SetSubviewComposer (bool theIsComposer) { myIsSubviewComposer = theIsComposer; }
+
+  //! Return subview list.
+  const NCollection_Sequence<Handle(Graphic3d_CView)>& Subviews() const { return mySubviews; }
+
+  //! Add subview to the list.
+  Standard_EXPORT void AddSubview (const Handle(Graphic3d_CView)& theView);
+
+  //! Remove subview from the list.
+  Standard_EXPORT bool RemoveSubview (const Graphic3d_CView* theView);
+
+  //! Return subview position within parent view; Aspect_TOTP_LEFT_UPPER by default.
+  Aspect_TypeOfTriedronPosition SubviewCorner() const { return mySubviewCorner; }
+
+  //! Set subview position within parent view.
+  void SetSubviewCorner (Aspect_TypeOfTriedronPosition thePos) { mySubviewCorner = thePos; }
+
+  //! Return subview top-left position relative to parent view in pixels.
+  const Graphic3d_Vec2i& SubviewTopLeft() const { return mySubviewTopLeft; }
+
+  //! Return TRUE if subview size is set as proportions relative to parent view.
+  bool IsSubViewRelativeSize() const { return mySubviewSize.x() <= 1.0 && mySubviewSize.y() <= 1.0; }
+
+  //! Return subview dimensions; (1.0, 1.0) by default.
+  //! Values >= 2   define size in pixels;
+  //! Values <= 1.0 define size as fraction of parent view.
+  const Graphic3d_Vec2d& SubviewSize() const { return mySubviewSize; }
+
+  //! Set subview size relative to parent view.
+  void SetSubviewSize (const Graphic3d_Vec2d& theSize) { mySubviewSize = theSize; }
+
+  //! Return corner offset within parent view; (0.0,0.0) by default.
+  //! Values >= 2   define offset in pixels;
+  //! Values <= 1.0 define offset as fraction of parent view dimensions.
+  const Graphic3d_Vec2d& SubviewOffset() const { return mySubviewOffset; }
+
+  //! Set corner offset within parent view.
+  void SetSubviewOffset (const Graphic3d_Vec2d& theOffset) { mySubviewOffset = theOffset; }
+
+  //! Return subview margins in pixels; (0,0) by default
+  const Graphic3d_Vec2i& SubviewMargins() const { return mySubviewMargins; }
+
+  //! Set subview margins in pixels.
+  void SetSubviewMargins (const Graphic3d_Vec2i& theMargins) { mySubviewMargins = theMargins; }
+
+  //! Update subview position and dimensions.
+  Standard_EXPORT void SubviewResized (const Handle(Aspect_NeutralWindow)& theWindow);
+
 private:
 
   //! Adds the structure to display lists of the view.
@@ -576,14 +643,14 @@ protected:
   Standard_Integer myId;
   Graphic3d_RenderingParams myRenderParams;
 
-  Quantity_ColorRGBA           myBgColor;
-  Handle(Graphic3d_TextureMap) myBackgroundImage;
-  Handle(Graphic3d_CubeMap)    myCubeMapBackground;  //!< Cubemap displayed at background
-  Handle(Graphic3d_CubeMap)    myCubeMapIBL;         //!< Cubemap used for environment lighting
-  Handle(Graphic3d_TextureEnv) myTextureEnvData;
-  Graphic3d_TypeOfBackground   myBackgroundType;     //!< Current type of background
-  Aspect_SkydomeBackground     mySkydomeAspect;
-  Standard_Boolean             myToUpdateSkydome;
+  NCollection_Sequence<Handle(Graphic3d_CView)> mySubviews; //!< list of child views
+  Graphic3d_CView*              myParentView;               //!< back-pointer to the parent view
+  Standard_Boolean              myIsSubviewComposer;        //!< flag to skip rendering of viewer contents
+  Aspect_TypeOfTriedronPosition mySubviewCorner;            //!< position within parent view
+  Graphic3d_Vec2i               mySubviewTopLeft;           //!< subview top-left position relative to parent view
+  Graphic3d_Vec2i               mySubviewMargins;           //!< subview margins in pixels
+  Graphic3d_Vec2d               mySubviewSize;              //!< subview size
+  Graphic3d_Vec2d               mySubviewOffset;            //!< subview corner offset within parent view
 
   Handle(Graphic3d_StructureManager) myStructureManager;
   Handle(Graphic3d_Camera)  myCamera;
@@ -597,16 +664,22 @@ protected:
   Graphic3d_TypeOfBackfacingModel myBackfacing;
   Graphic3d_TypeOfVisualization myVisualization;
 
+  Quantity_ColorRGBA           myBgColor;
+  Handle(Graphic3d_TextureMap) myBackgroundImage;
+  Handle(Graphic3d_CubeMap)    myCubeMapBackground;  //!< Cubemap displayed at background
+  Handle(Graphic3d_CubeMap)    myCubeMapIBL;         //!< Cubemap used for environment lighting
+  Handle(Graphic3d_TextureEnv) myTextureEnvData;
+  Graphic3d_GraduatedTrihedron myGTrihedronData;
+  Graphic3d_TypeOfBackground   myBackgroundType;     //!< Current type of background
+  Aspect_SkydomeBackground     mySkydomeAspect;
+  Standard_Boolean             myToUpdateSkydome;
+
   Handle(Aspect_XRSession) myXRSession;
   Handle(Graphic3d_Camera) myBackXRCamera;       //!< camera projection parameters to restore after closing XR session (FOV, aspect and similar)
   Handle(Graphic3d_Camera) myBaseXRCamera;       //!< neutral camera orientation defining coordinate system in which head tracking is defined
   Handle(Graphic3d_Camera) myPosedXRCamera;      //!< transient XR camera orientation with tracked head orientation applied (based on myBaseXRCamera)
   Handle(Graphic3d_Camera) myPosedXRCameraCopy;  //!< neutral camera orientation copy at the beginning of processing input
   Standard_Real            myUnitFactor;         //!< unit scale factor defined as scale factor for m (meters)
-
-protected:
-
-  Graphic3d_GraduatedTrihedron myGTrihedronData;
 
 };
 

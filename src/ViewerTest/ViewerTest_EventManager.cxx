@@ -149,11 +149,51 @@ bool ViewerTest_EventManager::UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
 //function : UpdateMouseButtons
 //purpose  :
 //=======================================================================
+bool ViewerTest_EventManager::UpdateMouseScroll (const Aspect_ScrollDelta& theDelta)
+{
+  if (!myView.IsNull()
+    && (myView->IsSubview()
+    || !myView->Subviews().IsEmpty()))
+  {
+    Handle(V3d_View) aParent = !myView->IsSubview() ? myView : myView->ParentView();
+    Handle(V3d_View) aPickedView = aParent->PickSubview (theDelta.Point);
+    if (!aPickedView.IsNull()
+      && aPickedView != myView)
+    {
+      // switch input focus to another subview
+      OnSubviewChanged (myCtx, myView, aPickedView);
+      return true;
+    }
+  }
+
+  return AIS_ViewController::UpdateMouseScroll (theDelta);
+}
+
+//=======================================================================
+//function : UpdateMouseButtons
+//purpose  :
+//=======================================================================
 bool ViewerTest_EventManager::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
                                                   Aspect_VKeyMouse theButtons,
                                                   Aspect_VKeyFlags theModifiers,
                                                   bool theIsEmulated)
 {
+  if (!myView.IsNull()
+    && myMousePressed == Aspect_VKeyMouse_NONE
+    && theButtons != Aspect_VKeyMouse_NONE
+    && (myView->IsSubview()
+    || !myView->Subviews().IsEmpty()))
+  {
+    Handle(V3d_View) aParent = !myView->IsSubview() ? myView : myView->ParentView();
+    Handle(V3d_View) aPickedView = aParent->PickSubview (thePoint);
+    if (!aPickedView.IsNull()
+      && aPickedView != myView)
+    {
+      // switch input focus to another subview
+      OnSubviewChanged (myCtx, myView, aPickedView);
+    }
+  }
+
   SetAllowRotation (!ViewerTest_V3dView::IsCurrentViewIn2DMode());
 
   if (theButtons == Aspect_VKeyMouse_LeftButton)
@@ -232,22 +272,45 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
 //==============================================================================
 void ViewerTest_EventManager::ProcessConfigure (bool theIsResized)
 {
-  if (!myView.IsNull())
+  if (myView.IsNull())
   {
-    if (!theIsResized
-     // track window moves to reverse stereo pair
-     && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_RowInterlaced
-     && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ColumnInterlaced
-     && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ChessBoard)
-    {
-      return;
-    }
-
-    myView->Window()->DoResize();
-    myView->MustBeResized();
-    myView->Invalidate();
-    FlushViewEvents (myCtx, myView, true);
+    return;
   }
+
+  if (!theIsResized
+    // track window moves to reverse stereo pair
+    && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_RowInterlaced
+    && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ColumnInterlaced
+    && myView->RenderingParams().StereoMode != Graphic3d_StereoMode_ChessBoard)
+  {
+    return;
+  }
+
+  Handle(V3d_View) aParent = !myView->IsSubview()
+                            ? myView
+                            : myView->ParentView();
+  aParent->Window()->DoResize();
+  aParent->MustBeResized();
+  aParent->Invalidate();
+  for (const Handle(V3d_View)& aChildIter : aParent->Subviews())
+  {
+    aChildIter->Window()->DoResize();
+    aChildIter->MustBeResized();
+    aChildIter->Invalidate();
+  }
+
+  FlushViewEvents (myCtx, myView, true);
+}
+
+//==============================================================================
+//function : OnSubviewChanged
+//purpose  :
+//==============================================================================
+void ViewerTest_EventManager::OnSubviewChanged (const Handle(AIS_InteractiveContext)& ,
+                                                const Handle(V3d_View)& ,
+                                                const Handle(V3d_View)& theNewView)
+{
+  ViewerTest::ActivateView (theNewView, false);
 }
 
 //==============================================================================

@@ -40,17 +40,57 @@ class Aspect_Window : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Aspect_Window, Standard_Transient)
 public:
 
-  //! Modifies the window background.
-  Standard_EXPORT void SetBackground (const Aspect_Background& ABack);
+  //! Returns True if the window <me> is virtual
+  Standard_EXPORT Standard_Boolean IsVirtual() const;
+
+  //! Setup the virtual state
+  Standard_EXPORT void SetVirtual (const Standard_Boolean theVirtual);
+
+  //! Returns window top-left corner.
+  Graphic3d_Vec2i TopLeft() const
+  {
+    Graphic3d_Vec2i aTopLeft, aBotRight;
+    Position (aTopLeft.x(), aTopLeft.y(), aBotRight.x(), aBotRight.y());
+    return aTopLeft;
+  }
+
+  //! Returns window dimensions.
+  Graphic3d_Vec2i Dimensions() const
+  {
+    Graphic3d_Vec2i aSize;
+    Size (aSize.x(), aSize.y());
+    return aSize;
+  }
+
+  //! Returns connection to Display or NULL.
+  const Handle(Aspect_DisplayConnection)& DisplayConnection() const { return myDisplay; }
+
+  //! Returns the window background.
+  Standard_EXPORT Aspect_Background Background() const;
+
+  //! Returns the current image background fill mode.
+  Standard_EXPORT Aspect_FillMethod BackgroundFillMethod() const;
+
+  //! Returns the window gradient background.
+  Standard_EXPORT Aspect_GradientBackground GradientBackground() const;
 
   //! Modifies the window background.
-  Standard_EXPORT void SetBackground (const Quantity_Color& color);
+  Standard_EXPORT void SetBackground (const Aspect_Background& theBack);
+
+  //! Modifies the window background.
+  Standard_EXPORT void SetBackground (const Quantity_Color& theColor);
 
   //! Modifies the window gradient background.
-  Standard_EXPORT void SetBackground (const Aspect_GradientBackground& ABackground);
+  Standard_EXPORT void SetBackground (const Aspect_GradientBackground& theBackground);
 
   //! Modifies the window gradient background.
   Standard_EXPORT void SetBackground (const Quantity_Color& theFirstColor, const Quantity_Color& theSecondColor, const Aspect_GradientFillMethod theFillMethod);
+
+public:
+
+  //! Returns True if the window <me> is opened
+  //! and False if the window is closed.
+  Standard_EXPORT virtual Standard_Boolean IsMapped() const = 0;
 
   //! Opens the window <me>.
   Standard_EXPORT virtual void Map() const = 0;
@@ -64,25 +104,6 @@ public:
   //! Apply the mapping change to the window <me>.
   //! and returns TRUE if the window is mapped at screen.
   Standard_EXPORT virtual Standard_Boolean DoMapping() const = 0;
-
-  //! Returns the window background.
-  Standard_EXPORT Aspect_Background Background() const;
-
-  //! Returns the current image background fill mode.
-  Standard_EXPORT Aspect_FillMethod BackgroundFillMethod() const;
-
-  //! Returns the window gradient background.
-  Standard_EXPORT Aspect_GradientBackground GradientBackground() const;
-
-  //! Returns True if the window <me> is opened
-  //! and False if the window is closed.
-  Standard_EXPORT virtual Standard_Boolean IsMapped() const = 0;
-
-  //! Returns True if the window <me> is virtual
-  Standard_EXPORT Standard_Boolean IsVirtual() const;
-
-  //! Setup the virtual state
-  Standard_EXPORT void SetVirtual (const Standard_Boolean theVirtual);
 
   //! Returns The Window RATIO equal to the physical
   //! WIDTH/HEIGHT dimensions
@@ -102,9 +123,6 @@ public:
 
   //! Returns native Window FB config (GLXFBConfig on Xlib)
   Standard_EXPORT virtual Aspect_FBConfig NativeFBConfig() const = 0;
-
-  //! Returns connection to Display or NULL.
-  const Handle(Aspect_DisplayConnection)& DisplayConnection() const { return myDisplay; }
 
   //! Sets window title.
   virtual void SetTitle (const TCollection_AsciiString& theTitle) { (void )theTitle; }

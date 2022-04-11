@@ -128,7 +128,8 @@ IDirect3DSurface9* D3DHost_View::D3dColorSurface() const
 // function : SetWindow
 // purpose  :
 // =======================================================================
-void D3DHost_View::SetWindow (const Handle(Aspect_Window)& theWindow,
+void D3DHost_View::SetWindow (const Handle(Graphic3d_CView)& theParentVIew,
+                              const Handle(Aspect_Window)& theWindow,
                               const Aspect_RenderingContext theContext)
 {
   if (!myD3dWglFbo.IsNull())
@@ -142,7 +143,7 @@ void D3DHost_View::SetWindow (const Handle(Aspect_Window)& theWindow,
     myD3dDevice = NULL;
   }
 
-  OpenGl_View::SetWindow (theWindow, theContext);
+  OpenGl_View::SetWindow (theParentVIew, theWindow, theContext);
 
   if (!myWindow.IsNull())
   {

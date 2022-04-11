@@ -932,7 +932,10 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
   Handle(V3d_View) aView;
   if (!aDumpFile.IsEmpty())
   {
-    ViewerTest::ViewerInit (0, 0, anImgParams.Width, anImgParams.Height, "TmpDriver/TmpViewer/TmpView");
+    ViewerTest_VinitParams aParams;
+    aParams.Size.SetValues ((float )anImgParams.Width, (float)anImgParams.Height);
+    aParams.ViewName = "TmpDriver/TmpViewer/TmpView";
+    ViewerTest::ViewerInit (aParams);
     aView = ViewerTest::CurrentView();
     aView->SetImmediateUpdate (false);
     aView->SetBgGradientStyle (Aspect_GradientFillMethod_None, false);

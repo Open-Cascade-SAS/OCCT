@@ -79,6 +79,9 @@ public:
     myPickPntArgVec[2] = theArgZ;
   }
 
+  //! Update mouse scroll event.
+  Standard_EXPORT virtual bool UpdateMouseScroll (const Aspect_ScrollDelta& theDelta) Standard_OVERRIDE;
+
   //! Handle mouse button click event.
   Standard_EXPORT virtual bool UpdateMouseClick (const Graphic3d_Vec2i& thePoint,
                                                   Aspect_VKeyMouse theButton,
@@ -115,6 +118,12 @@ public:
 
   //! Handle KeyPress event.
   Standard_EXPORT void ProcessKeyPress (Aspect_VKey theKey);
+
+  //! Callback called on Selection of another (sub)view.
+  //! This method is expected to be called from rendering thread.
+  Standard_EXPORT virtual void OnSubviewChanged (const Handle(AIS_InteractiveContext)& theCtx,
+                                                 const Handle(V3d_View)& theOldView,
+                                                 const Handle(V3d_View)& theNewView) Standard_OVERRIDE;
 
 protected:
 

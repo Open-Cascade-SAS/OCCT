@@ -56,7 +56,7 @@ static Standard_Integer DPrsStd_AISInitViewer (Draw_Interpretor& theDI,
   TCollection_AsciiString   aViewName = TCollection_AsciiString ("Driver1/Document_") + theArgVec[1] + "/View1";
   if (!TPrsStd_AISViewer::Find (aRoot, aDocViewer))
   {
-    ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
+    ViewerTest::ViewerInit (aViewName);
     aDocViewer = TPrsStd_AISViewer::New (aRoot, ViewerTest::GetAISContext());
   }
 

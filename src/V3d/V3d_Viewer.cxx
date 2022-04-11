@@ -143,9 +143,23 @@ void V3d_Viewer::SetViewOff (const Handle(V3d_View)& theView)
 // ========================================================================
 void V3d_Viewer::Redraw() const
 {
-  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
+  for (int aSubViewPass = 0; aSubViewPass < 2; ++aSubViewPass)
   {
-    aDefViewIter.Value()->Redraw();
+    // redraw subviews first
+    const bool isSubViewPass = (aSubViewPass == 0);
+    for (const Handle(V3d_View)& aViewIter : myDefinedViews)
+    {
+      if (isSubViewPass
+       && aViewIter->IsSubview())
+      {
+        aViewIter->Redraw();
+      }
+      else if (!isSubViewPass
+            && !aViewIter->IsSubview())
+      {
+        aViewIter->Redraw();
+      }
+    }
   }
 }
 
@@ -155,9 +169,23 @@ void V3d_Viewer::Redraw() const
 // ========================================================================
 void V3d_Viewer::RedrawImmediate() const
 {
-  for (V3d_ListOfView::Iterator aDefViewIter (myDefinedViews); aDefViewIter.More(); aDefViewIter.Next())
+  for (int aSubViewPass = 0; aSubViewPass < 2; ++aSubViewPass)
   {
-    aDefViewIter.Value()->RedrawImmediate();
+    // redraw subviews first
+    const bool isSubViewPass = (aSubViewPass == 0);
+    for (const Handle(V3d_View)& aViewIter : myDefinedViews)
+    {
+      if (isSubViewPass
+       && aViewIter->IsSubview())
+      {
+        aViewIter->RedrawImmediate();
+      }
+      else if (!isSubViewPass
+            && !aViewIter->IsSubview())
+      {
+        aViewIter->RedrawImmediate();
+      }
+    }
   }
 }
 
@@ -232,10 +260,24 @@ void V3d_Viewer::AddView (const Handle(V3d_View)& theView)
 // function : DelView
 // purpose  :
 // ========================================================================
-void V3d_Viewer::DelView (const Handle(V3d_View)& theView)
+void V3d_Viewer::DelView (const V3d_View* theView)
 {
-  myActiveViews.Remove (theView);
-  myDefinedViews.Remove (theView);
+  for (V3d_ListOfView::Iterator aViewIter (myActiveViews); aViewIter.More(); aViewIter.Next())
+  {
+    if (aViewIter.Value() == theView)
+    {
+      myActiveViews.Remove (aViewIter);
+      break;
+    }
+  }
+  for (V3d_ListOfView::Iterator aViewIter (myDefinedViews); aViewIter.More(); aViewIter.Next())
+  {
+    if (aViewIter.Value() == theView)
+    {
+      myDefinedViews.Remove (aViewIter);
+      break;
+    }
+  }
 }
 
 //=======================================================================

@@ -44,12 +44,8 @@ public:
   Standard_EXPORT virtual void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx) Standard_OVERRIDE;
 
   //! Creates and maps rendering window to the view.
-  //! @param theWindow [in] the window.
-  //! @param theContext [in] the rendering context. If NULL the context will be created internally.
-  //! @param theDisplayCB [in] the display callback function. If is not a NULL value, then the callback will be
-  //! invoked at the end of the OCC graphic traversal and just before the swap of buffers.
-  //! @param theClientData [in] the client data for the callback.
-  Standard_EXPORT virtual void SetWindow (const Handle(Aspect_Window)&  theWindow,
+  Standard_EXPORT virtual void SetWindow (const Handle(Graphic3d_CView)& theParentVIew,
+                                          const Handle(Aspect_Window)& theWindow,
                                           const Aspect_RenderingContext theContext) Standard_OVERRIDE;
 
   //! Resizes the window.

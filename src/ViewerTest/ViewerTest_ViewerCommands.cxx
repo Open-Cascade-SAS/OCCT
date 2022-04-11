@@ -477,28 +477,23 @@ TCollection_AsciiString ViewerTest::GetCurrentViewName ()
 //purpose  : Create the window viewer and initialize all the global variable
 //==============================================================================
 
-TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft,
-                                                const Standard_Integer thePxTop,
-                                                const Standard_Integer thePxWidth,
-                                                const Standard_Integer thePxHeight,
-                                                const TCollection_AsciiString& theViewName,
-                                                const TCollection_AsciiString& theDisplayName,
-                                                const Handle(V3d_View)& theViewToClone,
-                                                const Standard_Boolean theIsVirtual)
+TCollection_AsciiString ViewerTest::ViewerInit (const ViewerTest_VinitParams& theParams)
 {
   // Default position and dimension of the viewer window.
   // Note that left top corner is set to be sufficiently small to have
   // window fit in the small screens (actual for remote desktops, see #23003).
   // The position corresponds to the window's client area, thus some
   // gap is added for window frame to be visible.
-  Standard_Integer aPxLeft  = 20,  aPxTop    = 40;
-  Standard_Integer aPxWidth = 409, aPxHeight = 409;
+  Graphic3d_Vec2d aPxTopLeft (20, 40);
+  Graphic3d_Vec2d aPxSize (409, 409);
   Standard_Boolean isDefViewSize = Standard_True;
   Standard_Boolean toCreateViewer = Standard_False;
-  const Standard_Boolean isVirtual = Draw_VirtualWindows || theIsVirtual;
-  if (!theViewToClone.IsNull())
+  const Standard_Boolean isVirtual = Draw_VirtualWindows || theParams.IsVirtual;
+  if (!theParams.ViewToClone.IsNull())
   {
-    theViewToClone->Window()->Size (aPxWidth, aPxHeight);
+    Graphic3d_Vec2i aCloneSize;
+    theParams.ViewToClone->Window()->Size (aCloneSize.x(), aCloneSize.y());
+    aPxSize = Graphic3d_Vec2d (aCloneSize);
     isDefViewSize = Standard_False;
   #if !defined(__EMSCRIPTEN__)
     (void )isDefViewSize;
@@ -522,29 +517,10 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   }
 
   Handle(Graphic3d_GraphicDriver) aGraphicDriver;
-  ViewerTest_Names aViewNames(theViewName);
+  ViewerTest_Names aViewNames (theParams.ViewName);
   if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
   {
     aViewNames.SetViewName (aViewNames.GetViewerName() + "/" + CreateName<Handle(V3d_View)>(ViewerTest_myViews, "View"));
-  }
-
-  if (thePxLeft != 0)
-  {
-    aPxLeft = thePxLeft;
-  }
-  if (thePxTop != 0)
-  {
-    aPxTop = thePxTop;
-  }
-  if (thePxWidth != 0)
-  {
-    isDefViewSize = Standard_False;
-    aPxWidth = thePxWidth;
-  }
-  if (thePxHeight != 0)
-  {
-    isDefViewSize = Standard_False;
-    aPxHeight = thePxHeight;
   }
 
   // Get graphic driver (create it or get from another view)
@@ -553,9 +529,9 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   {
     // Get connection string
   #if defined(HAVE_XLIB)
-    if (!theDisplayName.IsEmpty())
+    if (!theParams.DisplayName.IsEmpty())
     {
-      SetDisplayConnection (new Aspect_DisplayConnection (theDisplayName));
+      SetDisplayConnection (new Aspect_DisplayConnection (theParams.DisplayName));
     }
     else
     {
@@ -569,7 +545,6 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
       SetDisplayConnection (new Aspect_DisplayConnection (aDispX));
     }
   #else
-    (void)theDisplayName; // avoid warning on unused argument
     SetDisplayConnection (new Aspect_DisplayConnection ());
   #endif
 
@@ -588,53 +563,89 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     aGraphicDriver = ViewerTest_myDrivers.Find1 (aViewNames.GetDriverName());
   }
 
-  //Dispose the window if input parameters are default
-  if (!ViewerTest_myViews.IsEmpty() && thePxLeft == 0 && thePxTop == 0)
-  {
-    Standard_Integer aTop = 0,
-                     aLeft = 0,
-                     aRight = 0,
-                     aBottom = 0,
-                     aScreenWidth = 0,
-                     aScreenHeight = 0;
-
-    // Get screen resolution
+  // Get screen resolution
+  Graphic3d_Vec2i aScreenSize;
 #if defined(_WIN32)
-    RECT aWindowSize;
-    GetClientRect(GetDesktopWindow(), &aWindowSize);
-    aScreenHeight = aWindowSize.bottom;
-    aScreenWidth = aWindowSize.right;
+  RECT aWindowSize;
+  GetClientRect(GetDesktopWindow(), &aWindowSize);
+  aScreenSize.SetValues (aWindowSize.right, aWindowSize.bottom);
 #elif defined(HAVE_XLIB)
-    ::Display* aDispX = (::Display* )GetDisplayConnection()->GetDisplayAspect();
-    Screen* aScreen = DefaultScreenOfDisplay(aDispX);
-    aScreenWidth  = WidthOfScreen(aScreen);
-    aScreenHeight = HeightOfScreen(aScreen);
+  ::Display* aDispX = (::Display* )GetDisplayConnection()->GetDisplayAspect();
+  Screen* aScreen = DefaultScreenOfDisplay(aDispX);
+  aScreenSize.x() = WidthOfScreen(aScreen);
+  aScreenSize.y() = HeightOfScreen(aScreen);
 #elif defined(__APPLE__)
-    GetCocoaScreenResolution (aScreenWidth, aScreenHeight);
+  GetCocoaScreenResolution (aScreenSize.x(), aScreenSize.y());
 #else
-    // not implemented
+  // not implemented
 #endif
 
-    TCollection_AsciiString anOverlappedViewId("");
+  if (!theParams.ParentView.IsNull())
+  {
+    aPxTopLeft.SetValues (0, 0);
+  }
+  if (theParams.Offset.x() != 0)
+  {
+    aPxTopLeft.x() = theParams.Offset.x();
+  }
+  if (theParams.Offset.y() != 0)
+  {
+    aPxTopLeft.y() = theParams.Offset.y();
+  }
+  if (theParams.Size.x() != 0)
+  {
+    isDefViewSize = Standard_False;
+    aPxSize.x() = theParams.Size.x();
+    if (aPxSize.x() <= 1.0
+     && aScreenSize.x() > 0
+     && theParams.ParentView.IsNull())
+    {
+      aPxSize.x() = aPxSize.x() * double(aScreenSize.x());
+    }
+  }
+  if (theParams.Size.y() != 0)
+  {
+    isDefViewSize = Standard_False;
+    aPxSize.y() = theParams.Size.y();
+    if (aPxSize.y() <= 1.0
+     && aScreenSize.y() > 0
+     && theParams.ParentView.IsNull())
+    {
+      aPxSize.y() = aPxSize.y() * double(aScreenSize.y());
+    }
+  }
 
-    while (IsWindowOverlapped (aPxLeft, aPxTop, aPxLeft + aPxWidth, aPxTop + aPxHeight, anOverlappedViewId))
+  //Dispose the window if input parameters are default
+  if (!ViewerTest_myViews.IsEmpty()
+    && theParams.ParentView.IsNull()
+    && theParams.Offset.x() == 0
+    && theParams.Offset.y() == 0)
+  {
+    Standard_Integer aTop = 0, aLeft = 0, aRight = 0, aBottom = 0;
+    TCollection_AsciiString anOverlappedViewId("");
+    while (IsWindowOverlapped ((int )aPxTopLeft.x(), (int )aPxTopLeft.y(),
+                               (int )aPxTopLeft.x() + (int )aPxSize.x(),
+                               (int )aPxTopLeft.y() + (int )aPxSize.y(), anOverlappedViewId))
     {
       ViewerTest_myViews.Find1(anOverlappedViewId)->Window()->Position (aLeft, aTop, aRight, aBottom);
 
-      if (IsWindowOverlapped (aRight + 20, aPxTop, aRight + 20 + aPxWidth, aPxTop + aPxHeight, anOverlappedViewId)
-        && aRight + 2*aPxWidth + 40 > aScreenWidth)
+      if (IsWindowOverlapped (aRight + 20, (int )aPxTopLeft.y(), aRight + 20 + (int )aPxSize.x(),
+                              (int )aPxTopLeft.y() + (int )aPxSize.y(), anOverlappedViewId)
+        && aRight + 2 * aPxSize.x() + 40 > aScreenSize.x())
       {
-        if (aBottom + aPxHeight + 40 > aScreenHeight)
+        if (aBottom + aPxSize.y() + 40 > aScreenSize.y())
         {
-          aPxLeft = 20;
-          aPxTop = 40;
+          aPxTopLeft.x() = 20;
+          aPxTopLeft.y() = 40;
           break;
         }
-        aPxLeft = 20;
-        aPxTop = aBottom + 40;
+        aPxTopLeft.x() = 20;
+        aPxTopLeft.y() = aBottom + 40;
       }
       else
-        aPxLeft = aRight + 20;
+      {
+        aPxTopLeft.x() = aRight + 20;
+      }
     }
   }
 
@@ -688,61 +699,76 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   }
 
   // Create window
-#if defined(_WIN32)
-  VT_GetWindow() = new WNT_Window (aTitle.ToCString(), WClass(),
-                                   isVirtual ? WS_POPUP : WS_OVERLAPPEDWINDOW,
-                                    aPxLeft, aPxTop,
-                                    aPxWidth, aPxHeight,
-                                    Quantity_NOC_BLACK);
-  VT_GetWindow()->RegisterRawInputDevices (WNT_Window::RawInputMask_SpaceMouse);
-#elif defined(HAVE_XLIB)
-  VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
-                                  aTitle.ToCString(),
-                                  aPxLeft, aPxTop,
-                                  aPxWidth, aPxHeight);
-#elif defined(__APPLE__)
-  VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
-                                     aPxLeft, aPxTop,
-                                     aPxWidth, aPxHeight);
-  ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
-#elif defined(__EMSCRIPTEN__)
-  // current EGL implementation in Emscripten supports only one global WebGL canvas returned by Module.canvas property;
-  // the code should be revised for handling multiple canvas elements (which is technically also possible)
-  TCollection_AsciiString aCanvasId = getModuleCanvasId();
-  if (!aCanvasId.IsEmpty())
+  if (!theParams.ParentView.IsNull())
   {
-    aCanvasId = TCollection_AsciiString("#") + aCanvasId;
+    VT_GetWindow() = Handle(ViewerTest_Window)::DownCast (theParams.ParentView->Window());
   }
+  else
+  {
+  #if defined(_WIN32)
+    VT_GetWindow() = new WNT_Window (aTitle.ToCString(), WClass(),
+                                     isVirtual ? WS_POPUP : WS_OVERLAPPEDWINDOW,
+                                     (int )aPxTopLeft.x(), (int )aPxTopLeft.y(),
+                                     (int )aPxSize.x(), (int )aPxSize.y(),
+                                     Quantity_NOC_BLACK);
+    VT_GetWindow()->RegisterRawInputDevices (WNT_Window::RawInputMask_SpaceMouse);
+  #elif defined(HAVE_XLIB)
+    VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
+                                    aTitle.ToCString(),
+                                    (int )aPxTopLeft.x(), (int )aPxTopLeft.y(),
+                                    (int )aPxSize.x(), (int )aPxSize.y());
+  #elif defined(__APPLE__)
+    VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
+                                       (int )aPxTopLeft.x(), (int )aPxTopLeft.y(),
+                                       (int )aPxSize.x(), (int )aPxSize.y());
+    ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
+  #elif defined(__EMSCRIPTEN__)
+    // current EGL implementation in Emscripten supports only one global WebGL canvas returned by Module.canvas property;
+    // the code should be revised for handling multiple canvas elements (which is technically also possible)
+    TCollection_AsciiString aCanvasId = getModuleCanvasId();
+    if (!aCanvasId.IsEmpty())
+    {
+      aCanvasId = TCollection_AsciiString("#") + aCanvasId;
+    }
 
-  VT_GetWindow() = new Wasm_Window (aCanvasId);
-  Graphic3d_Vec2i aRealSize;
-  VT_GetWindow()->Size (aRealSize.x(), aRealSize.y());
-  if (!isDefViewSize || (aRealSize.x() <= 0 && aRealSize.y() <= 0))
-  {
-    // Wasm_Window wraps an existing HTML element without creating a new one.
-    // Keep size defined on a web page instead of defaulting to 409x409 (as in case of other platform),
-    // but resize canvas if vinit has been called with explicitly specified dimensions.
-    VT_GetWindow()->SetSizeLogical (Graphic3d_Vec2d (aPxWidth, aPxHeight));
+    VT_GetWindow() = new Wasm_Window (aCanvasId);
+    Graphic3d_Vec2i aRealSize;
+    VT_GetWindow()->Size (aRealSize.x(), aRealSize.y());
+    if (!isDefViewSize || (aRealSize.x() <= 0 && aRealSize.y() <= 0))
+    {
+      // Wasm_Window wraps an existing HTML element without creating a new one.
+      // Keep size defined on a web page instead of defaulting to 409x409 (as in case of other platform),
+      // but resize canvas if vinit has been called with explicitly specified dimensions.
+      VT_GetWindow()->SetSizeLogical (Graphic3d_Vec2d (aPxSize));
+    }
+  #else
+    // not implemented
+    VT_GetWindow() = new Aspect_NeutralWindow();
+    VT_GetWindow()->SetSize ((int )aPxSize.x(), (int )aPxSize.y());
+  #endif
+    VT_GetWindow()->SetVirtual (isVirtual);
   }
-#else
-  // not implemented
-  VT_GetWindow() = new Aspect_NeutralWindow();
-  VT_GetWindow()->SetSize (aPxWidth, aPxHeight);
-#endif
-  VT_GetWindow()->SetVirtual (isVirtual);
 
   // View setup
   Handle(V3d_View) aView;
-  if (!theViewToClone.IsNull())
+  if (!theParams.ViewToClone.IsNull())
   {
-    aView = new ViewerTest_V3dView (a3DViewer, theViewToClone);
+    aView = new ViewerTest_V3dView (a3DViewer, theParams.ViewToClone);
   }
   else
   {
     aView = new ViewerTest_V3dView (a3DViewer, a3DViewer->DefaultTypeOfView());
   }
 
-  aView->SetWindow (VT_GetWindow());
+  aView->View()->SetSubviewComposer (theParams.IsComposer);
+  if (!theParams.ParentView.IsNull())
+  {
+    aView->SetWindow (theParams.ParentView, aPxSize, theParams.Corner, aPxTopLeft, theParams.SubviewMargins);
+  }
+  else
+  {
+    aView->SetWindow (VT_GetWindow());
+  }
   ViewerTest::GetAISContext()->RedrawImmediate (a3DViewer);
 
   ViewerTest::CurrentView(aView);
@@ -952,10 +978,7 @@ static int VDriver (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
 //==============================================================================
 static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  TCollection_AsciiString aViewName, aDisplayName;
-  Standard_Integer aPxLeft = 0, aPxTop = 0, aPxWidth = 0, aPxHeight = 0;
-  Standard_Boolean isVirtual = false;
-  Handle(V3d_View) aCopyFrom;
+  ViewerTest_VinitParams aParams;
   TCollection_AsciiString aName, aValue;
   int is2dMode = -1, aDpiAware = -1;
   for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
@@ -966,91 +989,128 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     if (anArgIt + 1 < theArgsNb
      && anArgCase == "-name")
     {
-      aViewName = theArgVec[++anArgIt];
+      aParams.ViewName = theArgVec[++anArgIt];
     }
     else if (anArgIt + 1 < theArgsNb
           && (anArgCase == "-left"
-           || anArgCase == "-l"))
+           || anArgCase == "-l")
+           && Draw::ParseReal (theArgVec[anArgIt + 1], aParams.Offset.x()))
     {
-      aPxLeft = Draw::Atoi (theArgVec[++anArgIt]);
+      ++anArgIt;
     }
     else if (anArgIt + 1 < theArgsNb
           && (anArgCase == "-top"
-           || anArgCase == "-t"))
+           || anArgCase == "-t")
+           && Draw::ParseReal (theArgVec[anArgIt + 1], aParams.Offset.y()))
     {
-      aPxTop = Draw::Atoi (theArgVec[++anArgIt]);
+      ++anArgIt;
     }
     else if (anArgIt + 1 < theArgsNb
           && (anArgCase == "-width"
-           || anArgCase == "-w"))
+           || anArgCase == "-w")
+           && Draw::ParseReal (theArgVec[anArgIt + 1], aParams.Size.x()))
     {
-      aPxWidth = Draw::Atoi (theArgVec[++anArgIt]);
+      ++anArgIt;
     }
     else if (anArgIt + 1 < theArgsNb
           && (anArgCase == "-height"
-           || anArgCase == "-h"))
+           || anArgCase == "-h")
+           && Draw::ParseReal (theArgVec[anArgIt + 1], aParams.Size.y()))
     {
-      aPxHeight = Draw::Atoi (theArgVec[++anArgIt]);
+      ++anArgIt;
+    }
+    else if (anArgIt + 1 < theArgsNb
+          && (anArgCase == "-pos"
+           || anArgCase == "-position"
+           || anArgCase == "-corner")
+          && ViewerTest::ParseCorner (theArgVec[anArgIt + 1], aParams.Corner))
+    {
+      ++anArgIt;
+    }
+    else if (anArgIt + 2 < theArgsNb
+          && anArgCase == "-margins"
+          && Draw::ParseInteger (theArgVec[anArgIt + 1], aParams.SubviewMargins.x())
+          && Draw::ParseInteger (theArgVec[anArgIt + 2], aParams.SubviewMargins.y()))
+    {
+      anArgIt += 2;
     }
     else if (anArgCase == "-virtual"
           || anArgCase == "-offscreen")
     {
-      isVirtual = true;
-      if (anArgIt + 1 < theArgsNb
-       && Draw::ParseOnOff (theArgVec[anArgIt + 1], isVirtual))
-      {
-        ++anArgIt;
-      }
+      aParams.IsVirtual = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt);;
+    }
+    else if (anArgCase == "-composer")
+    {
+      aParams.IsComposer = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt);
     }
     else if (anArgCase == "-exitonclose")
     {
-      ViewerTest_EventManager::ToExitOnCloseView() = true;
-      if (anArgIt + 1 < theArgsNb
-       && Draw::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToExitOnCloseView()))
-      {
-        ++anArgIt;
-      }
+      ViewerTest_EventManager::ToExitOnCloseView() = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt);;
     }
     else if (anArgCase == "-closeonescape"
           || anArgCase == "-closeonesc")
     {
-      ViewerTest_EventManager::ToCloseViewOnEscape() = true;
-      if (anArgIt + 1 < theArgsNb
-       && Draw::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
-      {
-        ++anArgIt;
-      }
+      ViewerTest_EventManager::ToCloseViewOnEscape() = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt);;
     }
     else if (anArgCase == "-2d_mode"
           || anArgCase == "-2dmode"
           || anArgCase == "-2d")
     {
-      bool toEnable = true;
-      if (anArgIt + 1 < theArgsNb
-       && Draw::ParseOnOff (theArgVec[anArgIt + 1], toEnable))
-      {
-        ++anArgIt;
-      }
+      bool toEnable = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt);;
       is2dMode = toEnable ? 1 : 0;
     }
     else if (anArgIt + 1 < theArgsNb
           && (anArgCase == "-disp"
            || anArgCase == "-display"))
     {
-      aDisplayName = theArgVec[++anArgIt];
+      aParams.DisplayName = theArgVec[++anArgIt];
     }
     else if (anArgCase == "-dpiaware")
     {
       aDpiAware = Draw::ParseOnOffIterator (theArgsNb, theArgVec, anArgIt) ? 1 : 0;
     }
     else if (!ViewerTest::CurrentView().IsNull()
-          &&  aCopyFrom.IsNull()
+          &&  aParams.ViewToClone.IsNull()
           && (anArgCase == "-copy"
            || anArgCase == "-clone"
            || anArgCase == "-cloneactive"
            || anArgCase == "-cloneactiveview"))
     {
-      aCopyFrom = ViewerTest::CurrentView();
+      aParams.ViewToClone = ViewerTest::CurrentView();
+    }
+    else if (!ViewerTest::CurrentView().IsNull()
+           && aParams.ParentView.IsNull()
+           && anArgCase == "-subview")
+    {
+      aParams.ParentView = ViewerTest::CurrentView();
+      if (aParams.ParentView.IsNull())
+      {
+        Message::SendFail() << "Syntax error: cannot create of subview without parent";
+        return 1;
+      }
+      if (aParams.ParentView->IsSubview())
+      {
+        aParams.ParentView = aParams.ParentView->ParentView();
+      }
+    }
+    else if (!ViewerTest::CurrentView().IsNull()
+           && aParams.ParentView.IsNull()
+           && anArgCase == "-parent"
+           && anArgIt + 1 < theArgsNb)
+    {
+      TCollection_AsciiString aParentStr (theArgVec[++anArgIt]);
+      ViewerTest_Names aViewNames (aParentStr);
+      if (!ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
+      {
+        Message::SendFail() << "Syntax error: parent view '" << aParentStr << "' not found";
+        return 1;
+      }
+
+      aParams.ParentView = ViewerTest_myViews.Find1(aViewNames.GetViewName());
+      if (aParams.ParentView->IsSubview())
+      {
+        aParams.ParentView = aParams.ParentView->ParentView();
+      }
     }
     // old syntax
     else if (ViewerTest::SplitParameter (anArg, aName, aValue))
@@ -1058,32 +1118,32 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
       aName.LowerCase();
       if (aName == "name")
       {
-        aViewName = aValue;
+        aParams.ViewName = aValue;
       }
       else if (aName == "l"
             || aName == "left")
       {
-        aPxLeft = aValue.IntegerValue();
+        aParams.Offset.x() = (float)aValue.RealValue();
       }
       else if (aName == "t"
             || aName == "top")
       {
-        aPxTop = aValue.IntegerValue();
+        aParams.Offset.y() = (float)aValue.RealValue();
       }
       else if (aName == "disp"
             || aName == "display")
       {
-        aDisplayName = aValue;
+        aParams.DisplayName = aValue;
       }
       else if (aName == "w"
             || aName == "width")
       {
-        aPxWidth = aValue.IntegerValue();
+        aParams.Size.x() = (float )aValue.RealValue();
       }
       else if (aName == "h"
             || aName == "height")
       {
-        aPxHeight = aValue.IntegerValue();
+        aParams.Size.y() = (float)aValue.RealValue();
       }
       else
       {
@@ -1091,9 +1151,9 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
         return 1;
       }
     }
-    else if (aViewName.IsEmpty())
+    else if (aParams.ViewName.IsEmpty())
     {
-      aViewName = anArg;
+      aParams.ViewName = anArg;
     }
     else
     {
@@ -1134,15 +1194,15 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
 #else
   (void )aDpiAware;
 #if !defined(HAVE_XLIB)
-  if (!aDisplayName.IsEmpty())
+  if (!aParams.DisplayName.IsEmpty())
   {
-    aDisplayName.Clear();
+    aParams.DisplayName.Clear();
     Message::SendWarning() << "Warning: display parameter will be ignored.\n";
   }
 #endif
 #endif
 
-  ViewerTest_Names aViewNames (aViewName);
+  ViewerTest_Names aViewNames (aParams.ViewName);
   if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
   {
     TCollection_AsciiString aCommand = TCollection_AsciiString ("vactivate ") + aViewNames.GetViewName();
@@ -1154,8 +1214,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     return 0;
   }
 
-  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight,
-                                                            aViewName, aDisplayName, aCopyFrom, isVirtual);
+  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aParams);
   if (is2dMode != -1)
   {
     ViewerTest_V3dView::SetCurrentView2DMode (is2dMode == 1);
@@ -1422,29 +1481,59 @@ static TCollection_AsciiString FindViewIdByWindowHandle (Aspect_Drawable theWind
 void ActivateView (const TCollection_AsciiString& theViewName,
                    Standard_Boolean theToUpdate = Standard_True)
 {
-  const Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
-  if (aView.IsNull())
+  if (const Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName))
+  {
+    ViewerTest::ActivateView (aView, theToUpdate);
+  }
+}
+
+//==============================================================================
+//function : ActivateView
+//purpose  :
+//==============================================================================
+void ViewerTest::ActivateView (const Handle(V3d_View)& theView,
+                               Standard_Boolean theToUpdate)
+{
+  Handle(V3d_View) aView = theView;
+  const TCollection_AsciiString* aViewName = ViewerTest_myViews.Seek2 (aView);
+  if (aViewName == nullptr)
   {
     return;
   }
 
   Handle(AIS_InteractiveContext) anAISContext = FindContextByView(aView);
-  if (!anAISContext.IsNull())
+  if (anAISContext.IsNull())
   {
-    if (const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView())
+    return;
+  }
+
+  if (const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView())
+  {
+    if (!aCurrentView->Window().IsNull())
     {
       aCurrentView->Window()->SetTitle (TCollection_AsciiString ("3D View - ") + ViewerTest_myViews.Find2 (aCurrentView));
     }
+  }
 
-    ViewerTest::CurrentView (aView);
-    ViewerTest::SetAISContext (anAISContext);
-    aView->Window()->SetTitle (TCollection_AsciiString("3D View - ") + theViewName + "(*)");
-    VT_GetWindow() = Handle(ViewerTest_Window)::DownCast(ViewerTest::CurrentView()->Window());
-    SetDisplayConnection(ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
-    if (theToUpdate)
-    {
-      ViewerTest::CurrentView()->Redraw();
-    }
+  ViewerTest::CurrentView (aView);
+  ViewerTest::SetAISContext (anAISContext);
+  if (aView->IsSubview())
+  {
+    aView->ParentView()->Window()->SetTitle (TCollection_AsciiString("3D View - ") + *aViewName + "(*)");
+    VT_GetWindow() = Handle(ViewerTest_Window)::DownCast(aView->View()->ParentView()->Window());
+  }
+  else
+  {
+    VT_GetWindow() = Handle(ViewerTest_Window)::DownCast(aView->Window());
+  }
+  if (!VT_GetWindow().IsNull())
+  {
+    VT_GetWindow()->SetTitle (TCollection_AsciiString("3D View - ") + *aViewName + "(*)");
+  }
+  SetDisplayConnection(aView->Viewer()->Driver()->GetDisplayConnection());
+  if (theToUpdate)
+  {
+    aView->Redraw();
   }
 }
 
@@ -1476,22 +1565,33 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
     return;
   }
 
+  Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
+  Handle(AIS_InteractiveContext) aCurrentContext = FindContextByView(aView);
+  ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
+  aRedrawer.Stop (aView);
+  if (!aView->Subviews().IsEmpty())
+  {
+    NCollection_Sequence<Handle(V3d_View)> aSubviews = aView->Subviews();
+    for (const Handle(V3d_View)& aSubviewIter : aSubviews)
+    {
+      RemoveView (aSubviewIter, isContextRemoved);
+    }
+  }
+
   // Activate another view if it's active now
   if (ViewerTest_myViews.Find1(theViewName) == ViewerTest::CurrentView())
   {
     if (ViewerTest_myViews.Extent() > 1)
     {
-      TCollection_AsciiString aNewViewName;
       for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter (ViewerTest_myViews);
            anIter.More(); anIter.Next())
       {
         if (anIter.Key1() != theViewName)
         {
-          aNewViewName = anIter.Key1();
+          ActivateView (anIter.Value(), true);
           break;
         }
       }
-      ActivateView (aNewViewName);
     }
     else
     {
@@ -1506,14 +1606,11 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   }
 
   // Delete view
-  Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
-  Handle(AIS_InteractiveContext) aCurrentContext = FindContextByView(aView);
-  ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
-  aRedrawer.Stop (aView);
-
-  // Remove view resources
   ViewerTest_myViews.UnBind1(theViewName);
-  aView->Window()->Unmap();
+  if (!aView->Window().IsNull())
+  {
+    aView->Window()->Unmap();
+  }
   aView->Remove();
 
 #if defined(HAVE_XLIB)
@@ -3196,47 +3293,13 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     {
       if (++anArgIter >= theArgNb)
       {
-        Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
+        Message::SendFail() << "Syntax error at '" << anArg << "'";
         return 1;
       }
 
-      TCollection_AsciiString aPosName (theArgVec[anArgIter]);
-      aPosName.LowerCase();
-      if (aPosName == "center")
+      if (!ViewerTest::ParseCorner (theArgVec[anArgIter], aPosition))
       {
-        aPosition = Aspect_TOTP_CENTER;
-      }
-      else if (aPosName == "left_lower"
-            || aPosName == "lower_left"
-            || aPosName == "leftlower"
-            || aPosName == "lowerleft")
-      {
-        aPosition = Aspect_TOTP_LEFT_LOWER;
-      }
-      else if (aPosName == "left_upper"
-            || aPosName == "upper_left"
-            || aPosName == "leftupper"
-            || aPosName == "upperleft")
-      {
-        aPosition = Aspect_TOTP_LEFT_UPPER;
-      }
-      else if (aPosName == "right_lower"
-            || aPosName == "lower_right"
-            || aPosName == "rightlower"
-            || aPosName == "lowerright")
-      {
-        aPosition = Aspect_TOTP_RIGHT_LOWER;
-      }
-      else if (aPosName == "right_upper"
-            || aPosName == "upper_right"
-            || aPosName == "rightupper"
-            || aPosName == "upperright")
-      {
-        aPosition = Aspect_TOTP_RIGHT_UPPER;
-      }
-      else
-      {
-        Message::SendFail() << "Error: wrong syntax at '" << anArg << "' - unknown position '" << aPosName << "'";
+        Message::SendFail() << "Syntax error at '" << anArg << "' - unknown position '" << theArgVec[anArgIter] << "'";
         return 1;
       }
     }
@@ -6158,15 +6221,13 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     theDI.Eval (aCommand.ToCString());
   }
 
-  Standard_Integer aPxLeft = 0;
-  Standard_Integer aPxTop  = 0;
-  Standard_Integer aWinSizeX = int(anImgRef->SizeX() * 2);
-  Standard_Integer aWinSizeY = !aDiff.IsNull() && !aPrsNameDiff.IsEmpty()
-                              ? int(anImgRef->SizeY() * 2)
-                              : int(anImgRef->SizeY());
-  TCollection_AsciiString aDisplayName;
-  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aWinSizeX, aWinSizeY,
-                                                            aViewName, aDisplayName);
+  ViewerTest_VinitParams aParams;
+  aParams.ViewName = aViewName;
+  aParams.Size.x() = float(anImgRef->SizeX() * 2);
+  aParams.Size.y() = !aDiff.IsNull() && !aPrsNameDiff.IsEmpty()
+                   ? float(anImgRef->SizeY() * 2)
+                   : float(anImgRef->SizeY());
+  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aParams);
 
   Standard_Real aRatio = anImgRef->Ratio();
   Standard_Real aSizeX = 1.0;
@@ -13801,8 +13862,9 @@ Makes specified driver active when ActiveName argument is specified.
 
   addCmd ("vinit", VInit, /* [vinit] */ R"(
 vinit [-name viewName] [-left leftPx] [-top topPx] [-width widthPx] [-height heightPx]
-      [-exitOnClose] [-closeOnEscape] [-cloneActive] [-virtual {on|off}=off] [-2d_mode {on|off}=off]
-      [-display displayName] [-dpiAware {on|off}]
+      [-exitOnClose] [-closeOnEscape] [-cloneActive] [-virtual {0|1}]=0 [-2d_mode {0|1}]=0
+      [-display displayName] [-dpiAware {0|1}]=0
+      [-subview] [-parent OtherView] [-composer {0|1}]=0 [-margins DX DY]=0
 Creates new View window with specified name viewName.
 By default the new view is created in the viewer and in graphic driver shared with active view.
  -name {driverName/viewerName/viewName | viewerName/viewName | viewName}
@@ -13817,6 +13879,7 @@ Display name will be used within creation of graphic driver, when specified.
  -exitOnClose when specified, closing the view will exit application.
  -closeOnEscape when specified, view will be closed on pressing Escape.
  -virtual create an offscreen window within interactive session
+ -subview create a subview within another view
  -2d_mode when on, view will not react on rotate scene events
  -dpiAware override dpi aware hint (Windows platform)
 Additional commands for operations with views: vclose, vactivate, vviewlist.

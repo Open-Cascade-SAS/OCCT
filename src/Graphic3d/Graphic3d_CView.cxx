@@ -13,6 +13,7 @@
 
 #include <Graphic3d_CView.hxx>
 
+#include <Aspect_NeutralWindow.hxx>
 #include <Aspect_OpenVRSession.hxx>
 #include <Graphic3d_CubeMapPacked.hxx>
 #include <Graphic3d_Layer.hxx>
@@ -26,18 +27,27 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CView,Graphic3d_DataStructureManager)
 //purpose  :
 //=======================================================================
 Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theMgr)
-: myBgColor                (Quantity_NOC_BLACK),
-  myBackgroundType         (Graphic3d_TOB_NONE),
-  myToUpdateSkydome        (Standard_False),
-  myStructureManager       (theMgr),
-  myCamera                 (new Graphic3d_Camera()),
-  myHiddenObjects          (new Graphic3d_NMapOfTransient()),
-  myIsInComputedMode       (Standard_False),
-  myIsActive               (Standard_False),
-  myIsRemoved              (Standard_False),
-  myBackfacing             (Graphic3d_TypeOfBackfacingModel_Auto),
-  myVisualization          (Graphic3d_TOV_WIREFRAME),
-  myUnitFactor             (1.0)
+: myId (0),
+  //
+  myParentView (nullptr),
+  myIsSubviewComposer (Standard_False),
+  mySubviewCorner (Aspect_TOTP_LEFT_UPPER),
+  mySubviewSize (1.0, 1.0),
+  //
+  myStructureManager (theMgr),
+  myCamera (new Graphic3d_Camera()),
+  myHiddenObjects (new Graphic3d_NMapOfTransient()),
+  myIsInComputedMode (Standard_False),
+  myIsActive (Standard_False),
+  myIsRemoved (Standard_False),
+  myBackfacing (Graphic3d_TypeOfBackfacingModel_Auto),
+  myVisualization (Graphic3d_TOV_WIREFRAME),
+  //
+  myBgColor (Quantity_NOC_BLACK),
+  myBackgroundType (Graphic3d_TOB_NONE),
+  myToUpdateSkydome (Standard_False),
+  //
+  myUnitFactor (1.0)
 {
   myId = myStructureManager->Identification (this);
 }
@@ -161,8 +171,21 @@ void Graphic3d_CView::Remove()
     return;
   }
 
-  Graphic3d_MapOfStructure aDisplayedStructs (myStructsDisplayed);
+  if (myParentView != nullptr)
+  {
+    myParentView->RemoveSubview (this);
+    myParentView = nullptr;
+  }
+  {
+    NCollection_Sequence<Handle(Graphic3d_CView)> aSubviews = mySubviews;
+    mySubviews.Clear();
+    for (const Handle(Graphic3d_CView)& aViewIter : aSubviews)
+    {
+      aViewIter->Remove();
+    }
+  }
 
+  Graphic3d_MapOfStructure aDisplayedStructs (myStructsDisplayed);
   for (Graphic3d_MapIteratorOfMapOfStructure aStructIter (aDisplayedStructs); aStructIter.More(); aStructIter.Next())
   {
     Erase (aStructIter.Value());
@@ -179,6 +202,114 @@ void Graphic3d_CView::Remove()
 
   myIsActive  = Standard_False;
   myIsRemoved = Standard_True;
+}
+
+// ========================================================================
+// function : AddSubview
+// purpose  :
+// ========================================================================
+void Graphic3d_CView::AddSubview (const Handle(Graphic3d_CView)& theView)
+{
+  mySubviews.Append (theView);
+}
+
+// ========================================================================
+// function : RemoveSubview
+// purpose  :
+// ========================================================================
+bool Graphic3d_CView::RemoveSubview (const Graphic3d_CView* theView)
+{
+  for (NCollection_Sequence<Handle(Graphic3d_CView)>::Iterator aViewIter (mySubviews); aViewIter.More(); aViewIter.Next())
+  {
+    if (aViewIter.Value() == theView)
+    {
+      mySubviews.Remove (aViewIter);
+      return true;
+    }
+  }
+  return false;
+}
+
+// ========================================================================
+// function : Resized
+// purpose  :
+// ========================================================================
+void Graphic3d_CView::Resized()
+{
+  if (IsSubview())
+  {
+    Handle(Aspect_NeutralWindow) aWindow = Handle(Aspect_NeutralWindow)::DownCast(Window());
+    SubviewResized (aWindow);
+  }
+}
+
+//! Calculate offset in pixels from fraction.
+static int getSubViewOffset (double theOffset, int theWinSize)
+{
+  if (theOffset >= 1.0)
+  {
+    return int(theOffset);
+  }
+  else
+  {
+    return int(theOffset * theWinSize);
+  }
+}
+
+// ========================================================================
+// function : SubviewResized
+// purpose  :
+// ========================================================================
+void Graphic3d_CView::SubviewResized (const Handle(Aspect_NeutralWindow)& theWindow)
+{
+  if (!IsSubview()
+   || theWindow.IsNull())
+  {
+    return;
+  }
+
+  const Graphic3d_Vec2i aWinSize (myParentView->Window()->Dimensions());
+  Graphic3d_Vec2i aViewSize (Graphic3d_Vec2d(aWinSize) * mySubviewSize);
+  if (mySubviewSize.x() > 1.0)
+  {
+    aViewSize.x() = (int)mySubviewSize.x();
+  }
+  if (mySubviewSize.y() > 1.0)
+  {
+    aViewSize.y() = (int)mySubviewSize.y();
+  }
+
+  Graphic3d_Vec2i anOffset (getSubViewOffset (mySubviewOffset.x(), aWinSize.x()),
+                            getSubViewOffset (mySubviewOffset.y(), aWinSize.y()));
+  mySubviewTopLeft = (aWinSize - aViewSize) / 2; // Aspect_TOTP_CENTER
+  if ((mySubviewCorner & Aspect_TOTP_LEFT) != 0)
+  {
+    mySubviewTopLeft.x() = anOffset.x();
+  }
+  else if ((mySubviewCorner & Aspect_TOTP_RIGHT) != 0)
+  {
+    mySubviewTopLeft.x() = Max (aWinSize.x() - anOffset.x() - aViewSize.x(), 0);
+  }
+
+  if ((mySubviewCorner & Aspect_TOTP_TOP) != 0)
+  {
+    mySubviewTopLeft.y() = anOffset.y();
+  }
+  else if ((mySubviewCorner & Aspect_TOTP_BOTTOM) != 0)
+  {
+    mySubviewTopLeft.y() = Max (aWinSize.y() - anOffset.y() - aViewSize.y(), 0);
+  }
+
+  mySubviewTopLeft += mySubviewMargins;
+  aViewSize -= mySubviewMargins * 2;
+
+  const int aRight = Min(mySubviewTopLeft.x() + aViewSize.x(), aWinSize.x());
+  aViewSize.x() = aRight - mySubviewTopLeft.x();
+
+  const int aBot = Min(mySubviewTopLeft.y() + aViewSize.y(), aWinSize.y());
+  aViewSize.y() = aBot - mySubviewTopLeft.y();
+
+  theWindow->SetSize (aViewSize.x(), aViewSize.y());
 }
 
 // ========================================================================

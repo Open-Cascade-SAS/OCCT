@@ -585,7 +585,7 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
   TCollection_AsciiString   aViewName = TCollection_AsciiString ("Driver1/Document_") + argv[1] + "/View1";
   if (!TPrsStd_AISViewer::Find (aRoot, aDocViewer))
   {
-    ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
+    ViewerTest::ViewerInit (aViewName);
     aDocViewer = TPrsStd_AISViewer::New (aRoot, ViewerTest::GetAISContext());
   }
 
@@ -1322,7 +1322,7 @@ static Standard_Integer testDoc (Draw_Interpretor&,
   aD1->Open(anApp);
   
   TCollection_AsciiString  aViewName ("Driver1/DummyDocument/View1");
-  ViewerTest::ViewerInit (0, 0, 0, 0, aViewName.ToCString(), "");
+  ViewerTest::ViewerInit (aViewName);
   TPrsStd_AISViewer::New (aD1->GetData()->Root(), ViewerTest::GetAISContext());
 
   // get shape tool for shape verification

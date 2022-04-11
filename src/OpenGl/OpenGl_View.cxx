@@ -15,8 +15,8 @@
 
 #include <OpenGl_View.hxx>
 
+#include <Aspect_NeutralWindow.hxx>
 #include <Aspect_RenderingContext.hxx>
-#include <Aspect_Window.hxx>
 #include <Aspect_XRSession.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Texture2Dmanual.hxx>
@@ -366,20 +366,57 @@ Standard_Boolean OpenGl_View::SetImmediateModeDrawToFront (const Standard_Boolea
 // =======================================================================
 Handle(Aspect_Window) OpenGl_View::Window() const
 {
-  return myWindow->PlatformWindow();
+  return myWindow->SizeWindow();
 }
 
 // =======================================================================
 // function : SetWindow
 // purpose  :
 // =======================================================================
-void OpenGl_View::SetWindow (const Handle(Aspect_Window)& theWindow,
+void OpenGl_View::SetWindow (const Handle(Graphic3d_CView)& theParentVIew,
+                             const Handle(Aspect_Window)& theWindow,
                              const Aspect_RenderingContext theContext)
 {
-  myWindow = myDriver->CreateRenderWindow (theWindow, theContext);
-  Standard_ASSERT_RAISE (!myWindow.IsNull(),
-                         "OpenGl_View::SetWindow, "
-                         "Failed to create OpenGl window.");
+  if (theContext != nullptr
+  && !theParentVIew.IsNull())
+  {
+    throw Standard_ProgramError ("OpenGl_View::SetWindow(), internal error");
+  }
+
+  if (myParentView != nullptr)
+  {
+    myParentView->RemoveSubview (this);
+    myParentView = nullptr;
+  }
+
+  OpenGl_View* aParentView = dynamic_cast<OpenGl_View*> (theParentVIew.get());
+  if (!theParentVIew.IsNull())
+  {
+    if (aParentView == nullptr
+     || aParentView->GlWindow().IsNull()
+     || aParentView->GlWindow()->GetGlContext().IsNull())
+    {
+      throw Standard_ProgramError ("OpenGl_View::SetWindow(), internal error");
+    }
+
+    myParentView = aParentView;
+    myParentView->AddSubview (this);
+
+    Handle(Aspect_NeutralWindow) aSubWindow = Handle(Aspect_NeutralWindow)::DownCast(theWindow);
+    SubviewResized (aSubWindow);
+
+    const Handle(OpenGl_Window)& aParentGlWindow = aParentView->GlWindow();
+    Aspect_RenderingContext aRendCtx = aParentGlWindow->GetGlContext()->RenderingContext();
+    myWindow = myDriver->CreateRenderWindow (aParentGlWindow->PlatformWindow(), theWindow, aRendCtx);
+  }
+  else
+  {
+    myWindow = myDriver->CreateRenderWindow (theWindow, theWindow, theContext);
+  }
+  if (myWindow.IsNull())
+  {
+    throw Standard_ProgramError ("OpenGl_View::SetWindow, Failed to create OpenGl window");
+  }
 
   myWorkspace = new OpenGl_Workspace (this, myWindow);
   myWorldViewProjState.Reset();
@@ -414,10 +451,11 @@ void OpenGl_View::SetWindow (const Handle(Aspect_Window)& theWindow,
 // =======================================================================
 void OpenGl_View::Resized()
 {
-  if (myWindow.IsNull())
-    return;
-
-  myWindow->Resize();
+  base_type::Resized();
+  if (!myWindow.IsNull())
+  {
+    myWindow->Resize();
+  }
 }
 
 // =======================================================================
@@ -1157,9 +1195,10 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   const bool hasTextureMsaa = aCtx->HasTextureMultisampling();
 
   bool toUseOit = myRenderParams.TransparencyMethod != Graphic3d_RTM_BLEND_UNORDERED
+               && !myIsSubviewComposer
                && checkOitCompatibility (aCtx, aNbSamples > 0);
 
-  const bool toInitImmediateFbo = myTransientDrawToFront
+  const bool toInitImmediateFbo = myTransientDrawToFront && !myIsSubviewComposer
                                && (!aCtx->caps->useSystemBuffer || (toUseOit && HasImmediateStructures()));
 
   if ( aFrameBuffer == NULL
@@ -1662,7 +1701,7 @@ void OpenGl_View::Redraw()
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
   bool toSwap = aCtx->IsRender()
             && !aCtx->caps->buffersNoSwap
-            &&  aFrameBuffer == NULL
+            &&  aFrameBuffer == nullptr
             &&  (!IsActiveXR() || myRenderParams.ToMirrorComposer);
   if ( aFrameBuffer == NULL
    && !aCtx->DefaultFrameBuffer().IsNull()
@@ -1738,7 +1777,9 @@ void OpenGl_View::Redraw()
     {
       toSwap = false;
     }
-    else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip && toSwap)
+    else if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
+          && toSwap
+          && myParentView == nullptr)
     {
       aCtx->SwapBuffers();
     }
@@ -1863,7 +1904,8 @@ void OpenGl_View::Redraw()
   }
 
   // Swap the buffers
-  if (toSwap)
+  if (toSwap
+   && myParentView == nullptr)
   {
     aCtx->SwapBuffers();
     if (!myMainSceneFbos[0]->IsValid())
@@ -1969,8 +2011,9 @@ void OpenGl_View::RedrawImmediate()
                               Standard_True) || toSwap;
     if (aStereoMode == Graphic3d_StereoMode_SoftPageFlip
     &&  toSwap
-    &&  myFBO.get() == NULL
-    && !aCtx->caps->buffersNoSwap)
+    &&  myFBO.get() == nullptr
+    && !aCtx->caps->buffersNoSwap
+    &&  myParentView == nullptr)
     {
       aCtx->SwapBuffers();
     }
@@ -2035,7 +2078,8 @@ void OpenGl_View::RedrawImmediate()
 
   if (toSwap
   &&  myFBO.get() == NULL
-  && !aCtx->caps->buffersNoSwap)
+  && !aCtx->caps->buffersNoSwap
+  &&  myParentView == nullptr)
   {
     aCtx->SwapBuffers();
   }
@@ -2159,7 +2203,89 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
 
   render (theProjection, theDrawFbo, theOitAccumFbo, Standard_True);
 
+  blitSubviews (theProjection, theDrawFbo);
+
   return !toCopyBackToFront;
+}
+
+// =======================================================================
+// function : blitSubviews
+// purpose  :
+// =======================================================================
+bool OpenGl_View::blitSubviews (const Graphic3d_Camera::Projection ,
+                                OpenGl_FrameBuffer* theDrawFbo)
+{
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
+  if (aCtx->arbFBOBlit == nullptr)
+  {
+    return false;
+  }
+
+  bool isChanged = false;
+  for (const Handle(Graphic3d_CView)& aChildIter : mySubviews)
+  {
+    OpenGl_View* aSubView = dynamic_cast<OpenGl_View*> (aChildIter.get());
+    const Handle(OpenGl_FrameBuffer)& aChildFbo = !aSubView->myImmediateSceneFbos[0].IsNull()
+                                                 ? aSubView->myImmediateSceneFbos[0]
+                                                 : aSubView->myMainSceneFbos[0];
+    if (aChildFbo.IsNull() || !aChildFbo->IsValid())
+    {
+      continue;
+    }
+
+    aChildFbo->BindReadBuffer (aCtx);
+    if (theDrawFbo != NULL
+     && theDrawFbo->IsValid())
+    {
+      theDrawFbo->BindDrawBuffer (aCtx);
+    }
+    else
+    {
+      aCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+      aCtx->SetFrameBufferSRGB (false);
+    }
+
+    Graphic3d_Vec2i aWinSize (aCtx->Viewport()[2], aCtx->Viewport()[3]); //aSubView->GlWindow()->PlatformWindow()->Dimensions();
+    Graphic3d_Vec2i aSubViewSize = aChildFbo->GetVPSize();
+    Graphic3d_Vec2i aSubViewPos  = aSubView->SubviewTopLeft();
+    Graphic3d_Vec2i aDestSize    = aSubViewSize;
+    if (aSubView->RenderingParams().RenderResolutionScale != 1.0f)
+    {
+      aDestSize = Graphic3d_Vec2i (Graphic3d_Vec2d(aDestSize) / Graphic3d_Vec2d(aSubView->RenderingParams().RenderResolutionScale));
+    }
+    aSubViewPos.y() = aWinSize.y() - aDestSize.y() - aSubViewPos.y();
+
+    const GLint aFilterGl = aDestSize == aSubViewSize ? GL_NEAREST : GL_LINEAR;
+    aCtx->arbFBOBlit->glBlitFramebuffer (0, 0, aSubViewSize.x(), aSubViewSize.y(),
+                                         aSubViewPos.x(), aSubViewPos.y(), aSubViewPos.x() + aDestSize.x(), aSubViewPos.y() + aDestSize.y(),
+                                         GL_COLOR_BUFFER_BIT, aFilterGl);
+    const int anErr = aCtx->core11fwd->glGetError();
+    if (anErr != GL_NO_ERROR)
+    {
+      TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "FBO blitting has failed [Error " + OpenGl_Context::FormatGlError (anErr) + "]\n"
+                                      + "  Please check your graphics driver settings or try updating driver.";
+      if (aChildFbo->NbSamples() != 0)
+      {
+        myToDisableMSAA = true;
+        aMsg += "\n  MSAA settings should not be overridden by driver!";
+      }
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+    }
+
+    if (theDrawFbo != NULL
+     && theDrawFbo->IsValid())
+    {
+      theDrawFbo->BindBuffer (aCtx);
+    }
+    else
+    {
+      aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+      aCtx->SetFrameBufferSRGB (false);
+    }
+    isChanged = true;
+  }
+
+  return isChanged;
 }
 
 //=======================================================================
@@ -2409,9 +2535,16 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
                                  OpenGl_FrameBuffer*          theOitAccumFbo,
                                  const Standard_Boolean       theToDrawImmediate)
 {
-  myZLayers.UpdateCulling (myWorkspace, theToDrawImmediate);
-  if ( myZLayers.NbStructures() <= 0 )
+  if (myIsSubviewComposer)
+  {
     return;
+  }
+
+  myZLayers.UpdateCulling (myWorkspace, theToDrawImmediate);
+  if (myZLayers.NbStructures() <= 0)
+  {
+    return;
+  }
 
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   Standard_Boolean toRenderGL = theToDrawImmediate ||

@@ -492,6 +492,12 @@ public:
                                                 const Handle(V3d_View)& theView,
                                                 AIS_DragAction theAction);
 
+  //! Callback called by HandleViewEvents() on Selection of another (sub)view.
+  //! This method is expected to be called from rendering thread.
+  Standard_EXPORT virtual void OnSubviewChanged (const Handle(AIS_InteractiveContext)& theCtx,
+                                                 const Handle(V3d_View)& theOldView,
+                                                 const Handle(V3d_View)& theNewView);
+
   //! Pick closest point under mouse cursor.
   //! This method is expected to be called from rendering thread.
   //! @param thePnt   [out] result point
