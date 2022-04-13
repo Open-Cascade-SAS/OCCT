@@ -1,0 +1,44 @@
+puts "============"
+puts "OCC32929: Modeling Algorithms - Crash in PerformIntersectionAtEnd after deletion of surfdata (fillet)"
+puts "============"
+puts ""
+
+# Load & prepare data.
+restore [locate_data_file bug32929.brep] b
+explode b E
+
+# Make screenshot before filleting.
+smallview
+donly b b_8
+fit
+xwd $imagedir/${test_image}_1.png
+
+# Make fillet.
+blend result b 1 b_8
+
+# Make screenshot after filleting.
+donly result
+fit
+xwd $imagedir/${test_image}_2.png
+
+# Check mass.
+checkprops result -s 13435.4
+
+# Check validity of result.
+checkshape result
+
+# Check content.
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 25
+ EDGE      : 40
+ WIRE      : 17
+ FACE      : 17
+ SHELL     : 1
+ SOLID     : 1
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 102
+"
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Result of ChFi3d_ChBuilder algorithm"
