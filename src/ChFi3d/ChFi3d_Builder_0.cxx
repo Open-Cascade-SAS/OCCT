@@ -819,10 +819,13 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure& DStr,
   if(fd1->IndexOfS1() == fd2->IndexOfS1()) { 
     jf1 = 1; jf2 = 1; 
     face = TopoDS::Face(DStr.Shape(fd1->Index(jf1)));
+    if (face.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL face");
     OrSave1 = cd1->Orientation(jf1);
     Or = OrFace1 = face.Orientation();
     OrSave2 = cd2->Orientation(jf2);
-    OrFace2 = DStr.Shape(fd2->Index(jf2)).Orientation();
+    const TopoDS_Shape& shape2 = DStr.Shape(fd2->Index(jf2));
+    if (shape2.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
+    OrFace2 = shape2.Orientation();
     visavis = Standard_True;
     sameside = ChFi3d::SameSide(Or,OrSave1,OrSave2,OrFace1,OrFace2);
     // The parameters of the other side are not used for orientation. This would raise problems
@@ -840,10 +843,13 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure& DStr,
   if(fd1->IndexOfS2() == fd2->IndexOfS1()) { 
     jf1 = 2; jf2 = 1; 
     face = TopoDS::Face(DStr.Shape(fd1->Index(jf1)));
+    if (face.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL face");
     OrSave1 = cd1->Orientation(jf1);
     Or = OrFace1 = face.Orientation();
     OrSave2 = cd2->Orientation(jf2);
-    OrFace2 = DStr.Shape(fd2->Index(jf2)).Orientation();
+    const TopoDS_Shape& shape2 = DStr.Shape(fd2->Index(jf2));
+    if (shape2.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
+    OrFace2 = shape2.Orientation();
     visavis = Standard_True;
     sameside = ChFi3d::SameSide(Or,OrSave1,OrSave2,OrFace1,OrFace2);
     // The parameters of the other side are not used for orientation. This would raise problems
@@ -873,10 +879,13 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure& DStr,
   if(fd1->IndexOfS1() == fd2->IndexOfS2()) { 
     jf1 = 1; jf2 = 2; 
     face = TopoDS::Face(DStr.Shape(fd1->Index(jf1)));
+    if (face.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL face");
     OrSave1 = cd1->Orientation(jf1);
     Or = OrFace1 = face.Orientation();
     OrSave2 = cd2->Orientation(jf2);
-    OrFace2 = DStr.Shape(fd2->Index(jf2)).Orientation();
+    const TopoDS_Shape& shape2 = DStr.Shape(fd2->Index(jf2));
+    if (shape2.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
+    OrFace2 = shape2.Orientation();
     visavis = Standard_True;
     sameside = ChFi3d::SameSide(Or,OrSave1,OrSave2,OrFace1,OrFace2);
     // The parameters of the other side are not used for orientation.
@@ -906,10 +915,13 @@ Standard_Boolean ChFi3d_IsInFront(TopOpeBRepDS_DataStructure& DStr,
   if(fd1->IndexOfS2() == fd2->IndexOfS2()) { 
     jf1 = 2; jf2 = 2; 
     face = TopoDS::Face(DStr.Shape(fd1->Index(jf1)));
+    if (face.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL face");
     OrSave1 = cd1->Orientation(jf1);
     Or = OrFace1 = face.Orientation();
     OrSave2 = cd2->Orientation(jf2);
-    OrFace2 = DStr.Shape(fd2->Index(jf2)).Orientation();
+    const TopoDS_Shape& shape2 = DStr.Shape(fd2->Index(jf2));
+    if (shape2.IsNull()) throw Standard_NullObject("ChFi3d_IsInFront : Trying to check orientation of NULL shape");
+    OrFace2 = shape2.Orientation();
     visavis = Standard_True;
     sameside = ChFi3d::SameSide(Or,OrSave1,OrSave2,OrFace1,OrFace2);
     // The parameters of the other side are not used for orientation.

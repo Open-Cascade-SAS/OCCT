@@ -1,0 +1,26 @@
+puts "TODO OCC32931 ALL: Tcl Exception"
+puts "TODO OCC32931 ALL: TEST INCOMPLETE"
+
+puts "============"
+puts "OCC32931: Modeling Algorithms - Crash in ChFi3d_IsInFront when no face was found"
+puts "============"
+puts ""
+
+# Load & prepare data.
+restore [locate_data_file bug32931.brep] b
+explode b E
+
+# Make screenshot before filleting.
+smallview
+donly b b_10 1 b_18 1 b_19 1 b_20 1 b_21 1 b_17
+fit
+xwd $imagedir/${test_image}_1.png
+
+# Make fillet.
+blend result b 1 b_10 1 b_18 1 b_19 1 b_20 1 b_21 1 b_17
+
+# Make screenshot after filleting.
+donly result
+fit
+xwd $imagedir/${test_image}_2.png
+
