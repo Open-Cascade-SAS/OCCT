@@ -1645,6 +1645,13 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       }
       if (compoint1 && compoint2) {
 	SeqFil.Remove(num);
+	num = ChFi3d_IndexOfSurfData(Vtx,stripe,sens);
+	if (isfirst) {
+	  num1=num+1;
+	}
+	else {
+	  num1=num-1;
+	}
         reg1=Standard_False; reg2=Standard_False;
       }
     }
