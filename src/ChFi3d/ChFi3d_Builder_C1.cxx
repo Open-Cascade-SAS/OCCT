@@ -2154,6 +2154,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       F=Face[nb-1];
       if (!prolface[nb-1]) faceprol[nb-1]=F;
     }
+
+    if (F.IsNull()) throw Standard_NullObject("IntersectionAtEnd : Trying to intersect with NULL face");
+
     Sfacemoins1=BRep_Tool::Surface(F);
     Handle(Geom_Curve) cint;
     Handle(Geom2d_Curve) C2dint1, C2dint2,cface,cfacemoins1;
