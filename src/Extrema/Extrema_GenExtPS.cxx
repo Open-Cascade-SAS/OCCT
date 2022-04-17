@@ -715,23 +715,114 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
   }
 }
 
-// Parametrization of the sample
+static Standard_Real LengthOfIso(const Adaptor3d_Surface& theS, const GeomAbs_IsoType theIso,
+  const Standard_Real thePar1, const Standard_Real thePar2,
+  const Standard_Integer theNbPnts,  const Standard_Real thePar)
+{
+  Standard_Real aLen = 0.;
+  Standard_Integer i;
+  Standard_Real dPar = (thePar2 - thePar1) / (theNbPnts - 1);
+  gp_Pnt aP1, aP2;
+  Standard_Real aPar = thePar1 + dPar;
+  if(theIso == GeomAbs_IsoU)
+  {
+    aP1 = theS.Value(thePar, thePar1);
+  }
+  else
+  {
+    aP1 = theS.Value(thePar1, thePar);
+  }
+
+  for (i = 2; i <= theNbPnts; ++i)
+  {
+    if (theIso == GeomAbs_IsoU)
+    {
+      aP2 = theS.Value(thePar, aPar);
+    }
+    else
+    {
+      aP2 = theS.Value(aPar, thePar);
+    }
+    aLen += aP1.Distance(aP2);
+    aP1 = aP2;
+    aPar += dPar;
+  }
+  return aLen;
+}
+static void CorrectNbSamples(const Adaptor3d_Surface& theS, 
+  const Standard_Real theU1, const Standard_Real theU2, Standard_Integer& theNbU, 
+  const Standard_Real theV1, const Standard_Real theV2, Standard_Integer& theNbV)
+{
+  Standard_Real aMinLen = 1.e-3;
+  Standard_Integer nbp = Min(23, theNbV);
+  Standard_Real aLenU1 = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU1);
+  if (aLenU1 <= aMinLen)
+  {
+    Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, .7*theU1 + 0.3*theU2);
+    aLenU1 = Max(aL, aLenU1);
+  }
+  Standard_Real aLenU2 = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, theU2);
+  if (aLenU2 <= aMinLen)
+  {
+    Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoU, theV1, theV2, nbp, .3*theU1 + 0.7*theU2);
+    aLenU2 = Max(aL, aLenU2);
+  }
+  nbp = Min(23, theNbV);
+  Standard_Real aLenV1 = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, theV1);
+  if (aLenV1 <= aMinLen)
+  {
+    Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, .7*theV1 + 0.3*theV2);
+    aLenV1 = Max(aL, aLenV1);
+  }
+  Standard_Real aLenV2 = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, theV2);
+  if (aLenV2 <= aMinLen)
+  {
+    Standard_Real aL = LengthOfIso(theS, GeomAbs_IsoV, theU1, theU2, nbp, .3*theV1 + 0.7*theV2);
+    aLenV2 = Max(aL, aLenV2);
+  }
+  //
+  Standard_Real aStepV1 = aLenU1 / theNbV;
+  Standard_Real aStepV2 = aLenU2 / theNbV;
+  Standard_Real aStepU1 = aLenV1 / theNbU;
+  Standard_Real aStepU2 = aLenV2 / theNbU;
+
+  Standard_Real aMaxStepV = Max(aStepV1, aStepV2);
+  Standard_Real aMaxStepU = Max(aStepU1, aStepU2);
+  //
+  Standard_Real aRatio = aMaxStepV / aMaxStepU;
+  if (aRatio > 10.)
+  {
+    Standard_Integer aMult = RealToInt(Log(aRatio) );
+    if(aMult > 1)
+      theNbV *= aMult;
+  }
+  else if (aRatio < 0.1)
+  {
+    Standard_Integer aMult = RealToInt( - Log(aRatio));
+    if(aMult > 1)
+      theNbV *= aMult;
+  }
+
+}
 void Extrema_GenExtPS::BuildTree()
 {
   // if tree already exists, assume it is already correctly filled
-  if ( ! mySphereUBTree.IsNull() )
+  if (!mySphereUBTree.IsNull())
     return;
 
-   if (myS->GetType() == GeomAbs_BSplineSurface) {
-     Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
-     Standard_Integer aUValue = aBspl->UDegree() * aBspl->NbUKnots();
-     Standard_Integer aVValue = aBspl->VDegree() * aBspl->NbVKnots();
-     if (aUValue > myusample)
-       myusample = aUValue;
-     if (aVValue > myvsample)
-       myvsample = aVValue;
-   }
-
+  if (myS->GetType() == GeomAbs_BSplineSurface) {
+    Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
+    Standard_Integer aUValue = aBspl->UDegree() * aBspl->NbUKnots();
+    Standard_Integer aVValue = aBspl->VDegree() * aBspl->NbVKnots();
+    // 300 is value, which is used for singular points (see Extrema_ExtPS.cxx::Initialize(...))
+    if (aUValue > myusample)
+      myusample = Min(aUValue, 300);
+    if (aVValue > myvsample)
+      myvsample = Min(aVValue, 300);
+  }
+  //
+  CorrectNbSamples(*myS, myumin, myusup, myusample, myvmin, myvsup, myvsample);
+  //
   Standard_Real PasU = myusup - myumin;
   Standard_Real PasV = myvsup - myvmin;
   Standard_Real U0 = PasU / myusample / 100.;

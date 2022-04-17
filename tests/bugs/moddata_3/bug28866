@@ -1,0 +1,28 @@
+puts "========"
+puts "0028866: Modeling Data - Problem with GeomAPI_ProjectPointOnSurf"
+puts "========"
+puts ""
+
+restore [locate_data_file bug28866.brep] f
+
+set CMP_TOL 5.0e-7
+
+point p1 -0.028128 -0.836810 -0.019004
+point p2 -0.028128  0.836810 -0.019004
+point p3 -0.040434 -0.836810 -0.019022 
+point p4 -0.040434  0.836810 -0.019022 
+point p5 -0.031644 -0.819230 -0.018362
+point p6 -0.045708  0.835050 -0.018969
+point p7  0.086142 -0.606510 -0.009508
+
+set pnts {"p1" "p2" "p3" "p4" "p5" "p6" "p7"}
+
+foreach pnt ${pnts} {
+ set log [projponf f $pnt -min -t]
+ regexp {proj dist = ([-0-9.+eE]+)} ${log} full distmax
+ if { ${distmax} > ${CMP_TOL} } {
+    puts "Error: Wrong distanse ($pnt)"
+ } else {
+    puts "OK: Good distanse ($pnt)"
+ }
+}
