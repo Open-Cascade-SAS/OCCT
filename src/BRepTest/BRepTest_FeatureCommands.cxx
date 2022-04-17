@@ -42,6 +42,7 @@
 #include <LocOpe_FindEdgesInFace.hxx>
 
 #include <BRepOffset_MakeOffset.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepOffset_MakeSimpleOffset.hxx>
 #include <BRep_Builder.hxx>
 #include <DBRep.hxx>
@@ -973,6 +974,81 @@ Standard_Integer thickshell(Draw_Interpretor& theCommands,
   reportOffsetState(theCommands, aRetCode);
 
   DBRep::Set(a[1], B.Shape());
+  return 0;
+}
+
+//=======================================================================
+//function : mkoffsetshape
+//purpose :
+//=======================================================================
+static Standard_Integer mkoffsetshape(Draw_Interpretor& theDI,
+  Standard_Integer  theArgNb,
+  const char**      theArgVec)
+{
+  if (theArgNb < 4)
+  {
+    return 0;
+  }
+  TopoDS_Shape aShape = DBRep::Get(theArgVec[2]);
+  if (aShape.IsNull())
+  {
+    theDI << "Shape is null";
+    return 1;
+  }
+  Standard_Real anOffVal = Draw::Atof(theArgVec[3]);
+  BRepOffsetAPI_MakeOffsetShape aMaker;
+  if (theArgNb == 4)
+  {
+    aMaker.PerformBySimple(aShape, anOffVal);
+  }
+  else
+  {
+    Standard_Real aTol = Draw::Atof(theArgVec[4]);
+
+    Standard_Boolean anInt = Standard_False;
+    if (theArgNb > 5)
+    {
+      if ((Draw::Atof(theArgVec[5]) == 1))
+      {
+        anInt = Standard_True;
+      }
+    }
+
+    Standard_Boolean aSelfInt = Standard_False;
+    if (theArgNb > 6)
+    {
+      if (Draw::Atof(theArgVec[6]) == 1)
+      {
+        aSelfInt = Standard_True;
+      }
+    }
+
+    GeomAbs_JoinType aJoin = GeomAbs_Arc;
+    if (theArgNb > 7)
+    {
+      if (!strcmp(theArgVec[7], "i"))
+      {
+        aJoin = GeomAbs_Intersection;
+      }
+    }
+
+    Standard_Boolean aRemIntEdges = Standard_False;
+    if (theArgNb > 8)
+    {
+      if (Draw::Atof(theArgVec[8]) == 1)
+      {
+        aRemIntEdges = Standard_True;
+      }
+    }
+    aMaker.PerformByJoin(aShape, anOffVal, aTol, BRepOffset_Skin, anInt, aSelfInt, aJoin, aRemIntEdges);
+  }
+  
+  if (!aMaker.IsDone())
+  {
+    theDI << " Error: Offset is not done.\n";
+    return 1;
+  }
+  DBRep::Set(theArgVec[1], aMaker.Shape());
   return 0;
 }
 
@@ -2476,6 +2552,10 @@ void BRepTest::FeatureCommands(Draw_Interpretor& theCommands)
   theCommands.Add("thickshell",
     "thickshell r shape offset [jointype [tol] ]",
     __FILE__, thickshell, g);
+
+  theCommands.Add("mkoffsetshape",
+    "mkoffsetshape r shape offset [Tol] [Intersection(0/1)] [SelfInter(0/1)] [JoinType(a/i)] [RemoveInternalEdges(0/1)]",
+    __FILE__, mkoffsetshape, g);
 
   theCommands.Add("offsetshape",
     "offsetshape r shape offset [tol] [face ...]",
