@@ -814,7 +814,8 @@ void OpenGl_Window::init()
     myGlContext->SetDefaultFrameBuffer (aDefFbo);
     aDefFbo->BindBuffer (myGlContext);
   }
-  else if (!myPlatformWindow->IsVirtual())
+  else if (!myPlatformWindow->IsVirtual()
+         && mySizeWindow == myPlatformWindow)
   {
     eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &mySize.x());
     eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &mySize.y());
