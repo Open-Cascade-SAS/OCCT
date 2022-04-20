@@ -1241,8 +1241,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
       Handle(StepRepr_HArray1OfRepresentationItem) newItems = 
         new StepRepr_HArray1OfRepresentationItem(1, oldItems->Length() + 1);
       Standard_Integer el = 1;
-      for (Standard_Integer i = 1; i <= oldItems->Length(); i++)
-        newItems->SetValue( el++, oldItems->Value(i) );
+        for (Standard_Integer i = 1; i <= oldItems->Length(); i++)
+          newItems->SetValue(el++, oldItems->Value(i));
       newItems->SetValue( el, items->Value( items->Length() ) );
       shapeRep->SetItems(newItems);
     }
@@ -1276,7 +1276,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
     return resbind;
   } else return FP->Find(start);
 
-}
+  }
 
 //=======================================================================
 //function : TransferCompound
@@ -1381,11 +1381,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound
       Handle(Transfer_SimpleBinderOfTransient) bx = 
         Handle(Transfer_SimpleBinderOfTransient)::DownCast(bnd);
       if ( !bx.IsNull() ) {
-        // Single SDR is created for a non-manifold group (ssv: 12.11.2010)
-        if (!isManifold && i > 1)
-          break;
-        else
-          binder->AddResult( TransientResult( bx->Result() ) );
+        binder->AddResult( TransientResult( bx->Result() ) );
       }
       bnd = bnd->NextResult();
     }
@@ -1465,7 +1461,10 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   //:abv 20.05.02: see comment in TransferShape(): added "! iasdr ||"
   Handle(Transfer_Binder) resprod = TransientResult(sdr);  //KA - OCC7141(skl 10.11.2004)
   if ( ! iasdr || resbind.IsNull() ) {
-    resbind = TransferShape(mapper, sdr, FP, shapeGroup, isManifold, theProgress);
+    Handle(Transfer_Binder) resbind1 = TransferShape(mapper, sdr, FP, shapeGroup, isManifold, theProgress);
+    if (resbind1.IsNull() || sdr->UsedRepresentation().IsNull())
+      return Handle(Transfer_Binder)();
+    resbind = resbind1;
     Handle(Transfer_Binder) oldbind = FP->Find ( mapper );
     if ( ! oldbind.IsNull() && !resbind.IsNull()) resbind->AddResult ( oldbind );
     FP->Bind (mapper,resbind);
