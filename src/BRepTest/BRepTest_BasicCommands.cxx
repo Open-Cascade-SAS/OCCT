@@ -124,7 +124,14 @@ static Standard_Integer transform(Draw_Interpretor&,Standard_Integer n,const cha
   Standard_Boolean isBasic = Standard_False;
   Standard_Boolean isForced = Standard_False;
   Standard_Boolean isCopy = Standard_False;
+  Standard_Boolean isCopyMesh = Standard_False;
 
+  // Check "copymesh" flag.
+  if (!strcmp(a[n - 1], "-copymesh"))
+  {
+    isCopyMesh = Standard_True;
+    last = --n;
+  }
   // Check "copy" flag.
   if (!strcmp(a[n-1], "-copy")) {
     isCopy = Standard_True;
@@ -218,7 +225,7 @@ static Standard_Integer transform(Draw_Interpretor&,Standard_Integer n,const cha
         return 1;
       }
       else {
-        trf.Perform(S, isCopy);
+        trf.Perform(S, isCopy, isCopyMesh);
         if (!trf.IsDone())
           return 1;
         DBRep::Set(a[i],trf.Shape());
@@ -1487,27 +1494,27 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  transform,g);
 
   theCommands.Add("tmove",
-		  "tmove name1 name2 ... name, set location from name [-copy]",
+		  "tmove name1 name2 ... name, set location from name [-copy] [-copymesh]",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("ttranslate",
-		  "ttranslate name1 name2 ... dx dy dz [-copy]",
+		  "ttranslate name1 name2 ... dx dy dz [-copy [-copymesh]]",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("trotate",
-		  "trotate name1 name2 ... x y z dx dy dz angle [-copy]",
+		  "trotate name1 name2 ... x y z dx dy dz angle [-copy [-copymesh]]",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("tmirror",
-		  "tmirror name x y z dx dy dz [-copy]",
+		  "tmirror name x y z dx dy dz [-copy] [-copymesh]",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("tscale",
-		  "tscale name x y z scale [-copy]",
+		  "tscale name x y z scale [-copy] [-copymesh]",
 		  __FILE__,
 		  transform,g);
 

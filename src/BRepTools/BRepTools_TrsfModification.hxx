@@ -50,6 +50,9 @@ public:
   //! Provides access to the gp_Trsf associated with this
   //! modification. The transformation can be changed.
   Standard_EXPORT gp_Trsf& Trsf();
+
+  //! Sets a flag to indicate the need to copy mesh.
+  Standard_EXPORT Standard_Boolean& IsCopyMesh();
   
   //! Returns true if the face F has been modified.
   //! If the face has been modified:
@@ -64,6 +67,21 @@ public:
   //! associated with this modification is negative.
   Standard_EXPORT Standard_Boolean NewSurface (const TopoDS_Face& F, Handle(Geom_Surface)& S, TopLoc_Location& L, Standard_Real& Tol, Standard_Boolean& RevWires, Standard_Boolean& RevFace) Standard_OVERRIDE;
   
+  //! Returns true if the face has been modified according to changed triangulation.
+  //! If the face has been modified:
+  //! - T is a new triangulation on the face
+  Standard_EXPORT Standard_Boolean NewTriangulation(const TopoDS_Face& F, Handle(Poly_Triangulation)& T) Standard_OVERRIDE;
+
+  //! Returns true if the edge has been modified according to changed polygon.
+  //! If the edge has been modified:
+  //! - P is a new polygon
+  Standard_EXPORT Standard_Boolean NewPolygon(const TopoDS_Edge& E, Handle(Poly_Polygon3D)& P) Standard_OVERRIDE;
+
+  //! Returns true if the edge has been modified according to changed polygon on triangulation.
+  //! If the edge has been modified:
+  //! - P is a new polygon on triangulation
+  Standard_EXPORT Standard_Boolean NewPolygonOnTriangulation(const TopoDS_Edge& E, const TopoDS_Face& F, Handle(Poly_PolygonOnTriangulation)& P) Standard_OVERRIDE;
+
   //! Returns true if the edge E has been modified.
   //! If the edge has been modified:
   //! - C is the new geometric support of the edge,
@@ -120,6 +138,7 @@ private:
 
 
   gp_Trsf myTrsf;
+  Standard_Boolean myCopyMesh;
 
 
 };

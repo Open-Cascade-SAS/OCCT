@@ -23,6 +23,7 @@
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
+#include <GeomLib_Tool.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -43,7 +44,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepTools_TrsfModification,BRepTools_Modification)
 //purpose  : 
 //=======================================================================
 BRepTools_TrsfModification::BRepTools_TrsfModification(const gp_Trsf& T) :
-myTrsf(T)
+myTrsf(T),
+myCopyMesh(Standard_False)
 {
 }
 
@@ -56,6 +58,16 @@ myTrsf(T)
 gp_Trsf& BRepTools_TrsfModification::Trsf ()
 {
   return myTrsf;
+}
+
+//=======================================================================
+//function : IsCopyMesh
+//purpose  :
+//=======================================================================
+
+Standard_Boolean& BRepTools_TrsfModification::IsCopyMesh()
+{
+  return myCopyMesh;
 }
 
 //=======================================================================
@@ -72,6 +84,12 @@ Standard_Boolean BRepTools_TrsfModification::NewSurface
        Standard_Boolean& RevFace)
 {
   S = BRep_Tool::Surface(F,L);
+  if (S.IsNull())
+  {
+    //processing cases when there is no geometry
+    return Standard_False;
+  }
+
   Tol = BRep_Tool::Tolerance(F);
   Tol *= Abs(myTrsf.ScaleFactor());
   RevWires = Standard_False;
@@ -87,6 +105,194 @@ Standard_Boolean BRepTools_TrsfModification::NewSurface
   return Standard_True;
 }
 
+//=======================================================================
+//function : NewTriangulation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_TrsfModification::NewTriangulation
+(const TopoDS_Face& theFace,
+  Handle(Poly_Triangulation)& theTriangulation)
+{
+  if (!myCopyMesh)
+  {
+    return Standard_False;
+  }
+
+  TopLoc_Location aLoc;
+  theTriangulation = BRep_Tool::Triangulation(theFace, aLoc);
+
+  if (theTriangulation.IsNull())
+  {
+    return Standard_False;
+  }
+
+  gp_Trsf aTrsf = myTrsf;
+  if (!aLoc.IsIdentity())
+  {
+    aTrsf = aLoc.Transformation().Inverted() * aTrsf * aLoc.Transformation();
+  }
+
+  theTriangulation = theTriangulation->Copy();
+  theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
+  theTriangulation->Deflection(theTriangulation->Deflection() * Abs(myTrsf.ScaleFactor()));
+  // apply transformation to 3D nodes
+  for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
+  {
+    gp_Pnt aP = theTriangulation->Node(anInd);
+    aP.Transform(aTrsf);
+    theTriangulation->SetNode(anInd, aP);
+  }
+  // modify 2D nodes
+  Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace, aLoc);
+  if (theTriangulation->HasUVNodes() && !aSurf.IsNull())
+  {
+    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
+    {
+      gp_Pnt2d aP2d = theTriangulation->UVNode(anInd);
+      aSurf->TransformParameters(aP2d.ChangeCoord().ChangeCoord(1),
+                                 aP2d.ChangeCoord().ChangeCoord(2),
+                                 myTrsf);
+      theTriangulation->SetUVNode(anInd, aP2d);
+    }
+  }
+  // modify triangles orientation in case of mirror transformation
+  if (myTrsf.ScaleFactor() < 0.0)
+  {
+    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
+    {
+      Poly_Triangle aTria = theTriangulation->Triangle(anInd);
+      Standard_Integer aN1, aN2, aN3;
+      aTria.Get(aN1, aN2, aN3);
+      aTria.Set(aN1, aN3, aN2);
+      theTriangulation->SetTriangle(anInd, aTria);
+    }
+  }
+  // modify normals
+  if (theTriangulation->HasNormals())
+  {
+    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
+    {
+      gp_Dir aNormal = theTriangulation->Normal(anInd);
+      aNormal.Transform(aTrsf);
+      theTriangulation->SetNormal(anInd, aNormal);
+    }
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : NewPolygon
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_TrsfModification::NewPolygon
+(const TopoDS_Edge& theE,
+  Handle(Poly_Polygon3D)& theP)
+{
+  if (!myCopyMesh)
+  {
+    return Standard_False;
+  }
+
+  TopLoc_Location aLoc;
+  theP = BRep_Tool::Polygon3D(theE, aLoc);
+  if (theP.IsNull())
+  {
+    return Standard_False;
+  }
+
+  gp_Trsf aTrsf = myTrsf;
+  if (!aLoc.IsIdentity())
+  {
+    aTrsf = aLoc.Transformation().Inverted() * aTrsf * aLoc.Transformation();
+  }
+
+  theP = theP->Copy();
+  theP->Deflection(theP->Deflection() * Abs(myTrsf.ScaleFactor()));
+  TColgp_Array1OfPnt& aNodesArray = theP->ChangeNodes();
+  for (Standard_Integer anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)
+  {
+    //Applying the transformation to each node of polygon
+    aNodesArray.ChangeValue(anId).Transform(aTrsf);
+  }
+  // transform the parametrization
+  if (theP->HasParameters())
+  {
+    TopLoc_Location aCurveLoc;
+    Standard_Real aFirst, aLast;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(theE, aCurveLoc, aFirst, aLast);
+    if (!aCurve.IsNull())
+    {
+      Standard_Real aReparametrization = aCurve->ParametricTransformation(aTrsf);
+      if (Abs(aReparametrization - 1.0) > Precision::PConfusion())
+      {
+        TColStd_Array1OfReal& aParams = theP->ChangeParameters();
+        for (Standard_Integer anInd = aParams.Lower(); anInd <= aParams.Upper(); ++anInd)
+        {
+          aParams(anInd) *= aReparametrization;
+        }
+      }
+    }
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : NewPolygonOnTriangulation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_TrsfModification::NewPolygonOnTriangulation
+(const TopoDS_Edge& theE,
+  const TopoDS_Face& theF,
+  Handle(Poly_PolygonOnTriangulation)& theP)
+{
+  if (!myCopyMesh)
+  {
+    return Standard_False;
+  }
+
+  TopLoc_Location aLoc;
+  Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(theF, aLoc);
+  if (aT.IsNull())
+  {
+    theP = Handle(Poly_PolygonOnTriangulation) ();
+    return Standard_False;
+  }
+
+  theP = BRep_Tool::PolygonOnTriangulation(theE, aT, aLoc);
+  if (theP.IsNull())
+  {
+    return Standard_False;
+  }
+  theP = theP->Copy();
+  theP->Deflection(theP->Deflection() * Abs(myTrsf.ScaleFactor()));
+
+  // transform the parametrization
+  Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theF, aLoc);
+  Standard_Real aFirst, aLast;
+  Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theE, theF, aFirst, aLast);
+  if (!aSurf.IsNull() && !aC2d.IsNull() && Abs(Abs(myTrsf.ScaleFactor()) - 1.0) > TopLoc_Location::ScalePrec())
+  {
+    gp_GTrsf2d aGTrsf = aSurf->ParametricTransformation(myTrsf);
+    if (aGTrsf.Form() != gp_Identity)
+    {
+      Handle(Geom2d_Curve) aNewC2d = GeomLib::GTransform(aC2d, aGTrsf);
+      for (Standard_Integer anInd = 1; anInd <= theP->NbNodes(); ++anInd)
+      {
+        Standard_Real aParam = theP->Parameter(anInd);
+        gp_Pnt2d aP2d = aC2d->Value(aParam);
+        aGTrsf.Transforms(aP2d.ChangeCoord());
+        GeomLib_Tool::Parameter(aNewC2d, aP2d, theP->Deflection(), aParam);
+        theP->SetParameter(anInd, aParam);
+      }
+    }
+  }
+
+  return Standard_True;
+}
 
 //=======================================================================
 //function : NewCurve
@@ -101,6 +307,10 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve
 {
   Standard_Real f,l;
   C = BRep_Tool::Curve(E,L,f,l);
+  if (C.IsNull())
+  {
+    return Standard_False;
+  }
 
   Tol = BRep_Tool::Tolerance(E);
   Tol *= Abs(myTrsf.ScaleFactor());
@@ -153,6 +363,12 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d
   Standard_Real scale = myTrsf.ScaleFactor();
   Tol *= Abs(scale);
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(F,loc);
+
+  if (S.IsNull())
+  {
+    // processing the case when the surface (geometry) is deleted
+    return Standard_False;
+  }
   GeomAdaptor_Surface GAsurf(S);
   if (GAsurf.GetType() == GeomAbs_Plane)
     return Standard_False;

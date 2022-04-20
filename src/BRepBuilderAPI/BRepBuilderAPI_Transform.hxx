@@ -50,28 +50,37 @@ public:
   //! to define the shape to transform.
   Standard_EXPORT BRepBuilderAPI_Transform(const gp_Trsf& T);
   
-  //! Creates a transformation from the gp_Trsf <T>, and
-  //! applies it to the shape <S>. If the transformation
+  //! Creates a transformation from the gp_Trsf <theTrsf>, and
+  //! applies it to the shape <theShape>. If the transformation
   //! is  direct   and isometric (determinant  =  1) and
-  //! <Copy> =  Standard_False,  the resulting shape  is
-  //! <S> on   which  a  new  location has    been  set.
+  //! <theCopyGeom> =  Standard_False,  the resulting shape  is
+  //! <theShape> on   which  a  new  location has    been  set.
   //! Otherwise,  the   transformation is applied   on a
-  //! duplication of <S>.
-  Standard_EXPORT BRepBuilderAPI_Transform(const TopoDS_Shape& S, const gp_Trsf& T, const Standard_Boolean Copy = Standard_False);
+  //! duplication of <theShape>.
+  //! If <theCopyMesh> is true, the triangulation will be copied,
+  //! and the copy will be assigned to the result shape.
+  Standard_EXPORT BRepBuilderAPI_Transform(const TopoDS_Shape&    theShape,
+                                           const gp_Trsf&         theTrsf,
+                                           const Standard_Boolean theCopyGeom = Standard_False,
+                                           const Standard_Boolean theCopyMesh = Standard_False);
   
-  //! pplies the geometric transformation defined at the
+  //! Applies the geometric transformation defined at the
   //! time of construction of this framework to the shape S.
   //! - If the transformation T is direct and isometric, in
   //! other words, if the determinant of the vectorial part
-  //! of T is equal to 1., and if Copy equals false (the
+  //! of T is equal to 1., and if theCopyGeom equals false (the
   //! default value), the resulting shape is the same as
   //! the original but with a new location assigned to it.
-  //! -   In all other cases, the transformation is applied to a duplicate of S.
+  //! - In all other cases, the transformation is applied to a duplicate of theShape.
+  //! - If theCopyMesh is true, the triangulation will be copied,
+  //! and the copy will be assigned to the result shape.
   //! Use the function Shape to access the result.
   //! Note: this framework can be reused to apply the same
   //! geometric transformation to other shapes. You only
   //! need to specify them by calling the function Perform again.
-  Standard_EXPORT void Perform (const TopoDS_Shape& S, const Standard_Boolean Copy = Standard_False);
+  Standard_EXPORT void Perform (const TopoDS_Shape&    theShape,
+                                const Standard_Boolean theCopyGeom = Standard_False, 
+                                const Standard_Boolean theCopyMesh = Standard_False);
   
   //! Returns the modified shape corresponding to <S>.
   Standard_EXPORT virtual TopoDS_Shape ModifiedShape (const TopoDS_Shape& S) const Standard_OVERRIDE;
