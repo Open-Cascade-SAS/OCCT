@@ -1,0 +1,21 @@
+puts "========================================================================="
+puts "OCC32864: Normal projection of a wire on a cylinder produces wrong result"
+puts "========================================================================="
+puts ""
+
+restore [locate_data_file bug32864.brep] a
+explode a
+
+nproject result a_2 a_1
+
+checkshape result
+
+checknbshapes result -t -edge 8 -vertex 16
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.0001} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -l 37.1616
