@@ -334,7 +334,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  
 	  if(Only2d && Only3d) {
 	    BRepLib_MakeEdge MKed(GeomAdaptor::MakeCurve(hcur->Curve()), 
-				  Ufin, Udeb);
+				  Udeb, Ufin);
 	    prj = MKed.Edge();
 	    BB.UpdateEdge(TopoDS::Edge(prj), 
 			  PCur2d, 
