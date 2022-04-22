@@ -43,7 +43,7 @@
 //! - "beta..." or "rc..." for beta releases or release candidates
 //! - "project..." for version containing project-specific fixes
 //#define OCC_VERSION_DEVELOPMENT   "dev"
-#define OCC_VERSION_SERVICEPACK   2
+#define OCC_VERSION_SERVICEPACK   3
 
 // Derived (manually): version as real and string (major.minor)
 #define OCC_VERSION               7.5
