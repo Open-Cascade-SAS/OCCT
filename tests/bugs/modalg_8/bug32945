@@ -1,0 +1,19 @@
+puts "========================================================================="
+puts "OCC32945: Modeling Algorithms - Boolean operation Common has no result in specific example"
+puts "========================================================================="
+puts ""
+
+restore [locate_data_file bug32945.brep] a
+explode a
+
+bcommon result a_1 a_2
+
+checkshape result
+
+checknbshapes result -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
+
+checkmaxtol result -min_tol 1.e-5
+
+checkprops result -s 83754.8
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
