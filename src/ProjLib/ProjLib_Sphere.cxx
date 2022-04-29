@@ -91,7 +91,8 @@ void  ProjLib_Sphere::Init(const gp_Sphere& Sp)
 //                \ Z = sinV             V = ASin( Z)
 //=======================================================================
 
-static gp_Pnt2d EvalPnt2d( const gp_Vec P, const gp_Sphere& Sp)
+static gp_Pnt2d EvalPnt2d(const gp_Vec&    P,
+                          const gp_Sphere& Sp)
 {
   Standard_Real X = P.Dot(gp_Vec(Sp.Position().XDirection()));
   Standard_Real Y = P.Dot(gp_Vec(Sp.Position().YDirection()));

@@ -1502,12 +1502,12 @@ static Standard_Boolean  containE(const TopoDS_Face & F1,
 //           <tol> from <Param>, check points between <Pf> and <Pl>
 //=======================================================================
 
-static Standard_Boolean IsShrink(const Geom2dAdaptor_Curve PC,
-                                 const Standard_Real       Pf,
-                                 const Standard_Real       Pl,
-                                 const Standard_Real       Param,
-                                 const Standard_Boolean    isU,
-                                 const Standard_Real       tol)
+static Standard_Boolean IsShrink(const Geom2dAdaptor_Curve& PC,
+                                 const Standard_Real        Pf,
+                                 const Standard_Real        Pl,
+                                 const Standard_Real        Param,
+                                 const Standard_Boolean     isU,
+                                 const Standard_Real        tol)
 {
   switch (PC.GetType()) {
   case GeomAbs_Line: {

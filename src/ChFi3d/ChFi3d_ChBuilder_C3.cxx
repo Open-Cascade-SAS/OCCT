@@ -60,10 +60,10 @@
 //           la distance de PntD par rapport au plan passant par les trois 
 //           points PntA, PntB, PntC
 //=======================================================================
-static Standard_Boolean CoPlanar(const gp_Pnt  PntA,
-	            const gp_Pnt  PntB,
-		    const gp_Pnt  PntC,
-		    const gp_Pnt  PntD)
+static Standard_Boolean CoPlanar(const gp_Pnt& PntA,
+                                 const gp_Pnt& PntB,
+                                 const gp_Pnt& PntC,
+                                 const gp_Pnt& PntD)
 {
   gp_Vec vecAB(PntA, PntB);
   gp_Vec vecAC(PntA, PntC);

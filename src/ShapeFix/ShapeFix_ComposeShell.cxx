@@ -1978,14 +1978,14 @@ static Standard_Integer IsShortSegment (const ShapeFix_WireSegment &seg,
 //function : IsSamePatch
 //purpose  : auxiliary
 //=======================================================================
-static Standard_Boolean IsSamePatch (const ShapeFix_WireSegment wire,
-                                     const Standard_Integer NU,
-                                     const Standard_Integer NV,
-                                     Standard_Integer &iumin,
-                                     Standard_Integer &iumax,
-                                     Standard_Integer &ivmin,
-                                     Standard_Integer &ivmax,
-                                     const Standard_Boolean extend=Standard_False)
+static Standard_Boolean IsSamePatch (const ShapeFix_WireSegment& wire,
+                                     const Standard_Integer      NU,
+                                     const Standard_Integer      NV,
+                                     Standard_Integer&           iumin,
+                                     Standard_Integer&           iumax,
+                                     Standard_Integer&           ivmin,
+                                     Standard_Integer&           ivmax,
+                                     const Standard_Boolean      extend=Standard_False)
 {
   // get patch indices for current segment
   Standard_Integer jumin, jumax, jvmin, jvmax;
@@ -2333,8 +2333,8 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
 //purpose  : 
 //=======================================================================
 
-static gp_Pnt2d GetMiddlePoint (const ShapeFix_WireSegment wire,
-                                const TopoDS_Face face)
+static gp_Pnt2d GetMiddlePoint (const ShapeFix_WireSegment& wire,
+                                const TopoDS_Face&          face)
 {
   if(wire.IsVertex()) {
     TopoDS_Vertex aV = wire.GetVertex();

@@ -100,8 +100,8 @@ public:
 
   Standard_EXPORT static StepDimTol_GeometricToleranceModifier GetGeomToleranceModifier(const XCAFDimTolObjects_GeomToleranceModif theModifier);
 
-  Standard_EXPORT static Handle(StepDimTol_HArray1OfDatumReferenceModifier) GetDatumRefModifiers(const XCAFDimTolObjects_DatumModifiersSequence theModifiers,
-                                                                                                 const XCAFDimTolObjects_DatumModifWithValue theModifWithVal,
+  Standard_EXPORT static Handle(StepDimTol_HArray1OfDatumReferenceModifier) GetDatumRefModifiers(const XCAFDimTolObjects_DatumModifiersSequence& theModifiers,
+                                                                                                 const XCAFDimTolObjects_DatumModifWithValue& theModifWithVal,
                                                                                                  const Standard_Real theValue,
                                                                                                  const StepBasic_Unit theUnit);
 

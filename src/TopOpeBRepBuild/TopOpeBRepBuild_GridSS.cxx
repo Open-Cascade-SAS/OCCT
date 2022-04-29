@@ -99,7 +99,7 @@ Standard_EXPORT void TopOpeBRepDS_SetThePCurve
 //(const TopoDS_Face& fF,const TopoDS_Edge& E,Standard_Real& splitpar);
 
 //---------------------------------------------
-static Standard_Integer FUN_getG(const gp_Pnt P,const TopOpeBRepDS_ListOfInterference& LI,const Handle(TopOpeBRepDS_HDataStructure) HDS,Standard_Integer& iEinterf)
+static Standard_Integer FUN_getG(const gp_Pnt& P,const TopOpeBRepDS_ListOfInterference& LI,const Handle(TopOpeBRepDS_HDataStructure) HDS,Standard_Integer& iEinterf)
 //---------------------------------------------
 {
   TopOpeBRepDS_ListIteratorOfListOfInterference ILI(LI);

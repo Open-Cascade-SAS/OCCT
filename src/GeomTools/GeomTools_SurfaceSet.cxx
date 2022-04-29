@@ -118,9 +118,9 @@ Standard_Integer  GeomTools_SurfaceSet::Index
 //purpose  : 
 //=======================================================================
 
-static void Print(const gp_Pnt P,
-		  Standard_OStream& OS,
-		  const Standard_Boolean compact)
+static void Print(const gp_Pnt&          P,
+                  Standard_OStream&      OS,
+                  const Standard_Boolean compact)
 {
   OS << P.X();
   if (!compact) OS << ",";
@@ -137,9 +137,9 @@ static void Print(const gp_Pnt P,
 //purpose  : 
 //=======================================================================
 
-static void Print(const gp_Dir D,
-		  Standard_OStream& OS,
-		  const Standard_Boolean compact)
+static void Print(const gp_Dir&          D,
+                  Standard_OStream&      OS,
+                  const Standard_Boolean compact)
 {
   OS << D.X();
   if (!compact) OS << ",";

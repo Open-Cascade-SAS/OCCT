@@ -798,7 +798,7 @@ public:
 private:
   SurfMaxMinCoord & operator = (const SurfMaxMinCoord & theOther);
 
-  Standard_Boolean CheckInputData(const math_Vector theParams)
+  Standard_Boolean CheckInputData(const math_Vector& theParams)
   {
     if (theParams(1) < myUMin || 
         theParams(1) > myUMax || 

@@ -222,13 +222,13 @@ public:
 
   //! Set connection point (for dimesional_size),
   //! Set connection point for the first shape (for dimensional_location).
-  void SetPoint(const gp_Pnt thePnt) {
+  void SetPoint(const gp_Pnt& thePnt) {
     myPnt1 = thePnt;
     myHasPoint1 = Standard_True;
   }
 
   // Set connection point for the second shape (for dimensional_location only).
-  void SetPoint2(const gp_Pnt thePnt) {
+  void SetPoint2(const gp_Pnt& thePnt) {
     myPnt2 = thePnt;
     myHasPoint2 = Standard_True;
   }

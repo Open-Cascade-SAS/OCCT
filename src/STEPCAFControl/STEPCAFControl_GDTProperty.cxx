@@ -1165,8 +1165,8 @@ StepDimTol_GeometricToleranceModifier STEPCAFControl_GDTProperty::
 //purpose  : Note: this function does not add anything to model
 //=======================================================================
 Handle(StepDimTol_HArray1OfDatumReferenceModifier) STEPCAFControl_GDTProperty::
-  GetDatumRefModifiers(const XCAFDimTolObjects_DatumModifiersSequence theModifiers,
-                       const XCAFDimTolObjects_DatumModifWithValue theModifWithVal,
+  GetDatumRefModifiers(const XCAFDimTolObjects_DatumModifiersSequence& theModifiers,
+                       const XCAFDimTolObjects_DatumModifWithValue& theModifWithVal,
                        const Standard_Real theValue,
                        const StepBasic_Unit theUnit)
 {

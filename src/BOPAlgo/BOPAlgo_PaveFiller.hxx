@@ -525,7 +525,7 @@ protected:
   Standard_EXPORT void UpdateEdgeTolerance(const Standard_Integer nE,
                                            const Standard_Real aTolNew);
 
-  Standard_EXPORT void RemovePaveBlocks(const TColStd_MapOfInteger theEdges);
+  Standard_EXPORT void RemovePaveBlocks(const TColStd_MapOfInteger& theEdges);
 
   Standard_EXPORT void CorrectToleranceOfSE();
 

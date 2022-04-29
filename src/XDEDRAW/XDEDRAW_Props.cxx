@@ -101,7 +101,10 @@ static double TetraVol(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
 //function : TetraCen
 //purpose  : auxiliary
 //=======================================================================
-static gp_XYZ TetraCen(gp_Pnt RefPoint, gp_Pnt Som1, gp_Pnt Som2, gp_Pnt Som3)
+static gp_XYZ TetraCen(const gp_Pnt& RefPoint,
+                       const gp_Pnt& Som1,
+                       const gp_Pnt& Som2,
+                       const gp_Pnt& Som3)
 {
   gp_XYZ curCentr, plnPnt;
   plnPnt = ( Som1.XYZ() + Som2.XYZ() + Som3.XYZ() )/3;

@@ -3394,7 +3394,7 @@ void BOPAlgo_PaveFiller::UpdatePaveBlocks
 //function : RemovePaveBlocks
 //purpose  : 
 //=======================================================================
-void BOPAlgo_PaveFiller::RemovePaveBlocks(const TColStd_MapOfInteger theEdges)
+void BOPAlgo_PaveFiller::RemovePaveBlocks(const TColStd_MapOfInteger& theEdges)
 {
   // Remove all pave blocks referring to input edges:
   //

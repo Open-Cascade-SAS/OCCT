@@ -105,7 +105,7 @@ public:
   //! Returns the maximal upper tolerance.
   Standard_EXPORT Standard_Real GetMaxValueModifier() const;
 
-  Standard_EXPORT void SetAxis (const gp_Ax2 theAxis);
+  Standard_EXPORT void SetAxis (const gp_Ax2& theAxis);
   
   Standard_EXPORT gp_Ax2 GetAxis() const;
    

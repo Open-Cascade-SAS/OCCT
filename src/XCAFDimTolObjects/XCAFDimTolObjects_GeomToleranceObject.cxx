@@ -254,7 +254,7 @@ Standard_Real XCAFDimTolObjects_GeomToleranceObject::GetMaxValueModifier()  cons
 //purpose  : 
 //=======================================================================
 
-void XCAFDimTolObjects_GeomToleranceObject::SetAxis (const gp_Ax2 theAxis) 
+void XCAFDimTolObjects_GeomToleranceObject::SetAxis(const gp_Ax2& theAxis)
 {
   myAxis = theAxis;
   myHasAxis = Standard_True;

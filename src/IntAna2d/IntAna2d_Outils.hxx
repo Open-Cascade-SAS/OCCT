@@ -55,8 +55,9 @@ Standard_Boolean Points_Confondus(const Standard_Real xa,const Standard_Real ya,
 void Traitement_Points_Confondus(Standard_Integer& nb_pts
 				 ,IntAna2d_IntPoint *pts);
 
-void Coord_Ancien_Repere(Standard_Real& Ancien_X,Standard_Real& Ancien_Y
-                        ,const gp_Ax2d Axe_Nouveau_Repere);
+void Coord_Ancien_Repere(Standard_Real& Ancien_X,
+                         Standard_Real& Ancien_Y,
+                         const gp_Ax2d& Axe_Nouveau_Repere);
 
 
 #endif

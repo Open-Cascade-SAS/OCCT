@@ -71,7 +71,7 @@ public:
   //! Creates a bounding box, it contains:
   //! -   minimum/maximum point of bounding box,
   //! The constructed box is qualified Void. Its gap is null.
-  Standard_EXPORT Bnd_Box (const gp_Pnt theMin, const gp_Pnt theMax);
+  Standard_EXPORT Bnd_Box (const gp_Pnt& theMin, const gp_Pnt& theMax);
 
   //! Sets this bounding box so that it covers the whole of 3D space.
   //! It is infinitely long in all directions.

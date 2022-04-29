@@ -108,7 +108,7 @@ void Approx_SameParameter_Evaluator::Evaluate (Standard_Integer *,/*Dimension*/
 //purpose  : 
 //=======================================================================
 static void ProjectPointOnCurve(const Standard_Real      InitValue,
-                                const gp_Pnt             APoint,
+                                const gp_Pnt&            APoint,
                                 const Standard_Real      Tolerance,
                                 const Standard_Integer   NumIteration,
                                 const Adaptor3d_Curve&   Curve,

@@ -267,7 +267,10 @@ void Traitement_Points_Confondus(Standard_Integer& nb_pts,
 }
 
 //-----------------------------------------------------------------------------
-void Coord_Ancien_Repere(Standard_Real& x1,Standard_Real& y1,const gp_Ax2d Dir1) {
+void Coord_Ancien_Repere(Standard_Real& x1,
+                         Standard_Real& y1,
+                         const gp_Ax2d& Dir1)
+{
   Standard_Real t11,t12,t21,t22,t13,t23;
   Standard_Real x0,y0;  
 

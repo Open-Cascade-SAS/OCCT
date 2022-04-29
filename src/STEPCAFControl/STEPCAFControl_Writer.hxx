@@ -224,19 +224,29 @@ private:
     const TDF_Label theLabel, const TopoDS_Shape theShape, Handle(StepRepr_RepresentationContext)& theRC,
     Handle(StepAP242_GeometricItemSpecificUsage)& theGISU);
 
-  Standard_EXPORT void WritePresentation(const Handle(XSControl_WorkSession) &WS, const TopoDS_Shape thePresentation,
-    const Handle(TCollection_HAsciiString)& thePrsName, const Standard_Boolean hasSemantic, const Standard_Boolean hasPlane,
-    const gp_Ax2 theAnnotationPlane, const gp_Pnt theTextPosition, const Handle(Standard_Transient) theDimension);
+  Standard_EXPORT void WritePresentation(const Handle(XSControl_WorkSession)&    WS,
+                                         const TopoDS_Shape&                     thePresentation,
+                                         const Handle(TCollection_HAsciiString)& thePrsName,
+                                         const Standard_Boolean                  hasSemantic,
+                                         const Standard_Boolean                  hasPlane,
+                                         const gp_Ax2&                           theAnnotationPlane,
+                                         const gp_Pnt&                           theTextPosition,
+                                         const Handle(Standard_Transient)        theDimension);
 
-  Standard_EXPORT Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSession) &WS, const TDF_LabelSequence theShapeL,
-    const TDF_Label theDatumL, const Standard_Boolean isFirstDTarget, const Handle(StepDimTol_Datum) theWrittenDatum);
+  Standard_EXPORT Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSession)& WS,
+                                                           const TDF_LabelSequence&             theShapeL,
+                                                           const TDF_Label&                     theDatumL,
+                                                           const Standard_Boolean               isFirstDTarget,
+                                                           const Handle(StepDimTol_Datum)       theWrittenDatum);
 
   Standard_EXPORT void WriteToleranceZone(const Handle(XSControl_WorkSession) &WS, const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,
     const Handle(StepDimTol_GeometricTolerance)& theEntity, const Handle(StepRepr_RepresentationContext)& theRC);
 
-  Standard_EXPORT void WriteGeomTolerance(const Handle(XSControl_WorkSession) &WS, const TDF_LabelSequence theShapeSeqL,
-    const TDF_Label theGeomTolL, const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
-    const Handle(StepRepr_RepresentationContext)& theRC);
+  Standard_EXPORT void WriteGeomTolerance(const Handle(XSControl_WorkSession)&                      WS,
+                                          const TDF_LabelSequence&                                  theShapeSeqL,
+                                          const TDF_Label&                                          theGeomTolL,
+                                          const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
+                                          const Handle(StepRepr_RepresentationContext)&             theRC);
 
 private:
 

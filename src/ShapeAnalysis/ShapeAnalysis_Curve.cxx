@@ -795,7 +795,7 @@ Standard_Integer ShapeAnalysis_Curve::SelectForwardSeam(const Handle(Geom2d_Curv
 // IsPlanar
 //=============================================================================
 
-static gp_XYZ GetAnyNormal ( gp_XYZ orig )
+static gp_XYZ GetAnyNormal (const gp_XYZ& orig)
 {
   gp_XYZ Norm;
   if ( Abs ( orig.Z() ) < Precision::Confusion() )

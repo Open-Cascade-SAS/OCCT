@@ -299,8 +299,8 @@ TopoDS_Shape ShapeFix::RemoveSmallEdges (TopoDS_Shape& Shape,
 //function : ReplaceVertex
 //purpose  : auxiliary for FixVertexPosition
 //=======================================================================
-static TopoDS_Edge ReplaceVertex(const TopoDS_Edge& theEdge,
-                                 const gp_Pnt theP,
+static TopoDS_Edge ReplaceVertex(const TopoDS_Edge&     theEdge,
+                                 const gp_Pnt&          theP,
                                  const Standard_Boolean theFwd)
 {
   TopoDS_Vertex aNewVertex;

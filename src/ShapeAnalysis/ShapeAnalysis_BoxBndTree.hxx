@@ -56,7 +56,7 @@ class ShapeAnalysis_BoxBndTreeSelector
        myStatus=ShapeExtend::EncodeStatus (ShapeExtend_OK);
     }
     
-  void DefinePnt (gp_Pnt theFPnt, gp_Pnt theLPnt)
+  void DefinePnt (const gp_Pnt& theFPnt, const gp_Pnt& theLPnt)
     { myFPnt = theFPnt;
       myLPnt = theLPnt; 
        myStatus =ShapeExtend::EncodeStatus (ShapeExtend_OK);

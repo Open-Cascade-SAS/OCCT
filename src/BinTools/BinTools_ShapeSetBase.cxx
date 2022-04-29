@@ -28,7 +28,7 @@ const Standard_CString BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_Format
 //function : operator << (gp_Pnt)
 //purpose  : 
 //=======================================================================
-Standard_OStream& operator << (Standard_OStream& OS, const gp_Pnt P)
+Standard_OStream& operator << (Standard_OStream& OS, const gp_Pnt& P)
 {
   BinTools::PutReal (OS, P.X());
   BinTools::PutReal (OS, P.Y());

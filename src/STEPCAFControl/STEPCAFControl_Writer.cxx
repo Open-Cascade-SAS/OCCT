@@ -2442,13 +2442,13 @@ Handle(StepRepr_ShapeAspect) STEPCAFControl_Writer::WriteShapeAspect (const Hand
 //function : WritePresentation
 //purpose  : auxiliary (write annotation plane and presentation)
 //======================================================================
-void STEPCAFControl_Writer::WritePresentation(const Handle(XSControl_WorkSession) &WS,
-                                              const TopoDS_Shape thePresentation,
+void STEPCAFControl_Writer::WritePresentation(const Handle(XSControl_WorkSession)& WS,
+                                              const TopoDS_Shape& thePresentation,
                                               const Handle(TCollection_HAsciiString)& thePrsName,
                                               const Standard_Boolean hasSemantic,
                                               const Standard_Boolean hasPlane,
-                                              const gp_Ax2 theAnnotationPlane,
-                                              const gp_Pnt theTextPosition,
+                                              const gp_Ax2& theAnnotationPlane,
+                                              const gp_Pnt& theTextPosition,
                                               const Handle(Standard_Transient) theDimension)
 {
   if (thePresentation.IsNull())
@@ -2528,9 +2528,9 @@ void STEPCAFControl_Writer::WritePresentation(const Handle(XSControl_WorkSession
 //           necessary entities and link them to already written datum 
 //           in case of multiple features association)
 //=======================================================================
-Handle(StepDimTol_Datum) STEPCAFControl_Writer::WriteDatumAP242(const Handle(XSControl_WorkSession) &WS,
-                                                                const TDF_LabelSequence theShapeL,
-                                                                const TDF_Label theDatumL,
+Handle(StepDimTol_Datum) STEPCAFControl_Writer::WriteDatumAP242(const Handle(XSControl_WorkSession)& WS,
+                                                                const TDF_LabelSequence& theShapeL,
+                                                                const TDF_Label& theDatumL,
                                                                 const Standard_Boolean isFirstDTarget,
                                                                 const Handle(StepDimTol_Datum) theWrittenDatum)
 {
@@ -3252,8 +3252,8 @@ void STEPCAFControl_Writer::WriteToleranceZone (const Handle(XSControl_WorkSessi
 //           label and datum system)
 //======================================================================
 void STEPCAFControl_Writer::WriteGeomTolerance (const Handle(XSControl_WorkSession) &WS,
-                                                const TDF_LabelSequence theShapeSeqL,
-                                                const TDF_Label theGeomTolL,
+                                                const TDF_LabelSequence& theShapeSeqL,
+                                                const TDF_Label& theGeomTolL,
                                                 const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
                                                 const Handle(StepRepr_RepresentationContext)& theRC)
 {

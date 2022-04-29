@@ -56,13 +56,13 @@ static inline Standard_Boolean BOUNDED_DOMAIN(const IntRes2d_Domain& domain)
   return (domain.HasFirstPoint() && domain.HasLastPoint());
 }
 
-static Standard_Boolean SET_BOUNDED_DOMAIN(const IntRes2d_Domain domain,
-					   Standard_Real&        binf,
-					   Standard_Real&        tolinf,
-					   gp_Pnt2d&             Pntinf,
-					   Standard_Real&        bsup,
-					   Standard_Real&        tolsup,
-					   gp_Pnt2d&             Pntsup)
+static Standard_Boolean SET_BOUNDED_DOMAIN(const IntRes2d_Domain& domain,
+                                           Standard_Real&         binf,
+                                           Standard_Real&         tolinf,
+                                           gp_Pnt2d&              Pntinf,
+                                           Standard_Real&         bsup,
+                                           Standard_Real&         tolsup,
+                                           gp_Pnt2d&              Pntsup)
 { 
   if(domain.HasFirstPoint()) { 
     if(binf<domain.FirstParameter()) {

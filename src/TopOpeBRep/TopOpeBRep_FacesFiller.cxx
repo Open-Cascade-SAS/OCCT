@@ -49,7 +49,7 @@
 #include <TopOpeBRepTool_SC.hxx>
 
 //#include <BRepAdaptor_Curve2d.hxx>
-Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt& P,const TopOpeBRep_LineInter L,const TopOpeBRep_FacesFiller& FF,
+Standard_EXPORT Standard_Boolean FUN_projPonL(const gp_Pnt& P,const TopOpeBRep_LineInter& L,const TopOpeBRep_FacesFiller& FF,
 				 Standard_Real& paramL)
 {
   Standard_Boolean paramLdef = Standard_False;

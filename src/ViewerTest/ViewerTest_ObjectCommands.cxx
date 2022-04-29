@@ -1965,7 +1965,7 @@ public:
   // CASCADE RTTI
   DEFINE_STANDARD_RTTI_INLINE(FilledCircle, AIS_InteractiveObject);
 
-  FilledCircle (gp_Pnt theCenter, Standard_Real theRadius);
+  FilledCircle (const gp_Pnt& theCenter, Standard_Real theRadius);
   FilledCircle (Handle(Geom_Circle) theCircle);
 
 private:
@@ -1987,7 +1987,7 @@ protected:
 }; 
 
 
-FilledCircle::FilledCircle(gp_Pnt theCenter, Standard_Real theRadius) 
+FilledCircle::FilledCircle(const gp_Pnt& theCenter, Standard_Real theRadius) 
 {
   myCircle = CreateCircle(theCenter, theRadius);
   myFilledStatus = Standard_True;

@@ -1572,12 +1572,12 @@ Standard_Boolean ShapeAnalysis_Wire::CheckLacking (const Standard_Integer num,
 //purpose  : 
 //=======================================================================
 
-static Standard_Real ProjectInside(const Adaptor3d_CurveOnSurface AD,
-				   const gp_Pnt pnt,
-				   const Standard_Real preci,
-				   gp_Pnt& proj,
-				   Standard_Real& param,
-				   const Standard_Boolean adjustToEnds = Standard_True)
+static Standard_Real ProjectInside(const Adaptor3d_CurveOnSurface& AD,
+                                   const gp_Pnt&                   pnt,
+                                   const Standard_Real             preci,
+                                   gp_Pnt&                         proj,
+                                   Standard_Real&                  param,
+                                   const Standard_Boolean          adjustToEnds = Standard_True)
 {
   ShapeAnalysis_Curve sac;
   Standard_Real dist = sac.Project(AD,pnt,preci,proj,param,adjustToEnds);
