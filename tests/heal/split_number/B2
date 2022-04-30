@@ -1,0 +1,7 @@
+restore [locate_data_file HOMAG_004.brep] a
+explode a f
+
+DT_SplitByNumber result a_4 100
+
+checknbshapes result -t -face 106
+

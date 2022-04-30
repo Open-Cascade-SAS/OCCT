@@ -1190,6 +1190,52 @@ static Standard_Integer splitarea (Draw_Interpretor& di,
   return 0;
 }
 
+static Standard_Integer splitbynumber (Draw_Interpretor& di, 
+                                       Standard_Integer argc, 
+                                       const char** argv)
+{
+  if (argc < 4) {
+    di << "bad number of arguments\n";
+    return 1;
+  }
+  
+  TopoDS_Shape inputShape=DBRep::Get(argv[2], TopAbs_FACE);
+  if (inputShape.IsNull()) {
+    di << "Unknown face\n";
+    return 1;
+  }
+  
+  Standard_Integer aNbParts, aNumber1 = 0, aNumber2 = 0;
+  aNbParts = aNumber1 = Draw::Atoi (argv[3]);
+  if (argc > 4)
+    aNumber2 = Draw::Atoi (argv[4]);
+  
+  if (argc == 4 && aNbParts <= 0)
+  {
+    di << "Incorrect number of parts\n";
+    return 1;
+  }
+  if (argc == 5 &&
+      (aNumber1 <= 0 || aNumber2 <= 0))
+  {
+    di << "Incorrect numbers in U or V\n";
+    return 1;
+  }
+    
+  ShapeUpgrade_ShapeDivideArea tool (inputShape);
+  tool.SetSplittingByNumber (Standard_True);
+  if (argc == 4)
+    tool.NbParts() = aNbParts;
+  else
+    tool.SetNumbersUVSplits (aNumber1, aNumber2);
+  tool.Perform();
+  TopoDS_Shape res = tool.Result();
+  
+  ShapeFix::SameParameter ( res, Standard_False );
+  DBRep::Set ( argv[1], res );
+  return 0;
+}
+
 static Standard_Integer removeinternalwires (Draw_Interpretor& di, 
                                              Standard_Integer argc, 
                                              const char** argv)
@@ -1624,6 +1670,8 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
 		   __FILE__,splitclosed,g);
   theCommands.Add ("DT_SplitByArea","result shape maxarea [preci]",
 		   __FILE__,splitarea,g);
+  theCommands.Add ("DT_SplitByNumber","result face number [number2]",
+                   __FILE__,splitbynumber,g);
   
   theCommands.Add ("RemoveIntWires","result minarea wholeshape [faces or wires] [moderemoveface ]",
                    __FILE__,removeinternalwires,g);

@@ -42,7 +42,20 @@ public:
   //! Set max area allowed for faces
     Standard_Real& MaxArea();
 
+  //! Set number of parts expected
+  //! for the case of splitting by number
+    Standard_Integer& NbParts();
 
+  //! Set fixed numbers of splits in U and V directions.
+  //! Only for "Splitting By Numbers" mode
+    void SetNumbersUVSplits(const Standard_Integer theNbUsplits,
+                            const Standard_Integer theNbVsplits);
+  
+  //! Set splitting mode
+  //! If the mode is "splitting by number",
+  //! the face is splitted approximately into <myNbParts> parts,
+  //! the parts are similar to squares in 2D.
+    void SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber);
 
 
 protected:
@@ -58,8 +71,11 @@ private:
 
 
 
-  Standard_Real myMaxArea;
-
+  Standard_Real    myMaxArea;
+  Standard_Integer myNbParts;
+  Standard_Integer myUnbSplit;
+  Standard_Integer myVnbSplit;
+  Standard_Boolean myIsSplittingByNumber;
 
 };
 

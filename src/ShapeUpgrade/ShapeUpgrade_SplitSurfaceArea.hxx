@@ -41,6 +41,17 @@ public:
   //! Set number of split for surfaces
     Standard_Integer& NbParts();
   
+  //! Set splitting mode
+  //! If the mode is "splitting into squares",
+  //! the face is splitted approximately into <myNbParts> parts,
+  //! the parts are similar to squares in 2D.
+    void SetSplittingIntoSquares(const Standard_Boolean theIsSplittingIntoSquares);
+
+  //! Set fixed numbers of splits in U and V directions.
+  //! Only for "Splitting Into Squares" mode
+    void SetNumbersUVSplits(const Standard_Integer theNbUsplits,
+                            const Standard_Integer theNbVsplits);
+  
   Standard_EXPORT virtual void Compute (const Standard_Boolean Segment = Standard_True) Standard_OVERRIDE;
 
 
@@ -57,6 +68,9 @@ private:
 
 
   Standard_Integer myNbParts;
+  Standard_Integer myUnbSplit;
+  Standard_Integer myVnbSplit;
+  Standard_Boolean myIsSplittingIntoSquares;
 
 
 };

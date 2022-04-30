@@ -68,7 +68,7 @@ ShapeUpgrade_ClosedFaceDivide::ShapeUpgrade_ClosedFaceDivide(const TopoDS_Face& 
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface()
+Standard_Boolean ShapeUpgrade_ClosedFaceDivide::SplitSurface(const Standard_Real)
 {
   Handle(ShapeUpgrade_SplitSurface) SplitSurf = GetSplitSurfaceTool();
   if ( SplitSurf.IsNull() ) return Standard_False;

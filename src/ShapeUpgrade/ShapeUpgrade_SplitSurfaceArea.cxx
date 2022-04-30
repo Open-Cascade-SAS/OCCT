@@ -26,7 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceArea,ShapeUpgrade_SplitSurfa
 ShapeUpgrade_SplitSurfaceArea::ShapeUpgrade_SplitSurfaceArea():
        ShapeUpgrade_SplitSurface()
 {
-  myNbParts =1;
+  myNbParts = 1;
+  myUnbSplit = myVnbSplit = -1;
+  myIsSplittingIntoSquares = Standard_False;
 }
 
 //=======================================================================
@@ -52,12 +54,42 @@ ShapeUpgrade_SplitSurfaceArea::ShapeUpgrade_SplitSurfaceArea():
   Standard_Real  aNbUV =  aUSize/aVSize;
   Handle(TColStd_HSequenceOfReal) aFirstSplit = (aNbUV <1. ? myVSplitValues : myUSplitValues);
   Handle(TColStd_HSequenceOfReal) aSecondSplit = (aNbUV <1. ? myUSplitValues : myVSplitValues);
+  Standard_Boolean anIsUFirst = (aNbUV > 1.);
   if(aNbUV<1)
     aNbUV = 1./aNbUV;
-  
-  Standard_Integer nbSplitF = (aNbUV >=  myNbParts ? myNbParts : RealToInt(ceil(sqrt(myNbParts*ceil(aNbUV)))));
-  Standard_Integer nbSplitS = (aNbUV >=  myNbParts ? 0  : RealToInt(ceil((Standard_Real)myNbParts/(Standard_Real)nbSplitF)));
-  if(nbSplitS ==1)
+
+  Standard_Boolean anIsFixedUVnbSplits = (myUnbSplit > 0 && myVnbSplit > 0);
+  Standard_Integer nbSplitF, nbSplitS;
+  if (myIsSplittingIntoSquares && myNbParts > 0)
+  {
+    if (!anIsFixedUVnbSplits) //(myUnbSplit <= 0 || myVnbSplit <= 0)
+    {
+      Standard_Real aSquareSize = Sqrt (myArea / myNbParts);
+      myUnbSplit = (Standard_Integer)(myUsize / aSquareSize);
+      myVnbSplit = (Standard_Integer)(myVsize / aSquareSize);
+      if (myUnbSplit == 0)
+        myUnbSplit = 1;
+      if (myVnbSplit == 0)
+        myVnbSplit = 1;
+    }
+
+    if (anIsUFirst)
+    {
+      nbSplitF = myUnbSplit;
+      nbSplitS = myVnbSplit;
+    }
+    else
+    {
+      nbSplitF = myVnbSplit;
+      nbSplitS = myUnbSplit;
+    }
+  }
+  else
+  {
+    nbSplitF = (aNbUV >=  myNbParts ? myNbParts : RealToInt(ceil(sqrt(myNbParts*ceil(aNbUV)))));
+    nbSplitS = (aNbUV >=  myNbParts ? 0  : RealToInt(ceil((Standard_Real)myNbParts/(Standard_Real)nbSplitF)));
+  }
+  if(nbSplitS ==1 && !anIsFixedUVnbSplits)
     nbSplitS++;
   if(!nbSplitF)
     return;

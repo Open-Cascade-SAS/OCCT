@@ -1,0 +1,8 @@
+psphere a 10  0 90
+fit
+explode a f
+
+DT_SplitByNumber result a_1 100
+
+checknbshapes result -t -face 102
+

@@ -16,4 +16,16 @@ inline Standard_Integer& ShapeUpgrade_SplitSurfaceArea::NbParts()
   return myNbParts;
 }
 
+inline void ShapeUpgrade_SplitSurfaceArea::SetSplittingIntoSquares(const Standard_Boolean theIsSplittingIntoSquares) 
+{
+  myIsSplittingIntoSquares = theIsSplittingIntoSquares;
+}
  
+inline void ShapeUpgrade_SplitSurfaceArea::SetNumbersUVSplits(const Standard_Integer theNbUsplits,
+                                                              const Standard_Integer theNbVsplits) 
+{
+  myUnbSplit = theNbUsplits;
+  myVnbSplit = theNbVsplits;
+  if (myUnbSplit > 0 && myVnbSplit > 0)
+    myNbParts  = myUnbSplit * myVnbSplit;
+}
