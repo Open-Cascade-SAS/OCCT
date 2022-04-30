@@ -92,12 +92,12 @@ void ShapeUpgrade_FaceDivide::SetSurfaceSegmentMode(const Standard_Boolean Segme
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeUpgrade_FaceDivide::Perform ()
+Standard_Boolean ShapeUpgrade_FaceDivide::Perform (const Standard_Real theArea)
 {
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
   if ( myFace.IsNull() ) return Standard_False;
   myResult = myFace;
-  SplitSurface();
+  SplitSurface (theArea);
   SplitCurves();
   return Status ( ShapeExtend_DONE );
  } 
@@ -107,7 +107,7 @@ Standard_Boolean ShapeUpgrade_FaceDivide::Perform ()
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeUpgrade_FaceDivide::SplitSurface ()  
+Standard_Boolean ShapeUpgrade_FaceDivide::SplitSurface (const Standard_Real theArea)
 {  
   Handle(ShapeUpgrade_SplitSurface) SplitSurf = GetSplitSurfaceTool();
   if ( SplitSurf.IsNull() ) return Standard_False;
@@ -144,7 +144,7 @@ Standard_Boolean ShapeUpgrade_FaceDivide::SplitSurface ()
     if (Vl < aSVl) Vl += Min(dV, aSVl - Vl);
   }
 
-  SplitSurf->Init ( surf, Uf, Ul, Vf, Vl );
+  SplitSurf->Init (surf, Uf, Ul, Vf, Vl, theArea);
   SplitSurf->Perform(mySegmentMode);
 
   // If surface was neither split nor modified, do nothing

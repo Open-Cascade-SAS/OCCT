@@ -40,12 +40,24 @@ public:
   
   //! Performs splitting and computes the resulting shell
   //! The context is used to keep track of former splittings
-  Standard_EXPORT virtual Standard_Boolean Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Perform(const Standard_Real theArea = 0.) Standard_OVERRIDE;
   
   //! Set max area allowed for faces
     Standard_Real& MaxArea();
 
+  //! Set number of parts expected
+    Standard_Integer& NbParts();
 
+  //! Set fixed numbers of splits in U and V directions.
+  //! Only for "Splitting By Numbers" mode
+    void SetNumbersUVSplits(const Standard_Integer theNbUsplits,
+                            const Standard_Integer theNbVsplits);
+  
+  //! Set splitting mode
+  //! If the mode is "splitting by number",
+  //! the face is splitted approximately into <myNbParts> parts,
+  //! the parts are similar to squares in 2D.
+    void SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber);
 
 
   DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_FaceDivideArea,ShapeUpgrade_FaceDivide)
@@ -59,7 +71,10 @@ private:
 
 
   Standard_Real myMaxArea;
-
+  Standard_Integer myNbParts;
+  Standard_Integer myUnbSplit;
+  Standard_Integer myVnbSplit;
+  Standard_Boolean myIsSplittingByNumber;
 
 };
 

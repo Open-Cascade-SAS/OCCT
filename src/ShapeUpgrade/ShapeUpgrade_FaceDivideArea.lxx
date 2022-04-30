@@ -17,3 +17,21 @@ inline Standard_Real& ShapeUpgrade_FaceDivideArea::MaxArea()
 }
 
  
+inline Standard_Integer& ShapeUpgrade_FaceDivideArea::NbParts() 
+{
+  return myNbParts;
+}
+
+inline void ShapeUpgrade_FaceDivideArea::SetSplittingByNumber(const Standard_Boolean theIsSplittingByNumber)
+{
+  myIsSplittingByNumber = theIsSplittingByNumber;
+}
+
+inline void ShapeUpgrade_FaceDivideArea::SetNumbersUVSplits(const Standard_Integer theNbUsplits,
+                                                            const Standard_Integer theNbVsplits)
+{
+  myUnbSplit = theNbUsplits;
+  myVnbSplit = theNbVsplits;
+  if (myUnbSplit > 0 && myVnbSplit > 0)
+    myNbParts  = myUnbSplit * myVnbSplit;
+}

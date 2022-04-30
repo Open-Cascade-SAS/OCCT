@@ -1,0 +1,13 @@
+pcylinder a 10 50
+plane pp -20 0 10  1 0 0
+pcylinder b1 pp 3 40
+plane pp 0 -20 30  0 1 0
+pcylinder b2 pp 5 40
+bcut a a b1
+bcut a a b2
+explode a f
+
+DT_SplitByNumber result a_1 100
+
+checknbshapes result -t -face 99
+

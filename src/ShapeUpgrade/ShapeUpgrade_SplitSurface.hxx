@@ -49,7 +49,10 @@ public:
   Standard_EXPORT void Init (const Handle(Geom_Surface)& S);
   
   //! Initializes with single supporting surface with bounding parameters.
-  Standard_EXPORT void Init (const Handle(Geom_Surface)& S, const Standard_Real UFirst, const Standard_Real ULast, const Standard_Real VFirst, const Standard_Real VLast);
+  Standard_EXPORT void Init (const Handle(Geom_Surface)& S,
+                             const Standard_Real UFirst, const Standard_Real ULast,
+                             const Standard_Real VFirst, const Standard_Real VLast,
+                             const Standard_Real theArea = 0.);
   
   //! Sets U parameters where splitting has to be done
   Standard_EXPORT void SetUSplitValues (const Handle(TColStd_HSequenceOfReal)& UValues);
@@ -109,6 +112,9 @@ protected:
   Handle(Geom_Surface) mySurface;
   Standard_Integer myStatus;
   Handle(ShapeExtend_CompositeSurface) myResSurfaces;
+  Standard_Real myArea;
+  Standard_Real myUsize;
+  Standard_Real myVsize;
 
 
 private:

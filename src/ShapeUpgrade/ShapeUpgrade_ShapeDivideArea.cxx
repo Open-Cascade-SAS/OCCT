@@ -26,6 +26,9 @@ ShapeUpgrade_ShapeDivideArea::ShapeUpgrade_ShapeDivideArea():
        ShapeUpgrade_ShapeDivide()
 {
   myMaxArea = Precision::Infinite();
+  myNbParts = 0;
+  myUnbSplit = myVnbSplit = -1;
+  myIsSplittingByNumber = Standard_False;
 }
 
 //=======================================================================
@@ -38,6 +41,9 @@ ShapeUpgrade_ShapeDivideArea::ShapeUpgrade_ShapeDivideArea(const TopoDS_Shape& S
        
 {
   myMaxArea = Precision::Infinite();
+  myNbParts = 0;
+  myUnbSplit = myVnbSplit = -1;
+  myIsSplittingByNumber = Standard_False;
 }
 
 //=======================================================================
@@ -49,6 +55,9 @@ ShapeUpgrade_ShapeDivideArea::ShapeUpgrade_ShapeDivideArea(const TopoDS_Shape& S
 {
   Handle(ShapeUpgrade_FaceDivideArea) aFaceTool = new ShapeUpgrade_FaceDivideArea;
   aFaceTool->MaxArea() = myMaxArea;
+  aFaceTool->NbParts() = myNbParts;
+  aFaceTool->SetNumbersUVSplits (myUnbSplit, myVnbSplit);
+  aFaceTool->SetSplittingByNumber (myIsSplittingByNumber);
   return aFaceTool;
 }
 
