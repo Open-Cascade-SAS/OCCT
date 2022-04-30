@@ -13644,61 +13644,116 @@ static int VViewCube (Draw_Interpretor& ,
   return 0;
 }
 
+//! Parse color type argument.
+static bool parseColorType (const char* theString,
+                            Quantity_TypeOfColor& theType)
+{
+  TCollection_AsciiString aType (theString);
+  aType.LowerCase();
+  if      (aType == "rgb")  { theType = Quantity_TOC_RGB; }
+  else if (aType == "srgb") { theType = Quantity_TOC_sRGB; }
+  else if (aType == "hex")  { theType = Quantity_TOC_sRGB; }
+  else if (aType == "name") { theType = Quantity_TOC_sRGB; }
+  else if (aType == "hls")  { theType = Quantity_TOC_HLS; }
+  else if (aType == "lab")  { theType = Quantity_TOC_CIELab; }
+  else if (aType == "lch")  { theType = Quantity_TOC_CIELch; }
+  else { return false; }
+  return true;
+}
+
 //===============================================================================================
 //function : VColorConvert
 //purpose  :
 //===============================================================================================
-static int VColorConvert (Draw_Interpretor& theDI, Standard_Integer  theNbArgs, const char** theArgVec)
+static int VColorConvert (Draw_Interpretor& theDI, Standard_Integer theNbArgs, const char** theArgVec)
 {
-  if (theNbArgs != 6)
+  Quantity_TypeOfColor aTypeFrom = Quantity_TOC_RGB, aTypeTo = Quantity_TOC_RGB;
+  double anInput[4] = {};
+  Quantity_ColorRGBA aColor (0.0f, 0.0f, 0.0f, 1.0f);
+  bool toPrintHex = false, toPrintName = false, hasAlpha = false;
+  for (int anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    std::cerr << "Error: command syntax is incorrect, see help" << std::endl;
-    return 1;
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if ((anArgCase == "-from"
+      || anArgCase == "from")
+     && anArgIter + 1 < theNbArgs
+     && parseColorType (theArgVec[anArgIter + 1], aTypeFrom))
+    {
+      ++anArgIter;
+    }
+    else if ((anArgCase == "-to"
+           || anArgCase == "to")
+          && anArgIter + 1 < theNbArgs
+          && parseColorType (theArgVec[anArgIter + 1], aTypeTo))
+    {
+      TCollection_AsciiString aToStr (theArgVec[++anArgIter]);
+      aToStr.LowerCase();
+      toPrintHex  = (aToStr == "hex");
+      toPrintName = (aToStr == "name");
+    }
+    else if (Quantity_ColorRGBA::ColorFromHex (theArgVec[anArgIter], aColor))
+    {
+      hasAlpha = anArgCase.Length() >= 8;
+    }
+    else if (Quantity_Color::ColorFromName (theArgVec[anArgIter], aColor.ChangeRGB()))
+    {
+      //
+    }
+    else if (anArgIter + 2 < theNbArgs
+          && Draw::ParseReal (theArgVec[anArgIter + 0], anInput[0])
+          && Draw::ParseReal (theArgVec[anArgIter + 1], anInput[1])
+          && Draw::ParseReal (theArgVec[anArgIter + 2], anInput[2]))
+    {
+      if (anArgIter + 3 < theNbArgs
+       && Draw::ParseReal (theArgVec[anArgIter + 3], anInput[3]))
+      {
+        anArgIter += 1;
+        aColor.SetAlpha ((float )anInput[3]);
+        hasAlpha = true;
+      }
+      anArgIter += 2;
+      aColor.ChangeRGB().SetValues (anInput[0], anInput[1], anInput[2], aTypeFrom);
+    }
+    else
+    {
+      theDI << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
   }
 
-  Standard_Boolean convertFrom = (! strcasecmp (theArgVec[1], "from"));
-  if (! convertFrom && strcasecmp (theArgVec[1], "to"))
+  if (toPrintHex)
   {
-    std::cerr << "Error: first argument must be either \"to\" or \"from\"" << std::endl;
-    return 1;
+    if (hasAlpha || aColor.Alpha() < 1.0f)
+    {
+      theDI << Quantity_ColorRGBA::ColorToHex (aColor);
+    }
+    else
+    {
+      theDI << Quantity_Color::ColorToHex (aColor.GetRGB());
+    }
   }
-
-  const char* aTypeStr = theArgVec[2];
-  Quantity_TypeOfColor aType = Quantity_TOC_RGB;
-  if (! strcasecmp (aTypeStr, "srgb"))
+  else if (toPrintName)
   {
-    aType = Quantity_TOC_sRGB;
-  }
-  else if (! strcasecmp (aTypeStr, "hls"))
-  {
-    aType = Quantity_TOC_HLS;
-  }
-  else if (! strcasecmp (aTypeStr, "lab"))
-  {
-    aType = Quantity_TOC_CIELab;
-  }
-  else if (! strcasecmp (aTypeStr, "lch"))
-  {
-    aType = Quantity_TOC_CIELch;
+    theDI << Quantity_Color::StringName (aColor.GetRGB().Name());
   }
   else
   {
-    std::cerr << "Error: unknown colorspace type: " << aTypeStr << std::endl;
-    return 1;
+    double anOutput[3] = {};
+    aColor.GetRGB().Values (anOutput[0], anOutput[1], anOutput[2], aTypeTo);
+
+    // print values with 6 decimal digits
+    char aBuffer[1024];
+    if (hasAlpha || aColor.Alpha() < 1.0f)
+    {
+      Sprintf (aBuffer, "%.6f %.6f %.6f %.6f", anOutput[0], anOutput[1], anOutput[2], aColor.Alpha());
+    }
+    else
+    {
+      Sprintf (aBuffer, "%.6f %.6f %.6f", anOutput[0], anOutput[1], anOutput[2]);
+    }
+    theDI << aBuffer;
   }
-
-  double aC1 = Draw::Atof (theArgVec[3]);
-  double aC2 = Draw::Atof (theArgVec[4]);
-  double aC3 = Draw::Atof (theArgVec[5]);
-
-  Quantity_Color aColor (aC1, aC2, aC3, convertFrom ? aType : Quantity_TOC_RGB);
-  aColor.Values (aC1, aC2, aC3, convertFrom ? Quantity_TOC_RGB : aType);
-
-  // print values with 6 decimal digits
-  char buffer[1024];
-  Sprintf (buffer, "%.6f %.6f %.6f", aC1, aC2, aC3);
-  theDI << buffer;
-
   return 0;
 }
  
@@ -14799,10 +14854,11 @@ Displays interactive view manipulation object. Options:
 )" /* [vviewcube] */);
 
   addCmd ("vcolorconvert", VColorConvert, /* [vcolorconvert] */ R"(
-vcolorconvert {from|to} type C1 C2 C2
-vcolorconvert from type C1 C2 C2 : Converts color from specified color space to linear RGB
-vcolorconvert to   type R  G  B  : Converts linear RGB color to specified color space
-Type can be sRGB, HLS, Lab, or Lch.
+vcolorconvert [-from {sRGB|HLS|Lab|Lch|RGB}]=RGB [-to {sRGB|HLS|Lab|Lch|RGB|hex|name}]=RGB C1 C2 C2
+To convert color from specified color space to linear RGB:
+  vcolorconvert -from {sRGB|HLS|Lab|Lch|RGB} C1 C2 C2
+To convert linear RGB color to specified color space:
+  vcolorconvert -to {sRGB|HLS|Lab|Lch|RGB|hex|name} R G B
 )" /* [vcolorconvert] */);
 
   addCmd ("vcolordiff", VColorDiff, /* [vcolordiff] */ R"(
