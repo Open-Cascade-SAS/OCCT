@@ -29,6 +29,7 @@
 #include <Approx_SweepApproximation.hxx>
 #include <ElCLib.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
