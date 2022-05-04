@@ -37,7 +37,7 @@ list(APPEND aLibDeps lib_FreeType)
 # system libraries
 list(APPEND aLibDeps EGL GLESv2 log android)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -frtti -fexceptions -fpermissive")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -frtti -fexceptions -fpermissive")
 
 add_library(TKJniSample SHARED ${SOURCE_FILES})
 target_link_libraries(TKJniSample ${aLibDeps})

@@ -359,7 +359,7 @@ https://dev.opencascade.org/resources/download/3rd-party-components
 
 | Component | Where to find | Used for | Purpose |
 | --------- | ------------- | -------- | -------------------- |
-| CMake 2.8+ | https://cmake.org/ | Configuration | Build from sources |
+| CMake 3.1+ | https://cmake.org/ | Configuration | Build from sources |
 | Intel TBB 4.x or later | https://oneapi-src.github.io/oneTBB/ | All | Parallelization of algorithms (alternative to built-in thread pool) |
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
 | OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |

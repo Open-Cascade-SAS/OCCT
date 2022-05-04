@@ -17,7 +17,7 @@ On Linux and macOS we recommend to use libraries maintained by distributive deve
 @section build_occt_win_cmake Building with CMake tool
 
 This chapter describes the [CMake](https://cmake.org/download/)-based build process, which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources.
-OCCT requires CMake version 2.8.12 or later.
+OCCT requires CMake version 3.1 or later.
 
 CMake is a tool that generates the actual project files for the selected target build system (e.g. Unix makefiles) or IDE (e.g. Visual Studio 2010).
 Here we describe the build procedure on the example of Windows platform with Visual Studio 2010.
@@ -113,6 +113,7 @@ The following table gives the full list of environment variables used at the con
 | BUILD_PATCH | Path | Points to the directory recognized as a "patch" for OCCT. If specified, the files from this directory take precedence over the corresponding native OCCT sources. This way you are able to introduce patches to Open CASCADE Technology not affecting the original source distribution |
 | BUILD_WITH_DEBUG | Boolean | Enables extended messages of many OCCT algorithms, usually printed to cout. These include messages on internal errors and special cases encountered, timing, etc. |
 | BUILD_ENABLE_FPE_SIGNAL_HANDLER | Boolean | Enable/Disable the floating point exceptions (FPE) during DRAW execution only. Corresponding environment variable (CSF_FPE) can be changed manually in custom.bat/sh scripts without regeneration by CMake. |
+| BUILD_CPP_STANDARD | String | Employ corresponding c++ standard (C++11, C++14, ..C++23) for building OCCT |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
 | INSTALL_DIR          | Path | Points to the installation directory. *INSTALL_DIR* is a synonym of *CMAKE_INSTALL_PREFIX*. The user can specify both *INSTALL_DIR* or *CMAKE_INSTALL_PREFIX* |
 | INSTALL_DIR_BIN      | Path | Relative path to the binaries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_BIN}) |

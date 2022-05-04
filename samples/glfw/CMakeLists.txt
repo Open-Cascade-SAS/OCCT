@@ -4,7 +4,6 @@ project(glfw-occt-demo)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/adm/cmake" ${CMAKE_MODULE_PATH})
 
-set(CMAKE_CXX_STANDARD 11)
 set(APP_VERSION_MAJOR 1)
 set(APP_VERSION_MINOR 0)
 set(APP_TARGET glfwocct)

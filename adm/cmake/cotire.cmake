@@ -32,15 +32,13 @@ if(__COTIRE_INCLUDED)
 endif()
 set(__COTIRE_INCLUDED TRUE)
 
-# call cmake_minimum_required, but prevent modification of the CMake policy stack in include mode
-# cmake_minimum_required also sets the policy version as a side effect, which we have to avoid
-if (NOT CMAKE_SCRIPT_MODE_FILE)
-	cmake_policy(PUSH)
-endif()
-cmake_minimum_required(VERSION 2.8.12)
-if (NOT CMAKE_SCRIPT_MODE_FILE)
-	cmake_policy(POP)
-endif()
+# Caution! Be careful, when increase minimal cmake version:
+# using of newer version may leads (by default) to applying
+# of some new policies. It may break compilation.
+# For canceling of applying new policies use:
+# cmake_policy(PUSH) before `cmake_minimum_required`
+# and cmake_policy(POP) after.
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 set (COTIRE_CMAKE_MODULE_FILE "${CMAKE_CURRENT_LIST_FILE}")
 set (COTIRE_CMAKE_MODULE_VERSION "1.7.9")
