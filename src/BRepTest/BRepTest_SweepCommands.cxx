@@ -57,6 +57,7 @@ static BRepOffsetAPI_ThruSections* Generator = 0;
 #include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
 #include <Message.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 
 //=======================================================================
 // prism
@@ -533,16 +534,50 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
 //=======================================================================
 //  mksweep
 //=======================================================================
-static Standard_Integer mksweep(Draw_Interpretor&,
+static Standard_Integer mksweep(Draw_Interpretor& di,
   Standard_Integer n, const char** a)
 {
-  if (n != 2) return 1;
+  if (n != 2 && n != 5) return 1;
   TopoDS_Shape Spine = DBRep::Get(a[1], TopAbs_WIRE);
   if (Spine.IsNull()) return 1;
   if (Sweep != 0)  {
     delete Sweep;
     Sweep = 0;
   }
+
+  if (n > 2 && n <= 5)
+  {
+    if (!strcmp(a[2], "-C"))
+    {
+      ShapeUpgrade_UnifySameDomain aUnif(Spine, Standard_True, Standard_False, Standard_True);
+
+      Standard_Real anAngTol = 5.;
+      Standard_Real aLinTol = 0.1;
+
+      if (n == 5)
+      {
+        anAngTol = Draw::Atof(a[3]);
+        aLinTol = Draw::Atof(a[4]);
+      }
+
+      aUnif.SetAngularTolerance(anAngTol * M_PI / 180.);
+      aUnif.SetLinearTolerance(aLinTol);
+      aUnif.Build();
+      Spine = aUnif.Shape();
+      if (BRepTest_Objects::IsHistoryNeeded())
+      {
+        BRepTest_Objects::SetHistory(aUnif.History());
+      }
+    }
+    else
+    {
+      di << "To correct input spine use 'mksweep wire -C [AngTol LinTol]'\n";
+      di << "By default, AngTol = 5, LinTol = 0.1";
+      return 1;
+    }
+  }
+
+
   Sweep = new BRepOffsetAPI_MakePipeShell(TopoDS::Wire(Spine));
   return 0;
 }
@@ -1010,7 +1045,9 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
     "\t\t-safe option allows to prevent the modifying of input shapes",
     __FILE__, thrusections, g);
 
-  theCommands.Add("mksweep", "mksweep wire",
+  theCommands.Add("mksweep", "mksweep wire [-C [AngTol LinTol]]\n"
+    "\t\tthe option -C correct input spine by merging smooth connected neighboring edges\n"
+    "\t\tthe AngTol is in degrees",
     __FILE__, mksweep, g);
 
   theCommands.Add("setsweep", "setsweep  no args to get help",
