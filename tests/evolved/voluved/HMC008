@@ -212,7 +212,7 @@ if {[regexp "Faulties" [bopargcheck result]]} {
 # the dimensions of the shape "result" are about 1.0e+5.
 # So, this tolerance seems to be OK.
 
-checkmaxtol result -ref 1.7319951447770465
+checkmaxtol result -ref 1.6514213338573371
 
 smallview
 don result sw tw

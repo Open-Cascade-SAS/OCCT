@@ -85,6 +85,7 @@
 #include <TopTools_HArray2OfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <GeomLib_CheckCurveOnSurface.hxx>
 
 #include <stdio.h>
 //#include <BRepFill_TrimCorner.hxx>
@@ -290,6 +291,34 @@ static Standard_Boolean CheckSameParameter
 }
 
 //=======================================================================
+//function : CheckSameParameterExact
+//purpose  : Check a posteriori that sameparameter has worked correctly
+// with exact calculation method of edge tolerance 
+//=======================================================================
+static Standard_Boolean CheckSameParameterExact
+(const Handle(Adaptor3d_Curve)& C3d,
+  const Handle(Adaptor3d_CurveOnSurface)& curveOnSurface,
+  const Standard_Real             tol3d,
+  Standard_Real& tolreached)
+{
+  GeomLib_CheckCurveOnSurface aCheckCurveOnSurface(C3d);
+  aCheckCurveOnSurface.SetParallel(Standard_False);
+  aCheckCurveOnSurface.Perform(curveOnSurface);
+
+  tolreached = aCheckCurveOnSurface.MaxDistance();
+
+  if (tolreached > tol3d) {
+    return Standard_False;
+  }
+  else
+  {
+    tolreached = Max(tolreached, Precision::Confusion());
+    tolreached *= 1.05;
+  }
+  return Standard_True;
+}
+
+//=======================================================================
 //function : SameParameter
 //purpose  : Encapsulation of Sameparameter
 // Boolean informs if the pcurve was computed or not...
@@ -340,8 +369,10 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
     return Standard_False;
   }
 
-  ResTol = sp.TolReached();
-  if(ResTol > tolreached ){
+  Handle(Adaptor3d_Curve) curve3d = sp.Curve3d();
+  Handle(Adaptor3d_CurveOnSurface) curveOnSurface = sp.CurveOnSurface();
+
+  if (!CheckSameParameterExact(curve3d, curveOnSurface, tol3d, ResTol) &&  ResTol > tolreached) {
 #ifdef OCCT_DEBUG
     std::cout<<"SameParameter : Tolerance not reached!"<<std::endl;
     std::cout<<"tol visee : "<<tol3d<<" tol obtained : "<<ResTol<<std::endl;
@@ -3253,7 +3284,7 @@ TopoDS_Shape BRepFill_Sweep::Tape(const Standard_Integer Index) const
 
   Tang = T1 + T2; //Average direction
   gp_Dir NormalOfBisPlane = Tang;
-
+  gp_Vec anIntersectPointCrossDirection = T1.Crossed(T2);
   if (isTangent) {
     Sortant -= Tang.Dot(Tang)*Tang;
   }
@@ -3300,7 +3331,7 @@ TopoDS_Shape BRepFill_Sweep::Tape(const Standard_Integer Index) const
     }
   }
 
-  BRepFill_TrimShellCorner aTrim(aFaces, Transition, AxeOfBisPlane);
+  BRepFill_TrimShellCorner aTrim(aFaces, Transition, AxeOfBisPlane, anIntersectPointCrossDirection);
   aTrim.AddBounds(Bounds);
   aTrim.AddUEdges(aUEdges);
   aTrim.AddVEdges(myVEdges, Index);

@@ -76,12 +76,14 @@ static Standard_Boolean FindCommonVertex(const TopoDS_Edge&   theFirstEdge,
 static Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
                                          const Standard_Integer   theEIndex1,
                                          const Standard_Integer   theEIndex2,
+                                         const gp_Vec&            theCrossDirection,
                                          TopoDS_Vertex&           theCommonVertex,
                                          Standard_Real&           theParamOnE1,
                                          Standard_Real&           theParamOnE2);
 
 static Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdges, 
                                     const BOPDS_PDS&                           theDS,
+	                                const gp_Vec&                              theCrossDirection,
                                     TopTools_DataMapOfShapeListOfShape&        theHistMap);
 
 static void StoreVedgeInHistMap(const Handle(TopTools_HArray1OfShape)&     theVEdges,
@@ -194,9 +196,11 @@ static void UpdateSectionEdge(TopoDS_Edge&         theEdge,
 // ===========================================================================================
 BRepFill_TrimShellCorner::BRepFill_TrimShellCorner(const Handle(TopTools_HArray2OfShape)& theFaces,
                                                    const BRepFill_TransitionStyle         theTransition,
-                                                   const gp_Ax2&                          theAxeOfBisPlane) :
+                                                   const gp_Ax2&                          theAxeOfBisPlane,
+                                                   const gp_Vec&                          theIntPointCrossDir) :
   myTransition(theTransition),
   myAxeOfBisPlane(theAxeOfBisPlane),
+  myIntPointCrossDir(theIntPointCrossDir),
   myDone(Standard_False),
   myHasSection(Standard_False)
 {
@@ -309,7 +313,7 @@ void BRepFill_TrimShellCorner::Perform()
   BOPDS_VectorOfInterfFF& aFFs = theDS->InterfFF();
   Standard_Integer aNbFFs = aFFs.Length();
 
-  if(!SplitUEdges(myUEdges, theDS, myHistMap)) {
+  if(!SplitUEdges(myUEdges, theDS, myIntPointCrossDir, myHistMap)) {
     return;
   }
 
@@ -425,7 +429,7 @@ BRepFill_TrimShellCorner::MakeFacesNonSec(const Standard_Integer                
   Standard_Real apar1 = 0., apar2 = 0.;
 
   Standard_Boolean bvertexfound = 
-    FindCommonVertex(theDS, anIndex1, anIndex2, aCommonVertex, apar1, apar2);
+    FindCommonVertex(theDS, anIndex1, anIndex2, myIntPointCrossDir, aCommonVertex, apar1, apar2);
   // search common vertex between bounds. end
 
   Handle(BRepTools_ReShape) aSubstitutor = new BRepTools_ReShape();
@@ -697,9 +701,9 @@ BRepFill_TrimShellCorner::MakeFacesSec(const Standard_Integer                   
 
   TopoDS_Vertex FirstVertex, LastVertex;
   Standard_Real ParamOnLeftE1, ParamOnLeftE2, ParamOnRightE1, ParamOnRightE2;
-  FindCommonVertex(theDS, IndexOfLeftE1, IndexOfLeftE2,
+  FindCommonVertex(theDS, IndexOfLeftE1, IndexOfLeftE2, myIntPointCrossDir,
                    FirstVertex, ParamOnLeftE1, ParamOnLeftE2);
-  FindCommonVertex(theDS, IndexOfRightE1, IndexOfRightE2,
+  FindCommonVertex(theDS, IndexOfRightE1, IndexOfRightE2, myIntPointCrossDir,
                    LastVertex, ParamOnRightE1, ParamOnRightE2);
 
   TopoDS_Shape SecWire;
@@ -1079,7 +1083,8 @@ Standard_Boolean BRepFill_TrimShellCorner::ChooseSection(const TopoDS_Shape& Com
 // purpose:
 // ------------------------------------------------------------------------------------------
 Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdges, 
-                             const BOPDS_PDS&                           theDS,
+                             const BOPDS_PDS&                           theDS, 
+	                         const gp_Vec&                              theCrossDirection,
                              TopTools_DataMapOfShapeListOfShape&        theHistMap) {
 
   const BOPDS_VectorOfInterfVV& aVVs = theDS->InterfVV();
@@ -1105,7 +1110,7 @@ Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdge
     TopoDS_Vertex aCommonVertex;
     Standard_Real apar1 = 0., apar2 = 0.;
     Standard_Boolean bvertexfound = 
-      FindCommonVertex(theDS, anEIndex1, anEIndex2, aCommonVertex, apar1, apar2);
+      FindCommonVertex(theDS, anEIndex1, anEIndex2, theCrossDirection, aCommonVertex, apar1, apar2);
     //
     if(!bvertexfound) {
       TopoDS_Vertex V1 = TopExp::LastVertex(TopoDS::Edge(aE1));
@@ -1217,6 +1222,7 @@ void FindFreeVertices(const TopoDS_Shape&         theShape,
 Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
                                   const Standard_Integer   theEIndex1,
                                   const Standard_Integer   theEIndex2,
+	                              const gp_Vec&            theCrossDirection,
                                   TopoDS_Vertex&           theCommonVertex,
                                   Standard_Real&           theParamOnE1,
                                   Standard_Real&           theParamOnE2) {
@@ -1226,6 +1232,10 @@ Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
   Standard_Boolean bvertexfound = Standard_False;
   TopoDS_Vertex aCommonVertex;
   Standard_Integer eeit = 0;
+
+  TopoDS_Edge theE1 = TopoDS::Edge(theDS->Shape(theEIndex1));
+  TopoDS_Edge theE2 = TopoDS::Edge(theDS->Shape(theEIndex2));
+  BRepAdaptor_Curve aBC1(theE1), aBC2(theE2);
 
   Standard_Integer aNbEEs;
   aNbEEs = aEEs.Length();
@@ -1247,10 +1257,21 @@ Standard_Boolean FindCommonVertex(const BOPDS_PDS&         theDS,
           IntTools_Tools::VertexParameters(aCP, theParamOnE1, theParamOnE2);
         else
           IntTools_Tools::VertexParameters(aCP, theParamOnE2, theParamOnE1);
-       
-        //
-        bvertexfound = Standard_True;
-        break;
+
+        gp_Pnt aPt;
+        gp_Vec aDirOnE1, aDirOnE2;
+        gp_Dir aIntersectPointCrossDir;
+
+        // intersect point aDirOnE1.cross(aDirOnE2) should same direction with path theCrossDirection
+        aBC1.D1(theParamOnE1, aPt, aDirOnE1);
+        aBC2.D1(theParamOnE2, aPt, aDirOnE2);
+        aIntersectPointCrossDir = aDirOnE1.Crossed(aDirOnE2);
+
+        if (aIntersectPointCrossDir.Dot(theCrossDirection) > Precision::SquareConfusion()) 
+        {
+          bvertexfound = Standard_True;
+          break;
+        }
       }
     }
   }

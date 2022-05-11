@@ -81,6 +81,21 @@ public:
     return myCurve2d;
   }
 
+  //! Returns the 3D curve that has the same parameter as
+  //! the 3D curve once evaluated on the surface up to the
+  //! specified tolerance.
+  Handle(Adaptor3d_Curve) Curve3d() const
+  {
+    return myC3d;
+  }
+
+  //! Returns the 3D curve on surface that has the same parameter as
+  //! the 3D curve up to the specified tolerance.
+  Handle(Adaptor3d_CurveOnSurface) CurveOnSurface() const
+  {
+    return myCurveOnSurface;
+  }
+
 private:
 
   //! Internal data structure to unify access to the most actively used data.
@@ -176,6 +191,7 @@ private:
   Handle(Adaptor2d_Curve2d) myHCurve2d;
   Handle(Adaptor3d_Curve) myC3d;
   Handle(Adaptor3d_Surface) mySurf;
+  Handle(Adaptor3d_CurveOnSurface) myCurveOnSurface;
 };
 
 #endif // _Approx_SameParameter_HeaderFile

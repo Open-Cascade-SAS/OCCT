@@ -526,6 +526,8 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     }
     myDone = Standard_True;
   }
+  
+  myCurveOnSurface = Handle(Adaptor3d_CurveOnSurface)::DownCast(aData.myCOnS.ShallowCopy());
 }
 
 //=======================================================================

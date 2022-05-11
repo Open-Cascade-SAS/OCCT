@@ -41,9 +41,12 @@ public:
   //! Constructor: takes faces to intersect,
   //! type of transition (it can be RightCorner or RoundCorner)
   //! and axis of bisector plane
+  //! theIntersectPointCrossDirection : prev path direction at the origin point of theAxeOfBisPlane
+  //! cross next path direction at the origin point of theAxeOfBisPlane. used when EE has more than one vertices
   Standard_EXPORT BRepFill_TrimShellCorner(const Handle(TopTools_HArray2OfShape)& theFaces,
                                            const BRepFill_TransitionStyle         theTransition,
-                                           const gp_Ax2&                          theAxeOfBisPlane);
+                                           const gp_Ax2&                          theAxeOfBisPlane,
+                                           const gp_Vec&                          theIntPointCrossDir);
 
   Standard_EXPORT void AddBounds (const Handle(TopTools_HArray2OfShape)& Bounds);
   
@@ -92,6 +95,7 @@ private:
 
   BRepFill_TransitionStyle myTransition;
   gp_Ax2 myAxeOfBisPlane;
+  gp_Vec myIntPointCrossDir;
   TopoDS_Shape myShape1;
   TopoDS_Shape myShape2;
   Handle(TopTools_HArray2OfShape) myBounds;

@@ -1,0 +1,17 @@
+puts "========"
+puts "bug32807: Sweep algorithm deal with EE more than one intersect points"
+puts "========"
+puts ""
+
+restore [locate_data_file bug32807_path.brep] p
+restore [locate_data_file bug32807_profile.brep] pr
+
+mksweep p
+setsweep -CF
+addsweep pr
+
+buildsweep result -C -S
+
+checkshape result -exact
+checknbshapes result -vertex 34 -edge 68 -wire 34 -face 34 -shell 1
+checkview -display result -2d -path ${imagedir}/${test_image}.png

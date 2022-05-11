@@ -21,7 +21,7 @@ fixshape result rr
 checkshape result
 checkprops result -s 2.14316e+011
 
-checkmaxtol result -ref 0.049038750060552701
+checkmaxtol result -ref 0.046703571498366049
 
 checknbshapes result -shell 1 -face 201 -wire 201
 
