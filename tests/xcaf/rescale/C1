@@ -1,0 +1,11 @@
+
+XOpen [locate_data_file "as1_pmi.xbf"] D_First
+
+set RESCALE_ASSEMBLY_FACTOR 0.5
+set RESCALE_ASSEMBLY_CHECK_BOUNDING 1
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "RESCALE_ASSEMBLY"

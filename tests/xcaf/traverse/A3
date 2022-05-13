@@ -1,0 +1,35 @@
+
+XOpen [locate_data_file "as1_pmi.xbf"] D_First
+
+set TRAVERSE_ASSEMBLY_GRAPH_ARGS "-names"
+set TRAVERSE_ASSEMBLY_GRAPH_RESULT "1 R 'as1' 2 9 22 25
+2 O 'rod-assembly_1' 3
+3 A 'rod-assembly' 4 6 7
+4 O 'nut_1' 5
+5 P 'nut'
+6 O 'nut_2' 5
+7 O 'rod_1' 8
+8 P 'rod'
+9 O 'l-bracket-assembly_1' 10
+10 A 'l-bracket-assembly' 11 16 17 18
+11 O 'nut-bolt-assembly_1' 12
+12 A 'nut-bolt-assembly' 13 15
+13 O 'bolt_1' 14
+14 P 'bolt'
+15 O 'nut_3' 5
+16 O 'nut-bolt-assembly_2' 12
+17 O 'nut-bolt-assembly_3' 12
+18 O 'l-bracket_1' 19
+19 P 'l-bracket' 20 21
+20 S 0:1:1:8:1
+21 S 0:1:1:8:2
+22 O 'plate_1' 23
+23 P 'plate' 24
+24 S 0:1:1:9:1
+25 O 'l-bracket-assembly_2' 10"
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "TRAVERSE_ASSEMBLY_GRAPH SKIP_CHECKVIEW"

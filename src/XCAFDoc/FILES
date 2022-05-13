@@ -6,6 +6,11 @@ XCAFDoc_AssemblyItemId.cxx
 XCAFDoc_AssemblyItemId.hxx
 XCAFDoc_AssemblyItemRef.cxx
 XCAFDoc_AssemblyItemRef.hxx
+XCAFDoc_AssemblyIterator.hxx
+XCAFDoc_AssemblyIterator.cxx
+XCAFDoc_AssemblyGraph.hxx
+XCAFDoc_AssemblyGraph.cxx
+XCAFDoc_AssemblyTool.hxx
 XCAFDoc_PartId.hxx
 XCAFDoc_Area.cxx
 XCAFDoc_Area.hxx

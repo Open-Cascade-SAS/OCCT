@@ -1,0 +1,11 @@
+
+ReadStep D_First [locate_data_file "as1-oc-214-mat.stp"]
+
+set RESCALE_ASSEMBLY_FACTOR 0.5
+set RESCALE_ASSEMBLY_CHECK_BOUNDING 1
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "RESCALE_ASSEMBLY"

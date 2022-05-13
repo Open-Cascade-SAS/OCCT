@@ -1,0 +1,22 @@
+
+ReadStep D_First [locate_data_file "as1-oc-214-mat.stp"]
+
+set TRAVERSE_ASSEMBLY_TREE_ARGS "-root 0:1:1:1/0:1:1:2 -names"
+set TRAVERSE_ASSEMBLY_TREE_RESULT "as1/rod-assembly
+as1/rod-assembly/nut_1
+as1/rod-assembly/nut_2
+as1/rod-assembly/rod_1"
+
+set TRAVERSE_ASSEMBLY_GRAPH_ARGS "-root 0:1:1:2 -names"
+set TRAVERSE_ASSEMBLY_GRAPH_RESULT "1 A 'rod-assembly' 2 4 5
+2 O 'nut_1' 3
+3 P 'nut'
+4 O 'nut_2' 3
+5 O 'rod_1' 6
+6 P 'rod'"
+
+set TypeOfFile ""
+
+set AddToDocument ""
+
+set CompareDocumentsMode "TRAVERSE_ASSEMBLY_TREE TRAVERSE_ASSEMBLY_GRAPH SKIP_CHECKVIEW"

@@ -524,6 +524,84 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
     set DocLayerLabels_First [XGetLayerLabels D_First]
     set DocShapeLabels_First [XGetTopLevelShapes D_First]
 }
+# Traverse assembly tree
+if {[regexp "TRAVERSE_ASSEMBLY_TREE" $CompareDocumentsMode]} {
+    if {[info exists TRAVERSE_ASSEMBLY_TREE_ARGS]} {
+      set traverse_assembly_tree_result [XDumpAssemblyTree D_First {*}$TRAVERSE_ASSEMBLY_TREE_ARGS]
+    } else {
+        set traverse_assembly_tree_result [XDumpAssemblyTree D_First]
+    }
+    set traverse_assembly_tree_result [string trim $traverse_assembly_tree_result]
+    if {$TRAVERSE_ASSEMBLY_TREE_RESULT != $traverse_assembly_tree_result} {
+        puts "ERROR: Not expected traverse assembly tree result"
+    }
+}
+# Traverse assembly graph
+if {[regexp "TRAVERSE_ASSEMBLY_GRAPH" $CompareDocumentsMode]} {
+    if {[info exists TRAVERSE_ASSEMBLY_GRAPH_ARGS]} {
+        set traverse_assembly_graph_result [XDumpAssemblyGraph D_First {*}$TRAVERSE_ASSEMBLY_GRAPH_ARGS]
+    } else {
+        set traverse_assembly_graph_result [XDumpAssemblyGraph D_First]
+    }
+    set traverse_assembly_graph_result [string trim $traverse_assembly_graph_result]
+    if {$TRAVERSE_ASSEMBLY_GRAPH_RESULT != $traverse_assembly_graph_result} {
+        puts "ERROR: Not expected traverse assembly graph result"
+    }
+}
+# Assembly nomenclature
+if {[regexp "ASSEMBLY_NOMENCLATURE" $CompareDocumentsMode]} {
+    set assembly_nomenclature_result [XDumpNomenclature D_First {*}$ASSEMBLY_NOMENCLATURE_ARGS]
+    set assembly_nomenclature_result [string trim $assembly_nomenclature_result]
+    if {$ASSEMBLY_NOMENCLATURE_RESULT != $assembly_nomenclature_result} {
+        puts "ERROR: Not expected assembly nomenclature result"
+    }
+}
+# Rescale assembly
+if {[regexp "RESCALE_ASSEMBLY" $CompareDocumentsMode]} {
+    if {[info exists RESCALE_ASSEMBLY_CHECK_BOUNDING] && $RESCALE_ASSEMBLY_CHECK_BOUNDING} {
+        XGetOneShape S_First D_First
+        bounding S_First -noTriangulation -save xmin ymin zmin xmax ymax zmax
+        set xmin_First [format "%.2f" [dval xmin]]
+        set ymin_First [format "%.2f" [dval ymin]]
+        set zmin_First [format "%.2f" [dval zmin]]
+        set xmax_First [format "%.2f" [dval xmax]]
+        set ymax_First [format "%.2f" [dval ymax]]
+        set zmax_First [format "%.2f" [dval zmax]]
+        set dx_First [expr $xmax_First - $xmin_First]
+        set dy_First [expr $ymax_First - $ymin_First]
+        set dz_First [expr $zmax_First - $zmin_First]
+    }
+    if {[info exists RESCALE_ASSEMBLY_ARGS]} {
+        XRescaleGeometry D_First $RESCALE_ASSEMBLY_FACTOR {*}$RESCALE_ASSEMBLY_ARGS
+    } else {
+        XRescaleGeometry D_First $RESCALE_ASSEMBLY_FACTOR
+    }
+    if {[info exists RESCALE_ASSEMBLY_CHECK_BOUNDING] && $RESCALE_ASSEMBLY_CHECK_BOUNDING} {
+        XGetOneShape S_Second D_First
+        bounding S_Second -noTriangulation -save xmin ymin zmin xmax ymax zmax
+        set xmin_Second [format "%.2f" [dval xmin]]
+        set ymin_Second [format "%.2f" [dval ymin]]
+        set zmin_Second [format "%.2f" [dval zmin]]
+        set xmax_Second [format "%.2f" [dval xmax]]
+        set ymax_Second [format "%.2f" [dval ymax]]
+        set zmax_Second [format "%.2f" [dval zmax]]
+        set dx_Second [expr $xmax_Second - $xmin_Second]
+        set dy_Second [expr $ymax_Second - $ymin_Second]
+        set dz_Second [expr $zmax_Second - $zmin_Second]
+        set dx_Scale [expr $dx_Second / $dx_First]
+        set dy_Scale [expr $dy_Second / $dy_First]
+        set dz_Scale [expr $dz_Second / $dz_First]
+        if { $dx_Scale != $RESCALE_ASSEMBLY_FACTOR } {
+            puts [format "Error : Compared X scale %f differs from %f specified one" $dx_Scale $RESCALE_ASSEMBLY_FACTOR]
+        }
+        if { $dy_Scale != $RESCALE_ASSEMBLY_FACTOR } {
+            puts [format "Error : Compared Y scale %f differs from %f specified one" $dy_Scale $RESCALE_ASSEMBLY_FACTOR]
+        }
+        if { $dz_Scale != $RESCALE_ASSEMBLY_FACTOR } {
+            puts [format "Error : Compared Z scale %f differs from %f specified one" $dz_Scale $RESCALE_ASSEMBLY_FACTOR]
+        }
+    }
+}
 ################## WRITING FILE ##################"
 ###Open temporary file
 if { [string compare ${TypeOfFile} ""] == 0  } {
@@ -917,9 +995,11 @@ if { [regexp "LAYERS" $CompareDocumentsMode] || [regexp "ALL" $CompareDocumentsM
     }
 }    
 
-XGetOneShape result D_Second
-if {[isdraw result]} {
-  checkview -display result -2d -path ${imagedir}/${test_image}.png
+if {![regexp "SKIP_CHECKVIEW" $CompareDocumentsMode]} {
+    XGetOneShape result D_Second
+    if {[isdraw result]} {
+      checkview -display result -2d -path ${imagedir}/${test_image}.png
+    }
 }
 
 if {[expr $ErrorCode == 2]} { 
