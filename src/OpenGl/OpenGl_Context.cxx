@@ -1818,7 +1818,7 @@ void OpenGl_Context::MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) 
   if (myFuncs->glXQueryCurrentRendererIntegerMESA != NULL)
   {
     unsigned int aVMemMiB = 0;
-    if (myFuncs->glXQueryCurrentRendererIntegerMESA (GLX_RENDERER_VIDEO_MEMORY_MESA, &aVMemMiB) != False)
+    if (myFuncs->glXQueryCurrentRendererIntegerMESA (GLX_RENDERER_VIDEO_MEMORY_MESA, &aVMemMiB) != 0)
     {
       addInfo (theDict, "GPU memory", TCollection_AsciiString() + int(aVMemMiB) + " MiB");
     }
