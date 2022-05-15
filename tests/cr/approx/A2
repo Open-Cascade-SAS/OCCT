@@ -1,0 +1,15 @@
+cylinder cyl 0 0 0 1 1 1 1
+mkface f cyl 0 2 0 1
+explode f w
+nurbsconvert w f_1
+cylinder cyl 0.1 0.1 0.1 1 1 1 .9
+getanasurf res w cyl 1.e-3 cyl
+if {[isdraw res]} {
+  set log [dump res]
+  if { [regexp {CylindricalSurface} $log ] != 1 } {
+     puts "Error: surface is not a cylindrical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+

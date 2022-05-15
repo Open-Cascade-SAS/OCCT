@@ -20,3 +20,8 @@ GeomConvert_CompCurveToBSplineCurve.cxx
 GeomConvert_CompCurveToBSplineCurve.hxx
 GeomConvert_Units.cxx
 GeomConvert_Units.hxx
+GeomConvert_CurveToAnaCurve.cxx
+GeomConvert_CurveToAnaCurve.hxx
+GeomConvert_SurfToAnaSurf.cxx
+GeomConvert_SurfToAnaSurf.hxx
+GeomConvert_ConvType.hxx

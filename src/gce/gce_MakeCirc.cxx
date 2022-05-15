@@ -53,7 +53,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt&  P1 ,
 //=========================================================================
   Standard_Real dist1, dist2, dist3, aResolution;
   //
-  aResolution=gp::Resolution();
+  aResolution = gp::Resolution();
   //
   dist1 = P1.Distance(P2);
   dist2 = P1.Distance(P3);
@@ -76,7 +76,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt&  P1 ,
   P2.Coord(x2,y2,z2);
   P3.Coord(x3,y3,z3);
   gp_Dir Dir1(x2-x1,y2-y1,z2-z1);
-  gp_Dir Dir2(x3-x2,y3-y2,z3-z2);
+  gp_Vec VDir2(x3-x2,y3-y2,z3-z2);
   //
   gp_Ax1 anAx1(P1, Dir1);
   gp_Lin aL12 (anAx1);
@@ -85,14 +85,21 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt&  P1 ,
     return;
   }
   //
-  gp_Dir Dir3 = Dir1.Crossed(Dir2);
+  gp_Vec VDir1(Dir1);
+  gp_Vec VDir3 = VDir1.Crossed(VDir2);
+  if(VDir3.SquareMagnitude() < aResolution)
+  {
+    TheError = gce_ColinearPoints;
+    return;
+  }
   //
+  gp_Dir Dir3(VDir3);
   gp_Dir dir = Dir1.Crossed(Dir3);
   gp_Lin L1(gp_Pnt((P1.XYZ()+P2.XYZ())/2.),dir);
-  dir = Dir2.Crossed(Dir3);
+  dir = VDir2.Crossed(Dir3);
   gp_Lin L2(gp_Pnt((P3.XYZ()+P2.XYZ())/2.),dir);
 
-  Standard_Real Tol = 0.000000001;
+  Standard_Real Tol = Precision::PConfusion();
   Extrema_ExtElC distmin(L1,L2,Tol);
   
   if (!distmin.IsDone()) { 
@@ -139,7 +146,7 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt&  P1 ,
       //Dir2 = gp_Dir(x2-x3,y2-y3,z2-z3);
       //modified by NIZNHY-PKV Thu Mar  3 11:31:13 2005t
       //
-      TheCirc = gp_Circ(gp_Ax2(pInt, Dir3, Dir1),(dist1+dist2+dist3)/3.);
+      TheCirc = gp_Circ(gp_Ax2(pInt, gp_Dir(VDir3), Dir1),(dist1+dist2+dist3)/3.);
       TheError = gce_Done;
     }
   }

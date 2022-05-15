@@ -1,0 +1,15 @@
+plane pl 0 0 0 1 1 1
+pcone con pl 2 1 3 60
+explode con w
+nurbsconvert w con_1
+cone con 0.1 .1 .1 1 1 1 -17 1.9
+getanasurf res w con 1.e-3 con
+if {[isdraw res]} {
+  set log [dump res]
+  if { [regexp {ConicalSurface} $log ] != 1 } {
+     puts "Error: surface is not a conical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+

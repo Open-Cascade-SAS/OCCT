@@ -1007,6 +1007,25 @@ Standard_Integer aNbOffsetSurfaces = aCheckContents.NbOffsetSurf();
 Handle(TopTools_HSequenceOfShape) aSeqFaces = aCheckContents.OffsetSurfaceSec();
 ~~~~
 
+@subsubsection occt_shg_3_2_4 Analysis of shape underlined geometry
+
+Class *ShapeAnalysis_CanonicalRecognition* provides tools that analyze geometry of shape and explore the possibility of converting geometry into a canonical form.
+Canonical forms for curves are lines, circles and ellipses.
+Canonical forms for surfaces are planar, cylindrical, conical and spherical surfaces.
+
+Recognition and converting into canonical form is performed according to maximal deviation criterium: maximal distance between initial and canonical geometrical objects must be less, than given value.
+
+Analysis of curves is allowed for following shapes:
+  * edge - algorithm checks 3d curve of edge
+  * wire - algorithm checks 3d curves of all edges in order to convert them in the same analytical curve
+
+Analysis of surfaces is allowed for following shapes:
+  * face - algorithm checks surface of face
+  * shell - algorithm checks surfaces of all faces in order to convert them in the same analytical surface
+  * edge - algorithm checks all surfaces that are shared by given edge in order convert one of them in analytical surface, which most close to the input sample surface.
+  * wire - the same as for edge, but algorithm checks all edges of wire in order to find analytical surface, which most close to the input sample surface.
+
+
 @section occt_shg_4 Upgrading
 
 Upgrading tools are intended for adaptation of shapes for better use by Open CASCADE Technology or for customization to particular needs, i.e. for export to another system.

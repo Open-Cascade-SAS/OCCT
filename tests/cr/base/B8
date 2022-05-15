@@ -1,0 +1,25 @@
+sphere surf 1
+trim surf1 surf 0 3 -1.5 0
+convert surf1 surf1
+mkface f1 surf1
+trim surf2 surf 0 3 0 1.5
+convert surf2 surf2
+mkface f2 surf2
+trim surf3 surf 3 6 0 1.5
+convert surf3 surf3
+mkface f3 surf3
+trim surf4 surf 3 6 -1.5 0
+convert surf4 surf4
+mkface f4 surf4
+sewing sh f1 f2 f3 f4
+getanasurf asurf sh sph 1.e-7
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {SphericalSurface} $log ] != 1 } {
+     puts "Error: surface is not a spherical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+
+

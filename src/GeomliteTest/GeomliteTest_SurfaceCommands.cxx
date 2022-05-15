@@ -59,7 +59,9 @@
 #include <Geom2dConvert.hxx>
 #include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
 #include <GeomLProp_SLProps.hxx>
-
+#include <GeomConvert_SurfToAnaSurf.hxx>
+#include <GeomConvert_CurveToAnaCurve.hxx>
+#include <GeomConvert_ConvType.hxx>
 
 #include <DrawTrSurf_BezierSurface.hxx>
 #include <DrawTrSurf_BSplineSurface.hxx>
@@ -517,6 +519,111 @@ static Standard_Integer converting(Draw_Interpretor& , Standard_Integer n, const
     GC = GeomConvert::CurveToBSplineCurve( GC,
 					  Parameterisation);
     DrawTrSurf::Set(a[1], GC);
+  }
+
+  return 0;
+}
+
+//=======================================================================
+//function : converting to canonical
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer tocanon(Draw_Interpretor& di, Standard_Integer n, const char ** a)
+{
+  if (n < 3) return 1;
+
+  GeomConvert_ConvType aConvType = GeomConvert_Simplest;
+  GeomAbs_CurveType aCurv = GeomAbs_Line;
+  GeomAbs_SurfaceType aSurf = GeomAbs_Plane;
+  if (n > 4)
+  {
+    if (strcmp(a[4], "sim") == 0) {
+      aConvType = GeomConvert_Simplest;
+    }
+    else if (strcmp(a[4], "gap") == 0) {
+      aConvType = GeomConvert_MinGap;
+    }
+    else if (strcmp(a[4], "lin") == 0) {
+      aConvType = GeomConvert_Target;
+      aCurv = GeomAbs_Line;
+    }
+    else if (strcmp(a[4], "cir") == 0) {
+      aConvType = GeomConvert_Target;
+      aCurv = GeomAbs_Circle;
+    }
+    else if (strcmp(a[4], "ell") == 0) {
+      aConvType = GeomConvert_Target;
+      aCurv = GeomAbs_Ellipse;
+    }
+    else if (strcmp(a[4], "pln") == 0) {
+      aConvType = GeomConvert_Target;
+      aSurf = GeomAbs_Plane;
+    }
+    else if (strcmp(a[4], "cyl") == 0) {
+      aConvType = GeomConvert_Target;
+      aSurf = GeomAbs_Cylinder;
+    }
+    else if (strcmp(a[4], "con") == 0) {
+      aConvType = GeomConvert_Target;
+      aSurf = GeomAbs_Cone;
+    }
+    else if (strcmp(a[4], "sph") == 0) {
+      aConvType = GeomConvert_Target;
+      aSurf = GeomAbs_Sphere;
+    }
+    else if (strcmp(a[4], "tor") == 0) {
+      aConvType = GeomConvert_Target;
+      aSurf = GeomAbs_Torus;
+    }
+  }
+
+  Standard_Real tol = Precision::Confusion();
+  if (n > 3)
+  {
+    tol = Draw::Atof(a[3]);
+  }
+
+  Handle(Geom_Curve) GC = DrawTrSurf::GetCurve(a[2]);
+  if (GC.IsNull()) {
+    Handle(Geom_Surface) GS = DrawTrSurf::GetSurface(a[2]);
+    if (GS.IsNull()) {
+      return 1;
+    }
+    else {
+      GeomConvert_SurfToAnaSurf aSurfToAna(GS);
+      aSurfToAna.SetConvType(aConvType);
+      if(aConvType == GeomConvert_Target)
+        aSurfToAna.SetTarget(aSurf);
+      Handle(Geom_Surface) anAnaSurf = aSurfToAna.ConvertToAnalytical(tol);
+      if (!anAnaSurf.IsNull())
+      {
+        DrawTrSurf::Set(a[1], anAnaSurf);
+        Standard_Real aGap = aSurfToAna.Gap();
+        di << "Gap = " << aGap << "\n";
+      }
+      else
+        di << "Conversion failed" << "\n";
+    }
+  }
+  else {
+    GeomConvert_CurveToAnaCurve aCurvToAna(GC);
+    aCurvToAna.SetConvType(aConvType);
+    if (aConvType == GeomConvert_Target)
+      aCurvToAna.SetTarget(aCurv);
+
+    Handle(Geom_Curve) anAnaCurv;
+    Standard_Real tf = GC->FirstParameter(), tl = GC->LastParameter(), ntf, ntl;
+    Standard_Boolean isdone = aCurvToAna.ConvertToAnalytical(tol, anAnaCurv, tf, tl, ntf, ntl);
+    if (isdone)
+    {
+      anAnaCurv = new Geom_TrimmedCurve(anAnaCurv, ntf, ntl);
+      DrawTrSurf::Set(a[1], anAnaCurv);
+      Standard_Real aGap = aCurvToAna.Gap();
+      di << "Gap = " << aGap << "\n";
+    }
+    else
+      di << "Conversion failed" << "\n";
   }
 
   return 0;
@@ -1713,6 +1820,11 @@ void  GeomliteTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  "convert result c2d/c3d/surf [qa,c1,s1,s2,s3,s4,po]",
 		  __FILE__,
 		  converting,g);
+
+  theCommands.Add("tocanon",
+    "tocanon result c3d/surf [tol [sim gap lin cir ell pln cyl con sph tor]]",
+    __FILE__,
+    tocanon, g);
 
   theCommands.Add("tobezier",
 		  "tobezier result c2d/c3d/surf [ufirst, ulast / ufirst, ulast, vfirst, vlast]",

@@ -338,7 +338,8 @@ The <i>GeomConvert</i> package also provides the following:
   * a splitting algorithm, which determines the curves along which a BSpline surface should be cut in order to obtain patches with the same degree of continuity,
   * global functions to construct BSpline surfaces created by this splitting algorithm, or by other types of BSpline surface segmentation,
   * an algorithm, which converts a BSpline surface into a series of adjacent Bezier surfaces,
-  * an algorithm, which converts a grid of adjacent Bezier surfaces into a BSpline surface.
+  * an algorithm, which converts a grid of adjacent Bezier surfaces into a BSpline surface. 
+  * algorithms that converts NURBS, Bezier and other general parametrized curves and surface into anaytical curves and surfaces.
 
 @subsection occt_modat_1_4 Points on Curves
 
