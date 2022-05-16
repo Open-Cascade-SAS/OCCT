@@ -245,8 +245,8 @@ public:
   //! must be defined around it
   Standard_EXPORT static void Standards();
 
-
-
+  //! Fills given string-to-string map with all static data
+  Standard_EXPORT static void FillMap(NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString, TCollection_AsciiString>& theMap);
 
   DEFINE_STANDARD_RTTIEXT(Interface_Static,Interface_TypedValue)
 

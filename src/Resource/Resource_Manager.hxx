@@ -54,6 +54,9 @@ public:
   //! syntax of an individual resource line is:
   Standard_EXPORT Resource_Manager(const Standard_CString aName, const Standard_Boolean Verbose = Standard_False);
 
+  //! Create an empty Resource manager
+  Standard_EXPORT Resource_Manager();
+
   //! Create a Resource manager.
   //! @param theName [in] description file name
   //! @param theDefaultsDirectory  [in] default folder for looking description file
@@ -112,6 +115,9 @@ public:
   //! or file doesn't exist returns empty string.
   Standard_EXPORT static void GetResourcePath (TCollection_AsciiString& aPath, const Standard_CString aName, const Standard_Boolean isUserDefaults);
 
+  //! Returns internal Ref or User map with parameters 
+  Standard_EXPORT Resource_DataMapOfAsciiStringAsciiString& GetMap(Standard_Boolean theRefMap = Standard_True);
+  
 private:
 
   Standard_EXPORT void Load (const TCollection_AsciiString& thePath,

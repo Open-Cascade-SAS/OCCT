@@ -100,9 +100,17 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
   if ( context.IsNull() )
   {
     Standard_CString rscfile = Interface_Static::CVal(prscfile);
-    if (!rscfile)
-      rscfile = prscfile;
-    context = new ShapeProcess_ShapeContext(shape, rscfile);
+    if (rscfile != nullptr && strlen (rscfile) == 0)
+    {
+      context = new ShapeProcess_ShapeContext(shape, nullptr);
+      Interface_Static::FillMap(context->ResourceManager()->GetMap());
+    }
+    else
+    {
+      if (!rscfile)
+        rscfile = prscfile;
+      context = new ShapeProcess_ShapeContext(shape, rscfile);
+    }
     context->SetDetalisation(TopAbs_EDGE);
   }
   context->SetNonManifold(NonManifold);

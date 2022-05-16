@@ -62,7 +62,14 @@ Standard_Boolean ShapeProcess_Context::Init (const Standard_CString file,
                                              const Standard_CString scope)
 {
   myScope.Nullify();
-  myRC = LoadResourceManager ( file ); 
+  if (file != nullptr && strlen (file) != 0)
+  {
+    myRC = LoadResourceManager ( file ); 
+  }
+  else
+  {
+    myRC = new Resource_Manager();
+  }
   if ( scope && scope[0] ) {
     SetScope ( scope );
   }

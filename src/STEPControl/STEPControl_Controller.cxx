@@ -179,12 +179,66 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init ("step","write.step.vertex.mode",'&',"eval One Compound");
     Interface_Static::Init ("step","write.step.vertex.mode",'&',"eval Single Vertex");
     Interface_Static::SetIVal("write.step.vertex.mode",0);
-  
+
     // abv 15.11.00: ShapeProcessing
-    Interface_Static::Init ("XSTEP","write.step.resource.name",'t',"STEP");
-    Interface_Static::Init ("XSTEP","read.step.resource.name",'t',"STEP");
-    Interface_Static::Init ("XSTEP","write.step.sequence",'t',"ToSTEP");
-    Interface_Static::Init ("XSTEP","read.step.sequence",'t',"FromSTEP");
+    Interface_Static::Init ("XSTEP", "write.step.resource.name",                      't', "STEP");
+    Interface_Static::Init ("XSTEP", "read.step.resource.name",                       't', "STEP");
+    Interface_Static::Init ("XSTEP", "write.step.sequence",                           't', "ToSTEP");
+    Interface_Static::Init ("XSTEP", "read.step.sequence",                            't', "FromSTEP");
+    Interface_Static::Init ("XSTEP", "ToSTEP.exec.op",                                't', "SplitCommonVertex,DirectFaces");
+    Interface_Static::Init ("XSTEP", "FromSTEP.exec.op",                              't', "FixShape");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.Tolerance3d",                 't', "&Runtime.Tolerance");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.MaxTolerance3d",              't', "&Runtime.MaxTolerance");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.MinTolerance3d",              't', "1.e-7");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixFreeShellMode",            't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixFreeFaceMode",             't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixFreeWireMode",             't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSameParameterMode",        't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSolidMode",                't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixShellOrientationMode",     't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.CreateOpenSolidMode",         't', "0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixShellMode",                't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixFaceOrientationMode",      't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixFaceMode",                 't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixWireMode",                 't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixOrientationMode",          't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixAddNaturalBoundMode",      't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixMissingSeamMode",          't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSmallAreaWireMode",        't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.RemoveSmallAreaFaceMode",     't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixIntersectingWiresMode",    't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixLoopWiresMode",            't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSplitFaceMode",            't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.AutoCorrectPrecisionMode",    't', "1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.ModifyTopologyMode",          't', "0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.ModifyGeometryMode",          't', "1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.ClosedWireMode",              't', "1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.PreferencePCurveMode",        't', "1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixReorderMode",              't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSmallMode",                't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixConnectedMode",            't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixEdgeCurvesMode",           't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixDegeneratedMode",          't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixLackingMode",              't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSelfIntersectionMode",     't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.RemoveLoopMode",              't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixReversed2dMode",           't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixRemovePCurveMode",         't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixRemoveCurve3dMode",        't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixAddPCurveMode",            't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixAddCurve3dMode",           't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSeamMode",                 't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixShiftedMode",              't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixEdgeSameParameterMode",    't', "0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixNotchedEdgesMode",         't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixTailMode",                 't', "0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.MaxTailAngle",                't', "0.0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.MaxTailWidth",                't', "-1.0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixSelfIntersectingEdgeMode", 't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixIntersectingEdgesMode",    't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixNonAdjacentIntersectingEdgesMode", 't', "-1");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixVertexPositionMode",       't', "0");
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixVertexToleranceMode",      't', "-1"); 
 
     // ika 28.07.16: Parameter to read all top level solids and shells,
     // should be used only in case of invalid shape_representation without links to shapes.

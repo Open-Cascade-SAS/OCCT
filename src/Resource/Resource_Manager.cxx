@@ -129,6 +129,16 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
 }
 
 // =======================================================================
+// function : Resource_Manager
+// purpose  :
+// =======================================================================
+Resource_Manager::Resource_Manager()
+  : myName(""), myVerbose(Standard_False)
+{
+
+}
+
+// =======================================================================
 // function : Load
 // purpose  :
 // =======================================================================
@@ -537,4 +547,13 @@ void Resource_Manager::GetResourcePath (TCollection_AsciiString& aPath, const St
   anOSDPath.SetExtension ("");
 
   anOSDPath.SystemName(aPath);
+}
+
+//=======================================================================
+// function : GetMap
+// purpose  :
+//=======================================================================
+Resource_DataMapOfAsciiStringAsciiString& Resource_Manager::GetMap(Standard_Boolean theRefMap)
+{
+  return theRefMap ? myRefMap : myUserMap;
 }

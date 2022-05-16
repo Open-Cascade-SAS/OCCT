@@ -839,14 +839,38 @@ static IFSelect_ReturnStatus fun27
   Standard_Integer argc = pilot->NbWords();
   Handle(IFSelect_WorkSession) WS = pilot->Session();
   const Standard_CString arg1 = pilot->Arg(1);
-  const Standard_CString arg2 = pilot->Arg(2);
+  Standard_CString arg2 = pilot->Arg(2);
+  const Standard_CString anEmptyStr = "";
+  if (arg2 && strlen(arg2) == 2 && arg2[0] == '"' && arg2[1] == '"')
+  {
+    arg2 = anEmptyStr;
+  }
 //        ****    Param(Value)         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
-  if (argc < 2) {
+  if (argc < 2 || (argc == 3 && strcmp (arg1, "-p") == 0)) {
     Handle(TColStd_HSequenceOfHAsciiString) li = Interface_Static::Items();
-    Standard_Integer i,nb = li->Length();
-    sout<<" List of parameters : "<<nb<<" items : "<<std::endl;
+    Standard_Integer i,nb = li->Length(), aPatternNb = 0;
+    size_t aPatternLen = strlen(arg2);
+    if (argc == 3)
+    {
+      for (i = 1; i <= nb; i ++)
+      {
+        if (strncmp(li->Value(i)->String().ToCString(), arg2, aPatternLen) == 0)
+        {
+          aPatternNb++;
+        }
+      }
+    }
+    else
+    {
+      aPatternNb = nb;
+    }
+    sout << " List of parameters : " << aPatternNb << " items : " << std::endl;
     for (i = 1; i <= nb; i ++) {
+      if (argc == 3 && strncmp(li->Value(i)->String().ToCString(), arg2, aPatternLen) != 0)
+      {
+        continue;
+      }
       sout<<li->Value(i)->String();
       sout<<" : "<<Interface_Static::CVal(li->Value(i)->ToCString())<<std::endl;
     }
@@ -864,7 +888,14 @@ static IFSelect_ReturnStatus fun27
 
     if (argc == 2) sout<<"To modify, param name_param new_val"<<std::endl;
     else {
-      sout<<" New demanded value : "<<arg2;
+      if (strlen(arg2) != 0)
+      {
+        sout<<" New demanded value : "<<arg2;
+      }
+      else
+      {
+        sout<<" New demanded value : not valued";
+      }
       if (Interface_Static::SetCVal (arg1,arg2))
 	{  sout<<"   OK"<<std::endl;  return IFSelect_RetDone;  }
       else  {  sout <<" , refused"<<std::endl;  return IFSelect_RetError;  }
@@ -2437,7 +2468,9 @@ void IFSelect_Functions::Init()
   IFSelect_Act::AddFunc("itemlabel","xxx xxx : liste items having this label",fun24);
   IFSelect_Act::AddFunc("xsave","filename:string  : sauve items-session",fun25);
   IFSelect_Act::AddFunc("xrestore","filename:string  : restaure items-session",fun26);
-  IFSelect_Act::AddFunc("param","nompar:string : displays parameter value; + nompar val : changes it",fun27);
+  IFSelect_Act::AddFunc("param","[-p Pattern] - displays all parameters or filtered by pattern;\n"
+                                "par_name - displays parameter;\n"
+                                "par_name par_value - changes parameter's value", fun27);
 
   IFSelect_Act::AddFunc("sentfiles","Lists files sent from last Load",fun29);
   IFSelect_Act::AddFunc("fileprefix","prefix:string    : definit File Prefix",fun30);
