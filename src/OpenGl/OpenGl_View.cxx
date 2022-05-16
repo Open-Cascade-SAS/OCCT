@@ -2225,6 +2225,11 @@ bool OpenGl_View::blitSubviews (const Graphic3d_Camera::Projection ,
   for (const Handle(Graphic3d_CView)& aChildIter : mySubviews)
   {
     OpenGl_View* aSubView = dynamic_cast<OpenGl_View*> (aChildIter.get());
+    if (!aSubView->IsActive())
+    {
+      continue;
+    }
+
     const Handle(OpenGl_FrameBuffer)& aChildFbo = !aSubView->myImmediateSceneFbos[0].IsNull()
                                                  ? aSubView->myImmediateSceneFbos[0]
                                                  : aSubView->myMainSceneFbos[0];

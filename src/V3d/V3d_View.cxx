@@ -348,7 +348,8 @@ Handle(V3d_View) V3d_View::PickSubview (const Graphic3d_Vec2i& thePnt) const
   for (Standard_Integer aSubviewIter = mySubviews.Upper(); aSubviewIter >= mySubviews.Lower(); --aSubviewIter)
   {
     const Handle(V3d_View)& aSubview = mySubviews.Value (aSubviewIter);
-    if (thePnt.x() >= aSubview->View()->SubviewTopLeft().x()
+    if (aSubview->View()->IsActive()
+     && thePnt.x() >= aSubview->View()->SubviewTopLeft().x()
      && thePnt.x() < (aSubview->View()->SubviewTopLeft().x() + aSubview->Window()->Dimensions().x())
      && thePnt.y() >= aSubview->View()->SubviewTopLeft().y()
      && thePnt.y() < (aSubview->View()->SubviewTopLeft().y() + aSubview->Window()->Dimensions().y()))
