@@ -2214,15 +2214,23 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView)
 //function : BoundingBoxOfSelection
 //purpose  :
 //=======================================================================
-Bnd_Box AIS_InteractiveContext::BoundingBoxOfSelection() const
+Bnd_Box AIS_InteractiveContext::BoundingBoxOfSelection (const Handle(V3d_View)& theView) const
 {
   Bnd_Box aBndSelected;
   AIS_MapOfObjectOwners anObjectOwnerMap;
+  const Standard_Integer aViewId = !theView.IsNull() ? theView->View()->Identification() : -1;
   for (AIS_NListOfEntityOwner::Iterator aSelIter (mySelection->Objects()); aSelIter.More(); aSelIter.Next())
   {
     const Handle(SelectMgr_EntityOwner)& anOwner = aSelIter.Value();
     Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast(anOwner->Selectable());
     if (anObj->IsInfinite())
+    {
+      continue;
+    }
+
+    Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->StructureManager()->ObjectAffinity (anObj);
+    const Standard_Boolean isVisible = aViewId == -1 || anAffinity->IsVisible (aViewId);
+    if (!isVisible)
     {
       continue;
     }
@@ -2264,7 +2272,7 @@ void AIS_InteractiveContext::FitSelected (const Handle(V3d_View)& theView,
                                           const Standard_Real theMargin,
                                           const Standard_Boolean theToUpdate)
 {
-  Bnd_Box aBndSelected = BoundingBoxOfSelection();
+  Bnd_Box aBndSelected = BoundingBoxOfSelection (theView);
   if (!aBndSelected.IsVoid())
   {
     theView->FitAll (aBndSelected, theMargin, theToUpdate);

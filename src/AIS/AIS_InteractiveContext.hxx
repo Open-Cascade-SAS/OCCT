@@ -502,7 +502,10 @@ public: //! @name Selection management
   Standard_EXPORT AIS_StatusOfPick SelectDetected (const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
 
   //! Returns bounding box of selected objects.
-  Standard_EXPORT Bnd_Box BoundingBoxOfSelection() const;
+  Standard_EXPORT Bnd_Box BoundingBoxOfSelection (const Handle(V3d_View)& theView) const;
+
+  Standard_DEPRECATED ("BoundingBoxOfSelection() should be called with View argument")
+  Bnd_Box BoundingBoxOfSelection() const { return BoundingBoxOfSelection (Handle(V3d_View)()); }
 
   //! Sets list of owner selected/deselected using specified selection scheme.
   //! @param theOwners owners to change selection state

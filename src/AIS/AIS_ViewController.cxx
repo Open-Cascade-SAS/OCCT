@@ -1969,7 +1969,7 @@ gp_Pnt AIS_ViewController::GravityPoint (const Handle(AIS_InteractiveContext)& t
 void AIS_ViewController::FitAllAuto (const Handle(AIS_InteractiveContext)& theCtx,
                                      const Handle(V3d_View)& theView)
 {
-  const Bnd_Box aBoxSel = theCtx->BoundingBoxOfSelection();
+  const Bnd_Box aBoxSel = theCtx->BoundingBoxOfSelection (theView);
   const double aFitMargin = 0.01;
   if (aBoxSel.IsVoid())
   {

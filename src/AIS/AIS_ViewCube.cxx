@@ -859,7 +859,7 @@ Standard_Boolean AIS_ViewCube::HasAnimation() const
 void AIS_ViewCube::viewFitAll (const Handle(V3d_View)& theView,
                                const Handle(Graphic3d_Camera)& theCamera)
 {
-  Bnd_Box aBndBox = myToFitSelected ? GetContext()->BoundingBoxOfSelection() : theView->View()->MinMaxValues();
+  Bnd_Box aBndBox = myToFitSelected ? GetContext()->BoundingBoxOfSelection (theView) : theView->View()->MinMaxValues();
   if (aBndBox.IsVoid()
    && myToFitSelected)
   {
