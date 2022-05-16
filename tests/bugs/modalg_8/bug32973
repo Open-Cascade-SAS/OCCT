@@ -1,0 +1,13 @@
+puts "============================================================================================="
+puts "0032973: Modeling Algorithms - Regression in BRepExtrema_DistShapeShape compared with 7.5"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug29313_Nozzle45.brep] s1
+restore [locate_data_file bug29313_RobotArm6.brep] s2
+
+distmini d s1 s2
+set Tol 1.e-7
+checkreal ddd [dval d_val] 2185.9739179983058 $Tol $Tol
+compound s1 s2 d d2 res
+checkview -display res -2d -path ${imagedir}/${test_image}.png
