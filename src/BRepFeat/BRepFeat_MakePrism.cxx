@@ -987,8 +987,8 @@ Standard_Integer SensOfPrism(const Handle(Geom_Curve) C,
   ASI1.Perform(scur);
   Standard_Integer sens = 1;
   if(ASI1.IsDone() && ASI1.NbPoints(1) >= 1) {
-    if(ASI1.Point(1, 1).Parameter() < 0. && 
-       ASI1.Point(1, ASI1.NbPoints(1)).Parameter() < 0.) {
+    if(ASI1.Point(1, 1).Parameter() + Precision::Confusion() < 0. &&
+       ASI1.Point(1, ASI1.NbPoints(1)).Parameter() + Precision::Confusion() < 0.) {
       sens = -1;
     }
   }
