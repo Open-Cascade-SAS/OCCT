@@ -52,6 +52,7 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <NCollection_IndexedMap.hxx>
 
 static Standard_Boolean SetEmptyResultRange(const Standard_Real      theParameter, 
                                             IntTools_MarkedRangeSet& theMarkedRange);
@@ -2331,27 +2332,44 @@ void BuildBox(const Handle(Geom_BSplineSurface)       &theSurf,
 static void MergeSolutions(const IntTools_ListOfCurveRangeSample& theListCurveRange,
                            const IntTools_ListOfSurfaceRangeSample& theListSurfaceRange,
                            IntTools_ListOfCurveRangeSample& theListCurveRangeSort,
-                           IntTools_ListOfSurfaceRangeSample& theListSurfaceRangeSort) {
-  
-  IntTools_ListIteratorOfListOfCurveRangeSample anItC2;
-  IntTools_ListIteratorOfListOfSurfaceRangeSample anItS1(theListSurfaceRange), anItS2;
-  IntTools_MapOfSurfaceSample aMapToAvoid;
+                           IntTools_ListOfSurfaceRangeSample& theListSurfaceRangeSort) 
+{
+  NCollection_IndexedMap<IntTools_SurfaceRangeSample, IntTools_SurfaceRangeSampleMapHasher> aMapToAvoid;
 
-  for(; anItS1.More(); anItS1.Next()) {
-    const IntTools_SurfaceRangeSample& aRangeS = anItS1.Value();
+  NCollection_DataMap<Standard_Integer, TColStd_ListOfInteger> aCurveIdMap;
+  std::vector<IntTools_CurveRangeSample> aCurveRangeVector;
+  aCurveRangeVector.reserve(theListCurveRange.Size());
 
-    if(aMapToAvoid.Contains(aRangeS))
-      continue;
-    aMapToAvoid.Add(aRangeS);
+  IntTools_ListIteratorOfListOfCurveRangeSample anItC(theListCurveRange);
+  IntTools_ListIteratorOfListOfSurfaceRangeSample anItS(theListSurfaceRange);
 
-    anItC2.Initialize(theListCurveRange);
-    anItS2.Initialize(theListSurfaceRange);
+  Standard_Integer aCurveRangeId = 0;
+  Standard_Integer aSurfRangeSize = 0;
+  for (; anItS.More() && anItC.More(); anItS.Next(), anItC.Next(), ++aCurveRangeId)
+  {
+    aCurveRangeVector.push_back(anItC.Value());
+    Standard_Integer aSurfIndex = aMapToAvoid.Add(anItS.Value());
+    if (aSurfIndex > aSurfRangeSize)
+    {
+      aCurveIdMap.Bound(aSurfIndex, TColStd_ListOfInteger())->Append(aCurveRangeId);
+      ++aSurfRangeSize;
+    }
+    else
+    {
+      aCurveIdMap.ChangeFind(aSurfIndex).Append(aCurveRangeId);
+    }
+  }
 
-    for(; anItS2.More() && anItC2.More(); anItS2.Next(), anItC2.Next()) {
-      if(aRangeS.IsEqual(anItS2.Value())) {
-        theListCurveRangeSort.Append(anItC2.Value());
-        theListSurfaceRangeSort.Append(anItS2.Value());
-      }
+  for (Standard_Integer i = 1; i <= aMapToAvoid.Size(); i++)
+  {
+    const IntTools_SurfaceRangeSample& aSurfRange = aMapToAvoid(i);
+    const TColStd_ListOfInteger& aCurveRangeList = aCurveIdMap(i);
+    for (TColStd_ListOfInteger::Iterator anIter(aCurveRangeList); anIter.More(); anIter.Next())
+    {
+      const IntTools_CurveRangeSample& aCurveRange = aCurveRangeVector[anIter.Value()];
+
+      theListSurfaceRangeSort.Append(aSurfRange);
+      theListCurveRangeSort.Append(aCurveRange);
     }
   }
 }
@@ -2376,20 +2394,25 @@ static void CheckSampling(const IntTools_CurveRangeSample& theCurveRange,
   bAllowSamplingU = Standard_True;
   bAllowSamplingV = Standard_True;
 
+  Standard_Integer aSamplesNb = theCurveRange.GetDepth() == 0 ? 1 : theCurveData.GetNbSample();
+
   // check
   if((pow((Standard_Real)theCurveData.GetNbSample(), (Standard_Real )(theCurveRange.GetDepth() + 1)) > dLimit) ||
-     ((DiffC / theCurveData.GetNbSample()) < theCurveData.GetMinRange())) {
+     ((DiffC / (Standard_Real)aSamplesNb) < theCurveData.GetMinRange())) {
     bAllowSamplingC = Standard_False;
   }
 
+  aSamplesNb = theSurfaceRange.GetDepthU() == 0 ? 1 : theSurfaceData.GetNbSampleU();
+
   if((pow((Standard_Real )theSurfaceData.GetNbSampleU(), (Standard_Real )(theSurfaceRange.GetDepthU() + 1)) > dLimit) ||
-     ((DiffU / theSurfaceData.GetNbSampleU()) < theSurfaceData.GetMinRangeU())) {
+     ((DiffU / (Standard_Real)aSamplesNb) < theSurfaceData.GetMinRangeU())) {
     bAllowSamplingU = Standard_False;
   }
   
+  aSamplesNb = theSurfaceRange.GetDepthV() == 0 ? 1 : theSurfaceData.GetNbSampleV();
 
   if((pow((Standard_Real )theSurfaceData.GetNbSampleV(), (Standard_Real )(theSurfaceRange.GetDepthV() + 1)) > dLimit) ||
-     ((DiffV / theSurfaceData.GetNbSampleV()) < theSurfaceData.GetMinRangeV())) {
+     ((DiffV / (Standard_Real)aSamplesNb) < theSurfaceData.GetMinRangeV())) {
     bAllowSamplingV = Standard_False;
   }
 }

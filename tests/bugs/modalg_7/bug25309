@@ -1,0 +1,10 @@
+puts "============"
+puts "0025309: Modeling Algorithms - Check of shape validity for BOP takes too long"
+puts "============"
+puts ""
+
+cpulimit 60
+
+restore [locate_data_file bug25309.brep] a
+
+bopargcheck a
