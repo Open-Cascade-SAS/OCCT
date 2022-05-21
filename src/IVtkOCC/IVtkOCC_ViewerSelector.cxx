@@ -114,7 +114,7 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer theXPix,
 
   mySelectingVolumeMgr.BuildSelectingVolume();
 
-  TraverseSensitives();
+  TraverseSensitives (-1);
 }
 
 //============================================================================
@@ -160,7 +160,7 @@ void IVtkOCC_ViewerSelector::Pick (const Standard_Integer    theXMin,
 
   mySelectingVolumeMgr.BuildSelectingVolume();
 
-  TraverseSensitives();
+  TraverseSensitives (-1);
 }
 
 //============================================================================
@@ -207,7 +207,7 @@ void IVtkOCC_ViewerSelector::Pick (double**                  thePoly,
 
   mySelectingVolumeMgr.BuildSelectingVolume();
 
-  TraverseSensitives();
+  TraverseSensitives (-1);
 }
 
 //============================================================================

@@ -134,12 +134,6 @@ public:
   //! Returns number of displayed structures in the view.
   virtual Standard_Integer NumberOfDisplayedStructures() const { return myStructsDisplayed.Extent(); }
 
-  //! Returns map of objects hidden within this specific view (not viewer-wise).
-  const Handle(Graphic3d_NMapOfTransient)& HiddenObjects() const { return myHiddenObjects; }
-
-  //! Returns map of objects hidden within this specific view (not viewer-wise).
-  Handle(Graphic3d_NMapOfTransient)& ChangeHiddenObjects() { return myHiddenObjects; }
-
   //! Returns Standard_True in case if the structure with the given <theStructId> is
   //! in list of structures to be computed and stores computed struct to <theComputedStruct>.
   Standard_EXPORT Standard_Boolean IsComputed (const Standard_Integer theStructId,
@@ -649,7 +643,6 @@ protected:
   Graphic3d_SequenceOfStructure myStructsToCompute;
   Graphic3d_SequenceOfStructure myStructsComputed;
   Graphic3d_MapOfStructure myStructsDisplayed;
-  Handle(Graphic3d_NMapOfTransient) myHiddenObjects;
   Standard_Boolean myIsInComputedMode;
   Standard_Boolean myIsActive;
   Standard_Boolean myIsRemoved;

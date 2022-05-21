@@ -325,7 +325,7 @@ protected:
 
   //! Traverses BVH containing all added selectable objects and
   //! finds candidates for further search of overlap
-  Standard_EXPORT void TraverseSensitives();
+  Standard_EXPORT void TraverseSensitives (const Standard_Integer theViewId = -1);
 
   //! Internal function that checks if there is possible overlap between some entity of selectable object theObject and
   //! current selecting volume.

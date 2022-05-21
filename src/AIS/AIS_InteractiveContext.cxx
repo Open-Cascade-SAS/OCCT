@@ -362,7 +362,7 @@ void AIS_InteractiveContext::ObjectsForView (AIS_ListOfInteractive&  theListOfIO
       continue;
     }
 
-    Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->StructureManager()->ObjectAffinity (anObjIter.Key());
+    Handle(Graphic3d_ViewAffinity) anAffinity = anObjIter.Key()->ViewAffinity();
     const Standard_Boolean isVisible = anAffinity->IsVisible (aViewId);
     if (isVisible == theIsVisibleInView)
     {
@@ -402,17 +402,9 @@ void AIS_InteractiveContext::SetViewAffinity (const Handle(AIS_InteractiveObject
     return;
   }
 
-  Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->StructureManager()->ObjectAffinity (theIObj);
+  Handle(Graphic3d_ViewAffinity) anAffinity = theIObj->ViewAffinity();
   Handle(Graphic3d_CView) aViewImpl = theView->View();
   anAffinity->SetVisible (aViewImpl->Identification(), theIsVisible == Standard_True);
-  if (theIsVisible)
-  {
-    theView->View()->ChangeHiddenObjects()->Remove (theIObj.get());
-  }
-  else
-  {
-    theView->View()->ChangeHiddenObjects()->Add (theIObj.get());
-  }
 }
 
 //=======================================================================
@@ -445,7 +437,8 @@ void AIS_InteractiveContext::Display (const Handle(AIS_InteractiveObject)& theIO
   if (!myObjects.IsBound (theIObj))
   {
     setObjectStatus (theIObj, PrsMgr_DisplayStatus_Displayed, theDispMode, theSelectionMode);
-    myMainVwr->StructureManager()->RegisterObject (theIObj);
+    theIObj->ViewAffinity()->SetVisible (true); // reset view affinity mask
+    myMainVwr->StructureManager()->RegisterObject (theIObj, theIObj->ViewAffinity());
     myMainPM->Display(theIObj, theDispMode);
     if (theSelectionMode != -1)
     {
@@ -521,7 +514,8 @@ void AIS_InteractiveContext::Load (const Handle(AIS_InteractiveObject)& theIObj,
     Standard_Integer aDispMode, aHiMod, aSelModeDef;
     GetDefModes (theIObj, aDispMode, aHiMod, aSelModeDef);
     setObjectStatus (theIObj, PrsMgr_DisplayStatus_Erased, aDispMode, theSelMode != -1 ? theSelMode : aSelModeDef);
-    myMainVwr->StructureManager()->RegisterObject (theIObj);
+    theIObj->ViewAffinity()->SetVisible (true); // reset view affinity mask
+    myMainVwr->StructureManager()->RegisterObject (theIObj, theIObj->ViewAffinity());
   }
 
   // Register theIObj in the selection manager to prepare further activation of selection
@@ -1900,12 +1894,8 @@ void AIS_InteractiveContext::ClearGlobal (const Handle(AIS_InteractiveObject)& t
   mgrSelector->Remove (anObj);
 
   setObjectStatus (theIObj, PrsMgr_DisplayStatus_None, -1, -1);
+  theIObj->ViewAffinity()->SetVisible (true); // reset view affinity mask
   myMainVwr->StructureManager()->UnregisterObject (theIObj);
-
-  for (V3d_ListOfViewIterator aDefViewIter (myMainVwr->DefinedViewIterator()); aDefViewIter.More(); aDefViewIter.Next())
-  {
-    aDefViewIter.Value()->View()->ChangeHiddenObjects()->Remove (theIObj.get());
-  }
 
   if (!myLastPicked.IsNull())
   {
@@ -2228,7 +2218,7 @@ Bnd_Box AIS_InteractiveContext::BoundingBoxOfSelection (const Handle(V3d_View)& 
       continue;
     }
 
-    Handle(Graphic3d_ViewAffinity) anAffinity = myMainVwr->StructureManager()->ObjectAffinity (anObj);
+    Handle(Graphic3d_ViewAffinity) anAffinity = anObj->ViewAffinity();
     const Standard_Boolean isVisible = aViewId == -1 || anAffinity->IsVisible (aViewId);
     if (!isVisible)
     {
@@ -2682,11 +2672,9 @@ AIS_StatusOfDetection AIS_InteractiveContext::moveTo (const Handle(V3d_View)& th
   myDetectedSeq.Clear();
   myLastActiveView = theView.get();
 
-  // preliminaires
+  // preliminaries
   AIS_StatusOfDetection aStatus        = AIS_SOD_Nothing;
   Standard_Boolean      toUpdateViewer = Standard_False;
-
-  myFilters->SetDisabledObjects (theView->View()->HiddenObjects());
 
   // filling of myAISDetectedSeq sequence storing information about detected AIS objects
   // (the objects must be AIS_Shapes)

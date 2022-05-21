@@ -519,7 +519,7 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation (const Hand
 
   Handle(PrsMgr_Presentation) aPrs = new PrsMgr_Presentation (this, thePrsObj, theMode);
   aPrs->SetZLayer (thePrsObj->ZLayer());
-  aPrs->CStructure()->ViewAffinity = myStructureManager->ObjectAffinity (!theSelObj.IsNull() ? theSelObj : thePrsObj);
+  aPrs->CStructure()->ViewAffinity = !theSelObj.IsNull() ? theSelObj->ViewAffinity() : thePrsObj->ViewAffinity();
   thePrsObj->Presentations().Append (aPrs);
   thePrsObj->Fill (this, aPrs, theMode);
 

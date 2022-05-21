@@ -1071,7 +1071,7 @@ void AIS_Manipulator::HilightOwnerWithColor (const Handle(PrsMgr_PresentationMan
     return;
   }
 
-  aPresentation->CStructure()->ViewAffinity = thePM->StructureManager()->ObjectAffinity (Handle(Standard_Transient) (this));
+  aPresentation->CStructure()->ViewAffinity = myViewAffinity;
 
   if (anOwner->Mode() == AIS_MM_TranslationPlane)
   {

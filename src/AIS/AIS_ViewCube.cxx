@@ -1016,7 +1016,7 @@ void AIS_ViewCube::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManage
 
   Handle(Prs3d_Presentation) aHiPrs = GetHilightPresentation (thePrsMgr);
   aHiPrs->Clear();
-  aHiPrs->CStructure()->ViewAffinity = thePrsMgr->StructureManager()->ObjectAffinity (Handle(Standard_Transient)(this));
+  aHiPrs->CStructure()->ViewAffinity = myViewAffinity;
   aHiPrs->SetTransformPersistence (TransformPersistence());
   aHiPrs->SetZLayer (aLayer);
 

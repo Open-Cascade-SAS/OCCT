@@ -182,29 +182,45 @@ void Graphic3d_StructureManager::RecomputeStructures (const NCollection_Map<Grap
   }
 }
 
-Handle(Graphic3d_ViewAffinity) Graphic3d_StructureManager::RegisterObject (const Handle(Standard_Transient)& theObject)
+// ========================================================================
+// function : RegisterObject
+// purpose  :
+// ========================================================================
+void Graphic3d_StructureManager::RegisterObject (const Handle(Standard_Transient)& theObject,
+                                                 const Handle(Graphic3d_ViewAffinity)& theAffinity)
 {
   Handle(Graphic3d_ViewAffinity) aResult;
-  if (myRegisteredObjects.Find (theObject.operator->(), aResult))
+  if (myRegisteredObjects.Find (theObject.operator->(), aResult)
+   && aResult == theAffinity)
   {
-    return aResult;
+    return;
   }
 
-  aResult = new Graphic3d_ViewAffinity();
-  myRegisteredObjects.Bind (theObject.operator->(), aResult);
-  return aResult;
+  myRegisteredObjects.Bind (theObject.operator->(), theAffinity);
 }
 
+// ========================================================================
+// function : UnregisterObject
+// purpose  :
+// ========================================================================
 void Graphic3d_StructureManager::UnregisterObject (const Handle(Standard_Transient)& theObject)
 {
   myRegisteredObjects.UnBind (theObject.operator->());
 }
 
-Handle(Graphic3d_ViewAffinity) Graphic3d_StructureManager::ObjectAffinity (const Handle(Standard_Transient)& theObject) const
+// ========================================================================
+// function : ObjectAffinity
+// purpose  :
+// ========================================================================
+const Handle(Graphic3d_ViewAffinity)& Graphic3d_StructureManager::ObjectAffinity (const Handle(Standard_Transient)& theObject) const
 {
-  Handle(Graphic3d_ViewAffinity) aResult;
-  myRegisteredObjects.Find (theObject.operator->(), aResult);
-  return aResult;
+  const Handle(Graphic3d_ViewAffinity)* aResult = myRegisteredObjects.Seek (theObject.operator->());
+  if (aResult == nullptr)
+  {
+    static const Handle(Graphic3d_ViewAffinity) aDummy;
+    return aDummy;
+  }
+  return *aResult;
 }
 
 // ========================================================================

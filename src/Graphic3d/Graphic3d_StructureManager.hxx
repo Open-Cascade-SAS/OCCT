@@ -151,11 +151,12 @@ public:
   //! Recomputes all structures from theStructures.
   Standard_EXPORT void RecomputeStructures (const NCollection_Map<Graphic3d_Structure*>& theStructures);
 
-  Standard_EXPORT Handle(Graphic3d_ViewAffinity) RegisterObject (const Handle(Standard_Transient)& theObject);
+  Standard_EXPORT void RegisterObject (const Handle(Standard_Transient)& theObject,
+                                       const Handle(Graphic3d_ViewAffinity)& theAffinity);
 
   Standard_EXPORT void UnregisterObject (const Handle(Standard_Transient)& theObject);
 
-  Standard_EXPORT Handle(Graphic3d_ViewAffinity) ObjectAffinity (const Handle(Standard_Transient)& theObject) const;
+  Standard_EXPORT const Handle(Graphic3d_ViewAffinity)& ObjectAffinity (const Handle(Standard_Transient)& theObject) const;
 
   //! Returns TRUE if Device Lost flag has been set and presentation data should be reuploaded onto graphics driver.
   Standard_Boolean IsDeviceLost() const { return myDeviceLostFlag; }
