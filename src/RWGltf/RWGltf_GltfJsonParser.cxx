@@ -188,7 +188,8 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser (TopTools_SequenceOfShape& theRootS
   myToSkipEmptyNodes (true),
   myToLoadAllScenes (false),
   myUseMeshNameAsFallback (true),
-  myToProbeHeader (false)
+  myToProbeHeader (false),
+  myToReadAssetExtras (true)
 {
   myCSTrsf.SetInputLengthUnit (1.0); // meters
   myCSTrsf.SetInputCoordinateSystem (RWMesh_CoordinateSystem_glTF);
@@ -285,6 +286,27 @@ void RWGltf_GltfJsonParser::gltfParseAsset()
     if (aCopyRight->IsString())
     {
       myMetadata->Add ("copyright", aCopyRight->GetString());
+    }
+  }
+
+  if (const RWGltf_JsonValue* anExtras = myToReadAssetExtras ? findObjectMember (*anAsset, "extras") : nullptr)
+  {
+    for (ConstMemberIterator aChildIter = anExtras->MemberBegin(); aChildIter != anExtras->MemberEnd(); ++aChildIter)
+    {
+      if (!aChildIter->name.IsString())
+      {
+        continue;
+      }
+
+      const TCollection_AsciiString aKey (aChildIter->name.GetString());
+      if (aChildIter->value.IsString())
+      {
+        myMetadata->Add (aKey, aChildIter->value.GetString());
+      }
+      if (aChildIter->value.IsNumber())
+      {
+        myMetadata->Add (aKey, aChildIter->value.GetDouble());
+      }
     }
   }
 }

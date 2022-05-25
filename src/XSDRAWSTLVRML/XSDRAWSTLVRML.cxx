@@ -194,6 +194,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   Standard_Boolean toKeepLateData = Standard_True;
   Standard_Boolean toPrintDebugInfo = Standard_False;
   Standard_Boolean toLoadAllScenes = Standard_False;
+  Standard_Boolean toPrintAssetInfo = Standard_False;
   Standard_Boolean isNoDoc = (TCollection_AsciiString(theArgVec[0]) == "readgltf");
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
@@ -203,33 +204,18 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
      && (anArgCase == "-nocreate"
       || anArgCase == "-nocreatedoc"))
     {
-      toUseExistingDoc = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
-      {
-        ++anArgIter;
-      }
+      toUseExistingDoc = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-parallel")
     {
-      isParallel = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isParallel))
-      {
-        ++anArgIter;
-      }
+      isParallel = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-doubleprec"
           || anArgCase == "-doubleprecision"
           || anArgCase == "-singleprec"
           || anArgCase == "-singleprecision")
     {
-      isDoublePrec = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isDoublePrec))
-      {
-        ++anArgIter;
-      }
+      isDoublePrec = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
       if (anArgCase.StartsWith ("-single"))
       {
         isDoublePrec = !isDoublePrec;
@@ -237,40 +223,20 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
     }
     else if (anArgCase == "-skiplateloading")
     {
-      toSkipLateDataLoading = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toSkipLateDataLoading))
-      {
-        ++anArgIter;
-      }
+      toSkipLateDataLoading = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-keeplate")
     {
-      toKeepLateData = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toKeepLateData))
-      {
-        ++anArgIter;
-      }
+      toKeepLateData = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-allscenes")
     {
-      toLoadAllScenes = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toLoadAllScenes))
-      {
-        ++anArgIter;
-      }
+      toLoadAllScenes = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-toprintinfo"
           || anArgCase == "-toprintdebuginfo")
     {
-      toPrintDebugInfo = Standard_True;
-      if (anArgIter + 1 < theNbArgs
-       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toPrintDebugInfo))
-      {
-        ++anArgIter;
-      }
+      toPrintDebugInfo = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (anArgCase == "-listexternalfiles"
           || anArgCase == "-listexternals"
@@ -278,7 +244,12 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
           || anArgCase == "-external"
           || anArgCase == "-externalfiles")
     {
-      toListExternalFiles = Standard_True;
+      toListExternalFiles = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
+    }
+    else if (anArgCase == "-assetinfo"
+          || anArgCase == "-metadata")
+    {
+      toPrintAssetInfo = Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
     else if (aDestName.IsEmpty())
     {
@@ -294,6 +265,13 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       return 1;
     }
   }
+  if (aFilePath.IsEmpty() && !aDestName.IsEmpty())
+  {
+    if (toListExternalFiles || toPrintAssetInfo)
+    {
+      std::swap (aFilePath, aDestName);
+    }
+  }
   if (aFilePath.IsEmpty())
   {
     Message::SendFail() << "Syntax error: wrong number of arguments";
@@ -302,7 +280,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
 
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
   Handle(TDocStd_Document) aDoc;
-  if (!toListExternalFiles
+  if (!aDestName.IsEmpty()
    && !isNoDoc)
   {
     Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
@@ -323,12 +301,14 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       return 1;
     }
   }
+
   Standard_Real aScaleFactorM = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactorM, UnitsMethods_LengthUnit_Meter))
   {
     XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
     aScaleFactorM = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
   }
+
   RWGltf_CafReader aReader;
   aReader.SetSystemLengthUnit (aScaleFactorM);
   aReader.SetSystemCoordinateSystem (RWMesh_CoordinateSystem_Zup);
@@ -339,13 +319,9 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   aReader.SetToKeepLateData (toKeepLateData);
   aReader.SetToPrintDebugMessages (toPrintDebugInfo);
   aReader.SetLoadAllScenes (toLoadAllScenes);
-  if (toListExternalFiles)
+  if (aDestName.IsEmpty())
   {
     aReader.ProbeHeader (aFilePath);
-    for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aFileIter (aReader.ExternalFiles()); aFileIter.More(); aFileIter.Next())
-    {
-      theDI << "\"" << aFileIter.Value() << "\" ";
-    }
   }
   else
   {
@@ -361,6 +337,32 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       Draw::Set (aDestName.ToCString(), aDrawDoc);
     }
   }
+
+  bool isFirstLine = true;
+  if (toPrintAssetInfo)
+  {
+    for (TColStd_IndexedDataMapOfStringString::Iterator aKeyIter (aReader.Metadata()); aKeyIter.More(); aKeyIter.Next())
+    {
+      if (!isFirstLine)
+      {
+        theDI << "\n";
+      }
+      isFirstLine = false;
+      theDI << aKeyIter.Key() << ": " << aKeyIter.Value();
+    }
+  }
+  if (toListExternalFiles)
+  {
+    if (!isFirstLine)
+    {
+      theDI << "\n";
+    }
+    for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aFileIter (aReader.ExternalFiles()); aFileIter.More(); aFileIter.Next())
+    {
+      theDI << "\"" << aFileIter.Value() << "\" ";
+    }
+  }
+
   return 0;
 }
 
@@ -2338,7 +2340,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   //XSDRAW::LoadDraw(theCommands);
 
   theCommands.Add ("ReadGltf",
-                   "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc] [-doublePrecision {on|off}]"
+                   "ReadGltf Doc file [-parallel {on|off}] [-listExternalFiles] [-noCreateDoc] [-doublePrecision {on|off}] [-assetInfo]"
                    "\n\t\t: Read glTF file into XDE document."
                    "\n\t\t:   -listExternalFiles do not read mesh and only list external files"
                    "\n\t\t:   -noCreateDoc read into existing XDE document"
@@ -2347,9 +2349,10 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:   -skipLateLoading data loading is skipped and can be performed later"
                    "\n\t\t:                    (false by default)"
                    "\n\t\t:   -keepLate data is loaded into itself with preservation of information"
-                   "\n\t\t:             about deferred storage to load/unload this data later.",
+                   "\n\t\t:             about deferred storage to load/unload this data later."
                    "\n\t\t:   -allScenes load all scenes defined in the document instead of default one (false by default)"
                    "\n\t\t:   -toPrintDebugInfo print additional debug information during data reading"
+                   "\n\t\t:   -assetInfo print asset information",
                    __FILE__, ReadGltf, g);
   theCommands.Add ("readgltf",
                    "readgltf shape file"
