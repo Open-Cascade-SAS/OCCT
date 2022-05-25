@@ -23,6 +23,8 @@ if "%VCVER%" == "vc8" (
   call "%VS141COMNTOOLS%/vsvars32.bat" > nul
 ) else if "%VCVER%" == "vc142" (
   call "%VS142COMNTOOLS%/vsvars32.bat" > nul
+) else if "%VCVER%" == "vc143" (
+  call "%VS143COMNTOOLS%/vsvars32.bat" > nul
 ) else (
   echo Error: wrong VS identifier
   exit /B

@@ -462,7 +462,7 @@ To run any Open CASCADE Technology application you need to set the environment v
 
 You can define the environment variables with env.bat script located in the 
 $CASROOT folder. This script accepts two arguments to be used: 
-the version of Visual Studio (vc12 -- vc142) and the architecture (win32 or win64).
+the version of Visual Studio (vc12 -- vc143) and the architecture (win32 or win64).
 
 The additional environment settings necessary for compiling OCCT libraries and samples 
 by Microsoft Visual Studio can be set using script custom.bat located in the same folder. 

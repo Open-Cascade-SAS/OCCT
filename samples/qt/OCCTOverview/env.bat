@@ -7,6 +7,7 @@ if exist "%~dp0custom.bat" (
 call "%CASROOT%\env.bat" %1 %2 %3
 if /I ["%1"] == ["vc141"] set "VCVER=vc141"
 if /I ["%1"] == ["vc142"] set "VCVER=vc142"
+if /I ["%1"] == ["vc143"] set "VCVER=vc143"
 set "BIN_DIR=win%ARCH%\%VCVER%\bind"
 set "LIB_DIR=win%ARCH%\%VCVER%\libd"
 

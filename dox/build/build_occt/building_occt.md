@@ -324,6 +324,7 @@ The environment is defined in the file *custom.sh* (on Linux and macOS) or *cust
 | vc141-uwp | 2017 (15)             | UWP (Universal Windows Platform) | vc14-uwp |
 | vc142     | 2019 (16)             | Desktop (Windows API)            | vc14 |
 | vc142-uwp | 2019 (16)             | UWP (Universal Windows Platform) | vc14-uwp |
+| vc143     | 2022 (17)             | Desktop (Windows API)            | vc14 |
 
 Alternatively, you can launch **genconf**, a GUI tool allowing to configure build options interactively.
 That tool will analyze your environment and propose you to choose available options:

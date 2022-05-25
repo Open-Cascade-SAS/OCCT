@@ -119,6 +119,8 @@ android-g++ {
     # VS2015, vc141
   } else:equals(aMsvcVer, 16.0){
     # VS2019, vc142
+  } else:equals(aMsvcVer, 17.0){
+    # VS2022, vc143
   } else {
     warning (Unknown msvc version. "$$MY_COMPILER" is used)
   }
