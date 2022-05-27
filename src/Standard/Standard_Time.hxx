@@ -16,22 +16,17 @@
 
 #include <Standard_TypeDef.hxx>
 
-// ===============================================
-// Methods from Standard_Entity class which are redefined:  
-//    - IsEqual
-// ===============================================
-
-#ifndef __QNX__ // same as Standard_Size
-
 // ------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two time values are equal
 // ------------------------------------------------------------------
-inline Standard_Boolean IsEqual (const Standard_Time theOne,
-                                 const Standard_Time theTwo)
+template<typename TheTimeType>
+typename opencascade::std::enable_if<opencascade::std::is_same<TheTimeType,      Standard_Time>::value
+                                 && !opencascade::std::is_same<Standard_Size,    Standard_Time>::value
+                                 && !opencascade::std::is_same<Standard_Integer, Standard_Time>::value,
+                                     Standard_Boolean>::type
+IsEqual (const TheTimeType theOne, const TheTimeType theTwo)
 {
   return theOne == theTwo;
 }
-
-#endif
 
 #endif
