@@ -167,15 +167,15 @@ void  math_FRPR::Perform(math_MultipleVarFunctionWithGradient& F,
 	 
          Standard_Boolean IsGood = MinimizeDirection(TheLocation,
                                             TheGradient, TheMinimum, F_Dir);
-         if(!IsGood) {
-           Done = Standard_False;
-           TheStatus = math_DirectionSearchError;
-           return;
-         }
-         if(IsSolutionReached(F)) {
+         if (IsSolutionReached(F)) {
            Done = Standard_True;
            State = F.GetStateNumber();
            TheStatus = math_OK;
+           return;
+         }
+         if(!IsGood) {
+           Done = Standard_False;
+           TheStatus = math_DirectionSearchError;
            return;
          }
          Good = F.Values(TheLocation, PreviousMinimum, TheGradient);

@@ -1,0 +1,8 @@
+puts "============"
+puts "0030492: Foundation Classes - math_BFGS fails if starting point is exactly the minimum"
+puts "============"
+puts ""
+
+pload QAcommands
+
+OCC30492

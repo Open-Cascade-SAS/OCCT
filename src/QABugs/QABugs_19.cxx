@@ -5267,6 +5267,79 @@ static Standard_Integer OCC29412 (Draw_Interpretor& /*theDI*/, Standard_Integer 
   return 0;
 }
 
+#include <math_FRPR.hxx>
+#include <math_BFGS.hxx>
+//=======================================================================
+//function : OCC30492
+//purpose  : BFGS and FRPR fail if starting point is exactly the minimum.
+//=======================================================================
+// Function is:
+// f(x) = x^2
+class SquareFunction : public math_MultipleVarFunctionWithGradient
+{
+public:
+  SquareFunction()
+  {}
+
+  virtual Standard_Integer NbVariables() const
+  {
+    return 1;
+  }
+  virtual Standard_Boolean Value(const math_Vector& X,
+                                 Standard_Real&     F)
+  {
+    const Standard_Real x = X(1);
+    F = x * x;
+
+    return Standard_True;
+  }
+  virtual Standard_Boolean Gradient(const math_Vector& X,
+                                    math_Vector&       G)
+  {
+    const Standard_Real x = X(1);
+    G(1) = 2 * x;
+
+    return Standard_True;
+  }
+  virtual Standard_Boolean Values(const math_Vector& X,
+                                  Standard_Real&     F,
+                                  math_Vector&       G)
+  {
+    Value(X, F);
+    Gradient(X, G);
+
+    return Standard_True;
+  }
+
+private:
+};
+
+static Standard_Integer OCC30492(Draw_Interpretor& /*theDI*/,
+                                 Standard_Integer  /*theNArg*/,
+                                 const char**      /*theArgs*/)
+{
+  SquareFunction aFunc;
+  math_Vector aStartPnt(1, 1);
+  aStartPnt(1) = 0.0;
+
+  // BFGS and FRPR fail when if starting point is exactly the minimum.
+  math_FRPR aFRPR(aFunc, Precision::Confusion());
+  aFRPR.Perform(aFunc, aStartPnt);
+  if (!aFRPR.IsDone())
+    std::cout << "OCC30492: Error: FRPR optimization is not done." << std::endl;
+  else
+    std::cout << "OCC30492: OK: FRPR optimization is done." << std::endl;
+
+  math_BFGS aBFGS(1, Precision::Confusion());
+  aBFGS.Perform(aFunc, aStartPnt);
+  if (!aBFGS.IsDone())
+    std::cout << "OCC30492: Error: BFGS optimization is not done." << std::endl;
+  else
+    std::cout << "OCC30492: OK: BFGS optimization is done." << std::endl;
+
+  return 0;
+}
+
 //========================================================================
 //function : Commands_19
 //purpose  :
@@ -5390,5 +5463,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
                   "OCC28310: Tests validness of iterator in AIS_InteractiveContext after an removing object from it",
                   __FILE__, OCC28310, group);
   theCommands.Add("OCC29412", "OCC29412 [nb cycles]: test display / remove of many small objects", __FILE__, OCC29412, group);
+  theCommands.Add ("OCC30492",
+                   "OCC30492: Checks whether BFGS and FRPR fail when starting point is exact minimum.",
+                   __FILE__, OCC30492, group);
   return;
 }
