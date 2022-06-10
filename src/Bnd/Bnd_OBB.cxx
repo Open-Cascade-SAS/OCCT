@@ -419,7 +419,7 @@ OBBTool::
     myPointBoxSet->SetSize(myPntsList.Length());
 
     // Add the points into Set
-    for (Standard_Integer iP = 0; iP < theL.Length(); ++iP)
+    for (Standard_Integer iP = theL.Lower(); iP <= theL.Upper(); ++iP)
     {
       const gp_Pnt& aP = theL (iP);
       Standard_Real aTol = theLT ? theLT->Value(iP) : Precision::Confusion();

@@ -4257,6 +4257,23 @@ static Standard_Integer OCC32744(Draw_Interpretor& theDi, Standard_Integer theNb
   return 0;
 }
 
+static Standard_Integer OCC33009(Draw_Interpretor&, Standard_Integer, const char**)
+{
+  Bnd_OBB aBndBox;
+
+  TColgp_Array1OfPnt aPoints(1, 5);
+
+  aPoints.ChangeValue(1) = gp_Pnt(1, 2, 3);
+  aPoints.ChangeValue(2) = gp_Pnt(3, 2, 1);
+  aPoints.ChangeValue(3) = gp_Pnt(2, 3, 1);
+  aPoints.ChangeValue(4) = gp_Pnt(1, 3, 2);
+  aPoints.ChangeValue(5) = gp_Pnt(2, 1, 3);
+
+  aBndBox.ReBuild(aPoints, (const TColStd_Array1OfReal*)0, true);
+
+  return 0;
+}
+
 //=======================================================================
 //function : QACheckBends
 //purpose :
@@ -4426,6 +4443,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
                   "Tests avoid Endless loop in GCPnts_UniformDeflection",
                   __FILE__,
                   OCC32744, group);
+
+  theCommands.Add("OCC33009", 
+                 "Tests the case when", 
+                 __FILE__, OCC33009, group);
 
   theCommands.Add("QACheckBends",
     "QACheckBends curve [CosMaxAngle [theNbPoints]]",
