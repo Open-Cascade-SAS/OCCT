@@ -436,15 +436,6 @@ void Cocoa_Window::InvalidateContent (const Handle(Aspect_DisplayConnection)& )
     return;
   }
 
-  if ([NSThread isMainThread])
-  {
-  #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-    [myHView setNeedsDisplay];
-  #else
-    [myHView setNeedsDisplay: YES];
-  #endif
-  }
-  else
   {
     [myHView performSelectorOnMainThread: @selector(invalidateContentOcct:)
                               withObject: NULL

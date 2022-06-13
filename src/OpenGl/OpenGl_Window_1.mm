@@ -264,11 +264,20 @@ OpenGl_Window::~OpenGl_Window()
 void OpenGl_Window::Resize()
 {
   // If the size is not changed - do nothing
-  Standard_Integer aWidthPt  = 0;
-  Standard_Integer aHeightPt = 0;
-  myPlatformWindow->Size (aWidthPt, aHeightPt);
-  if (myWidthPt  == aWidthPt
-   && myHeightPt == aHeightPt)
+  Graphic3d_Vec2i aWinSize;
+  myPlatformWindow->Size (aWinSize.x(), aWinSize.y());
+  if (myPlatformWindow->IsVirtual())
+  {
+    if (myWidth  == aWinSize.x()
+     && myHeight == aWinSize.y())
+    {
+      return;
+    }
+    myWidth  = aWinSize.x();
+    myHeight = aWinSize.y();
+  }
+  else if (myWidthPt  == aWinSize.x()
+        && myHeightPt == aWinSize.y())
   {
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     return;
@@ -293,8 +302,8 @@ void OpenGl_Window::Resize()
   #endif
   }
 
-  myWidthPt  = aWidthPt;
-  myHeightPt = aHeightPt;
+  myWidthPt  = aWinSize.x();
+  myHeightPt = aWinSize.y();
 
   Init();
 }
@@ -356,35 +365,39 @@ void OpenGl_Window::Init()
   aDefFbo->BindBuffer (myGlContext);
   aDefFbo.Nullify();
 #else
-  NSOpenGLContext* aGLCtx  = myGlContext->myGContext;
-Standard_DISABLE_DEPRECATION_WARNINGS
-  NSView*          aView   = [aGLCtx view];
-Standard_ENABLE_DEPRECATION_WARNINGS
-  NSRect           aBounds = [aView bounds];
-
-  // we should call this method each time when window is resized
-  [aGLCtx update];
-
-  if ([aView respondsToSelector: @selector(convertSizeToBacking:)])
+  if (!myPlatformWindow->IsVirtual())
   {
-    NSSize aRes = [aView convertSizeToBacking: aBounds.size];
-    myWidth  = Standard_Integer(aRes.width);
-    myHeight = Standard_Integer(aRes.height);
+    NSOpenGLContext* aGLCtx  = myGlContext->myGContext;
+  Standard_DISABLE_DEPRECATION_WARNINGS
+    NSView*          aView   = [aGLCtx view];
+  Standard_ENABLE_DEPRECATION_WARNINGS
+    NSRect           aBounds = [aView bounds];
+
+    // we should call this method each time when window is resized
+    [aGLCtx update];
+
+    if ([aView respondsToSelector: @selector(convertSizeToBacking:)])
+    {
+      NSSize aRes = [aView convertSizeToBacking: aBounds.size];
+      myWidth  = Standard_Integer(aRes.width);
+      myHeight = Standard_Integer(aRes.height);
+    }
+    else
+    {
+      myWidth  = Standard_Integer(aBounds.size.width);
+      myHeight = Standard_Integer(aBounds.size.height);
+    }
+    myWidthPt  = Standard_Integer(aBounds.size.width);
+    myHeightPt = Standard_Integer(aBounds.size.height);
   }
-  else
-  {
-    myWidth  = Standard_Integer(aBounds.size.width);
-    myHeight = Standard_Integer(aBounds.size.height);
-  }
-  myWidthPt  = Standard_Integer(aBounds.size.width);
-  myHeightPt = Standard_Integer(aBounds.size.height);
 #endif
 
   ::glDisable (GL_DITHER);
   ::glDisable (GL_SCISSOR_TEST);
-  ::glViewport (0, 0, myWidth, myHeight);
+  const Standard_Integer aViewport[4] = { 0, 0, myWidth, myHeight };
+  myGlContext->ResizeViewport (aViewport);
 #if !defined(GL_ES_VERSION_2_0)
-  ::glDrawBuffer (GL_BACK);
+  myGlContext->SetDrawBuffer (GL_BACK);
   if (myGlContext->core11ffp != NULL)
   {
     ::glMatrixMode (GL_MODELVIEW);

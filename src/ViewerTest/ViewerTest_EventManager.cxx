@@ -196,7 +196,7 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
      && (!aRedrawer.IsStarted() || aRedrawer.IsPaused()))
     {
       myIsTmpContRedraw = true;
-    #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+    #if !defined(_WIN32) && !defined(__EMSCRIPTEN__) && !defined(__APPLE__)
       aRedrawer.Start (theView, 60.0);
     #endif
     }
@@ -210,7 +210,7 @@ void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveCont
   else if (myIsTmpContRedraw)
   {
     myIsTmpContRedraw = false;
-  #ifndef _WIN32
+  #if !defined(_WIN32) && !defined(__APPLE__)
     ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
     aRedrawer.Pause();
   #endif
