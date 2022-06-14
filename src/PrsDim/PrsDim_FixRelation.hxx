@@ -17,7 +17,6 @@
 #ifndef _PrsDim_FixRelation_HeaderFile
 #define _PrsDim_FixRelation_HeaderFile
 
-#include <gp_Lin.hxx>
 #include <gp_Circ.hxx>
 #include <TopoDS_Wire.hxx>
 #include <PrsDim_Relation.hxx>

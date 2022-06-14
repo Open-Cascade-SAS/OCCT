@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepBasic_RWCharacterizedObject.hxx>
 #include <StepBasic_CharacterizedObject.hxx>

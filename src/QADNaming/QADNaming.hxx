@@ -24,7 +24,6 @@
 #include <Standard_CString.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Address.hxx>
 #include <Draw_Interpretor.hxx>
 class TopoDS_Shape;

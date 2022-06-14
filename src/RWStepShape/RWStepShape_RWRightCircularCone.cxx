@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepShape_RWRightCircularCone.hxx>
 #include <StepData_StepReaderData.hxx>

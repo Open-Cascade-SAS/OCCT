@@ -12,10 +12,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepBasic_RWConversionBasedUnitAndMassUnit.hxx>
-#include <StepBasic_ConversionBasedUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MassUnit.hxx>

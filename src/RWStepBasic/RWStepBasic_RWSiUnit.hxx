@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <StepBasic_SiPrefix.hxx>
-#include <Standard_CString.hxx>
 #include <StepBasic_SiUnitName.hxx>
 class StepData_StepReaderData;
 class Interface_Check;

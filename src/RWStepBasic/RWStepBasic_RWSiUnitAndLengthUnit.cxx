@@ -13,13 +13,10 @@
 
 // pdn 24.12.98 t3d_opt.stp: treatment of unsorted uncertanties
 
-#include <Interface_Check.hxx>
 #include <RWStepBasic_RWSiUnit.hxx>
 #include <RWStepBasic_RWSiUnitAndLengthUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_LengthUnit.hxx>
 #include <StepBasic_SiPrefix.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_SiUnitName.hxx>
 #include <StepData_StepReaderData.hxx>

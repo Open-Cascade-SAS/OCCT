@@ -17,7 +17,6 @@
 #include <RWStepVisual_RWInvisibility.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepVisual_HArray1OfInvisibleItem.hxx>
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 

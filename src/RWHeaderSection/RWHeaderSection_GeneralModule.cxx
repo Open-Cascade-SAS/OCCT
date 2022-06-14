@@ -24,7 +24,6 @@
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <RWHeaderSection.hxx>
 #include <RWHeaderSection_GeneralModule.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>

@@ -22,7 +22,6 @@
 
 #include <StepData_GeneralModule.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Interface_EntityIterator;
 class Interface_ShareTool;

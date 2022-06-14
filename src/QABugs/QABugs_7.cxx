@@ -16,15 +16,10 @@
 #include <QABugs.hxx>
 
 #include <Draw_Interpretor.hxx>
-#include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
-#include <AIS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Line.hxx>

@@ -17,7 +17,6 @@
 #include <RWStepShape_RWFacetedBrepAndBrepWithVoids.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_FacetedBrep.hxx>
 #include <StepShape_FacetedBrepAndBrepWithVoids.hxx>

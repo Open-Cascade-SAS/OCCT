@@ -19,7 +19,6 @@
 
 #include <Select3D_EntitySequence.hxx>
 #include <Select3D_IndexedMapOfEntity.hxx>
-#include <Select3D_SensitiveEntity.hxx>
 #include <Select3D_SensitiveSet.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 

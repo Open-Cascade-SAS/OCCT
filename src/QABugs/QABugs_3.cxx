@@ -16,16 +16,13 @@
 #include <QABugs.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
 #include <DBRep.hxx>
-#include <Geom_Surface.hxx>
 #include <BRep_Tool.hxx>
 #include <GeomInt_IntSS.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Graphic3d_ClipPlane.hxx>
 #include <ViewerTest.hxx>
 #include <AIS_Shape.hxx>
 
@@ -108,7 +105,6 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   return 0;
 }
 
-#include<TopoDS_Wire.hxx>
 #include <BRepTools.hxx>
 
 static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, const char ** argv )
@@ -124,18 +120,14 @@ static Standard_Integer BUC60652(Draw_Interpretor& di, Standard_Integer argc, co
   return 0; 
 }
 
-#include <TopoDS_Solid.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
-#include <BRepPrimAPI_MakeSphere.hxx>
 
 #include <BRepAlgoAPI_Fuse.hxx>
 
 #include <V3d_View.hxx>
-#include <gce_MakePln.hxx>
 
 #include <Bnd_BoundSortBox.hxx>
 #include <BRepBndLib.hxx>
-#include <Bnd_HArray1OfBox.hxx>
 #include <TopExp_Explorer.hxx>
 
 static Standard_Integer BUC60729 (Draw_Interpretor& /*di*/,Standard_Integer /*argc*/, const char ** /*argv*/ )
@@ -483,7 +475,6 @@ static int OCC10006(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   return 0;
 }
 
-#include <Geom_RectangularTrimmedSurface.hxx>
 #include <GC_MakeTrimmedCone.hxx>
 
 static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv )
@@ -830,8 +821,6 @@ static Standard_Integer BUC60874(Draw_Interpretor& /*di*/, Standard_Integer /*ar
 #include<DDF.hxx>
 
 #include<TDocStd_Modified.hxx>
-#include<TDF_ListIteratorOfDeltaList.hxx>
-#include<TDocStd_Document.hxx>
 #include<TDocStd_Application.hxx>
 #include<TDF_Delta.hxx>
 #include<TDataXtd_Constraint.hxx>

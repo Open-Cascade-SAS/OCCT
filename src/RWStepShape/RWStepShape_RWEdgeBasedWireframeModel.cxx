@@ -20,7 +20,6 @@
 #include <RWStepShape_RWEdgeBasedWireframeModel.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_ConnectedEdgeSet.hxx>
 #include <StepShape_EdgeBasedWireframeModel.hxx>
 #include <StepShape_HArray1OfConnectedEdgeSet.hxx>
 

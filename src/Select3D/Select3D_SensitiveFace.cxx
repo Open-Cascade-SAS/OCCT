@@ -16,7 +16,6 @@
 
 #include <Select3D_SensitiveFace.hxx>
 
-#include <Select3D_SensitivePoly.hxx>
 #include <Select3D_InteriorSensitivePointSet.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveFace,Select3D_SensitiveEntity)

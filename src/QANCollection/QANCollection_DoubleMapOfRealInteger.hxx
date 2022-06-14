@@ -16,7 +16,6 @@
 #ifndef QANCollection_DoubleMapOfRealInteger_HeaderFile
 #define QANCollection_DoubleMapOfRealInteger_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_MapRealHasher.hxx>
 #include <TColStd_MapIntegerHasher.hxx>

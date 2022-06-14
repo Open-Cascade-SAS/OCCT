@@ -20,10 +20,6 @@
 #include <Aspect_TypeOfFacingModel.hxx>
 #include <gp_GTrsf.hxx>
 #include <Graphic3d_ClipPlane.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
-#include <Graphic3d_TransformPers.hxx>
-#include <Graphic3d_TransModeFlags.hxx>
-#include <Graphic3d_ZLayerId.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <PrsMgr_ListOfPresentableObjects.hxx>
 #include <PrsMgr_Presentation.hxx>

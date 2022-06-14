@@ -16,7 +16,6 @@
 
 #include <Select3D_SensitiveWire.hxx>
 #include <Select3D_SensitiveEntity.hxx>
-#include <Precision.hxx>
 #include <TopLoc_Location.hxx>
 
 #include <Select3D_SensitiveSegment.hxx>

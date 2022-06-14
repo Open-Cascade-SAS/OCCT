@@ -18,7 +18,6 @@
 #include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
 #include <RWMesh_FaceIterator.hxx>
-#include <RWMesh_MaterialMap.hxx>
 #include <RWObj_ObjMaterialMap.hxx>
 #include <RWObj_ObjWriterContext.hxx>
 #include <Standard_CLocaleSentry.hxx>

@@ -16,7 +16,6 @@
 #ifndef QANCollection_DataMapOfRealPnt_HeaderFile
 #define QANCollection_DataMapOfRealPnt_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
 #include <TColStd_MapRealHasher.hxx>
 #include <NCollection_DataMap.hxx>

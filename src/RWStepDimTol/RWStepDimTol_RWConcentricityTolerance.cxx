@@ -22,7 +22,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_ConcentricityTolerance.hxx>
-#include <StepDimTol_DatumReference.hxx>
 #include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
 

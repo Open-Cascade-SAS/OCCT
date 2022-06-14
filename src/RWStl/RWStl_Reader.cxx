@@ -15,7 +15,6 @@
 
 #include <RWStl_Reader.hxx>
 
-#include <gp_XY.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
@@ -25,7 +24,6 @@
 #include <OSD_FileSystem.hxx>
 #include <OSD_Timer.hxx>
 #include <Poly_MergeNodesTool.hxx>
-#include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
 
 #include <algorithm>

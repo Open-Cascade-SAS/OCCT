@@ -21,7 +21,6 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_SelectionType.hxx>
-#include <Standard_Dump.hxx>
 
 class gp_Pnt;
 

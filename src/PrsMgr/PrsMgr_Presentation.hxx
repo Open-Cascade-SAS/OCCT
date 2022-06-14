@@ -17,7 +17,6 @@
 #ifndef _PrsMgr_Presentation_HeaderFile
 #define _PrsMgr_Presentation_HeaderFile
 
-#include <Aspect_TypeOfHighlightMethod.hxx>
 #include <Prs3d_Presentation.hxx>
 
 class PrsMgr_PresentationManager;

@@ -17,9 +17,6 @@
 #include <RWStepVisual_RWStyledItem.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
-#include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_StyledItem.hxx>
 
 RWStepVisual_RWStyledItem::RWStepVisual_RWStyledItem () {}

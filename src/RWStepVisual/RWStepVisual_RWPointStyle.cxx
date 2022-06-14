@@ -12,14 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepVisual_RWPointStyle.hxx>
-#include <StepBasic_SizeSelect.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_Colour.hxx>
-#include <StepVisual_MarkerSelect.hxx>
 #include <StepVisual_PointStyle.hxx>
 
 RWStepVisual_RWPointStyle::RWStepVisual_RWPointStyle () {}

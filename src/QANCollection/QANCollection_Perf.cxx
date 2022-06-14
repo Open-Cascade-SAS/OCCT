@@ -45,14 +45,12 @@
 // These are: TheItemType, TheKey1Type, TheKey2Type
 // So must be defined ::HashCode and ::IsEqual too
 
-#include <NCollection_DefineArray1.hxx>
 #include <NCollection_DefineHArray1.hxx>
 ////////////////////////////////DEFINE_ARRAY1(QANCollection_Array1,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_HARRAY1(QANCollection_HArray1,QANCollection_Array1)
 DEFINE_ARRAY1(QANCollection_Array1Perf,QANCollection_BaseColPerf,ItemType)
 DEFINE_HARRAY1(QANCollection_HArray1Perf,QANCollection_Array1Perf)
 
-#include <NCollection_DefineArray2.hxx>
 #include <NCollection_DefineHArray2.hxx>
 ////////////////////////////////DEFINE_ARRAY2(QANCollection_Array2,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_HARRAY2(QANCollection_HArray2,QANCollection_Array2)
@@ -79,7 +77,6 @@ DEFINE_INDEXEDDATAMAP(QANCollection_IDMapPerf,QANCollection_BaseColPerf,Key1Type
 ////////////////////////////////DEFINE_LIST(QANCollection_List,QANCollection_BaseCol,ItemType)
 DEFINE_LIST(QANCollection_ListPerf,QANCollection_BaseColPerf,ItemType)
 
-#include <NCollection_DefineSequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 ////////////////////////////////DEFINE_SEQUENCE(QANCollection_Sequence,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_HSEQUENCE(QANCollection_HSequence,QANCollection_Sequence)

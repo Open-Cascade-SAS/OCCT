@@ -29,12 +29,10 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <ElSLib.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -54,7 +52,6 @@
 #include <ShapeAnalysis_Surface.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_Surface,Standard_Transient)

@@ -19,7 +19,6 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepAP203_RWCcDesignApproval.hxx>
-#include <StepAP203_ApprovedItem.hxx>
 #include <StepAP203_CcDesignApproval.hxx>
 #include <StepAP203_HArray1OfApprovedItem.hxx>
 #include <StepBasic_Approval.hxx>

@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <math_FunctionSetWithDerivatives.hxx>
 #include <math_Vector.hxx>

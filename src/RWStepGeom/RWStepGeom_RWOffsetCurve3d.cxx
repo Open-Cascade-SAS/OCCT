@@ -12,13 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWOffsetCurve3d.hxx>
-#include <StepData_Logical.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Curve.hxx>
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_OffsetCurve3d.hxx>
 

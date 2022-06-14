@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepVisual_RWBackgroundColour.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepVisual_AreaOrView.hxx>
 #include <StepVisual_BackgroundColour.hxx>
 
 RWStepVisual_RWBackgroundColour::RWStepVisual_RWBackgroundColour () {}

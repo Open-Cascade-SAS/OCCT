@@ -16,12 +16,9 @@
 
 #include <PrsDim.hxx>
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
@@ -31,7 +28,6 @@
 #include <ElSLib.hxx>
 #include <GccEnt_QualifiedLin.hxx>
 #include <gce_MakeDir.hxx>
-#include <gce_MakeLin.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Circle.hxx>
@@ -64,8 +60,6 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_Point.hxx>
 #include <StdPrs_WFShape.hxx>
@@ -78,7 +72,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 const Standard_Real SquareTolerance = Precision::SquareConfusion();
 

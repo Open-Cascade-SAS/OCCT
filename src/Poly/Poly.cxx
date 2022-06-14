@@ -30,8 +30,6 @@
 #include <Standard_Stream.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TShort_Array1OfShortReal.hxx>
-#include <TShort_HArray1OfShortReal.hxx>
 
 //=======================================================================
 //function : Catenate

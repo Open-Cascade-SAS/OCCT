@@ -17,7 +17,6 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <gp_Vec.hxx>
 #include <TopLoc_Location.hxx>
-#include <Precision.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveSegment,Select3D_SensitiveEntity)

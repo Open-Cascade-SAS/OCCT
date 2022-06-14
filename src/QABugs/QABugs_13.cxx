@@ -18,9 +18,7 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
-#include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -35,11 +33,9 @@
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <GC_MakeArcOfCircle.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Law_Linear.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Edge.hxx>
@@ -385,7 +381,6 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 }
 
 #include <gce_MakePln.hxx>
-#include <TopExp.hxx>
 #include <BRepOffsetAPI_Sewing.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 

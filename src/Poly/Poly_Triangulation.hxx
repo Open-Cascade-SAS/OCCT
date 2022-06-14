@@ -18,7 +18,6 @@
 #define _Poly_Triangulation_HeaderFile
 
 #include <Bnd_Box.hxx>
-#include <gp_Vec3f.hxx>
 #include <Poly_HArray1OfTriangle.hxx>
 #include <Poly_ArrayOfNodes.hxx>
 #include <Poly_ArrayOfUVNodes.hxx>

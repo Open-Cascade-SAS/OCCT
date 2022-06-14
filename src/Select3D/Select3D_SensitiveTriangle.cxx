@@ -16,8 +16,6 @@
 
 #include <Select3D_SensitiveTriangle.hxx>
 
-#include <Precision.hxx>
-#include <Bnd_Box.hxx>
 #include <TopLoc_Location.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveTriangle,Select3D_SensitiveEntity)

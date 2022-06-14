@@ -16,12 +16,10 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 
-#include <Message_Status.hxx>
 #include <NCollection_StdAllocator.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_HeapAllocator.hxx>
 #include <OSD_Timer.hxx>
-#include <Standard_Assert.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -32,7 +30,6 @@
 
 #include <vector>
 #include <memory>
-#include <typeinfo>
 
 // Auxiliary macro to check and report status.
 // Note that if() is used to ensure that condition is

@@ -17,7 +17,6 @@
 #ifndef _PrsDim_Chamf2dDimension_HeaderFile
 #define _PrsDim_Chamf2dDimension_HeaderFile
 
-#include <PrsDim_KindOfDimension.hxx>
 #include <PrsDim_Relation.hxx>
 #include <DsgPrs_ArrowSide.hxx>
 #include <gp_Dir.hxx>

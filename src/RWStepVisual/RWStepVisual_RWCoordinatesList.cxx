@@ -19,9 +19,6 @@
 #include <RWStepVisual_RWCoordinatesList.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
-#include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <gp_XYZ.hxx>

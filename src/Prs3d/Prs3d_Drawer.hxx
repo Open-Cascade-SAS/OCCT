@@ -16,10 +16,8 @@
 #define _Prs3d_Drawer_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
 #include <Graphic3d_GroupAspect.hxx>
 #include <Graphic3d_PresentationAttributes.hxx>

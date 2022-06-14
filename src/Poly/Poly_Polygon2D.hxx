@@ -17,7 +17,6 @@
 #ifndef _Poly_Polygon2D_HeaderFile
 #define _Poly_Polygon2D_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_Transient.hxx>
 

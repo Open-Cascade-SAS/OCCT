@@ -15,15 +15,12 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWBezierCurveAndRationalBSplineCurve.hxx>
-#include <StepData_Logical.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_BezierCurve.hxx>
 #include <StepGeom_BezierCurveAndRationalBSplineCurve.hxx>
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <StepGeom_RationalBSplineCurve.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 // --- Enum : BSplineCurveForm ---

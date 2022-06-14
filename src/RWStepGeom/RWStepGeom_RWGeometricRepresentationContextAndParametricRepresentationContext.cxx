@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_GeometricRepresentationContext.hxx>
 #include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
 
 RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext () {}

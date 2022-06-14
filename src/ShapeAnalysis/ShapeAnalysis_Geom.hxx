@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 class gp_Pln;
 class gp_Trsf;

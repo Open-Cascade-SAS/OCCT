@@ -18,7 +18,6 @@
 #include <Standard_Real.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepVisual_HArray1OfBoxCharacteristicSelect.hxx>
 #include <StepVisual_TextStyleForDefinedFont.hxx>
 #include <StepVisual_TextStyleWithBoxCharacteristics.hxx>
 

@@ -21,7 +21,6 @@
 #include <QANCollection.hxx>
 #include <Draw_Interpretor.hxx>
 
-#include <NCollection_Array1.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_Vector.hxx>
@@ -29,7 +28,6 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <Standard_Assert.hxx>
 #include <OSD_Timer.hxx>
 #include <OSD_Parallel.hxx>
 

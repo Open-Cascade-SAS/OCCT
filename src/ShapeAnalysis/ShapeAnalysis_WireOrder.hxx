@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HSequenceOfXY.hxx>
 #include <TColgp_HSequenceOfXYZ.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class gp_XYZ;
 class gp_XY;

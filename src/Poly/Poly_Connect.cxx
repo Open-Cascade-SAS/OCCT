@@ -17,7 +17,6 @@
 #include <Poly_Connect.hxx>
 
 #include <NCollection_IncAllocator.hxx>
-#include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
 
 // this structure records one of the edges starting from a node

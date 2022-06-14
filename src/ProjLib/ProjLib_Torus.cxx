@@ -20,14 +20,11 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Parab.hxx>
-#include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Torus.hxx>
-#include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
 //function : ProjLib_Torus

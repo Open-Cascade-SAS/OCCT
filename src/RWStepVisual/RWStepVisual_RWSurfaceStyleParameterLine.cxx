@@ -19,7 +19,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CurveStyle.hxx>
-#include <StepVisual_HArray1OfDirectionCountSelect.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 
 RWStepVisual_RWSurfaceStyleParameterLine::RWStepVisual_RWSurfaceStyleParameterLine () {}

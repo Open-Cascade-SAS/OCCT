@@ -23,7 +23,6 @@
 
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Vec4.hxx>
 
 //! This class allows the definition of an RGB color as triplet of 3 normalized floating point values (red, green, blue).

@@ -20,8 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
 #include <TColGeom_HSequenceOfBoundedCurve.hxx>

@@ -15,14 +15,11 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepFEA_RWFeaLinearElasticity.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaLinearElasticity.hxx>
-#include <StepFEA_SymmetricTensor43dMember.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : RWStepFEA_RWFeaLinearElasticity

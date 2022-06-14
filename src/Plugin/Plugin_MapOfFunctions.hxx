@@ -17,7 +17,6 @@
 #ifndef Plugin_MapOfFunctions_HeaderFile
 #define Plugin_MapOfFunctions_HeaderFile
 
-#include <TCollection_AsciiString.hxx>
 #include <OSD_Function.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>

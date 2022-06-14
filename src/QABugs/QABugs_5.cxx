@@ -17,13 +17,9 @@
 
 #include <Draw_Interpretor.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <DrawTrSurf.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <BRepAdaptor_CompCurve.hxx>
 #include <TopoDS.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
 #include <IntCurveSurface_HInter.hxx>

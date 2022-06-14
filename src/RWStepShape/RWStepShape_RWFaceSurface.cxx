@@ -18,7 +18,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Surface.hxx>
-#include <StepShape_FaceBound.hxx>
 #include <StepShape_FaceSurface.hxx>
 #include <StepShape_HArray1OfFaceBound.hxx>
 

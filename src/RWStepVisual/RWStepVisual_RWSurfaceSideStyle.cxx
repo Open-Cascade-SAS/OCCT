@@ -17,7 +17,6 @@
 #include <RWStepVisual_RWSurfaceSideStyle.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepVisual_HArray1OfSurfaceStyleElementSelect.hxx>
 #include <StepVisual_SurfaceSideStyle.hxx>
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 

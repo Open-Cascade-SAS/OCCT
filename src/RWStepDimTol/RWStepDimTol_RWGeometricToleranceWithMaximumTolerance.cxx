@@ -17,11 +17,8 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_GeometricToleranceModifier.hxx>
-#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeometricToleranceWithMaximumTolerance.hxx>
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>

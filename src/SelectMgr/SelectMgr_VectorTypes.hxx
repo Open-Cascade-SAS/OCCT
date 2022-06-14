@@ -15,7 +15,6 @@
 #define _SelectMgr_VectorTypes_HeaderFile
 
 #include <gp_Trsf.hxx>
-#include <NCollection_Array1.hxx>
 #include <NCollection_Mat4.hxx>
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vec4.hxx>

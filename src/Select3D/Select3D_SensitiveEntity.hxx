@@ -17,13 +17,8 @@
 #ifndef _Select3D_SensitiveEntity_HeaderFile
 #define _Select3D_SensitiveEntity_HeaderFile
 
-#include <gp_GTrsf.hxx>
-#include <gp_Trsf.hxx>
-#include <Standard_Assert.hxx>
 #include <Standard_Transient.hxx>
 #include <Select3D_BndBox3d.hxx>
-#include <SelectBasics_SelectingVolumeManager.hxx>
-#include <SelectBasics_PickResult.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
 #include <TopLoc_Location.hxx>
 

@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <RWStepBasic_RWWeekOfYearAndDayDate.hxx>
 #include <StepBasic_WeekOfYearAndDayDate.hxx>
 #include <StepData_StepReaderData.hxx>

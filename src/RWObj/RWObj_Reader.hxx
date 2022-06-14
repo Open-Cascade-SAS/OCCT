@@ -15,9 +15,6 @@
 #ifndef _RWObj_Reader_HeaderFile
 #define _RWObj_Reader_HeaderFile
 
-#include <gp_XYZ.hxx>
-#include <Graphic3d_Vec2.hxx>
-#include <Graphic3d_Vec4.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressRange.hxx>

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepBasic_RWMechanicalContext.hxx>
 #include <StepBasic_ApplicationContext.hxx>

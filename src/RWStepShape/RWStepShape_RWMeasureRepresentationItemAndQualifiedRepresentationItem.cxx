@@ -20,7 +20,6 @@
 #include <StepBasic_Unit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_HArray1OfValueQualifier.hxx>
 #include <StepShape_MeasureRepresentationItemAndQualifiedRepresentationItem.hxx>
 #include <StepShape_ValueQualifier.hxx>
 

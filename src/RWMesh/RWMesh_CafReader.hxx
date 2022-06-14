@@ -16,7 +16,6 @@
 #define _RWMesh_CafReader_HeaderFile
 
 #include <Message_ProgressRange.hxx>
-#include <NCollection_IndexedMap.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <RWMesh_NodeAttributes.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>

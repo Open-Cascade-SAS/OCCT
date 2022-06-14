@@ -12,14 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepShape_RWOrientedPath.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_EdgeLoop.hxx>
-#include <StepShape_HArray1OfOrientedEdge.hxx>
-#include <StepShape_OrientedEdge.hxx>
 #include <StepShape_OrientedPath.hxx>
 
 RWStepShape_RWOrientedPath::RWStepShape_RWOrientedPath () {}

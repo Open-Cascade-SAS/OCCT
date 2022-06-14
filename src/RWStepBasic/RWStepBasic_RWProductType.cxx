@@ -15,7 +15,6 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepBasic_RWProductType.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductType.hxx>
 #include <StepData_StepReaderData.hxx>

@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepDimTol_RWFlatnessTolerance.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>

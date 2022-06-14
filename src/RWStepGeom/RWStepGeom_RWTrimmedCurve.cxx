@@ -18,8 +18,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepGeom_HArray1OfTrimmingSelect.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
 #include <StepGeom_TrimmingPreference.hxx>
 #include <StepGeom_TrimmingSelect.hxx>

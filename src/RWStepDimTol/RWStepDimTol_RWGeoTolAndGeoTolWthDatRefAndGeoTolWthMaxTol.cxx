@@ -21,9 +21,6 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_DatumReference.hxx>
-#include <StepDimTol_GeometricToleranceTarget.hxx>
-#include <StepDimTol_GeometricToleranceType.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>

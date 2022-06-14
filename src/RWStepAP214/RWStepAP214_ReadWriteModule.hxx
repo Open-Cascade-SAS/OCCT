@@ -18,12 +18,10 @@
 #define _RWStepAP214_ReadWriteModule_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepData_ReadWriteModule.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_AsciiString;
 class StepData_StepReaderData;
 class Interface_Check;

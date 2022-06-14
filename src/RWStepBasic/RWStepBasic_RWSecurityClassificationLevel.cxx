@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <RWStepBasic_RWSecurityClassificationLevel.hxx>
 #include <StepBasic_SecurityClassificationLevel.hxx>
 #include <StepData_StepReaderData.hxx>

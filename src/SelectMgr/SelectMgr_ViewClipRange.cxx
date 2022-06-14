@@ -13,7 +13,6 @@
 
 #include <SelectMgr_ViewClipRange.hxx>
 
-#include <gp_Ax1.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
 // =======================================================================

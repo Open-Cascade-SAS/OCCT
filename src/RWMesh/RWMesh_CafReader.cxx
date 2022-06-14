@@ -18,7 +18,6 @@
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressScope.hxx>
 #include <BRep_Builder.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Timer.hxx>

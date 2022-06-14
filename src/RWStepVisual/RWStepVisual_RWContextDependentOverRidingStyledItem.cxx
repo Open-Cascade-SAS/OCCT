@@ -17,7 +17,6 @@
 #include <RWStepVisual_RWContextDependentOverRidingStyledItem.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_ContextDependentOverRidingStyledItem.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <StepVisual_HArray1OfStyleContextSelect.hxx>

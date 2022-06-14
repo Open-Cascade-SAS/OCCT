@@ -20,8 +20,6 @@
 #include <RWStepFEA_RWCurveElementEndRelease.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepElement_CurveElementEndReleasePacket.hxx>
-#include <StepElement_HArray1OfCurveElementEndReleasePacket.hxx>
 #include <StepFEA_CurveElementEndRelease.hxx>
 
 //=======================================================================

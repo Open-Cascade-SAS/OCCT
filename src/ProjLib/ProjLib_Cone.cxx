@@ -16,19 +16,15 @@
 
 
 #include <ElSLib.hxx>
-#include <gp.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Parab.hxx>
-#include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <ProjLib_Cone.hxx>
-#include <Standard_NoSuchObject.hxx>
 
 //=======================================================================
 //function : ProjLib_Cone

@@ -17,7 +17,6 @@
 #ifndef _PrsDim_Relation_HeaderFile
 #define _PrsDim_Relation_HeaderFile
 
-#include <AIS_KindOfInteractive.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>

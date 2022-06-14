@@ -15,7 +15,6 @@
 #include <PrsMgr_PresentationManager.hxx>
 
 #include <TopLoc_Datum3D.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <Prs3d_PresentationShadow.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_Presentation.hxx>

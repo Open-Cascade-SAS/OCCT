@@ -21,7 +21,6 @@
 #include <DsgPrs_ConcentricPresentation.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Plane.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
@@ -33,7 +32,6 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>

@@ -15,15 +15,9 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface.hxx>
-#include <StepData_Logical.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_BSplineSurfaceForm.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
-#include <StepGeom_QuasiUniformSurface.hxx>
 #include <StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface.hxx>
-#include <StepGeom_RationalBSplineSurface.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
 // --- Enum : BSplineSurfaceForm ---

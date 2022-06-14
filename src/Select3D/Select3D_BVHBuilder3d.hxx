@@ -15,7 +15,6 @@
 #define _Select3D_BVHBuilder3d_Header
 
 #include <BVH_Builder.hxx>
-#include <Standard_Real.hxx>
 
 typedef BVH_Builder<Standard_Real, 3> Select3D_BVHBuilder3d;
 

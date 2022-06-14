@@ -23,17 +23,12 @@
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_XY.hxx>
 #include <GProp_GProps.hxx>
-#include <Precision.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TopExp.hxx>

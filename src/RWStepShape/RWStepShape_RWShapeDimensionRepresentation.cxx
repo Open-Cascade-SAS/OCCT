@@ -20,10 +20,7 @@
 #include <RWStepShape_RWShapeDimensionRepresentation.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepShape_HArray1OfShapeDimensionRepresentationItem.hxx>
 #include <StepShape_ShapeDimensionRepresentation.hxx>
 
 //=======================================================================

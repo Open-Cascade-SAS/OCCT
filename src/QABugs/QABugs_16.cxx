@@ -24,17 +24,12 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <GProp_GProps.hxx>
 #include <BRepGProp.hxx>
-#include <TopoDS_Edge.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <gp_Ax2.hxx>
 #include <Geom_Circle.hxx>
 #include <AIS_Circle.hxx>
-#include <TopoDS.hxx>
-#include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
 #include <PrsDim_AngleDimension.hxx>
 
@@ -61,11 +56,7 @@
 #include <ShapeFix_Wireframe.hxx>
 #include <ShapeBuild_ReShape.hxx>
 
-#include <BRepBuilderAPI_MakeEdge.hxx>
-
 #include <ViewerTest_EventManager.hxx>
-
-#include <TColgp_Array1OfPnt2d.hxx>
 
 #include <DDocStd.hxx>
 #include <TDocStd_Document.hxx>

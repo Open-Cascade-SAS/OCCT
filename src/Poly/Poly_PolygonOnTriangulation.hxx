@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, Standard_Transient)

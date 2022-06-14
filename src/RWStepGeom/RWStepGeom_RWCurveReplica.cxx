@@ -12,13 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWCurveReplica.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CartesianTransformationOperator.hxx>
-#include <StepGeom_Curve.hxx>
 #include <StepGeom_CurveReplica.hxx>
 
 RWStepGeom_RWCurveReplica::RWStepGeom_RWCurveReplica () {}

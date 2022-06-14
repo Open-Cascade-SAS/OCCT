@@ -17,7 +17,6 @@
 #include <RWStepBasic_RWMeasureWithUnit.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
-#include <StepBasic_NamedUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 

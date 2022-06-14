@@ -12,13 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepShape_RWBooleanResult.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_BooleanOperand.hxx>
-#include <StepShape_BooleanOperator.hxx>
 #include <StepShape_BooleanResult.hxx>
 #include <StepShape_SolidModel.hxx>
 #include <TCollection_AsciiString.hxx>

@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class ShapeAnalysis_TransferParameters;

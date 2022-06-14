@@ -18,9 +18,7 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
-#include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -32,7 +30,6 @@
 #include <gp_Pln.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-#include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 #include <stdio.h>

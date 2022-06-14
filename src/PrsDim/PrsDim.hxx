@@ -18,12 +18,8 @@
 #define _PrsDim_HeaderFile
 
 #include <PrsDim_KindOfSurface.hxx>
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pnt.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Standard.hxx>

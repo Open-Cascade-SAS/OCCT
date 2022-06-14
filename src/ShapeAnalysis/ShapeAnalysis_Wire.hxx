@@ -21,10 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Face.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_SequenceOfReal.hxx>

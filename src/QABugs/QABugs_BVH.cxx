@@ -15,7 +15,6 @@
 
 #include <QABugs.hxx>
 
-#include <Bnd_Box.hxx>
 #include <Bnd_Tools.hxx>
 
 #include <BRep_Builder.hxx>
@@ -23,7 +22,6 @@
 #include <BRepBndLib.hxx>
 
 #include <BVH_Box.hxx>
-#include <BVH_BoxSet.hxx>
 #include <BVH_DistanceField.hxx>
 #include <BVH_Geometry.hxx>
 #include <BVH_IndexedBoxSet.hxx>

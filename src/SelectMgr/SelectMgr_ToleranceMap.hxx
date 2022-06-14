@@ -15,7 +15,6 @@
 #define _SelectMgr_ToleranceMap_HeaderFile
 
 #include <NCollection_DataMap.hxx>
-#include <Precision.hxx>
 
 //! An internal class for calculation of current largest tolerance value which will be applied for creation of selecting frustum by default.
 //! Each time the selection set is deactivated, maximum tolerance value will be recalculated.

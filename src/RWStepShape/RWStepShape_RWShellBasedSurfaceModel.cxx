@@ -17,7 +17,6 @@
 #include <RWStepShape_RWShellBasedSurfaceModel.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_HArray1OfShell.hxx>
 #include <StepShape_Shell.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 

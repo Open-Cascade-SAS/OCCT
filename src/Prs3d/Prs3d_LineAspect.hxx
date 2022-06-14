@@ -17,7 +17,6 @@
 #ifndef _Prs3d_LineAspect_HeaderFile
 #define _Prs3d_LineAspect_HeaderFile
 
-#include <Aspect_TypeOfLine.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_BasicAspect.hxx>
 #include <Quantity_Color.hxx>

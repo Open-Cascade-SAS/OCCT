@@ -26,7 +26,6 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_FreeBoundData.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeAnalysis_FreeBoundsProperties.hxx>
 #include <ShapeAnalysis_Wire.hxx>

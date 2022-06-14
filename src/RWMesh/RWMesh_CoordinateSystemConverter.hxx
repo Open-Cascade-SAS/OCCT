@@ -17,11 +17,9 @@
 
 #include <RWMesh_CoordinateSystem.hxx>
 
-#include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_XYZ.hxx>
 #include <gp_Trsf.hxx>
-#include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_Vec.hxx>
 
 //! Coordinate system converter defining the following tools:

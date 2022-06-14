@@ -17,8 +17,6 @@
 #include <PrsDim_TangentRelation.hxx>
 
 #include <PrsDim.hxx>
-#include <AIS_Shape.hxx>
-#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -29,9 +27,7 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
-#include <gp_Circ.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
@@ -39,8 +35,6 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>

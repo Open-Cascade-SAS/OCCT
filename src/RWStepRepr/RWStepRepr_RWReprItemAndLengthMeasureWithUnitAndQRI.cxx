@@ -21,7 +21,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI.hxx>
-#include <StepShape_HArray1OfValueQualifier.hxx>
 #include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepShape_ValueQualifier.hxx>
 

@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepRepr_RWMaterialDesignation.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_CharacterizedDefinition.hxx>
 #include <StepRepr_MaterialDesignation.hxx>
 
 RWStepRepr_RWMaterialDesignation::RWStepRepr_RWMaterialDesignation () {}

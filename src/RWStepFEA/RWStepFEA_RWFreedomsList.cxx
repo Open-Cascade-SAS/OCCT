@@ -20,7 +20,6 @@
 #include <RWStepFEA_RWFreedomsList.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepFEA_DegreeOfFreedom.hxx>
 #include <StepFEA_FreedomsList.hxx>
 #include <StepFEA_HArray1OfDegreeOfFreedom.hxx>
 

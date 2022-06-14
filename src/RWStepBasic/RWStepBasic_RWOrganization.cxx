@@ -13,7 +13,6 @@
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
-#include <Interface_Check.hxx>
 #include <RWStepBasic_RWOrganization.hxx>
 #include <StepBasic_Organization.hxx>
 #include <StepData_StepReaderData.hxx>

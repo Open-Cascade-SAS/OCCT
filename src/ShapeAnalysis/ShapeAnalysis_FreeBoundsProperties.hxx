@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeAnalysis_HSequenceOfFreeBounds.hxx>
 #include <Standard_Integer.hxx>
 class ShapeAnalysis_FreeBoundData;

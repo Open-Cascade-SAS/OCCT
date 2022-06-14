@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <SelectMgr_CompositionFilter.hxx>
-#include <Standard_Boolean.hxx>
 class SelectMgr_EntityOwner;
 
 

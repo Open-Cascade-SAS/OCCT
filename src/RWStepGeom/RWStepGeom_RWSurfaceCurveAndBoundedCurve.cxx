@@ -26,10 +26,6 @@
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_Curve.hxx>
-#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
-#include <StepGeom_PreferredSurfaceCurveRepresentation.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
 #include <StepGeom_SurfaceCurveAndBoundedCurve.hxx>
 #include <TCollection_AsciiString.hxx>
 

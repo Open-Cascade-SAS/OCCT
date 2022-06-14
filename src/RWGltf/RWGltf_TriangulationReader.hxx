@@ -18,7 +18,6 @@
 #include <RWMesh_TriangulationReader.hxx>
 #include <RWGltf_GltfAccessor.hxx>
 #include <RWGltf_GltfArrayType.hxx>
-#include <RWGltf_GltfPrimitiveMode.hxx>
 
 class RWGltf_GltfLatePrimitiveArray;
 class RWGltf_GltfPrimArrayData;

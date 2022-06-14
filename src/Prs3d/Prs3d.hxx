@@ -17,7 +17,6 @@
 #ifndef _Prs3d_HeaderFile
 #define _Prs3d_HeaderFile
 
-#include <Bnd_Box.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Prs3d_Drawer.hxx>

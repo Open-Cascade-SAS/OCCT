@@ -15,19 +15,15 @@
 
 #include <QABugs.hxx>
 
-#include <gp_Ax2.hxx>
 #include <Extrema_GenLocateExtPS.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <NCollection_List.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
-#include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <GeomFill_BSplineCurves.hxx>
 #include <Draw.hxx>
@@ -35,12 +31,12 @@
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS_Edge.hxx>
+#include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <TopoDS.hxx>
 #include <DBRep.hxx>
 
@@ -58,7 +54,6 @@
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
-#include <HLRAppli_ReflectLines.hxx>
 #include <HLRBRep_PolyHLRToShape.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
 
@@ -66,7 +61,10 @@
 
 #include <Bnd_OBB.hxx>
 #include <BRepBndLib.hxx>
+#include <OSD_MemInfo.hxx>
 #include <OSD_Timer.hxx>
+#include <TDataStd_Name.hxx>
+#include <AppCont_Function.hxx>
 
 #include <limits>
 
@@ -1955,10 +1953,7 @@ static Standard_Integer OCC27357(Draw_Interpretor& theDI,
   return 0;
 }
 #include <Standard_ErrorHandler.hxx>
-#include <TColGeom_SequenceOfCurve.hxx>
 #include <GeomFill_NSections.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <TopExp_Explorer.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 //=======================================================================
 //function : OCC26270
@@ -2298,12 +2293,9 @@ static Standard_Integer OCC28389(Draw_Interpretor& di, Standard_Integer argc, co
 }
 
 #include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColgp_Array1OfVec2d.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <GeomAPI.hxx>
-#include <BRepBuilderAPI_MakeEdge2d.hxx>
 
 static Standard_Integer OCC28594(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
@@ -2388,7 +2380,6 @@ static Standard_Integer OCC28829 (Draw_Interpretor&, Standard_Integer, const cha
 #include <DDocStd_DrawDocument.hxx>
 #include <OSD_FileSystem.hxx>
 #include <Standard_ArrayStreamBuffer.hxx>
-#include <TDataStd_Name.hxx>
 #include <TDocStd_Application.hxx>
 
 #ifdef max
@@ -2570,7 +2561,6 @@ static Standard_Integer OCC28131 (Draw_Interpretor&, Standard_Integer theNbArgs,
   return 0;
 }
 #include <math_NewtonFunctionRoot.hxx>
-#include <math_TrigonometricFunctionRoots.hxx>
 #include <math_TrigonometricEquationFunction.hxx>
 #include <gp_Elips2d.hxx>
 #include <Geom2d_Ellipse.hxx>
@@ -2811,7 +2801,6 @@ static Standard_Integer OCC29371 (Draw_Interpretor& di, Standard_Integer n, cons
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <OSD_MemInfo.hxx>
 
 // check that copying of empty maps does not allocate extra memory
 template<typename T> void AllocDummyArr (Draw_Interpretor& theDI, int theN1, int theN2)
@@ -3392,7 +3381,6 @@ static Standard_Integer QAEndsWith(Draw_Interpretor& di, Standard_Integer n, con
 }
 
 //Class is used in OCC30435
-#include <AppCont_Function.hxx>
 #include <Adaptor3d_Curve.hxx>
 class CurveEvaluator : public AppCont_Function
 
@@ -3568,7 +3556,6 @@ static Standard_Integer OCC30708_2 (Draw_Interpretor& di, Standard_Integer, cons
 //function : OCC30747
 //purpose  :
 //=======================================================================
-#include <Geom2d_Circle.hxx>
 #include <GCE2d_MakeCircle.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>

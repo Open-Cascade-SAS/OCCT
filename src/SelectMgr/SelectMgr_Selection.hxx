@@ -17,7 +17,6 @@
 #ifndef _SelectMgr_Selection_HeaderFile
 #define _SelectMgr_Selection_HeaderFile
 
-#include <NCollection_Vector.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <SelectMgr_TypeOfBVHUpdate.hxx>

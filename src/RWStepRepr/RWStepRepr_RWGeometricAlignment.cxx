@@ -16,8 +16,6 @@
 #include <RWStepRepr_RWGeometricAlignment.hxx>
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Check.hxx>
-#include <StepData_Logical.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_GeometricAlignment.hxx>

@@ -13,7 +13,6 @@
 
 
 #include <Interface_Check.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 #include <RWStepBasic_RWPerson.hxx>
 #include <StepBasic_Person.hxx>
 #include <StepData_StepReaderData.hxx>

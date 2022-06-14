@@ -42,6 +42,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_ListOfInteger.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 #include <Quantity_Color.hxx>
 
 class V3d_Viewer;

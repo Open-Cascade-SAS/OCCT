@@ -12,13 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepShape_RWSolidReplica.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
-#include <StepShape_SolidModel.hxx>
 #include <StepShape_SolidReplica.hxx>
 
 RWStepShape_RWSolidReplica::RWStepShape_RWSolidReplica () {}

@@ -15,10 +15,8 @@
 
 #include <Prs3d_ToolQuadric.hxx>
 
-#include <gp_Quaternion.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Poly_Array1OfTriangle.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 
 //=======================================================================
 //function : FIllArray

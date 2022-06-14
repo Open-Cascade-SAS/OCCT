@@ -24,7 +24,6 @@
 #include <StepElement_Surface3dElementDescriptor.hxx>
 #include <StepElement_SurfaceElementProperty.hxx>
 #include <StepFEA_FeaModel3d.hxx>
-#include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
 #include <StepFEA_Surface3dElementRepresentation.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>

@@ -17,7 +17,6 @@
 #ifndef PrsMgr_Presentations_HeaderFile
 #define PrsMgr_Presentations_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <NCollection_Sequence.hxx>
 
 class PrsMgr_Presentation;

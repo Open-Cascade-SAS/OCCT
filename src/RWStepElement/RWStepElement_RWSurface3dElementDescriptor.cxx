@@ -20,7 +20,6 @@
 #include <RWStepElement_RWSurface3dElementDescriptor.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember.hxx>
 #include <StepElement_HSequenceOfSurfaceElementPurposeMember.hxx>
 #include <StepElement_Surface3dElementDescriptor.hxx>
 #include <StepElement_SurfaceElementPurposeMember.hxx>

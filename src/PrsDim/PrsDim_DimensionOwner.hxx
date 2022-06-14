@@ -18,14 +18,11 @@
 #define _PrsDim_DimensionOwner_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <PrsDim_DimensionSelectionMode.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Integer.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Standard_Boolean.hxx>
 
 class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;

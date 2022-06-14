@@ -17,8 +17,6 @@
 #include <RWStepVisual_RWPresentationLayerAssignment.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepVisual_HArray1OfLayeredItem.hxx>
-#include <StepVisual_LayeredItem.hxx>
 #include <StepVisual_PresentationLayerAssignment.hxx>
 
 RWStepVisual_RWPresentationLayerAssignment::RWStepVisual_RWPresentationLayerAssignment () {}

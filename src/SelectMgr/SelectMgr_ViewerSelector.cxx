@@ -20,7 +20,6 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
 #include <OSD_Environment.hxx>
-#include <Precision.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectBasics_PickResult.hxx>
 #include <SelectMgr.hxx>

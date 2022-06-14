@@ -20,7 +20,6 @@
 #include <RWStepShape_RWSubface.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_Face.hxx>
 #include <StepShape_FaceBound.hxx>
 #include <StepShape_HArray1OfFaceBound.hxx>
 #include <StepShape_Subface.hxx>

@@ -17,9 +17,6 @@
 #define _SelectMgr_SensitiveEntitySet_HeaderFile
 
 #include <BVH_PrimitiveSet3d.hxx>
-#include <NCollection_DataMap.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <Select3D_BndBox3d.hxx>
 #include <Select3D_BVHBuilder3d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SensitiveEntity.hxx>

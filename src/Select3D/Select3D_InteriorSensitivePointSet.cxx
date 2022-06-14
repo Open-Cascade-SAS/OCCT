@@ -13,11 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gp_Pnt.hxx>
 #include <gp_XYZ.hxx>
-
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
 
 #include <Select3D_InteriorSensitivePointSet.hxx>
 

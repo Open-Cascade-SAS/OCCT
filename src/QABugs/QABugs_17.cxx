@@ -29,17 +29,14 @@
 
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <gp_Pln.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAPI.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc_Lin2d2Tan.hxx>
 #include <Geom2d_Line.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <TopoDS_Edge.hxx>
 #include <Precision.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2dGcc_QCurve.hxx>
@@ -47,13 +44,7 @@
 #include <Geom2dGcc_Lin2d2TanIter.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-#include <BRep_Tool.hxx>
-#include <gp_Circ.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
-#include <AIS_Trihedron.hxx>
-#include <Geom_Axis2Placement.hxx>
 #include <V3d_View.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <PrsDim_LengthDimension.hxx>
@@ -64,13 +55,8 @@
 #include <Geom_CartesianPoint.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2dGcc_Circ2d3Tan.hxx>
-#include <Aspect_Window.hxx>
 
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_CompSolid.hxx>
-#include <HLRAlgo_Projector.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Font_NameOfFont.hxx>
 
 static Standard_Integer BUC60842 (Draw_Interpretor& di, Standard_Integer /*argc*/,const char ** /*argv*/)
 {
@@ -688,7 +674,6 @@ static Standard_Integer BUILDEVOL(Draw_Interpretor& di,
   return 1;
 }
 
-#include <TColGeom_SequenceOfCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomFill_NSections.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -900,9 +885,6 @@ static Standard_Integer OCC814 (Draw_Interpretor& di, Standard_Integer argc,cons
   return 0;
 }
 
-#include <ShapeAnalysis_Wire.hxx>
-#include <IntRes2d_SequenceOfIntersectionPoint.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 #include <ShapeFix_Wire.hxx>
 //=======================================================================
 //function : OCC884

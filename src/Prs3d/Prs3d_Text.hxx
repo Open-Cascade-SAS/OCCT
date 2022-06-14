@@ -17,7 +17,6 @@
 #ifndef _Prs3d_Text_HeaderFile
 #define _Prs3d_Text_HeaderFile
 
-#include <gp_Ax2.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>

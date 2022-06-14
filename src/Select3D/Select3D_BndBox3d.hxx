@@ -17,11 +17,8 @@
 #define _Select3D_BndBox3d_Header
 
 #include <BVH_Box.hxx>
-#include <BVH_Types.hxx>
 
 #include <gp_Trsf.hxx>
-
-#include <NCollection_Vector.hxx>
 
 typedef BVH_Box<Standard_Real, 3> Select3D_BndBox3d;
 typedef NCollection_Vec3<Standard_Real> Select3D_Vec3;

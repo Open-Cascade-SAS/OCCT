@@ -14,12 +14,8 @@
 
 #include <PrsMgr_Presentation.hxx>
 
-#include <Graphic3d_DataStructureManager.hxx>
-#include <Precision.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <Quantity_Color.hxx>
 #include <Graphic3d_CView.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsMgr_Presentation, Graphic3d_Structure)

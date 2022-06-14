@@ -17,29 +17,23 @@
 
 #include <PrsDim.hxx>
 #include <PrsDim_DimensionOwner.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
-#include <Font_BRepFont.hxx>
 #include <Font_BRepTextBuilder.hxx>
 #include <GC_MakeCircle.hxx>
 #include <Geom_Line.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <gce_MakeDir.hxx>
 #include <gce_MakeLin.hxx>
 #include <gce_MakePln.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <PrsMgr_PresentationManager.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -49,7 +43,6 @@
 #include <Prs3d_Text.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <SelectMgr_SequenceOfOwner.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitiveCurve.hxx>
@@ -58,7 +51,6 @@
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_ProgramError.hxx>
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_WFShape.hxx>
@@ -67,9 +59,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <V3d_Viewer.hxx>
-#include <Units.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <UnitsAPI.hxx>
 

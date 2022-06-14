@@ -16,7 +16,6 @@
 
 #include <Select3D_SensitiveCurve.hxx>
 
-#include <Precision.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCurve,Select3D_SensitivePoly)

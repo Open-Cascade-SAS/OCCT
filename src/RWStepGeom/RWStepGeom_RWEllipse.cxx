@@ -12,13 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <RWStepGeom_RWEllipse.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Axis2Placement.hxx>
 #include <StepGeom_Ellipse.hxx>
 
 RWStepGeom_RWEllipse::RWStepGeom_RWEllipse () {}

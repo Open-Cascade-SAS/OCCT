@@ -12,15 +12,12 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <RWStepBasic_RWSiUnit.hxx>
 #include <RWStepBasic_RWSiUnitAndTimeUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiPrefix.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndTimeUnit.hxx>
 #include <StepBasic_SiUnitName.hxx>
-#include <StepBasic_TimeUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 

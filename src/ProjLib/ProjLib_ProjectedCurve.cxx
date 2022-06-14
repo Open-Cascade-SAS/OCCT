@@ -16,11 +16,9 @@
 
 //  Modified by skv - Wed Aug 11 15:45:58 2004 OCC6272
 
-#include <GeomAbs_SurfaceType.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
-#include <ProjLib_CompProjectedCurve.hxx>
 #include <ProjLib_HCompProjectedCurve.hxx>
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
 #include <ProjLib_ComputeApprox.hxx>
@@ -34,25 +32,15 @@
 #include <ProjLib_Sphere.hxx>
 #include <ProjLib_Torus.hxx>
 #include <Precision.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <gp_Vec2d.hxx>
 #include <StdFail_NotDone.hxx>
-#include <gp_XY.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_HArray1OfVec2d.hxx>
-#include <TColStd_HArray1OfBoolean.hxx>
-#include <BSplCLib.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <ElCLib.hxx>
 #include <GeomLib.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <NCollection_DataMap.hxx>

@@ -19,11 +19,9 @@
 //    abv 06.05.99: S4137: adding methods GetTangent2d()
 
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
 #include <BRepLib_ValidateEdge.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -45,7 +43,6 @@
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeExtend.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Edge.hxx>

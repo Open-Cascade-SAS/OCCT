@@ -16,12 +16,8 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <RWStepGeom_RWRationalBSplineSurface.hxx>
-#include <StepData_Logical.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_BSplineSurfaceForm.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray2OfCartesianPoint.hxx>
 #include <StepGeom_RationalBSplineSurface.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 

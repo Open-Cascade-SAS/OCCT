@@ -23,7 +23,6 @@
 #include <StepElement_ElementMaterial.hxx>
 #include <StepElement_Volume3dElementDescriptor.hxx>
 #include <StepFEA_FeaModel3d.hxx>
-#include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
 #include <StepFEA_Volume3dElementRepresentation.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>

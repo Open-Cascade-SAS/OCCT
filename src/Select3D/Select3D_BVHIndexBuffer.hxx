@@ -17,9 +17,6 @@
 #define _Select3D_BVHIndexBuffer_Header
 
 #include <Graphic3d_Buffer.hxx>
-#include <Graphic3d_IndexBuffer.hxx>
-#include <Select3D_SensitiveSet.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 
 //! Index buffer for BVH tree.
 class Select3D_BVHIndexBuffer : public Graphic3d_Buffer

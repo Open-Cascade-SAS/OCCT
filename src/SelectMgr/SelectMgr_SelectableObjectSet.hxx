@@ -16,12 +16,7 @@
 #ifndef _SelectMgr_SelectableObjectSet_HeaderFile
 #define _SelectMgr_SelectableObjectSet_HeaderFile
 
-#include <BVH_Builder.hxx>
-#include <BVH_Tree.hxx>
-#include <Graphic3d_Mat4d.hxx>
-#include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Handle.hxx>
-#include <NCollection_IndexedMap.hxx>
 #include <Select3D_BVHBuilder3d.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 

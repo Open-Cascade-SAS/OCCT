@@ -17,28 +17,18 @@
 // 09-Aug-95 : xab : changed the ProjLib_ProjectOnPlane in the case
 //                   of the line and the parameteriation is kept
 #include <ProjLib_ProjectOnPlane.hxx>
-#include <AppCont_Function.hxx>
 #include <Approx_FitAndDivide.hxx>
 #include <AppParCurves_MultiCurve.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Precision.hxx>
 #include <BSplCLib.hxx>
-#include <PLib.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <Precision.hxx>
 #include <ElCLib.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <GeomConvert.hxx>
-#include <BSplCLib.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Parabola.hxx>

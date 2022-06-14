@@ -28,18 +28,15 @@
 #include <Geom2d_Line.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
 #include <Geom2d_Circle.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <gp_Lin.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <DBRep_DrawableShape.hxx>
 #include <BRep_Builder.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <Draw.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -51,9 +48,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <OSD_Path.hxx>
 #include <ShapeBuild_ReShape.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <TopoDS_Wire.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeAnalysis_Wire.hxx>
@@ -62,7 +57,8 @@
 #include <BRep_Tool.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <V3d_View.hxx>
-#include <Standard_ErrorHandler.hxx>
+#include <TDF_Label.hxx>
+#include <TDataStd_Expression.hxx>
 
 static Standard_Integer BUC60897 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
@@ -848,7 +844,6 @@ static Standard_Integer OCC1919_set (Draw_Interpretor& di, Standard_Integer argc
   return 0;
 }
 #include <DDF.hxx>
-#include <TDF_Label.hxx>
 #include <TDataStd_Real.hxx>
 #include <NCollection_BaseMap.hxx>
 static Standard_Integer OCC1919_real (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
@@ -936,7 +931,6 @@ static Standard_Integer OCC2932_SetCurrent (Draw_Interpretor& di, Standard_Integ
   return 0;
 }
 
-#include <TDataStd_Expression.hxx>
 static Standard_Integer OCC2932_SetExpression (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if( argc != 4)

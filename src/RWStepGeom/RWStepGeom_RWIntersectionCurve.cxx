@@ -17,8 +17,6 @@
 #include <RWStepGeom_RWIntersectionCurve.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
 #include <StepGeom_IntersectionCurve.hxx>
 #include <StepGeom_PcurveOrSurface.hxx>
 #include <StepGeom_PreferredSurfaceCurveRepresentation.hxx>

@@ -20,12 +20,9 @@
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
-#include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <BRepBuilderAPI_MakePolygon.hxx>
-#include <TopoDS_Face.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
@@ -42,10 +39,8 @@
 #include <BRep_Tool.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopExp.hxx>
-#include <ChFi3d_FilletShape.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 
 #include <ShapeUpgrade_UnifySameDomain.hxx>

@@ -21,8 +21,6 @@
 #include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <string.h>
-
 #define RGBHLS_H_UNDEFINED -1.0
 
 static Standard_Real TheEpsilon = 0.0001;

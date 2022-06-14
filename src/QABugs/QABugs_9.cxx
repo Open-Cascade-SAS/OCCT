@@ -26,7 +26,6 @@
 
 #include <gp_Ax2.hxx>
 #include <gp_Pnt.hxx>
-#include <Geom_RectangularTrimmedSurface.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <GC_MakeTrimmedCone.hxx>
 
@@ -66,13 +65,11 @@ static Standard_Integer BUC60857 (Draw_Interpretor& di, Standard_Integer /*argc*
   return 0;
 }
 
-#include <GccEnt_Position.hxx>
 #include <Geom2dGcc_QualifiedCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
 #include <gp_Elips2d.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Circle.hxx>
-#include <AIS_InteractiveObject.hxx>
 
 static Standard_Integer OCC24303(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {

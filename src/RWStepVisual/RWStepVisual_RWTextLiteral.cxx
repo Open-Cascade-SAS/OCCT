@@ -12,13 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepVisual_RWTextLiteral.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Axis2Placement.hxx>
-#include <StepVisual_FontSelect.hxx>
 #include <StepVisual_TextLiteral.hxx>
 #include <StepVisual_TextPath.hxx>
 #include <TCollection_AsciiString.hxx>

@@ -23,7 +23,6 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Plane.hxx>
 #include <gce_MakeDir.hxx>
-#include <Standard_ProgramError.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_DiameterDimension, PrsDim_Dimension)
 

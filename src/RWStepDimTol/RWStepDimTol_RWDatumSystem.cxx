@@ -18,7 +18,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_DatumReferenceCompartment.hxx>
 #include <StepDimTol_DatumSystem.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 

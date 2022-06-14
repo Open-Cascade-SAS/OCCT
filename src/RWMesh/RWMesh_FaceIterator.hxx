@@ -17,7 +17,6 @@
 #include <BRepLProp_SLProps.hxx>
 #include <gp_Trsf.hxx>
 #include <NCollection_DataMap.hxx>
-#include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Face.hxx>

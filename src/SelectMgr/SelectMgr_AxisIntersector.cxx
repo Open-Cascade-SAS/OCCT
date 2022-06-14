@@ -13,7 +13,6 @@
 
 #include <SelectMgr_AxisIntersector.hxx>
 
-#include <Bnd_Range.hxx>
 #include <BVH_Tools.hxx>
 #include <Precision.hxx>
 #include <SelectBasics_PickResult.hxx>

@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 
 //! The Precision package offers a set of functions defining precision criteria
 //! for use in conventional situations when comparing two numbers.

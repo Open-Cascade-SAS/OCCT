@@ -21,7 +21,6 @@
 #include <Graphic3d_Text.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
 // =======================================================================

@@ -18,7 +18,6 @@
 #define _ShapeAnalysis_FreeBoundData_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopoDS_Wire.hxx>
 #include <Standard_Real.hxx>

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <RWStepVisual_RWSurfaceStyleTransparent.hxx>
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
@@ -34,7 +33,6 @@ RWStepVisual_RWSurfaceStyleTransparent::RWStepVisual_RWSurfaceStyleTransparent()
 //function : ReadStep
 //purpose  :
 //=======================================================================
-#include <iostream>
 
 void RWStepVisual_RWSurfaceStyleTransparent::ReadStep (const Handle(StepData_StepReaderData)& data,
                                                        const Standard_Integer num,

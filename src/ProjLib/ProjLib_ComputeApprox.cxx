@@ -21,11 +21,9 @@
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <AppCont_Function.hxx>
 #include <Convert_CompBezierCurves2dToBSplineCurve2d.hxx>
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
-#include <BSplCLib.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>

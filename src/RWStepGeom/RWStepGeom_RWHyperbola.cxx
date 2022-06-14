@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWHyperbola.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Axis2Placement.hxx>
 #include <StepGeom_Hyperbola.hxx>
 
 RWStepGeom_RWHyperbola::RWStepGeom_RWHyperbola () {}

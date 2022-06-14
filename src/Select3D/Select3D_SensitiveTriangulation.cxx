@@ -20,7 +20,6 @@
 #include <Poly_Connect.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
-#include <Precision.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 
 #include <algorithm>

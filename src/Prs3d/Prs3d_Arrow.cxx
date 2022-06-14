@@ -24,7 +24,6 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ToolCylinder.hxx>
 #include <Prs3d_ToolDisk.hxx>
-#include <Prs3d_ToolSphere.hxx>
 
 //=======================================================================
 //function : Draw

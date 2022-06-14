@@ -12,12 +12,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWCircle.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Axis2Placement.hxx>
 #include <StepGeom_Circle.hxx>
 
 RWStepGeom_RWCircle::RWStepGeom_RWCircle () {}

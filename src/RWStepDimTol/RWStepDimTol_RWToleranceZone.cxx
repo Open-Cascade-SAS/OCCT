@@ -18,7 +18,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_HArray1OfToleranceZoneTarget.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
 #include <StepDimTol_ToleranceZoneForm.hxx>
 #include <StepDimTol_ToleranceZoneTarget.hxx>

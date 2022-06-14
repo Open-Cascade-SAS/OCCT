@@ -18,7 +18,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepDimTol_NonUniformZoneDefinition.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
 #include <StepRepr_ShapeAspect.hxx>

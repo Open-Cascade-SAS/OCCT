@@ -17,7 +17,6 @@
 #ifndef _Select3D_SensitiveBox_HeaderFile
 #define _Select3D_SensitiveBox_HeaderFile
 
-#include <Bnd_Box.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 
 //! A framework to define selection by a sensitive box.

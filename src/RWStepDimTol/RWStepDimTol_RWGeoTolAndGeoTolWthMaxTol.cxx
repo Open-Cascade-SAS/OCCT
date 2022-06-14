@@ -21,8 +21,6 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_GeometricToleranceTarget.hxx>
-#include <StepDimTol_GeometricToleranceType.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
 

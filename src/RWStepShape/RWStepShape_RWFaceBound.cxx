@@ -12,13 +12,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
 #include <RWStepShape_RWFaceBound.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_Edge.hxx>
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_FaceBound.hxx>
 #include <StepShape_Loop.hxx>

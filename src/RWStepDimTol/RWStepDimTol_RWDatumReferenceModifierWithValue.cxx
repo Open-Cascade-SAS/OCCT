@@ -15,12 +15,9 @@
 
 #include <RWStepDimTol_RWDatumReferenceModifierWithValue.hxx>
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepBasic_LengthMeasureWithUnit.hxx>
-#include <StepDimTol_DatumReferenceModifierType.hxx>
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 
 //=======================================================================

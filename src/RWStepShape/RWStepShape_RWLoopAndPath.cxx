@@ -17,11 +17,8 @@
 #include <RWStepShape_RWLoopAndPath.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_HArray1OfOrientedEdge.hxx>
-#include <StepShape_Loop.hxx>
 #include <StepShape_LoopAndPath.hxx>
 #include <StepShape_OrientedEdge.hxx>
-#include <StepShape_Path.hxx>
 
 RWStepShape_RWLoopAndPath::RWStepShape_RWLoopAndPath () {}
 

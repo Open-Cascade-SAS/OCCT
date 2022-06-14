@@ -16,9 +16,7 @@
 #include <HeaderSection_FileName.hxx>
 #include <HeaderSection_FileSchema.hxx>
 #include <HeaderSection_Protocol.hxx>
-#include <Interface_Check.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_ParamType.hxx>
 #include <Interface_ReaderLib.hxx>
 #include <RWHeaderSection_ReadWriteModule.hxx>
 #include <RWHeaderSection_RWFileDescription.hxx>

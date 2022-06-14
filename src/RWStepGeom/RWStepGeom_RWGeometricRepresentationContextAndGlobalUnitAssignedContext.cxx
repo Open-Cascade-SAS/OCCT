@@ -15,13 +15,9 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
-#include <StepBasic_NamedUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_GeometricRepresentationContext.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
-#include <StepRepr_GlobalUnitAssignedContext.hxx>
 
 RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext::RWStepGeom_RWGeometricRepresentationContextAndGlobalUnitAssignedContext () {}
 

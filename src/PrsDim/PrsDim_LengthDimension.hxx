@@ -15,14 +15,11 @@
 #define _PrsDim_LengthDimension_HeaderFile
 
 #include <PrsDim_Dimension.hxx>
-#include <PrsDim_KindOfDimension.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 
 DEFINE_STANDARD_HANDLE (PrsDim_LengthDimension, PrsDim_Dimension)
 

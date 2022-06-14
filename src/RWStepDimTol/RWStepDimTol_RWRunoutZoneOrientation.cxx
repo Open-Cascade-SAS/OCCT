@@ -15,7 +15,6 @@
 
 #include <RWStepDimTol_RWRunoutZoneOrientation.hxx>
 
-#include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>

@@ -16,10 +16,8 @@
 #include <RWStepDimTol_RWProjectedZoneDefinition.hxx>
 
 #include <Interface_EntityIterator.hxx>
-#include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepDimTol_ProjectedZoneDefinition.hxx>
 #include <StepDimTol_ToleranceZone.hxx>
 #include <StepRepr_ShapeAspect.hxx>

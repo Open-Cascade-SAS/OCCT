@@ -15,17 +15,13 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_FloatWriter.hxx>
 #include <Interface_MSG.hxx>
 #include <RWStepBasic_RWUncertaintyMeasureWithUnit.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
-#include <StepBasic_NamedUnit.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <TCollection_AsciiString.hxx>
 
-#include <string.h>
 //=======================================================================
 //function : RWStepBasic_RWUncertaintyMeasureWithUnit
 //purpose  : 

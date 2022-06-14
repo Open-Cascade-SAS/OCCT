@@ -25,7 +25,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 #include <StepGeom_Curve.hxx>
-#include <Standard_Boolean.hxx>
 
 //=======================================================================
 //function : RWStepKinematics_RWPointOnPlanarCurvePair

@@ -16,8 +16,6 @@
 #include <QANCollection.hxx>
 #include <Draw_Interpretor.hxx>
 
-#include <gp_Pnt.hxx>
-
 void QANCollection::Commands (Draw_Interpretor& theCommands)
 {
   QANCollection::CommandsTest (theCommands);

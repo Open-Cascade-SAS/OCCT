@@ -18,7 +18,6 @@
 #define _SelectMgr_SortCriterion_HeaderFile
 
 #include <Graphic3d_Vec3.hxx>
-#include <Graphic3d_ZLayerId.hxx>
 #include <Precision.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 

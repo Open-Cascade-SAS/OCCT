@@ -19,7 +19,6 @@
 #include <PrsDim.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <DsgPrs_LengthPresentation.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeLin.hxx>
@@ -27,13 +26,10 @@
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -41,9 +37,7 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

@@ -27,8 +27,6 @@
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
 #include <gp_Parab2d.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Geom2d_BSplineCurve;
 class Geom2d_BezierCurve;
 class gp_Lin;

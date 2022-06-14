@@ -13,7 +13,6 @@
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepBasic_RWDocumentRelationship.hxx>
 #include <StepBasic_Document.hxx>

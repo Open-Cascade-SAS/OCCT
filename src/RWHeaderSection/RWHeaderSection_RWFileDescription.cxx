@@ -13,7 +13,6 @@
 
 
 #include <HeaderSection_FileDescription.hxx>
-#include <Interface_Check.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <RWHeaderSection_RWFileDescription.hxx>
 #include <StepData_StepReaderData.hxx>

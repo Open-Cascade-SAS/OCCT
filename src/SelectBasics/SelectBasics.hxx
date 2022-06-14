@@ -18,8 +18,6 @@
 #define _SelectBasics_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Integer.hxx>
 
 //! interface class for dynamic selection
 class SelectBasics 

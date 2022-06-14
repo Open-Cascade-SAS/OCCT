@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepShape_RWContextDependentShapeRepresentation.hxx>
 #include <StepData_StepReaderData.hxx>
@@ -20,7 +19,6 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_ShapeRepresentationRelationship.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
-#include <StepShape_ShapeDefinitionRepresentation.hxx>
 
 // pour Share
 //=======================================================================

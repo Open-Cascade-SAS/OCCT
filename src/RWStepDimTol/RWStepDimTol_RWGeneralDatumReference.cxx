@@ -19,8 +19,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_Datum.hxx>
-#include <StepDimTol_DatumReferenceModifier.hxx>
-#include <StepDimTol_GeneralDatumReference.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceElement.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepDimTol_DatumReferenceElement.hxx>

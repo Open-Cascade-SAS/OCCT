@@ -17,10 +17,7 @@
 #ifndef _SelectMgr_ViewerSelector_HeaderFile
 #define _SelectMgr_ViewerSelector_HeaderFile
 
-#include <Graphic3d_SequenceOfStructure.hxx>
-#include <NCollection_DataMap.hxx>
 #include <OSD_Chronometer.hxx>
-#include <Select3D_BVHBuilder3d.hxx>
 #include <SelectMgr_BVHThreadPool.hxx>
 #include <SelectMgr_IndexedDataMapOfOwnerCriterion.hxx>
 #include <SelectMgr_SelectingVolumeManager.hxx>
@@ -35,7 +32,6 @@
 #include <Standard_Transient.hxx>
 #include <StdSelect_TypeOfSelectionImage.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
 
 class SelectMgr_SensitiveEntitySet;
 class SelectMgr_EntityOwner;

@@ -17,8 +17,6 @@
 #include <RWStepShape_RWOpenShell.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_Face.hxx>
-#include <StepShape_HArray1OfFace.hxx>
 #include <StepShape_OpenShell.hxx>
 
 RWStepShape_RWOpenShell::RWStepShape_RWOpenShell () {}

@@ -18,10 +18,7 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
-#include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <ViewerTest.hxx>
-#include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <gp_Pnt.hxx>
@@ -32,7 +29,6 @@
 #include <gp_Circ.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <TopoDS_Edge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopoDS_Wire.hxx>
 #include <Geom_TrimmedCurve.hxx>

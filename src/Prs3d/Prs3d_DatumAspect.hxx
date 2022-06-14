@@ -17,11 +17,9 @@
 #ifndef _Prs3d_DatumAspect_HeaderFile
 #define _Prs3d_DatumAspect_HeaderFile
 
-#include <NCollection_DataMap.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DatumAttribute.hxx>
 #include <Prs3d_DatumAxes.hxx>
-#include <Prs3d_DatumMode.hxx>
 #include <Prs3d_DatumParts.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>

@@ -18,7 +18,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepRepr_HArray1OfShapeAspect.hxx>
 #include <StepDimTol_RunoutZoneDefinition.hxx>
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_ToleranceZone.hxx>

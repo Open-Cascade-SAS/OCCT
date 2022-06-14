@@ -18,7 +18,6 @@
 #include <Standard_Type.hxx>
 
 #include <Graphic3d_NMapOfTransient.hxx>
-#include <Standard_Boolean.hxx>
 #include <SelectMgr_CompositionFilter.hxx>
 #include <SelectMgr_FilterType.hxx>
 

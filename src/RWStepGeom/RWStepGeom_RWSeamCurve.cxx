@@ -17,10 +17,6 @@
 #include <RWStepGeom_RWSeamCurve.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_Curve.hxx>
-#include <StepGeom_HArray1OfPcurveOrSurface.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
-#include <StepGeom_PreferredSurfaceCurveRepresentation.hxx>
 #include <StepGeom_SeamCurve.hxx>
 
 // --- Enum : PreferredSurfaceCurveRepresentation ---

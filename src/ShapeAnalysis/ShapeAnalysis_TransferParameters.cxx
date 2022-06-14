@@ -20,7 +20,6 @@
 #include <ShapeAnalysis_TransferParameters.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 

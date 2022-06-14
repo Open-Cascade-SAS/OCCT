@@ -15,7 +15,6 @@
 
 #include <RWStepAP242_RWItemIdentifiedRepresentationUsage.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>

@@ -18,7 +18,6 @@
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_HArray1OfValueQualifier.hxx>
 #include <StepShape_MeasureQualification.hxx>
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>

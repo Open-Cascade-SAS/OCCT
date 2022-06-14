@@ -17,14 +17,9 @@
 
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <DBRep.hxx>
-#include <DrawTrSurf.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <ViewerTest.hxx>
-#include <AIS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 
-#include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 

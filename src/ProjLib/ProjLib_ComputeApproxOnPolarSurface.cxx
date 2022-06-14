@@ -14,19 +14,13 @@
 // commercial license or contractual agreement.
 
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
-#include <AppCont_Function.hxx>
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
-#include <BSplCLib.hxx>
-#include <PLib.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <gp_Trsf.hxx>
 #include <Precision.hxx>
 #include <Approx_FitAndDivide2d.hxx>
-#include <math.hxx>
 #include <AppParCurves_MultiCurve.hxx>
-#include <Geom_Surface.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Line.hxx>
@@ -42,27 +36,21 @@
 #include <Geom_TrimmedCurve.hxx>
 
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_Array2OfPnt2d.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 #include <TColStd_ListOfTransient.hxx>
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
-#include <Adaptor3d_Curve.hxx>
 #include <Adaptor2d_Curve2d.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

@@ -21,7 +21,6 @@
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_ElementarySurface.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -31,7 +30,6 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <ShapeAnalysis_ShapeContents.hxx>
 #include <ShapeAnalysis_Wire.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>

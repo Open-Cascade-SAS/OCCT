@@ -16,27 +16,21 @@
 #ifndef _PrsDim_Dimension_HeaderFile
 #define _PrsDim_Dimension_HeaderFile
 
-#include <PrsDim_DimensionSelectionMode.hxx>
 #include <PrsDim_DimensionOwner.hxx>
 #include <PrsDim_DisplaySpecialSymbol.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_KindOfInteractive.hxx>
 #include <PrsDim_KindOfDimension.hxx>
-#include <PrsDim_KindOfSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_DimensionUnits.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_TextAspect.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColgp_HSequenceOfPnt.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>

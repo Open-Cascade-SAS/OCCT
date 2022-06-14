@@ -26,7 +26,6 @@
 #include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Timer.hxx>
-#include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
 #include <Standard_ReadLineBuffer.hxx>
 

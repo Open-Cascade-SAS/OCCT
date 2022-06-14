@@ -16,10 +16,7 @@
 #ifndef _SelectMgr_FrustumBuilder_HeaderFile
 #define _SelectMgr_FrustumBuilder_HeaderFile
 
-#include <Standard_Type.hxx>
-
 #include <Graphic3d_Camera.hxx>
-#include <Graphic3d_WorldViewProjState.hxx>
 #include <Precision.hxx>
 #include <SelectMgr_VectorTypes.hxx>
 

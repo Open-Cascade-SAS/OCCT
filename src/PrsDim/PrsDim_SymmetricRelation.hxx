@@ -17,7 +17,6 @@
 #ifndef _PrsDim_SymmetricRelation_HeaderFile
 #define _PrsDim_SymmetricRelation_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <PrsDim_Relation.hxx>

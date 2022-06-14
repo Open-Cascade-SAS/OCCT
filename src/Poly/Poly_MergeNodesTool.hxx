@@ -14,9 +14,7 @@
 #ifndef _Poly_MergeNodesTool_HeaderFile
 #define _Poly_MergeNodesTool_HeaderFile
 
-#include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
-#include <NCollection_Vec4.hxx>
 #include <Poly_Triangulation.hxx>
 
 //! Auxiliary tool for merging triangulation nodes for visualization purposes.

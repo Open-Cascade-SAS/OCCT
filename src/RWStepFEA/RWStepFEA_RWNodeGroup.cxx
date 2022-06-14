@@ -21,7 +21,6 @@
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaModel.hxx>
-#include <StepFEA_HArray1OfNodeRepresentation.hxx>
 #include <StepFEA_NodeGroup.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
 

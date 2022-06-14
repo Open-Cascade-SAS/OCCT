@@ -26,17 +26,12 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <gp_Circ.hxx>
-#include <gp_Circ2d.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Elips.hxx>
-#include <gp_Elips2d.hxx>
 #include <gp_Hypr.hxx>
-#include <gp_Hypr2d.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Lin2d.hxx>
 #include <gp_Parab.hxx>
-#include <gp_Parab2d.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

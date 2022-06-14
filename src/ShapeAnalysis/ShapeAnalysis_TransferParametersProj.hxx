@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <Standard_Real.hxx>
 #include <TopLoc_Location.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeAnalysis_TransferParameters.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 class Geom_Curve;

@@ -16,11 +16,9 @@
 #include <stdio.h>
 
 #include <QADNaming.hxx>
-#include <TDF_Label.hxx>
 #include <Draw_Interpretor.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_NewShapeIterator.hxx>
-#include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_SameShapeIterator.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopoDS_Shape.hxx>

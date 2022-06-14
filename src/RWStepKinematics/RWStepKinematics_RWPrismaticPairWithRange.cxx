@@ -24,7 +24,6 @@
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
 //=======================================================================

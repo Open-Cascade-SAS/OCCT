@@ -17,10 +17,8 @@
 #include <RWStepBasic_RWMassMeasureWithUnit.hxx>
 #include <StepBasic_MassMeasureWithUnit.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
-#include <StepBasic_NamedUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <TCollection_AsciiString.hxx>
 
 //=======================================================================
 //function : RWStepBasic_RWMassMeasureWithUnit

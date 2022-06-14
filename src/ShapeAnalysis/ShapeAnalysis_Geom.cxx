@@ -13,7 +13,6 @@
 
 //szv#4 S4163
 
-#include <gp_Dir.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
@@ -24,8 +23,6 @@
 #include <GProp_PrincipalProps.hxx>
 #include <ShapeAnalysis_Geom.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
-#include <Standard_OutOfRange.hxx>
 
 //=======================================================================
 //function : NearestPlane

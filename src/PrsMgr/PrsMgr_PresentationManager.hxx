@@ -20,7 +20,6 @@
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <PrsMgr_ListOfPresentations.hxx>
-#include <Quantity_Color.hxx>
 
 class Graphic3d_Structure;
 typedef Graphic3d_Structure Prs3d_Presentation;

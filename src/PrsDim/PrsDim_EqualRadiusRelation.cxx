@@ -25,7 +25,6 @@
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <gp_Circ.hxx>
 #include <Precision.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
@@ -33,7 +32,6 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>

@@ -25,8 +25,7 @@
 #include <OSD_CachedFileSystem.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_ThreadPool.hxx>
-
-#include <fstream>
+#include <RWGltf_GltfLatePrimitiveArray.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafReader, RWMesh_CafReader)
 

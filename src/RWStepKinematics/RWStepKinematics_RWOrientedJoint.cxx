@@ -23,7 +23,6 @@
 #include <TCollection_HAsciiString.hxx>
 #include <StepShape_Vertex.hxx>
 #include <StepShape_Edge.hxx>
-#include <Standard_Boolean.hxx>
 
 //=======================================================================
 //function : RWStepKinematics_RWOrientedJoint

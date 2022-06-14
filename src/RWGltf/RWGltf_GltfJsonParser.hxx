@@ -15,12 +15,8 @@
 #ifndef _RWGltf_GltfJsonParser_HeaderFile
 #define _RWGltf_GltfJsonParser_HeaderFile
 
-#include <Graphic3d_Vec.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_ProgressScope.hxx>
-#include <NCollection_DataMap.hxx>
-#include <NCollection_IndexedMap.hxx>
-#include <RWGltf_GltfAccessor.hxx>
 #include <RWGltf_GltfPrimArrayData.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
 #include <RWGltf_GltfBufferView.hxx>

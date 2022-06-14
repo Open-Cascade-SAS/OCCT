@@ -17,8 +17,6 @@
 #include <RWStepShape_RWPolyLoop.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
 #include <StepShape_PolyLoop.hxx>
 
 RWStepShape_RWPolyLoop::RWStepShape_RWPolyLoop () {}

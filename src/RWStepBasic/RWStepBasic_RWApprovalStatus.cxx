@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Check.hxx>
 #include <RWStepBasic_RWApprovalStatus.hxx>
 #include <StepBasic_ApprovalStatus.hxx>
 #include <StepData_StepReaderData.hxx>

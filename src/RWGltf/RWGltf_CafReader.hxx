@@ -15,7 +15,6 @@
 #ifndef _RWGltf_CafReader_HeaderFile
 #define _RWGltf_CafReader_HeaderFile
 
-#include <Message_ProgressRange.hxx>
 #include <NCollection_Vector.hxx>
 #include <RWMesh_CafReader.hxx>
 #include <TopoDS_Face.hxx>

@@ -21,7 +21,6 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_DimensionOwner, SelectMgr_EntityOwner)
 

@@ -16,11 +16,8 @@
 #include <RWStepDimTol_RWUnequallyDisposedGeometricTolerance.hxx>
 
 #include <Interface_EntityIterator.hxx>
-#include <StepBasic_LengthMeasureWithUnit.hxx>
-#include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_UnequallyDisposedGeometricTolerance.hxx>
 
 //=======================================================================

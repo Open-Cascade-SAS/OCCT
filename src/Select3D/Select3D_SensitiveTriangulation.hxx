@@ -17,12 +17,7 @@
 #ifndef _Select3D_SensitiveTriangulation_Header
 #define _Select3D_SensitiveTriangulation_Header
 
-#include <TopLoc_Location.hxx>
-#include <gp_Trsf.hxx>
-#include <gp_Pnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Select3D_SensitiveEntity.hxx>
-#include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Select3D_SensitiveSet.hxx>
 
 class Poly_Triangle;

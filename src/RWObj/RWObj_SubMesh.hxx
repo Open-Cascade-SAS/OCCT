@@ -15,7 +15,6 @@
 #ifndef _RWObj_SubMesh_HeaderFile
 #define _RWObj_SubMesh_HeaderFile
 
-#include <Quantity_Color.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! Sub-mesh definition for OBJ reader.

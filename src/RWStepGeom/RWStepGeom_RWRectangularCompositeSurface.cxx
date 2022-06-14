@@ -17,7 +17,6 @@
 #include <RWStepGeom_RWRectangularCompositeSurface.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepGeom_HArray2OfSurfacePatch.hxx>
 #include <StepGeom_RectangularCompositeSurface.hxx>
 #include <StepGeom_SurfacePatch.hxx>
 

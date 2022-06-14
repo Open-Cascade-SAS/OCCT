@@ -21,8 +21,6 @@
 #include <StepBasic_EulerAngles.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepElement_CurveElementSectionDefinition.hxx>
-#include <StepElement_HArray1OfCurveElementSectionDefinition.hxx>
 #include <StepFEA_CurveElementIntervalLinearlyVarying.hxx>
 #include <StepFEA_CurveElementLocation.hxx>
 

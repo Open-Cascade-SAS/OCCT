@@ -17,7 +17,6 @@
 #include <RWStepShape_RWQualifiedRepresentationItem.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
-#include <StepShape_HArray1OfValueQualifier.hxx>
 #include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>

@@ -17,10 +17,8 @@
 #ifndef _Poly_Polygon3D_HeaderFile
 #define _Poly_Polygon3D_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 
 DEFINE_STANDARD_HANDLE(Poly_Polygon3D, Standard_Transient)

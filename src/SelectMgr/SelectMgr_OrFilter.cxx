@@ -14,7 +14,6 @@
 
 
 #include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_Filter.hxx>
 #include <SelectMgr_OrFilter.hxx>
 #include <Standard_Type.hxx>
 

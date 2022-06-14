@@ -19,7 +19,6 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <RWStepAP203_RWStartWork.hxx>
-#include <StepAP203_HArray1OfWorkItem.hxx>
 #include <StepAP203_StartWork.hxx>
 #include <StepAP203_WorkItem.hxx>
 #include <StepBasic_Action.hxx>

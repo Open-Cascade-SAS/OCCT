@@ -33,18 +33,13 @@
 #include <AIS_Trihedron.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <TopoDS_Solid.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <IGESToBRep_Reader.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <GCPnts_UniformDeflection.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <IGESToBRep.hxx>
-#include <V3d_Viewer.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -54,14 +49,11 @@
 #include <OSD_SIGSEGV.hxx>
 #include <OSD_Exception_ACCESS_VIOLATION.hxx>
 #include <OSD_Exception_STACK_OVERFLOW.hxx>
-#include <OSD.hxx>
 #include <OSD_Timer.hxx>
-#include <OSD_ThreadPool.hxx>
 #include <OSD_Parallel.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <Interface_Static.hxx>
-#include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Failure.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
@@ -79,10 +71,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <AIS_ColorScale.hxx>
-#include <AIS_ListOfInteractive.hxx>
-#include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
-#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <gp_GTrsf.hxx>
 #include <Poly_Triangulation.hxx>
@@ -92,9 +81,16 @@
 #include <V3d_View.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepAlgoAPI_Section.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <Message.hxx>
 #include <Draw_Printer.hxx>
+#include <TopExp_Explorer.hxx>
+#include <ShapeFix_Shell.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <TDocStd_Document.hxx>
+#include <PCDM_StoreStatus.hxx>
+#include <TDocStd_Application.hxx>
+#include <TPrsStd_AISPresentation.hxx>
+#include <ExprIntrp_GenExp.hxx>
 
 #if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
@@ -241,7 +237,6 @@ static int BUC60610(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 
 //OCC105
 #include <BRepTools_WireExplorer.hxx>
-#include <BRep_Tool.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <TopExp.hxx>
 
@@ -371,11 +366,10 @@ static int pipe_OCC9 (Draw_Interpretor& di,
 // OCC125
 // usage : OCC125 shell
 //======================================================================
-#include <ShapeFix_Shell.hxx>
 
 Standard_Integer  OCC125(Draw_Interpretor& di ,
-			 Standard_Integer n,
-			 const char ** a)
+                         Standard_Integer n,
+                         const char ** a)
 {
   if (n!=2) {
     di<<" Use OCC125 shell";
@@ -421,10 +415,10 @@ Standard_Integer  OCC125(Draw_Interpretor& di ,
 }
 
 #include <BRepLib_FindSurface.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
+
 Standard_Integer  OCC157(Draw_Interpretor& di,
-			 Standard_Integer n,
-			 const char ** a)
+                         Standard_Integer n,
+                         const char ** a)
 //static Standard_Integer findplanarsurface(Draw_Interpretor&, Standard_Integer n, const char ** a)
 {
   if (n<3) {
@@ -457,11 +451,8 @@ Standard_Integer  OCC157(Draw_Interpretor& di,
 
 // #include <MyCommandsCMD.h>
 #include <ShapeFix_Shape.hxx>
-#include <BRepOffset_MakeOffset.hxx>
 #include <BRepOffsetAPI_MakeOffset.hxx>
-#include <BRepOffset_Mode.hxx>
 #include <GeomAbs_JoinType.hxx>
-#include <AIS_Shape.hxx>
 
 #include <BRepTools.hxx>
 
@@ -671,10 +662,7 @@ for(;wex.More();wex.Next())
 
 }
 
-#include <TDocStd_Document.hxx>
 #include <DDocStd.hxx>
-#include <PCDM_StoreStatus.hxx>
-#include <TDocStd_Application.hxx>
 
 static Standard_Integer OCC381_Save (Draw_Interpretor& di, Standard_Integer nb, const char ** a)
 {
@@ -887,8 +875,6 @@ static Standard_Integer OCC277bug (Draw_Interpretor& di, Standard_Integer nb, co
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <TDF_LabelSequence.hxx>
-#include <TPrsStd_AISPresentation.hxx>
-#include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <XCAFPrs_Driver.hxx>
 
@@ -1124,7 +1110,6 @@ static Standard_Integer OCC22 (Draw_Interpretor& di, Standard_Integer argc, cons
 #include <ShapeProcess_ShapeContext.hxx>
 #include <ShapeProcess.hxx>
 
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <IMeshTools_Parameters.hxx>
 
@@ -1204,7 +1189,6 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
   return 0;
 }
 
-#include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
@@ -1277,7 +1261,6 @@ static Standard_Integer OCC525(Draw_Interpretor& di, Standard_Integer /*argc*/, 
   return 0;
 }
 
-#include <BRepPrimAPI_MakeWedge.hxx>
 #include <gce_MakeRotation.hxx>
 #include <gce_MakeTranslation.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -1600,8 +1583,6 @@ static Standard_Integer OCC921 (Draw_Interpretor& di, Standard_Integer argc, con
 
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_GeneralExpression.hxx>
-#include <Expr_Exponential.hxx>
-#include <ExprIntrp_GenExp.hxx>
 //=======================================================================
 //function :  OCC902
 //purpose  : 
@@ -1652,7 +1633,6 @@ static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, cons
 
 #include <DDF.hxx>
 #include <TPrsStd_AISViewer.hxx>
-#include <TDF_Label.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 //=======================================================================
 //function : OCC1029_AISTransparency 
@@ -3179,11 +3159,6 @@ static Standard_Integer OCC15755 (Draw_Interpretor& di, Standard_Integer argc, c
 #include <TDF_Tool.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 // Iterators
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
-#include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
-#include <TDataStd_ListIteratorOfListOfByte.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
 // Attributes
 #include <TDataStd_Tick.hxx>
 #include <TDataStd_IntegerList.hxx>
@@ -4480,14 +4455,9 @@ static Standard_Integer OCC12584 (Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 #include <Interface_Macros.hxx>
-#include <IGESControl_Controller.hxx>
-#include <XSDRAW.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <XSControl_WorkSession.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
 #include <Message_ProgressScope.hxx>
-#include <XSControl_TransferReader.hxx>
 
 #include <Geom_Plane.hxx>
 static Standard_Integer OCC20766 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
