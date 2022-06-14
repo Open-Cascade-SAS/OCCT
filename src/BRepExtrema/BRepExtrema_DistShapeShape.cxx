@@ -30,7 +30,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Precision.hxx>
-#include <Bnd_SeqOfBox.hxx>
 #include <BRepExtrema_UnCompatibleShape.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>

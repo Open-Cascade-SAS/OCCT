@@ -15,8 +15,6 @@ Bnd_B3x.gxx
 Bnd_B3x.lxx
 Bnd_BoundSortBox.cxx
 Bnd_BoundSortBox.hxx
-Bnd_BoundSortBox2d.cxx
-Bnd_BoundSortBox2d.hxx
 Bnd_Box.cxx
 Bnd_Box.hxx
 Bnd_Box2d.cxx
@@ -28,7 +26,6 @@ Bnd_OBB.cxx
 Bnd_OBB.hxx
 Bnd_Range.cxx
 Bnd_Range.hxx
-Bnd_SeqOfBox.hxx
 Bnd_Sphere.cxx
 Bnd_Sphere.hxx
 Bnd_Sphere.lxx

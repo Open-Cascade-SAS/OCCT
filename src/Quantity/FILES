@@ -1,5 +1,4 @@
 Quantity_Array1OfColor.hxx
-Quantity_Array2OfColor.hxx
 Quantity_Color.cxx
 Quantity_Color.hxx
 Quantity_ColorTable.pxx
@@ -15,5 +14,4 @@ Quantity_NameOfColor.hxx
 Quantity_Period.cxx
 Quantity_Period.hxx
 Quantity_PeriodDefinitionError.hxx
-Quantity_PhysicalQuantity.hxx
 Quantity_TypeOfColor.hxx

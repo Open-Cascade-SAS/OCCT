@@ -61,7 +61,6 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
-#include <Bnd_SeqOfBox.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <Extrema_ExtPS.hxx>
 
@@ -1468,8 +1467,8 @@ void FindInternalIntersections(const TopoDS_Edge& theEdge,
 Standard_Boolean LocOpe_WiresOnShape::Add(const TopTools_SequenceOfShape& theEdges)
 {
   TopTools_SequenceOfShape anEdges;
-  Bnd_SeqOfBox anEdgeBoxes;
   Standard_Integer i = 1, nb = theEdges.Length();
+  NCollection_Array1<Bnd_Box> anEdgeBoxes(1, nb);
   for (; i <= nb; i++)
   {
     const TopoDS_Shape& aCurSplit = theEdges(i);
@@ -1484,7 +1483,7 @@ Standard_Boolean LocOpe_WiresOnShape::Add(const TopTools_SequenceOfShape& theEdg
         continue;
       Standard_Real aTolE = BRep_Tool::Tolerance(TopoDS::Edge(aCurE));
       aBoxE.SetGap(aTolE);
-      anEdgeBoxes.Append(aBoxE);
+      anEdgeBoxes.SetValue(i, aBoxE);
       anEdges.Append(aCurE);
 
     }
