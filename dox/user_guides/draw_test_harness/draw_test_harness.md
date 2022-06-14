@@ -2044,43 +2044,47 @@ Creates a *MeshVS_Mesh* object based on STL file data. The object will be displa
 meshfromstl mesh myfile.stl
 ~~~~
 
-@subsubsection occt_draw_4_5_2 meshdispmode
+@subsubsection occt_draw_4_5_2 vsetdispmode
 
 Syntax:
 ~~~~{.php}
-meshdispmode meshname displaymode
+vsetdispmode meshname displaymode
 ~~~~
 
-Changes the display mode of object **meshname**. The **displaymode** is integer, which can be:
-* *1* for *wireframe*, 
+Changes the display mode of object **meshname**. The **displaymode** is integer (`MeshVS_DisplayModeFlags`), which can be:
+* *1* for *wireframe*,
 * *2* for *shading* mode, or
-* *3* for *shrink* mode. 
+* *3* for *shrink* mode.
 
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
-meshdispmode mesh 2
+vinit
+meshfromstl mesh myfile.stl
+vsetdispmode mesh 2
 ~~~~
 
-@subsubsection occt_draw_4_5_3 meshselmode
+@subsubsection occt_draw_4_5_3 vselmode
 
 Syntax:
 ~~~~{.php}
-meshselmode meshname selectionmode
+vselmode meshname selectionmode {on|off}
 ~~~~
 
-Changes the selection mode of object **meshname**. The *selectionmode* is integer OR-combination of mode flags. The basic flags are the following: 
+Changes the selection mode of object **meshname**.
+The *selectionmode* is integer OR-combination of mode flags (`MeshVS_SelectionModeFlags`). The basic flags are the following:
+* *0* -- selection of mesh as whole;
 * *1* -- node selection;
-* *2* -- 0D elements (not supported in STL); 
-* *4* -- links (not supported in STL); 
-* *8* -- faces.
- 
-**Example:** 
+* *2* -- 0D elements (not supported in STL);
+* *4* -- links (not supported in STL);
+* *8* -- faces;
+* *16* -- volumes (not supported in STL);
+* *256* -- groups (not supported in STL).
+
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
-meshselmode mesh 1
+vinit
+meshfromstl mesh myfile.stl
+vselmode mesh 1
 ~~~~
 
 @subsubsection occt_draw_4_5_4 meshshadcolor
@@ -2091,11 +2095,11 @@ meshshadcolor meshname red green blue
 ~~~~
 
 Changes the face interior color of object **meshname**. The *red*, *green* and *blue* are real values between *0* and *1*.
- 
-**Example:** 
+
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
+vinit
+meshfromstl mesh myfile.stl
 meshshadcolormode mesh 0.5 0.5 0.5
 ~~~~
 
@@ -2107,11 +2111,11 @@ meshlinkcolor meshname red green blue
 ~~~~
 
 Changes the color of face borders for object **meshname**. The *red*, *green* and *blue* are real values between *0* and *1*.
- 
-**Example:** 
+
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
+vinit
+meshfromstl mesh myfile.stl
 meshlinkcolormode mesh 0.5 0.5 0.5
 ~~~~
 
@@ -2119,39 +2123,37 @@ meshlinkcolormode mesh 0.5 0.5 0.5
 
 Syntax:
 ~~~~{.php}
-meshmat meshname material
+meshmat meshname material [transparency]
 ~~~~
 
 Changes the material of object **meshname**.
 
-*material* is represented with an integer value as follows (equivalent to enumeration *Graphic3d_NameOfMaterial*): 
-* *0 -- BRASS,* 
-* *1 -- BRONZE,* 
-* *2 -- COPPER,* 
-* *3 -- GOLD,* 
-* *4 -- PEWTER,* 
-* *5 -- PLASTER,* 
-* *6 -- PLASTIC,* 
-* *7 -- SILVER,* 
-* *8 -- STEEL,* 
-* *9 -- STONE,* 
-* *10 -- SHINY_PLASTIC,* 
-* *11 -- SATIN,*
-* *12 -- METALIZED,* 
-* *13 -- NEON_GNC,* 
-* *14 -- CHROME,*
-* *15 -- ALUMINIUM,*
-* *16 -- OBSIDIAN,* 
-* *17 -- NEON_PHC,* 
-* *18 -- JADE,*
-* *19 -- DEFAULT,* 
-* *20 -- UserDefined*
+*material* is represented with an integer value as follows (equivalent to enumeration *Graphic3d_NameOfMaterial*):
+* *0 -- BRASS*,
+* *1 -- BRONZE*,
+* *2 -- COPPER*,
+* *3 -- GOLD*,
+* *4 -- PEWTER*,
+* *5 -- PLASTER*,
+* *6 -- PLASTIC*,
+* *7 -- SILVER*,
+* *8 -- STEEL*,
+* *9 -- STONE*,
+* *10 -- SHINY_PLASTIC*,
+* *11 -- SATIN*,
+* *12 -- METALIZED*,
+* *13 -- NEON_GNC*,
+* *14 -- CHROME*,
+* *15 -- ALUMINIUM*,
+* *16 -- OBSIDIAN*,
+* *17 -- NEON_PHC*,
+* *18 -- JADE*.
  
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
-meshmat mesh JADE 
+vinit
+meshfromstl mesh myfile.stl
+meshmat mesh 18
 ~~~~
 
 @subsubsection occt_draw_4_5_7 meshshrcoef
@@ -2161,12 +2163,14 @@ Syntax:
 meshshrcoef meshname shrinkcoefficient
 ~~~~
 
-Changes the value of shrink coefficient used in the shrink mode. In the shrink mode the face is shown as a congruent part of a usual face, so that *shrinkcoefficient* controls the value of this part. The *shrinkcoefficient* is a positive real number.
- 
-**Example:** 
+Changes the value of shrink coefficient used in the shrink mode.
+In the shrink mode the face is shown as a congruent part of a usual face, so that *shrinkcoefficient* controls the value of this part.
+The *shrinkcoefficient* is a positive real number.
+
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
+vinit
+meshfromstl mesh myfile.stl
 meshshrcoef mesh 0.05
 ~~~~
 
@@ -2178,11 +2182,12 @@ meshshow meshname
 ~~~~
 
 Displays **meshname** in the viewer (if it is erased).
+The same as calling `vdisplay`.
  
 **Example:** 
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
+vinit
+meshfromstl mesh myfile.stl
 meshshow mesh
 ~~~~
 
@@ -2193,12 +2198,13 @@ Syntax:
 meshhide meshname
 ~~~~
 
-Hides **meshname** in the viewer. 
+Hides **meshname** in the viewer.
+The same as calling `verase`.
 
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
+vinit
+meshfromstl mesh myfile.stl
 meshhide mesh
 ~~~~
 
@@ -2209,7 +2215,7 @@ Syntax:
 meshhidesel meshname
 ~~~~
 
-Hides only selected entities. The other part of **meshname** remains visible. 
+Hides only selected entities. The other part of **meshname** remains visible.
 
 @subsubsection occt_draw_4_5_11 meshshowsel
 
@@ -2218,7 +2224,7 @@ Syntax:
 meshshowsel meshname
 ~~~~
 
-Shows only selected entities. The other part of **meshname** becomes invisible. 
+Shows only selected entities. The other part of **meshname** becomes invisible.
 
 @subsubsection occt_draw_4_5_12 meshshowall
 
@@ -2227,22 +2233,22 @@ Syntax:
 meshshowall meshname
 ~~~~
 
-Changes the state of all entities to visible for **meshname**. 
+Changes the state of all entities to visible for **meshname**.
 
-@subsubsection occt_draw_4_5_13 meshdelete
+@subsubsection occt_draw_4_5_13 vremove
 
 Syntax:
 ~~~~{.php}
-meshdelete meshname
+vremove meshname
 ~~~~
 
-Deletes MeshVS_Mesh object **meshname**. 
+Deletes MeshVS_Mesh object **meshname**.
 
-**Example:** 
+**Example:**
 ~~~~{.php}
-vinit 
-meshfromstl mesh myfile.stl 
-meshdelete mesh 
+vinit
+meshfromstl mesh myfile.stl
+vremove mesh
 ~~~~
 
 @subsection occt_draw_4_6	VIS Viewer commands
