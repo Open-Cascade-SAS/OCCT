@@ -60,7 +60,7 @@ public:
   //! of this conic is recomputed normal to theA, without
   //! changing the orientation of the local coordinate
   //! system (right-handed or left-handed).
-  void SetYAxis (const gp_Ax2d& theAY) { pos.SetXAxis(theAY); }
+  void SetYAxis (const gp_Ax2d& theAY) { pos.SetYAxis(theAY); }
   
   //! Modifies this conic, redefining its local coordinate
   //! system partially, by assigning theP as its origin.
