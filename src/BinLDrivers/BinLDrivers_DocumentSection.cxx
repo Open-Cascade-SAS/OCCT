@@ -214,14 +214,17 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
 //purpose  : 
 //=======================================================================
 
-void BinLDrivers_DocumentSection::ReadTOC
-                                (BinLDrivers_DocumentSection& theSection,
+Standard_Boolean BinLDrivers_DocumentSection::ReadTOC (
+                                 BinLDrivers_DocumentSection& theSection,
                                  Standard_IStream&            theStream,
                                  const TDocStd_FormatVersion  theDocFormatVersion)
 {
-  char aBuf[512];
+  static const int THE_BUF_SIZE = 512;
+  char aBuf[THE_BUF_SIZE];
   Standard_Integer aNameBufferSize;
   theStream.read ((char *)&aNameBufferSize, sizeof(Standard_Integer));
+  if (theStream.eof() || aNameBufferSize > THE_BUF_SIZE)
+    return Standard_False;
 #ifdef DO_INVERSE
   aNameBufferSize = InverseSize(aNameBufferSize);
 #endif
@@ -260,4 +263,5 @@ void BinLDrivers_DocumentSection::ReadTOC
     theSection.myValue[1] = aValue[1];
     theSection.myIsPostRead = (aValue[2] != 0);
   }
+  return Standard_True;
 }

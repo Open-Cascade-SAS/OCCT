@@ -229,11 +229,12 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   if (aFileVer >= TDocStd_FormatVersion_VERSION_3) {
     BinLDrivers_DocumentSection aSection;
     do {
-      BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream, aFileVer);
+      if (!BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream, aFileVer))
+        break;
       mySections.Append(aSection);
     } while (!aSection.Name().IsEqual (aQuickPart ? ENDSECTION_POS : SHAPESECTION_POS) && !theIStream.eof());
 
-    if (theIStream.eof()) {
+    if (mySections.IsEmpty() || theIStream.eof()) {
       // There is no shape section in the file.
       myMsgDriver->Send (aMethStr + "error: shape section is not found", Message_Fail);
       myReaderStatus = PCDM_RS_ReaderException;

@@ -8,6 +8,11 @@ NewDocument D BinOcaf
 SaveAs D $docname
 Close D
 
+# make the first open/close iteration before checking memory because some filled structures
+# are cleared on start of the next open (like mySections in DocumentRetrievalDriver)
+Open $docname D
+Close D
+
 puts "Executing Load / Close in cycle to see if allocated heap memory grows"
 set listmem {}
 for {set i 1} {$i < 10} {incr i} {
