@@ -19,7 +19,10 @@
 #include <DDocStd.hxx>
 #include <Draw.hxx>
 #include <gp_Trsf.hxx>
+#include <Message.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TDF_ChildIterator.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS_Compound.hxx>
@@ -934,59 +937,140 @@ static Standard_Integer updateAssemblies(Draw_Interpretor& di, Standard_Integer 
   return 0;
 }
 
-static Standard_Integer XGetProperties(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer XGetProperties(Draw_Interpretor& theDI,
+                                       Standard_Integer theArgc,
+                                       const char** theArgv)
 {
-  if (argc != 3)
+  if (theArgc < 2)
   {
-    di << "Syntax error: wrong number of arguments\nUse: " << argv[0] << " Doc Label\n";
+    theDI.PrintHelp(theArgv[0]);
     return 1;
   }
 
   Handle(TDocStd_Document) aDoc;
-  DDocStd::GetDocument(argv[1], aDoc);
+  DDocStd::GetDocument(theArgv[1], aDoc);
   if (aDoc.IsNull())
   {
-    di << "Syntax error: " << argv[1] << " is not a document\n";
+    theDI << "Syntax error: " << theArgv[1] << " is not a document\n";
     return 1;
   }
-
-  TDF_Label aLabel;
-  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
-
-  // Get XDE shape tool
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
-
-  Handle(TDataStd_NamedData) aNamedData = aShapeTool->GetNamedProperties(aLabel);
-
-  if (aNamedData.IsNull())
+  NCollection_IndexedDataMap<TCollection_AsciiString, Handle(TDataStd_NamedData)> aNameDataMap;
+  for (Standard_Integer anInd = 2; anInd < theArgc; anInd++)
   {
-    di << argv[2] << " has no properties\n";
-    return 0;
-  }
-
-  aNamedData->LoadDeferredData();
-  if (aNamedData->HasIntegers())
-  {
-    TColStd_DataMapOfStringInteger anIntProperties = aNamedData->GetIntegersContainer();
-    for (TColStd_DataMapIteratorOfDataMapOfStringInteger anIter(anIntProperties); anIter.More(); anIter.Next())
+    TDF_Label aLabel;
+    const TCollection_AsciiString anEntry = theArgv[anInd];
+    TDF_Tool::Label(aDoc->GetData(), anEntry, aLabel);
+    if (aLabel.IsNull())
     {
-      di << anIter.Key() << " : " << anIter.Value() << "\n";
+      TopoDS_Shape aShape = DBRep::Get(theArgv[anInd]);
+      if (!aShape.IsNull())
+      {
+        aLabel = aShapeTool->FindShape(aShape);
+      }
+    }
+    if (!aLabel.IsNull())
+    {
+      Handle(TDataStd_NamedData) aNamedData = aShapeTool->GetNamedProperties(aLabel);
+      if (!aNamedData.IsNull())
+      {
+        aNameDataMap.Add(anEntry, aNamedData);
+      }
+    }
+    else
+    {
+      Message::SendWarning() << "Warning: incorrect argument [" << theArgv[anInd] << "]" << " is not a label";
     }
   }
-  if (aNamedData->HasReals())
+  if (theArgc == 2)
   {
-    TDataStd_DataMapOfStringReal aRealProperties = aNamedData->GetRealsContainer();
-    for (TDataStd_DataMapIteratorOfDataMapOfStringReal anIter(aRealProperties); anIter.More(); anIter.Next())
+    for (TDF_ChildIterator anIter(aShapeTool->Label(), Standard_True);
+         anIter.More(); anIter.Next())
     {
-      di << anIter.Key() << " : " << anIter.Value() << "\n";
+      const TDF_Label& aLabel = anIter.Value();
+      TCollection_AsciiString anEntry;
+      TDF_Tool::Entry(aLabel, anEntry);
+      Handle(TDataStd_NamedData) aNamedData = aShapeTool->GetNamedProperties(aLabel);
+      if (!aNamedData.IsNull())
+      {
+        aNameDataMap.Add(anEntry, aNamedData);
+      }
     }
   }
-  if (aNamedData->HasStrings())
+  for (NCollection_IndexedDataMap<TCollection_AsciiString, Handle(TDataStd_NamedData)>::Iterator aNamedDataIter(aNameDataMap);
+       aNamedDataIter.More(); aNamedDataIter.Next())
   {
-    TDataStd_DataMapOfStringString aStringProperties = aNamedData->GetStringsContainer();
-    for (TDataStd_DataMapIteratorOfDataMapOfStringString anIter(aStringProperties); anIter.More(); anIter.Next())
+    if (theArgc != 3)
     {
-      di << anIter.Key() << " : " << anIter.Value() << "\n";
+      theDI << "Property for [" << aNamedDataIter.Key() << "]:\n";
+    }
+    const Handle(TDataStd_NamedData)& aNamedData = aNamedDataIter.Value();
+    aNamedData->LoadDeferredData();
+    if (aNamedData->HasIntegers())
+    {
+      const TColStd_DataMapOfStringInteger& anIntProperties = aNamedData->GetIntegersContainer();
+      for (TColStd_DataMapIteratorOfDataMapOfStringInteger anIter(anIntProperties); anIter.More(); anIter.Next())
+      {
+        theDI << anIter.Key() << " : " << anIter.Value() << "\n";
+      }
+    }
+    if (aNamedData->HasReals())
+    {
+      const TDataStd_DataMapOfStringReal& aRealProperties = aNamedData->GetRealsContainer();
+      for (TDataStd_DataMapIteratorOfDataMapOfStringReal anIter(aRealProperties); anIter.More(); anIter.Next())
+      {
+        theDI << anIter.Key() << " : " << anIter.Value() << "\n";
+      }
+    }
+    if (aNamedData->HasStrings())
+    {
+      const TDataStd_DataMapOfStringString& aStringProperties = aNamedData->GetStringsContainer();
+      for (TDataStd_DataMapIteratorOfDataMapOfStringString anIter(aStringProperties); anIter.More(); anIter.Next())
+      {
+        theDI << anIter.Key() << " : " << anIter.Value() << "\n";
+      }
+    }
+    if (aNamedData->HasBytes())
+    {
+      const TDataStd_DataMapOfStringByte& aByteProperties = aNamedData->GetBytesContainer();
+      for (TDataStd_DataMapOfStringByte::Iterator anIter(aByteProperties); anIter.More(); anIter.Next())
+      {
+        theDI << anIter.Key() << " : " << anIter.Value() << "\n";
+      }
+    }
+    if (aNamedData->HasArraysOfIntegers())
+    {
+      const TDataStd_DataMapOfStringHArray1OfInteger& anArrayIntegerProperties =
+        aNamedData->GetArraysOfIntegersContainer();
+      for (TDataStd_DataMapOfStringHArray1OfInteger::Iterator anIter(anArrayIntegerProperties);
+           anIter.More(); anIter.Next())
+      {
+        TCollection_AsciiString aMessage(anIter.Key() + " : ");
+        for (TColStd_HArray1OfInteger::Iterator anSubIter(anIter.Value()->Array1());
+             anSubIter.More(); anSubIter.Next())
+        {
+          aMessage += " ";
+          aMessage += anSubIter.Value();
+        }
+        theDI << aMessage << "\n";
+      }
+    }
+    if (aNamedData->HasArraysOfReals())
+    {
+      const TDataStd_DataMapOfStringHArray1OfReal& anArrayRealsProperties =
+        aNamedData->GetArraysOfRealsContainer();
+      for (TDataStd_DataMapOfStringHArray1OfReal::Iterator anIter(anArrayRealsProperties);
+           anIter.More(); anIter.Next())
+      {
+        TCollection_AsciiString aMessage(anIter.Key() + " : ");
+        for (TColStd_HArray1OfReal::Iterator anSubIter(anIter.Value()->Array1());
+             anSubIter.More(); anSubIter.Next())
+        {
+          aMessage += " ";
+          aMessage += anSubIter.Value();
+        }
+        theDI << aMessage << "\n";
+      }
     }
   }
 
@@ -1142,7 +1226,7 @@ void XDEDRAW_Shapes::InitCommands(Draw_Interpretor& di)
   di.Add ("XUpdateAssemblies","Doc \t: updates assembly compounds",
                    __FILE__, updateAssemblies, g);
 
-  di.Add("XGetProperties", "Doc Label \t: prints named properties assigned to the Label",
+  di.Add("XGetProperties", "Doc [label1, label2, ...] [shape1, shape2, ...]\t: prints named properties assigned to the all document's shape labels or chosen labels of shapes",
          __FILE__, XGetProperties, g);
 
   di.Add ("XAutoNaming","Doc [0|1]\t: Disable/enable autonaming to Document",
