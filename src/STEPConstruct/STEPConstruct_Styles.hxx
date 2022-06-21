@@ -21,11 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <STEPConstruct_Tool.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>

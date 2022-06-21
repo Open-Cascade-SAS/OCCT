@@ -13,12 +13,10 @@
 
 #include <StdObjMgt_Persistent.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdStorage_RootData.hxx>
 #include <StdStorage_Root.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
-#include <Storage_DataMapIteratorOfMapOfPers.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdStorage_RootData, Standard_Transient)

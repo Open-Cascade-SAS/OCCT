@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <TopoDS_Shape.hxx>
 

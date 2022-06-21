@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_SizeMember.hxx>
 #include <StepBasic_SizeSelect.hxx>

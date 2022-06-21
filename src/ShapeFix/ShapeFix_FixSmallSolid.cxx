@@ -16,7 +16,6 @@
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 #include <Message_Msg.hxx>
-#include <Precision.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeFix_FixSmallSolid.hxx>
 #include <Standard_Type.hxx>
@@ -25,13 +24,10 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_FixSmallSolid,ShapeFix_Root)

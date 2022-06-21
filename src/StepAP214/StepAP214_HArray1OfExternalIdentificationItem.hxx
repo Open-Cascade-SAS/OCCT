@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfExternalIdentificationItem_HeaderFile
 #define StepAP214_HArray1OfExternalIdentificationItem_HeaderFile
 
-#include <StepAP214_ExternalIdentificationItem.hxx>
 #include <StepAP214_Array1OfExternalIdentificationItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

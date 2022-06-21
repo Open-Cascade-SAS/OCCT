@@ -22,7 +22,6 @@
 
 #include <StdSelect_TypeOfEdge.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class SelectMgr_EntityOwner;
 

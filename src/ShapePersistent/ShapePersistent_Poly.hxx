@@ -17,9 +17,6 @@
 
 #include <StdObjMgt_SharedObject.hxx>
 #include <StdObjMgt_TransientPersistentMap.hxx>
-#include <StdObjMgt_ReadData.hxx>
-#include <StdObjMgt_WriteData.hxx>
-#include <StdLPersistent_HArray1.hxx>
 #include <ShapePersistent_HArray1.hxx>
 
 class Poly_Polygon2D;

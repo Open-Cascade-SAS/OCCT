@@ -17,7 +17,6 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
-#include <Precision.hxx>
 #include <ShapeBuild_Vertex.hxx>
 #include <TopoDS_Vertex.hxx>
 

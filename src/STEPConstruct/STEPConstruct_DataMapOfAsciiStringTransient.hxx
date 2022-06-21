@@ -19,7 +19,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_AsciiString,Handle(Standard_Transient),TCollection_AsciiString> STEPConstruct_DataMapOfAsciiStringTransient;

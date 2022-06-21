@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <StepToTopoDS_NMTool.hxx>
-#include <Standard_Real.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>

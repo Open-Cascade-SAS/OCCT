@@ -18,12 +18,9 @@
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
 #include <StepData_StepModel.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
 

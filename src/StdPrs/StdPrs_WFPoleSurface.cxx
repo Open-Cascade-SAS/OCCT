@@ -21,7 +21,6 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_IsoAspect.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <StdPrs_WFPoleSurface.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 

@@ -19,9 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <ShapeUpgrade_FaceDivide.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Face;
 
 

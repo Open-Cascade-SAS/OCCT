@@ -13,7 +13,6 @@
 
 #include <Hatch_Hatcher.hxx>
 #include <Graphic3d_Group.hxx>
-#include <gp_Pnt.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box2d.hxx>
@@ -23,7 +22,6 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <Geom_Surface.hxx>
 #include <StdPrs_WFRestrictedFace.hxx>
 #include <StdPrs_ToolRFace.hxx>
 #include <StdPrs_Curve.hxx>

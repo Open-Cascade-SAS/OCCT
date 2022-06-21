@@ -15,8 +15,6 @@
 #ifndef _ShapePersistent_Geom2d_Curve_HeaderFile
 #define _ShapePersistent_Geom2d_Curve_HeaderFile
 
-#include <StdObjMgt_TransientPersistentMap.hxx>
-
 #include <ShapePersistent_Geom2d.hxx>
 #include <ShapePersistent_HArray1.hxx>
 #include <StdLPersistent_HArray1.hxx>

@@ -15,7 +15,6 @@
 
 #include <Standard_Type.hxx>
 #include <Standard_Mutex.hxx>
-#include <Standard_Assert.hxx>
 
 #include <NCollection_DataMap.hxx>
 

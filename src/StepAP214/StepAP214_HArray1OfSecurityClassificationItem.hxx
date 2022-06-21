@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfSecurityClassificationItem_HeaderFile
 #define StepAP214_HArray1OfSecurityClassificationItem_HeaderFile
 
-#include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepAP214_Array1OfSecurityClassificationItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

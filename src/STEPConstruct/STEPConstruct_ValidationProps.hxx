@@ -23,9 +23,7 @@
 
 #include <StepBasic_Unit.hxx>
 #include <STEPConstruct_Tool.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 class StepBasic_ProductDefinition;
 class XSControl_WorkSession;

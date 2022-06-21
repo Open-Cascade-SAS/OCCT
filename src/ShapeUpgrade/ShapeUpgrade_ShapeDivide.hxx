@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Message_Gravity.hxx>
 #include <ShapeExtend_Status.hxx>

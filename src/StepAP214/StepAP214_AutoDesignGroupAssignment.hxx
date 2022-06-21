@@ -18,7 +18,6 @@
 #define _StepAP214_AutoDesignGroupAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfAutoDesignGroupedItem.hxx>
 #include <StepBasic_GroupAssignment.hxx>

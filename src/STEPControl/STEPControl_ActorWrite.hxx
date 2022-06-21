@@ -21,10 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <STEPConstruct_ContextTool.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <STEPControl_StepModelType.hxx>
 class Transfer_Finder;

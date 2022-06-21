@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfAutoDesignGroupedItem_HeaderFile
 #define StepAP214_HArray1OfAutoDesignGroupedItem_HeaderFile
 
-#include <StepAP214_AutoDesignGroupedItem.hxx>
 #include <StepAP214_Array1OfAutoDesignGroupedItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <StdObjMgt_ReadData.hxx>
-#include <StdObjMgt_WriteData.hxx>
 #include <ShapePersistent_HSequence.hxx>
 
 

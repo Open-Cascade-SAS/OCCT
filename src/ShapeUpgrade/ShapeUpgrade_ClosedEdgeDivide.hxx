@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <ShapeUpgrade_EdgeDivide.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Edge;
 
 

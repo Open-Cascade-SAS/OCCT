@@ -16,7 +16,6 @@
 #ifndef _STEPCAFControl_Reader_HeaderFile
 #define _STEPCAFControl_Reader_HeaderFile
 
-#include <Resource_FormatType.hxx>
 #include <STEPControl_Reader.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <TDF_LabelSequence.hxx>

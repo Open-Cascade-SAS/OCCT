@@ -16,7 +16,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <Standard_Type.hxx>
 #include <StepBasic_ActionMethod.hxx>
 #include <TCollection_HAsciiString.hxx>
 

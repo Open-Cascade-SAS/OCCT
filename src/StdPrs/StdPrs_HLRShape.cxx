@@ -15,7 +15,6 @@
 
 #include <BRepAdaptor_Curve.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_HLRToolShape.hxx>

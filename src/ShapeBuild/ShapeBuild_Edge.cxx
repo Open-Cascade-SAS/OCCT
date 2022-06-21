@@ -19,14 +19,12 @@
 #include <BRep_Curve3D.hxx>
 #include <BRep_CurveOnSurface.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -38,10 +36,8 @@
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAPI.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Lin2d.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf2d.hxx>
 #include <Precision.hxx>

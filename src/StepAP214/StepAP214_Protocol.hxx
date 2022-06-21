@@ -18,7 +18,6 @@
 #define _StepAP214_Protocol_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepData_Protocol.hxx>
 #include <Standard_Integer.hxx>

@@ -25,7 +25,6 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 class TopoDS_Shape;

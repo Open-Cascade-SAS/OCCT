@@ -17,7 +17,6 @@
 #define _StepAP242_IdAttribute_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP242_IdAttributeSelect.hxx>
 #include <Standard_Transient.hxx>

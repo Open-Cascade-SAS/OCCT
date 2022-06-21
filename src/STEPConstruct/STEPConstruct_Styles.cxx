@@ -16,10 +16,7 @@
 
 
 #include <APIHeaderSection_MakeHeader.hxx>
-#include <gp_Pnt.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Graph.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Static.hxx>
 #include <Quantity_Color.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
@@ -27,10 +24,8 @@
 #include <STEPConstruct_Styles.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
-#include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
@@ -39,7 +34,6 @@
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
-#include <StepVisual_Colour.hxx>
 #include <StepVisual_ColourRgb.hxx>
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_DraughtingModel.hxx>
@@ -49,9 +43,6 @@
 #include <StepVisual_FillAreaStyleColour.hxx>
 #include <StepVisual_FillStyleSelect.hxx>
 #include <StepVisual_HArray1OfFillStyleSelect.hxx>
-#include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
-#include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
-#include <StepVisual_HArray1OfSurfaceStyleElementSelect.hxx>
 #include <StepVisual_Invisibility.hxx>
 #include <StepVisual_InvisibleItem.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>
@@ -66,15 +57,12 @@
 #include <StepVisual_SurfaceStyleBoundary.hxx>
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <StepVisual_SurfaceStyleFillArea.hxx>
-#include <StepVisual_SurfaceStyleRendering.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 #include <StepVisual_RenderingPropertiesSelect.hxx>
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Transfer_Binder.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <XSControl_TransferReader.hxx>

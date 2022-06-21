@@ -26,7 +26,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
-#include <TColGeom_HArray1OfCurve.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve3dContinuity,ShapeUpgrade_SplitCurve3d)

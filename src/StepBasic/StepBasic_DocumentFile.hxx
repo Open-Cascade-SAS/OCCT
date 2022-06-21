@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_Document.hxx>
-#include <Standard_Boolean.hxx>
 class StepBasic_CharacterizedObject;
 class TCollection_HAsciiString;
 class StepBasic_DocumentType;

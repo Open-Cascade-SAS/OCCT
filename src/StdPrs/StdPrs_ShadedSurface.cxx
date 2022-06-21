@@ -19,11 +19,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfTriangleStrips.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <StdPrs_ShadedSurface.hxx>
 #include <TColStd_Array1OfReal.hxx>

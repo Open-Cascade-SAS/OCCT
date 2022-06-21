@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;

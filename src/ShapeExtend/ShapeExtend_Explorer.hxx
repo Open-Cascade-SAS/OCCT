@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_HSequenceOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 class TopoDS_Shape;

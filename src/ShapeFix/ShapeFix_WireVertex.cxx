@@ -16,7 +16,6 @@
 #include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_WireVertex.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_WireVertex.hxx>
 #include <TColStd_HArray1OfReal.hxx>

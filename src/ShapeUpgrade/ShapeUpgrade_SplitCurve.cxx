@@ -24,7 +24,6 @@
 #include <Standard_Type.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve,Standard_Transient)
 

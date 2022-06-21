@@ -15,7 +15,6 @@
 #include <StdObjMgt_MapOfInstantiators.hxx>
 
 #include <StdPersistent_TopLoc.hxx>
-#include <StdPersistent_TopoDS.hxx>
 #include <StdPersistent_Naming.hxx>
 #include <StdPersistent_HArray1.hxx>
 #include <StdLPersistent_HArray1.hxx>

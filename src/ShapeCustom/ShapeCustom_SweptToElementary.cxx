@@ -16,7 +16,6 @@
 #include <GeomAdaptor_SurfaceOfRevolution.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
@@ -25,7 +24,6 @@
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -34,12 +32,8 @@
 #include <Geom_SweptSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Torus.hxx>
 #include <Message_Msg.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <ShapeCustom_SweptToElementary.hxx>

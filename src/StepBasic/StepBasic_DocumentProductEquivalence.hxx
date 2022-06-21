@@ -17,7 +17,6 @@
 #define _StepBasic_DocumentProductEquivalence_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_DocumentProductAssociation.hxx>
 

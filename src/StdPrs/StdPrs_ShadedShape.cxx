@@ -16,14 +16,11 @@
 
 #include <StdPrs_ShadedShape.hxx>
 
-#include <Bnd_Box.hxx>
 #include <BRepTools.hxx>
-#include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
@@ -37,7 +34,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <Poly_Connect.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
@@ -49,9 +45,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TColgp_Array1OfDir.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 namespace

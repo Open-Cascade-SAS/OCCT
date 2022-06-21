@@ -18,7 +18,6 @@
 
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopoDS_Vertex.hxx>
 
 #include <Standard_Assert.hxx>
 

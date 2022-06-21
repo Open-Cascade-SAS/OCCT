@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignReferencingItem.hxx>
 #include <StepBasic_Document.hxx>

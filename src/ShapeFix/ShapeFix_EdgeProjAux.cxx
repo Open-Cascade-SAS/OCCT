@@ -20,15 +20,12 @@
 #include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPC.hxx>
-#include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>

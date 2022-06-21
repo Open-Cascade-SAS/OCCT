@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <StepBasic_Unit.hxx>

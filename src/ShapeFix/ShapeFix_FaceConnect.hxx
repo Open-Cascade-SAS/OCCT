@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Face;
 class TopoDS_Shell;
 

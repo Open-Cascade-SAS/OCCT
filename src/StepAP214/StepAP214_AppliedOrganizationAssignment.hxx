@@ -18,7 +18,6 @@
 #define _StepAP214_AppliedOrganizationAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfOrganizationItem.hxx>
 #include <StepBasic_OrganizationAssignment.hxx>

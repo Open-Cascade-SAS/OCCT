@@ -16,6 +16,7 @@
 
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_Integer.hxx>
 
 //! Polygon offset parameters.
 struct Graphic3d_PolygonOffset

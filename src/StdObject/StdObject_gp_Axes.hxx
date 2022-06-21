@@ -20,8 +20,6 @@
 
 #include <gp_Ax2d.hxx>
 #include <gp_Ax22d.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 
 

@@ -18,7 +18,6 @@
 #define _StepBasic_Person_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Standard_Boolean.hxx>

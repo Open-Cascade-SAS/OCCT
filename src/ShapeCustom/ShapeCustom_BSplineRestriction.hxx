@@ -22,8 +22,6 @@
 
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeCustom_Modification.hxx>
 class ShapeCustom_RestrictionParameters;
 class TopoDS_Face;

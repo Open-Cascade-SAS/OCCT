@@ -18,7 +18,6 @@
 #define _StepBasic_PersonalAddress_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_HArray1OfPerson.hxx>
 #include <StepBasic_Address.hxx>

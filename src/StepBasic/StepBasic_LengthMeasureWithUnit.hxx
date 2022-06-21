@@ -18,7 +18,6 @@
 #define _StepBasic_LengthMeasureWithUnit_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_MeasureWithUnit.hxx>
 

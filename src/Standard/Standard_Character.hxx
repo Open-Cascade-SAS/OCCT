@@ -25,7 +25,6 @@
 
 #include <Standard_TypeDef.hxx>
 
-#include <string.h>
 #include <cctype>
 
 // ------------------------------------------------------------------

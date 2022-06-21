@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfApprovalItem_HeaderFile
 #define StepAP214_HArray1OfApprovalItem_HeaderFile
 
-#include <StepAP214_ApprovalItem.hxx>
 #include <StepAP214_Array1OfApprovalItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -15,10 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <Bnd_Box.hxx>
-#include <BndLib_AddSurface.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_Group.hxx>
@@ -26,17 +23,15 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <StdPrs_Curve.hxx>
 #include <StdPrs_WFSurface.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 
 static void FindLimits(const Handle(Adaptor3d_Surface)& surf ,
-		       const Standard_Real             aLimit,
-		       Standard_Real&                  UFirst,
-		       Standard_Real&                  ULast,
-		       Standard_Real&                  VFirst,
-		       Standard_Real&                  VLast)
+                       const Standard_Real             aLimit,
+                       Standard_Real&                  UFirst,
+                       Standard_Real&                  ULast,
+                       Standard_Real&                  VFirst,
+                       Standard_Real&                  VLast)
 {
   UFirst = surf->FirstUParameter();
   ULast = surf->LastUParameter();

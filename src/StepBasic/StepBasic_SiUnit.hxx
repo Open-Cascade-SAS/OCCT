@@ -22,7 +22,6 @@
 
 #include <StepBasic_SiPrefix.hxx>
 #include <StepBasic_SiUnitName.hxx>
-#include <Standard_Boolean.hxx>
 #include <StepBasic_NamedUnit.hxx>
 class StepBasic_DimensionalExponents;
 

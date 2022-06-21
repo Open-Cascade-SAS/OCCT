@@ -17,17 +17,14 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom2dConvert_ApproxCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_ElementarySurface.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>

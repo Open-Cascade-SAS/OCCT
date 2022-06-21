@@ -15,8 +15,6 @@
 
 #include <Standard_Mutex.hxx>
 
-#include <errno.h>
-
 //=============================================
 // Standard_Mutex::Standard_Mutex
 //=============================================

@@ -17,7 +17,6 @@
 #ifndef StepAP203_HArray1OfApprovedItem_HeaderFile
 #define StepAP203_HArray1OfApprovedItem_HeaderFile
 
-#include <StepAP203_ApprovedItem.hxx>
 #include <StepAP203_Array1OfApprovedItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

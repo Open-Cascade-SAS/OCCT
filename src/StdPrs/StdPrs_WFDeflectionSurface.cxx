@@ -15,16 +15,12 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_Group.hxx>
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_WFDeflectionSurface.hxx>
 

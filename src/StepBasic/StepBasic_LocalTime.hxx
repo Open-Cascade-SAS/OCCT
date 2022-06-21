@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class StepBasic_CoordinatedUniversalTimeOffset;
 

@@ -16,28 +16,23 @@
 
 #include <StdSelect_BRepSelectionTool.hxx>
 
-#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepBndLib.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_Curve.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <gp_Circ.hxx>
-#include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveCylinder.hxx>
@@ -47,7 +42,6 @@
 #include <Select3D_SensitivePoint.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitiveSphere.hxx>
-#include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
 #include <Select3D_SensitiveWire.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>

@@ -21,7 +21,6 @@
 #include <STEPCAFControl_GDTProperty.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Direction.hxx>
 #include <StepDimTol_CylindricityTolerance.hxx>
 #include <StepDimTol_FlatnessTolerance.hxx>
 #include <StepDimTol_LineProfileTolerance.hxx>
@@ -30,7 +29,6 @@
 #include <StepDimTol_StraightnessTolerance.hxx>
 #include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
-#include <StepVisual_CoordinatesList.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>

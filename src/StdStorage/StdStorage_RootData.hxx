@@ -20,7 +20,6 @@
 #include <Storage_Error.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <StdStorage_MapOfRoots.hxx>
 #include <StdStorage_HSequenceOfRoots.hxx>

@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignSecurityClassification_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfClassifiedItem.hxx>
 #include <StepBasic_SecurityClassificationAssignment.hxx>

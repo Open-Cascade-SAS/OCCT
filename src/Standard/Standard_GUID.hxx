@@ -17,18 +17,13 @@
 #ifndef _Standard_GUID_HeaderFile
 #define _Standard_GUID_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_ExtCharacter.hxx>
-#include <Standard_Byte.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_ExtString.hxx>
 #include <Standard_UUID.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_PExtCharacter.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 
 #define Standard_GUID_SIZE 36

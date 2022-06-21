@@ -20,8 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <Standard_Integer.hxx>
 class TopoDS_Edge;

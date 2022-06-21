@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 class StepShape_ShapeDefinitionRepresentation;
 class StepShape_ShapeRepresentation;
 class StepGeom_Axis2Placement3d;

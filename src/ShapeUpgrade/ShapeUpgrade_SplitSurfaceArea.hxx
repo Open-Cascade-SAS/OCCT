@@ -21,7 +21,6 @@
 
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_SplitSurface.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class ShapeUpgrade_SplitSurfaceArea;

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>

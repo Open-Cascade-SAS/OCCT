@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfOrganizationItem_HeaderFile
 #define StepAP214_HArray1OfOrganizationItem_HeaderFile
 
-#include <StepAP214_OrganizationItem.hxx>
 #include <StepAP214_Array1OfOrganizationItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

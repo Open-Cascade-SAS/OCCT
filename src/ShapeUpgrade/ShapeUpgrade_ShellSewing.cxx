@@ -18,7 +18,6 @@
 #include <ShapeAnalysis_ShapeTolerance.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeUpgrade_ShellSewing.hxx>
-#include <ShapeUpgrade_WireDivide.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

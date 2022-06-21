@@ -18,7 +18,6 @@
 #define _StepAP214_AutoDesignDateAndPersonAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfAutoDesignDateAndPersonItem.hxx>
 #include <StepBasic_PersonAndOrganizationAssignment.hxx>

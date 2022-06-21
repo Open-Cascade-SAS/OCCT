@@ -16,7 +16,6 @@
 
 
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_Curve.hxx>

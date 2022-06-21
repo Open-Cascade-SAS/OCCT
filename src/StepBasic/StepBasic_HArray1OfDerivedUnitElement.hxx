@@ -17,7 +17,6 @@
 #ifndef StepBasic_HArray1OfDerivedUnitElement_HeaderFile
 #define StepBasic_HArray1OfDerivedUnitElement_HeaderFile
 
-#include <StepBasic_DerivedUnitElement.hxx>
 #include <StepBasic_Array1OfDerivedUnitElement.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

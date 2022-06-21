@@ -17,7 +17,6 @@
 
 #include <ShapePersistent_TriangleMode.hxx>
 
-#include <StdPersistent_TopoDS.hxx>
 #include <StdPersistent_HArray1.hxx>
 #include <StdLPersistent_HArray1.hxx>
 #include <StdObject_Shape.hxx>

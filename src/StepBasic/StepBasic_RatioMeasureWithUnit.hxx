@@ -18,7 +18,6 @@
 #define _StepBasic_RatioMeasureWithUnit_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_MeasureWithUnit.hxx>
 

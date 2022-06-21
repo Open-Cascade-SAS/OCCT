@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>

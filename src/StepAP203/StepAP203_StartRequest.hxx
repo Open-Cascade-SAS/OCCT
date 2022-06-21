@@ -18,7 +18,6 @@
 #define _StepAP203_StartRequest_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfStartRequestItem.hxx>
 #include <StepBasic_ActionRequestAssignment.hxx>

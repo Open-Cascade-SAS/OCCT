@@ -20,8 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 #include <Message_ProgressRange.hxx>
 
 class ShapeProcess_Operator;

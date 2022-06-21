@@ -22,10 +22,8 @@
 
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
-#include <Standard_Real.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <ShapeFix_DataMapOfShapeBox2d.hxx>

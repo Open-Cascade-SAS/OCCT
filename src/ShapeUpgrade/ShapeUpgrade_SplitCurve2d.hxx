@@ -22,8 +22,6 @@
 
 #include <TColGeom2d_HArray1OfCurve.hxx>
 #include <ShapeUpgrade_SplitCurve.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 class Geom2d_Curve;
 
 

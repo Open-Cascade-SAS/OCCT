@@ -17,7 +17,6 @@
 #define _STEPCAFControl_ActorWrite_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
 #include <TopTools_MapOfShape.hxx>

@@ -20,9 +20,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
-#include <Standard_Real.hxx>
 class Geom2d_Line;
 class Geom2d_Curve;
 class Geom2d_BSplineCurve;

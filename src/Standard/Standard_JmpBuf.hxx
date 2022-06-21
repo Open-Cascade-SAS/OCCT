@@ -14,7 +14,6 @@
 #ifndef _Standard_JmpBuf_HeaderFile
 #define _Standard_JmpBuf_HeaderFile
 
-#include <stdlib.h>
 #include <setjmp.h>
 
 typedef 

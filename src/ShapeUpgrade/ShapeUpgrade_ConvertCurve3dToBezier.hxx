@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <TColGeom_HSequenceOfCurve.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 
 

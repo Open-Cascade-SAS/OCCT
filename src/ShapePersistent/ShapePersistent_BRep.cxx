@@ -19,12 +19,9 @@
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
 #include <BRep_Curve3D.hxx>
-#include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_Polygon3D.hxx>
-#include <BRep_PolygonOnTriangulation.hxx>
 #include <BRep_PolygonOnClosedTriangulation.hxx>
-#include <BRep_PolygonOnSurface.hxx>
 #include <BRep_PolygonOnClosedSurface.hxx>
 #include <BRep_CurveOn2Surfaces.hxx>
 

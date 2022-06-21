@@ -19,7 +19,6 @@
 #include <BRep_Tool.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
-#include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>

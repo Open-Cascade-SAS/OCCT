@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <SelectMgr_Selection.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>

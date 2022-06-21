@@ -17,8 +17,6 @@
 //   svv  10.01.00 porting on DEC
 
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurface.hxx>

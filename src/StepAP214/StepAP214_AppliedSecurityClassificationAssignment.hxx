@@ -18,7 +18,6 @@
 #define _StepAP214_AppliedSecurityClassificationAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
 #include <StepBasic_SecurityClassificationAssignment.hxx>

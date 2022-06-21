@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 
 

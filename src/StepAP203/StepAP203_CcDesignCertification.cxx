@@ -16,7 +16,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
-#include <Standard_Type.hxx>
 #include <StepAP203_CcDesignCertification.hxx>
 #include <StepBasic_Certification.hxx>
 

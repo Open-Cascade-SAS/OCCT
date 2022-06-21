@@ -15,7 +15,6 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_PlaneAngleUnit.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndPlaneAngleUnit,StepBasic_SiUnit)

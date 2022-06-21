@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdPrs_ShadedShape.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdSelect_Shape,PrsMgr_PresentableObject)

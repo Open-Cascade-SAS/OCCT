@@ -17,7 +17,6 @@
 
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
-#include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf.hxx>

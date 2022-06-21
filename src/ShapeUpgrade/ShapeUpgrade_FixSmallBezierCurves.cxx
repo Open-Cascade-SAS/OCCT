@@ -26,8 +26,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeUpgrade_FixSmallBezierCurves.hxx>

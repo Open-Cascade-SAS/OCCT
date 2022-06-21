@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignCertification_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfCertifiedItem.hxx>
 #include <StepBasic_CertificationAssignment.hxx>

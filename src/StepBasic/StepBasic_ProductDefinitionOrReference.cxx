@@ -16,7 +16,6 @@
 
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
-#include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionOrReference.hxx>
 #include <StepBasic_ProductDefinitionReference.hxx>
 #include <StepBasic_ProductDefinitionReferenceWithLocalRepresentation.hxx>

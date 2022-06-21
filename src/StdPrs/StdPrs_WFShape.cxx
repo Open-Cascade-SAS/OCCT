@@ -17,14 +17,10 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <OSD_Parallel.hxx>
-#include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_Isolines.hxx>
 #include <StdPrs_ShapeTool.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>

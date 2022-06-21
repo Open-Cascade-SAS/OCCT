@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignSpecificationReference_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfSpecifiedItem.hxx>
 #include <StepBasic_DocumentReference.hxx>

@@ -16,13 +16,11 @@
 
 
 #include <BRepAdaptor_Curve.hxx>
-#include <SelectMgr_EntityOwner.hxx>
 #include <Standard_Type.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_EdgeFilter.hxx>
 #include <TopAbs.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StdSelect_EdgeFilter,SelectMgr_Filter)
 

@@ -18,12 +18,10 @@
 #define _ShapeFix_EdgeProjAux_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class Geom2d_Curve;
 

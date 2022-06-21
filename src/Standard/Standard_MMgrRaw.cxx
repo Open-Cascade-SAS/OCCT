@@ -15,7 +15,6 @@
 
 #include <Standard_MMgrRaw.hxx>
 #include <Standard_OutOfMemory.hxx>
-#include <stdlib.h>
 
 //=======================================================================
 //function : Standard_MMgrRaw

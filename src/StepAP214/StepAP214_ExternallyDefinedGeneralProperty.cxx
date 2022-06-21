@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <Standard_Type.hxx>
 #include <StepAP214_ExternallyDefinedGeneralProperty.hxx>
 #include <StepBasic_ExternallyDefinedItem.hxx>
 #include <StepBasic_ExternalSource.hxx>

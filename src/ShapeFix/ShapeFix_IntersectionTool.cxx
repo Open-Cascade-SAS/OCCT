@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
@@ -25,22 +24,18 @@
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <IntRes2d_Position.hxx>
 #include <NCollection_Sequence.hxx>
-#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend_WireData.hxx>
-#include <ShapeFix_DataMapOfShapeBox2d.hxx>
 #include <ShapeFix_IntersectionTool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>

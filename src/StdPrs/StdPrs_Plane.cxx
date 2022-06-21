@@ -22,12 +22,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_Plane.hxx>

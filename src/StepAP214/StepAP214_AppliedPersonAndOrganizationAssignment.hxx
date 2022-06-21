@@ -18,7 +18,6 @@
 #define _StepAP214_AppliedPersonAndOrganizationAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfPersonAndOrganizationItem.hxx>
 #include <StepBasic_PersonAndOrganizationAssignment.hxx>

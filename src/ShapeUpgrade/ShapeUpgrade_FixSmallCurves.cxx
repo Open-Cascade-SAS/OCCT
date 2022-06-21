@@ -14,11 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <ShapeUpgrade_FixSmallCurves.hxx>
-#include <ShapeUpgrade_SplitCurve2d.hxx>
-#include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -30,10 +26,6 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_FixSmallCurves,ShapeUpgrade_Tool)
 #//include <TColGeom2d_HArray1OfCurve.hxx>
 //#include <TColStd_HSequenceOfReal.hxx>
 #include <ShapeExtend.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
 

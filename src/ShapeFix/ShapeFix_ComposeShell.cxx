@@ -19,7 +19,6 @@
 //    svv  10.01.00 porting on DEC
 
 #include <Bnd_Box2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
@@ -31,7 +30,6 @@
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_ElementarySurface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
@@ -44,15 +42,12 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <ShapeAnalysis_TransferParameters.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeBuild_Vertex.hxx>
-#include <ShapeExtend.hxx>
 #include <ShapeExtend_CompositeSurface.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_ComposeShell.hxx>
 #include <ShapeFix_Edge.hxx>
 #include <ShapeFix_Face.hxx>

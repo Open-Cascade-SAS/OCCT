@@ -18,12 +18,9 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_NullObject.hxx>
 
-#include <StdObjMgt_WriteData.hxx>
 #include <StdObjMgt_SharedObject.hxx>
 #include <StdObjMgt_TransientPersistentMap.hxx>
 
-#include <StdObject_gp_Vectors.hxx>
-#include <StdObject_gp_Axes.hxx>
 #include <StdObject_gp_Curves.hxx>
 #include <StdObject_gp_Surfaces.hxx>
 #include <StdObject_gp_Trsfs.hxx>
@@ -34,7 +31,6 @@
 #include <Geom_Axis1Placement.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Transformation.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 
 class ShapePersistent_Geom : public StdObjMgt_SharedObject

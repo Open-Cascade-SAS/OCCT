@@ -13,8 +13,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRepAdaptor_Curve.hxx>
-#include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Algo.hxx>
 #include <HLRBRep_Data.hxx>
 #include <StdPrs_HLRToolShape.hxx>

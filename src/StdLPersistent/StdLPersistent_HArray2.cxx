@@ -13,9 +13,6 @@
 
 #include <StdLPersistent_HArray2.hxx>
 
-#include <TColStd_HArray2OfInteger.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-
 
 //=======================================================================
 //function : Read

@@ -14,29 +14,22 @@
 
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_ShareFlags.hxx>
 #include <Interface_Static.hxx>
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ConversionBasedUnit.hxx>
 #include <StepBasic_DocumentProductEquivalence.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepBasic_NamedUnit.hxx>
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
-#include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
-#include <StepBasic_ProductDefinitionFormationRelationship.hxx>
 #include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
-#include <StepBasic_SiPrefix.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
 #include <StepBasic_SiUnitName.hxx>
 #include <StepBasic_SolidAngleMeasureWithUnit.hxx>
-#include <StepBasic_SolidAngleUnit.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 #include <STEPControl_Controller.hxx>
 #include <STEPControl_Reader.hxx>
@@ -64,7 +57,6 @@
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <Transfer_TransientProcess.hxx>
-#include <XSControl_Controller.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 

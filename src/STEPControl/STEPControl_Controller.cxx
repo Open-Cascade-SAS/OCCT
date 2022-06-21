@@ -16,13 +16,11 @@
 
 #include <APIHeaderSection_EditHeader.hxx>
 #include <APIHeaderSection_MakeHeader.hxx>
-#include <HeaderSection.hxx>
 #include <IFSelect_EditForm.hxx>
 #include <IFSelect_SelectModelRoots.hxx>
 #include <IFSelect_SelectSignature.hxx>
 #include <IFSelect_SignAncestor.hxx>
 #include <IFSelect_SignCounter.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <RWHeaderSection.hxx>
@@ -37,7 +35,6 @@
 #include <STEPEdit.hxx>
 #include <STEPEdit_EditContext.hxx>
 #include <STEPEdit_EditSDR.hxx>
-#include <StepSelect_StepType.hxx>
 #include <StepSelect_WorkLibrary.hxx>
 #include <STEPSelections_SelectAssembly.hxx>
 #include <STEPSelections_SelectDerived.hxx>
@@ -45,10 +42,8 @@
 #include <STEPSelections_SelectForTransfer.hxx>
 #include <STEPSelections_SelectGSCurves.hxx>
 #include <STEPSelections_SelectInstances.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
 #include <XSControl_WorkSession.hxx>
 

@@ -18,11 +18,8 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepLib_MakeFace.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <GC_MakeCircle.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom2d_Circle.hxx>
 #include <GCE2d_MakeLine.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -30,14 +27,12 @@
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Parabola.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_ElementarySurface.hxx>
 #include <Geom_Line.hxx>
-#include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
@@ -45,7 +40,6 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_SweptSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomConvert.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
@@ -57,10 +51,8 @@
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
-#include <ShapeFix_Edge.hxx>
 #include <ShapeFix_Face.hxx>
 #include <ShapeFix_Shell.hxx>
 #include <ShapeFix_Wire.hxx>
@@ -83,7 +75,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <gp_Circ.hxx>
@@ -96,9 +87,6 @@
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <ElCLib.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepBuilderAPI_MakeWire.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <GCPnts_AbscissaPoint.hxx>
 #include <ElSLib.hxx>
 #include <GeomProjLib.hxx>
 

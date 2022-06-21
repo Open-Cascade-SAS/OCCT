@@ -29,19 +29,14 @@
 
 #include <Precision.hxx>
 
-#include <Standard_Failure.hxx>
-
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <Geom_Surface.hxx>
 
 //:i2
 #include <gp_Pnt.hxx>
 #include <Geom_Plane.hxx>
-#include <ShapeFix_Edge.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -56,13 +51,11 @@
 #include <TopTools_MapOfShape.hxx>
 #include <BRepLib.hxx>
 
-#include <ShapeAnalysis_Edge.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopExp.hxx>

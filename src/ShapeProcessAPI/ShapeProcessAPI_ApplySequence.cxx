@@ -24,7 +24,6 @@
 #include <ShapeProcessAPI_ApplySequence.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 
 //=======================================================================
 //function : ShapeProcessAPI_ApplySequence

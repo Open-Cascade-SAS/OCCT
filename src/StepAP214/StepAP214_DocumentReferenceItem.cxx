@@ -24,7 +24,6 @@
 #include <StepBasic_ProductCategory.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>
-#include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepRepr_AssemblyComponentUsage.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_MaterialDesignation.hxx>

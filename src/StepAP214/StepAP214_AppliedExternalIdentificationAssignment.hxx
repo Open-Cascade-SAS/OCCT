@@ -17,7 +17,6 @@
 #define _StepAP214_AppliedExternalIdentificationAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfExternalIdentificationItem.hxx>
 #include <StepBasic_ExternalIdentificationAssignment.hxx>

@@ -20,16 +20,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <gp_Ax2.hxx>
 #include <STEPConstruct_Tool.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
-#include <StepBasic_Unit.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_GeometricToleranceModifier.hxx>
 #include <StepDimTol_GeometricToleranceType.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceModifier.hxx>
-#include <StepGeom_Axis2Placement3d.hxx>
 #include <StepRepr_CompoundRepresentationItem.hxx>
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <XCAFDimTolObjects_DimensionModifiersSequence.hxx>

@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 #include <Standard_MMgrRoot.hxx>
-#include <stdlib.h>
 
 //=======================================================================
 //function : ~Standard_MMgrRoot

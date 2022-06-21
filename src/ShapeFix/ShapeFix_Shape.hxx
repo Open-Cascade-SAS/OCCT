@@ -24,9 +24,7 @@
 #include <TopTools_MapOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeFix_Root.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
-#include <Standard_Real.hxx>
 #include <Message_ProgressRange.hxx>
 
 class ShapeFix_Solid;

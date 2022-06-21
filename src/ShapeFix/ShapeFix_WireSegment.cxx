@@ -20,7 +20,6 @@
 #include <ShapeFix_WireSegment.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
 
 //=======================================================================
 //function : ShapeFix_WireSegment

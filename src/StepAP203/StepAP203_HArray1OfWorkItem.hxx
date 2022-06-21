@@ -17,7 +17,6 @@
 #ifndef StepAP203_HArray1OfWorkItem_HeaderFile
 #define StepAP203_HArray1OfWorkItem_HeaderFile
 
-#include <StepAP203_WorkItem.hxx>
 #include <StepAP203_Array1OfWorkItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

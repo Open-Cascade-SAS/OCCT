@@ -22,8 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <StepData_SelectReal.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 
 
 class StepBasic_MeasureValueMember;

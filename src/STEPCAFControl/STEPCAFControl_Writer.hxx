@@ -16,14 +16,12 @@
 #ifndef _STEPCAFControl_Writer_HeaderFile
 #define _STEPCAFControl_Writer_HeaderFile
 
-#include <IFSelect_ReturnStatus.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 #include <STEPCAFControl_DataMapOfLabelShape.hxx>
 #include <STEPCAFControl_DataMapOfLabelExternFile.hxx>
-#include <STEPControl_StepModelType.hxx>
 #include <STEPControl_Writer.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepDimTol_Datum.hxx>

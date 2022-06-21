@@ -16,7 +16,6 @@
 #include <Standard_Transient.hxx>
 #include <StepAP214_ApprovalItem.hxx>
 #include <StepBasic_Date.hxx>
-#include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentFile.hxx>
 #include <StepBasic_Effectivity.hxx>
 #include <StepBasic_Group.hxx>
@@ -31,7 +30,6 @@
 #include <StepRepr_ConfigurationItem.hxx>
 #include <StepRepr_MaterialDesignation.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
-#include <StepRepr_Representation.hxx>
 #include <StepRepr_ShapeAspectRelationship.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepVisual_MechanicalDesignGeometricPresentationRepresentation.hxx>

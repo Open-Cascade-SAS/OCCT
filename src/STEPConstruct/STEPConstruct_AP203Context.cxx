@@ -38,9 +38,7 @@
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <Interface_HArray1OfHAsciiString.hxx>
 
 #include <StepBasic_CalendarDate.hxx>
 #include <StepBasic_LocalTime.hxx>

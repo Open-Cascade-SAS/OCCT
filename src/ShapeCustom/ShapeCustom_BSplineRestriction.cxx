@@ -17,13 +17,11 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_Modifier.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Conic.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -33,13 +31,10 @@
 #include <Geom2dConvert_ApproxCurve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Conic.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
-#include <Geom_ElementarySurface.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -56,11 +51,9 @@
 #include <GeomConvert.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
-#include <gp_Ax1.hxx>
 #include <gp_Pnt.hxx>
 #include <Message_Msg.hxx>
 #include <Precision.hxx>
-#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeConstruct.hxx>
 #include <ShapeCustom_BSplineRestriction.hxx>
@@ -70,13 +63,10 @@
 #include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_HArray1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>

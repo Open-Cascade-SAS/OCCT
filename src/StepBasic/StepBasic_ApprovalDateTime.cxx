@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_DateTimeSelect.hxx>

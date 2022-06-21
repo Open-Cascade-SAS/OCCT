@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Message_Gravity.hxx>
 #include <Message_Msg.hxx>
 #include <ShapeCustom_Modification.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>

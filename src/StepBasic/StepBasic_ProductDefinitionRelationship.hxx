@@ -19,7 +19,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_ProductDefinitionOrReference.hxx>
 class TCollection_HAsciiString;

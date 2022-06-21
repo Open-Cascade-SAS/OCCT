@@ -15,7 +15,6 @@
 
 #include <BRep_Builder.hxx>
 #include <ShapeExtend_Explorer.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>

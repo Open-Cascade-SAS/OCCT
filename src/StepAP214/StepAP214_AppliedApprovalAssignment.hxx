@@ -18,7 +18,6 @@
 #define _StepAP214_AppliedApprovalAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfApprovalItem.hxx>
 #include <StepBasic_ApprovalAssignment.hxx>

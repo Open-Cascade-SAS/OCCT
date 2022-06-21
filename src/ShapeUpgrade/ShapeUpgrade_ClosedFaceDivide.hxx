@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_FaceDivide.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Face;
 
 

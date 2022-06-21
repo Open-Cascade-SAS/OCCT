@@ -16,12 +16,10 @@
 
 
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>

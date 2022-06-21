@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationalAddress.hxx>
 #include <TCollection_HAsciiString.hxx>
 

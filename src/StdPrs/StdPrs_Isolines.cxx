@@ -22,13 +22,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Line.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomLib_Tool.hxx>
 #include <gp_Lin2d.hxx>
 #include <Hatch_Hatcher.hxx>
 #include <NCollection_Shared.hxx>

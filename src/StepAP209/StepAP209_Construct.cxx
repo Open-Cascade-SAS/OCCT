@@ -54,10 +54,6 @@
 #include <StepBasic_DateTimeSelect.hxx>
 #include <StepBasic_DesignContext.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_HArray1OfNamedUnit.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
-#include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
 #include <StepBasic_LocalTime.hxx>
 #include <StepBasic_MechanicalContext.hxx>
 #include <StepBasic_Organization.hxx>
@@ -65,8 +61,6 @@
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 #include <StepBasic_PersonOrganizationSelect.hxx>
-#include <StepBasic_Product.hxx>
-#include <StepBasic_ProductCategory.hxx>
 #include <StepBasic_ProductCategoryRelationship.hxx>
 #include <StepBasic_ProductContext.hxx>
 #include <StepBasic_ProductDefinition.hxx>
@@ -82,14 +76,12 @@
 #include <StepData_StepModel.hxx>
 #include <StepElement_AnalysisItemWithinRepresentation.hxx>
 #include <StepElement_ElementMaterial.hxx>
-#include <StepFEA_CoordinateSystemType.hxx>
 #include <StepFEA_Curve3dElementProperty.hxx>
 #include <StepFEA_Curve3dElementRepresentation.hxx>
 #include <StepFEA_CurveElementIntervalConstant.hxx>
 #include <StepFEA_ElementGeometricRelationship.hxx>
 #include <StepFEA_ElementRepresentation.hxx>
 #include <StepFEA_FeaAxis2Placement3d.hxx>
-#include <StepFEA_FeaModel.hxx>
 #include <StepFEA_FeaModel3d.hxx>
 #include <StepFEA_FeaModelDefinition.hxx>
 #include <StepFEA_HArray1OfCurveElementInterval.hxx>
@@ -99,7 +91,6 @@
 #include <StepGeom_Direction.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
-#include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>

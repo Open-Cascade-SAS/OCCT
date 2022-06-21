@@ -18,15 +18,12 @@
 #define _StdSelect_BRepOwner_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <Quantity_NameOfColor.hxx>
-#include <Graphic3d_ZLayerId.hxx>
 class StdSelect_Shape;
 class SelectMgr_SelectableObject;
 class PrsMgr_PresentationManager;

@@ -22,9 +22,6 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientProcess.hxx>

@@ -17,8 +17,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <StdStorage_Root.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(StdStorage_Root), TCollection_AsciiString> StdStorage_MapOfRoots;

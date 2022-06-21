@@ -19,16 +19,11 @@
 #include <Interface_Static.hxx>
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_DesignContext.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
 #include <StepBasic_MechanicalContext.hxx>
-#include <StepBasic_Product.hxx>
 #include <StepBasic_ProductContext.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>
-#include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionFormationWithSpecifiedSource.hxx>
-#include <StepBasic_ProductRelatedProductCategory.hxx>
 #include <StepBasic_ProductType.hxx>
 #include <STEPConstruct_Part.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>

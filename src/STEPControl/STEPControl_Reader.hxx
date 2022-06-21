@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <XSControl_Reader.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>

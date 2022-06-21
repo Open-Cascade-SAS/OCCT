@@ -15,7 +15,6 @@
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeBuild_ReShape.hxx>
-#include <ShapeExtend.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeUpgrade_RemoveInternalWires.hxx>
 #include <Standard_Type.hxx>
@@ -29,7 +28,6 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 

@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignApproval_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfApprovedItem.hxx>
 #include <StepBasic_ApprovalAssignment.hxx>

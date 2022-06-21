@@ -14,7 +14,6 @@
 
 #include <Message_Msg.hxx>
 #include <ShapeBuild_ReShape.hxx>
-#include <ShapeExtend_BasicMsgRegistrator.hxx>
 #include <ShapeFix_Root.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>

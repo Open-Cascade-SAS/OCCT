@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepAP214_AutoDesignPresentedItem.hxx>
 #include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 

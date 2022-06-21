@@ -23,7 +23,6 @@
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class TopoDS_Wire;
 class TopoDS_Edge;

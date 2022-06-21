@@ -21,15 +21,11 @@
 #include <Font_TextFormatter.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_String.hxx>
 #include <Standard_Mutex.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
 DEFINE_STANDARD_HANDLE(StdPrs_BRepFont, Standard_Transient)

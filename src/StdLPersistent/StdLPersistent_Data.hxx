@@ -15,7 +15,6 @@
 #ifndef _StdLPersistent_Data_HeaderFile
 #define _StdLPersistent_Data_HeaderFile
 
-#include <StdObjMgt_Persistent.hxx>
 #include <StdLPersistent_HArray1.hxx>
 
 class TDF_Data;

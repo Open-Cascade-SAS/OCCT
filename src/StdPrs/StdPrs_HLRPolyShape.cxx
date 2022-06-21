@@ -21,16 +21,11 @@
 #include <Graphic3d_Group.hxx>
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <HLRAlgo_EdgeStatus.hxx>
-#include <HLRBRep_BiPoint.hxx>
-#include <HLRBRep_ListIteratorOfListOfBPoint.hxx>
 #include <HLRBRep_ListOfBPoint.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_WFShape.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
-#include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 

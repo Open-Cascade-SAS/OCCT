@@ -16,7 +16,6 @@
 #ifndef STEPCAFControl_DataMapOfLabelShape_HeaderFile
 #define STEPCAFControl_DataMapOfLabelShape_HeaderFile
 
-#include <TDF_Label.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

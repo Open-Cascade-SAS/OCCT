@@ -18,7 +18,6 @@
 #define _StepAP203_StartWork_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfWorkItem.hxx>
 #include <StepBasic_ActionAssignment.hxx>

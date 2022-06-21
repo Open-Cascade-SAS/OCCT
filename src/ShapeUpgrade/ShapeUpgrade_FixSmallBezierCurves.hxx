@@ -20,8 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <ShapeUpgrade_FixSmallCurves.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class Geom_Curve;
 class Geom2d_Curve;
 

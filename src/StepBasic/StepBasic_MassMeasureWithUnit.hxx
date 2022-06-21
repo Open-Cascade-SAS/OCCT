@@ -17,7 +17,6 @@
 #define _StepBasic_MassMeasureWithUnit_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_MeasureWithUnit.hxx>
 

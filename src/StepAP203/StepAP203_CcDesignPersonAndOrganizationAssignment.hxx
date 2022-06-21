@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignPersonAndOrganizationAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
 #include <StepBasic_PersonAndOrganizationAssignment.hxx>

@@ -14,7 +14,6 @@
 #include <StdLDrivers_DocumentRetrievalDriver.hxx>
 #include <StdLDrivers.hxx>
 
-#include <StdObjMgt_Persistent.hxx>
 #include <StdObjMgt_MapOfInstantiators.hxx>
 #include <StdObjMgt_ReadData.hxx>
 
@@ -32,7 +31,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_Handle.hxx>
 #include <TDocStd_Document.hxx>
 #include <Storage_Schema.hxx>
 

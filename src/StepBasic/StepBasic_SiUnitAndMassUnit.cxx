@@ -15,7 +15,6 @@
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MassUnit.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndMassUnit.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepBasic_SiUnitAndMassUnit,StepBasic_SiUnit)

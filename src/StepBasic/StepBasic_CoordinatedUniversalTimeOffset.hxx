@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <StepBasic_AheadOrBehind.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 
 

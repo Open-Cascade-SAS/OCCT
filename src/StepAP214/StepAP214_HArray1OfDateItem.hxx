@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfDateItem_HeaderFile
 #define StepAP214_HArray1OfDateItem_HeaderFile
 
-#include <StepAP214_DateItem.hxx>
 #include <StepAP214_Array1OfDateItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

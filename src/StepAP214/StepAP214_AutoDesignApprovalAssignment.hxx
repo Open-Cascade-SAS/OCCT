@@ -18,7 +18,6 @@
 #define _StepAP214_AutoDesignApprovalAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
 #include <StepBasic_ApprovalAssignment.hxx>

@@ -24,13 +24,10 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -38,7 +35,6 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomLib.hxx>
 #include <Precision.hxx>
@@ -53,7 +49,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
-#include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>

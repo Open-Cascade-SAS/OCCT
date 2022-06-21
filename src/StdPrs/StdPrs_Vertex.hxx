@@ -15,10 +15,8 @@
 #define StdPrs_Vertex_HeaderFile
 
 #include <Prs3d_Point.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <StdPrs_ToolVertex.hxx>
-#include <Prs3d_Presentation.hxx>
 
 typedef Prs3d_Point<TopoDS_Vertex, StdPrs_ToolVertex> StdPrs_Vertex;
 #endif

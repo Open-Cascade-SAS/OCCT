@@ -13,7 +13,6 @@
 
 
 #include <Standard_Type.hxx>
-#include <StepBasic_ConversionBasedUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_LengthUnit.hxx>

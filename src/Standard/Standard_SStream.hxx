@@ -15,7 +15,6 @@
 #ifndef _Standard_SStream_HeaderFile
 #define _Standard_SStream_HeaderFile
 
-#include <Standard_Stream.hxx>
 #include <sstream>
 
 //! Defines Standard_SStream as typedef to C++ string stream.

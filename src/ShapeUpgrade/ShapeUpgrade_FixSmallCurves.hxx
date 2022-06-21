@@ -17,13 +17,11 @@
 #define _ShapeUpgrade_FixSmallCurves_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <ShapeUpgrade_Tool.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <ShapeExtend_Status.hxx>
 class ShapeUpgrade_SplitCurve3d;

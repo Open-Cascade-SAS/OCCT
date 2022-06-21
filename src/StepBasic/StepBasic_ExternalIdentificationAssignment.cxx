@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <Standard_Type.hxx>
 #include <StepBasic_ExternalIdentificationAssignment.hxx>
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_IdentificationRole.hxx>

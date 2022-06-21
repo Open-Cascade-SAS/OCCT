@@ -28,7 +28,6 @@
 #include <gp_Trsf.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools_Modifier.hxx>

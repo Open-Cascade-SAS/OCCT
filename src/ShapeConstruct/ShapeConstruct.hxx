@@ -21,10 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TopAbs_Orientation.hxx>
 class Geom_BSplineCurve;

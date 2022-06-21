@@ -16,8 +16,6 @@
 
 #include <Geom_Point.hxx>
 #include <Prs3d_Point.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <StdPrs_ToolPoint.hxx>
 //computes the presentation of objects to be seen as points.
 typedef Prs3d_Point<Handle(Geom_Point), StdPrs_ToolPoint> StdPrs_Point;

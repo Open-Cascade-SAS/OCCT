@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignContract_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfContractedItem.hxx>
 #include <StepBasic_ContractAssignment.hxx>

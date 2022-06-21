@@ -21,11 +21,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <STEPControl_StepModelType.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
 

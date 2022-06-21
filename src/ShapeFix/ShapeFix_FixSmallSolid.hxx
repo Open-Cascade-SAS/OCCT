@@ -20,9 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <ShapeFix_Root.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class ShapeBuild_ReShape;
 

@@ -30,7 +30,6 @@
 #include <Precision.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeBuild_Edge.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeUpgrade_ConvertCurve2dToBezier.hxx>
 #include <ShapeUpgrade_ConvertCurve3dToBezier.hxx>

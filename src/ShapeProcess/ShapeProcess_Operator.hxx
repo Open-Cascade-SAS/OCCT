@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 class ShapeProcess_Context;

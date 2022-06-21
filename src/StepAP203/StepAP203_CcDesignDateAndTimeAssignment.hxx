@@ -18,7 +18,6 @@
 #define _StepAP203_CcDesignDateAndTimeAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfDateTimeItem.hxx>
 #include <StepBasic_DateAndTimeAssignment.hxx>

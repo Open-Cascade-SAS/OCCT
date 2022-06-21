@@ -20,9 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <ShapeUpgrade_SplitSurface.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class ShapeUpgrade_SplitSurfaceAngle;

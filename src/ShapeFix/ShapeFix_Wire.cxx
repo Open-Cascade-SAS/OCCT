@@ -45,19 +45,13 @@
 
 #include <ShapeFix_Wire.hxx>
 
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <Bnd_Array1OfBox2d.hxx>
-#include <Bnd_Box2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepTools.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -72,11 +66,9 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <gp_Pln.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <IntRes2d_SequenceOfIntersectionPoint.hxx>
 #include <Message_Msg.hxx>
@@ -85,7 +77,6 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Surface.hxx>
-#include <ShapeAnalysis_TransferParameters.hxx>
 #include <ShapeAnalysis_TransferParametersProj.hxx>
 #include <ShapeAnalysis_Wire.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
@@ -95,7 +86,6 @@
 #include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeExtend_WireData.hxx>
-#include <ShapeFix.hxx>
 #include <ShapeFix_Edge.hxx>
 #include <ShapeFix_IntersectionTool.hxx>
 #include <ShapeFix_SplitTool.hxx>

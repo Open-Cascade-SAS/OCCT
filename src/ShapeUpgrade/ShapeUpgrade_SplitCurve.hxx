@@ -23,8 +23,6 @@
 #include <TColStd_HSequenceOfReal.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
 
 // resolve name collisions with X11 headers

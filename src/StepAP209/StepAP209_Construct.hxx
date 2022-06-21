@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <STEPConstruct_Tool.hxx>
-#include <Standard_Boolean.hxx>
 #include <StepElement_HSequenceOfElementMaterial.hxx>
 #include <StepFEA_HSequenceOfElementGeometricRelationship.hxx>
 #include <StepFEA_HSequenceOfElementRepresentation.hxx>

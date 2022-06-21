@@ -15,27 +15,19 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
-#include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include <Geom_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Hatch_Hatcher.hxx>
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
-#include <Prs3d_Presentation.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <StdPrs_ToolRFace.hxx>
 #include <StdPrs_WFDeflectionRestrictedFace.hxx>

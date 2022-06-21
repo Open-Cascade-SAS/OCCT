@@ -15,7 +15,6 @@
 #ifndef _ShapePersistent_Geom2d_HeaderFile
 #define _ShapePersistent_Geom2d_HeaderFile
 
-#include <StdObjMgt_TransientPersistentMap.hxx>
 #include <ShapePersistent_Geom.hxx>
 
 #include <Geom2d_CartesianPoint.hxx>

@@ -17,7 +17,6 @@
 #ifndef StepBasic_HArray1OfProductContext_HeaderFile
 #define StepBasic_HArray1OfProductContext_HeaderFile
 
-#include <StepBasic_ProductContext.hxx>
 #include <StepBasic_Array1OfProductContext.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

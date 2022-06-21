@@ -19,12 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 
 
 //! This class is intended to output free bounds of the shape

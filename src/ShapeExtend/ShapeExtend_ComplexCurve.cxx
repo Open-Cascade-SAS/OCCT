@@ -16,11 +16,9 @@
 
 //    pdn 13.07.99 Derivatives are scaled in accordance with local/global parameter transition
 
-#include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Precision.hxx>
 #include <ShapeExtend_ComplexCurve.hxx>
 #include <Standard_Type.hxx>
 

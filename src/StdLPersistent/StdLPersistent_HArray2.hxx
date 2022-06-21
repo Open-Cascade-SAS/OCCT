@@ -22,8 +22,6 @@
 #include <StdObjMgt_ReadData.hxx>
 #include <StdObjMgt_WriteData.hxx>
 
-#include <NCollection_DefineHArray2.hxx>
-
 #include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 

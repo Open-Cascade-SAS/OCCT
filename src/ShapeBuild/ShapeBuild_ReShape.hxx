@@ -23,7 +23,6 @@
 #include <BRepTools_ReShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
 class TopoDS_Shape;
 

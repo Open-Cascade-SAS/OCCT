@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepAP214_AppliedDateAndTimeAssignment.hxx>
 #include <StepAP214_DateAndTimeItem.hxx>
 #include <StepBasic_DateAndTime.hxx>

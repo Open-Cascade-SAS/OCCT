@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <ShapeProcess_Context.hxx>
 #include <ShapeProcess_UOperator.hxx>
 #include <Standard_Type.hxx>
 

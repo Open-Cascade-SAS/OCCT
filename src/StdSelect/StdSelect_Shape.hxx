@@ -18,7 +18,6 @@
 #define _StdSelect_Shape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 
 

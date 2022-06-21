@@ -22,8 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <ShapeExtend_Status.hxx>
 class ShapeConstruct_ProjectCurveOnSurface;
 class TopoDS_Edge;

@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <StdDrivers.hxx>
 #include <StdStorage_TypeData.hxx>
 #include <Storage_BaseDriver.hxx>

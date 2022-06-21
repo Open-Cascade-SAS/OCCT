@@ -22,8 +22,6 @@
 #include <BRepTools.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeBuild_Edge.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend.hxx>
 #include <ShapeExtend_CompositeSurface.hxx>
@@ -34,7 +32,6 @@
 #include <Standard_Type.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>

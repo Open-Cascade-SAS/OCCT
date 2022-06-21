@@ -17,7 +17,6 @@
 
 #include <Standard_Transient.hxx>
 #include <StepBasic_SourceItem.hxx>
-#include <StepData_SelectMember.hxx>
 #include <StepData_SelectNamed.hxx>
 #include <TCollection_HAsciiString.hxx>
 

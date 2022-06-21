@@ -15,9 +15,7 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <Standard_Type.hxx>
 #include <StepBasic_ProductDefinition.hxx>
-#include <StepBasic_ProductDefinitionOrReference.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <TCollection_HAsciiString.hxx>
 

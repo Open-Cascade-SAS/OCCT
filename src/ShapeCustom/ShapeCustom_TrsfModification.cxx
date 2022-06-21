@@ -19,7 +19,6 @@
 #include <BRep_TFace.hxx>
 #include <BRep_TVertex.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>

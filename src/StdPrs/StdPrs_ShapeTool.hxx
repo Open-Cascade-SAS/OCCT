@@ -17,12 +17,9 @@
 #ifndef _StdPrs_ShapeTool_HeaderFile
 #define _StdPrs_ShapeTool_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>

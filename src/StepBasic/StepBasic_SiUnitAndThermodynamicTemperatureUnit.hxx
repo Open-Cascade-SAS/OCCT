@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepBasic_SiUnit.hxx>
-#include <Standard_Boolean.hxx>
 #include <StepBasic_SiPrefix.hxx>
 #include <StepBasic_SiUnitName.hxx>
 class StepBasic_ThermodynamicTemperatureUnit;

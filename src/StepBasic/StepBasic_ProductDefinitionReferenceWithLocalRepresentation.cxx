@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_ProductDefinitionReferenceWithLocalRepresentation.hxx>
 

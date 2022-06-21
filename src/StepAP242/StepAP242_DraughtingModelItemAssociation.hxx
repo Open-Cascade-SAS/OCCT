@@ -17,7 +17,6 @@
 #define _StepAP242_DraughtingModelItemAssociation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP242_ItemIdentifiedRepresentationUsage.hxx>
 

@@ -25,8 +25,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeFix_Root.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <ShapeFix_SequenceOfWireSegment.hxx>

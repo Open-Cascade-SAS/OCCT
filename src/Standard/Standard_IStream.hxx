@@ -15,7 +15,6 @@
 #ifndef _Standard_IStream_HeaderFile
 #define _Standard_IStream_HeaderFile
 
-#include <Standard_Macro.hxx>
 #include <Standard_Stream.hxx>
 
 typedef std::istream Standard_IStream;

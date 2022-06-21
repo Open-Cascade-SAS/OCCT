@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_SplitCurve3d.hxx>
 class Geom_Curve;

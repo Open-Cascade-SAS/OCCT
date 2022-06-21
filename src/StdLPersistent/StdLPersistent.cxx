@@ -16,9 +16,7 @@
 
 #include <StdLPersistent_Document.hxx>
 #include <StdLPersistent_Data.hxx>
-#include <StdLPersistent_HString.hxx>
 #include <StdLPersistent_HArray1.hxx>
-#include <StdLPersistent_HArray2.hxx>
 #include <StdLPersistent_Void.hxx>
 #include <StdLPersistent_Real.hxx>
 #include <StdLPersistent_Value.hxx>

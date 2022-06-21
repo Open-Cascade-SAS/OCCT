@@ -14,7 +14,6 @@
 #include <NCollection_Handle.hxx>
 #include <NCollection_Array1.hxx>
 #include <PCDM.hxx>
-#include <PCDM_BaseDriverPointer.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NullObject.hxx>
@@ -34,7 +33,6 @@
 #include <Storage_StreamFormatError.hxx>
 #include <Storage_StreamWriteError.hxx>
 
-#include <locale.h>
 #include <stdio.h>
 
 //=======================================================================

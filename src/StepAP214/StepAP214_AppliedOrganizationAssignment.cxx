@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_OrganizationItem.hxx>
 #include <StepBasic_Organization.hxx>

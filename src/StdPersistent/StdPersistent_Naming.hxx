@@ -21,7 +21,6 @@
 #include <StdLPersistent_HArray1.hxx>
 #include <StdLPersistent_HString.hxx>
 
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Naming.hxx>
 
 class TNaming_Name;

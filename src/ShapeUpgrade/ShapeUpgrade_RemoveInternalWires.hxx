@@ -20,8 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>

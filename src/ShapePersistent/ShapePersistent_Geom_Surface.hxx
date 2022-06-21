@@ -15,8 +15,6 @@
 #ifndef _ShapePersistent_Geom_Surface_HeaderFile
 #define _ShapePersistent_Geom_Surface_HeaderFile
 
-#include <StdObjMgt_TransientPersistentMap.hxx>
-
 #include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_HArray2.hxx>
 #include <StdLPersistent_HArray1.hxx>
@@ -30,7 +28,6 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_OffsetSurface.hxx>
 

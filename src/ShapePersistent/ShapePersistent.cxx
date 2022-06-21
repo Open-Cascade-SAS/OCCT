@@ -12,23 +12,13 @@
 // commercial license or contractual agreement.
 
 #include <ShapePersistent.hxx>
-#include <ShapePersistent_Geom.hxx>
-#include <ShapePersistent_Geom2d.hxx>
 #include <StdObjMgt_MapOfInstantiators.hxx>
 
-#include <StdLPersistent_HArray1.hxx>
-#include <StdLPersistent_HArray2.hxx>
-#include <StdPersistent_TopoDS.hxx>
-#include <ShapePersistent_TopoDS.hxx>
-#include <ShapePersistent_HArray1.hxx>
-#include <ShapePersistent_HArray2.hxx>
 #include <ShapePersistent_HSequence.hxx>
-#include <ShapePersistent_Geom2d.hxx>
 #include <ShapePersistent_Geom2d_Curve.hxx>
 #include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_Geom_Curve.hxx>
 #include <ShapePersistent_Geom_Surface.hxx>
-#include <ShapePersistent_Poly.hxx>
 #include <ShapePersistent_BRep.hxx>
 
 

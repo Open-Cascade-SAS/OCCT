@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <TColGeom2d_HSequenceOfCurve.hxx>
-#include <TColStd_HSequenceOfReal.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class ShapeUpgrade_ConvertCurve2dToBezier;

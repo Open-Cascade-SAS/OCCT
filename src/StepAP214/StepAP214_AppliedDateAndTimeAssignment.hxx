@@ -18,7 +18,6 @@
 #define _StepAP214_AppliedDateAndTimeAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfDateAndTimeItem.hxx>
 #include <StepBasic_DateAndTimeAssignment.hxx>

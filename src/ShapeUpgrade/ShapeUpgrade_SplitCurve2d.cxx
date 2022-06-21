@@ -23,14 +23,12 @@
 #include <Precision.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeExtend.hxx>
-#include <ShapeUpgrade.hxx>
 #include <ShapeUpgrade_SplitCurve2d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
 #include <TColGeom2d_HArray1OfCurve.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve2d,ShapeUpgrade_SplitCurve)
 

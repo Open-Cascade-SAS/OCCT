@@ -14,12 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Graph.hxx>
-#include <Interface_HGraph.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <STEPConstruct_Tool.hxx>
-#include <Transfer_FinderProcess.hxx>
-#include <Transfer_TransientProcess.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>

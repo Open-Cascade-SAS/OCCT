@@ -23,8 +23,6 @@
 
 #include <HLRAlgo_EdgeIterator.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class HLRBRep_Data;
 class TopoDS_Shape;
 class HLRAlgo_Projector;

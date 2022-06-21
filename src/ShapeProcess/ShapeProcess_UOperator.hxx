@@ -17,11 +17,9 @@
 #define _ShapeProcess_UOperator_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <ShapeProcess_OperFunc.hxx>
 #include <ShapeProcess_Operator.hxx>
-#include <Standard_Boolean.hxx>
 class ShapeProcess_Context;
 
 

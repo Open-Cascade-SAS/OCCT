@@ -24,7 +24,6 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Message_ProgressRange.hxx>
 

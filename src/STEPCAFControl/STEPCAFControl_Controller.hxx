@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <STEPControl_Controller.hxx>
-#include <Standard_Boolean.hxx>
 
 
 class STEPCAFControl_Controller;

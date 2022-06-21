@@ -11,12 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NullObject.hxx>
-
 #include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_Geom_Curve.hxx>
 #include <ShapePersistent_Geom_Surface.hxx>
-#include <StdObject_gp_Axes.hxx>
 #include <StdObject_gp_Vectors.hxx>
 
 

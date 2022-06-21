@@ -17,7 +17,6 @@
 #define _STEPCAFControl_ExternFile_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Boolean.hxx>

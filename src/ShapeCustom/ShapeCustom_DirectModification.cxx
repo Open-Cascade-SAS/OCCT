@@ -20,7 +20,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
@@ -33,7 +32,6 @@
 #include <gp_Mat.hxx>
 #include <gp_Pnt.hxx>
 #include <Message_Msg.hxx>
-#include <Precision.hxx>
 #include <ShapeCustom_DirectModification.hxx>
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>

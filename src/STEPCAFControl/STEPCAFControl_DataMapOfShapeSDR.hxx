@@ -16,7 +16,6 @@
 #ifndef STEPCAFControl_DataMapOfShapeSDR_HeaderFile
 #define STEPCAFControl_DataMapOfShapeSDR_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

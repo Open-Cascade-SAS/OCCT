@@ -17,7 +17,6 @@
 #ifndef StepAP214_HArray1OfAutoDesignDateAndPersonItem_HeaderFile
 #define StepAP214_HArray1OfAutoDesignDateAndPersonItem_HeaderFile
 
-#include <StepAP214_AutoDesignDateAndPersonItem.hxx>
 #include <StepAP214_Array1OfAutoDesignDateAndPersonItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

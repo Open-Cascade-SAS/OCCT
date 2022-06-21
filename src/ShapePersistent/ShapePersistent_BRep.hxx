@@ -16,7 +16,6 @@
 #define _ShapePersistent_BRep_HeaderFile
 
 #include <ShapePersistent_TopoDS.hxx>
-#include <ShapePersistent_Geom.hxx>
 #include <ShapePersistent_Geom2d.hxx>
 #include <ShapePersistent_Poly.hxx>
 #include <StdObjMgt_TransientPersistentMap.hxx>

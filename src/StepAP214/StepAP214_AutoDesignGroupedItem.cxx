@@ -15,7 +15,6 @@
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepAP214_AutoDesignGroupedItem.hxx>
-#include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>

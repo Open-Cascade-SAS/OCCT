@@ -41,9 +41,6 @@
 #include <Geom2dAdaptor.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <Geom_BezierSurface.hxx>
-#include <Geom_BoundedCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetSurface.hxx>
 #include <Geom_Plane.hxx>
@@ -61,8 +58,6 @@
 #include <ElCLib.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Precision.hxx>
-#include <ProjLib_CompProjectedCurve.hxx>
-#include <ProjLib_HCompProjectedCurve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>

@@ -15,17 +15,13 @@
 // Great zoom leads to non-coincidence of
 // a point and non-infinite lines passing through this point:
 
-#include <Adaptor3d_Curve.hxx>
-#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <GCPnts_QuasiUniformDeflection.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Precision.hxx>
 #include <Prs3d.hxx>

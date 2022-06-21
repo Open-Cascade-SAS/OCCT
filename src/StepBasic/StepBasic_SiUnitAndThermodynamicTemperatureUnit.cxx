@@ -14,7 +14,6 @@
 
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndThermodynamicTemperatureUnit.hxx>
 #include <StepBasic_ThermodynamicTemperatureUnit.hxx>
 

@@ -14,7 +14,6 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
@@ -34,11 +33,9 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <Message_Msg.hxx>
-#include <Precision.hxx>
 #include <ShapeCustom_ConvertToRevolution.hxx>
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>

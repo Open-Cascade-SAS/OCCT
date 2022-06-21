@@ -17,7 +17,6 @@
 #define _StepAP214_AppliedGroupAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfGroupItem.hxx>
 #include <StepBasic_GroupAssignment.hxx>

@@ -15,7 +15,6 @@
 #ifndef _StdPersistent_DataXtd_HeaderFile
 #define _StdPersistent_DataXtd_HeaderFile
 
-#include <StdObjMgt_Attribute.hxx>
 #include <StdLPersistent_Void.hxx>
 #include <StdObject_gp_Vectors.hxx>
 

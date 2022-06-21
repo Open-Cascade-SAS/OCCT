@@ -19,7 +19,6 @@
 #include <StdLPersistent_HString.hxx>
 #include <StdLPersistent_HArray1.hxx>
 
-#include <TDataStd_Expression.hxx>
 #include <TDataStd_Relation.hxx>
 
 

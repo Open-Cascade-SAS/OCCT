@@ -18,8 +18,6 @@
 #define _Standard_OutOfMemory_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <Standard_DefineException.hxx>
-#include <Standard_SStream.hxx>
 #include <Standard_ProgramError.hxx>
 
 class Standard_OutOfMemory;

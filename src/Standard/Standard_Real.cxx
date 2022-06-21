@@ -14,7 +14,6 @@
 
 #include <float.h>
 #include <Standard_Real.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_NumericError.hxx>
 #include <Standard_NullValue.hxx>
 #include <Standard_Stream.hxx>

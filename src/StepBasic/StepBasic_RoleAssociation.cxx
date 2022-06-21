@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <Standard_Type.hxx>
 #include <StepBasic_ObjectRole.hxx>
 #include <StepBasic_RoleAssociation.hxx>
 #include <StepBasic_RoleSelect.hxx>

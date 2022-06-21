@@ -21,7 +21,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 class Graphic3d_ArrayOfPoints;

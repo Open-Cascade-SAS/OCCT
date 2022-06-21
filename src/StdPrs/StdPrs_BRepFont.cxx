@@ -21,22 +21,18 @@
 #include <BRepLib_MakeEdge.hxx>
 #include <Font_FTLibrary.hxx>
 #include <Font_FontMgr.hxx>
-#include <Font_TextFormatter.hxx>
 #include <GCE2d_MakeSegment.hxx>
-#include <GC_MakeSegment.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_Line.hxx>
 #include <GeomAPI.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
 #include <gp_Pln.hxx>
-#include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TopExp.hxx>
@@ -50,7 +46,6 @@
 #ifdef HAVE_FREETYPE
   #include <ft2build.h>
   #include FT_FREETYPE_H
-  #include FT_OUTLINE_H
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFont, Standard_Transient)

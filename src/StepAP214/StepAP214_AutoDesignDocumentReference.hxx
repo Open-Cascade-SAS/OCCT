@@ -18,7 +18,6 @@
 #define _StepAP214_AutoDesignDocumentReference_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP214_HArray1OfAutoDesignReferencingItem.hxx>
 #include <StepBasic_DocumentReference.hxx>

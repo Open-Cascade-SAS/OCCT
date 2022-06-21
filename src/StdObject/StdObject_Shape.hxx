@@ -15,8 +15,6 @@
 #ifndef _StdObject_Shape_HeaderFile
 #define _StdObject_Shape_HeaderFile
 
-#include <StdObjMgt_ReadData.hxx>
-#include <StdObjMgt_WriteData.hxx>
 #include <StdObject_Location.hxx>
 #include <StdPersistent_TopoDS.hxx>
 

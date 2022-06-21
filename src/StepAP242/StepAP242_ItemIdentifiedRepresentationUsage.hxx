@@ -17,7 +17,6 @@
 #define _StepAP242_ItemIdentifiedRepresentationUsage_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
 #include <StepAP242_ItemIdentifiedRepresentationUsageDefinition.hxx>

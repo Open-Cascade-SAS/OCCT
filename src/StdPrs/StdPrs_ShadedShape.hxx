@@ -17,7 +17,6 @@
 #ifndef _StdPrs_ShadedShape_HeaderFile
 #define _StdPrs_ShadedShape_HeaderFile
 
-#include <GeomAbs_Shape.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <StdPrs_Volume.hxx>

@@ -15,12 +15,10 @@
 #include <Interface_Macros.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>
 #include <StepBasic_Action.hxx>
-#include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentFile.hxx>
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
-#include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>
 #include <StepBasic_GeneralProperty.hxx>
 #include <StepRepr_ProductConcept.hxx>

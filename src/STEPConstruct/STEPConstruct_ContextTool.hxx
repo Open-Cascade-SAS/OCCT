@@ -23,7 +23,6 @@
 
 #include <TColStd_SequenceOfInteger.hxx>
 #include <STEPConstruct_AP203Context.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 class StepBasic_ApplicationProtocolDefinition;

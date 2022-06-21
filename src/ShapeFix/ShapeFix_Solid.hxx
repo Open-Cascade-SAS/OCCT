@@ -22,10 +22,8 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeFix_Root.hxx>
 #include <ShapeExtend_Status.hxx>
-#include <Standard_Real.hxx>
 class ShapeFix_Shell;
 class TopoDS_Solid;
 class TopoDS_Shell;

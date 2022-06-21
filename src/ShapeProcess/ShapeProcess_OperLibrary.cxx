@@ -16,9 +16,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
-#include <BRepTools_Modification.hxx>
 #include <BRepTools_Modifier.hxx>
-#include <Message_MsgFile.hxx>
 #include <Message_ProgressScope.hxx>
 #include <Precision.hxx>
 #include <ShapeBuild_ReShape.hxx>
@@ -28,10 +26,8 @@
 #include <ShapeCustom_DirectModification.hxx>
 #include <ShapeCustom_RestrictionParameters.hxx>
 #include <ShapeCustom_SweptToElementary.hxx>
-#include <ShapeExtend.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <ShapeFix.hxx>
-#include <ShapeFix_Face.hxx>
 #include <ShapeFix_FixSmallFace.hxx>
 #include <ShapeFix_FixSmallSolid.hxx>
 #include <ShapeFix_Shape.hxx>

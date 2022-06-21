@@ -14,7 +14,6 @@
 
 #include <StdPrs_ToolRFace.hxx>
 
-#include <Adaptor2d_Curve2d.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <TopoDS.hxx>

@@ -18,7 +18,6 @@
 #include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignOrganizationAssignment.hxx>
 #include <StepBasic_Product.hxx>
-#include <StepBasic_ProductDefinition.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 #include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>

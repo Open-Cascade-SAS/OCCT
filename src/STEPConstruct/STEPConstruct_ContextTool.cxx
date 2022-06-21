@@ -28,23 +28,14 @@
 #include <StepBasic_ApplicationProtocolDefinition.hxx>
 #include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_ApprovalPersonOrganization.hxx>
-#include <StepBasic_HArray1OfProduct.hxx>
-#include <StepBasic_HArray1OfProductContext.hxx>
-#include <StepBasic_Product.hxx>
 #include <StepBasic_ProductCategoryRelationship.hxx>
-#include <StepBasic_ProductContext.hxx>
-#include <StepBasic_ProductDefinition.hxx>
-#include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductRelatedProductCategory.hxx>
-#include <StepBasic_ProductType.hxx>
-#include <STEPConstruct_AP203Context.hxx>
 #include <STEPConstruct_Assembly.hxx>
 #include <STEPConstruct_ContextTool.hxx>
 #include <STEPConstruct_Part.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
-#include <StepRepr_PropertyDefinition.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 #include <TCollection_HAsciiString.hxx>
 

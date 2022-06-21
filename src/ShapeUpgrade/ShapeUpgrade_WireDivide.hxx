@@ -24,7 +24,6 @@
 #include <TopoDS_Wire.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeUpgrade_Tool.hxx>
-#include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
 class ShapeUpgrade_SplitCurve3d;
 class ShapeUpgrade_SplitCurve2d;

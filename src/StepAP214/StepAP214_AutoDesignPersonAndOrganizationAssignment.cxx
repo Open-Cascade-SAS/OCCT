@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepAP214_AutoDesignGeneralOrgItem.hxx>
 #include <StepAP214_AutoDesignPersonAndOrganizationAssignment.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>
 #include <StepBasic_PersonAndOrganizationRole.hxx>

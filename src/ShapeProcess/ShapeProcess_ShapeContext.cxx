@@ -16,19 +16,15 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepTools_Modifier.hxx>
-#include <Message_ListIteratorOfListOfMsg.hxx>
-#include <Message_ListOfMsg.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <ShapeBuild_ReShape.hxx>
-#include <ShapeExtend_DataMapOfShapeListOfMsg.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <ShapeProcess_ShapeContext.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_ShapeContext,ShapeProcess_Context)
 

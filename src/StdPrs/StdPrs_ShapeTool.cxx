@@ -16,7 +16,6 @@
 
 #include <StdPrs_ShapeTool.hxx>
 
-#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -30,9 +29,7 @@
 #include <Poly_Triangulation.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
 //function : StdPrs_ShapeTool

@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Message_ListOfMsg.hxx>
 #include <Message_Msg.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
 #include <Standard_Transient.hxx>

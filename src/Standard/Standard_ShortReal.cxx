@@ -13,9 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <Standard_ShortReal.hxx>
-#include <Standard_RangeError.hxx>
 #include <Standard_NullValue.hxx>
-#include <Standard_Stream.hxx>
 
 //============================================================================
 // function : HashCode

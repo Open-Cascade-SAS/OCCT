@@ -26,8 +26,6 @@
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Pln.hxx>

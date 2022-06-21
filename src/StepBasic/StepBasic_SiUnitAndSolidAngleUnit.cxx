@@ -14,7 +14,6 @@
 
 #include <Standard_Type.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
-#include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
 #include <StepBasic_SolidAngleUnit.hxx>
 

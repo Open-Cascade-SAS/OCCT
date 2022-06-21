@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Real.hxx>
 #include <ShapeUpgrade_ShapeDivide.hxx>
 class TopoDS_Shape;
 class ShapeUpgrade_FaceDivide;

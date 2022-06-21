@@ -18,7 +18,6 @@
 #define _StepAP203_ChangeRequest_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepAP203_HArray1OfChangeRequestItem.hxx>
 #include <StepBasic_ActionRequestAssignment.hxx>
