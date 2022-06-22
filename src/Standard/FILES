@@ -93,7 +93,6 @@ Standard_Stream.hxx
 Standard_Strtod.cxx
 Standard_ThreadId.hxx
 Standard_Time.hxx
-Standard_TooManyUsers.hxx
 Standard_Transient.cxx
 Standard_Transient.hxx
 Standard_Type.cxx
