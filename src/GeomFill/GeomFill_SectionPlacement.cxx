@@ -102,41 +102,6 @@ static Standard_Real EvalAngle(const gp_Vec& V1,
  return angle;
 }
 
-static Standard_Integer NbSamples(const Handle(Geom_Curve)& aCurve)
-{
-  Standard_Real nbs = 100.; //on default
-
-  Handle(Geom_Curve) theCurve = aCurve;
-  if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
-    theCurve = (Handle(Geom_TrimmedCurve)::DownCast(aCurve))->BasisCurve();
-
-  if (theCurve->IsInstance(STANDARD_TYPE(Geom_Line)))
-    nbs = 1;
-  else if (theCurve->IsKind(STANDARD_TYPE(Geom_Conic)))
-    nbs = 4;
-  else if (theCurve->IsInstance(STANDARD_TYPE(Geom_BezierCurve)))
-    {
-      Handle(Geom_BezierCurve) BC = Handle(Geom_BezierCurve)::DownCast(theCurve);
-      nbs = 3 + BC->NbPoles();
-    }
-  else if (theCurve->IsInstance(STANDARD_TYPE(Geom_BSplineCurve)))
-    {
-      Handle(Geom_BSplineCurve) BC = Handle(Geom_BSplineCurve)::DownCast(theCurve);
-      nbs  = BC->NbKnots();
-      nbs *= BC->Degree();
-      Standard_Real ratio =
-	(aCurve->LastParameter() - aCurve->FirstParameter())/(BC->LastParameter() - BC->FirstParameter());
-      nbs *= ratio;
-      if(nbs < 4.0)
-	nbs = 4;
-    }
-
-  if (nbs > 300.)
-    nbs = 300;
-
-  return ((Standard_Integer)nbs);
-}
-
 //===============================================================
 // Function :DistMini
 // Purpose : Examine un extrema pour updater <Dist> & <Param>
@@ -495,24 +460,22 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
 		  }
 	      }
 	  }
-	if (!Intersector.IsDone() || Intersector.NbPoints() == 0)
-	  {
-	    Standard_Integer NbPnts = NbSamples( mySection );
-	    TColgp_Array1OfPnt Pnts( 1, NbPnts+1 );
-	    Standard_Real delta = (mySection->LastParameter()-mySection->FirstParameter())/NbPnts;
-	    for (ii = 0; ii <= NbPnts; ii++)
-	      Pnts(ii+1) = mySection->Value( mySection->FirstParameter() + ii*delta );
-	    
-	    gp_Pnt BaryCenter;
-	    gp_Dir Xdir, Ydir;
-	    Standard_Real Xgap, Ygap, Zgap;
-	    GeomLib::Inertia( Pnts, BaryCenter, Xdir, Ydir, Xgap, Ygap, Zgap );
-	    
-	    gp_Pnt Pfirst = Path->Value( Path->FirstParameter() );
-	    if (Pfirst.Distance(BaryCenter) < Plast.Distance(BaryCenter))
-	      PathParam = Path->FirstParameter();
-	    else
-	      {
+  if (!Intersector.IsDone() || Intersector.NbPoints() == 0)
+  {
+    // Comparing the distances from the path's endpoints to the best matching plane of the profile.
+    const gp_Pnt firstPoint = Path->Value(Path->FirstParameter());
+    const gp_Pnt lastPoint = Path->Value(Path->LastParameter());
+    const gp_Pln plane = plan->Pln();
+    Standard_Real firstDistance = plane.SquareDistance(firstPoint);
+    Standard_Real lastDistance = plane.SquareDistance(lastPoint);
+
+    if (((Abs(firstDistance) < Precision::SquareConfusion()) && Abs(lastDistance) < Precision::SquareConfusion()) ||
+       firstDistance < lastDistance)
+    {
+      PathParam = Path->FirstParameter(); 
+    }
+    else 
+    {
 		PathParam = Path->LastParameter();
 		Tangente (*Path, PathParam, PonPath, dp1);
 		PonSec = myAdpSection.Value(SecParam);
