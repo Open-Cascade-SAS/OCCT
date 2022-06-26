@@ -63,7 +63,7 @@ void IGESCAFControl_Provider::initStatic(const Handle(DE_ConfigurationNode)& the
   myOldValues.ReadApproxd1 = Interface_Static::IVal("read.iges.bspline.approxd1.mode") == 1;
   myOldValues.ReadResourceName = Interface_Static::CVal("read.iges.resource.name");
   myOldValues.ReadSequence = Interface_Static::CVal("read.iges.sequence");
-  myOldValues.ReadFaultyEntities = Interface_Static::IVal("read.iges.faulty.entities");
+  myOldValues.ReadFaultyEntities = Interface_Static::IVal("read.iges.faulty.entities") == 1;
   myOldValues.ReadOnlyVisible = Interface_Static::IVal("read.iges.onlyvisible") == 1;
 
   myOldValues.WriteBRepMode = (IGESCAFControl_ConfigurationNode::WriteMode_BRep)Interface_Static::IVal("write.iges.brep.mode");
