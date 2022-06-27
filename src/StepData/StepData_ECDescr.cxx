@@ -13,7 +13,6 @@
 
 
 #include <Standard_Type.hxx>
-#include <StepData_Described.hxx>
 #include <StepData_ECDescr.hxx>
 #include <StepData_ESDescr.hxx>
 #include <StepData_Plex.hxx>

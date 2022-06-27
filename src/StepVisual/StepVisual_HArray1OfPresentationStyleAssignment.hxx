@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfPresentationStyleAssignment_HeaderFile
 #define StepVisual_HArray1OfPresentationStyleAssignment_HeaderFile
 
-#include <StepVisual_PresentationStyleAssignment.hxx>
 #include <StepVisual_Array1OfPresentationStyleAssignment.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

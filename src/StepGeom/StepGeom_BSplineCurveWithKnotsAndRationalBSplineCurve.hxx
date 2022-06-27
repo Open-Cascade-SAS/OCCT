@@ -28,7 +28,6 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <StepGeom_KnotType.hxx>
-#include <Standard_Real.hxx>
 class StepGeom_BSplineCurveWithKnots;
 class StepGeom_RationalBSplineCurve;
 class TCollection_HAsciiString;

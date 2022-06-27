@@ -18,7 +18,6 @@
 #define _StepVisual_ContextDependentOverRidingStyledItem_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfStyleContextSelect.hxx>
 #include <StepVisual_OverRidingStyledItem.hxx>

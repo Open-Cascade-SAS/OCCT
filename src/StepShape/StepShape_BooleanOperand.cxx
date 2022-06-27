@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Macros.hxx>
 #include <StepShape_BooleanOperand.hxx>
 #include <StepShape_BooleanResult.hxx>
 #include <StepShape_CsgPrimitive.hxx>

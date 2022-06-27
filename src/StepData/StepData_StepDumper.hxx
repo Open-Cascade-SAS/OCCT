@@ -25,7 +25,6 @@
 #include <StepData_WriterLib.hxx>
 #include <StepData_StepWriter.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class StepData_StepModel;
 class StepData_Protocol;
 

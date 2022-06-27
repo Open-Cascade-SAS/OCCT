@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfCurveStyleFontPattern_HeaderFile
 #define StepVisual_HArray1OfCurveStyleFontPattern_HeaderFile
 
-#include <StepVisual_CurveStyleFontPattern.hxx>
 #include <StepVisual_Array1OfCurveStyleFontPattern.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

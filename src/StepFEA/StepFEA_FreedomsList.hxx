@@ -17,7 +17,6 @@
 #define _StepFEA_FreedomsList_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_HArray1OfDegreeOfFreedom.hxx>
 #include <Standard_Transient.hxx>

@@ -18,12 +18,9 @@
 #define _StepData_ReadWriteModule_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Interface_ReaderModule.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <Standard_Boolean.hxx>
 class Interface_FileReaderData;
 class TCollection_AsciiString;
 class Interface_Check;

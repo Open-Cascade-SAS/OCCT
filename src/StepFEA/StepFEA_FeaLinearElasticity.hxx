@@ -17,7 +17,6 @@
 #define _StepFEA_FeaLinearElasticity_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_SymmetricTensor43d.hxx>
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>

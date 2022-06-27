@@ -18,7 +18,6 @@
 #define _StepGeom_Circle_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
 #include <StepGeom_Conic.hxx>

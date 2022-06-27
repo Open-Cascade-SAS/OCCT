@@ -16,7 +16,6 @@
 #ifndef _StepVisual_HArray1OfDraughtingCalloutElement_HeaderFile
 #define _StepVisual_HArray1OfDraughtingCalloutElement_HeaderFile
 
-#include <StepVisual_DraughtingCalloutElement.hxx>
 #include <StepVisual_Array1OfDraughtingCalloutElement.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

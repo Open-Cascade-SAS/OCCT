@@ -17,10 +17,8 @@
 #define _StepDimTol_DatumSystem_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <StepRepr_ShapeAspect.hxx>
 #include <StepDimTol_HArray1OfDatumReferenceCompartment.hxx>
 
 class StepDimTol_DatumSystem;

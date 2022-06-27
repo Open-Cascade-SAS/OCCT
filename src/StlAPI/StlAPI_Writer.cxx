@@ -14,10 +14,7 @@
 #include <StlAPI_Writer.hxx>
 
 #include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
 #include <Message.hxx>
-#include <Message_Messenger.hxx>
-#include <OSD_Path.hxx>
 #include <OSD_OpenFile.hxx>
 #include <RWStl.hxx>
 #include <BRep_Tool.hxx>

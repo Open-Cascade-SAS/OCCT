@@ -16,23 +16,18 @@
 
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <Geom_Direction.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_TrsfForm.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_CartesianTransformationOperator3d.hxx>
-#include <StepGeom_Direction.hxx>
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_MappedItem.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationMap.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_MakeTransformed.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 

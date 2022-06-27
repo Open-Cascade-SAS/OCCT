@@ -29,7 +29,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <Standard_Real.hxx>
 class StepGeom_BSplineSurfaceWithKnots;
 class StepGeom_RationalBSplineSurface;
 class TCollection_HAsciiString;

@@ -30,7 +30,6 @@
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_TranslateCompositeCurve.hxx>
 #include <StepToTopoDS_TranslateCurveBoundedSurface.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <Transfer_TransientProcess.hxx>

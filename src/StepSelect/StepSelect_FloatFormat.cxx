@@ -13,7 +13,6 @@
 
 
 #include <IFSelect_ContextWrite.hxx>
-#include <Interface_FloatWriter.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepSelect_FloatFormat.hxx>

@@ -20,7 +20,6 @@
 #include <StepVisual_PointStyle.hxx>
 #include <StepVisual_PresentationStyleSelect.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
-#include <StepVisual_TextStyle.hxx>
 
 StepVisual_PresentationStyleSelect::StepVisual_PresentationStyleSelect () {  }
 

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class TCollection_HAsciiString;
 class StepBasic_ProductConceptContext;

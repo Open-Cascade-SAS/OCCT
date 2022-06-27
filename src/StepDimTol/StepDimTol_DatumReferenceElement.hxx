@@ -17,7 +17,6 @@
 #define _StepDimTol_DatumReferenceElement_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
 #include <Standard_Macro.hxx>
 
 #include <StepDimTol_GeneralDatumReference.hxx>

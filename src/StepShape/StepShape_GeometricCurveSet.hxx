@@ -18,7 +18,6 @@
 #define _StepShape_GeometricCurveSet_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_GeometricSet.hxx>
 

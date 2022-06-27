@@ -12,9 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepVisual_CurveStyle.hxx>
-#include <StepVisual_DirectionCountSelect.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_SurfaceStyleParameterLine,Standard_Transient)

@@ -18,10 +18,8 @@
 #define _StepKinematics_KinematicLinkRepresentation_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepRepr_Representation.hxx>
 
-#include <TCollection_HAsciiString.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepRepr_RepresentationContext.hxx>
 #include <StepKinematics_KinematicLink.hxx>

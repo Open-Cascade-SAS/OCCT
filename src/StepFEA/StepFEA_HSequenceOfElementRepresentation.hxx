@@ -14,7 +14,6 @@
 #ifndef StepFEA_HSequenceOfElementRepresentation_HeaderFile
 #define StepFEA_HSequenceOfElementRepresentation_HeaderFile
 
-#include <StepFEA_ElementRepresentation.hxx>
 #include <StepFEA_SequenceOfElementRepresentation.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

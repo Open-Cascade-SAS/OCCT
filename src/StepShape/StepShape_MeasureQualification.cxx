@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepShape_MeasureQualification.hxx>
 #include <StepShape_ValueQualifier.hxx>

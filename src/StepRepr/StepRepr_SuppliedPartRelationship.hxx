@@ -18,7 +18,6 @@
 #define _StepRepr_SuppliedPartRelationship_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_ProductDefinitionRelationship.hxx>
 

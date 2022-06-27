@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepRepr_AssemblyComponentUsage.hxx>
-#include <Standard_Boolean.hxx>
 class StepBasic_MeasureWithUnit;
 class TCollection_HAsciiString;
 class StepBasic_ProductDefinition;

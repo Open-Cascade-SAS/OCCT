@@ -22,8 +22,6 @@
 
 #include <TColStd_SequenceOfTransient.hxx>
 #include <StepData_Described.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 class StepData_ECDescr;

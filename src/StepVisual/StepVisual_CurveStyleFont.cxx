@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepVisual_CurveStyleFont.hxx>
 #include <StepVisual_CurveStyleFontPattern.hxx>
 #include <TCollection_HAsciiString.hxx>

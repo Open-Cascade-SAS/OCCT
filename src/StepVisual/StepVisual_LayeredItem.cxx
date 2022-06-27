@@ -14,7 +14,6 @@
 
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_LayeredItem.hxx>
 #include <StepVisual_PresentationRepresentation.hxx>
 

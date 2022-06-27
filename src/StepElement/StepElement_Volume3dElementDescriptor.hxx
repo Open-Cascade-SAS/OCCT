@@ -17,7 +17,6 @@
 #define _StepElement_Volume3dElementDescriptor_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepElement_HArray1OfVolumeElementPurposeMember.hxx>
 #include <StepElement_Volume3dElementShape.hxx>

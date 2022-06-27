@@ -23,21 +23,15 @@
 //    smh 31.01.01 BUC60810 : IsNull protection
 
 #include <BRep_Builder.hxx>
-#include <BRep_CurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
-#include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Interface_Static.hxx>
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>
@@ -48,16 +42,11 @@
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_EdgeProjAux.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_Curve.hxx>
 #include <StepGeom_Pcurve.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
-#include <StepGeom_Polyline.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
-#include <StepShape_Edge.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_FaceBound.hxx>
@@ -74,7 +63,6 @@
 #include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>

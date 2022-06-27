@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepGeom_Curve.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
 #include <StepGeom_TrimmingSelect.hxx>
 #include <TCollection_HAsciiString.hxx>

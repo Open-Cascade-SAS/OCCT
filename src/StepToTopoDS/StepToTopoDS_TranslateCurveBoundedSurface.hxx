@@ -23,7 +23,6 @@
 
 #include <TopoDS_Face.hxx>
 #include <StepToTopoDS_Root.hxx>
-#include <Standard_Boolean.hxx>
 class StepGeom_CurveBoundedSurface;
 class Transfer_TransientProcess;
 

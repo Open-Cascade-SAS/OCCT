@@ -17,7 +17,6 @@
 #define _StepDimTol_StraightnessTolerance_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepDimTol_GeometricTolerance.hxx>
 

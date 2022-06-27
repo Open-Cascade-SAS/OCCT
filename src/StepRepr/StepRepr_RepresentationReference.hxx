@@ -18,10 +18,8 @@
 #define _StepRepr_RepresentationReference_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
-#include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationContextReference.hxx>
 
 DEFINE_STANDARD_HANDLE(StepRepr_RepresentationReference, Standard_Transient)

@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <TCollection_HAsciiString.hxx>
 

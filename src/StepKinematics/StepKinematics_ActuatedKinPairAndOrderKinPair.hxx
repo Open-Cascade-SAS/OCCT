@@ -17,9 +17,7 @@
 #define _StepKinematics_ActuatedKinPairAndOrderKinPair_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 class StepRepr_RepresentationItem;

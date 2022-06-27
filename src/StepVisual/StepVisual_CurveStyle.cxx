@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepBasic_SizeSelect.hxx>
 #include <StepVisual_Colour.hxx>
 #include <StepVisual_CurveStyle.hxx>
 #include <StepVisual_CurveStyleFontSelect.hxx>

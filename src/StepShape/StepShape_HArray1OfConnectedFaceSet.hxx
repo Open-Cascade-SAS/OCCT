@@ -17,7 +17,6 @@
 #ifndef StepShape_HArray1OfConnectedFaceSet_HeaderFile
 #define StepShape_HArray1OfConnectedFaceSet_HeaderFile
 
-#include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_Array1OfConnectedFaceSet.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

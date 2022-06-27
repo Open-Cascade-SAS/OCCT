@@ -18,7 +18,6 @@
 #define _StepKinematics_KinematicLink_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepShape_Vertex.hxx>
 
 #include <TCollection_HAsciiString.hxx>

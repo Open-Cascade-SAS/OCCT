@@ -13,7 +13,6 @@
 
 
 #include <Standard_OutOfRange.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_FieldList1.hxx>
 
 StepData_FieldList1::StepData_FieldList1  ()    {  }

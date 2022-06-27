@@ -23,9 +23,6 @@
 #include <Interface_DataMapOfTransientInteger.hxx>
 #include <Interface_Protocol.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 class Interface_InterfaceModel;
 class StepData_EDescr;

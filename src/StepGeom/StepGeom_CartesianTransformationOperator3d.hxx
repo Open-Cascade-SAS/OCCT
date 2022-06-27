@@ -20,9 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <StepGeom_CartesianTransformationOperator.hxx>
-#include <Standard_Real.hxx>
 class StepGeom_Direction;
 class TCollection_HAsciiString;
 class StepGeom_CartesianPoint;

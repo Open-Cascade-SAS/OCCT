@@ -18,7 +18,6 @@
 #define _StepVisual_ContextDependentInvisibility_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_InvisibilityContext.hxx>
 #include <StepVisual_Invisibility.hxx>

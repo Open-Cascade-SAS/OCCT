@@ -16,10 +16,7 @@
 #ifndef _StlAPI_Reader_HeaderFile
 #define _StlAPI_Reader_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_CString.hxx>
 
 class TopoDS_Shape;
 

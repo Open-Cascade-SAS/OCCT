@@ -14,8 +14,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <Interface_DataMapIteratorOfDataMapOfTransientInteger.hxx>
-#include <Interface_InterfaceModel.hxx>
-#include <Interface_Protocol.hxx>
 #include <StepData_Described.hxx>
 #include <StepData_ECDescr.hxx>
 #include <StepData_EDescr.hxx>

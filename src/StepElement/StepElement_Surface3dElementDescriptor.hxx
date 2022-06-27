@@ -17,7 +17,6 @@
 #define _StepElement_Surface3dElementDescriptor_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepElement_HArray1OfHSequenceOfSurfaceElementPurposeMember.hxx>
 #include <StepElement_Element2dShape.hxx>

@@ -18,12 +18,10 @@
 #define _StepKinematics_PrismaticPairWithRange_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_PrismaticPair.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_PrismaticPairWithRange, StepKinematics_PrismaticPair)

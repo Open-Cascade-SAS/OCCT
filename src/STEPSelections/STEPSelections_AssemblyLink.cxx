@@ -16,7 +16,6 @@
 
 
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <STEPSelections_AssemblyComponent.hxx>
 #include <STEPSelections_AssemblyLink.hxx>

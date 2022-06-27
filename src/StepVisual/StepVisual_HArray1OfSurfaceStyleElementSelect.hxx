@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfSurfaceStyleElementSelect_HeaderFile
 #define StepVisual_HArray1OfSurfaceStyleElementSelect_HeaderFile
 
-#include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <StepVisual_Array1OfSurfaceStyleElementSelect.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

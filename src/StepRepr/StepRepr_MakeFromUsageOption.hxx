@@ -21,7 +21,6 @@
 
 #include <Standard_Integer.hxx>
 #include <StepRepr_ProductDefinitionUsage.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 class StepBasic_MeasureWithUnit;
 class StepBasic_ProductDefinition;

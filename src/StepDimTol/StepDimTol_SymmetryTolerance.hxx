@@ -17,7 +17,6 @@
 #define _StepDimTol_SymmetryTolerance_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 

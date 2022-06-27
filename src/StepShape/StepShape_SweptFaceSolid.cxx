@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepShape_FaceSurface.hxx>
 #include <StepShape_SweptFaceSolid.hxx>
 #include <TCollection_HAsciiString.hxx>

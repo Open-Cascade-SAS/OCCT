@@ -17,7 +17,6 @@
 #define _StepElement_ElementMaterial_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_HArray1OfMaterialPropertyRepresentation.hxx>
 #include <Standard_Transient.hxx>

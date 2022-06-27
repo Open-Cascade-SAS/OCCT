@@ -18,7 +18,6 @@
 #define _StepRepr_PromissoryUsageOccurrence_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_AssemblyComponentUsage.hxx>
 

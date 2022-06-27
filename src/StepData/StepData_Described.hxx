@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 class StepData_EDescr;
 class StepData_Simple;
 class StepData_Field;

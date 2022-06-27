@@ -17,7 +17,6 @@
 #define _StepElement_Curve3dElementDescriptor_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepElement_HArray1OfHSequenceOfCurveElementPurposeMember.hxx>
 #include <StepElement_ElementDescriptor.hxx>

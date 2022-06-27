@@ -21,9 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-
 
 //! This class implements the common services for
 //! all classes of StepToTopoDS which report error

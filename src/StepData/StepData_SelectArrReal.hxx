@@ -17,7 +17,6 @@
 #define _StepData_SelectArrReal_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfReal.hxx>
 #include <StepData_SelectNamed.hxx>

@@ -22,11 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_CString.hxx>
 #include <StepData_Logical.hxx>
-#include <Standard_Real.hxx>
 class Standard_Transient;
 class StepData_PDescr;
 class StepData_SelectMember;

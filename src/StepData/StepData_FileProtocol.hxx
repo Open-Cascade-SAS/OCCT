@@ -23,9 +23,6 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <StepData_Protocol.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 class Interface_Protocol;
 class Interface_Graph;
 class Interface_Check;

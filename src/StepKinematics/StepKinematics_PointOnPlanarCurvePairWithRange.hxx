@@ -18,12 +18,10 @@
 #define _StepKinematics_PointOnPlanarCurvePairWithRange_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_PointOnPlanarCurvePair.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_TrimmedCurve.hxx>

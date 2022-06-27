@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <StepGeom_KnotType.hxx>
 #include <StepGeom_BSplineSurface.hxx>
 #include <Standard_Integer.hxx>

@@ -17,7 +17,6 @@
 #define _StepDimTol_ToleranceZone_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_ShapeAspect.hxx>
 #include <Standard_Integer.hxx>

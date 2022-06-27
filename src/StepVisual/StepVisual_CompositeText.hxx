@@ -18,7 +18,6 @@
 #define _StepVisual_CompositeText_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfTextOrCharacter.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>

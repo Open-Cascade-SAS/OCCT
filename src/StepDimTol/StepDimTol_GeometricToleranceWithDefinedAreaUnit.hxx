@@ -17,7 +17,6 @@
 #define _StepDimTol_GeometricToleranceWithDefinedAreaUnit_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Boolean.hxx>
 #include <StepDimTol_AreaUnitType.hxx>

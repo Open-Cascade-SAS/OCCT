@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfRenderingPropertiesSelect_HeaderFile
 #define StepVisual_HArray1OfRenderingPropertiesSelect_HeaderFile
 
-#include <StepVisual_RenderingPropertiesSelect.hxx>
 #include <StepVisual_Array1OfRenderingPropertiesSelect.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

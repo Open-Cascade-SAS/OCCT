@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class StepGeom_SurfaceCurve;
 class StepGeom_Surface;
 class StepGeom_Pcurve;

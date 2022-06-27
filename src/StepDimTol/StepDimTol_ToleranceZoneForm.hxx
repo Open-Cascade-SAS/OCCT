@@ -20,7 +20,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 class TCollection_HAsciiString;

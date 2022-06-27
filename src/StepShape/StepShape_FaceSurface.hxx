@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <StepShape_Face.hxx>
 #include <StepShape_HArray1OfFaceBound.hxx>
 class StepGeom_Surface;

@@ -17,7 +17,6 @@
 #define _StepShape_ShapeDimensionRepresentation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_HArray1OfShapeDimensionRepresentationItem.hxx>
 #include <StepShape_ShapeRepresentation.hxx>

@@ -18,7 +18,6 @@
 #define _StepKinematics_ProductDefinitionRelationshipKinematics_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
 
 #include <TCollection_HAsciiString.hxx>

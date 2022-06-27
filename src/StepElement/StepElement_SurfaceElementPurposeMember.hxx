@@ -17,11 +17,9 @@
 #define _StepElement_SurfaceElementPurposeMember_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <StepData_SelectNamed.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 
 

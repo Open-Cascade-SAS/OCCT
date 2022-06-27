@@ -17,7 +17,6 @@
 #define _StepFEA_FeaModel_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfAsciiString.hxx>
 #include <StepRepr_Representation.hxx>

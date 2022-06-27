@@ -18,13 +18,9 @@
 #define _StepKinematics_RollingCurvePair_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_PlanarCurvePair.hxx>
 
 #include <TCollection_HAsciiString.hxx>
-#include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
-#include <StepKinematics_KinematicJoint.hxx>
 #include <StepGeom_Curve.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_RollingCurvePair, StepKinematics_PlanarCurvePair)

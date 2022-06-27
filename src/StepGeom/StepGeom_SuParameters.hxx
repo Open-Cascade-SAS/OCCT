@@ -18,7 +18,6 @@
 #define _StepGeom_SuParameters_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
 #include <TCollection_HAsciiString.hxx>

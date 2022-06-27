@@ -17,7 +17,6 @@
 #define _StepFEA_FeaModel3d_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_FeaModel.hxx>
 

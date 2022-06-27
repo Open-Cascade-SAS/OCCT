@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepVisual_ContextDependentInvisibility.hxx>
 #include <StepVisual_InvisibilityContext.hxx>
 

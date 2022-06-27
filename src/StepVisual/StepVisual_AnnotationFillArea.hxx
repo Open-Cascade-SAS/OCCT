@@ -17,9 +17,7 @@
 #define _StepVisual_AnnotationFillArea_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <StepRepr_HArray1OfRepresentationItem.hxx>
 #include <StepShape_GeometricCurveSet.hxx>
 #include <Standard_Integer.hxx>
 

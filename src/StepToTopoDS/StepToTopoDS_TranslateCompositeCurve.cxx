@@ -24,14 +24,12 @@
 #include <Geom_Surface.hxx>
 #include <Interface_Static.hxx>
 #include <Precision.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
 #include <StepGeom_Pcurve.hxx>
-#include <StepGeom_PcurveOrSurface.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
 #include <StepToGeom.hxx>

@@ -13,7 +13,6 @@
 
 
 #include <Standard_OutOfRange.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_FieldListD.hxx>
 
 StepData_FieldListD::StepData_FieldListD  (const Standard_Integer nb)

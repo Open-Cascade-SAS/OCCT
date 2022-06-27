@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
 #include <StepGeom_Direction.hxx>
 #include <StepShape_ExtrudedAreaSolid.hxx>

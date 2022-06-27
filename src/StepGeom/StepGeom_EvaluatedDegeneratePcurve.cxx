@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_EvaluatedDegeneratePcurve.hxx>
 #include <StepGeom_Surface.hxx>

@@ -13,7 +13,6 @@
 
 
 #include <Standard_Type.hxx>
-#include <StepBasic_NamedUnit.hxx>
 #include <StepGeom_GeometricRepresentationContext.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>

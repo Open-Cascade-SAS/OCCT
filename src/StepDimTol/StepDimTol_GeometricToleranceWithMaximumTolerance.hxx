@@ -17,7 +17,6 @@
 #define _StepDimTol_GeometricToleranceWithMaximumTolerance_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>

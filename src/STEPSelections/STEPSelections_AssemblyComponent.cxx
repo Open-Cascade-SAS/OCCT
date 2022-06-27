@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <STEPSelections_AssemblyComponent.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
 

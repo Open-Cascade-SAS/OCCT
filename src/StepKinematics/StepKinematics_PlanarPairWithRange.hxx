@@ -18,12 +18,10 @@
 #define _StepKinematics_PlanarPairWithRange_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_PlanarPair.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_PlanarPairWithRange, StepKinematics_PlanarPair)

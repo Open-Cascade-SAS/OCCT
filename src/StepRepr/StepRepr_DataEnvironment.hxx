@@ -17,7 +17,6 @@
 #define _StepRepr_DataEnvironment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_HArray1OfPropertyDefinitionRepresentation.hxx>
 #include <Standard_Transient.hxx>

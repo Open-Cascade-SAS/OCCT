@@ -26,7 +26,6 @@
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepData_Logical.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <Standard_Real.hxx>
 class StepGeom_QuasiUniformSurface;
 class StepGeom_RationalBSplineSurface;
 class TCollection_HAsciiString;

@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 class StepGeom_Surface;
 class TCollection_HAsciiString;

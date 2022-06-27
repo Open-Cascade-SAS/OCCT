@@ -21,9 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Integer.hxx>
-
-
 
 class StepVisual_DirectionCountSelect 
 {

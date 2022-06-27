@@ -17,7 +17,6 @@
 #define _StepElement_SurfaceSection_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <Standard_Transient.hxx>

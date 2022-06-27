@@ -17,7 +17,6 @@
 #define _StepVisual_AnnotationPlane_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_AnnotationOccurrence.hxx>
 #include <StepVisual_HArray1OfAnnotationPlaneElement.hxx>

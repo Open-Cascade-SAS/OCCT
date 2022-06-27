@@ -21,17 +21,13 @@
 #include <Standard_Type.hxx>
 #include <Resource_FormatType.hxx>
 
-#include <TColStd_Array1OfInteger.hxx>
 #include <Interface_IndexedMapOfAsciiString.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Interface_FileReaderData.hxx>
 #include <Standard_CString.hxx>
 #include <Interface_ParamType.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Type.hxx>
 #include <StepData_Logical.hxx>
 class Interface_Check;
 class TCollection_AsciiString;

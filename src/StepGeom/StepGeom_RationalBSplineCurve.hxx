@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TColStd_HArray1OfReal.hxx>
 #include <StepGeom_BSplineCurve.hxx>
 #include <Standard_Integer.hxx>
 #include <StepGeom_HArray1OfCartesianPoint.hxx>

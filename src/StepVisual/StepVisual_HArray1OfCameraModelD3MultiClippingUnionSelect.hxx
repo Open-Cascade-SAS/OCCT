@@ -16,7 +16,6 @@
 #ifndef _StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect_HeaderFile
 #define _StepVisual_HArray1OfCameraModelD3MultiClippingUnionSelect_HeaderFile
 
-#include <StepVisual_CameraModelD3MultiClippingUnionSelect.hxx>
 #include <StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

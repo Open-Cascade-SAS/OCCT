@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <StepData_SelectMember.hxx>
 #include <Standard_Integer.hxx>
 

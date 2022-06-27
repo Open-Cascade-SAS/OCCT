@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepSelect_StepType.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Interface_InterfaceModel;
 class TCollection_AsciiString;

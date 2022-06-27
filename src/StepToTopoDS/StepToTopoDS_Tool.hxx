@@ -24,7 +24,6 @@
 #include <StepToTopoDS_DataMapOfTRI.hxx>
 #include <StepToTopoDS_PointVertexMap.hxx>
 #include <StepToTopoDS_PointEdgeMap.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class Transfer_TransientProcess;
 class StepShape_TopologicalRepresentationItem;

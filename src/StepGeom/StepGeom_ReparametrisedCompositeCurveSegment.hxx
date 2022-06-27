@@ -20,10 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
 #include <StepGeom_TransitionCode.hxx>
-#include <Standard_Boolean.hxx>
 class StepGeom_Curve;
 
 

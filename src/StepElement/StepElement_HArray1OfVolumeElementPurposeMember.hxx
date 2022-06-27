@@ -14,7 +14,6 @@
 #ifndef StepElement_HArray1OfVolumeElementPurposeMember_HeaderFile
 #define StepElement_HArray1OfVolumeElementPurposeMember_HeaderFile
 
-#include <StepElement_VolumeElementPurposeMember.hxx>
 #include <StepElement_Array1OfVolumeElementPurposeMember.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

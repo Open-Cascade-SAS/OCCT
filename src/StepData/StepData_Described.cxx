@@ -14,11 +14,9 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_InterfaceMismatch.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Described.hxx>
 #include <StepData_EDescr.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_Simple.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_Described,Standard_Transient)

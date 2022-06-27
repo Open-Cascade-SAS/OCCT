@@ -18,10 +18,7 @@
 #define _StepKinematics_PairValue_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <StepGeom_GeometricRepresentationItem.hxx>
 
-#include <TCollection_HAsciiString.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_PairValue, StepGeom_GeometricRepresentationItem)

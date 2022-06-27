@@ -18,7 +18,6 @@
 #define _StepShape_CsgSolid_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_CsgSelect.hxx>
 #include <StepShape_SolidModel.hxx>

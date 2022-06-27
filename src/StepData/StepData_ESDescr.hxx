@@ -20,12 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <StepData_EDescr.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>

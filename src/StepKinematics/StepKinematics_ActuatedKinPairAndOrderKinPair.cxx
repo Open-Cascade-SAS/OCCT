@@ -15,7 +15,6 @@
 
 #include <StepKinematics_ActuatedKinPairAndOrderKinPair.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 #include <StepKinematics_ActuatedKinematicPair.hxx>
 

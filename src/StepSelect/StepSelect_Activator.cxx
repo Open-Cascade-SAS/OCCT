@@ -16,7 +16,6 @@
 #include <IFSelect_WorkSession.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Plex.hxx>
 #include <StepData_Simple.hxx>

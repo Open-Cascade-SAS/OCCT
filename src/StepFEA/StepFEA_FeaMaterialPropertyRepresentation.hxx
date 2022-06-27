@@ -17,7 +17,6 @@
 #define _StepFEA_FeaMaterialPropertyRepresentation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 

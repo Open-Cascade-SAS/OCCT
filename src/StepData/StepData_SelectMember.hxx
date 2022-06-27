@@ -21,12 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Interface_ParamType.hxx>
 #include <StepData_Logical.hxx>
-#include <Standard_Real.hxx>
 
 
 class StepData_SelectMember;

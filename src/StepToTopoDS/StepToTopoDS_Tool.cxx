@@ -18,11 +18,7 @@
 //    (Bind general;  BindVertex ?)
 
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepShape_TopologicalRepresentationItem.hxx>
-#include <StepToTopoDS_PointPair.hxx>
 #include <StepToTopoDS_Tool.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>

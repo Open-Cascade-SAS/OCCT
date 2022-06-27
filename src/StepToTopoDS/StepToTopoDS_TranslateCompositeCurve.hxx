@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Wire.hxx>
-#include <Standard_Boolean.hxx>
 #include <StepToTopoDS_Root.hxx>
 class StepGeom_CompositeCurve;
 class Transfer_TransientProcess;

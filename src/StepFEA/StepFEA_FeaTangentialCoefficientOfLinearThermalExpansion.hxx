@@ -17,7 +17,6 @@
 #define _StepFEA_FeaTangentialCoefficientOfLinearThermalExpansion_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_SymmetricTensor23d.hxx>
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>

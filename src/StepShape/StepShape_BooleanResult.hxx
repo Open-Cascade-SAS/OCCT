@@ -18,7 +18,6 @@
 #define _StepShape_BooleanResult_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_BooleanOperator.hxx>
 #include <StepShape_BooleanOperand.hxx>

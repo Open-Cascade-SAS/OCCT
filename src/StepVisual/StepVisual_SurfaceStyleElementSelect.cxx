@@ -19,8 +19,6 @@
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <StepVisual_SurfaceStyleFillArea.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
-#include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
-#include <StepVisual_SurfaceStyleSilhouette.hxx>
 #include <StepVisual_SurfaceStyleRendering.hxx>
 
 StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect () {  }

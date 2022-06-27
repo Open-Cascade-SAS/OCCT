@@ -18,7 +18,6 @@
 #define _StepKinematics_RollingSurfacePairValue_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_PairValue.hxx>
 
 #include <TCollection_HAsciiString.hxx>

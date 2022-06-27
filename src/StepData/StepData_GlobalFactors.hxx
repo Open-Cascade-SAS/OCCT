@@ -19,7 +19,6 @@
 #include <Standard_Handle.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 
 //! Class for using global units variables
 class StepData_GlobalFactors

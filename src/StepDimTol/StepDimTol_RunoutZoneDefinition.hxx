@@ -17,7 +17,6 @@
 #define _StepDimTol_RunoutZoneDefinition_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepDimTol_RunoutZoneOrientation.hxx>
 #include <StepDimTol_ToleranceZoneDefinition.hxx>

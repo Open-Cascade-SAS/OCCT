@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepData_EnumTool.hxx>
 #include <StepVisual_MarkerMember.hxx>
 #include <TCollection_AsciiString.hxx>

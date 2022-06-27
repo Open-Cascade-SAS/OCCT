@@ -17,7 +17,6 @@
 #ifndef StepRepr_HArray1OfRepresentationItem_HeaderFile
 #define StepRepr_HArray1OfRepresentationItem_HeaderFile
 
-#include <StepRepr_RepresentationItem.hxx>
 #include <StepRepr_Array1OfRepresentationItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

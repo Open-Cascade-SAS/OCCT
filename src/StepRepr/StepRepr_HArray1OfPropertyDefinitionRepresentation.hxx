@@ -17,7 +17,6 @@
 #ifndef StepRepr_HArray1OfPropertyDefinitionRepresentation_HeaderFile
 #define StepRepr_HArray1OfPropertyDefinitionRepresentation_HeaderFile
 
-#include <StepRepr_PropertyDefinitionRepresentation.hxx>
 #include <StepRepr_Array1OfPropertyDefinitionRepresentation.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

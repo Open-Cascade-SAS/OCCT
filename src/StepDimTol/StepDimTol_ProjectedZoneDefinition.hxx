@@ -17,7 +17,6 @@
 #define _StepDimTol_ProjectedZoneDefinition_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>

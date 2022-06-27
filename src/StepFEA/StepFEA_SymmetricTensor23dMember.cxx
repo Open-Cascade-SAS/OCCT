@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V2.0
 
-#include <Standard_Type.hxx>
 #include <StepFEA_SymmetricTensor23dMember.hxx>
 #include <TCollection_HAsciiString.hxx>
 

@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Polyline.hxx>
 #include <TCollection_HAsciiString.hxx>
 

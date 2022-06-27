@@ -17,7 +17,6 @@
 #define _StepFEA_FreedomAndCoefficient_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_DegreeOfFreedom.hxx>
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>

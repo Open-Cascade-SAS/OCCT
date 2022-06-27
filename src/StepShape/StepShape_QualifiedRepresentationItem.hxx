@@ -17,7 +17,6 @@
 #define _StepShape_QualifiedRepresentationItem_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_HArray1OfValueQualifier.hxx>
 #include <StepRepr_RepresentationItem.hxx>

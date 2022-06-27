@@ -17,7 +17,6 @@
 #define _StepRepr_StructuralResponsePropertyDefinitionRepresentation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_PropertyDefinitionRepresentation.hxx>
 

@@ -18,7 +18,6 @@
 #define _StepVisual_PresentationStyleAssignment_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfPresentationStyleSelect.hxx>
 #include <Standard_Transient.hxx>

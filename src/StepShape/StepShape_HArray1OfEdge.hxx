@@ -17,7 +17,6 @@
 #ifndef StepShape_HArray1OfEdge_HeaderFile
 #define StepShape_HArray1OfEdge_HeaderFile
 
-#include <StepShape_Edge.hxx>
 #include <StepShape_Array1OfEdge.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

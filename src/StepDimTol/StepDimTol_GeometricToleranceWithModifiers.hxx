@@ -17,11 +17,9 @@
 #define _StepDimTol_GeometricToleranceWithModifiers_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
-#include <StepDimTol_GeometricToleranceModifier.hxx>
 #include <StepDimTol_HArray1OfGeometricToleranceModifier.hxx>
 
 class TCollection_HAsciiString;

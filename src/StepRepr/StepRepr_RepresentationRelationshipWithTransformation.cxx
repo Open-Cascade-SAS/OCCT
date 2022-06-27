@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepRepr_Representation.hxx>
 #include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
 #include <StepRepr_Transformation.hxx>

@@ -20,9 +20,6 @@
 #include <Geom_CartesianPoint.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Point.hxx>
-#include <StepShape_Vertex.hxx>
 #include <StepShape_VertexPoint.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_NMTool.hxx>

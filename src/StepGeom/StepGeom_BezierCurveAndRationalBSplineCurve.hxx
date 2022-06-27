@@ -26,7 +26,6 @@
 #include <StepGeom_BSplineCurveForm.hxx>
 #include <StepData_Logical.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Real.hxx>
 class StepGeom_BezierCurve;
 class StepGeom_RationalBSplineCurve;
 class TCollection_HAsciiString;

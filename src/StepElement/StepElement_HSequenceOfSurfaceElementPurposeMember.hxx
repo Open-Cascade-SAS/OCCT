@@ -14,7 +14,6 @@
 #ifndef StepElement_HSequenceOfSurfaceElementPurposeMember_HeaderFile
 #define StepElement_HSequenceOfSurfaceElementPurposeMember_HeaderFile
 
-#include <StepElement_SurfaceElementPurposeMember.hxx>
 #include <StepElement_SequenceOfSurfaceElementPurposeMember.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

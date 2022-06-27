@@ -18,7 +18,6 @@
 #define _StepKinematics_ContextDependentKinematicLinkRepresentation_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
 #include <StepKinematics_KinematicLinkRepresentationAssociation.hxx>

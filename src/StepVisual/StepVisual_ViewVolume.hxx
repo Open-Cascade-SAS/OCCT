@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepVisual_CentralOrParallel.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class StepGeom_CartesianPoint;
 class StepVisual_PlanarBox;

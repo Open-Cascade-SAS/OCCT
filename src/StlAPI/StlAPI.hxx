@@ -20,9 +20,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 
 //! Offers the API for STL data manipulation.

@@ -17,7 +17,6 @@
 #define _StepDimTol_UnequallyDisposedGeometricTolerance_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>

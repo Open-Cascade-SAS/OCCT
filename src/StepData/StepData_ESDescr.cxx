@@ -14,7 +14,6 @@
 
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
-#include <StepData_Described.hxx>
 #include <StepData_ESDescr.hxx>
 #include <StepData_PDescr.hxx>
 #include <StepData_Simple.hxx>

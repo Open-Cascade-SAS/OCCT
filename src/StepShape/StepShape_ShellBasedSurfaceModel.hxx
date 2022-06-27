@@ -18,7 +18,6 @@
 #define _StepShape_ShellBasedSurfaceModel_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_HArray1OfShell.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>

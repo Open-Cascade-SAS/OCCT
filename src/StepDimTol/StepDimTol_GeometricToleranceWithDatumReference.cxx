@@ -17,7 +17,6 @@
 
 #include <Standard_Type.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
-#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeometricToleranceWithDatumReference.hxx>
 #include <StepRepr_ShapeAspect.hxx>
 #include <TCollection_HAsciiString.hxx>

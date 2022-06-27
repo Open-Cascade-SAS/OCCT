@@ -16,8 +16,6 @@
 
 
 #include <Standard_Type.hxx>
-#include <StepBasic_NamedUnit.hxx>
-#include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <StepGeom_GeometricRepresentationContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>

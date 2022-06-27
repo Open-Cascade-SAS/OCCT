@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
-#include <Standard_Type.hxx>
 #include <StepVisual_ExternallyDefinedTextFont.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepVisual_ExternallyDefinedTextFont,StepBasic_ExternallyDefinedItem)

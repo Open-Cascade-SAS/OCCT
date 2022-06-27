@@ -14,7 +14,6 @@
 #ifndef StepFEA_HArray1OfCurveElementEndOffset_HeaderFile
 #define StepFEA_HArray1OfCurveElementEndOffset_HeaderFile
 
-#include <StepFEA_CurveElementEndOffset.hxx>
 #include <StepFEA_Array1OfCurveElementEndOffset.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

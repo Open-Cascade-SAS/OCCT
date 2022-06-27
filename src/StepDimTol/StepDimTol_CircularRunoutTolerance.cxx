@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <Standard_Type.hxx>
 #include <StepDimTol_CircularRunoutTolerance.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepDimTol_CircularRunoutTolerance,StepDimTol_GeometricToleranceWithDatumReference)

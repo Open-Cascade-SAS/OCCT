@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <Standard_Type.hxx>
 #include <StepFEA_FeaModel.hxx>
 #include <StepFEA_NodeRepresentation.hxx>
 #include <StepRepr_RepresentationContext.hxx>

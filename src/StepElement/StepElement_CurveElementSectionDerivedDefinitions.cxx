@@ -15,7 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <Standard_Type.hxx>
 #include <StepElement_CurveElementSectionDerivedDefinitions.hxx>
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <TCollection_HAsciiString.hxx>

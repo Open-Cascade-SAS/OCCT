@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfStyleContextSelect_HeaderFile
 #define StepVisual_HArray1OfStyleContextSelect_HeaderFile
 
-#include <StepVisual_StyleContextSelect.hxx>
 #include <StepVisual_Array1OfStyleContextSelect.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

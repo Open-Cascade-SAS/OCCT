@@ -18,14 +18,11 @@
 #define _StepKinematics_ActuatedKinematicPair_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_KinematicPair.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
-#include <StepKinematics_ActuatedDirection.hxx>
 #include <StepKinematics_ActuatedDirection.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_ActuatedKinematicPair, StepKinematics_KinematicPair)

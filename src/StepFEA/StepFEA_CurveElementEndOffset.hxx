@@ -17,7 +17,6 @@
 #define _StepFEA_CurveElementEndOffset_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_CurveElementEndCoordinateSystem.hxx>
 #include <TColStd_HArray1OfReal.hxx>

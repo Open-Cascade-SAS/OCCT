@@ -18,7 +18,6 @@
 #define _StepVisual_OverRidingStyledItem_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_StyledItem.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>

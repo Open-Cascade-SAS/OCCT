@@ -15,8 +15,6 @@
 
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
-#include <Standard_Type.hxx>
-#include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <StepElement_UniformSurfaceSection.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepElement_UniformSurfaceSection,StepElement_SurfaceSection)

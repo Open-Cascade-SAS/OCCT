@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_OutOfRange.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_FieldListN.hxx>
 
 StepData_FieldListN::StepData_FieldListN  (const Standard_Integer nb)

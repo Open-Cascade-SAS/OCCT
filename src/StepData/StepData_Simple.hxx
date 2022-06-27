@@ -23,7 +23,6 @@
 #include <StepData_FieldListN.hxx>
 #include <StepData_Described.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class StepData_ESDescr;
 class StepData_Field;

@@ -17,7 +17,6 @@
 #define _StepVisual_AnnotationCurveOccurrenceAndGeomReprItem_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_AnnotationCurveOccurrence.hxx>
 

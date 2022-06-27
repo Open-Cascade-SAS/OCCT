@@ -17,7 +17,6 @@
 #ifndef StepShape_HArray1OfConnectedEdgeSet_HeaderFile
 #define StepShape_HArray1OfConnectedEdgeSet_HeaderFile
 
-#include <StepShape_ConnectedEdgeSet.hxx>
 #include <StepShape_Array1OfConnectedEdgeSet.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

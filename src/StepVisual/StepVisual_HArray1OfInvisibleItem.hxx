@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfInvisibleItem_HeaderFile
 #define StepVisual_HArray1OfInvisibleItem_HeaderFile
 
-#include <StepVisual_InvisibleItem.hxx>
 #include <StepVisual_Array1OfInvisibleItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

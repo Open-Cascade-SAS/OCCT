@@ -16,8 +16,6 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Graph.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
 #include <StepBasic_Product.hxx>
@@ -27,7 +25,6 @@
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepRepr_PropertyDefinition.hxx>
-#include <STEPSelections_AssemblyComponent.hxx>
 #include <STEPSelections_AssemblyExplorer.hxx>
 #include <STEPSelections_AssemblyLink.hxx>
 #include <STEPSelections_HSequenceOfAssemblyLink.hxx>

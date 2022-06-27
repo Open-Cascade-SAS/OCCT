@@ -25,7 +25,6 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepLib.hxx>
-#include <Geom_BoundedSurface.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -39,7 +38,6 @@
 #include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
 #include <STEPControl_ActorRead.hxx>
-#include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
@@ -49,7 +47,6 @@
 #include <StepGeom_SurfacePatch.hxx>
 #include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
-#include <StepShape_ConnectedEdgeSet.hxx>
 #include <StepShape_EdgeBasedWireframeModel.hxx>
 #include <StepShape_FaceBasedSurfaceModel.hxx>
 #include <StepShape_FaceSurface.hxx>
@@ -64,14 +61,12 @@
 #include <StepShape_ManifoldSolidBrep.hxx>
 #include <StepShape_OpenShell.hxx>
 #include <StepShape_OrientedClosedShell.hxx>
-#include <StepShape_Shell.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepVisual_TessellatedFace.hxx>
 #include <StepVisual_TessellatedShell.hxx>
 #include <StepVisual_TessellatedSolid.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_Builder.hxx>
-#include <StepToTopoDS_DataMapOfTRI.hxx>
 #include <StepToTopoDS_NMTool.hxx>
 #include <StepToTopoDS_Tool.hxx>
 #include <StepToTopoDS_TranslateCompositeCurve.hxx>

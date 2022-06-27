@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepShape_BooleanOperand.hxx>
 #include <StepShape_BooleanResult.hxx>
 #include <TCollection_HAsciiString.hxx>
 

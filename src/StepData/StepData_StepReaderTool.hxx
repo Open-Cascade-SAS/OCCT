@@ -24,7 +24,6 @@
 #include <Interface_GeneralLib.hxx>
 #include <Interface_ReaderLib.hxx>
 #include <Interface_FileReaderTool.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class StepData_FileRecognizer;
 class StepData_StepReaderData;

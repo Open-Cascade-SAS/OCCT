@@ -17,7 +17,6 @@
 #ifndef StepVisual_HArray1OfLayeredItem_HeaderFile
 #define StepVisual_HArray1OfLayeredItem_HeaderFile
 
-#include <StepVisual_LayeredItem.hxx>
 #include <StepVisual_Array1OfLayeredItem.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

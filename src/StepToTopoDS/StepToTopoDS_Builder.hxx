@@ -24,7 +24,6 @@
 #include <StepToTopoDS_BuilderError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 class StepShape_ManifoldSolidBrep;

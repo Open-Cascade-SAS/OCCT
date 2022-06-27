@@ -24,7 +24,6 @@
 #include <StepToTopoDS_TranslateEdgeLoopError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-#include <Standard_Boolean.hxx>
 class StepShape_FaceBound;
 class TopoDS_Face;
 class Geom_Surface;

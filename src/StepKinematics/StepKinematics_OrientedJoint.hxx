@@ -18,12 +18,9 @@
 #define _StepKinematics_OrientedJoint_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepShape_OrientedEdge.hxx>
 
 #include <TCollection_HAsciiString.hxx>
-#include <StepShape_Vertex.hxx>
-#include <StepShape_Edge.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_OrientedJoint, StepShape_OrientedEdge)
 

@@ -18,7 +18,6 @@
 #define _StepKinematics_MechanismRepresentation_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepRepr_Representation.hxx>
 
 #include <TCollection_HAsciiString.hxx>

@@ -27,10 +27,8 @@
 #include <Precision.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
 #include <StepShape_PolyLoop.hxx>
 #include <StepToGeom.hxx>
-#include <StepToTopoDS_PointPair.hxx>
 #include <StepToTopoDS_Tool.hxx>
 #include <StepToTopoDS_TranslatePolyLoop.hxx>
 #include <TopoDS.hxx>

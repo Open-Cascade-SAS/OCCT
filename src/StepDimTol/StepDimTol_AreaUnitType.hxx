@@ -16,8 +16,6 @@
 #ifndef _StepDimTol_AreaUnitType_HeaderFile
 #define _StepDimTol_AreaUnitType_HeaderFile
 
-#include <Standard_PrimitiveTypes.hxx>
-
 enum StepDimTol_AreaUnitType {
   StepDimTol_Circular,
   StepDimTol_Rectangular,

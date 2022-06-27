@@ -17,7 +17,6 @@
 #include <Interface_InterfaceMismatch.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_ECDescr.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_Plex.hxx>
 #include <StepData_Simple.hxx>
 #include <TCollection_AsciiString.hxx>

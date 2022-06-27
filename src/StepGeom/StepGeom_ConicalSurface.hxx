@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <StepGeom_ElementarySurface.hxx>
 class TCollection_HAsciiString;
 class StepGeom_Axis2Placement3d;

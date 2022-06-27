@@ -18,8 +18,6 @@
 #define _StepKinematics_RotationAboutDirection_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <StepGeom_GeometricRepresentationItem.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepGeom_Direction.hxx>

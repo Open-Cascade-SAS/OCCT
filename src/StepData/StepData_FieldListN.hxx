@@ -23,7 +23,6 @@
 
 #include <StepData_Array1OfField.hxx>
 #include <StepData_FieldList.hxx>
-#include <Standard_Integer.hxx>
 class StepData_Field;
 
 

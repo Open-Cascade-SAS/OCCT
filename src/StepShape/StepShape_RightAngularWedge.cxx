@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepShape_RightAngularWedge.hxx>
 #include <TCollection_HAsciiString.hxx>

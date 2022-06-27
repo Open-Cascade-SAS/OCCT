@@ -18,7 +18,6 @@
 #define _StepVisual_TextLiteral_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepGeom_Axis2Placement.hxx>
 #include <StepVisual_TextPath.hxx>

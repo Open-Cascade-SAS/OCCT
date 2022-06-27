@@ -18,7 +18,6 @@
 #define _StepShape_GeometricSet_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepShape_HArray1OfGeometricSetSelect.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>

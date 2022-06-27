@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepGeom_TransitionCode.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class StepGeom_Curve;
 

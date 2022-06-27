@@ -17,7 +17,6 @@
 #define _StepRepr_PropertyDefinition_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_CharacterizedDefinition.hxx>
 #include <Standard_Boolean.hxx>

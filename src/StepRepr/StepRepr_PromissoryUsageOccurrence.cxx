@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepRepr_PromissoryUsageOccurrence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_PromissoryUsageOccurrence,StepRepr_AssemblyComponentUsage)

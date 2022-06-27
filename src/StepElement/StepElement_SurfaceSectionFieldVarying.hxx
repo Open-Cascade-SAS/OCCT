@@ -17,7 +17,6 @@
 #define _StepElement_SurfaceSectionFieldVarying_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepElement_HArray1OfSurfaceSection.hxx>
 #include <Standard_Boolean.hxx>

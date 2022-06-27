@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_HalfSpaceSolid.hxx>
-#include <Standard_Boolean.hxx>
 class StepShape_BoxDomain;
 class TCollection_HAsciiString;
 class StepGeom_Surface;

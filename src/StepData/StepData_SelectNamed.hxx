@@ -18,12 +18,10 @@
 #define _StepData_SelectNamed_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <StepData_Field.hxx>
 #include <StepData_SelectMember.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>

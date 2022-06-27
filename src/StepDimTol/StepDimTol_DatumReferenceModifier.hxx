@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <StepData_SelectType.hxx>
 #include <StepDimTol_DatumReferenceModifierWithValue.hxx>
 #include <StepDimTol_SimpleDatumReferenceModifierMember.hxx>
 

@@ -14,7 +14,6 @@
 #ifndef StepFEA_HArray1OfNodeRepresentation_HeaderFile
 #define StepFEA_HArray1OfNodeRepresentation_HeaderFile
 
-#include <StepFEA_NodeRepresentation.hxx>
 #include <StepFEA_Array1OfNodeRepresentation.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

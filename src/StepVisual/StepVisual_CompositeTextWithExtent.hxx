@@ -18,7 +18,6 @@
 #define _StepVisual_CompositeTextWithExtent_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_CompositeText.hxx>
 #include <StepVisual_HArray1OfTextOrCharacter.hxx>

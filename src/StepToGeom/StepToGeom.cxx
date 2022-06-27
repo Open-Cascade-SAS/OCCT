@@ -22,10 +22,7 @@
 
 #include <Geom_Axis1Placement.hxx>
 #include <Geom_Axis2Placement.hxx>
-#include <Geom_BoundedCurve.hxx>
-#include <Geom_BoundedSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Conic.hxx>
@@ -52,8 +49,6 @@
 #include <Geom_VectorWithMagnitude.hxx>
 
 #include <Geom2d_AxisPlacement.hxx>
-#include <Geom2d_BoundedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Conic.hxx>
@@ -70,7 +65,6 @@
 #include <gp_Trsf.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Lin.hxx>
-#include <gp_Lin2d.hxx>
 
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
@@ -79,11 +73,6 @@
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
-#include <StepGeom_BoundedCurve.hxx>
-#include <StepGeom_BoundedSurface.hxx>
-#include <StepGeom_BSplineCurve.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_Direction.hxx>
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>

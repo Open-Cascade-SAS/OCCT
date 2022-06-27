@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepShape_Vertex.hxx>
 
 class TCollection_HAsciiString;

@@ -16,8 +16,6 @@
 #ifndef _StepDimTol_DatumReferenceModifierType_HeaderFile
 #define _StepDimTol_DatumReferenceModifierType_HeaderFile
 
-#include <Standard_PrimitiveTypes.hxx>
-
 enum StepDimTol_DatumReferenceModifierType {
   StepDimTol_CircularOrCylindrical,
   StepDimTol_Distance,

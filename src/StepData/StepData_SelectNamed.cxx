@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_SelectNamed.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_SelectNamed,StepData_SelectMember)

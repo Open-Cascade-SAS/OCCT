@@ -18,7 +18,6 @@
 #define _StepVisual_Invisibility_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfInvisibleItem.hxx>
 #include <Standard_Transient.hxx>

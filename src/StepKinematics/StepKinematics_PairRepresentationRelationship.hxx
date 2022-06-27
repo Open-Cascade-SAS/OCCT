@@ -18,12 +18,10 @@
 #define _StepKinematics_PairRepresentationRelationship_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationOrRepresentationReference.hxx>
-#include <StepRepr_Transformation.hxx>
 #include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_PairRepresentationRelationship, StepGeom_GeometricRepresentationItem)

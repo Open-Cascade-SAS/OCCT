@@ -17,8 +17,6 @@
 #include <Interface_InterfaceMismatch.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_ESDescr.hxx>
-#include <StepData_Field.hxx>
-#include <StepData_FieldListN.hxx>
 #include <StepData_Simple.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_Simple,StepData_Described)

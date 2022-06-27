@@ -17,7 +17,6 @@
 #define _StepVisual_DraughtingCallout_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepVisual_HArray1OfDraughtingCalloutElement.hxx>

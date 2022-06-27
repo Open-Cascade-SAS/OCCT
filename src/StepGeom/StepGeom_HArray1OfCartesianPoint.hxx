@@ -17,7 +17,6 @@
 #ifndef StepGeom_HArray1OfCartesianPoint_HeaderFile
 #define StepGeom_HArray1OfCartesianPoint_HeaderFile
 
-#include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Array1OfCartesianPoint.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

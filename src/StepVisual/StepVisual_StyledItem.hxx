@@ -18,7 +18,6 @@
 #define _StepVisual_StyledItem_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <StepRepr_RepresentationItem.hxx>

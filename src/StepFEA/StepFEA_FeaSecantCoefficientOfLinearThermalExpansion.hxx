@@ -17,7 +17,6 @@
 #define _StepFEA_FeaSecantCoefficientOfLinearThermalExpansion_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepFEA_SymmetricTensor23d.hxx>
 #include <Standard_Real.hxx>

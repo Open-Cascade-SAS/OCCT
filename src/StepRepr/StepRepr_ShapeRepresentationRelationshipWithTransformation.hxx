@@ -18,7 +18,6 @@
 #define _StepRepr_ShapeRepresentationRelationshipWithTransformation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepRepr_RepresentationRelationshipWithTransformation.hxx>
 

@@ -22,7 +22,6 @@
 
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <StepElement_UnspecifiedValue.hxx>
 class Standard_Transient;
 class StepData_SelectMember;

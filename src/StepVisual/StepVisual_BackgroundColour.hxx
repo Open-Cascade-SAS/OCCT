@@ -18,7 +18,6 @@
 #define _StepVisual_BackgroundColour_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepVisual_AreaOrView.hxx>
 #include <StepVisual_Colour.hxx>

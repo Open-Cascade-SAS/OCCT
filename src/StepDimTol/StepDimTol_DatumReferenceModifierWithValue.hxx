@@ -17,7 +17,6 @@
 #define _StepDimTol_DatumReferenceModifierWithValue_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_DefineHandle.hxx>
 #include <Standard_Handle.hxx>
 
 #include <Standard_Transient.hxx>

@@ -18,13 +18,10 @@
 #define _StepKinematics_LinearFlexibleLinkRepresentation_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_KinematicLinkRepresentation.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
-#include <StepKinematics_KinematicLink.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_LinearFlexibleLinkRepresentation, StepKinematics_KinematicLinkRepresentation)
 

@@ -13,7 +13,6 @@
 
 
 #include <Interface_Check.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>

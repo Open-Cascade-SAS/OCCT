@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <StepVisual_LayeredItem.hxx>
 #include <StepVisual_PresentationLayerAssignment.hxx>
 #include <TCollection_HAsciiString.hxx>
 

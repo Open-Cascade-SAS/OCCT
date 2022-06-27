@@ -14,10 +14,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
-#include <StepDimTol_GeometricToleranceTarget.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthMaxTol.hxx>
 #include <StepDimTol_GeometricToleranceWithModifiers.hxx>
 #include <StepRepr_ShapeAspect.hxx>

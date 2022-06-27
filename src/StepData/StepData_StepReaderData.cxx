@@ -15,7 +15,6 @@
 //    sln 04,10.2001. BUC61003. Prevent exception which may occur during reading of complex entity (if entity's items are not in alphabetical order)
 
 #include <Interface_Check.hxx>
-#include <Interface_FileParameter.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
@@ -24,9 +23,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <StepData_EnumTool.hxx>
 #include <StepData_ESDescr.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_FieldList.hxx>
 #include <StepData_PDescr.hxx>
 #include <StepData_SelectArrReal.hxx>
@@ -35,7 +32,6 @@
 #include <StepData_SelectNamed.hxx>
 #include <StepData_SelectReal.hxx>
 #include <StepData_SelectType.hxx>
-#include <StepData_StepModel.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>

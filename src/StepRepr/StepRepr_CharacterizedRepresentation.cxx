@@ -14,10 +14,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_RepresentationContext.hxx>
-#include <StepRepr_RepresentationItem.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(StepRepr_CharacterizedRepresentation, StepRepr_Representation)

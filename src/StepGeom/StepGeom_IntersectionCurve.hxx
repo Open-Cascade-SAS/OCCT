@@ -18,7 +18,6 @@
 #define _StepGeom_IntersectionCurve_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepGeom_SurfaceCurve.hxx>
 

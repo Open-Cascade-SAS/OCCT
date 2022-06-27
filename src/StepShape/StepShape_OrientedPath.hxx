@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <StepShape_Path.hxx>
 #include <StepShape_HArray1OfOrientedEdge.hxx>
 #include <Standard_Integer.hxx>

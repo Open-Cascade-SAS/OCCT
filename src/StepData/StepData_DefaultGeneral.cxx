@@ -17,7 +17,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_GeneralLib.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_ParamType.hxx>
 #include <Interface_ShareTool.hxx>
 #include <Interface_UndefinedContent.hxx>
 #include <Standard_Transient.hxx>

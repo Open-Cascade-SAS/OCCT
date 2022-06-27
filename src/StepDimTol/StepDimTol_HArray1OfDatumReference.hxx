@@ -16,7 +16,6 @@
 #ifndef StepDimTol_HArray1OfDatumReference_HeaderFile
 #define StepDimTol_HArray1OfDatumReference_HeaderFile
 
-#include <StepDimTol_DatumReference.hxx>
 #include <StepDimTol_Array1OfDatumReference.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

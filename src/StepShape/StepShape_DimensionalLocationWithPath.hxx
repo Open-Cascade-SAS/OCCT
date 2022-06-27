@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_DimensionalLocation.hxx>
-#include <Standard_Boolean.hxx>
 class StepRepr_ShapeAspect;
 class TCollection_HAsciiString;
 

@@ -14,7 +14,6 @@
 #ifndef StepElement_HArray1OfSurfaceSection_HeaderFile
 #define StepElement_HArray1OfSurfaceSection_HeaderFile
 
-#include <StepElement_SurfaceSection.hxx>
 #include <StepElement_Array1OfSurfaceSection.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -14,7 +14,6 @@
 #ifndef StepElement_HArray1OfMeasureOrUnspecifiedValue_HeaderFile
 #define StepElement_HArray1OfMeasureOrUnspecifiedValue_HeaderFile
 
-#include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <StepElement_Array1OfMeasureOrUnspecifiedValue.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -18,7 +18,6 @@
 #define _StepVisual_SurfaceStyleRenderingWithProperties_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepVisual_SurfaceStyleRendering.hxx>
 
 #include <StepVisual_ShadingSurfaceMethod.hxx>

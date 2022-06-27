@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <StepShape_SweptFaceSolid.hxx>
 class StepGeom_Axis1Placement;
 class TCollection_HAsciiString;

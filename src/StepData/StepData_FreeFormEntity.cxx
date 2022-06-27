@@ -14,7 +14,6 @@
 
 #include <Interface_Macros.hxx>
 #include <Standard_Type.hxx>
-#include <StepData_Field.hxx>
 #include <StepData_FreeFormEntity.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Standard_Transient.hxx>

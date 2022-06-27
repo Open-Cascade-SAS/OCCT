@@ -18,12 +18,10 @@
 #define _StepKinematics_KinematicTopologyStructure_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepRepr_Representation.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_HArray1OfRepresentationItem.hxx>
-#include <StepRepr_RepresentationContext.hxx>
 
 DEFINE_STANDARD_HANDLE(StepKinematics_KinematicTopologyStructure, StepRepr_Representation)
 

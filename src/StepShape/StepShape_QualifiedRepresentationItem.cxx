@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <StepShape_QualifiedRepresentationItem.hxx>
 #include <StepShape_ValueQualifier.hxx>
 #include <TCollection_HAsciiString.hxx>

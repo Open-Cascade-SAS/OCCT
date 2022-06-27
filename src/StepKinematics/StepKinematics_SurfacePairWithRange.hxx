@@ -18,12 +18,10 @@
 #define _StepKinematics_SurfacePairWithRange_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_SurfacePair.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <StepRepr_RepresentationItem.hxx>
-#include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepKinematics_KinematicJoint.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_RectangularTrimmedSurface.hxx>

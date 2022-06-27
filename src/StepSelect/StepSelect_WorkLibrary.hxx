@@ -20,10 +20,8 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_WorkLibrary.hxx>
-#include <Standard_CString.hxx>
 class Interface_InterfaceModel;
 class Interface_Protocol;
 class IFSelect_ContextWrite;

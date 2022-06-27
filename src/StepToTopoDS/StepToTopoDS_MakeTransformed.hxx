@@ -23,7 +23,6 @@
 
 #include <gp_Trsf.hxx>
 #include <StepToTopoDS_Root.hxx>
-#include <Standard_Boolean.hxx>
 #include <Message_ProgressRange.hxx>
 
 class StepGeom_Axis2Placement3d;

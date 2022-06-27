@@ -18,7 +18,6 @@
 #define _StepRepr_GlobalUncertaintyAssignedContext_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <StepBasic_HArray1OfUncertaintyMeasureWithUnit.hxx>
 #include <StepRepr_RepresentationContext.hxx>

@@ -17,7 +17,6 @@
 #define _StepFEA_SymmetricTensor43dMember_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
 #include <StepData_SelectArrReal.hxx>

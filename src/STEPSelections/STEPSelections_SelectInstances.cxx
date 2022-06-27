@@ -16,7 +16,6 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>

@@ -18,7 +18,6 @@
 #define _StepKinematics_KinematicPropertyMechanismRepresentation_HeaderFile_
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepKinematics_KinematicPropertyDefinitionRepresentation.hxx>
 
 #include <StepRepr_RepresentedDefinition.hxx>

@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepData_SelectInt.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <StepVisual_MarkerType.hxx>
 

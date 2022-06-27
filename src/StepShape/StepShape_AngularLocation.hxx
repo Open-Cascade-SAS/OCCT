@@ -21,7 +21,6 @@
 
 #include <StepShape_AngleRelator.hxx>
 #include <StepShape_DimensionalLocation.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_HAsciiString;
 class StepRepr_ShapeAspect;
 

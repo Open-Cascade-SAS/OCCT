@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <StepGeom_Point.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 class TCollection_HAsciiString;

@@ -20,7 +20,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 #include <StepBasic_PlaneAngleMeasureWithUnit.hxx>
 
 class StepDimTol_RunoutZoneOrientation;

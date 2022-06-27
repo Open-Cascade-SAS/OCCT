@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <StepShape_OrientedEdge.hxx>
-#include <Standard_Boolean.hxx>
 class StepGeom_Pcurve;
 class TCollection_HAsciiString;
 class StepShape_Edge;

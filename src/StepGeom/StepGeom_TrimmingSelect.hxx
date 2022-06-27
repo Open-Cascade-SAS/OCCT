@@ -23,7 +23,6 @@
 
 #include <StepData_SelectType.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 class Standard_Transient;
 class StepData_SelectMember;
 class StepGeom_CartesianPoint;

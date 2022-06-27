@@ -14,7 +14,6 @@
 #ifndef StepElement_HSequenceOfCurveElementSectionDefinition_HeaderFile
 #define StepElement_HSequenceOfCurveElementSectionDefinition_HeaderFile
 
-#include <StepElement_CurveElementSectionDefinition.hxx>
 #include <StepElement_SequenceOfCurveElementSectionDefinition.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

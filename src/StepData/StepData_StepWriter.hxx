@@ -23,13 +23,11 @@
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <Interface_LineBuffer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Interface_FloatWriter.hxx>
 #include <Interface_CheckIterator.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Real.hxx>
 #include <StepData_Logical.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <Standard_OStream.hxx>
