@@ -2070,8 +2070,22 @@ Standard_Boolean ShapeUpgrade_UnifySameDomain::MergeSubSeq(const TopTools_Sequen
     TopoDS_Vertex V[2];
     V[0] = sae.FirstVertex(FE);
     V[1] = sae.LastVertex(TopoDS::Edge(theChain.Last()));
+    Standard_Boolean isClosed = V[0].IsSame(V[1]);
+    if (!isClosed)
+    {
+      // additionally check the points for equality to make a final decision about closedness of the result curve
+      gp_Pnt aP0 = BRep_Tool::Pnt(V[0]);
+      gp_Pnt aP1 = BRep_Tool::Pnt(V[1]);
+      Standard_Real aTol = Max(BRep_Tool::Tolerance(V[0]), BRep_Tool::Tolerance(V[1]));
+      if (aP0.SquareDistance(aP1) < aTol * aTol)
+      {
+        isClosed = Standard_True;
+        V[1] = V[0];
+        V[1].Reverse();
+      }
+    }
     TopoDS_Edge E;
-    if (V[0].IsSame(V[1])) {
+    if (isClosed) {
       // closed chain
       BRepAdaptor_Curve adef(FE);
       Handle(Geom_Circle) Cir1;
