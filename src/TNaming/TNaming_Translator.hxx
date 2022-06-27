@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 class TopoDS_Shape;

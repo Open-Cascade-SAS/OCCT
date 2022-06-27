@@ -18,12 +18,9 @@
 #define _TDocStd_Application_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <CDF_Application.hxx>
 #include <Message_Messenger.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_IStream.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>

@@ -16,9 +16,6 @@
 #ifndef TDF_LabelDoubleMap_HeaderFile
 #define TDF_LabelDoubleMap_HeaderFile
 
-#include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 

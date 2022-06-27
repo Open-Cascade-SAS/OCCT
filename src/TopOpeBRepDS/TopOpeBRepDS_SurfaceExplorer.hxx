@@ -19,11 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 class TopOpeBRepDS_DataStructure;
 

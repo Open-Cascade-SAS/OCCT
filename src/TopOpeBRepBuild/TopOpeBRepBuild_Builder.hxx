@@ -30,7 +30,6 @@
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
@@ -46,7 +45,6 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
 #include <TopOpeBRepDS_Config.hxx>
-#include <Standard_Real.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <Standard_Address.hxx>
 class TopOpeBRepDS_HDataStructure;

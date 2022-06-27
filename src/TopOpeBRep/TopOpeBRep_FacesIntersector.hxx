@@ -21,7 +21,6 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <IntPatch_Intersection.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_HArray1OfLineInter.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>

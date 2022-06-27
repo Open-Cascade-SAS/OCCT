@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTrans_CurveTransition.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
 class gp_Dir;
 

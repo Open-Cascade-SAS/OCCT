@@ -19,23 +19,13 @@
 #include <TopOpeBRepTool_CORRISO.hxx>
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom_Surface.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopTools_Array1OfShape.hxx>
 
-#include <BRep_Tool.hxx>
-#include <Precision.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 #include <Standard_Failure.hxx>

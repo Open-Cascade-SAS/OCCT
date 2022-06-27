@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepLProp_CLProps.hxx>
 #include <BRepTools.hxx>
@@ -31,7 +30,6 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>

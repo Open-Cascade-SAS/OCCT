@@ -17,7 +17,6 @@
 #ifndef TopOpeBRepTool_IndexedDataMapOfSolidClassifier_HeaderFile
 #define TopOpeBRepTool_IndexedDataMapOfSolidClassifier_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>

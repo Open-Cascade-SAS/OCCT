@@ -18,7 +18,6 @@
 #define _TopoDS_TVertex_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopoDS_TShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>

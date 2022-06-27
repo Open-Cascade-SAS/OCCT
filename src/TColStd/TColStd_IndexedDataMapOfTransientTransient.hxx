@@ -16,7 +16,6 @@
 #define TColStd_IndexedDataMapOfTransientTransient_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <Standard_Transient.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 

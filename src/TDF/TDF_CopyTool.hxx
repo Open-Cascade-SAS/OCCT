@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelDataMap.hxx>
 #include <TDF_AttributeDataMap.hxx>
 #include <TDF_LabelMap.hxx>

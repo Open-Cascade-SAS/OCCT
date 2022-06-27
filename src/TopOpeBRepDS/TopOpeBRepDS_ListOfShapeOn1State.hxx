@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 
 

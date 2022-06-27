@@ -20,11 +20,8 @@ static TCollection_AsciiString PRODINS("dins ");
 #endif
 
 
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_ShellFaceSet.hxx>
 

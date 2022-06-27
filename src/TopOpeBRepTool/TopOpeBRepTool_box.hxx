@@ -17,7 +17,6 @@
 #ifndef _TopOpeBRepTool_box_HeaderFile
 #define _TopOpeBRepTool_box_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_HBoxTool.hxx>
 
 #ifdef OCCT_DEBUG

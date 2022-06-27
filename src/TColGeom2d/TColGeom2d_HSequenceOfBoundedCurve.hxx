@@ -17,7 +17,6 @@
 #ifndef TColGeom2d_HSequenceOfBoundedCurve_HeaderFile
 #define TColGeom2d_HSequenceOfBoundedCurve_HeaderFile
 
-#include <Geom2d_BoundedCurve.hxx>
 #include <TColGeom2d_SequenceOfBoundedCurve.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

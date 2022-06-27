@@ -20,7 +20,6 @@
 
 #include <Standard_DomainError.hxx>
 #include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_ImmutableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -39,7 +38,6 @@
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
-#include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute,Standard_Transient)

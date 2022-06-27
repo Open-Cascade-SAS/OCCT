@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_GeometryData.hxx>

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! parse an OS path

@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -26,7 +25,6 @@
 #include <TopOpeBRepDS_connex.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_InterferenceTool.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>

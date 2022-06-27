@@ -23,7 +23,6 @@
 
 #include <TDF_LabelMap.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
 class Standard_GUID;

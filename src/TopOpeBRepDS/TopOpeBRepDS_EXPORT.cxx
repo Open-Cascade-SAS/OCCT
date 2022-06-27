@@ -16,21 +16,15 @@
 
 // Modified by xpu, Wed May 20 10:47:38 1998
 
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Geom_Curve.hxx>
 #include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <Precision.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfIntegerInteger.hxx>
 
-#include <TopOpeBRepTool_CurveTool.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
@@ -39,7 +33,6 @@
 #include <Standard_ProgramError.hxx>
 
 #include <TopOpeBRepDS_InterferenceTool.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
 #include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>

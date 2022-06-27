@@ -19,7 +19,6 @@
 #include <Standard_Dump.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopLoc_SListOfItemLocation.hxx>
 
 //=======================================================================
 //function : TopLoc_ItemLocation

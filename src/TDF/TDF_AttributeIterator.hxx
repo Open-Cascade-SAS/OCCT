@@ -22,7 +22,6 @@
 #ifndef TDF_AttributeIterator_HeaderFile
 #define TDF_AttributeIterator_HeaderFile
 
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNodePtr.hxx>
 

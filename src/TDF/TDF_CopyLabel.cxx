@@ -16,7 +16,6 @@
 
 
 #include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeMap.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_ClosureMode.hxx>
 #include <TDF_ClosureTool.hxx>
@@ -26,9 +25,6 @@
 #include <TDF_DataSet.hxx>
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 

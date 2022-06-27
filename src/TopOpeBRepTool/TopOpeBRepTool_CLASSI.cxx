@@ -19,7 +19,6 @@
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -29,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepTool_CLASSI.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_face.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>

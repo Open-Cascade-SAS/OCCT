@@ -16,14 +16,9 @@
 
 #include <TNaming_CopyShape.hxx>
 #include <TNaming_TranslateTool.hxx>
-#include <TopAbs.hxx>
 #include <TopLoc_Datum3D.hxx>
-#include <TopLoc_Location.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 
 //=======================================================================
 //function : CopyTool

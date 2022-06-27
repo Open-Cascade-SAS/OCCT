@@ -20,8 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TDF_LabelNodePtr.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TDF_Label.hxx>
 class TDF_Label;

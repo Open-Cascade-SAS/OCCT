@@ -22,9 +22,6 @@
 #include <BRep_CurveOnSurface.hxx>
 #include <BRep_CurveRepresentation.hxx>
 #include <BRep_GCurve.hxx>
-#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
-#include <BRep_ListIteratorOfListOfPointRepresentation.hxx>
-#include <BRep_ListOfCurveRepresentation.hxx>
 #include <BRep_ListOfPointRepresentation.hxx>
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
@@ -40,7 +37,6 @@
 #include <BRep_TVertex.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <TNaming_CopyShape.hxx>
 #include <TNaming_TranslateTool.hxx>
 #include <TopoDS.hxx>

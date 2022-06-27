@@ -23,7 +23,6 @@
 #include <TDF_AttributeDeltaList.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelList.hxx>
 #include <Standard_OStream.hxx>
 class TDF_AttributeDelta;

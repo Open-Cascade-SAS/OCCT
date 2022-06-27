@@ -17,7 +17,6 @@
 #define _TDF_DeltaOnForget_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_AttributeDelta.hxx>
 class TDF_Attribute;

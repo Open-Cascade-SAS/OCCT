@@ -17,7 +17,6 @@
 #ifndef TColGeom_HArray1OfCurve_HeaderFile
 #define TColGeom_HArray1OfCurve_HeaderFile
 
-#include <Geom_Curve.hxx>
 #include <TColGeom_Array1OfCurve.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

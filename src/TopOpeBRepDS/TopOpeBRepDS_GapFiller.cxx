@@ -24,9 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_SequenceOfPnt.hxx>
 #include <TColStd_MapOfTransient.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -38,9 +36,7 @@
 #include <TopOpeBRepDS_GapTool.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_Point.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 
 //=======================================================================

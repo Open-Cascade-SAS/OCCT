@@ -17,20 +17,13 @@
 #ifndef _TopOpeBRepTool_TOPOLOGY_HeaderFile
 #define _TopOpeBRepTool_TOPOLOGY_HeaderFile
 
-#include <TopOpeBRepTool_define.hxx>
-
 #include <GeomAbs_CurveType.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Dir2d.hxx>
 #include <gp_Vec.hxx>
-#include <Bnd_Box2d.hxx>
 #include <TopoDS_Wire.hxx>
-#include <BRepAdaptor_Curve.hxx>
 //#include <BRepAdaptor_Curve2d.hxx>
 
 Standard_EXPORT void FUN_tool_tolUV(const TopoDS_Face& F,Standard_Real& tolu,Standard_Real& tolv);

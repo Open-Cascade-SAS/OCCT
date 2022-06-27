@@ -17,11 +17,9 @@
 #define _TDataStd_ReferenceList_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_LabelList.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_GUID.hxx>

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_AncestorsTool.hxx>

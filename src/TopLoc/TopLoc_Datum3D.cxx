@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Trsf.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>

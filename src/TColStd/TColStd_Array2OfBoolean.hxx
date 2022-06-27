@@ -15,7 +15,6 @@
 #ifndef TColStd_Array2OfBoolean_HeaderFile
 #define TColStd_Array2OfBoolean_HeaderFile
 
-#include <Standard_Boolean.hxx>
 #include <NCollection_Array2.hxx>
 
 typedef NCollection_Array2<Standard_Boolean> TColStd_Array2OfBoolean;

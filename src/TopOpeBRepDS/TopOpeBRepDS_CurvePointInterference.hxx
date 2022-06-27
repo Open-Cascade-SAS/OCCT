@@ -18,7 +18,6 @@
 #define _TopOpeBRepDS_CurvePointInterference_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
 #include <TopOpeBRepDS_Interference.hxx>

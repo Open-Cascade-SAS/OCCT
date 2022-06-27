@@ -17,7 +17,6 @@
 #ifndef TopLoc_MapOfLocation_HeaderFile
 #define TopLoc_MapOfLocation_HeaderFile
 
-#include <TopLoc_Location.hxx>
 #include <TopLoc_MapLocationHasher.hxx>
 #include <NCollection_Map.hxx>
 

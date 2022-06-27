@@ -21,8 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 class TopoDS_Shape;

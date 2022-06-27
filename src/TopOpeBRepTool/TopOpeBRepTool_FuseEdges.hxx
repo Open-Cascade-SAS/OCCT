@@ -19,17 +19,14 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfIntegerListOfShape.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Vertex;

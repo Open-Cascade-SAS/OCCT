@@ -18,7 +18,6 @@
 #define _Storage_InternalData_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Storage_BucketOfPersistent.hxx>
 #include <Standard_Integer.hxx>

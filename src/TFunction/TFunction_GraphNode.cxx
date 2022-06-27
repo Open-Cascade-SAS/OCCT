@@ -16,7 +16,6 @@
 
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>

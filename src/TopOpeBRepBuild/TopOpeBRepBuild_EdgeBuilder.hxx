@@ -23,7 +23,6 @@
 
 #include <TopOpeBRepBuild_Area1dBuilder.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 class TopOpeBRepBuild_PaveSet;
 class TopOpeBRepBuild_PaveClassifier;
 class TopOpeBRepBuild_LoopSet;

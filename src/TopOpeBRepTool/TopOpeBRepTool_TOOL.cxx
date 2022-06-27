@@ -18,7 +18,6 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepLProp_CLProps.hxx>
@@ -36,7 +35,6 @@
 #include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Parab.hxx>
-#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Sphere.hxx>
@@ -45,7 +43,6 @@
 #include <gp_Vec2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_IndexedMapOfReal.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>

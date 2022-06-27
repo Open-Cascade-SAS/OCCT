@@ -24,11 +24,9 @@
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopOpeBRep_FaceEdgeIntersector.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>

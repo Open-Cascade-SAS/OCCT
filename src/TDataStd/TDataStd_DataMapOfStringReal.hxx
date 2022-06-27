@@ -18,8 +18,6 @@
 #define TDataStd_DataMapOfStringReal_HeaderFile
 
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_Real.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Real,TCollection_ExtendedString> TDataStd_DataMapOfStringReal;

@@ -17,8 +17,6 @@
 #include <TDataXtd_Presentation.hxx>
 
 #include <TDF_DefaultDeltaOnRemoval.hxx>
-#include <TDF_DefaultDeltaOnModification.hxx>
-#include <TDF_DeltaOnAddition.hxx>
 #include <TDF_Tool.hxx>
 #include <TCollection_ExtendedString.hxx>
 

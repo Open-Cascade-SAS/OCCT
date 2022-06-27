@@ -14,15 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepTool_define.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_2d.hxx>
-#include <TopExp_Explorer.hxx>
 #include <BRep_Tool.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <TopTools_Array1OfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
 
 #define M_FORWARD(sta)  (sta == TopAbs_FORWARD)
 #define M_REVERSED(sta) (sta == TopAbs_REVERSED)

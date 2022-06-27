@@ -18,8 +18,6 @@
 //Version	Date		Purpose
 //		0.0	Mar 11 1997	Creation
 
-#include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>

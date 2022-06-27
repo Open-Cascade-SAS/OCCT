@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_Plos.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>

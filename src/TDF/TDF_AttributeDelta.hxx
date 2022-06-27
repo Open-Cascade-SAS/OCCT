@@ -17,7 +17,6 @@
 #define _TDF_AttributeDelta_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_Label.hxx>
 #include <Standard_Transient.hxx>

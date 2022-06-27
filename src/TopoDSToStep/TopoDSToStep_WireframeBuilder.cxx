@@ -23,8 +23,6 @@
 #include <BRepTools.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
@@ -33,36 +31,25 @@
 #include <GeomToStep_MakeCurve.hxx>
 #include <GeomToStep_MakeLine.hxx>
 #include <gp_Vec.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NullObject.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray1OfTrimmingSelect.hxx>
 #include <StepGeom_Line.hxx>
-#include <StepGeom_SeamCurve.hxx>
-#include <StepGeom_SurfaceCurve.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
 #include <StepGeom_TrimmingSelect.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <TColStd_SequenceOfTransient.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDSToStep_Tool.hxx>
 #include <TopoDSToStep_WireframeBuilder.hxx>
 #include <Transfer_FinderProcess.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
 
 // ============================================================================
 // Method  : TopoDSToStep_Builder::TopoDSToStep_Builder

@@ -19,7 +19,6 @@
 #define TObj_ModelIterator_HeaderFile
 
 #include <TObj_Object.hxx>
-#include <TObj_ObjectIterator.hxx>
 #include <TObj_SequenceOfIterator.hxx>
 
 

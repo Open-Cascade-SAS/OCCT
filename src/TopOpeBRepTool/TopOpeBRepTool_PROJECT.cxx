@@ -16,21 +16,14 @@
 
 #include <TopOpeBRepTool_PROJECT.hxx>
 
-#include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepExtrema_ExtPF.hxx>
-#include <Bnd_Box2d.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <BndLib_Add2dCurve.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Dir2d.hxx>
 #include <BRep_Tool.hxx>
 #include <Precision.hxx>
 

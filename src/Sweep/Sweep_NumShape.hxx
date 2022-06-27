@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 

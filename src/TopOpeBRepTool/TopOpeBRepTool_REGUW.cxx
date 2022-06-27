@@ -17,16 +17,9 @@
 
 #include <BRep_Tool.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopOpeBRepTool_C2DF.hxx>
-#include <TopOpeBRepTool_connexity.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>

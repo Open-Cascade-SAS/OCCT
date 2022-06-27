@@ -17,7 +17,6 @@
 #ifndef TFunction_HArray1OfDataMapOfGUIDDriver_HeaderFile
 #define TFunction_HArray1OfDataMapOfGUIDDriver_HeaderFile
 
-#include <TFunction_DataMapOfGUIDDriver.hxx>
 #include <TFunction_Array1OfDataMapOfGUIDDriver.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

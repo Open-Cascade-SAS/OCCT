@@ -17,9 +17,7 @@
 #ifndef _TopOpeBRepTool_SC_HeaderFile
 #define _TopOpeBRepTool_SC_HeaderFile
 
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_ShapeClassifier.hxx>
-#include <TopOpeBRepTool_PShapeClassifier.hxx>
 
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(void);
 Standard_EXPORT TopOpeBRepTool_ShapeClassifier& FSC_GetPSC(const TopoDS_Shape& S);

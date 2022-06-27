@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRepBuild_Area3dBuilder.hxx>
-#include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_LoopSet;
 class TopOpeBRepBuild_LoopClassifier;
 

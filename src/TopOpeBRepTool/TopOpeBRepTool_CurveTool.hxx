@@ -23,8 +23,6 @@
 
 #include <TopOpeBRepTool_GeomTool.hxx>
 #include <TopOpeBRepTool_OutCurveType.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 class Geom_Curve;

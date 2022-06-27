@@ -20,8 +20,6 @@
 #include <TopOpeBRepTool_define.hxx>
 
 #include <Geom_Surface.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Pnt.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
 #include <Extrema_ExtPC.hxx>

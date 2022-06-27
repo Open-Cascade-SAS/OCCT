@@ -24,7 +24,6 @@
 #include <TNaming_Evolution.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;
 class TopoDS_Shape;

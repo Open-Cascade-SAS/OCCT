@@ -15,11 +15,9 @@
 
 
 #include <gp_Ax1.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd.hxx>
 #include <TDataStd_Integer.hxx>

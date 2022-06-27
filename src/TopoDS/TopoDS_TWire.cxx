@@ -16,7 +16,6 @@
 
 
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_Shape.hxx>
 

@@ -15,14 +15,12 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

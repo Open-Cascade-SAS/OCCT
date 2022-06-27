@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TDataXtd_ConstraintEnum.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_LabelList.hxx>

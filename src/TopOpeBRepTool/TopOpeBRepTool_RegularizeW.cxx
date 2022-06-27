@@ -15,14 +15,12 @@
 // commercial license or contractual agreement.
 
 #include <TopOpeBRepTool.hxx>
-#include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_CLASSI.hxx>
 #include <TopOpeBRepTool_REGUW.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <BRep_Tool.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 
 #ifdef DRAW

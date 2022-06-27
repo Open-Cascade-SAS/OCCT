@@ -16,7 +16,6 @@
 
 
 #include <BRepTools.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_BlockBuilder.hxx>
 #include <TopOpeBRepBuild_CompositeClassifier.hxx>

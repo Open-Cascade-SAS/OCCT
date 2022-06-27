@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <MoniTool_DataMapOfShapeTransient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>

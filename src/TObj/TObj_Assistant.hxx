@@ -20,7 +20,6 @@
 
 #include <TObj_Common.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 
 class TObj_Model;

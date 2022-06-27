@@ -19,13 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRepBuild_LoopSet.hxx>
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <TopOpeBRepBuild_BlockBuilder.hxx>
 #include <TopOpeBRepBuild_SolidAreaBuilder.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TopOpeBRepBuild_ShellFaceSet;
 class TopoDS_Shape;

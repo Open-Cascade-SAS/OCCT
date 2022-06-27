@@ -17,7 +17,6 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepLProp_CLProps.hxx>
-#include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>

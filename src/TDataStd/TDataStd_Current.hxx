@@ -18,7 +18,6 @@
 #define _TDataStd_Current_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_Label.hxx>
 #include <TDF_Attribute.hxx>

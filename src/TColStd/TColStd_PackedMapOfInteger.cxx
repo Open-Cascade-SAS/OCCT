@@ -17,7 +17,6 @@
 
 #include <NCollection_Array1.hxx>
 #include <TCollection.hxx>
-#include <Standard_Type.hxx>
 
 //=======================================================================
 //function : TColStd_intMapNode_findNext

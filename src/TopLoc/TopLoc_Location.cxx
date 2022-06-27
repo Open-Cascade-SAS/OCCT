@@ -18,11 +18,8 @@
 
 
 #include <gp_Trsf.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_Dump.hxx>
 #include <TopLoc_Datum3D.hxx>
-#include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 

@@ -15,7 +15,6 @@
 #ifndef TColStd_IndexedMapOfReal_HeaderFile
 #define TColStd_IndexedMapOfReal_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <TColStd_MapRealHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 

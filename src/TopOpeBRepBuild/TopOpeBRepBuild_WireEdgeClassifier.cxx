@@ -15,41 +15,25 @@
 // commercial license or contractual agreement.
 
 
-#include <TopoDS_Shape.hxx>
-#include <TopOpeBRepBuild_BlockBuilder.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_WireEdgeClassifier.hxx>
 
 #ifdef DRAW
 #include <DBRep.hxx>
 #endif
 
-#include <Precision.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopExp_Explorer.hxx>
-#include <BRep_Tool.hxx>
-#include <Geom2d_Curve.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <Standard_ProgramError.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec2d.hxx>
-#include <BRep_Builder.hxx>
 #include <TopOpeBRepTool_2d.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopExp.hxx>
 
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
-#include <TopOpeBRepTool_CurveTool.hxx>
 
-#include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 
 #ifdef OCCT_DEBUG

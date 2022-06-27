@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
 #include <TFunction_Driver.hxx>
 #include <TFunction_Logbook.hxx>
 

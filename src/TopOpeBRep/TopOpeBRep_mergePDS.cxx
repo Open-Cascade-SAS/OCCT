@@ -16,10 +16,8 @@
 
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_IndexedDataMapOfVertexPoint.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS.hxx>
 

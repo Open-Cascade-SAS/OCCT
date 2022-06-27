@@ -19,11 +19,9 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRep_PLineInter.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class TopOpeBRep_WPointInter;
 
 

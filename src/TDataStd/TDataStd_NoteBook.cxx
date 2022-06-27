@@ -17,8 +17,6 @@
 #include <TDataStd_NoteBook.hxx>
 
 #include <Standard_DomainError.hxx>
-#include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>

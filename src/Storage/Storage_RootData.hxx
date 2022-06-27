@@ -26,7 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
 #include <Storage_HSeqOfRoot.hxx>
-#include <Standard_Boolean.hxx>
 class Storage_BaseDriver;
 class Storage_Root;
 class Standard_Persistent;

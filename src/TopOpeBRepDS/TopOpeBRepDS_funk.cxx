@@ -18,29 +18,14 @@
 
 #include <gp_Pnt2d.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
-#include <TopOpeBRepDS_FaceEdgeInterference.hxx>
 #include <TopOpeBRepDS_FaceInterferenceTool.hxx>
-#include <TopoDS.hxx>
 #include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger.hxx>
-#include <TColStd_DataMapOfIntegerListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TopOpeBRepDS_FaceEdgeInterference.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepTool_SC.hxx>
-#include <TopOpeBRepTool_box.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -49,10 +34,8 @@
 #include <GeomProjLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
-#include <Geom_Surface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
 
 Standard_EXPORT Handle(Geom2d_Curve) MakePCurve(const ProjLib_ProjectedCurve& PC);
 

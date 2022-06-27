@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_Integer.hxx>
 
 //! The package <TCollection> provides the services for the
 //! transient basic data structures.

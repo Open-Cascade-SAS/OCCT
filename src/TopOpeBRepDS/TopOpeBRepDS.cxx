@@ -16,7 +16,6 @@
 
 #include <TopOpeBRepDS.hxx>
 
-#include <Standard_ProgramError.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopOpeBRepDS_define.hxx>
 

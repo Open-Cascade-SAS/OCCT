@@ -18,8 +18,6 @@
 #include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS.hxx>
 #include <TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference.hxx>
-#include <TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx>
-#include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_TKI.hxx>

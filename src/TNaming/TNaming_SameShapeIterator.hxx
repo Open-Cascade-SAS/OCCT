@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TNaming_PtrNode.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_NoMoreObject;
 class Standard_NoSuchObject;
 class TNaming_Tool;

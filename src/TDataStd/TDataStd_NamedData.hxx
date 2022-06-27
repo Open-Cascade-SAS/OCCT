@@ -18,8 +18,6 @@
 
 #include <TDF_Attribute.hxx>
 #include <TColStd_DataMapOfStringInteger.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TDataStd_DataMapOfStringReal.hxx>
 #include <TDataStd_DataMapOfStringString.hxx>
 #include <TDataStd_DataMapOfStringByte.hxx>

@@ -17,7 +17,6 @@
 #ifndef TFunction_DataMapOfLabelListOfLabel_HeaderFile
 #define TFunction_DataMapOfLabelListOfLabel_HeaderFile
 
-#include <TDF_Label.hxx>
 #include <TDF_LabelList.hxx>
 #include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

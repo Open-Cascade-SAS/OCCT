@@ -16,35 +16,21 @@
 
 
 #include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_CurveOnSurface.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
-#include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <GeomAbs_CurveType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <GeomProjLib.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -52,23 +38,17 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopOpeBRepBuild_CorrectFace2d.hxx>
 #include <TopOpeBRepBuild_Tools.hxx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeState.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeState.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
 #include <TopOpeBRepDS_ShapeWithState.hxx>
 #include <TopOpeBRepTool_2d.hxx>
-#include <TopOpeBRepTool_CurveTool.hxx>
 #include <TopOpeBRepTool_ShapeClassifier.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
 
 #include <stdio.h>
 //define parameter division number as 10*e^(-PI) = 0.43213918

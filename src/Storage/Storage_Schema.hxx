@@ -18,12 +18,9 @@
 #define _Storage_Schema_HeaderFile
 
 #include <Storage_BaseDriver.hxx>
-#include <Storage_HArrayOfSchema.hxx>
 #include <Storage_InternalData.hxx>
 #include <Storage_MapOfCallBack.hxx>
-#include <Storage_SolveMode.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
 
 class Storage_CallBack;

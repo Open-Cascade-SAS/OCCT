@@ -21,23 +21,16 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Face.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopOpeBRep_PFacesIntersector.hxx>
 #include <TopOpeBRepDS_PDataStructure.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRep_PLineInter.hxx>
-#include <Standard_Boolean.hxx>
-#include <TopOpeBRepDS_Transition.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
-#include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopAbs_State.hxx>
-#include <Standard_Real.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRep_FFDumper;
 class TopoDS_Shape;

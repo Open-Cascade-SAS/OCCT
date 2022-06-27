@@ -25,7 +25,6 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_Builder1.hxx>
@@ -39,7 +38,6 @@
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepDS_ShapeWithState.hxx>

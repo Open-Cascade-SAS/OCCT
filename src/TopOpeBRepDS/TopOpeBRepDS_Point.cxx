@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>

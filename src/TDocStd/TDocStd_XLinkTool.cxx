@@ -16,22 +16,13 @@
 
 #include <TDocStd_XLinkTool.hxx>
 
-#include <Standard_DomainError.hxx>
-#include <Standard_GUID.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_ClosureMode.hxx>
 #include <TDF_ClosureTool.hxx>
-#include <TDF_ComparisonTool.hxx>
 #include <TDF_CopyTool.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_IDFilter.hxx>
-#include <TDF_IDList.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_NoMoreObject.hxx>
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 
 //=======================================================================

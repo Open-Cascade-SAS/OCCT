@@ -22,14 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <TopAbs_State.hxx>
-#include <Standard_OStream.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
-#include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopOpeBRepDS_Config.hxx>
-#include <Standard_Boolean.hxx>
 class TCollection_AsciiString;
 
 

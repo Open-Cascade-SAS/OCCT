@@ -18,12 +18,6 @@
 #include <BRep_Tool.hxx>
 #include <Interface_Static.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopoDSToStep_Tool.hxx>
 
 //=======================================================================

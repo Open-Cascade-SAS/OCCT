@@ -16,24 +16,15 @@
 
 #include <TDataStd.hxx>
 
-#include <Standard_GUID.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
-#include <TDataStd_UAttribute.hxx>
-#include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeList.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_DataSet.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_TagSource.hxx>
-#include <TDF_Tool.hxx>
 
 //=======================================================================
 //function : IDList

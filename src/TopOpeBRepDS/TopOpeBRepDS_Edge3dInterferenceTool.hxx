@@ -23,8 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TopTrans_SurfaceTransition.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>

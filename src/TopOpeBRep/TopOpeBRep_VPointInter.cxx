@@ -15,16 +15,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Adaptor2d_Curve2d.hxx>
-#include <Adaptor3d_HVertex.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepTopAdaptor_HVertex.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <IntPatch_Point.hxx>
 #include <Precision.hxx>
 #include <Standard_DomainError.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -32,7 +27,6 @@
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_FFTransitionTool.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
 #ifdef OCCT_DEBUG

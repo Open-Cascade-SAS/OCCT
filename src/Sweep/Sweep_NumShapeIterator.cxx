@@ -15,9 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_NoMoreObject.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Sweep_NumShape.hxx>
 #include <Sweep_NumShapeIterator.hxx>
 
 //=======================================================================

@@ -21,7 +21,6 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
-#include <TDF_LabelNodePtr.hxx>
 
 #define ChildIterator_UpToBrother \
 { \

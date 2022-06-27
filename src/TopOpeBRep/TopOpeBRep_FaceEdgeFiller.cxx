@@ -17,14 +17,11 @@
 
 #include <gp_Pnt2d.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FaceEdgeFiller.hxx>
 #include <TopOpeBRep_FaceEdgeIntersector.hxx>
 #include <TopOpeBRep_PointGeomTool.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_InterferenceTool.hxx>

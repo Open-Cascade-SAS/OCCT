@@ -17,7 +17,6 @@
 #define _TDataStd_HDataMapOfStringByte_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDataStd_DataMapOfStringByte.hxx>
 #include <Standard_Transient.hxx>

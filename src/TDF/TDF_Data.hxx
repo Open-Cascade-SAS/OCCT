@@ -21,7 +21,6 @@
 
 #include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TDF_HAllocator.hxx>
 #include <Standard_Transient.hxx>

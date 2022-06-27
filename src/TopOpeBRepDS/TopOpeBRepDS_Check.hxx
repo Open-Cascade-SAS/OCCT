@@ -22,7 +22,6 @@
 
 #include <TopOpeBRepDS_DataMapOfCheckStatus.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Kind.hxx>

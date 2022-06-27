@@ -21,7 +21,6 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 

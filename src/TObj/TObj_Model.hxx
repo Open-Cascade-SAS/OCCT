@@ -19,7 +19,6 @@
 #define TObj_Model_HeaderFile
 
 #include <Message_Messenger.hxx>
-#include <TDF_Label.hxx>
 #include <TObj_Partition.hxx>
 #include <TCollection_ExtendedString.hxx>
 

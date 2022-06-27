@@ -17,7 +17,6 @@
 
 #include <Geom2d_Curve.hxx>
 #include <Standard_Type.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 

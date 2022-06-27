@@ -21,15 +21,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopOpeBRep_ShapeScanner.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRep_EdgesIntersector.hxx>
 #include <TopOpeBRep_FaceEdgeIntersector.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopOpeBRepTool_HBoxTool;

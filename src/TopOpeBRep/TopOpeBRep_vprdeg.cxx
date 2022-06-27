@@ -15,41 +15,25 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
-#include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRep_VPointInterClassifier.hxx>
 #include <TopOpeBRep_VPointInterIterator.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef DRAW
 #include <TopOpeBRepDS_DRAW.hxx>
 #endif
 
-#include <Geom_Curve.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Curve.hxx>
-
 #include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
 //#include <BRepAdaptor_Curve2d.hxx>
 #include <gp_Vec.hxx>
 #include <BRep_Tool.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
-#include <Precision.hxx>
 
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRep.hxx>

@@ -18,7 +18,6 @@
 #define _TopLoc_SListNodeOfItemLocation_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopLoc_SListOfItemLocation.hxx>
 #include <TopLoc_ItemLocation.hxx>

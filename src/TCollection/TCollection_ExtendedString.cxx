@@ -16,16 +16,10 @@
 
 #include <NCollection_UtfIterator.hxx>
 #include <Standard.hxx>
-#include <Standard_ExtString.hxx>
-#include <Standard_NegativeValue.hxx>
 #include <Standard_NullObject.hxx>
-#include <Standard_NumericError.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <algorithm>
-#include <cctype>
-#include <cstdio>
 
 namespace
 {

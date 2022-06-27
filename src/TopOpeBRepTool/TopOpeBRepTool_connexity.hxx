@@ -23,7 +23,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <TopTools_Array1OfListOfShape.hxx>
-#include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Boolean.hxx>
 

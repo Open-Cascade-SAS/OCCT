@@ -17,9 +17,7 @@
 #define _TDF_RelocationTable_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelDataMap.hxx>
 #include <TDF_AttributeDataMap.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>

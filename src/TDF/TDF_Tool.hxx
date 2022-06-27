@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_AttributeMap.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_CString.hxx>

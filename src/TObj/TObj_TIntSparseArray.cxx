@@ -19,7 +19,6 @@
 #include <Standard_GUID.hxx>
 #include <Standard_ImmutableObject.hxx>
 #include <TDF_Data.hxx>
-#include <TDF_AttributeDelta.hxx>
 #include <TDF_DeltaOnModification.hxx>
 
 

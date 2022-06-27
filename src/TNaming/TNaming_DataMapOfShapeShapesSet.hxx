@@ -17,7 +17,6 @@
 #ifndef TNaming_DataMapOfShapeShapesSet_HeaderFile
 #define TNaming_DataMapOfShapeShapesSet_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <TNaming_ShapesSet.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger,Standard_Transient)

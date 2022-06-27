@@ -15,7 +15,6 @@
 #ifndef TColStd_ListOfReal_HeaderFile
 #define TColStd_ListOfReal_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <NCollection_List.hxx>
 
 typedef NCollection_List<Standard_Real> TColStd_ListOfReal;

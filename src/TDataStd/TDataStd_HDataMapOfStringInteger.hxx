@@ -17,7 +17,6 @@
 #define _TDataStd_HDataMapOfStringInteger_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_DataMapOfStringInteger.hxx>
 #include <Standard_Transient.hxx>

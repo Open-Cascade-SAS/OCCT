@@ -36,7 +36,6 @@
 #include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_FreeBoundData.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <ShapeAnalysis_FreeBoundsProperties.hxx>
 #include <ShapeAnalysis_ShapeContents.hxx>
@@ -53,7 +52,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>

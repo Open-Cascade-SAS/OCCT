@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TDF_Label.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelList.hxx>
 #include <TFunction_ExecutionStatus.hxx>
 #include <TFunction_DoubleMapOfIntegerLabel.hxx>

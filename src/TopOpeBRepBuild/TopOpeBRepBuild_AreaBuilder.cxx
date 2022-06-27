@@ -20,8 +20,6 @@
 //                         Celine
 //                         Voyage au bout de la nuit
 
-#include <Standard_DomainError.hxx>
-#include <TopAbs.hxx>
 #include <TopOpeBRepBuild_AreaBuilder.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_LoopClassifier.hxx>

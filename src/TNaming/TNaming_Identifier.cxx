@@ -20,13 +20,11 @@
 #include <TNaming_Identifier.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_Localizer.hxx>
-#include <TNaming_MapIteratorOfMapOfNamedShape.hxx>
 #include <TNaming_MapOfNamedShape.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //#define MDTV_DEB_IDF

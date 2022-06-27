@@ -16,7 +16,6 @@
 #include <TDocStd_ApplicationDelta.hxx>
 
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDocStd_Document.hxx>
 

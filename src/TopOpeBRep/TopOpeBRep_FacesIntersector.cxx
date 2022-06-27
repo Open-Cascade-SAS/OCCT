@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
@@ -31,14 +29,13 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <Precision.hxx>
 #include <Geom_Curve.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Standard_CString.hxx>
 #include <BRepTools.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 
@@ -113,7 +110,6 @@ static void TestWLinesToAnArc(IntPatch_SequenceOfLine&           slin,
 // modified by NIZHNY-OFV  Fri Mar 29 12:37:21 2002.BEGIN
 #include <TColgp_SequenceOfPnt.hxx>
 #include <TopExp.hxx>
-#include <TColStd_SequenceOfReal.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <Extrema_POnSurf.hxx>

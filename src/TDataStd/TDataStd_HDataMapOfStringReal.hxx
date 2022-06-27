@@ -17,7 +17,6 @@
 #define _TDataStd_HDataMapOfStringReal_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDataStd_DataMapOfStringReal.hxx>
 #include <Standard_Transient.hxx>

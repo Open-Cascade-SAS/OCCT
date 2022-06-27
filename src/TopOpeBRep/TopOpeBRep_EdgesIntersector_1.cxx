@@ -15,22 +15,14 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
-#include <IntRes2d_IntersectionSegment.hxx>
-#include <Precision.hxx>
 #include <Standard_Failure.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_EdgesIntersector.hxx>
 #include <TopOpeBRep_Point2d.hxx>
 #include <TopOpeBRepDS_Transition.hxx>

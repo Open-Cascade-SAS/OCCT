@@ -19,13 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Sweep_NumShape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Boolean.hxx>
 
 
 //! This class provides  the indexation and  type analysis

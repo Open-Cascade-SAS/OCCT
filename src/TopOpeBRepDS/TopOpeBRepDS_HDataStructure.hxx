@@ -21,17 +21,13 @@
 #include <Standard_Type.hxx>
 
 #include <TopOpeBRepDS_DataStructure.hxx>
-#include <Standard_Boolean.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <Standard_Real.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 class TopoDS_Shape;
 class TopOpeBRepDS_Surface;
 class TopOpeBRepDS_CurveIterator;

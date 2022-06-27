@@ -48,7 +48,6 @@
 #include <Precision.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_ProgramError.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>

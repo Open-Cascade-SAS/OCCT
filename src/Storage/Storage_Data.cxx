@@ -17,7 +17,6 @@
 #include <Standard_Type.hxx>
 #include <Storage_Data.hxx>
 #include <Storage_HeaderData.hxx>
-#include <Storage_InternalData.hxx>
 #include <Storage_Root.hxx>
 #include <Storage_RootData.hxx>
 #include <Storage_Schema.hxx>

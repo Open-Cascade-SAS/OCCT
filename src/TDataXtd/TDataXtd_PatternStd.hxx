@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDataXtd_Pattern.hxx>
 #include <TDataXtd_Array1OfTrsf.hxx>
 #include <Standard_OStream.hxx>

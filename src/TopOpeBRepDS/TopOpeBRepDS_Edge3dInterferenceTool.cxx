@@ -16,14 +16,10 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Curve2d.hxx>
 #include <gp_Vec.hxx>
-#include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_Edge3dInterferenceTool.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>

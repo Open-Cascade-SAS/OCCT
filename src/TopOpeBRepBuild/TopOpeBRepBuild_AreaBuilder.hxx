@@ -23,7 +23,6 @@
 
 #include <TopOpeBRepBuild_ListOfListOfLoop.hxx>
 #include <TopOpeBRepBuild_ListIteratorOfListOfListOfLoop.hxx>
-#include <TopOpeBRepBuild_ListIteratorOfListOfLoop.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopAbs_State.hxx>
 #include <TopOpeBRepBuild_ListOfLoop.hxx>

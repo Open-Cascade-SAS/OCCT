@@ -22,10 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRep_P2Dstatus.hxx>
 #include <gp_Pnt.hxx>

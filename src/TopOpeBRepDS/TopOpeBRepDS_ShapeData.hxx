@@ -19,15 +19,12 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Boolean.hxx>
-
 
 
 class TopOpeBRepDS_ShapeData 

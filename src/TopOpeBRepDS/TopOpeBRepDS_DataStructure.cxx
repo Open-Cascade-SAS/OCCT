@@ -15,27 +15,19 @@
 // commercial license or contractual agreement.
 
 
-#include <Geom_Surface.hxx>
-#include <Standard_ProgramError.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepDS_CurveData.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_PointData.hxx>
-#include <TopOpeBRepDS_PointExplorer.hxx>
 #include <TopOpeBRepDS_ShapeData.hxx>
 #include <TopOpeBRepDS_ShapeWithState.hxx>
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_SurfaceData.hxx>
-#include <TopOpeBRepDS_SurfaceExplorer.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_DataStructure

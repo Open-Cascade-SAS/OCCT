@@ -18,10 +18,8 @@
 #define _TDataStd_RealArray_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfReal.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_Attribute.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>

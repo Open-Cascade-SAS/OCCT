@@ -17,12 +17,10 @@
 #define _TDocStd_XLink_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <TDocStd_XLinkPtr.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;
 class TDF_Reference;

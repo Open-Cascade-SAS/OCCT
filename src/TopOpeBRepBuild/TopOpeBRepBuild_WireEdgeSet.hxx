@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Face.hxx>
 #include <TopOpeBRepBuild_ShapeSet.hxx>
-#include <Standard_Address.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>

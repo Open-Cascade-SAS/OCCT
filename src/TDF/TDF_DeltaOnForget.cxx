@@ -18,8 +18,6 @@
 //Version	Date		Purpose
 //		0.0	Nov  3 1997	Creation
 
-#include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_DeltaOnForget.hxx>
 #include <TDF_Label.hxx>
 

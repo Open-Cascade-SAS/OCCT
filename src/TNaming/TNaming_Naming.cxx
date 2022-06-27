@@ -17,16 +17,10 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
-#include <NCollection_DataMap.hxx>
-#include <NCollection_Map.hxx>
 #include <Standard_DomainError.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <TDF_Data.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
@@ -40,7 +34,6 @@
 #include <TNaming_Iterator.hxx>
 #include <TNaming_ListIteratorOfListOfNamedShape.hxx>
 #include <TNaming_Localizer.hxx>
-#include <TNaming_Name.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamingTool.hxx>
@@ -56,15 +49,11 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TNaming_Naming,TDF_Attribute)

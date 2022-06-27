@@ -15,7 +15,6 @@
 #ifndef TColStd_Array2OfCharacter_HeaderFile
 #define TColStd_Array2OfCharacter_HeaderFile
 
-#include <Standard_Character.hxx>
 #include <NCollection_Array2.hxx>
 
 typedef NCollection_Array2<Standard_Character> TColStd_Array2OfCharacter;

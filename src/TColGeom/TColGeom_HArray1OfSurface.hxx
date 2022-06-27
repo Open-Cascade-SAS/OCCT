@@ -17,7 +17,6 @@
 #ifndef TColGeom_HArray1OfSurface_HeaderFile
 #define TColGeom_HArray1OfSurface_HeaderFile
 
-#include <Geom_Surface.hxx>
 #include <TColGeom_Array1OfSurface.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

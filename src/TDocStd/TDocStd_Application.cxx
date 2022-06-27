@@ -22,14 +22,12 @@
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
 #include <PCDM_ReaderFilter.hxx>
-#include <Plugin.hxx>
 #include <Plugin_Failure.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NoSuchObject.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>

@@ -15,30 +15,19 @@
 // commercial license or contractual agreement.
 
 
-#include <TDF_Label.hxx>
-#include <TNaming_DataMapOfShapeShapesSet.hxx>
-#include <TNaming_Evolution.hxx>
 #include <TNaming_Identifier.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_IteratorOnShapesSet.hxx>
-#include <TNaming_ListIteratorOfListOfIndexedDataMapOfShapeListOfShape.hxx>
-#include <TNaming_ListIteratorOfListOfMapOfShape.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
 #include <TNaming_ListOfNamedShape.hxx>
 #include <TNaming_Localizer.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
-#include <TNaming_ShapesSet.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 
 #ifdef OCCT_DEBUG
 //#define MDTV_DEB_SC

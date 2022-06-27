@@ -21,7 +21,6 @@
 #include <TObj_Common.hxx>
 
 #include <NCollection_SparseArray.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 
 typedef NCollection_SparseArray<Standard_Integer> TObj_TIntSparseArray_VecOfData;

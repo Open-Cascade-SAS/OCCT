@@ -17,7 +17,6 @@
 #define _TDF_DefaultDeltaOnRemoval_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_DeltaOnRemoval.hxx>
 class TDF_Attribute;

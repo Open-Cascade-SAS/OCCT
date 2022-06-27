@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelMap.hxx>
 class TDF_Label;
 class TopoDS_Shape;

@@ -15,57 +15,29 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopOpeBRepBuild_Builder.hxx>
-#include <TopOpeBRepBuild_EdgeBuilder.hxx>
-#include <TopOpeBRepBuild_FaceBuilder.hxx>
 #include <TopOpeBRepBuild_GTool.hxx>
 #include <TopOpeBRepBuild_GTopo.hxx>
 #include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopOpeBRepBuild_ListOfListOfLoop.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
-#include <TopOpeBRepBuild_Pave.hxx>
 #include <TopOpeBRepBuild_PaveSet.hxx>
-#include <TopOpeBRepBuild_ShapeSet.hxx>
-#include <TopOpeBRepBuild_ShellFaceSet.hxx>
-#include <TopOpeBRepBuild_SolidBuilder.hxx>
 #include <TopOpeBRepBuild_Tools.hxx>
-#include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepDS_CurveIterator.hxx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeState.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeState.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_PointIterator.hxx>
 #include <TopOpeBRepDS_ShapeWithState.hxx>
-#include <TopOpeBRepDS_SurfaceIterator.hxx>
-#include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopTools_DataMapOfShapeListOfInteger.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //define parameter division number as 10*e^(-PI) = 0.43213918

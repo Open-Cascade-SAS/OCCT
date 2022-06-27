@@ -17,10 +17,8 @@
 
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TDataStd_RealArray.hxx>
-#include <TDF_AttributeIterator.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 

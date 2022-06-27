@@ -14,19 +14,11 @@
 
 // Robert Boehne 30 May 2000 : Dec Osf
 
-#include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_FaceInterferenceTool.hxx>
 #include <TopOpeBRepDS_FIR.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_MapOfShapeData.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ShapeData.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>

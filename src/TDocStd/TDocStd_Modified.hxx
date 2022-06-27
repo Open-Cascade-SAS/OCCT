@@ -18,7 +18,6 @@
 #define _TDocStd_Modified_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_LabelMap.hxx>
 #include <TDF_Attribute.hxx>

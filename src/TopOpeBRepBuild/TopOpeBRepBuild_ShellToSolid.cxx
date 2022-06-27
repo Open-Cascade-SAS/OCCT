@@ -15,14 +15,11 @@
 // commercial license or contractual agreement.
 
 
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_ShellFaceSet.hxx>
 #include <TopOpeBRepBuild_ShellToSolid.hxx>
 #include <TopOpeBRepBuild_SolidBuilder.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_ShellToSolid

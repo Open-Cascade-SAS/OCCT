@@ -21,9 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Face.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>

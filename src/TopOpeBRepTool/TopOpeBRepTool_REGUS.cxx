@@ -16,17 +16,12 @@
 
 
 #include <BRep_Tool.hxx>
-#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopOpeBRepTool_CLASSI.hxx>
-#include <TopOpeBRepTool_connexity.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_REGUS.hxx>
 #include <TopOpeBRepTool_REGUW.hxx>

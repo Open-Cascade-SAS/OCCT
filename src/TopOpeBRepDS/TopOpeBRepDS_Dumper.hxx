@@ -21,12 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <Standard_Integer.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopOpeBRepDS_HDataStructure;

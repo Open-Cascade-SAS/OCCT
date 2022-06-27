@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TDF_Label.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TNaming_NameType.hxx>
 #include <TNaming_ListOfNamedShape.hxx>
 #include <TopTools_ListOfShape.hxx>

@@ -18,7 +18,6 @@
 #include <TObj_Object.hxx>
 
 #include <TObj_Assistant.hxx>
-#include <TObj_LabelIterator.hxx>
 #include <TObj_Model.hxx>
 #include <TObj_ObjectIterator.hxx>
 #include <TObj_OcafObjectIterator.hxx>

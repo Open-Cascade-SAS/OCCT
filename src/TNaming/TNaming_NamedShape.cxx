@@ -16,7 +16,6 @@
 
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
-#include <gp_Pnt.hxx>
 #include <Standard.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_GUID.hxx>
@@ -24,14 +23,9 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_AttributeDelta.hxx>
-#include <TDF_AttributeIterator.hxx>
-#include <TDF_Data.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_DeltaOnAddition.hxx>
-#include <TDF_DeltaOnModification.hxx>
-#include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
@@ -44,13 +38,11 @@
 #include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_PtrNode.hxx>
-#include <TNaming_PtrRefShape.hxx>
 #include <TNaming_RefShape.hxx>
 #include <TNaming_SameShapeIterator.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TNaming_NamedShape,TDF_Attribute)
 

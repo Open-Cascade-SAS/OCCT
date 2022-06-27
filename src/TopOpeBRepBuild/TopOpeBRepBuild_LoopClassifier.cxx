@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_LoopClassifier.hxx>
 
 TopOpeBRepBuild_LoopClassifier::~TopOpeBRepBuild_LoopClassifier()

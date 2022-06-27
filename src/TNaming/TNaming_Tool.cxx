@@ -16,29 +16,21 @@
 
 
 #include <BRep_Builder.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <TDF_AttributeMap.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TDF_Tool.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TNaming_ListOfNamedShape.hxx>
 #include <TNaming_Localizer.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_OldShapeIterator.hxx>
-#include <TNaming_RefShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================

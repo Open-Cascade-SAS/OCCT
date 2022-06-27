@@ -16,7 +16,6 @@
 #define TColStd_DataMapOfIntegerReal_HeaderFile
 
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 

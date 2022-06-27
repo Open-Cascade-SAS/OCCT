@@ -17,7 +17,6 @@
 #define TDF_IDMap_HeaderFile
 
 #include <Standard_GUID.hxx>
-#include <Standard_GUID.hxx>
 #include <NCollection_Map.hxx>
 
 typedef NCollection_Map<Standard_GUID,Standard_GUID> TDF_IDMap;

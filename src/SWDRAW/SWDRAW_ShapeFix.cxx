@@ -24,21 +24,13 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_XYZ.hxx>
-#include <Message_ListIteratorOfListOfMsg.hxx>
-#include <Message_Msg.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_FreeBounds.hxx>
-#include <ShapeAnalysis_Wire.hxx>
 #include <ShapeAnalysis_WireOrder.hxx>
-#include <ShapeAnalysis_WireVertex.hxx>
 #include <ShapeBuild_ReShape.hxx>
-#include <ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg.hxx>
-#include <ShapeExtend_DataMapOfShapeListOfMsg.hxx>
 #include <ShapeExtend_MsgRegistrator.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix.hxx>
-#include <ShapeFix_Face.hxx>
 #include <ShapeFix_FixSmallFace.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeFix_ShapeTolerance.hxx>
@@ -48,7 +40,6 @@
 #include <SWDRAW.hxx>
 #include <SWDRAW_ShapeFix.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger.hxx>
 #include <TColStd_DataMapOfAsciiStringInteger.hxx>
 #include <TopAbs_State.hxx>
 #include <TopExp.hxx>
@@ -68,7 +59,6 @@
 #include <strings.h>
 #endif
 #include <stdio.h>
-#include <ShapeExtend_WireData.hxx>
 
 //=======================================================================
 //function : edgesameparam

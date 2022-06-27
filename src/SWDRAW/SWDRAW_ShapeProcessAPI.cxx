@@ -22,7 +22,6 @@
 #include <SWDRAW_ShapeProcessAPI.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <stdio.h>
 //=======================================================================
 //function : ApplySequence
 //purpose  : 

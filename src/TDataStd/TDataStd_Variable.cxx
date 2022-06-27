@@ -18,10 +18,8 @@
 
 #include <Standard_DomainError.hxx>
 #include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TDataStd_Expression.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>

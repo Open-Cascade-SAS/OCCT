@@ -17,7 +17,6 @@
 #ifndef TFunction_DataMapOfGUIDDriver_HeaderFile
 #define TFunction_DataMapOfGUIDDriver_HeaderFile
 
-#include <Standard_GUID.hxx>
 #include <TFunction_Driver.hxx>
 #include <Standard_GUID.hxx>
 #include <NCollection_DataMap.hxx>

@@ -22,12 +22,9 @@
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_AttributeDeltaList.hxx>
 #include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeList.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>
-#include <TDF_IDMap.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_ListIteratorOfAttributeDeltaList.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 #include <TDF_ListIteratorOfDeltaList.hxx>
 #include <TDF_Reference.hxx>

@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_TVertex.hxx>
 #include <TopoDS_Shape.hxx>
 

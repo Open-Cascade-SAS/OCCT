@@ -18,7 +18,6 @@
 #include <BRep_Tool.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
-#include <DrawTrSurf.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Curve.hxx>
@@ -27,7 +26,6 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -38,7 +36,6 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <ShapeCustom.hxx>
-#include <ShapeCustom_BSplineRestriction.hxx>
 #include <ShapeCustom_RestrictionParameters.hxx>
 #include <ShapeFix.hxx>
 #include <SWDRAW.hxx>

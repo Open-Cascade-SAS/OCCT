@@ -17,7 +17,6 @@
 #ifndef _TopoDS_TShape_HeaderFile
 #define _TopoDS_TShape_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_ListOfShape.hxx>

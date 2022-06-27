@@ -19,9 +19,6 @@
 //		0.0	Mar 13 1997	Creation
 
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>

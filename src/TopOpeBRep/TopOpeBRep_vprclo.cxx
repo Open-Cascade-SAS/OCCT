@@ -16,35 +16,20 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <Precision.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
-#include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
-#include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRep_VPointInterClassifier.hxx>
-#include <TopOpeBRep_VPointInterIterator.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_PointIterator.hxx>
-#include <TopOpeBRepDS_repvg.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_makeTransition.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 
 // LOIinfsup
 #define M_ON(st)       (st == TopAbs_ON) 

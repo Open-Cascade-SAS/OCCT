@@ -18,12 +18,9 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopOpeBRepBuild_Tools2d.hxx>
 #include <TopOpeBRepBuild_VertexInfo.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 
 #include <stdio.h>

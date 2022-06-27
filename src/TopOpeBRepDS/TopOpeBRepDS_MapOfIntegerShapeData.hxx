@@ -17,7 +17,6 @@
 #ifndef TopOpeBRepDS_MapOfIntegerShapeData_HeaderFile
 #define TopOpeBRepDS_MapOfIntegerShapeData_HeaderFile
 
-#include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_ShapeData.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>

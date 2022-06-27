@@ -23,7 +23,6 @@
 #include <TFunction_DataMapOfGUIDDriver.hxx>
 #include <TFunction_HArray1OfDataMapOfGUIDDriver.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;

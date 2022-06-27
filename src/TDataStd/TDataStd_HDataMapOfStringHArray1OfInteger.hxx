@@ -17,7 +17,6 @@
 #define _TDataStd_HDataMapOfStringHArray1OfInteger_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
 #include <Standard_Transient.hxx>

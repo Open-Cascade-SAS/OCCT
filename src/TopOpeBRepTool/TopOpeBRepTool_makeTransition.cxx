@@ -16,13 +16,10 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_makeTransition.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>

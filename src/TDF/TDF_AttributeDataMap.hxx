@@ -17,7 +17,6 @@
 #define TDF_AttributeDataMap_HeaderFile
 
 #include <TDF_Attribute.hxx>
-#include <TDF_Attribute.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 

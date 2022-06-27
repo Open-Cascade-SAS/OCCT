@@ -14,7 +14,6 @@
 
 
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Storage_TypeData.hxx>
 #include <Storage_BaseDriver.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>

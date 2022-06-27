@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_Pave.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Pave,TopOpeBRepBuild_Loop)

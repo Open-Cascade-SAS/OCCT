@@ -23,11 +23,9 @@
 
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference.hxx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Boolean.hxx>
 class TopOpeBRepDS_Interference;
 
 

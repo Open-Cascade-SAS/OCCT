@@ -15,72 +15,26 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepBuild_EdgeBuilder.hxx>
 #include <TopOpeBRepBuild_FaceBuilder.hxx>
-#include <TopOpeBRepBuild_GTopo.hxx>
-#include <TopOpeBRepBuild_HBuilder.hxx>
-#include <TopOpeBRepBuild_PaveSet.hxx>
 #include <TopOpeBRepBuild_ShapeSet.hxx>
-#include <TopOpeBRepBuild_ShellFaceSet.hxx>
 #include <TopOpeBRepBuild_SolidBuilder.hxx>
-#include <TopOpeBRepBuild_WireEdgeSet.hxx>
-#include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopOpeBRepDS_CurveIterator.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_PointIterator.hxx>
-#include <TopOpeBRepDS_SurfaceIterator.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 
-#include <stdio.h>
 #ifdef DRAW
 #include <DBRep.hxx>
 #endif
 
-#include <TopOpeBRepBuild_GIter.hxx>
-#include <TopOpeBRepBuild_GTool.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_Config.hxx>
-#include <TopOpeBRepDS_Dumper.hxx>
-#include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepTool_ShapeExplorer.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom2d_Curve.hxx>
-#include <BRep_Tool.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS.hxx>
-#include <TopExp.hxx>
-#include <Geom_Plane.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
-#include <ElCLib.hxx>
-#include <ElSLib.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <GeomAbs_CurveType.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TopOpeBRepBuild_WireEdgeSet.hxx>
+#include <TopOpeBRepBuild_GIter.hxx>
+#include <TopOpeBRepDS.hxx>
+#include <TopOpeBRepDS_Dumper.hxx>
+#include <gp_Pnt.hxx>
+#include <TopExp.hxx>
+#include <TopoDS.hxx>
+#include <BRepAdaptor_Surface.hxx>
 
 #ifdef OCCT_DEBUG
 static TCollection_AsciiString PRODINS("dins ");

@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDS_Edge.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepBuild_LoopClassifier.hxx>

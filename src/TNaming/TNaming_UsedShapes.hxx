@@ -22,7 +22,6 @@
 
 #include <TNaming_DataMapOfShapePtrRefShape.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;
 class TDF_AttributeDelta;

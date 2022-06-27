@@ -25,14 +25,10 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapOfOrientedShapeInteger.hxx>
-#include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopAbs_State.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeState.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 class TopOpeBRepDS_BuildTool;

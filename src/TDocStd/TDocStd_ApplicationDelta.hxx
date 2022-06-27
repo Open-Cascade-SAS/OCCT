@@ -17,7 +17,6 @@
 #define _TDocStd_ApplicationDelta_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDocStd_SequenceOfDocument.hxx>
 #include <TCollection_ExtendedString.hxx>

@@ -17,7 +17,6 @@
 #define TDF_LabelDataMap_HeaderFile
 
 #include <TDF_Label.hxx>
-#include <TDF_Label.hxx>
 #include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 

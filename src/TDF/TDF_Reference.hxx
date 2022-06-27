@@ -17,7 +17,6 @@
 #define _TDF_Reference_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_Label.hxx>
 #include <TDF_Attribute.hxx>

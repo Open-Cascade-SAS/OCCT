@@ -17,16 +17,11 @@
 #include <TopOpeBRepDS_InterferenceTool.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
-#include <TopOpeBRepDS_InterferenceIterator.hxx>
 #include <TopOpeBRepDS_TKI.hxx>
 #include <TopoDS.hxx>
-#include <BRepLProp_SLProps.hxx>
 #include <BRepAdaptor_Surface.hxx>
 //#include <BRepAdaptor_Curve2d.hxx>
 #include <BRep_Tool.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
 #include <Precision.hxx>
 #include <TColStd_MapOfInteger.hxx>
 #include <Standard_ProgramError.hxx>

@@ -20,14 +20,9 @@
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
-#include <gp_Pnt.hxx>
 #include <ShapeAnalysis_Edge.hxx>
-#include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepGeom_CartesianPoint.hxx>
-#include <StepGeom_HArray1OfCartesianPoint.hxx>
-#include <StepShape_Edge.hxx>
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_HArray1OfOrientedEdge.hxx>
 #include <StepShape_OrientedEdge.hxx>
@@ -36,7 +31,6 @@
 #include <StepShape_Vertex.hxx>
 #include <StepShape_VertexLoop.hxx>
 #include <StepShape_VertexPoint.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>

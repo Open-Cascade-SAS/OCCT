@@ -22,8 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepTool_OutCurveType.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 
 

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TDF_IDList.hxx>

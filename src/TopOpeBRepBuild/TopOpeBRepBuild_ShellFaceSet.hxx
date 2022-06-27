@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Solid.hxx>
 #include <TopOpeBRepBuild_ShapeSet.hxx>

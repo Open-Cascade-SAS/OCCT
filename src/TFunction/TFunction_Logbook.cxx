@@ -16,11 +16,8 @@
 
 
 #include <Standard_OStream.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TFunction_Logbook.hxx>

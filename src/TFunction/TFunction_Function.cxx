@@ -17,15 +17,11 @@
 
 #include <Standard_DomainError.hxx>
 #include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TFunction_Function.hxx>
-#include <TFunction_GraphNode.hxx>
-#include <TFunction_Scope.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TFunction_Function,TDF_Attribute)
 

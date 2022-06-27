@@ -20,7 +20,6 @@
 
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 

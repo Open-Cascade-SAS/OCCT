@@ -15,7 +15,6 @@
 #ifndef TColStd_MapRealHasher_HeaderFile
 #define TColStd_MapRealHasher_HeaderFile
 
-#include <Standard_Real.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
 typedef NCollection_DefaultHasher<Standard_Real> TColStd_MapRealHasher;

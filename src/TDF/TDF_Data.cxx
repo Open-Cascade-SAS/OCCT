@@ -16,15 +16,11 @@
 
 #include <NCollection_IncAllocator.hxx>
 #include <Standard_Dump.hxx>
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_GUID.hxx>
 #include <NCollection_Array1.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_AttributeDelta.hxx>
-#include <TDF_AttributeIndexedMap.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
@@ -36,9 +32,7 @@
 #include <TDF_DeltaOnResume.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelNode.hxx>
-#include <TDF_LabelNodePtr.hxx>
 #include <TDF_Tool.hxx>
-#include <TDF_Transaction.hxx>
 
 typedef NCollection_Array1<Handle(TDF_AttributeDelta)> TDF_Array1OfAttributeIDelta;
 

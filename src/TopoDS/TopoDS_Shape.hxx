@@ -17,10 +17,7 @@
 #ifndef _TopoDS_Shape_HeaderFile
 #define _TopoDS_Shape_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <TopAbs.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_TShape.hxx>
 

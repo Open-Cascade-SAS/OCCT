@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Dir.hxx>
 #include <TopCnx_EdgeFaceTransition.hxx>
 
 //=======================================================================

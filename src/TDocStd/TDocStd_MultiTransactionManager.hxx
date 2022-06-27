@@ -17,9 +17,7 @@
 #define _TDocStd_MultiTransactionManager_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TDocStd_SequenceOfDocument.hxx>
 #include <TDocStd_SequenceOfApplicationDelta.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>

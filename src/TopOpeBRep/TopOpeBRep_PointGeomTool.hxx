@@ -19,9 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 class TopOpeBRepDS_Point;
 class TopOpeBRep_VPointInter;
 class TopOpeBRep_Point2d;

@@ -20,7 +20,6 @@
 #include <BRep_TVertex.hxx>
 #include <BRepTools.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <TNaming_CopyShape.hxx>
 #include <TNaming_Translator.hxx>
 #include <TopLoc_Datum3D.hxx>

@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_Array1OfShape.hxx>
-#include <Standard_Real.hxx>
 #include <TopAbs_State.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>

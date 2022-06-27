@@ -17,7 +17,6 @@
 #ifndef Storage_MapOfPers_HeaderFile
 #define Storage_MapOfPers_HeaderFile
 
-#include <TCollection_AsciiString.hxx>
 #include <Storage_Root.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>

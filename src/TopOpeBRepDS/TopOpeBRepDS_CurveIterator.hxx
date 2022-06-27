@@ -23,7 +23,6 @@
 
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>

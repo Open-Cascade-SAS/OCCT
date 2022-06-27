@@ -22,23 +22,16 @@
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <gp_Trsf.hxx>
 #include <IntTools_FClass2d.hxx>
-#include <TColStd_IndexedDataMapOfTransientTransient.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_DataMapOfShapePtrRefShape.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TNaming_ListOfNamedShape.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_NewShapeIterator.hxx>
 #include <TNaming_RefShape.hxx>
 #include <TNaming_ShapesSet.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_TranslateTool.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopLoc_Datum3D.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -48,13 +41,9 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape.hxx>
-#include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <TopTools_DataMapOfOrientedShapeShape.hxx>
 #include <TopTools_DataMapOfShapeShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 // CopyShape

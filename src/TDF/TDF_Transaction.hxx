@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Boolean.hxx>
 class TDF_Data;
 class TDF_Delta;
 

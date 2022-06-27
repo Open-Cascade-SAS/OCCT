@@ -17,7 +17,6 @@
 #ifndef Storage_HArrayOfCallBack_HeaderFile
 #define Storage_HArrayOfCallBack_HeaderFile
 
-#include <Storage_CallBack.hxx>
 #include <Storage_ArrayOfCallBack.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

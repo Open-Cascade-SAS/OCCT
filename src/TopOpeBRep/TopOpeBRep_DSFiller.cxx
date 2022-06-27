@@ -17,12 +17,8 @@
 
 #include <Precision.hxx>
 #include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_DSFiller.hxx>
 #include <TopOpeBRep_EdgesFiller.hxx>
 #include <TopOpeBRep_FaceEdgeFiller.hxx>
@@ -34,10 +30,8 @@
 #include <TopOpeBRepDS_Filter.hxx>
 #include <TopOpeBRepDS_GapFiller.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
 #include <TopOpeBRepDS_Reducer.hxx>
 #include <TopOpeBRepDS_samdom.hxx>
-#include <TopOpeBRepDS_ShapeWithState.hxx>
 #include <TopOpeBRepTool_2d.hxx>
 #include <TopOpeBRepTool_box.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>

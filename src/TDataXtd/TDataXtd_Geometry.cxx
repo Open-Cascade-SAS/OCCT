@@ -27,24 +27,17 @@
 #include <gp_Circ.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Elips.hxx>
-#include <gp_Lin.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Failure.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd.hxx>
 #include <TDataXtd.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Geometry,TDF_Attribute)

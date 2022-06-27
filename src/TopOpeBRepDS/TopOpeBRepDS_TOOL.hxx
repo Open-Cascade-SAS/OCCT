@@ -23,7 +23,6 @@
 
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Edge;

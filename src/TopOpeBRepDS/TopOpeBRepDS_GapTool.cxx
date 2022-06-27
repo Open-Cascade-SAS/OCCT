@@ -15,15 +15,10 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_OutOfRange.hxx>
-#include <Standard_Type.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_GapTool.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_GapTool,Standard_Transient)
 

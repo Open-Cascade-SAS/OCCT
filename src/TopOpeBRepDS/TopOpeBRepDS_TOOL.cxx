@@ -18,13 +18,8 @@
 #include <BRep_Tool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx>
-#include <TopOpeBRepDS_define.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>
 #include <TopOpeBRepDS_TOOL.hxx>

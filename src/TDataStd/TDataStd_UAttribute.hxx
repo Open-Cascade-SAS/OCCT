@@ -18,7 +18,6 @@
 #define _TDataStd_UAttribute_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>

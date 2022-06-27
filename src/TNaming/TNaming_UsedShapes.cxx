@@ -24,9 +24,7 @@
 #include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
-#include <TNaming_Builder.hxx>
 #include <TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx>
-#include <TNaming_PtrNode.hxx>
 #include <TNaming_RefShape.hxx>
 #include <TNaming_UsedShapes.hxx>
 #include <TopoDS_Shape.hxx>

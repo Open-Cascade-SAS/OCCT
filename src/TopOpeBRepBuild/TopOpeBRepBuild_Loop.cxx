@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepBuild_Loop,Standard_Transient)

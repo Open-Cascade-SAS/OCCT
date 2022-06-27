@@ -18,7 +18,6 @@
 #ifndef TObj_TNameContainer_HeaderFile
 #define TObj_TNameContainer_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <TObj_Container.hxx>
 #include <TDF_Attribute.hxx>
 

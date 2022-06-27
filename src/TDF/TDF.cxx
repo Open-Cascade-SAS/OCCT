@@ -15,8 +15,6 @@
 
 #include <TDF.hxx>
 
-#include <Standard_GUID.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TDF_GUIDProgIDMap.hxx>
 
 static TDF_GUIDProgIDMap guidprogidmap;

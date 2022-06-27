@@ -24,7 +24,6 @@
 #include <Standard_Boolean.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <Standard_OStream.hxx>
 #include <TopOpeBRepTool_OutCurveType.hxx>

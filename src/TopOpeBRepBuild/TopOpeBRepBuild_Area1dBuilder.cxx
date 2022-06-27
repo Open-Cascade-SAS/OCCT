@@ -15,16 +15,9 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_DomainError.hxx>
-#include <TopAbs.hxx>
-#include <TopAbs_Orientation.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopOpeBRepBuild_Area1dBuilder.hxx>
 #include <TopOpeBRepBuild_Loop.hxx>
-#include <TopOpeBRepBuild_LoopClassifier.hxx>
 #include <TopOpeBRepBuild_LoopEnum.hxx>
-#include <TopOpeBRepBuild_LoopSet.hxx>
-#include <TopOpeBRepBuild_Pave.hxx>
 #include <TopOpeBRepBuild_PaveClassifier.hxx>
 #include <TopOpeBRepBuild_PaveSet.hxx>
 

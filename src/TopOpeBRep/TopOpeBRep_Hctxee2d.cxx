@@ -17,14 +17,10 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <IntRes2d_Domain.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_Hctxee2d.hxx>
@@ -32,7 +28,6 @@
 #include <TopOpeBRepTool_CurveTool.hxx>
 #include <TopOpeBRepTool_GEOMETRY.hxx>
 #include <TopOpeBRepTool_PROJECT.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_Hctxee2d,Standard_Transient)
 

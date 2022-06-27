@@ -22,13 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepDS_PDataStructure.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Integer.hxx>
 #include <TopTrans_SurfaceTransition.hxx>
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Curve;
 

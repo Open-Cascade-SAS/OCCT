@@ -17,7 +17,6 @@
 
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Sweep_NumShape.hxx>
 #include <Sweep_NumShapeTool.hxx>
 
 //=======================================================================

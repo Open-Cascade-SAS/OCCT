@@ -20,17 +20,12 @@
 #include <StepShape_GeometricCurveSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
 #include <StepShape_HArray1OfGeometricSetSelect.hxx>
-#include <TCollection_HAsciiString.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDSToStep.hxx>
-#include <TopoDSToStep_Builder.hxx>
 #include <TopoDSToStep_MakeGeometricCurveSet.hxx>
 #include <TopoDSToStep_Tool.hxx>
 #include <TopoDSToStep_WireframeBuilder.hxx>
 #include <Transfer_FinderProcess.hxx>
-#include <TransferBRep_ShapeMapper.hxx>
 
 //=============================================================================
 // Create a GeometricCurveSet of StepShape from a Shape of TopoDS

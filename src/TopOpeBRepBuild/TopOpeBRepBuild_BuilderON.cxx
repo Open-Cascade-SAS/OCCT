@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepLProp_SLProps.hxx>
 #include <BRepLProp_SurfaceTool.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -26,7 +25,6 @@
 #include <TopOpeBRepBuild_BuilderON.hxx>
 #include <TopOpeBRepBuild_define.hxx>
 #include <TopOpeBRepDS_connex.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_ShapeShapeInterference.hxx>

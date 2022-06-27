@@ -18,12 +18,10 @@
 #define _TDataStd_TreeNode_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDataStd_PtrTreeNode.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class TDF_Label;

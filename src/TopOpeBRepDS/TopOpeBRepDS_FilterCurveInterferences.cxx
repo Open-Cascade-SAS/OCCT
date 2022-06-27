@@ -16,10 +16,6 @@
 
 
 #include <TopOpeBRepDS_Filter.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
 //=======================================================================

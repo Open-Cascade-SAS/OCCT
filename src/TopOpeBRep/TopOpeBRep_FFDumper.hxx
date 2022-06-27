@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
-#include <Standard_Boolean.hxx>
 class TopOpeBRep_LineInter;
 class TopOpeBRep_VPointInter;
 class TopoDS_Shape;

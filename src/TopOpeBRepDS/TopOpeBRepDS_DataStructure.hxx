@@ -34,10 +34,8 @@
 #include <TopOpeBRepDS_Surface.hxx>
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_ShapeSurface.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
 #include <TopOpeBRepDS_Config.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 class Geom_Surface;
 class TopoDS_Edge;
 class TopOpeBRepDS_Interference;

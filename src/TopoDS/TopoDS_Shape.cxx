@@ -18,7 +18,6 @@
 
 #include <Standard_DomainError.hxx>
 #include <Standard_NullObject.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <Standard_Dump.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_TShape.hxx>

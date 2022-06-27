@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_ShapeListOfShape.hxx>
 #include <TopOpeBRepTool_define.hxx>
 

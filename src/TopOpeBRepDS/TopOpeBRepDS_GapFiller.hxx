@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_MapOfInteger.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepDS_GapTool;

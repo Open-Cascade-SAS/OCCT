@@ -16,10 +16,6 @@
 
 
 #include <Geom2d_Curve.hxx>
-#include <IntSurf_Situation.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <TopAbs.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 #include <TopOpeBRepDS_FaceEdgeInterference.hxx>

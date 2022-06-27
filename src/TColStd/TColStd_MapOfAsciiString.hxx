@@ -16,7 +16,6 @@
 #define TColStd_MapOfAsciiString_HeaderFile
 
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
 
 typedef NCollection_Map<TCollection_AsciiString,TCollection_AsciiString> TColStd_MapOfAsciiString;

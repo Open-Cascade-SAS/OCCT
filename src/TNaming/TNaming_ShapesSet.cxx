@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TNaming_Iterator.hxx>
 #include <TNaming_IteratorOnShapesSet.hxx>
 #include <TNaming_ShapesSet.hxx>
 #include <TopExp_Explorer.hxx>

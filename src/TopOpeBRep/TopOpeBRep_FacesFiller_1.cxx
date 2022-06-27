@@ -15,39 +15,27 @@
 // commercial license or contractual agreement.
 
 
-#include <Bnd_Box.hxx>
 #include <BndLib_Add3dCurve.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <Standard_CString.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopOpeBRep.hxx>
-#include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_FFTransitionTool.hxx>
 #include <TopOpeBRep_GeomTool.hxx>
 #include <TopOpeBRep_LineInter.hxx>
-#include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRep_PointGeomTool.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRep_VPointInterClassifier.hxx>
 #include <TopOpeBRep_VPointInterIterator.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_Dumper.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_InterferenceTool.hxx>
-#include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_defineG.hxx>

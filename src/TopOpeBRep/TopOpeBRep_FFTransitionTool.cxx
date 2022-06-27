@@ -20,20 +20,12 @@
 #include <Geom_Surface.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Vec.hxx>
-#include <IntSurf_Situation.hxx>
-#include <IntSurf_Transition.hxx>
-#include <IntSurf_TypeTrans.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FFTransitionTool.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
-#include <TopOpeBRepDS_SolidSurfaceInterference.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
 //-----------------------------------------------------------------------

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
@@ -23,8 +22,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_BlockBuilder.hxx>
 #include <TopOpeBRepBuild_ShellFaceClassifier.hxx>
 

@@ -16,7 +16,6 @@
 
 
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepTopAdaptor_TopolTool.hxx>
 #include <gp_Pnt2d.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopOpeBRep_PointClassifier.hxx>

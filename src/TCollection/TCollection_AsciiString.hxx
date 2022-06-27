@@ -22,11 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_PCharacter.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Character.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 class TCollection_ExtendedString;

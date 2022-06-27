@@ -17,7 +17,6 @@
 #ifndef TopOpeBRep_HArray1OfLineInter_HeaderFile
 #define TopOpeBRep_HArray1OfLineInter_HeaderFile
 
-#include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_Array1OfLineInter.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -17,7 +17,6 @@
 #define _TDataStd_DeltaOnModificationOfIntPackedMap_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TDF_DeltaOnModification.hxx>
 class TColStd_HPackedMapOfInteger;

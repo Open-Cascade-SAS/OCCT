@@ -23,8 +23,6 @@
 
 #include <TopOpeBRepDS_Kind.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 class TopOpeBRepDS_Interference;
 class TopOpeBRepDS_Transition;

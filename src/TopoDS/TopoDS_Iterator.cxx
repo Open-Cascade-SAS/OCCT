@@ -18,9 +18,6 @@
 
 #include <TopoDS_Iterator.hxx>
 
-#include <Standard_NoMoreObject.hxx>
-#include <Standard_NoSuchObject.hxx>
-
 //=======================================================================
 //function : Initialize
 //purpose  : 

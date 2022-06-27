@@ -27,7 +27,6 @@
 #include <TopOpeBRepBuild_PWireEdgeSet.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
-#include <Standard_Boolean.hxx>
 class TopOpeBRepDS_Interference;
 
 

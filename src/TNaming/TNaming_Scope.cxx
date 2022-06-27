@@ -17,7 +17,6 @@
 
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Scope.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopoDS_Shape.hxx>

@@ -24,7 +24,6 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TopoDSToStep_BuilderError.hxx>
 #include <TopoDSToStep_Root.hxx>
-#include <Standard_Boolean.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 class TopoDS_Shape;
 class TopoDSToStep_Tool;

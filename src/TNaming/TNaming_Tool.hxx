@@ -23,7 +23,6 @@
 
 #include <TDF_LabelMap.hxx>
 #include <TNaming_MapOfNamedShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TDF_LabelList.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>

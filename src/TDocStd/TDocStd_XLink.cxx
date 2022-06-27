@@ -20,8 +20,6 @@
 
 #include <TDocStd_XLink.hxx>
 
-#include <Standard_GUID.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
@@ -34,7 +32,6 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd.hxx>
 #include <TDocStd_Document.hxx>
-#include <TDocStd_XLinkIterator.hxx>
 #include <TDocStd_XLinkRoot.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDocStd_XLink,TDF_Attribute)

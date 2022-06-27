@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_LoopSet.hxx>
 
 //=======================================================================

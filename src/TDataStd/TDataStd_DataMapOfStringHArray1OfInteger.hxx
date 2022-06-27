@@ -19,7 +19,6 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_ExtendedString,Handle(TColStd_HArray1OfInteger),TCollection_ExtendedString> TDataStd_DataMapOfStringHArray1OfInteger;

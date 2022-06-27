@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TDF_IDMap.hxx>
 #include <TDF_IDList.hxx>
 #include <Standard_OStream.hxx>

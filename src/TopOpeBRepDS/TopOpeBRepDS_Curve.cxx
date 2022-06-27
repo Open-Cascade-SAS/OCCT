@@ -18,7 +18,6 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Precision.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_Dumper.hxx>
 #include <TopOpeBRepDS_Interference.hxx>

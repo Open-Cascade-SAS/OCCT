@@ -18,8 +18,6 @@
 #define TDataStd_DataMapOfStringByte_HeaderFile
 
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_Byte.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Byte,TCollection_ExtendedString> TDataStd_DataMapOfStringByte;

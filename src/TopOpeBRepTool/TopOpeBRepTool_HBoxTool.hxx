@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class Bnd_Box;
 

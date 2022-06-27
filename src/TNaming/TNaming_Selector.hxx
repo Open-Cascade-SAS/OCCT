@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <TDF_Label.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_AttributeMap.hxx>
 class TopoDS_Shape;

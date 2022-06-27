@@ -24,7 +24,6 @@
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
 class TopOpeBRepBuild_ShapeSet;
 class TopOpeBRepBuild_BlockIterator;

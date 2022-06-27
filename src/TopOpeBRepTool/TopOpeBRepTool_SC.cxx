@@ -17,6 +17,7 @@
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
+#include <TopOpeBRepTool_PShapeClassifier.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 
 // ----------------------------------------------------------------------

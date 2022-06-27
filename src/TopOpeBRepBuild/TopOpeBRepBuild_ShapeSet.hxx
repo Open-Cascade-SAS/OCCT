@@ -19,18 +19,15 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopOpeBRepTool_ShapeExplorer.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 
 

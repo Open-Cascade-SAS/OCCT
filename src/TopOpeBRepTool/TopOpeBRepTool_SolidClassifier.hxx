@@ -19,15 +19,11 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRepTool_PSoClassif.hxx>
 #include <TopTools_IndexedDataMapOfShapeAddress.hxx>
 #include <TopAbs_State.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 #include <BRep_Builder.hxx>
-#include <Standard_Real.hxx>
 class gp_Pnt;
 
 

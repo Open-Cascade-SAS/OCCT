@@ -18,7 +18,6 @@
 #define _TopOpeBRepDS_Association_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopOpeBRepDS_DataMapOfInterferenceListOfInterference.hxx>
 #include <Standard_Transient.hxx>

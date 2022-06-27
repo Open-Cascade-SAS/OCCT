@@ -17,20 +17,14 @@
 #include <TopOpeBRepBuild_FuseFace.hxx>
 
 #include <TopTools_ListOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeListOfShape.hxx>
-#include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
 
 #include <TopExp_Explorer.hxx>
 
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
 
 #include <BRepLib_MakeWire.hxx>
 #include <BRepLib_MakeFace.hxx>

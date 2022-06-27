@@ -21,10 +21,8 @@
 #include <Interface_Static.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_CartesianPoint.hxx>
-#include <StepShape_TopologicalRepresentationItem.hxx>
 #include <StepShape_VertexPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDSToStep_MakeStepVertex.hxx>
 #include <TopoDSToStep_Tool.hxx>
 #include <Transfer_FinderProcess.hxx>

@@ -18,7 +18,6 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Ellipse.hxx>
@@ -26,7 +25,6 @@
 #include <Geom_Line.hxx>
 #include <Geom_Parabola.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <GeomAbs_SurfaceType.hxx>
 #include <gp_Pnt.hxx>
 #include <IntPatch_ALine.hxx>
 #include <IntPatch_ALineToWLine.hxx>
@@ -36,11 +34,8 @@
 #include <IntPatch_RLine.hxx>
 #include <IntPatch_SequenceOfLine.hxx>
 #include <IntPatch_WLine.hxx>
-#include <IntSurf_Quadric.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep.hxx>

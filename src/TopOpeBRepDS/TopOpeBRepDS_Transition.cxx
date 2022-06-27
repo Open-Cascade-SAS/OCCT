@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopOpeBRepDS.hxx>
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 

@@ -18,15 +18,8 @@
 #include <TObj_Model.hxx>
 
 #include <OSD_File.hxx>
-#include <Precision.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_GUID.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TDataStd_Integer.hxx>
-#include <TDataStd_Real.hxx>
 #include <TDF_Tool.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
 
 #include <TObj_Assistant.hxx>

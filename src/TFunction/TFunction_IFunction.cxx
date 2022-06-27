@@ -14,22 +14,11 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_GUID.hxx>
-#include <Standard_NoSuchObject.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
-#include <TFunction_DataMapIteratorOfDataMapOfLabelListOfLabel.hxx>
 #include <TFunction_DataMapOfLabelListOfLabel.hxx>
-#include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
-#include <TFunction_Driver.hxx>
 #include <TFunction_DriverTable.hxx>
 #include <TFunction_Function.hxx>
 #include <TFunction_GraphNode.hxx>
 #include <TFunction_IFunction.hxx>
-#include <TFunction_Logbook.hxx>
 #include <TFunction_Scope.hxx>
 
 //=======================================================================

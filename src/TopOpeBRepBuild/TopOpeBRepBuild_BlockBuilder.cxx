@@ -15,8 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Failure.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_BlockBuilder.hxx>
 #include <TopOpeBRepBuild_BlockIterator.hxx>
 #include <TopOpeBRepBuild_ShapeSet.hxx>

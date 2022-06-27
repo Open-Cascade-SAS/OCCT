@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_ProgramError.hxx>
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_WPointInter.hxx>
 #include <TopOpeBRep_WPointInterIterator.hxx>

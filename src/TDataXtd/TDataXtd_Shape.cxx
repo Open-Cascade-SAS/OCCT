@@ -15,21 +15,16 @@
 
 
 #include <BRep_Builder.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd.hxx>
 #include <TDataXtd.hxx>
 #include <TDataXtd_Shape.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 

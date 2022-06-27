@@ -17,7 +17,6 @@
 
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FaceEdgeIntersector.hxx>
 #include <TopOpeBRep_Point2d.hxx>

@@ -16,8 +16,6 @@
 #define TColStd_DataMapOfStringInteger_HeaderFile
 
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_Integer.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Integer,TCollection_ExtendedString> TColStd_DataMapOfStringInteger;

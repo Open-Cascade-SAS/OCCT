@@ -16,9 +16,6 @@
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <DBRep.hxx>
-#include <Draw.hxx>
-#include <Draw_ProgressIndicator.hxx>
-#include <Draw_Window.hxx>
 #include <gp_Trsf.hxx>
 #include <ShapeProcess_OperLibrary.hxx>
 #include <SWDRAW_ShapeAnalysis.hxx>

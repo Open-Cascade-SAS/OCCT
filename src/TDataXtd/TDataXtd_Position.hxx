@@ -21,7 +21,6 @@
 
 #include <gp_Pnt.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 class TDF_Label;
 class Standard_GUID;
 class TDF_RelocationTable;

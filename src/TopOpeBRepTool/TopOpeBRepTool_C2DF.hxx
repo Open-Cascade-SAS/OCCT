@@ -21,9 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <TopoDS_Face.hxx>
-#include <Standard_Boolean.hxx>
 class Geom2d_Curve;
 
 

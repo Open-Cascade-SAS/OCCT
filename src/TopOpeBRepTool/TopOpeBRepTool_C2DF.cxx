@@ -16,7 +16,6 @@
 
 
 #include <Geom2d_Curve.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <TopOpeBRepTool_define.hxx>
 

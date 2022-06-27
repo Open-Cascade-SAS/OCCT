@@ -31,7 +31,6 @@
 #include <TNaming_Evolution.hxx>
 #include <TNaming_ListOfNamedShape.hxx>
 #include <TNaming_MapOfNamedShape.hxx>
-#include <Standard_Boolean.hxx>
 class TNaming_UsedShapes;
 class TopoDS_Shape;
 class TDF_Label;

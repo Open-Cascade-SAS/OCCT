@@ -18,7 +18,6 @@
 #define _TopOpeBRepDS_SolidSurfaceInterference_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>

@@ -19,11 +19,6 @@
 //		0.0	Mar  7 1997	Creation
 
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDF_DataMapIteratorOfAttributeDataMap.hxx>
-#include <TDF_DataMapIteratorOfLabelDataMap.hxx>
-#include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_RelocationTable,Standard_Transient)

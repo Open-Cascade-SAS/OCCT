@@ -16,13 +16,6 @@
 
 
 #include <Bnd_Box.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopOpeBRep_define.hxx>
-#include <TopOpeBRep_EdgesIntersector.hxx>
-#include <TopOpeBRep_FaceEdgeIntersector.hxx>
-#include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_ShapeIntersector.hxx>
 #include <TopOpeBRepTool_box.hxx>
 #include <TopOpeBRepTool_HBoxTool.hxx>
@@ -42,11 +35,7 @@ void seteefff(const Standard_Integer e1,const Standard_Integer e2, const Standar
 
 // modified by NIZHNY-OFV  Thu Apr 18 17:15:38 2002 (S)
 #include <TopoDS.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Solid.hxx>
-#include <TopoDS_Shell.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>

@@ -14,12 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
-#include <Geom_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Bnd_Box2d.hxx>
-#include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <BRepAdaptor_Surface.hxx>
@@ -36,8 +31,6 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Wire.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <ElCLib.hxx>
 #include <Precision.hxx>

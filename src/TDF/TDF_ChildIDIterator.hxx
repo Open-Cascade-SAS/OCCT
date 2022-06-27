@@ -22,7 +22,6 @@
 
 #include <Standard_GUID.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <Standard_Boolean.hxx>
 class TDF_Attribute;
 class TDF_Label;
 

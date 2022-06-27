@@ -23,8 +23,6 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_OStream.hxx>
-#include <Standard_Boolean.hxx>
 class Geom2d_Curve;
 class TopOpeBRepDS_Transition;
 

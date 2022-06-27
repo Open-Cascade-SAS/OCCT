@@ -23,7 +23,6 @@
 #include <TopOpeBRepBuild_Builder1.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 #include <TColStd_DataMapOfIntegerListOfInteger.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <Standard_Transient.hxx>

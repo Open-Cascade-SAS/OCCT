@@ -17,7 +17,6 @@
 #ifndef TopOpeBRep_HArray1OfVPointInter_HeaderFile
 #define TopOpeBRep_HArray1OfVPointInter_HeaderFile
 
-#include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRep_Array1OfVPointInter.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

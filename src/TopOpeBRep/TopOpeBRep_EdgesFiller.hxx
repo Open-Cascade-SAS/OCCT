@@ -25,12 +25,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopOpeBRepDS_PDataStructure.hxx>
 #include <TopOpeBRep_PEdgesIntersector.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 #include <TopOpeBRepDS_Kind.hxx>
-#include <Standard_Real.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Shape;

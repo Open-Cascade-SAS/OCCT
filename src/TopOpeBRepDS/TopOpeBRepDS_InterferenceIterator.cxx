@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_InterferenceIterator.hxx>
 
 //=======================================================================

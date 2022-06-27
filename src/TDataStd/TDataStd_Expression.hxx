@@ -18,7 +18,6 @@
 #define _TDataStd_Expression_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_AttributeList.hxx>

@@ -14,15 +14,8 @@
 // commercial license or contractual agreement.
 
 
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF_DataMapIteratorOfLabelIntegerMap.hxx>
-#include <TDF_Label.hxx>
 #include <TDF_LabelIntegerMap.hxx>
-#include <TDF_LabelMap.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
-#include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
 #include <TFunction_GraphNode.hxx>
 #include <TFunction_IFunction.hxx>
 #include <TFunction_Iterator.hxx>

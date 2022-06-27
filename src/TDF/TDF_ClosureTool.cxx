@@ -19,9 +19,7 @@
 //		0.0	Sep  8 1998	Creation
 
 #include <Standard_TypeMismatch.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_AttributeIterator.hxx>
-#include <TDF_AttributeMap.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_ClosureMode.hxx>
 #include <TDF_ClosureTool.hxx>
@@ -30,8 +28,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
-#include <TDF_MapIteratorOfAttributeMap.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 
 //=======================================================================
 //function : Closure

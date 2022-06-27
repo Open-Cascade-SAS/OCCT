@@ -15,10 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
 #include <TopOpeBRepDS_Association.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRepDS_Association,Standard_Transient)
 

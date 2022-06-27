@@ -21,9 +21,7 @@
 
 #include <GeomAbs_CurveType.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Dir2d.hxx>
 #include <Bnd_Box2d.hxx>

@@ -24,7 +24,6 @@
 #include <TopOpeBRepDS_EdgeInterferenceTool.hxx>
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 #include <TopOpeBRepDS_EIR.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>

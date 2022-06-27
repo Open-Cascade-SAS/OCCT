@@ -16,10 +16,7 @@
 
 #include <TopOpeBRepDS_repvg.hxx>
 #include <TopoDS.hxx>
-#include <BRep_Tool.hxx>
-#include <TopExp.hxx>
 
-#include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>
 #include <TopOpeBRepTool_makeTransition.hxx>
 
@@ -27,13 +24,10 @@
 #include <TopOpeBRepDS_EdgeVertexInterference.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_TKI.hxx>
-#include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 #include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_define.hxx>
-#include <Precision.hxx>
 
 #include <TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx>
-#include <TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference.hxx>
 #define MDSdmoiloi TopOpeBRepDS_DataMapOfIntegerListOfInterference
 #define MDSdmiodmoiloi TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference
 

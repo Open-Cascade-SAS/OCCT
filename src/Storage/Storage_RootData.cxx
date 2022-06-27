@@ -15,7 +15,6 @@
 
 #include <Standard_Persistent.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Storage_RootData.hxx>
 #include <Storage_Root.hxx>
 #include <Storage_BaseDriver.hxx>

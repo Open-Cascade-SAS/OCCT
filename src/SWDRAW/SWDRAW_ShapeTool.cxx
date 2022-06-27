@@ -28,25 +28,19 @@
 #include <DrawTrSurf.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomLib.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <SWDRAW_ShapeTool.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 

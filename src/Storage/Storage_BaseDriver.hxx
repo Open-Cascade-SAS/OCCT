@@ -17,10 +17,7 @@
 #ifndef _Storage_BaseDriver_HeaderFile
 #define _Storage_BaseDriver_HeaderFile
 
-#include <Standard_Type.hxx>
-
 #include <Storage_OpenMode.hxx>
-#include <Storage_Error.hxx>
 #include <Storage_Data.hxx>
 #include <Storage_Position.hxx>
 #include <TCollection_AsciiString.hxx>

@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopoDS_Wire.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopoDS_Face.hxx>
 
 

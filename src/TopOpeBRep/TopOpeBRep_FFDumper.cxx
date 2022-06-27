@@ -16,18 +16,10 @@
 
 
 #include <BRep_Tool.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Pnt.hxx>
 #include <IntPatch_GLine.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRep.hxx>
-#include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
 #include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_FFDumper.hxx>
@@ -35,6 +27,8 @@
 #include <TopOpeBRep_LineInter.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
 #include <TopOpeBRep_VPointInterIterator.hxx>
+#include <TopOpeBRepDS_DataStructure.hxx>
+#include <TopOpeBRepDS_HDataStructure.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopOpeBRep_FFDumper,Standard_Transient)

@@ -16,13 +16,10 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_define.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
@@ -34,10 +31,6 @@
 #include <TopOpeBRep_VPointInterClassifier.hxx>
 #include <TopOpeBRep_VPointInterIterator.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_Transition.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_ShapeTool.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>

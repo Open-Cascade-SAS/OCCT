@@ -13,8 +13,6 @@
 
 
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopOpeBRepBuild_VertexInfo.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 

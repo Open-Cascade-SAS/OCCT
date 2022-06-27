@@ -17,7 +17,6 @@
 #define _TDataStd_DeltaOnModificationOfExtStringArray_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>

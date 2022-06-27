@@ -17,50 +17,16 @@
 
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_OffsetCurve.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Hyperbola.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_OffsetCurve.hxx>
-#include <Geom_Parabola.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 #include <GeomTools_CurveSet.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <Standard_Stream.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopAbs.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepDS.hxx>
-#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_CurveExplorer.hxx>
-#include <TopOpeBRepDS_CurveIterator.hxx>
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepDS_Dumper.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_Point.hxx>
-#include <TopOpeBRepDS_PointExplorer.hxx>
-#include <TopOpeBRepDS_ShapeShapeInterference.hxx>
-#include <TopOpeBRepDS_Surface.hxx>
-#include <TopOpeBRepDS_SurfaceCurveInterference.hxx>
-#include <TopOpeBRepDS_SurfaceExplorer.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 
-#include <string.h>
 //=======================================================================
 //function : TopOpeBRepDS_Dumper::TopOpeBRepDS_Dumper
 //purpose  : 

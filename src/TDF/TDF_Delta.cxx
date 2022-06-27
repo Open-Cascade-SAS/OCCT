@@ -21,11 +21,8 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TDF_AttributeDelta.hxx>
-#include <TDF_Data.hxx>
 #include <TDF_Delta.hxx>
-#include <TDF_LabelMap.hxx>
 #include <TDF_ListIteratorOfAttributeDeltaList.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>

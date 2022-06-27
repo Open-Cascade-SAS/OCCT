@@ -22,7 +22,6 @@
 
 #include <TNaming_Name.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelMap.hxx>
 #include <Standard_OStream.hxx>
 #include <TDF_AttributeIndexedMap.hxx>

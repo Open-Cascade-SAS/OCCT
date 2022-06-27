@@ -17,12 +17,9 @@
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_makeTransition.hxx>
 
-#include <TopOpeBRepDS_define.hxx>
-#include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
 
 #include <TopoDS.hxx>
-#include <Precision.hxx>
 #include <BRep_Tool.hxx>
 
 #define M_FORWARD(st)  (st == TopAbs_FORWARD)

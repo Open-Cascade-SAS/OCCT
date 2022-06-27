@@ -15,13 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <TopoDS_Shape.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
 #include <TopOpeBRepDS_Filter.hxx>
 #include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_ListIteratorOfListOfInterference.hxx>
-#include <TopOpeBRepDS_ListOfInterference.hxx>
 
 //=======================================================================
 //function : TopOpeBRepDS_Filter

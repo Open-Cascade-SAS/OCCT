@@ -15,14 +15,11 @@
 // commercial license or contractual agreement.
 
 
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopOpeBRepBuild_Builder.hxx>
 #include <TopOpeBRepBuild_FaceBuilder.hxx>
 #include <TopOpeBRepBuild_WireEdgeSet.hxx>
 #include <TopOpeBRepBuild_WireToFace.hxx>
 #include <TopOpeBRepDS_BuildTool.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 //=======================================================================
 //function : TopOpeBRepBuild_WireToFace

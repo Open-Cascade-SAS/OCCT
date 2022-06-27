@@ -17,8 +17,6 @@
 #ifndef TopOpeBRepDS_DoubleMapOfIntegerShape_HeaderFile
 #define TopOpeBRepDS_DoubleMapOfIntegerShape_HeaderFile
 
-#include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DoubleMap.hxx>

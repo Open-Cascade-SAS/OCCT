@@ -15,59 +15,26 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Pnt.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_FacesFiller.hxx>
-#include <TopOpeBRep_FacesIntersector.hxx>
 #include <TopOpeBRep_FFDumper.hxx>
 #include <TopOpeBRep_LineInter.hxx>
-#include <TopOpeBRep_PointClassifier.hxx>
 #include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRep_VPointInterClassifier.hxx>
-#include <TopOpeBRep_VPointInterIterator.hxx>
-#include <TopOpeBRepDS_DataStructure.hxx>
-#include <TopOpeBRepDS_HDataStructure.hxx>
-#include <TopOpeBRepDS_Interference.hxx>
-#include <TopOpeBRepDS_Point.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
 #ifdef DRAW
 #include <TopOpeBRep_DRAW.hxx>
 #endif
 
-#include <gp_Vec.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Line.hxx>
 #include <Geom_Curve.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Ellipse.hxx>
-#include <Geom_Surface.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
 //#include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <TopAbs.hxx>
-#include <TopExp.hxx>
 #include <TopoDS.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
-#include <TopOpeBRepDS_InterferenceTool.hxx>
 #include <TopOpeBRep_FFTransitionTool.hxx>
-#include <TopOpeBRep_FacesIntersector.hxx>
-#include <TopOpeBRep_LineInter.hxx>
-#include <TopOpeBRep_VPointInter.hxx>
-#include <TopOpeBRep_Bipoint.hxx>
-#include <TopOpeBRep_ListOfBipoint.hxx>
-#include <TopOpeBRep_ListIteratorOfListOfBipoint.hxx>
 #include <TopOpeBRep_VPointInterIterator.hxx>
 #include <TopOpeBRep_GeomTool.hxx>
 #include <Precision.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ProgramError.hxx>
-#include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRep.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_SC.hxx>

@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepDS_CurveData.hxx>
 #include <TopOpeBRepDS_DataStructure.hxx>
 

@@ -16,12 +16,10 @@
 
 
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

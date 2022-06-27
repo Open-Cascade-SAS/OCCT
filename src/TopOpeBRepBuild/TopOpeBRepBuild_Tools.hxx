@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_IndexedDataMapOfShapeWithState.hxx>
@@ -29,10 +28,8 @@
 #include <TopTools_MapOfShape.hxx>
 #include <TopOpeBRepDS_DataMapOfShapeState.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
-#include <Standard_Real.hxx>
 class TopoDS_Shape;
 class TopOpeBRepTool_ShapeClassifier;
 class TopoDS_Face;

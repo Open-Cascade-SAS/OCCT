@@ -16,24 +16,16 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_Line.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Lin.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd.hxx>
 #include <TDataXtd.hxx>
 #include <TDataXtd_Axis.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TopAbs.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 

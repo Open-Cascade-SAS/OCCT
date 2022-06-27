@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_ProgramError.hxx>
 #include <TopOpeBRepDS_ListOfShapeOn1State.hxx>
 
 //=======================================================================

@@ -15,11 +15,8 @@
 // commercial license or contractual agreement.
 
 
-#include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <BRepClass3d_SolidExplorer.hxx>
-#include <BRepClass_Edge.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepClass_FacePassiveClassifier.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
@@ -27,7 +24,6 @@
 #include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopExp.hxx>

@@ -18,18 +18,14 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd.hxx>
 #include <TDataXtd.hxx>
 #include <TDataXtd_Point.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 

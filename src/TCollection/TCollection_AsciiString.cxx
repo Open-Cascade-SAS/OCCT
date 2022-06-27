@@ -25,7 +25,6 @@
 
 #include <algorithm>
 #include <cctype>
-#include <cstdio>
 #include <cstring>
 
 // Shortcuts to standard allocate and reallocate functions

@@ -17,7 +17,6 @@
 #define _TopoDS_AlertAttribute_HeaderFile
 
 #include <Message_AttributeStream.hxx>
-#include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Report.hxx>
 

@@ -15,18 +15,13 @@
 
 
 #include <Standard_DomainError.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_ImmutableObject.hxx>
 #include <Standard_NullObject.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_IDFilter.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <TDF_LabelNode.hxx>
 #include <TDF_LabelNodePtr.hxx>
 #include <TDF_Tool.hxx>

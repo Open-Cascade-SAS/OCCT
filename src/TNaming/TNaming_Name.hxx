@@ -28,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <TDF_Label.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelMap.hxx>
 class TNaming_NamedShape;
 class TDF_RelocationTable;

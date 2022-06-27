@@ -22,15 +22,10 @@
 #include <Geom_Curve.hxx>
 #include <ProjLib_ProjectedCurve.hxx>
 #include <Geom_Surface.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <GeomAdaptor_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <TopOpeBRepTool_CurveTool.hxx>
 #include <TopOpeBRepTool_DataMapOfShapeListOfC2DF.hxx>
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <TopOpeBRepTool_ListOfC2DF.hxx>
-#include <TopOpeBRepTool_ListIteratorOfListOfC2DF.hxx>
 #include <TopOpeBRepTool_tol.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepTool_TOOL.hxx>

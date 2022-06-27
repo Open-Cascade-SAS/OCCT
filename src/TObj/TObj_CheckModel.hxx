@@ -18,7 +18,6 @@
 #ifndef TObj_CheckModel_HeaderFile
 #define TObj_CheckModel_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <TObj_Model.hxx>
 #include <Message_Algorithm.hxx>
 

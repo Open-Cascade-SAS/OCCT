@@ -25,7 +25,6 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 class TopoDS_Shape;
 class TopOpeBRepTool_ShapeExplorer;

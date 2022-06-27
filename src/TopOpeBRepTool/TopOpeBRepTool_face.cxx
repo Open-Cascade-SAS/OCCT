@@ -16,15 +16,12 @@
 
 
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
-#include <Precision.hxx>
 #include <Standard_Failure.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
-#include <TopOpeBRepTool_define.hxx>
 #include <TopOpeBRepTool_face.hxx>
 
 //=======================================================================

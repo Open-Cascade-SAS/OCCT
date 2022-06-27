@@ -18,8 +18,6 @@
 
 #include <Standard_GUID.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <Standard_GUID.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <NCollection_DoubleMap.hxx>
 
 typedef NCollection_DoubleMap<Standard_GUID,TCollection_ExtendedString,Standard_GUID,TCollection_ExtendedString> TDF_GUIDProgIDMap;

@@ -24,7 +24,6 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepTest_Objects.hxx>
 #include <BRepTools.hxx>
-#include <BRepTools_ReShape.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
@@ -33,7 +32,6 @@
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_OffsetCurve.hxx>
-#include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Message.hxx>
@@ -43,7 +41,6 @@
 #include <ShapeExtend_CompositeSurface.hxx>
 #include <ShapeFix.hxx>
 #include <ShapeFix_ComposeShell.hxx>
-#include <ShapeUpgrade.hxx>
 #include <ShapeUpgrade_RemoveInternalWires.hxx>
 #include <ShapeUpgrade_RemoveLocations.hxx>
 #include <ShapeUpgrade_ShapeConvertToBezier.hxx>
@@ -61,18 +58,11 @@
 #include <TColGeom2d_HArray1OfCurve.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <TColGeom_HArray2OfSurface.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Wire.hxx>
 
 #include <stdio.h> 
 //#include <SWDRAW_ShapeUpgrade.hxx>

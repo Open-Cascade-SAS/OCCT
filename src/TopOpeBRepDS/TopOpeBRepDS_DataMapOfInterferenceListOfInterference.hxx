@@ -17,7 +17,6 @@
 #ifndef TopOpeBRepDS_DataMapOfInterferenceListOfInterference_HeaderFile
 #define TopOpeBRepDS_DataMapOfInterferenceListOfInterference_HeaderFile
 
-#include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>

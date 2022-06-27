@@ -14,21 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TopOpeBRepDS_EXPORT.hxx>
 #include <TopOpeBRepDS_EdgeInterferenceTool.hxx>
-#include <TopOpeBRepDS_EdgeVertexInterference.hxx>
-#include <TopOpeBRepDS_CurvePointInterference.hxx>
 #include <TopOpeBRepDS_TKI.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Shell.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <TopOpeBRepDS_ProcessInterferencesTool.hxx>
-#include <BRep_Tool.hxx>
-#include <Precision.hxx>
 #include <Geom_Curve.hxx>
-#include <BRep_Builder.hxx>
 #include <TopOpeBRepDS_define.hxx>
 #include <TopOpeBRepTool_EXPORT.hxx>
 #include <TopOpeBRepDS_connex.hxx>

@@ -18,9 +18,7 @@
 #include <TObj_CheckModel.hxx>
 
 #include <TObj_ObjectIterator.hxx>
-#include <Message_Msg.hxx>
 #include <Message_Status.hxx>
-#include <Message_Messenger.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(TObj_CheckModel,Message_Algorithm)

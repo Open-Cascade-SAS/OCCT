@@ -15,11 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <TopoDS_Shape.hxx>
 #include <TopOpeBRepBuild_EdgeBuilder.hxx>
-#include <TopOpeBRepBuild_LoopClassifier.hxx>
-#include <TopOpeBRepBuild_LoopSet.hxx>
-#include <TopOpeBRepBuild_Pave.hxx>
 #include <TopOpeBRepBuild_PaveClassifier.hxx>
 #include <TopOpeBRepBuild_PaveSet.hxx>
 

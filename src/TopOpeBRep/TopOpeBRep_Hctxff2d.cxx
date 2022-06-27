@@ -17,7 +17,6 @@
 
 #include <BRepAdaptor_Surface.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopOpeBRep_define.hxx>

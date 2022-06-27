@@ -15,9 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TopAbs.hxx>
 #include <TopOpeBRepDS.hxx>
 #include <TopOpeBRepDS_Interference.hxx>
 #include <TopOpeBRepDS_Transition.hxx>

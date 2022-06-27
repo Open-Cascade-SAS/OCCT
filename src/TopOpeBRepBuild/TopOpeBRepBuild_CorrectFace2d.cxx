@@ -41,7 +41,6 @@
 #include <TopOpeBRepBuild_Tools2d.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 

@@ -17,7 +17,6 @@
 #ifndef TNaming_MapOfNamedShape_HeaderFile
 #define TNaming_MapOfNamedShape_HeaderFile
 
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_NamedShapeHasher.hxx>
 #include <NCollection_Map.hxx>
 

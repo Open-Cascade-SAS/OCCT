@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx>
 #include <TopTools_ListOfShape.hxx>

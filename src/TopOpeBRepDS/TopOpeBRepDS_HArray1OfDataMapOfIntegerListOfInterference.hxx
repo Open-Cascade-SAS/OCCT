@@ -17,7 +17,6 @@
 #ifndef TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference_HeaderFile
 #define TopOpeBRepDS_HArray1OfDataMapOfIntegerListOfInterference_HeaderFile
 
-#include <TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx>
 #include <TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

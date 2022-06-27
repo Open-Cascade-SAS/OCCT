@@ -17,7 +17,6 @@
 #ifndef TColGeom2d_HSequenceOfCurve_HeaderFile
 #define TColGeom2d_HSequenceOfCurve_HeaderFile
 
-#include <Geom2d_Curve.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

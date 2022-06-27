@@ -23,7 +23,6 @@
 
 #include <TDF_LabelNodePtr.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <TDF_AttributeIndexedMap.hxx>
 class TDF_Attribute;

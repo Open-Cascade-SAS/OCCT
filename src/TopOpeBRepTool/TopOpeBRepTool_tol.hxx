@@ -18,9 +18,7 @@
 #define _TopOpeBRepTool_tol_HeaderFile
 
 #include <Bnd_Box.hxx>
-#include <TopoDS_Face.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <TopOpeBRepTool_define.hxx>
 
 Standard_EXPORT void FTOL_FaceTolerances
 (const Bnd_Box& B1,const Bnd_Box& B2,

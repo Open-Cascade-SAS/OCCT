@@ -83,13 +83,10 @@ static void Write(const TopoDS_Shape& shape,
 
 #define ORIENTATION_DSOPT
 #ifdef ORIENTATION_DSOPT
-#include <TopTools_MapOfOrientedShape.hxx>
 #include <TopTools_MapIteratorOfMapOfOrientedShape.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_OldShapeIterator.hxx>
-#include <TNaming_NamedShape.hxx>
 //==========================================================================================
 inline static void MapOfOrientedShapes(const TopoDS_Shape& S, TopTools_MapOfOrientedShape& M) 
 {

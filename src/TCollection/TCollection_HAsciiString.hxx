@@ -23,10 +23,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Character.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class TCollection_HExtendedString;
 

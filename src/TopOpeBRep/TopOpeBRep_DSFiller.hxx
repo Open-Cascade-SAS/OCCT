@@ -27,7 +27,6 @@
 #include <TopOpeBRep_EdgesFiller.hxx>
 #include <TopOpeBRep_FaceEdgeFiller.hxx>
 #include <TopOpeBRepTool_PShapeClassifier.hxx>
-#include <Standard_Boolean.hxx>
 class TopoDS_Shape;
 class TopOpeBRepDS_HDataStructure;
 class TopoDS_Face;

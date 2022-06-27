@@ -22,7 +22,6 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopOpeBRep_GeomTool.hxx>
@@ -32,7 +31,6 @@
 #include <TopOpeBRep_WPointInterIterator.hxx>
 #include <TopOpeBRepDS_Curve.hxx>
 #include <TopOpeBRepTool_CurveTool.hxx>
-#include <TopOpeBRepTool_ShapeTool.hxx>
 
 //=======================================================================
 //function : MakeCurves

@@ -23,7 +23,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <TopOpeBRepBuild_Loop.hxx>
 #include <TopOpeBRepBuild_Pave.hxx>
 #include <TopOpeBRepBuild_PaveClassifier.hxx>
 
