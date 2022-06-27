@@ -1,0 +1,74 @@
+puts "============"
+puts "0029854: XCAF GD&T: Clear contents of reserved labels only"
+puts "============"
+puts ""
+
+pload DCAF
+
+box b 10 10 10
+
+# create document with object 
+NewDocument D
+set L [XAddShape D b]
+
+# create datum with reserved children 
+set datumL [XAddDatum D $L]
+set aTagNumber 20
+for {set i 1} {${i}<${aTagNumber}} {incr i} {
+  NewChild D $datumL
+}
+
+set val 100
+
+# add datum child with attribute
+set childL [NewChild D $datumL]
+SetInteger D $childL $val
+
+# call setObject func
+XSetDatumPosition D $datumL 2
+
+# check that the new child attribute exists and correct
+set currVal [GetInteger D $childL]
+if { ${val} != ${currVal} } {
+   puts "Error: TDataStd_Integer attribute value is not expected for datum child"
+}
+
+# create tolerance with reserved children 
+set TL [XAddGeomTolerance D $L]
+set aTagNumber 19
+for {set i 1} {${i}<${aTagNumber}} {incr i} {
+  NewChild D $TL
+}
+
+# add tolerance child with attribute
+set childL [NewChild D $TL]
+SetInteger D $childL $val
+
+# call setObject func
+XSetToleranceValue D $L 0.5
+
+# check that the new child attribute exists and correct
+set currVal [GetInteger D $childL]
+if { ${val} != ${currVal} } {
+   puts "Error: TDataStd_Integer attribute value is not expected for tolerance child"
+}
+
+# create dimension with reserved children 
+set DL [XAddDimension D $L]
+set aTagNumber 19
+for {set i 1} {${i}<${aTagNumber}} {incr i} {
+  NewChild D $DL
+}
+
+# add dimension child with attribute
+set childL [NewChild D $DL]
+SetInteger D $childL $val
+
+# call setObject func
+XSetDimensionValue D $L 0.5
+
+# check that the new child attribute exists and correct
+set currVal [GetInteger D $childL]
+if { ${val} != ${currVal} } {
+   puts "Error: TDataStd_Integer attribute value is not expected for dimension child"
+}

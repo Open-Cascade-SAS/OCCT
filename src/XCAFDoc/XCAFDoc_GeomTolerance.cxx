@@ -32,7 +32,8 @@ IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_GeomTolerance,TDataStd_GenericEmpty)
 
 enum ChildLab
 {
-  ChildLab_Type = 1,
+  ChildLab_Begin = 1,
+  ChildLab_Type = ChildLab_Begin,
   ChildLab_TypeOfValue,
   ChildLab_Value,
   ChildLab_MatReqModif,
@@ -49,7 +50,8 @@ enum ChildLab
   ChildLab_Pnt,
   ChildLab_PntText,
   ChildLab_Presentation,
-  ChildLab_AffectedPlane
+  ChildLab_AffectedPlane,
+  ChildLab_End
 };
 
 //=======================================================================
@@ -105,10 +107,9 @@ void XCAFDoc_GeomTolerance::SetObject (const Handle(XCAFDimTolObjects_GeomTolera
     TDataStd_Name::Set(Label(), str);
   }
 
-  TDF_ChildIterator anIter(Label());
-  for(;anIter.More(); anIter.Next())
+  for (int aChild = ChildLab_Begin; aChild < ChildLab_End; aChild++)
   {
-    anIter.Value().ForgetAllAttributes();
+    Label().FindChild(aChild).ForgetAllAttributes();
   }
 
   Handle(TDataStd_Integer) aType = TDataStd_Integer::Set(Label().FindChild(ChildLab_Type), theObject->GetType());
