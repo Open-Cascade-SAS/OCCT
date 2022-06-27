@@ -17,10 +17,6 @@
 
 #include <XCAFPrs_Style.hxx>
 
-#include <TDF_ChildIterator.hxx>
-#include <TDF_Label.hxx>
-#include <TopLoc_Location.hxx>
-
 //! Auxiliary tool for iterating through Path identification string.
 class XCAFPrs_DocumentIdIterator
 {

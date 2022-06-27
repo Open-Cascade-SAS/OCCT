@@ -27,24 +27,18 @@
 #include <IGESCAFControl_Writer.hxx>
 #include <IGESControl_Controller.hxx>
 #include <Interface_Macros.hxx>
-#include <STEPCAFControl_ExternFile.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_Controller.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TDataStd_Name.hxx>
 #include <TDF_Data.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
-#include <XDEDRAW.hxx>
 #include <XDEDRAW_Common.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAW_Vars.hxx>
-#include <XSDRAWIGES.hxx>
-#include <XSDRAWSTEP.hxx>
 #include <VrmlAPI_Writer.hxx>
 #include <DDF.hxx>
 

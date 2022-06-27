@@ -16,7 +16,6 @@
 #include <XmlMDF_ADriverTable.hxx>
 
 #include <Message_Messenger.hxx>
-#include <TDF_DerivedAttribute.hxx>
 #include <TDF_AttributeList.hxx>
 #include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_DerivedDriver.hxx>

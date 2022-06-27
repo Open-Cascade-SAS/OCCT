@@ -20,9 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Real.hxx>
 #include <Units_Token.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 class Units_Dimensions;
 

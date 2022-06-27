@@ -15,9 +15,7 @@
 
 
 #include <Message_Messenger.hxx>
-#include <gp_XYZ.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_Centroid.hxx>
 #include <XmlMXCAFDoc_CentroidDriver.hxx>
 #include <XmlObjMgt.hxx>

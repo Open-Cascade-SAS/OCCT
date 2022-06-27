@@ -17,8 +17,6 @@
 
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <TColgp_SequenceOfXYZ.hxx>
-#include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_DataMapOfIntegerReal.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSDRAWSTLVRML_DataSource,MeshVS_DataSource)

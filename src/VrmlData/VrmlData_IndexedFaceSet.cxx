@@ -16,7 +16,6 @@
 #include <VrmlData_IndexedFaceSet.hxx>
 #include <VrmlData_InBuffer.hxx>
 #include <VrmlData_UnknownNode.hxx>
-#include <Poly_Triangulation.hxx>
 #include <BRep_TFace.hxx>
 #include <BRepMesh_Triangulator.hxx>
 #include <VrmlData_Coordinate.hxx>

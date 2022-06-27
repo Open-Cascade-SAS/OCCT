@@ -25,35 +25,23 @@
 
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
-#include <TDocStd_Document.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFDoc_DimTol.hxx>
 #include <XCAFDoc_Dimension.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 #include <XCAFDoc_Datum.hxx>
-#include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
-#include <XCAFDimTolObjects_GeomToleranceObject.hxx>
-#include <XCAFDoc_DimTolTool.hxx>
-#include <XCAFDimTolObjects_DimensionObjectSequence.hxx>
-#include <XCAFDimTolObjects_DatumObjectSequence.hxx>
-#include <XCAFDimTolObjects_GeomToleranceObjectSequence.hxx>
 #include <XCAFDimTolObjects_DatumSingleModif.hxx>
 #include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <XCAFDimTolObjects_GeomToleranceModif.hxx>
 #include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
-#include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XCAFDimTolObjects_Tool.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TColStd_HArray1OfReal.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>

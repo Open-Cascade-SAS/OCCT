@@ -15,7 +15,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_LengthUnit.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>

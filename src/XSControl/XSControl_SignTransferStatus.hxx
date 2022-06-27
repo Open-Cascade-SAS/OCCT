@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IFSelect_Signature.hxx>
-#include <Standard_CString.hxx>
 class XSControl_TransferReader;
 class Transfer_TransientProcess;
 class Standard_Transient;

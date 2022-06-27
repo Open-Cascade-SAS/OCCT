@@ -16,7 +16,6 @@
 #define TopTools_IndexedDataMapOfShapeReal_HeaderFile
 
 #include <NCollection_IndexedDataMap.hxx>
-#include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 

@@ -15,11 +15,8 @@
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <StdPrs_ShapeTool.hxx>
-#include <TColgp_HArray1OfVec.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Vrml_Coordinate3.hxx>
 #include <Vrml_Material.hxx>

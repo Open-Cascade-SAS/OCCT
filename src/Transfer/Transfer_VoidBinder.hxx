@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Transfer_Binder.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
 
 
 class Transfer_VoidBinder;

@@ -22,14 +22,11 @@
 #include <LDOM_Text.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_LocationSet.hxx>
-#include <XmlLDrivers.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlMNaming_Shape1.hxx>
 #include <XmlObjMgt.hxx>

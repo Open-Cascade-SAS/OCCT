@@ -16,7 +16,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_XLink.hxx>

@@ -15,7 +15,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_AssemblyItemRef.hxx>
 #include <XmlMXCAFDoc_AssemblyItemRefDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>

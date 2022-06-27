@@ -13,16 +13,12 @@
 
 #include <XCAFDoc_DimTolTool.hxx>
 
-#include <Precision.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDataStd_UAttribute.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_AttributeIterator.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>

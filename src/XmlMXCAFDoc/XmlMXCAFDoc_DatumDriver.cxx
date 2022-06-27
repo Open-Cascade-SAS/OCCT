@@ -18,7 +18,6 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <XmlMXCAFDoc_DatumDriver.hxx>
 #include <XmlObjMgt.hxx>

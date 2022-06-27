@@ -23,7 +23,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 #include <PCDM_StorageDriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <XmlObjMgt_Element.hxx>
 #include <Standard_Integer.hxx>
 #include <TDocStd_FormatVersion.hxx>

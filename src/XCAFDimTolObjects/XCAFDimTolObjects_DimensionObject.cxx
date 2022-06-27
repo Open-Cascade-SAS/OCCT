@@ -13,7 +13,6 @@
 
 #include <XCAFDimTolObjects_DimensionObject.hxx>
 
-#include <Precision.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDimTolObjects_DimensionObject,Standard_Transient)

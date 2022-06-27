@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Vrml_ShapeHints.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 class Vrml_Material;
 

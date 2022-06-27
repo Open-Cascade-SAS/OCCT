@@ -15,16 +15,9 @@
 
 
 #include <Message_Messenger.hxx>
-#include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelList.hxx>
-#include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_Tool.hxx>
-#include <TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel.hxx>
 #include <TFunction_Scope.hxx>
 #include <XmlMFunction_ScopeDriver.hxx>
 #include <XmlObjMgt.hxx>

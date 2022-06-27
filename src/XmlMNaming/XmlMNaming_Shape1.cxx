@@ -16,7 +16,6 @@
 
 #include <BRep_Tool.hxx>
 #include <gp_Pnt.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>

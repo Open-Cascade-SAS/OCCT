@@ -18,7 +18,6 @@
 #include <Aspect_Window.hxx>
 
 #include <Aspect_VKey.hxx>
-#include <Aspect_Handle.hxx>
 #include <Graphic3d_Vec2.hxx>
 
 class Aspect_WindowInputListener;

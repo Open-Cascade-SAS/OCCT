@@ -23,7 +23,6 @@
 
 #include <Units_TokensSequence.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Units_Lexicon;
 class Units_Token;
 

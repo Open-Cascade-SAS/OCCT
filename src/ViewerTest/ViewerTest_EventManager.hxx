@@ -18,7 +18,6 @@
 #define _ViewerTest_EventManager_HeaderFile
 
 #include <AIS_ViewController.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class AIS_InteractiveContext;

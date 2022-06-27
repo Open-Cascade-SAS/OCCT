@@ -21,8 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <XSControl_Vars.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_Transient;
 class Geom_Geometry;
 class Geom2d_Curve;

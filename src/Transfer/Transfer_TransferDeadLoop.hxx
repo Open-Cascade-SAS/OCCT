@@ -18,7 +18,6 @@
 #define _Transfer_TransferDeadLoop_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <Standard_DefineException.hxx>
 #include <Standard_SStream.hxx>
 #include <Transfer_TransferFailure.hxx>
 

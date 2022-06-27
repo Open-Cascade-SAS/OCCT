@@ -15,7 +15,6 @@
 #ifndef TShort_SequenceOfShortReal_HeaderFile
 #define TShort_SequenceOfShortReal_HeaderFile
 
-#include <Standard_ShortReal.hxx>
 #include <NCollection_Sequence.hxx>
 
 typedef NCollection_Sequence<Standard_ShortReal> TShort_SequenceOfShortReal;

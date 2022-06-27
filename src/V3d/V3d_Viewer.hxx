@@ -17,20 +17,13 @@
 #ifndef _V3d_Viewer_HeaderFile
 #define _V3d_Viewer_HeaderFile
 
-#include <Aspect_Background.hxx>
-#include <Aspect_GenId.hxx>
-#include <Aspect_GradientBackground.hxx>
-#include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_GridDrawMode.hxx>
 #include <Aspect_GridType.hxx>
-#include <gp_Ax3.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfTransient.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <V3d_ListOfLight.hxx>
 #include <V3d_ListOfView.hxx>

@@ -22,7 +22,6 @@
 
 #include <TPrsStd_DataMapOfGUIDDriver.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
 class Standard_GUID;
 class TPrsStd_Driver;
 

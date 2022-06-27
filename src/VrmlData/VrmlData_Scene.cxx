@@ -14,12 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <VrmlData_Scene.hxx>
-#include <VrmlData_InBuffer.hxx>
 #include <VrmlData_Appearance.hxx>
 #include <VrmlData_Box.hxx>
-#include <VrmlData_Color.hxx>
 #include <VrmlData_Cone.hxx>
-#include <VrmlData_Coordinate.hxx>
 #include <VrmlData_Cylinder.hxx>
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
 #include <VrmlData_Group.hxx>
@@ -36,9 +33,7 @@
 #include <VrmlData_UnknownNode.hxx>
 //#include <VrmlData_WorldInfo.hxx>
 #include <NCollection_Vector.hxx>
-#include <TopoDS_TFace.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRep_Builder.hxx>
 #include <Precision.hxx>

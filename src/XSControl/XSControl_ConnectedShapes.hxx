@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <IFSelect_SelectExplore.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <TopAbs_ShapeEnum.hxx>

@@ -21,10 +21,8 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
 #include <Standard_CString.hxx>
 #include <UnitsAPI_SystemUnits.hxx>
-#include <Standard_Boolean.hxx>
 class Units_Dimensions;
 
 

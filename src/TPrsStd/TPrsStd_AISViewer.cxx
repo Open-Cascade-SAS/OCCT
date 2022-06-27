@@ -16,13 +16,10 @@
 
 
 #include <AIS_InteractiveContext.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <TDataXtd_Presentation.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
 #include <V3d_Viewer.hxx>

@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TPrsStd_Driver.hxx>
-#include <Standard_Boolean.hxx>
 class TDF_Label;
 class AIS_InteractiveObject;
 class Standard_GUID;

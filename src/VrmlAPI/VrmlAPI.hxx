@@ -21,7 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
 class TopoDS_Shape;
 
 

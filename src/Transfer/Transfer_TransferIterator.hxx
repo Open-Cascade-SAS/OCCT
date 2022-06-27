@@ -25,7 +25,6 @@
 #include <TColStd_HSequenceOfInteger.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_Boolean.hxx>
 #include <Transfer_StatusExec.hxx>
 class Transfer_Binder;
 class Standard_Transient;

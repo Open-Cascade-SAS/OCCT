@@ -15,7 +15,6 @@
 #ifndef _ViewerTest_HeaderFile
 #define _ViewerTest_HeaderFile
 
-#include <AIS_KindOfInteractive.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Aspect_TypeOfTriedronPosition.hxx>
@@ -23,7 +22,6 @@
 #include <Graphic3d_TypeOfShadingModel.hxx>
 #include <Graphic3d_Vec2.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_HArray1OfShape.hxx>

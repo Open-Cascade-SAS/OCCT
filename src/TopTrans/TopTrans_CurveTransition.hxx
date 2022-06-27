@@ -19,14 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Dir.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
-#include <Standard_Integer.hxx>
 
 
 //! This algorithm  is used to  compute the transition

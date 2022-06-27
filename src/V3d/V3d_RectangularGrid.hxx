@@ -18,12 +18,10 @@
 #define _V3d_RectangularGrid_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Ax3.hxx>
 #include <V3d_ViewerPointer.hxx>
 #include <Standard_Boolean.hxx>
-#include <Aspect_GridDrawMode.hxx>
 #include <Standard_Real.hxx>
 #include <Aspect_RectangularGrid.hxx>
 class Graphic3d_Structure;

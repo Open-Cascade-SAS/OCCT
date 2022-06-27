@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Vec2d.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
 

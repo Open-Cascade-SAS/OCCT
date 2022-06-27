@@ -17,7 +17,6 @@
 #include <Message_Messenger.hxx>
 #include <Standard_PCharacter.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 #include <XCAFDoc_GraphNode.hxx>

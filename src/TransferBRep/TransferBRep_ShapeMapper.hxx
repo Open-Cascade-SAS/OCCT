@@ -22,9 +22,6 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Transfer_Finder.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
 class TopoDS_Shape;
 class TopTools_ShapeMapHasher;
 class TransferBRep_ShapeInfo;

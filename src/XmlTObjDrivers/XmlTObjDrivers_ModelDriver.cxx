@@ -18,12 +18,10 @@
 
 #include "XmlTObjDrivers_ModelDriver.hxx"
 
-#include <Message_Messenger.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt.hxx>
 #include <Standard_GUID.hxx>
-#include <TDF_Attribute.hxx>
 
 #include <TObj_TModel.hxx>
 #include <TObj_Model.hxx>

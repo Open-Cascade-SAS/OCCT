@@ -25,7 +25,6 @@
 #include <XCAFDimTolObjects_DimensionType.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <XCAFDimTolObjects_DimensionQualifier.hxx>
-#include <Standard_Boolean.hxx>
 #include <XCAFDimTolObjects_DimensionFormVariance.hxx>
 #include <XCAFDimTolObjects_DimensionGrade.hxx>
 #include <Standard_Integer.hxx>
@@ -39,7 +38,6 @@
 #include <XCAFDimTolObjects_DimensionModif.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <NCollection_Vector.hxx>
-#include <TColStd_HArray1OfExtendedString.hxx>
 #include <XCAFDimTolObjects_AngularQualifier.hxx>
 
 class XCAFDimTolObjects_DimensionObject;

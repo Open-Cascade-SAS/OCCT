@@ -17,15 +17,7 @@
 #ifndef _Units_UnitsDictionary_HeaderFile
 #define _Units_UnitsDictionary_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Time.hxx>
 #include <Units_QuantitiesSequence.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 class TCollection_AsciiString;
 class Units_Dimensions;
 

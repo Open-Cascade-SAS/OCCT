@@ -18,7 +18,6 @@
 #define _TransferBRep_BinderOfShape_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopoDS_Shape.hxx>
 #include <Transfer_Binder.hxx>

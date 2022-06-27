@@ -17,7 +17,6 @@
 #ifndef TopTools_HArray1OfListOfShape_HeaderFile
 #define TopTools_HArray1OfListOfShape_HeaderFile
 
-#include <TopTools_ListOfShape.hxx>
 #include <TopTools_Array1OfListOfShape.hxx>
 #include <NCollection_DefineHArray1.hxx>
 

@@ -15,16 +15,11 @@
 
 #include <XCAFPrs.hxx>
 
-#include <TColStd_HSequenceOfExtendedString.hxx>
-#include <TDF_AttributeSequence.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TopLoc_IndexedMapOfLocation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
-#include <TopoDS_Iterator.hxx>
-#include <TopTools_SequenceOfShape.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>

@@ -16,7 +16,6 @@
 #ifndef XSDRAWSTLVRML_ElemNodesMap_HeaderFile
 #define XSDRAWSTLVRML_ElemNodesMap_HeaderFile
 
-#include <Standard_Integer.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>

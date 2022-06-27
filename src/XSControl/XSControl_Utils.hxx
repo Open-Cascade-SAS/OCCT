@@ -22,11 +22,9 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Standard_ExtString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_HSequenceOfHExtendedString.hxx>
 #include <TopTools_HSequenceOfShape.hxx>

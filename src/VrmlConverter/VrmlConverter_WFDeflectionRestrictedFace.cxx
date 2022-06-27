@@ -16,9 +16,7 @@
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
-#include <BRepAdaptor_Surface.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

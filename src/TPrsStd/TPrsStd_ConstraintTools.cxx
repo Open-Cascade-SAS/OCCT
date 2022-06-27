@@ -71,7 +71,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_Reference.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>

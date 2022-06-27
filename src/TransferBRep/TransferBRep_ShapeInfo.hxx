@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
 class TopoDS_Shape;
 
 

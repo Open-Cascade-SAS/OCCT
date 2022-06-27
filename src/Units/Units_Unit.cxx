@@ -16,11 +16,7 @@
 
 
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <Units.hxx>
-#include <Units_Quantity.hxx>
 #include <Units_Token.hxx>
 #include <Units_Unit.hxx>
 #include <Units_UnitsDictionary.hxx>

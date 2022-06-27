@@ -21,7 +21,6 @@
 
 #include <BRepTools_ShapeSet.hxx>
 #include <XmlMDF_ADriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>

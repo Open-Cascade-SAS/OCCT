@@ -19,7 +19,6 @@
 #include <XCAFDimTolObjects_GeomToleranceObjectSequence.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDimTolObjects_DatumObjectSequence.hxx>
-#include <XCAFDoc_Datum.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_Datum.hxx>
 #include <TDF_Label.hxx>

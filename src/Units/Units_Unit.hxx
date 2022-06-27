@@ -21,11 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_HAsciiString;
 class Units_Quantity;

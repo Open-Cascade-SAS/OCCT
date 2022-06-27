@@ -17,19 +17,15 @@
 #define _XSDRAWSTLVRML_DataSource_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_HArray2OfInteger.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 #include <MeshVS_DataSource.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <MeshVS_EntityType.hxx>
 #include <Standard_Address.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <Standard_Real.hxx>
 #include <Poly_Triangulation.hxx>
 
 

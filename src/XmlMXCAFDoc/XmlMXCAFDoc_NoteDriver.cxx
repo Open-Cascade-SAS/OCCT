@@ -15,7 +15,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_Note.hxx>
 #include <XmlMXCAFDoc_NoteDriver.hxx>
 #include <XmlObjMgt_Persistent.hxx>

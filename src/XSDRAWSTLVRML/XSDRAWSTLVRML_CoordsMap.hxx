@@ -16,7 +16,6 @@
 #ifndef XSDRAWSTLVRML_CoordsMap_HeaderFile
 #define XSDRAWSTLVRML_CoordsMap_HeaderFile
 
-#include <Standard_Integer.hxx>
 #include <TColStd_DataMapOfIntegerReal.hxx>
 #include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>

@@ -20,15 +20,10 @@
 #include <Draw.hxx>
 #include <gp_Trsf.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TDataStd_NamedData.hxx>
-#include <TDF_AttributeSequence.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_SequenceOfShape.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_Location.hxx>

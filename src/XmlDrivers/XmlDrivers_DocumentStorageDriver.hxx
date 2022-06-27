@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <XmlLDrivers_DocumentStorageDriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <XmlObjMgt_Element.hxx>
 class TCollection_ExtendedString;
 class XmlMDF_ADriverTable;

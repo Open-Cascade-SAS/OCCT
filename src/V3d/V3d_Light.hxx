@@ -18,7 +18,6 @@
 #define _V3d_Light_HeaderFile
 
 #include <Graphic3d_CLight.hxx>
-#include <V3d_TypeOfLight.hxx>
 
 typedef Graphic3d_CLight V3d_Light;
 typedef Handle_Graphic3d_CLight Handle_V3d_Light;

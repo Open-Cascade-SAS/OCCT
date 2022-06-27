@@ -17,7 +17,6 @@
 #define _XCAFDoc_ShapeMapTool_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TDF_Attribute.hxx>

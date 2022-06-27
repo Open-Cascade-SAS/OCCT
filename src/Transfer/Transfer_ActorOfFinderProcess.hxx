@@ -18,9 +18,7 @@
 #define _Transfer_ActorOfFinderProcess_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Integer.hxx>
 #include <Transfer_ActorOfProcessForFinder.hxx>
 class Transfer_Binder;
 class Transfer_Finder;

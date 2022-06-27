@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class XSControl_WorkSession;
 class TCollection_AsciiString;
 

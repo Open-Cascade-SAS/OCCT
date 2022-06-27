@@ -17,7 +17,6 @@
 #ifndef TopTools_IndexedMapOfShape_HeaderFile
 #define TopTools_IndexedMapOfShape_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 

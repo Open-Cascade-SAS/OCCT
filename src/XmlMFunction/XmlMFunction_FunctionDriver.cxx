@@ -16,7 +16,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
 #include <TFunction_Function.hxx>
 #include <XmlMFunction_FunctionDriver.hxx>

@@ -15,16 +15,11 @@
 
 
 #include <CDM_Application.hxx>
-#include <CDM_Document.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <CDM_MetaData.hxx>
-#include <LDOM_DocumentType.hxx>
-#include <LDOM_LDOMImplementation.hxx>
-#include <LDOMParser.hxx>
 #include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
-#include <PCDM_Document.hxx>
 #include <PCDM_DOMHeaderParser.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -39,7 +34,6 @@
 #include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlObjMgt.hxx>
-#include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
@@ -48,7 +42,6 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDri
 # include <tchar.h>
 #endif  // _MSC_VER
 
-#include <locale.h>
 #include <Standard_Failure.hxx>
 #include <Standard_ErrorHandler.hxx>
 

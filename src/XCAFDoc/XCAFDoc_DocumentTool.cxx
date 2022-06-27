@@ -15,14 +15,12 @@
 
 #include <XCAFDoc_DocumentTool.hxx>
 
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_ColorTool.hxx>

@@ -18,13 +18,11 @@
 #include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_SequenceOfHAsciiString.hxx>
-#include <TDataStd_ChildNodeIterator.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDataStd_UAttribute.hxx>
@@ -34,12 +32,10 @@
 #include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_LabelSequence.hxx>
-#include <TDF_MapIteratorOfLabelMap.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopLoc_IndexedMapOfLocation.hxx>
 #include <TopLoc_Location.hxx>

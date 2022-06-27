@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <TCollection_AsciiString.hxx>
 #include <gp_Vec.hxx>

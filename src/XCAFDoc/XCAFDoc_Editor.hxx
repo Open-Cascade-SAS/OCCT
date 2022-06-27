@@ -16,9 +16,7 @@
 #ifndef _XCAFDoc_Editor_HeaderFile
 #define _XCAFDoc_Editor_HeaderFile
 
-#include <Standard_DefineAlloc.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF_AttributeMap.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelDataMap.hxx>
 #include <TDF_LabelSequence.hxx>

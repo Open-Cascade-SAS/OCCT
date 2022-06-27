@@ -15,11 +15,7 @@
 
 #include <V3d_Trihedron.hxx>
 
-#include <gp_Ax3.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Graphic3d_Camera.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>

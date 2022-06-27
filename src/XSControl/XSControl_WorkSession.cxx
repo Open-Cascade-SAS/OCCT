@@ -15,26 +15,16 @@
 
 #include <Geom2d_Point.hxx>
 #include <Interface_Check.hxx>
-#include <Interface_CheckIterator.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_IntVal.hxx>
 #include <Interface_Macros.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <TopoDS_Shape.hxx>
-#include <Transfer_Binder.hxx>
-#include <Transfer_Finder.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <Transfer_ResultFromModel.hxx>
 #include <Transfer_ResultFromTransient.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
-#include <TransferBRep.hxx>
 #include <XSControl_Controller.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_Vars.hxx>

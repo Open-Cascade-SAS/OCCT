@@ -17,7 +17,6 @@
 #define _XmlMDF_ADriverTable_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <XmlMDF_TypeADriverMap.hxx>
 #include <Standard_Transient.hxx>

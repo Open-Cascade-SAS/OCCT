@@ -13,11 +13,8 @@
 
 #include <XCAFDoc_NotesTool.hxx>
 
-#include <Standard_GUID.hxx>
-#include <NCollection_Map.hxx>
 #include <TColStd_HArray1OfByte.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDF_Tool.hxx>

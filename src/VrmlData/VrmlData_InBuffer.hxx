@@ -17,7 +17,6 @@
 #define VrmlData_InBuffer_HeaderFile
 
 #include <Standard_IStream.hxx>
-#include <Standard_Boolean.hxx>
 /**
  * Structure passed to the methods dealing with input stream.
  */

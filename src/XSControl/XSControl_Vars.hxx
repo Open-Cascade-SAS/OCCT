@@ -21,9 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TCollection_AsciiString.hxx>
 class Geom_Geometry;

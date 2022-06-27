@@ -20,7 +20,6 @@
 #include <TDF_Tool.hxx>
 #include <XCAFDoc_AssemblyItemRef.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_Note.hxx>
 #include <XCAFDoc_NoteBalloon.hxx>
 #include <XCAFDoc_NoteComment.hxx>
 #include <XCAFDoc_NoteBinData.hxx>

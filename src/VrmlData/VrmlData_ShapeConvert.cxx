@@ -16,7 +16,6 @@
 #include <VrmlData_ShapeConvert.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_Group.hxx>
-#include <VrmlData_Coordinate.hxx>
 #include <VrmlData_IndexedFaceSet.hxx>
 #include <VrmlData_IndexedLineSet.hxx>
 #include <VrmlData_ShapeNode.hxx>
@@ -28,16 +27,12 @@
 #include <Poly_Connect.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Polygon3D.hxx>
-#include <Precision.hxx>
-#include <Quantity_ColorRGBA.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
 //#include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
@@ -45,7 +40,6 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <TShort_Array1OfShortReal.hxx>
 #include <GeomLib.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 #include <VrmlData_Appearance.hxx>

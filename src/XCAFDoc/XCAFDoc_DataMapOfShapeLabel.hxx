@@ -16,7 +16,6 @@
 #ifndef XCAFDoc_DataMapOfShapeLabel_HeaderFile
 #define XCAFDoc_DataMapOfShapeLabel_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <TDF_Label.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>

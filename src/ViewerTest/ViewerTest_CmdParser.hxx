@@ -18,7 +18,6 @@
 
 #include <Graphic3d_Vec3.hxx>
 
-#include <limits>
 #include <map>
 #include <vector>
 #include <set>

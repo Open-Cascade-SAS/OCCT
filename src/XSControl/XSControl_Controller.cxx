@@ -17,7 +17,6 @@
 #include <IFSelect_DispPerOne.hxx>
 #include <IFSelect_DispPerSignature.hxx>
 #include <IFSelect_EditForm.hxx>
-#include <IFSelect_GeneralModifier.hxx>
 #include <IFSelect_GraphCounter.hxx>
 #include <IFSelect_IntParam.hxx>
 #include <IFSelect_ParamEditor.hxx>
@@ -33,25 +32,16 @@
 #include <IFSelect_SignCounter.hxx>
 #include <IFSelect_SignType.hxx>
 #include <IFSelect_SignValidity.hxx>
-#include <IFSelect_WorkLibrary.hxx>
-#include <Interface_CheckIterator.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_Protocol.hxx>
 #include <Interface_Static.hxx>
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfHAsciiString.hxx>
-#include <TColStd_IndexedMapOfTransient.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Transfer_Binder.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
@@ -59,7 +49,6 @@
 #include <XSControl_Controller.hxx>
 #include <XSControl_SelectForTransfer.hxx>
 #include <XSControl_SignTransferStatus.hxx>
-#include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_Controller,Standard_Transient)

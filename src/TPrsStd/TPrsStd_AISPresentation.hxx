@@ -20,12 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_GUID.hxx>
-#include <Standard_Real.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDataXtd_Presentation.hxx>
 #include <AIS_InteractiveContext.hxx>

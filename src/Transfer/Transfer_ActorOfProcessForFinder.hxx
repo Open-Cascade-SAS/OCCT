@@ -18,11 +18,8 @@
 #define _Transfer_ActorOfProcessForFinder_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
-#include <Transfer_HSequenceOfFinder.hxx>
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
 #include <Message_ProgressRange.hxx>
 

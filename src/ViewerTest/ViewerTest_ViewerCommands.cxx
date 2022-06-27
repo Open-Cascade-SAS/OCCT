@@ -28,7 +28,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_LightSource.hxx>
 #include <AIS_ListOfInteractive.hxx>
-#include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Manipulator.hxx>
 #include <AIS_ViewCube.hxx>
 #include <AIS_Shape.hxx>
@@ -36,7 +35,6 @@
 #include <Aspect_DisplayConnection.hxx>
 #include <Aspect_Grid.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_ProgressIndicator.hxx>
@@ -47,7 +45,6 @@
 #include <Geom_CartesianPoint.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 #include <Graphic3d_CubeMapPacked.hxx>
 #include <Graphic3d_CubeMapSeparate.hxx>
@@ -64,12 +61,9 @@
 #include <Image_VideoRecorder.hxx>
 #include <Message.hxx>
 #include <Message_ProgressScope.hxx>
-#include <Message_ProgressRange.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <NCollection_Vector.hxx>
-#include <OSD.hxx>
 #include <OSD_Parallel.hxx>
 #include <OSD_Timer.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -81,12 +75,9 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <TColStd_MapOfAsciiString.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
 #include <ViewerTest_ContinuousRedrawer.hxx>
 #include <ViewerTest_EventManager.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_CmdParser.hxx>
 #include <ViewerTest_V3dView.hxx>
@@ -100,12 +91,9 @@
 
 #include <tcl.h>
 
-#include <cstdlib>
-
 #if defined(_WIN32)
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
-  #include <WNT_HIDSpaceMouse.hxx>
 #elif defined(HAVE_XLIB)
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h>

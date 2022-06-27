@@ -15,7 +15,6 @@
 
 #include <XmlObjMgt.hxx>
 
-#include <LDOM_Text.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <XmlObjMgt_Document.hxx>

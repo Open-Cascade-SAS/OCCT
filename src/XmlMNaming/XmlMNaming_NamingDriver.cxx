@@ -16,13 +16,9 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <TNaming_Iterator.hxx>
-#include <TNaming_ListIteratorOfListOfNamedShape.hxx>
-#include <TNaming_Name.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Naming.hxx>
 #include <XmlMNaming_NamingDriver.hxx>
 #include <XmlObjMgt.hxx>

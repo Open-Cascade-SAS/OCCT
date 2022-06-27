@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Vec.hxx>
 #include <Vrml_Scale.hxx>
 
 Vrml_Scale::Vrml_Scale()

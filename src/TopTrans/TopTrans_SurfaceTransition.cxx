@@ -16,7 +16,6 @@
 
 // Modified: eap Mar 25 2002 (occ102,occ227), touch case
 
-#include <gp_Dir.hxx>
 #include <Precision.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_Orientation.hxx>

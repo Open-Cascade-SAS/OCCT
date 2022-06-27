@@ -17,7 +17,6 @@
 #define Units_Operators_HeaderFile
 
 #include <Units_Token.hxx>
-#include <Units_Unit.hxx>
 #include <Units_Quantity.hxx>
 
 Standard_EXPORT Standard_Boolean operator ==(const Handle(Units_Quantity)&,const Standard_CString);

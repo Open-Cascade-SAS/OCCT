@@ -19,7 +19,6 @@
 #include <Aspect_Window.hxx>
 
 #include <Aspect_VKey.hxx>
-#include <Aspect_Handle.hxx>
 
 class Aspect_DisplayConnection;
 class Aspect_WindowInputListener;

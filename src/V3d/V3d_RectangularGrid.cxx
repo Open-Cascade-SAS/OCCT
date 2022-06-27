@@ -17,13 +17,10 @@
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Structure.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-#include <TColStd_Array2OfReal.hxx>
 #include <V3d_Viewer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(V3d_RectangularGrid,Aspect_RectangularGrid)

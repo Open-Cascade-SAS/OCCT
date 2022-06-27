@@ -24,7 +24,6 @@
 #include <OSD_File.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TDF_Tool.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Document.hxx>

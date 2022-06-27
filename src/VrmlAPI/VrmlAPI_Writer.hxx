@@ -21,9 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <VrmlAPI_RepresentationOfShape.hxx>
-#include <Standard_Real.hxx>
 #include <Quantity_HArray1OfColor.hxx>
-#include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 
 class VrmlConverter_Drawer;

@@ -16,7 +16,6 @@
 #include <XmlMDataXtd_PositionDriver.hxx>
 
 #include <Message_Messenger.hxx>
-#include <gp_XYZ.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Position.hxx>
 #include <TDF_Attribute.hxx>

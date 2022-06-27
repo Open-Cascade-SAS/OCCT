@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_ProcessForTransient.hxx>

@@ -14,7 +14,6 @@
 #include <XCAFDoc_Note.hxx>
 
 #include <gp_Pln.hxx>
-#include <Standard_GUID.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <TDataXtd_Plane.hxx>
 #include <TDataXtd_Point.hxx>
@@ -22,7 +21,6 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_GraphNode.hxx>

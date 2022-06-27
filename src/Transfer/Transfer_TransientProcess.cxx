@@ -14,15 +14,12 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Graph.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_MSG.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_TransientProcess.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_TransientProcess,Transfer_ProcessForTransient)

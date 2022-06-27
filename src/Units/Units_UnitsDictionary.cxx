@@ -31,7 +31,6 @@
 #include <Units_Quantity.hxx>
 #include <Units_ShiftedUnit.hxx>
 #include <Units_Token.hxx>
-#include <Units_TokensSequence.hxx>
 #include <Units_Unit.hxx>
 #include <Units_UnitSentence.hxx>
 #include <Units_UnitsLexicon.hxx>

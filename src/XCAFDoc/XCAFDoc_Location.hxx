@@ -17,7 +17,6 @@
 #define _XCAFDoc_Location_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <TopLoc_Location.hxx>
 #include <TDF_Attribute.hxx>

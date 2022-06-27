@@ -21,9 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Aspect_TypeOfDeflection.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_Transient.hxx>
 class VrmlConverter_IsoAspect;
 class VrmlConverter_LineAspect;

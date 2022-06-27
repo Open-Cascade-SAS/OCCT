@@ -16,13 +16,10 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <TopLoc_Datum3D.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopTools_LocationSet.hxx>
 #include <XCAFDoc_Location.hxx>
-#include <XmlMNaming.hxx>
 #include <XmlMXCAFDoc_LocationDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>

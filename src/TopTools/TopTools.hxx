@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_OStream.hxx>
-#include <Standard_Integer.hxx>
 class TopoDS_Shape;
 
 

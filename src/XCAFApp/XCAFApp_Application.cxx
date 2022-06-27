@@ -17,7 +17,6 @@
 #include <Resource_Manager.hxx>
 #include <Standard_Dump.hxx>
 #include <TDF_Label.hxx>
-#include <TDocStd_Document.hxx>
 #include <TPrsStd_DriverTable.hxx>
 #include <XCAFApp_Application.hxx>
 #include <XCAFDoc_DocumentTool.hxx>

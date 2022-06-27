@@ -17,7 +17,6 @@
 #ifndef Units_QuantitiesSequence_HeaderFile
 #define Units_QuantitiesSequence_HeaderFile
 
-#include <Units_Quantity.hxx>
 #include <Units_QtsSequence.hxx>
 #include <NCollection_DefineHSequence.hxx>
 

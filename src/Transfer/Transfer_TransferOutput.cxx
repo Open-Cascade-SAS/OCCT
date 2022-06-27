@@ -18,7 +18,6 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
 #include <Interface_ShareFlags.hxx>
-#include <Standard_NoSuchObject.hxx>
 #include <Standard_Transient.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Transfer_Binder.hxx>

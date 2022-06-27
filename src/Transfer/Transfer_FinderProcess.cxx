@@ -13,10 +13,7 @@
 
 
 #include <Interface_Check.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_MSG.hxx>
-#include <Transfer_Binder.hxx>
-#include <Transfer_Finder.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_TransientMapper.hxx>
 

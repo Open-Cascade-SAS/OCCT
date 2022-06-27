@@ -16,7 +16,6 @@
 
 
 #include <OSD_Environment.hxx>
-#include <OSD_File.hxx>
 #include <OSD_FileIterator.hxx>
 #include <OSD_Host.hxx>
 #include <OSD_Path.hxx>

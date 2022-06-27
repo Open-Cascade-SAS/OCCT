@@ -15,7 +15,6 @@
 
 #include <XCAFDoc_ViewTool.hxx>
 
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -24,7 +23,6 @@
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <XCAFDoc.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_View.hxx>

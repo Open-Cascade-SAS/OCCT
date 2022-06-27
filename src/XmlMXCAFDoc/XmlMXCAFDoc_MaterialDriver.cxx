@@ -17,7 +17,6 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_Material.hxx>
 #include <XmlMXCAFDoc_MaterialDriver.hxx>
 #include <XmlObjMgt.hxx>

@@ -13,13 +13,9 @@
 
 
 #include <Adaptor3d_Curve.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
-#include <TColgp_HArray1OfVec.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <Vrml_Coordinate3.hxx>
 #include <Vrml_IndexedLineSet.hxx>
 #include <Vrml_Material.hxx>

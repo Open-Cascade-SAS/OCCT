@@ -23,14 +23,12 @@
 #include <VrmlData_Cone.hxx>
 #include <VrmlData_Cylinder.hxx>
 #include <VrmlData_Sphere.hxx>
-#include <VrmlData_UnknownNode.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrim_Cone.hxx>
 #include <BRepPrim_Cylinder.hxx>
 #include <BRepPrim_Sphere.hxx>
 #include <BRepPrim_Builder.hxx>
 #include <NCollection_Vector.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <VrmlData_ArrayVec3d.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Geometry,VrmlData_Node)

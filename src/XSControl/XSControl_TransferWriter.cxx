@@ -14,17 +14,13 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_CheckIterator.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
-#include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Transfer_ActorOfFinderProcess.hxx>
-#include <Transfer_FinderProcess.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
 #include <XSControl_Controller.hxx>

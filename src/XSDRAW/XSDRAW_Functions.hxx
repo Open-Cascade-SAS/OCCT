@@ -17,8 +17,6 @@
 #ifndef _XSDRAW_Functions_HeaderFile
 #define _XSDRAW_Functions_HeaderFile
 
-#include <Standard.hxx>
-
 //! Defines additional commands for XSDRAW to :
 //! - control of initialisation (xinit, xnorm, newmodel)
 //! - analyse of the result of a transfer (recorded in a

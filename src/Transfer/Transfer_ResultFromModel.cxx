@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_ResultFromModel.hxx>
 #include <Transfer_ResultFromTransient.hxx>
 #include <Transfer_TransientProcess.hxx>

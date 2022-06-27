@@ -15,17 +15,13 @@
 
 
 #include <CDM_Application.hxx>
-#include <CDM_Document.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
-#include <LDOM_DocumentType.hxx>
-#include <LDOM_LDOMImplementation.hxx>
 #include <LDOM_XmlWriter.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
 #include <OSD_FileSystem.hxx>
-#include <PCDM.hxx>
 #include <PCDM_ReadWriter.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
@@ -44,7 +40,6 @@
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 
-#include <locale.h>
 IMPLEMENT_STANDARD_RTTIEXT(XmlLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
 
 #define STORAGE_VERSION      "STORAGE_VERSION: "

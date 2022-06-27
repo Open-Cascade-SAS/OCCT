@@ -20,7 +20,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_GUID.hxx>
 

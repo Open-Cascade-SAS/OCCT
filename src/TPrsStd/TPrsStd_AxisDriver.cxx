@@ -21,7 +21,6 @@
 #include <TDataXtd_Axis.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <TDF_Label.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TPrsStd_AxisDriver.hxx>

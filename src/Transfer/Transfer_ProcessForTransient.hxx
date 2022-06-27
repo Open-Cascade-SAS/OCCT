@@ -19,8 +19,6 @@
 
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
-#include <TColStd_MapTransientHasher.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
 #include <Message_ProgressRange.hxx>
 
 class Message_Messenger;

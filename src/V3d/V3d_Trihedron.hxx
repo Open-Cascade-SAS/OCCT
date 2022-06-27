@@ -16,8 +16,6 @@
 #ifndef _V3d_Trihedron_HeaderFile
 #define _V3d_Trihedron_HeaderFile
 
-#include <Graphic3d_Group.hxx>
-#include <Graphic3d_Structure.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Prs3d_LineAspect.hxx>

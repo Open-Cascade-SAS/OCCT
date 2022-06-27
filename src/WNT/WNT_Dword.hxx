@@ -34,11 +34,6 @@
 #  endif  // THIS
 # endif  // __WINDOWS_H_INCLUDED
 
-# ifndef __STANDARD_TYPE_HXX_INCLUDED
-#  define __STANDARD_TYPE_HXX_INCLUDED
-#  include <Standard_Type.hxx>
-# endif  // __STANDARD_TYPE_HXX_INCLUDED 
-
 typedef DWORD WNT_Dword;
 
 #endif  // __WNT_Dword_HeaderFile

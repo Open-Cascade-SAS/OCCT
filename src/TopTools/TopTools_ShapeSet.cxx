@@ -26,13 +26,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_LocationSet.hxx>
 #include <TopTools_ShapeSet.hxx>
 #include <Standard_Assert.hxx>
 
 #include <BRep_TFace.hxx>
 
-#include <locale.h>
 #include <string.h>
 
 const Standard_CString TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] =

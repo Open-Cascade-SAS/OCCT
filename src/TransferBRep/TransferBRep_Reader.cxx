@@ -16,11 +16,9 @@
 #include <Interface_CheckIterator.hxx>
 #include <Interface_CheckTool.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Interface_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>

@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 #include <VrmlData_Group.hxx>
-#include <VrmlData_Geometry.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_WorldInfo.hxx>
 #include <VrmlData_InBuffer.hxx>

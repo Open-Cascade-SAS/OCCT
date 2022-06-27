@@ -18,9 +18,6 @@
 #include <DDocStd.hxx>
 #include <Draw.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_HSequenceOfExtendedString.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS_Shape.hxx>
@@ -28,7 +25,6 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_LayerTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
 #include <XDEDRAW_Layers.hxx>
 
 //=======================================================================

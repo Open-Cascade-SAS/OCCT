@@ -19,7 +19,6 @@
 #include <VrmlData_ListOfNode.hxx>
 #include <VrmlData_MapOfNode.hxx>
 #include <VrmlData_ErrorStatus.hxx>
-#include <VrmlData_Geometry.hxx>
 #include <VrmlData_WorldInfo.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_OStream.hxx>

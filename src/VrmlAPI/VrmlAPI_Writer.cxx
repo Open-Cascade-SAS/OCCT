@@ -16,7 +16,6 @@
 #include <OSD_FileSystem.hxx>
 #include <OSD_Path.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Quantity_HArray1OfColor.hxx>
 #include <Standard_Stream.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -24,7 +23,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_Array1OfShape.hxx>
 #include <Vrml.hxx>
 #include <Vrml_Group.hxx>
 #include <Vrml_Instancing.hxx>

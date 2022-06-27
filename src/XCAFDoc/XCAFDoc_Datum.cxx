@@ -13,9 +13,7 @@
 
 #include <XCAFDoc_Datum.hxx>
 
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -25,7 +23,6 @@
 #include <TDataStd_RealArray.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_Tool.hxx>
 #include <TDataStd_Name.hxx>

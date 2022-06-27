@@ -23,7 +23,6 @@
 #include <Standard_Integer.hxx>
 #include <Vrml_SFImageNumber.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 
 

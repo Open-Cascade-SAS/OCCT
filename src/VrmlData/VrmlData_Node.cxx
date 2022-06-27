@@ -21,8 +21,6 @@
 #include <VrmlData_UnknownNode.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_InBuffer.hxx>
-#include <gp_XY.hxx>
-#include <gp_XYZ.hxx>
 #include <VrmlData_Geometry.hxx>
 #include <VrmlData_TextureTransform.hxx>
 #include <VrmlData_Texture.hxx>

@@ -17,7 +17,6 @@
 #include <TDF_ChildIterator.hxx>
 #include <XCAFDoc.hxx>
 #include <TDataStd_TreeNode.hxx>
-#include <Precision.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>
@@ -25,7 +24,6 @@
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TopoDS.hxx>
 #include <XCAFDimTolObjects_DimensionObject.hxx>

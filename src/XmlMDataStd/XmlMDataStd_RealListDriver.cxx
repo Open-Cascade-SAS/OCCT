@@ -17,7 +17,6 @@
 #include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TDataStd_RealList.hxx>
 #include <TDF_Attribute.hxx>
 #include <XmlMDataStd_RealListDriver.hxx>

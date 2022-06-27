@@ -21,7 +21,6 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <Standard_CString.hxx>

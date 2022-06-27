@@ -16,7 +16,6 @@
 
 #include <TopTools.hxx>
 
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeSet.hxx>
 
 //=======================================================================

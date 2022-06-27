@@ -16,30 +16,17 @@
 
 #include <ViewerTest.hxx>
 #include <BRepTest.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
 #include <DBRep.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
-#include <BiTgte_Blend.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopoDS.hxx>
 #include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
 
-#include <FilletSurf_Builder.hxx>
 #include <ChFi3d_FilletShape.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <TopTools_ListOfShape.hxx>
-#include <FilletSurf_StatusType.hxx>
-#include <FilletSurf_ErrorTypeStatus.hxx>
-#include <TopAbs.hxx>
-#include <DrawTrSurf.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 
 #include <AIS_InteractiveContext.hxx>

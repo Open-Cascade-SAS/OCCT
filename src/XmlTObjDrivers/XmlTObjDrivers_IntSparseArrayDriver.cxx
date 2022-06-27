@@ -17,10 +17,8 @@
 
 #include <XmlTObjDrivers_IntSparseArrayDriver.hxx>
 #include <Message_Messenger.hxx>
-#include <TDF_Attribute.hxx>
 #include <XmlObjMgt_Persistent.hxx>
 #include <TObj_TIntSparseArray.hxx>
-#include <TObj_Assistant.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 

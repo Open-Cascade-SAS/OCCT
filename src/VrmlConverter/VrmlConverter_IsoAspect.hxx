@@ -22,7 +22,6 @@
 
 #include <Standard_Integer.hxx>
 #include <VrmlConverter_LineAspect.hxx>
-#include <Standard_Boolean.hxx>
 class Vrml_Material;
 
 

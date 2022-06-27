@@ -23,7 +23,6 @@
 #include <XmlObjMgt_DOMString.hxx>
 #include <Standard_Boolean.hxx>
 #include <XmlObjMgt_Element.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Real.hxx>
 class TCollection_ExtendedString;

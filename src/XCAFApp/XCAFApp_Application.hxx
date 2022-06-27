@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TDocStd_Application.hxx>
-#include <TColStd_SequenceOfExtendedString.hxx>
 #include <Standard_CString.hxx>
 
 

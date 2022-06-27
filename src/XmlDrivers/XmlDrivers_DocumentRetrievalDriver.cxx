@@ -19,7 +19,6 @@
 #include <TNaming_NamedShape.hxx>
 #include <XmlDrivers.hxx>
 #include <XmlDrivers_DocumentRetrievalDriver.hxx>
-#include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlObjMgt_Element.hxx>

@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Vec.hxx>
-#include <Quantity_Color.hxx>
 #include <Vrml_DirectionalLight.hxx>
 
 Vrml_DirectionalLight::Vrml_DirectionalLight():

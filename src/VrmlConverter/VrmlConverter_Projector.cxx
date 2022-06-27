@@ -19,14 +19,11 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
-#include <HLRAlgo_Projector.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfVec.hxx>
 #include <Vrml_Instancing.hxx>
-#include <Vrml_MatrixTransform.hxx>
-#include <Vrml_SFRotation.hxx>
 #include <Vrml_TransformSeparator.hxx>
 #include <VrmlConverter_Projector.hxx>
 

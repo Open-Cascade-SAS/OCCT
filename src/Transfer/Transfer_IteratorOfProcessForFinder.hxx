@@ -23,7 +23,6 @@
 
 #include <Transfer_HSequenceOfFinder.hxx>
 #include <Transfer_TransferIterator.hxx>
-#include <Transfer_TransferMapOfProcessForFinder.hxx>
 
 class Standard_NoSuchObject;
 class Transfer_Finder;

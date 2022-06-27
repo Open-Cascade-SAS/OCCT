@@ -21,7 +21,6 @@
 #include <TDataXtd_Geometry.hxx>
 #include <TDataXtd_Plane.hxx>
 #include <TDF_Label.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TPrsStd_PlaneDriver.hxx>
 

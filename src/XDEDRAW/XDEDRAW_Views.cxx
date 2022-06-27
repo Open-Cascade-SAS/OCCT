@@ -20,10 +20,8 @@
 #include <Draw.hxx>
 #include <DrawTrSurf.hxx>
 #include <Geom_Plane.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_ClippingPlaneTool.hxx>
 #include <XCAFDoc_DimTolTool.hxx>

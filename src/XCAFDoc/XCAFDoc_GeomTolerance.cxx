@@ -26,7 +26,6 @@
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <TNaming_Tool.hxx>
 #include <TNaming_Builder.hxx>
-#include <TCollection_ExtendedString.hxx>
 #include <TDataStd_Name.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_GeomTolerance,TDataStd_GenericEmpty)

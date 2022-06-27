@@ -17,7 +17,6 @@
 #define _XCAFDoc_ShapeTool_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <XCAFDoc_DataMapOfShapeLabel.hxx>
 #include <Standard_Boolean.hxx>

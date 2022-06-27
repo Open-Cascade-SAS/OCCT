@@ -14,7 +14,6 @@
 
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_TypeMismatch.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>

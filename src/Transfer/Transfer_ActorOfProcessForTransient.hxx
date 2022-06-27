@@ -20,10 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
-#include <TColStd_MapTransientHasher.hxx>
-#include <TColStd_HSequenceOfTransient.hxx>
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
 #include <Message_ProgressRange.hxx>
 

@@ -15,7 +15,6 @@
 
 #include <XCAFDoc_AssemblyItemRef.hxx>
 
-#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>

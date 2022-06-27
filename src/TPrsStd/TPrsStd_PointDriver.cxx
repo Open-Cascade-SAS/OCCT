@@ -16,7 +16,6 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Point.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <Geom_Point.hxx>
 #include <gp_Pnt.hxx>
 #include <Standard_Type.hxx>
 #include <TDataXtd_Geometry.hxx>

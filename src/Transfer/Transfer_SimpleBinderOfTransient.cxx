@@ -14,7 +14,6 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransferFailure.hxx>
 

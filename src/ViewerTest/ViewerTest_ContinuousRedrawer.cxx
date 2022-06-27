@@ -14,7 +14,6 @@
 #include <ViewerTest_ContinuousRedrawer.hxx>
 
 #include <Aspect_DisplayConnection.hxx>
-#include <Aspect_Window.hxx>
 #include <OSD.hxx>
 #include <OSD_Timer.hxx>
 #include <V3d_View.hxx>

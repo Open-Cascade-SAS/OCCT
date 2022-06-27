@@ -16,7 +16,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <XCAFDoc_Color.hxx>
 #include <XmlMXCAFDoc_ColorDriver.hxx>
 #include <XmlObjMgt.hxx>

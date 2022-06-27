@@ -17,12 +17,8 @@
 
 #include <GeomTools.hxx>
 #include <gp_Ax3.hxx>
-#include <gp_Vec.hxx>
-#include <Precision.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_Stream.hxx>
 #include <Message_ProgressScope.hxx>
-#include <TopLoc_Location.hxx>
 #include <TopTools_LocationSet.hxx>
 
 //=======================================================================

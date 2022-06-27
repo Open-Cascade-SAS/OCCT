@@ -18,7 +18,6 @@
 #define _XCAFDimTolObjects_DatumObject_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <XCAFDimTolObjects_DatumObjectSequence.hxx>
 #include <XCAFDimTolObjects_DatumTargetType.hxx>
@@ -29,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
 #include <XCAFDimTolObjects_DatumSingleModif.hxx>
-#include <Standard_Boolean.hxx>
 #include <gp_Ax2.hxx>
 
 class XCAFDimTolObjects_DatumObject;

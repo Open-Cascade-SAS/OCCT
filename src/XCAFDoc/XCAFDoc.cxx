@@ -14,12 +14,7 @@
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_ColorType.hxx>
 
-#include <Quantity_ColorRGBA.hxx>
-
-#include <Standard_GUID.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDF_Label.hxx>
 #include <TDF_Reference.hxx>
 #include <TDF_Tool.hxx>
 #include <TDataStd_AsciiString.hxx>
@@ -30,12 +25,10 @@
 #include <TDataStd_Name.hxx>
 #include <XCAFDoc_LengthUnit.hxx>
 #include <TDataStd_RealArray.hxx>
-#include <TDataStd_Real.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDataStd_UAttribute.hxx>
 #include <TDocStd_Document.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
 #include <XCAFDoc_Color.hxx>

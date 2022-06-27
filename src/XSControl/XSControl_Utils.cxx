@@ -29,7 +29,6 @@
 #include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_HShape.hxx>
 #include <TopoDS_Iterator.hxx>

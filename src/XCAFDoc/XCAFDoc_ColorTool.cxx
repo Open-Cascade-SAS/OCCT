@@ -13,9 +13,6 @@
 
 #include <XCAFDoc_ColorTool.hxx>
 
-#include <Quantity_Color.hxx>
-#include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -25,8 +22,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Color.hxx>
 #include <XCAFDoc_DocumentTool.hxx>

@@ -16,13 +16,8 @@
 #include <V3d.hxx>
 
 #include <Aspect_Grid.hxx>
-#include <Aspect_Window.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_Structure.hxx>
-#include <Quantity_NameOfColor.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 

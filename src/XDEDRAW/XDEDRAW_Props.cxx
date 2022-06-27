@@ -28,7 +28,6 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Stream.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -36,13 +35,11 @@
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>

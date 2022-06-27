@@ -19,13 +19,10 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <gp_Dir.hxx>
-#include <Standard_Real.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <TopTrans_Array2OfOrientation.hxx>
-#include <Standard_Boolean.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs_State.hxx>
 

@@ -25,8 +25,6 @@
 #include <Units_QuantitiesSequence.hxx>
 #include <Units_UnitsSequence.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
 class Units_UnitsSystem;
 class Units_UnitsDictionary;
 class TCollection_AsciiString;

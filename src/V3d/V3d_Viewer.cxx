@@ -13,11 +13,9 @@
 
 #include <V3d_Viewer.hxx>
 
-#include <Aspect_Grid.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>

@@ -24,7 +24,6 @@
 #include <Standard_CString.hxx>
 #include <Storage_Error.hxx>
 #include <Storage_OpenMode.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 class TCollection_ExtendedString;
 class Storage_BaseDriver;

@@ -17,7 +17,6 @@
 #define VrmlData_ShapeConvert_HeaderFile
 
 #include <VrmlData_Geometry.hxx>
-#include <VrmlData_Appearance.hxx>
 #include <VrmlData_Group.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_DataMap.hxx>

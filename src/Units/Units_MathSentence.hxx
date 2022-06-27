@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <Units_Sentence.hxx>
-#include <Standard_CString.hxx>
 
 
 //! This class  defines all the methods to  create and

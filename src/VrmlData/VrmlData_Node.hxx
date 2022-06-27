@@ -16,7 +16,6 @@
 #ifndef VrmlData_Node_HeaderFile
 #define VrmlData_Node_HeaderFile
 
-#include <Standard_Type.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_TypeDef.hxx>

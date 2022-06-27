@@ -18,7 +18,6 @@
 #define _Transfer_ActorOfTransientProcess_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <Transfer_ActorOfProcessForTransient.hxx>
 class Transfer_Binder;

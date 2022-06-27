@@ -23,7 +23,6 @@
 
 #include <Aspect_ScrollDelta.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
-#include <Aspect_WindowError.hxx>
 #include <Aspect_WindowInputListener.hxx>
 #include <Message.hxx>
 #include <NCollection_LocalArray.hxx>

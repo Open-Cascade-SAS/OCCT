@@ -26,7 +26,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <NCollection_DataMap.hxx>
 #include <TDF_LabelMapHasher.hxx>
 
 class XCAFDoc_ShapeTool;

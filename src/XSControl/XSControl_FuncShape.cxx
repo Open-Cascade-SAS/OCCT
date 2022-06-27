@@ -14,37 +14,24 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
-#include <Geom2d_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <IFSelect_Act.hxx>
-#include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IFSelect_SessionPilot.hxx>
-#include <Interface_CheckIterator.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <ShapeExtend_Explorer.hxx>
-#include <Standard_ErrorHandler.hxx>
-#include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <TColStd_SequenceOfInteger.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
-#include <Transfer_Binder.hxx>
-#include <Transfer_Finder.hxx>
-#include <Transfer_FinderProcess.hxx>
-#include <Transfer_ResultFromModel.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientListBinder.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
-#include <TransferBRep_ShapeBinder.hxx>
 #include <TransferBRep_ShapeListBinder.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <XSControl.hxx>
@@ -52,7 +39,6 @@
 #include <XSControl_Controller.hxx>
 #include <XSControl_FuncShape.hxx>
 #include <XSControl_TransferReader.hxx>
-#include <XSControl_TransferWriter.hxx>
 #include <XSControl_Vars.hxx>
 #include <XSControl_WorkSession.hxx>
 

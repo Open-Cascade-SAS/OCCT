@@ -18,7 +18,6 @@
 
 #include "XmlTObjDrivers_ReferenceDriver.hxx"
 
-#include <Message_Messenger.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_Attribute.hxx>
 
@@ -30,7 +29,6 @@
 #include <TObj_Model.hxx>
 #include <TObj_Object.hxx>
 #include <TObj_Assistant.hxx>
-#include <TDF_ChildIterator.hxx>
 
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlTObjDrivers_ReferenceDriver,XmlMDF_ADriver)

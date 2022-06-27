@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Vec.hxx>
 #include <Vrml_Translation.hxx>
 
 Vrml_Translation::Vrml_Translation()

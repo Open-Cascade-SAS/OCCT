@@ -16,8 +16,6 @@
 
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_MapIteratorOfMapOfInteger.hxx>
-#include <TDF_Attribute.hxx>
 #include <TFunction_GraphNode.hxx>
 #include <XmlMFunction_GraphNodeDriver.hxx>
 #include <XmlObjMgt.hxx>

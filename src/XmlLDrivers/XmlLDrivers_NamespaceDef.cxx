@@ -14,7 +14,6 @@
 // commercial license or contractual agreement.
 
 
-#include <TCollection_AsciiString.hxx>
 #include <XmlLDrivers_NamespaceDef.hxx>
 
 //=======================================================================

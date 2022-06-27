@@ -15,13 +15,10 @@
 
 #include <XCAFPrs_AISObject.hxx>
 
-#include <AIS_DisplayMode.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Graphic3d_AspectLine3d.hxx>
-#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -29,13 +26,11 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <TDataStd_Name.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
-#include <XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_Style.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFPrs_AISObject,AIS_ColoredShape)

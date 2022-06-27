@@ -13,9 +13,7 @@
 
 #include <XCAFDoc_MaterialTool.hxx>
 
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TCollection_HAsciiString.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_Attribute.hxx>

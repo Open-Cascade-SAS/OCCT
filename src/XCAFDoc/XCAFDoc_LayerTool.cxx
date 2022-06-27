@@ -15,7 +15,6 @@
 
 #include <XCAFDoc_LayerTool.hxx>
 
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDataStd_Name.hxx>

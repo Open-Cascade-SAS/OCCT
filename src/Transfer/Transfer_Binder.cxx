@@ -14,7 +14,6 @@
 
 #include <Geom2d_CartesianPoint.hxx>
 #include <Interface_Check.hxx>
-#include <Interface_IntVal.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <Transfer_Binder.hxx>

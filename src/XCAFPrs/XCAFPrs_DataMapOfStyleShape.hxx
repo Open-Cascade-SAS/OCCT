@@ -16,7 +16,6 @@
 #ifndef XCAFPrs_DataMapOfStyleShape_HeaderFile
 #define XCAFPrs_DataMapOfStyleShape_HeaderFile
 
-#include <XCAFPrs_Style.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <NCollection_DataMap.hxx>

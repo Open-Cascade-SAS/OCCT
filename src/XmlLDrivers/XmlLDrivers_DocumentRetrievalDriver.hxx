@@ -23,7 +23,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <XmlObjMgt_Element.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
 #include <Storage_Data.hxx>
 class XmlMDF_ADriverTable;

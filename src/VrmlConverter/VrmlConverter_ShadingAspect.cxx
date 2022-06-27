@@ -14,7 +14,6 @@
 
 #include <Standard_Type.hxx>
 #include <Vrml_Material.hxx>
-#include <Vrml_ShapeHints.hxx>
 #include <VrmlConverter_ShadingAspect.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(VrmlConverter_ShadingAspect,Standard_Transient)

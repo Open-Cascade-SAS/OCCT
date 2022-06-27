@@ -15,8 +15,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <PrsDim_Relation.hxx>
-#include <Standard_GUID.hxx>
-#include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataXtd_Constraint.hxx>

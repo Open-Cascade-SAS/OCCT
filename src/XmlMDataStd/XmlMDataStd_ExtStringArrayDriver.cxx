@@ -15,7 +15,6 @@
 
 
 #include <Message_Messenger.hxx>
-#include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDF_Attribute.hxx>
@@ -25,7 +24,6 @@
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Document.hxx>
 #include <XmlObjMgt_Persistent.hxx>
-#include <XmlLDrivers.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ExtStringArrayDriver,XmlMDF_ADriver)
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")

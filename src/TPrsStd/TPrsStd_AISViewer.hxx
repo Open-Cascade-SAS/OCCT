@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
 class AIS_InteractiveContext;
 class Standard_GUID;
 class TDF_Label;

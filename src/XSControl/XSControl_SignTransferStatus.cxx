@@ -17,7 +17,6 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <XSControl_SignTransferStatus.hxx>
 #include <XSControl_TransferReader.hxx>

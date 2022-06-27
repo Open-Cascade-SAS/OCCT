@@ -17,7 +17,6 @@
 #include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfByte.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>

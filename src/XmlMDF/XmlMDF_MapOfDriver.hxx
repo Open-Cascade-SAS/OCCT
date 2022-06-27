@@ -18,7 +18,6 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <XmlMDF_ADriver.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_AsciiString,Handle(XmlMDF_ADriver),TCollection_AsciiString> XmlMDF_MapOfDriver;

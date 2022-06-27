@@ -21,10 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <XmlObjMgt_Element.hxx>
-#include <XmlObjMgt_SRelocationTable.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlMDF_MapOfDriver.hxx>
 
 #include <Message_ProgressRange.hxx>

@@ -20,7 +20,6 @@
 #include <Standard_Type.hxx>
 
 #include <TDataStd_GenericEmpty.hxx>
-#include <Standard_Boolean.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TColStd_HSequenceOfExtendedString.hxx>
 class XCAFDoc_ShapeTool;

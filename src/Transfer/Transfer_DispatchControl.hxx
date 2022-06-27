@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Interface_CopyControl.hxx>
-#include <Standard_Boolean.hxx>
 class Transfer_TransientProcess;
 class Interface_InterfaceModel;
 class Standard_Transient;

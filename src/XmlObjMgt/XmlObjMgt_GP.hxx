@@ -16,10 +16,8 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <XmlObjMgt_DOMString.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Trsf;
 class gp_Mat;
 class gp_XYZ;

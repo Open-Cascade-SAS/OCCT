@@ -17,7 +17,6 @@
 #define _XCAFDoc_Centroid_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <TDF_Attribute.hxx>

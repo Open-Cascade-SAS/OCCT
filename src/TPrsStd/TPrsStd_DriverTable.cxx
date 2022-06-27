@@ -25,7 +25,6 @@
 #include <TNaming_NamedShape.hxx>
 #include <TPrsStd_AxisDriver.hxx>
 #include <TPrsStd_ConstraintDriver.hxx>
-#include <TPrsStd_DataMapOfGUIDDriver.hxx>
 #include <TPrsStd_Driver.hxx>
 #include <TPrsStd_DriverTable.hxx>
 #include <TPrsStd_GeometryDriver.hxx>

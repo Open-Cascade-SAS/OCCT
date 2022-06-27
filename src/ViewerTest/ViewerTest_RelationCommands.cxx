@@ -17,7 +17,6 @@
 #include <ViewerTest.hxx>
 
 #include <AIS_Circle.hxx>
-#include <AIS_DisplayMode.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_Shape.hxx>
@@ -39,16 +38,12 @@
 #include <PrsDim_TangentRelation.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepExtrema_ExtCC.hxx>
-#include <BRepExtrema_ExtPC.hxx>
 #include <BRepExtrema_ExtCF.hxx>
 #include <BRepExtrema_ExtPF.hxx>
 #include <BRepExtrema_ExtFF.hxx>
 #include <BRepTools.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Window.hxx>
 #include <DBRep.hxx>
@@ -68,25 +63,17 @@
 #include <IntAna_Quadric.hxx>
 #include <Message.hxx>
 #include <Precision.hxx>
-#include <StdSelect.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColStd_MapOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
-#include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-#include <V3d.hxx>
-#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
-#include <ViewerTest_EventManager.hxx>
 
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,

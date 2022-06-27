@@ -17,7 +17,6 @@
 
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Units_Dimensions.hxx>
 #include <Units_ShiftedToken.hxx>
 #include <Units_Token.hxx>
 

@@ -23,9 +23,6 @@
 #include <Transfer_StatusResult.hxx>
 #include <Transfer_StatusExec.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
 class Interface_Check;
 
 // resolve name collisions with X11 headers

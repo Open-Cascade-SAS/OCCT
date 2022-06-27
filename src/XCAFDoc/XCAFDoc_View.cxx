@@ -15,17 +15,13 @@
 
 #include <XCAFDoc_View.hxx>
 
-#include <Standard_GUID.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
-#include <TDataStd_RealArray.hxx>
 #include <TDataXtd_Axis.hxx>
 #include <TDataXtd_Geometry.hxx>
-#include <TDataXtd_Plane.hxx>
 #include <TDataXtd_Point.hxx>
 #include <TDF_ChildIterator.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFView_Object.hxx>
 

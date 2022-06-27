@@ -18,9 +18,7 @@
 #include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_OutOfMemory.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>

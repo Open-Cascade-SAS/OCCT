@@ -16,7 +16,6 @@
 #ifndef XCAFPrs_IndexedDataMapOfShapeStyle_HeaderFile
 #define XCAFPrs_IndexedDataMapOfShapeStyle_HeaderFile
 
-#include <TopoDS_Shape.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>

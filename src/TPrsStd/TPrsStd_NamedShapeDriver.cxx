@@ -16,16 +16,10 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TColStd_ListOfInteger.hxx>
 #include <TDataStd.hxx>
 #include <TDF_Label.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
 #include <TopLoc_Location.hxx>
 #include <TPrsStd_DriverTable.hxx>

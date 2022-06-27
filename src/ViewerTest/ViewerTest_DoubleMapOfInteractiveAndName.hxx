@@ -20,7 +20,6 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_MapTransientHasher.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_DoubleMap.hxx>
 
 class AIS_InteractiveObject;

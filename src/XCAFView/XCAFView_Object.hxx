@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>

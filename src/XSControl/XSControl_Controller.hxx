@@ -22,15 +22,12 @@
 
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
-#include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <NCollection_Vector.hxx>
 #include <IFSelect_ReturnStatus.hxx>
-#include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Message_ProgressRange.hxx>
 
 class IFSelect_WorkLibrary;

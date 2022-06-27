@@ -15,7 +15,6 @@
 #ifndef TShort_Array1OfShortReal_HeaderFile
 #define TShort_Array1OfShortReal_HeaderFile
 
-#include <Standard_ShortReal.hxx>
 #include <NCollection_Array1.hxx>
 
 typedef NCollection_Array1<Standard_ShortReal> TShort_Array1OfShortReal;

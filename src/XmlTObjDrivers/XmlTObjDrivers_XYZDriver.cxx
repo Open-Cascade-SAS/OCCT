@@ -19,7 +19,6 @@
 #include <XmlTObjDrivers_XYZDriver.hxx>
 
 #include <Message_Messenger.hxx>
-#include <TDF_Attribute.hxx>
 
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>

@@ -14,7 +14,6 @@
 #ifndef _XCAFDoc_VisMaterialPBR_HeaderFile
 #define _XCAFDoc_VisMaterialPBR_HeaderFile
 
-#include <Graphic3d_AlphaMode.hxx>
 #include <Graphic3d_Vec.hxx>
 #include <Image_Texture.hxx>
 #include <Quantity_ColorRGBA.hxx>

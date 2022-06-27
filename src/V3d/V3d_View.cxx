@@ -23,7 +23,6 @@
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
-#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
@@ -39,13 +38,10 @@
 #include <Standard_Assert.hxx>
 #include <Standard_DivideByZero.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Standard_MultiplyDefined.hxx>
 #include <Standard_ShortReal.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_TypeMismatch.hxx>
-#include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
-#include <TColStd_HSequenceOfInteger.hxx>
 #include <V3d.hxx>
 #include <V3d_BadValue.hxx>
 #include <V3d_Light.hxx>

@@ -17,11 +17,8 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Standard_GUID.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_NoMoreObject.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_AttributeDelta.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_DefaultDeltaOnRemoval.hxx>
@@ -31,10 +28,8 @@
 #include <TDF_Tool.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TDataXtd_Presentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
-#include <TPrsStd_Driver.hxx>
 #include <TPrsStd_DriverTable.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_AISPresentation,TDF_Attribute)

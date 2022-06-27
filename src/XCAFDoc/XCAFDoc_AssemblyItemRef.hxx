@@ -17,8 +17,6 @@
 #define _XCAFDoc_AssemblyItemRef_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_GUID.hxx>
 #include <TDF_Attribute.hxx>
 #include <XCAFDoc_AssemblyItemId.hxx>
 

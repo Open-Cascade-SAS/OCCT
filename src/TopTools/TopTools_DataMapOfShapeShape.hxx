@@ -18,7 +18,6 @@
 #define TopTools_DataMapOfShapeShape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 

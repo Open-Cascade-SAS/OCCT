@@ -15,7 +15,6 @@
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom_CartesianPoint.hxx>
-#include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Pnt.hxx>

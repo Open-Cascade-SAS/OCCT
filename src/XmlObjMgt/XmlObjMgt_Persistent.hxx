@@ -18,7 +18,6 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 
 #include <XmlObjMgt_Element.hxx>
 #include <Standard_Integer.hxx>

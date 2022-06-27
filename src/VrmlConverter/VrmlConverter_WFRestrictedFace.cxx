@@ -15,8 +15,6 @@
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <gp_Pnt.hxx>
 #include <Hatch_Hatcher.hxx>
 #include <Precision.hxx>
 #include <StdPrs_ToolRFace.hxx>

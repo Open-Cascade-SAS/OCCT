@@ -23,7 +23,6 @@
 
 #include <gp_Vec.hxx>
 #include <Vrml_SFRotation.hxx>
-#include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 
 

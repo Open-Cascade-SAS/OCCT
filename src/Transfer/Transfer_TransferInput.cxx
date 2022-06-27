@@ -13,11 +13,9 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
-#include <Transfer_Binder.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_IteratorOfProcessForFinder.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>

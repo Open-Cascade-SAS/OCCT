@@ -25,8 +25,6 @@
 //		plantatoire sur HP.
 
 #include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <Units_Dimensions.hxx>
 #include <Units_Operators.hxx>
 #include <Units_Token.hxx>
 

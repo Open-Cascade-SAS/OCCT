@@ -15,7 +15,6 @@
 #define _XCAFDoc_VisMaterialTool_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_LabelSequence.hxx>
 
 class TopoDS_Shape;

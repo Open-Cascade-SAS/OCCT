@@ -17,7 +17,6 @@
 #include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_IntPackedMap.hxx>

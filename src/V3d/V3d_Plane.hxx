@@ -16,8 +16,6 @@
 #ifndef V3d_Plane_HeaderFile
 #define V3d_Plane_HeaderFile
 
-#include <Graphic3d_ClipPlane.hxx>
-#include <Graphic3d_Structure.hxx>
 #include <V3d_View.hxx>
 
 class V3d_Plane;

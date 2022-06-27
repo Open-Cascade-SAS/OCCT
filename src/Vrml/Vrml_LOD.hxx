@@ -22,7 +22,6 @@
 
 #include <TColStd_HArray1OfReal.hxx>
 #include <gp_Vec.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
 

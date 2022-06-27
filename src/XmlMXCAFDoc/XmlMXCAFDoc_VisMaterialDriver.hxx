@@ -15,10 +15,8 @@
 #define _XmlMXCAFDoc_VisMaterialDriver_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <XmlMDF_ADriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 

@@ -21,7 +21,6 @@
 
 #include <TopTools_LocationSetPtr.hxx>
 #include <XmlMDF_ADriver.hxx>
-#include <Standard_Boolean.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 #include <XmlObjMgt_Element.hxx>

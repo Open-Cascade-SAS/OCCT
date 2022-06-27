@@ -19,8 +19,6 @@
 #include <Aspect_WindowDefinitionError.hxx>
 #include <Aspect_WindowInputListener.hxx>
 #include <Message.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_NotImplemented.hxx>
 
 #if defined(HAVE_XLIB)
   #include <X11/Xlib.h>

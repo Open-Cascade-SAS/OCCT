@@ -23,9 +23,7 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Transfer_ProcessForTransient.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>

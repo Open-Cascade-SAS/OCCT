@@ -15,7 +15,6 @@
 
 
 #include <Message_Messenger.hxx>
-#include <LDOM_MemManager.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_ReferenceArray.hxx>
 #include <TDF_Attribute.hxx>

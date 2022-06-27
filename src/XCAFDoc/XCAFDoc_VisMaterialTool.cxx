@@ -13,15 +13,12 @@
 
 #include <XCAFDoc_VisMaterialTool.hxx>
 
-#include <Standard_GUID.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_TreeNode.hxx>
-#include <TDataStd_UAttribute.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TNaming_NamedShape.hxx>
-#include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_VisMaterial.hxx>
 #include <XCAFDoc_DocumentTool.hxx>

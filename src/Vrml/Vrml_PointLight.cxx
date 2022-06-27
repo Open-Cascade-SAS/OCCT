@@ -12,8 +12,6 @@
 // commercial license or contractual agreement.
 
 
-#include <gp_Vec.hxx>
-#include <Quantity_Color.hxx>
 #include <Vrml_PointLight.hxx>
 
 Vrml_PointLight::Vrml_PointLight():

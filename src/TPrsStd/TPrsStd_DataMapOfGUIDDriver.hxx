@@ -19,7 +19,6 @@
 
 #include <Standard_GUID.hxx>
 #include <TPrsStd_Driver.hxx>
-#include <Standard_GUID.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<Standard_GUID,Handle(TPrsStd_Driver),Standard_GUID> TPrsStd_DataMapOfGUIDDriver;

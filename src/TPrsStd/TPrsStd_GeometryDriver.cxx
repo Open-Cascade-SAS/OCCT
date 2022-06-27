@@ -33,10 +33,7 @@
 #include <TDataXtd.hxx>
 #include <TDataXtd_Geometry.hxx>
 #include <TDF_Label.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <TNaming_Tool.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TPrsStd_GeometryDriver.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TPrsStd_GeometryDriver,TPrsStd_Driver)
