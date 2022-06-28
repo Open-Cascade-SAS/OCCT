@@ -1,0 +1,43 @@
+puts "=========="
+puts "0033011: Data Exchange - Backward compatibility XBF format"
+puts "=========="
+puts ""
+
+pload XDE
+pload OCAF
+
+Close D -silent
+
+# create test document
+box b 1 1 1
+box bb 2 0 0 1 1 1
+compound b bb c
+XNewDoc D
+XAddShape D c 0
+# 0:1:1:1
+XAddShape D b
+# 0:1:1:2
+explode b f
+# b_1 b_2 b_3 b_4 b_5 b_6
+XAddSubShape D b_1 0:1:1:1
+# 0:1:1:1:1
+XAddSubShape D b_1 0:1:1:2
+# 0:1:1:2:1
+
+XAddDimension D c b
+#0:1:4:1
+XSetDimensionType D 0:1:4:1 2
+XSetDimensionValue D 0:1:4:1 6
+XSetDimensionPlusMinusTol D 0:1:4:1 -0.001 0.002
+vertex v1 10 10 10
+vertex v2 20 20 20 
+XSetDimensionPoints D 0:1:4:1 v1 v2
+
+box pres 0.5 0.5 0.5
+XSetGDTPresentation D 0:1:4:1 pres "temp presentation"
+
+# DO NOT CHANGE THE LABEL
+XGetShape pres_shape D  0:1:4:1:15
+
+checknbshapes pres_shape -vertex 8 -edge 12 -wire 6 -face 6
+checkprops pres_shape -s 1.5 -eps 1e-2

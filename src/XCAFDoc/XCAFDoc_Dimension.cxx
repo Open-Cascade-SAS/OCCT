@@ -37,7 +37,6 @@ enum ChildLab
   ChildLab_Type = ChildLab_Begin,
   ChildLab_Value,
   ChildLab_Qualifier,
-  ChildLab_AngularQualifier,
   ChildLab_Class,
   ChildLab_Dec,
   ChildLab_Modifiers,
@@ -52,6 +51,7 @@ enum ChildLab
   ChildLab_Presentation,
   ChildLab_Descriptions,
   ChildLab_DescriptionNames,
+  ChildLab_AngularQualifier,
   ChildLab_End
 };
 
