@@ -1,0 +1,11 @@
+puts "========="
+puts "OCC32692: Crash when the input shape has some invalid topology"
+puts "========="
+puts ""
+
+puts "REQUIRED ALL: Meshing statuses: Reused"
+
+restore [locate_data_file bug32692_broken_mesh.brep] s
+incmesh s 0.01 -parallel
+
+checktrinfo s -nod 3 -tri 1 -face 1
