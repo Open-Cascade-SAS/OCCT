@@ -1,0 +1,14 @@
+puts "========="
+puts "OCC32692: Crash when the input shape has some invalid topology"
+puts "========="
+puts ""
+
+puts "REQUIRED ALL: Meshing statuses: OpenWire Failure Outdated"
+
+pload MODELING
+cylinder c 0 0 0 10
+mkface f c
+
+incmesh f 0.01 -parallel
+
+checktrinfo f -nod 0 -tri 0 -face 1
