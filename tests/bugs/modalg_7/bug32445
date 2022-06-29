@@ -1,0 +1,28 @@
+puts "============================================"
+puts "0032445: BRepOffsetAPI_MakePipeShell crash when using -DT mode and DT_ShapeDivide on the spine"
+puts "============================================"
+puts ""
+
+restore [locate_data_file bug32445_spine.brep] s
+restore [locate_data_file bug32445_profile_1.brep] p1
+restore [locate_data_file bug32445_profile_2.brep] p2
+restore [locate_data_file bug32445_profile_3.brep] p3
+restore [locate_data_file bug32445_profile_4.brep] p4
+restore [locate_data_file bug32445_profile_5.brep] p5
+restore [locate_data_file bug32445_profile_6.brep] p6
+
+DT_ShapeDivide s s 0.01
+
+mksweep s 
+setsweep -DT
+addsweep p1
+addsweep p2
+addsweep p3
+addsweep p4
+addsweep p5
+addsweep p6
+
+buildsweep r -C -S
+
+checkshape r
+checkview -display r -2d -path ${imagedir}/${test_image}.png
