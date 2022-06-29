@@ -221,7 +221,7 @@ Handle(TopTools_HSequenceOfShape) Translate::importModel( const int format, cons
             shapes = importSTEP( file );
             break;
         }
-    } catch ( Standard_Failure ) {
+    } catch ( const Standard_Failure& ) {
         shapes.Nullify();
     }
     return shapes;
@@ -256,7 +256,7 @@ bool Translate::exportModel( const int format, const QString& file, const Handle
         case FormatSTL:  return exportSTL ( file, shapes );
         case FormatVRML: return exportVRML( file, shapes );
         }
-    } catch ( Standard_Failure ) {
+    } catch ( const Standard_Failure& ) {
         //
     }
     return false;
@@ -528,26 +528,26 @@ bool Translate::exportSTL( const QString& file, const Handle(TopTools_HSequenceO
     if ( shapes.IsNull() || shapes->IsEmpty() )
         return false;
 
-	TopoDS_Compound res;
-	BRep_Builder builder;
-	builder.MakeCompound( res );
+    TopoDS_Compound res;
+    BRep_Builder builder;
+    builder.MakeCompound( res );
 
-	for ( int i = 1; i <= shapes->Length(); i++ )
-	{
-		TopoDS_Shape shape = shapes->Value( i );
-		if ( shape.IsNull() ) 
-		{
-			myInfo = QObject::tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-			return false;
+    for ( int i = 1; i <= shapes->Length(); i++ )
+    {
+        TopoDS_Shape shape = shapes->Value( i );
+        if ( shape.IsNull() ) 
+        {
+            myInfo = QObject::tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
+            return false;
         }
-		builder.Add( res, shape );
-	}
+        builder.Add( res, shape );
+    }
 
-	StlAPI_Writer writer;
-	
-	const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
-	
-	writer.Write( res, anUtf8Path.ToCString() );
+    StlAPI_Writer writer;
+
+    const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+
+    writer.Write( res, anUtf8Path.ToCString() );
 
     return true;
 }
@@ -557,26 +557,26 @@ bool Translate::exportVRML( const QString& file, const Handle(TopTools_HSequence
     if ( shapes.IsNull() || shapes->IsEmpty() )
         return false;
 
-	TopoDS_Compound res;
-	BRep_Builder builder;
-	builder.MakeCompound( res );
+    TopoDS_Compound res;
+    BRep_Builder builder;
+    builder.MakeCompound( res );
 
-	for ( int i = 1; i <= shapes->Length(); i++ )
-	{
-		TopoDS_Shape shape = shapes->Value( i );
-		if ( shape.IsNull() )
-		{
-			myInfo = QObject::tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-			return false;
+    for ( int i = 1; i <= shapes->Length(); i++ )
+    {
+        TopoDS_Shape shape = shapes->Value( i );
+        if ( shape.IsNull() )
+        {
+            myInfo = QObject::tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
+            return false;
         }
-		builder.Add( res, shape );
-	}
+    builder.Add( res, shape );
+    }
 
-	VrmlAPI_Writer writer;
-	
-	const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
-	
-	writer.Write( res, anUtf8Path.ToCString() );
+    VrmlAPI_Writer writer;
+
+    const TCollection_AsciiString anUtf8Path (file.toUtf8().data());
+
+    writer.Write( res, anUtf8Path.ToCString() );
 
     return true;
 }
