@@ -26,6 +26,8 @@ BRepBuilderAPI_MakePolygon.cxx
 BRepBuilderAPI_MakePolygon.hxx
 BRepBuilderAPI_MakeShape.cxx
 BRepBuilderAPI_MakeShape.hxx
+BRepBuilderAPI_MakeShapeOnMesh.cxx
+BRepBuilderAPI_MakeShapeOnMesh.hxx
 BRepBuilderAPI_MakeShell.cxx
 BRepBuilderAPI_MakeShell.hxx
 BRepBuilderAPI_MakeSolid.cxx

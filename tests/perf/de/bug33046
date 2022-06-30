@@ -1,0 +1,17 @@
+puts "========"
+puts "0033046: Modeling algorithms - improve performance of per-facet shape construction"
+puts "Checks execution time of new shape construction method from STL file."
+puts "========" 
+
+cpulimit 25
+
+# Run stl loading and translation to the shape.
+chrono c reset; chrono c start;
+readstl m [locate_data_file model_stl_025.stl] -brep
+chrono c stop; chrono c show;
+
+# Check that model is converted succesfully.
+checknbshapes m -face 54337;
+
+# Visual check
+checkview -display m -2d -path ${imagedir}/${test_image}.png

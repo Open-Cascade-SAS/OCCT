@@ -13,18 +13,9 @@
 
 #include <StlAPI_Reader.hxx>
 
-#include <BRep_Builder.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeShapeOnMesh.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
-#include <gp_Pnt.hxx>
 #include <RWStl.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
 
 //=============================================================================
 //function : Read
@@ -35,55 +26,17 @@ Standard_Boolean StlAPI_Reader::Read (TopoDS_Shape&          theShape,
 {
   Handle(Poly_Triangulation) aMesh = RWStl::ReadFile (theFileName);
   if (aMesh.IsNull())
-  {
     return Standard_False;
-  }
 
-  TopoDS_Vertex aTriVertexes[3];
-  TopoDS_Face aFace;
-  TopoDS_Wire aWire;
-  BRepBuilderAPI_Sewing aSewingTool;
-  aSewingTool.Init (1.0e-06, Standard_True);
+  BRepBuilderAPI_MakeShapeOnMesh aConverter(aMesh);
+  aConverter.Build();
+  if (!aConverter.IsDone())
+    return Standard_False;
 
-  TopoDS_Compound aComp;
-  BRep_Builder BuildTool;
-  BuildTool.MakeCompound (aComp);
+  TopoDS_Shape aResult = aConverter.Shape();
+  if (aResult.IsNull())
+    return Standard_False;
 
-  for (Standard_Integer aTriIdx  = 1; aTriIdx <= aMesh->NbTriangles(); ++aTriIdx)
-  {
-    const Poly_Triangle aTriangle = aMesh->Triangle (aTriIdx);
-
-    Standard_Integer anId[3];
-    aTriangle.Get(anId[0], anId[1], anId[2]);
-
-    const gp_Pnt aPnt1 = aMesh->Node (anId[0]);
-    const gp_Pnt aPnt2 = aMesh->Node (anId[1]);
-    const gp_Pnt aPnt3 = aMesh->Node (anId[2]);
-    if (!(aPnt1.IsEqual (aPnt2, 0.0))
-     && !(aPnt1.IsEqual (aPnt3, 0.0)))
-    {
-      aTriVertexes[0] = BRepBuilderAPI_MakeVertex (aPnt1);
-      aTriVertexes[1] = BRepBuilderAPI_MakeVertex (aPnt2);
-      aTriVertexes[2] = BRepBuilderAPI_MakeVertex (aPnt3);
-
-      aWire = BRepBuilderAPI_MakePolygon (aTriVertexes[0], aTriVertexes[1], aTriVertexes[2], Standard_True);
-      if (!aWire.IsNull())
-      {
-        aFace = BRepBuilderAPI_MakeFace (aWire);
-        if (!aFace.IsNull())
-        {
-          BuildTool.Add (aComp, aFace);
-        }
-      }
-    }
-  }
-
-  aSewingTool.Load (aComp);
-  aSewingTool.Perform();
-  theShape = aSewingTool.SewedShape();
-  if (theShape.IsNull())
-  {
-    theShape = aComp;
-  }
+  theShape = aResult;
   return Standard_True;
 }
