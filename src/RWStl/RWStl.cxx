@@ -99,9 +99,40 @@ namespace
       return aPoly;
     }
 
+  protected:
+    void Clear()
+    {
+      myNodes.Clear();
+      myTriangles.Clear();
+    }
+
   private:
     NCollection_Vector<gp_XYZ> myNodes;
     NCollection_Vector<Poly_Triangle> myTriangles;
+  };
+
+  class MultiDomainReader : public Reader
+  {
+  public:
+    //! Add new solid
+    //! Add triangulation to triangulation list for multi-domain case
+    virtual void AddSolid() Standard_OVERRIDE
+    {
+      if (Handle(Poly_Triangulation) aCurrentTri = GetTriangulation())
+      {
+        myTriangulationList.Append(aCurrentTri);
+      }
+      Clear();
+    }
+
+    //! Returns triangulation list for multi-domain case
+    NCollection_Sequence<Handle(Poly_Triangulation)>& ChangeTriangulationList()
+    {
+      return myTriangulationList;
+    }
+
+  private:
+    NCollection_Sequence<Handle(Poly_Triangulation)> myTriangulationList;
   };
 
 }
@@ -120,6 +151,22 @@ Handle(Poly_Triangulation) RWStl::ReadFile (const Standard_CString theFile,
   // note that returned bool value is ignored intentionally -- even if something went wrong,
   // but some data have been read, we at least will return these data
   return aReader.GetTriangulation();
+}
+
+//=============================================================================
+//function : ReadFile
+//purpose  :
+//=============================================================================
+void RWStl::ReadFile(const Standard_CString theFile,
+                     const Standard_Real theMergeAngle,
+                     NCollection_Sequence<Handle(Poly_Triangulation)>& theTriangList,
+                     const Message_ProgressRange& theProgress)
+{
+  MultiDomainReader aReader;
+  aReader.SetMergeAngle (theMergeAngle);
+  aReader.Read (theFile, theProgress);
+  theTriangList.Clear();
+  theTriangList.Append (aReader.ChangeTriangulationList());
 }
 
 //=============================================================================

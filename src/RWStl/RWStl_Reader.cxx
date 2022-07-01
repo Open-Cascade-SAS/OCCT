@@ -180,6 +180,7 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
       }
     }
     *aStream >> std::ws; // skip any white spaces
+    AddSolid();
   }
   return ! aStream->fail();
 }
@@ -300,6 +301,11 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
 
   // skip header "solid ..."
   aLine = theBuffer.ReadLine (theStream, aLineLen);
+  // skip empty lines
+  while (aLine && !*aLine)
+  {
+    aLine = theBuffer.ReadLine (theStream, aLineLen);
+  }
   if (aLine == NULL)
   {
     Message::SendFail ("Error: premature end of file");

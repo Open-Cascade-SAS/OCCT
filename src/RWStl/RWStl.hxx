@@ -20,6 +20,7 @@
 #include <Poly_Triangulation.hxx>
 #include <Standard_Macro.hxx>
 #include <Message_ProgressScope.hxx>
+#include <NCollection_Sequence.hxx>
 
 //! This class provides methods to read and write triangulation from / to the STL files.
 class RWStl
@@ -61,7 +62,17 @@ public:
   Standard_EXPORT static Handle(Poly_Triangulation) ReadFile (const Standard_CString theFile,
                                                               const Standard_Real theMergeAngle,
                                                               const Message_ProgressRange& theProgress = Message_ProgressRange());
-
+  
+  //! Read specified STL file and fills triangulation list for multi-domain case.
+  //! @param[in] theFile file path to read
+  //! @param[in] theMergeAngle maximum angle in radians between triangles to merge equal nodes; M_PI/2 means ignore angle
+  //! @param[out] theTriangList triangulation list for multi-domain case
+  //! @param[in] theProgress progress indicator
+  Standard_EXPORT static void ReadFile(const Standard_CString theFile,
+                                       const Standard_Real theMergeAngle,
+                                       NCollection_Sequence<Handle(Poly_Triangulation)>& theTriangList,
+                                       const Message_ProgressRange& theProgress = Message_ProgressRange());
+  
   //! Read triangulation from a binary STL file
   //! In case of error, returns Null handle.
   Standard_EXPORT static Handle(Poly_Triangulation) ReadBinary (const OSD_Path& thePath,

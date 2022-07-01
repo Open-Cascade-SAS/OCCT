@@ -1,0 +1,44 @@
+puts "========"
+puts "0031080: Data Exchange, STL reader - improve API for reading multi-domain STL files"
+puts "========"
+puts ""
+
+pload ALL
+
+# create two boxes with mesh
+box b1 5 5 5 
+box b2 5 5 5 
+ttranslate b2 10 10 10 
+incmesh b1 0.1
+incmesh b2 0.1
+
+# write each box to Ascii STL
+writestl b1 $imagedir/${casename}_1.stl 0
+writestl b2 $imagedir/${casename}_2.stl 0
+
+set aTmpStl "${imagedir}/${casename}_cat.stl"
+file delete $aTmpStl
+set file_res [open $aTmpStl a+]
+
+# cat each stl files content to file_res
+set file_stl [open $imagedir/${casename}_1.stl r]
+set buffer [read $file_stl];
+puts $file_res $buffer
+close $file_stl
+
+set file_stl [open $imagedir/${casename}_2.stl r]
+set buffer [read $file_stl];
+puts $file_res $buffer
+close $file_stl
+close $file_res
+
+# load multi-domain STL
+readstl result ${imagedir}/${casename}_cat.stl -multi
+
+vinit
+vdisplay result -dispmode 1
+vfit
+
+checknbshapes result -face 2 -compound 1
+checktrinfo result -tri 24 -nod 16
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

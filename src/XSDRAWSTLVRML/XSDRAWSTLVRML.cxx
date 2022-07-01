@@ -626,6 +626,7 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
 {
   TCollection_AsciiString aShapeName, aFilePath;
   bool toCreateCompOfTris = false;
+  bool anIsMulti = false;
   double aMergeAngle = M_PI / 2.0;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgc; ++anArgIter)
   {
@@ -644,6 +645,15 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
       toCreateCompOfTris = true;
       if (anArgIter + 1 < theArgc
        && Draw::ParseOnOff (theArgv[anArgIter + 1], toCreateCompOfTris))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArg == "-multi")
+    {
+      anIsMulti = true;
+      if (anArgIter + 1 < theArgc
+       && Draw::ParseOnOff (theArgv[anArgIter + 1], anIsMulti))
       {
         ++anArgIter;
       }
@@ -689,15 +699,46 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
   TopoDS_Shape aShape;
   if (!toCreateCompOfTris)
   {
-    // Read STL file to the triangulation.
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
-    Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(), aMergeAngle, aProgress->Start());
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI,1);
+    if(anIsMulti)
+    {
+      NCollection_Sequence<Handle(Poly_Triangulation)> aTriangList;
+      // Read STL file to the triangulation list.
+      RWStl::ReadFile(aFilePath.ToCString(),aMergeAngle,aTriangList,aProgress->Start());
+      BRep_Builder aB;
+      TopoDS_Face aFace;
+      if (aTriangList.Size() == 1)
+      {
+        aB.MakeFace (aFace);
+        aB.UpdateFace (aFace,aTriangList.First());
+        aShape = aFace;
+      }
+      else
+      {
+        TopoDS_Compound aCmp;
+        aB.MakeCompound (aCmp);
+      
+        NCollection_Sequence<Handle(Poly_Triangulation)>::Iterator anIt (aTriangList);
+        for (; anIt.More(); anIt.Next())
+        { 
+          aB.MakeFace (aFace);
+          aB.UpdateFace (aFace,anIt.Value());
+          aB.Add (aCmp,aFace);
+        }
+        aShape = aCmp;
+      }
+    }
+    else
+    {
+      // Read STL file to the triangulation.
+      Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(),aMergeAngle,aProgress->Start());
 
-    TopoDS_Face aFace;
-    BRep_Builder aB;
-    aB.MakeFace (aFace);
-    aB.UpdateFace (aFace, aTriangulation);
-    aShape = aFace;
+      TopoDS_Face aFace;
+      BRep_Builder aB;
+      aB.MakeFace (aFace);
+      aB.UpdateFace (aFace,aTriangulation);
+      aShape = aFace;
+    }
   }
   else
   {
@@ -2435,11 +2476,12 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",
-                   "readstl shape file [-brep] [-mergeAngle Angle]"
+                   "readstl shape file [-brep] [-mergeAngle Angle] [-multi]"
                    "\n\t\t: Reads STL file and creates a new shape with specified name."
                    "\n\t\t: When -brep is specified, creates a Compound of per-triangle Faces."
                    "\n\t\t: Single triangulation-only Face is created otherwise (default)."
-                   "\n\t\t: -mergeAngle specifies maximum angle in degrees between triangles to merge equal nodes; disabled by default.",
+                   "\n\t\t: -mergeAngle specifies maximum angle in degrees between triangles to merge equal nodes; disabled by default."
+                   "\n\t\t: -multi creates a face per solid in multi-domain files; ignored when -brep is set.",
                    __FILE__, readstl, g);
   theCommands.Add ("loadvrml" , "shape file",__FILE__,loadvrml,g);
   theCommands.Add ("ReadObj",

@@ -39,7 +39,8 @@ public:
   Standard_EXPORT RWStl_Reader();
 
   //! Reads data from STL file (either binary or Ascii).
-  //! This function supports reading multi-domain STL files formed by concatenation of several "plain" files.
+  //! This function supports reading multi-domain STL files formed by concatenation 
+  //! of several "plain" files. 
   //! The mesh nodes are not merged between domains.
   //! Unicode paths can be given in UTF-8 encoding.
   //! Format is recognized automatically by analysis of the file header.
@@ -84,6 +85,9 @@ public:
   //! Should create new triangle built on specified nodes in the target model.
   virtual void AddTriangle (Standard_Integer theN1, Standard_Integer theN2, Standard_Integer theN3) = 0;
 
+  //! Callback function to be implemented in descendant.
+  //! Should create a new triangulation for a solid in multi-domain case.
+  virtual void AddSolid() {}
 public:
 
   //! Return merge tolerance; M_PI/2 by default - all nodes are merged regardless angle between triangles.
