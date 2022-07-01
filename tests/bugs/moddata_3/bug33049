@@ -1,0 +1,25 @@
+puts "================================================================="
+puts "0033049: Command 'tclean -geom' does not remove all geometric objects from the shape"
+puts "================================================================="
+puts ""
+
+psphere s1 10
+pcylinder s2 8 20
+pcone s3 10 8 5
+ttranslate s1 0 0 25
+ttranslate s3 0 0 -5
+
+baddobjects s1
+baddtools s2 s3
+bfillds
+bbop s fuse
+
+incmesh s 0.1
+tclean -geom s
+
+regexp {Dump of ([0-9+-]*) Curve2ds.*Dump of ([0-9+-]*) Curves.*Dump of ([0-9+-]*) surfaces} [dump s] full nbC2d nbC3d nbSurf
+if {$nbC2d != 0 || $nbC3d != 0 || $nbSurf != 0} {
+  puts "Error: geometry is not fully removed"
+} else {
+  puts "OK: shape has no geometry"
+}

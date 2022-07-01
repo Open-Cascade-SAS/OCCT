@@ -893,6 +893,8 @@ void BRepTools::CleanGeometry(const TopoDS_Shape& theShape)
     aBuilder.UpdateEdge(anEdge, Handle(Geom_Curve)(),
       TopLoc_Location(), BRep_Tool::Tolerance(anEdge));
   }
+
+  RemoveUnusedPCurves(theShape);
 }
 
 
