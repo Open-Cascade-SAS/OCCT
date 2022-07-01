@@ -29,6 +29,7 @@
 #include <GeomLib.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Quaternion.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
@@ -88,7 +89,13 @@ Standard_Boolean BRepTools_GTrsfModification::NewSurface
   gp_GTrsf gtrsf;
   gtrsf.SetVectorialPart(myGTrsf.VectorialPart());
   gtrsf.SetTranslationPart(myGTrsf.TranslationPart());
-  S = Handle(Geom_Surface)::DownCast(BRep_Tool::Surface(F,L)->Copy());
+  S = BRep_Tool::Surface(F, L);
+  if (S.IsNull())
+  {
+    //processing the case when there is no geometry
+    return Standard_False;
+  }
+  S = Handle(Geom_Surface)::DownCast(S->Copy());
 
   Tol = BRep_Tool::Tolerance(F);
   Tol *= myGScale;
@@ -173,7 +180,7 @@ Standard_Boolean BRepTools_GTrsfModification::NewCurve
     C = new Geom_TrimmedCurve(C, f, l);
   }
   L.Identity() ;  
-  return Standard_True;
+  return !C.IsNull();
 }
 
 //=======================================================================
@@ -214,6 +221,11 @@ Standard_Boolean BRepTools_GTrsfModification::NewCurve2d
   Tol *= myGScale;
   Standard_Real f,l;
   C = BRep_Tool::CurveOnSurface(E,F,f,l);
+  if (C.IsNull())
+  {
+    //processing the case when there is no geometry
+    return Standard_False;
+  }
   C = new Geom2d_TrimmedCurve(C, f, l);
   return Standard_True;
 }
@@ -251,4 +263,113 @@ GeomAbs_Shape BRepTools_GTrsfModification::Continuity
   return BRep_Tool::Continuity(E,F1,F2);
 }
 
+//=======================================================================
+//function : NewTriangulation
+//purpose  : 
+//=======================================================================
 
+Standard_Boolean BRepTools_GTrsfModification::NewTriangulation(const TopoDS_Face&          theFace,
+                                                               Handle(Poly_Triangulation)& theTriangulation)
+{
+  TopLoc_Location aLoc;
+  theTriangulation = BRep_Tool::Triangulation(theFace, aLoc);
+  if (theTriangulation.IsNull())
+  {
+    return Standard_False;
+  }
+
+  gp_GTrsf aGTrsf;
+  aGTrsf.SetVectorialPart(myGTrsf.VectorialPart());
+  aGTrsf.SetTranslationPart(myGTrsf.TranslationPart());
+  aGTrsf.Multiply(aLoc.Transformation());
+
+  theTriangulation = theTriangulation->Copy();
+  theTriangulation->SetCachedMinMax(Bnd_Box()); // clear bounding box
+  theTriangulation->Deflection(theTriangulation->Deflection() * Abs(myGScale));
+  // apply transformation to 3D nodes
+  for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
+  {
+    gp_Pnt aP = theTriangulation->Node(anInd);
+    aGTrsf.Transforms(aP.ChangeCoord());
+    theTriangulation->SetNode(anInd, aP);
+  }
+  // modify triangles orientation in case of mirror transformation
+  if (myGScale < 0.0)
+  {
+    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
+    {
+      Poly_Triangle aTria = theTriangulation->Triangle(anInd);
+      Standard_Integer aN1, aN2, aN3;
+      aTria.Get(aN1, aN2, aN3);
+      aTria.Set(aN1, aN3, aN2);
+      theTriangulation->SetTriangle(anInd, aTria);
+    }
+  }
+  // modify normals
+  if (theTriangulation->HasNormals())
+  {
+    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
+    {
+      gp_Dir aNormal = theTriangulation->Normal(anInd);
+      aNormal.Transform(aGTrsf.Trsf());
+      theTriangulation->SetNormal(anInd, aNormal);
+    }
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : NewPolygon
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_GTrsfModification::NewPolygon(const TopoDS_Edge&      theEdge,
+                                                         Handle(Poly_Polygon3D)& thePoly)
+{
+  TopLoc_Location aLoc;
+  thePoly = BRep_Tool::Polygon3D(theEdge, aLoc);
+  if (thePoly.IsNull())
+  {
+    return Standard_False;
+  }
+
+  gp_GTrsf aGTrsf;
+  aGTrsf.SetVectorialPart(myGTrsf.VectorialPart());
+  aGTrsf.SetTranslationPart(myGTrsf.TranslationPart());
+  aGTrsf.Multiply(aLoc.Transformation());
+
+  thePoly = thePoly->Copy();
+  thePoly->Deflection(thePoly->Deflection() * Abs(myGScale));
+  // transform nodes
+  TColgp_Array1OfPnt& aNodesArray = thePoly->ChangeNodes();
+  for (Standard_Integer anId = aNodesArray.Lower(); anId <= aNodesArray.Upper(); ++anId)
+  {
+    gp_Pnt& aP = aNodesArray.ChangeValue(anId);
+    aGTrsf.Transforms(aP.ChangeCoord());
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : NewPolygonOnTriangulation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_GTrsfModification::NewPolygonOnTriangulation
+ (const TopoDS_Edge& theEdge,
+  const TopoDS_Face& theFace,
+  Handle(Poly_PolygonOnTriangulation)& thePoly)
+{
+  TopLoc_Location aLoc;
+  Handle(Poly_Triangulation) aT = BRep_Tool::Triangulation(theFace, aLoc);
+  if (aT.IsNull())
+  {
+    return Standard_False;
+  }
+
+  thePoly = BRep_Tool::PolygonOnTriangulation(theEdge, aT, aLoc);
+  if (!thePoly.IsNull())
+    thePoly = thePoly->Copy();
+  return Standard_True;
+}

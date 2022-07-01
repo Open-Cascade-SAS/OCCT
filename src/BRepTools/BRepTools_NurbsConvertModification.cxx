@@ -20,7 +20,10 @@
 #include <BRep_TEdge.hxx>
 #include <BRepTools.hxx>
 #include <ElSLib.hxx>
+#include <Extrema_ExtPC2d.hxx>
+#include <Extrema_GenLocateExtPS.hxx>
 #include <Extrema_LocateExtPC.hxx>
+#include <Extrema_LocateExtPC2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
@@ -47,30 +50,163 @@
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Edge.hxx>
 #include <BRep_Builder.hxx>
-IMPLEMENT_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_Modification)
+
+IMPLEMENT_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_CopyModification)
 
 //
-static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
-                  const Standard_Real newU1,
-                  const Standard_Real newU2)
+namespace
 {
-  TColStd_Array1OfReal  knots(1,aSurface->NbUKnots()) ;
-  aSurface->UKnots(knots) ;
-  BSplCLib::Reparametrize(newU1,
-              newU2,
-              knots) ;
-  aSurface->SetUKnots(knots) ;
-}
-static void GeomLib_ChangeVBounds(Handle(Geom_BSplineSurface)& aSurface,
-                  const Standard_Real newV1,
-                  const Standard_Real newV2)
-{
-  TColStd_Array1OfReal  knots(1,aSurface->NbVKnots()) ;
-  aSurface->VKnots(knots) ;
-  BSplCLib::Reparametrize(newV1,
-              newV2,
-              knots) ;
-  aSurface->SetVKnots(knots) ;
+  static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
+                                    const Standard_Real newU1,
+                                    const Standard_Real newU2)
+  {
+    TColStd_Array1OfReal  knots(1, aSurface->NbUKnots());
+    aSurface->UKnots(knots);
+    BSplCLib::Reparametrize(newU1, newU2, knots);
+    aSurface->SetUKnots(knots);
+  }
+
+  static void GeomLib_ChangeVBounds(Handle(Geom_BSplineSurface)& aSurface,
+                                    const Standard_Real newV1,
+                                    const Standard_Real newV2)
+  {
+    TColStd_Array1OfReal  knots(1, aSurface->NbVKnots());
+    aSurface->VKnots(knots);
+    BSplCLib::Reparametrize(newV1, newV2, knots);
+    aSurface->SetVKnots(knots);
+  }
+
+  // find 3D curve from theEdge in theMap, and return the transformed curve or NULL
+  static Handle(Geom_Curve) newCurve(const TColStd_IndexedDataMapOfTransientTransient& theMap,
+                                     const TopoDS_Edge& theEdge,
+                                     Standard_Real& theFirst,
+                                     Standard_Real& theLast)
+  {
+    Handle(Geom_Curve) aNewCurve;
+
+    TopLoc_Location aLoc;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(theEdge, aLoc, theFirst, theLast);
+    if (!aCurve.IsNull() && theMap.Contains(aCurve))
+    {
+      aNewCurve = Handle(Geom_Curve)::DownCast(theMap.FindFromKey(aCurve));
+      aNewCurve = Handle(Geom_Curve)::DownCast(aNewCurve->Transformed(aLoc.Transformation()));
+    }
+    return aNewCurve;
+  }
+
+  // find 2D curve from theEdge on theFace in theMap, and return the transformed curve or NULL
+  static Handle(Geom2d_Curve) newCurve(const TColStd_IndexedDataMapOfTransientTransient& theMap,
+                                       const TopoDS_Edge& theEdge,
+                                       const TopoDS_Face& theFace,
+                                       Standard_Real& theFirst,
+                                       Standard_Real& theLast)
+  {
+    Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, theFirst, theLast);
+    return (!aC2d.IsNull() && theMap.Contains(aC2d)) ? Handle(Geom2d_Curve)::DownCast(theMap.FindFromKey(aC2d))
+                                                     : Handle(Geom2d_Curve)();
+  }
+
+  // find surface from theFace in theMap, and return the transformed surface or NULL
+  static Handle(Geom_Surface) newSurface(const TColStd_IndexedDataMapOfTransientTransient& theMap,
+                                         const TopoDS_Face& theFace)
+  {
+    Handle(Geom_Surface) aNewSurf;
+
+    TopLoc_Location aLoc;
+    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace, aLoc);
+    if (!aSurf.IsNull() && theMap.Contains(aSurf))
+    {
+      aNewSurf = Handle(Geom_Surface)::DownCast(theMap.FindFromKey(aSurf));
+      aNewSurf = Handle(Geom_Surface)::DownCast(aNewSurf->Transformed(aLoc.Transformation()));
+    }
+    return aNewSurf;
+  }
+
+  static Standard_Boolean newParameter(const gp_Pnt& thePoint,
+                                       const Handle(Geom_Curve)& theCurve,
+                                       const Standard_Real theFirst,
+                                       const Standard_Real theLast,
+                                       const Standard_Real theTol,
+                                       Standard_Real& theParam)
+  {
+    GeomAdaptor_Curve anAdaptor(theCurve);
+    Extrema_LocateExtPC proj(thePoint, anAdaptor, theParam, theFirst, theLast, Precision::PConfusion());
+    if (proj.IsDone())
+    {
+      Standard_Real aDist2Min = proj.SquareDistance();
+      if (aDist2Min < theTol * theTol)
+      {
+        theParam = proj.Point().Parameter();
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
+
+  static Standard_Boolean newParameter(const gp_Pnt2d& theUV,
+                                       const Handle(Geom2d_Curve)& theCurve2d,
+                                       const Standard_Real theFirst,
+                                       const Standard_Real theLast,
+                                       const Standard_Real theTol,
+                                       Standard_Real& theParam)
+  {
+    Geom2dAdaptor_Curve anAdaptor(theCurve2d);
+    Extrema_LocateExtPC2d aProj(theUV, anAdaptor, theParam, Precision::PConfusion());
+    if (aProj.IsDone())
+    {
+      Standard_Real aDist2Min = aProj.SquareDistance();
+      if (aDist2Min < theTol * theTol)
+      {
+        theParam = aProj.Point().Parameter();
+        return Standard_True;
+      }
+    }
+    else
+    {
+      // Try to use general extrema to find the parameter, because Extrema_LocateExtPC2d
+      // sometimes could not find a solution if the parameter's first approach is several
+      // spans away from the expected solution (test bugs/modalg_7/bug28722).
+      Extrema_ExtPC2d anExt(theUV, anAdaptor, theFirst, theLast);
+      if (anExt.IsDone())
+      {
+        Standard_Integer aMinInd = 0;
+        Standard_Real aMinSqDist = Precision::Infinite();
+        for (Standard_Integer anIndex = 1; anIndex <= anExt.NbExt(); ++anIndex)
+          if (anExt.SquareDistance(anIndex) < aMinSqDist)
+          {
+            aMinSqDist = anExt.SquareDistance(anIndex);
+            aMinInd = anIndex;
+          }
+        if (aMinSqDist < theTol * theTol)
+        {
+          theParam = anExt.Point(aMinInd).Parameter();
+          return Standard_True;
+        }
+      }
+    }
+    return Standard_False;
+  }
+
+  static Standard_Boolean newUV(const gp_Pnt& thePoint,
+                                const Handle(Geom_Surface)& theSurf,
+                                const Standard_Real theTol,
+                                gp_Pnt2d& theUV)
+  {
+    GeomAdaptor_Surface anAdaptor(theSurf);
+    Extrema_GenLocateExtPS aProj(anAdaptor);
+    aProj.Perform(thePoint, theUV.X(), theUV.Y());
+    if (aProj.IsDone())
+    {
+      Standard_Real aDist2Min = aProj.SquareDistance();
+      if (aDist2Min < theTol * theTol)
+      {
+        gp_XY& aUV = theUV.ChangeCoord();
+        aProj.Point().Parameter(aUV.ChangeCoord(1), aUV.ChangeCoord(2));
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
 }
 
 //=======================================================================
@@ -102,6 +238,12 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
   RevWires = Standard_False;
   RevFace = Standard_False;
   Handle(Geom_Surface) SS = BRep_Tool::Surface(F,L);
+  if (SS.IsNull())
+  {
+    //processing the case when there is no geometry
+    return Standard_False;
+  }
+
   Handle(Standard_Type) TheTypeSS = SS->DynamicType();
   if ((TheTypeSS == STANDARD_TYPE(Geom_BSplineSurface)) ||
       (TheTypeSS == STANDARD_TYPE(Geom_BezierSurface))) {
@@ -115,7 +257,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
   //OCC466(apo)->
   U1 = curvU1;  U2 = curvU2;  
   V1 = curvV1;  V2 = curvV2;
-  SS->Bounds(surfU1,surfU2,surfV1,surfV2);
+  S->Bounds(surfU1,surfU2,surfV1,surfV2);
 
   if (Abs(U1 - surfU1) <= TolPar)
     U1 = surfU1;
@@ -192,10 +334,10 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
 
   if (Abs(surfU1-U1) > Tol || Abs(surfU2-U2) > Tol ||
       Abs(surfV1-V1) > Tol || Abs(surfV2-V2) > Tol)
-    SS = new Geom_RectangularTrimmedSurface(S, U1, U2, V1, V2);
-  SS->Bounds(surfU1,surfU2,surfV1,surfV2); 
+    S = new Geom_RectangularTrimmedSurface(S, U1, U2, V1, V2);
+  S->Bounds(surfU1,surfU2,surfV1,surfV2); 
 
-  S = GeomConvert::SurfaceToBSplineSurface(SS);
+  S = GeomConvert::SurfaceToBSplineSurface(S);
   Handle(Geom_BSplineSurface) BS = Handle(Geom_BSplineSurface)::DownCast(S) ;
   BS->Resolution(Tol, UTol, VTol) ;
   
@@ -210,6 +352,9 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
     GeomLib_ChangeVBounds(BS, V1, V2) ;
   }
 
+  if (!myMap.Contains(SS)) {
+    myMap.Add(SS, S);
+  }
   return Standard_True;
 }
 
@@ -232,6 +377,41 @@ static Standard_Boolean IsConvert(const TopoDS_Edge& E)
   }
   return isConvert;
   
+}
+
+//=======================================================================
+//function : NewTriangulation
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_NurbsConvertModification::NewTriangulation(const TopoDS_Face&          theFace,
+                                                                      Handle(Poly_Triangulation)& theTri)
+{
+  if (!BRepTools_CopyModification::NewTriangulation(theFace, theTri))
+  {
+    return Standard_False;
+  }
+
+  // convert UV nodes of the mesh
+  if (theTri->HasUVNodes())
+  {
+    TopLoc_Location aLoc;
+    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace, aLoc);
+    Handle(Geom_Surface) aNewSurf = newSurface(myMap, theFace);
+    if (!aSurf.IsNull() && !aNewSurf.IsNull())
+    {
+      Standard_Real aTol = BRep_Tool::Tolerance(theFace);
+      for (Standard_Integer anInd = 1; anInd <= theTri->NbNodes(); ++anInd)
+      {
+        gp_Pnt2d aUV = theTri->UVNode(anInd);
+        gp_Pnt aPoint = aSurf->Value(aUV.X(), aUV.Y());
+        if (newUV(aPoint, aNewSurf, aTol, aUV))
+          theTri->SetUVNode(anInd, aUV);
+      }
+    }
+  }
+
+  return Standard_True;
 }
 
 //=======================================================================
@@ -313,6 +493,40 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve
 }
 
 //=======================================================================
+//function : NewPolygon
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean BRepTools_NurbsConvertModification::NewPolygon(const TopoDS_Edge&      theEdge,
+                                                                Handle(Poly_Polygon3D)& thePoly)
+{
+  if (!BRepTools_CopyModification::NewPolygon(theEdge, thePoly))
+  {
+    return Standard_False;
+  }
+
+  // update parameters of polygon
+  if (thePoly->HasParameters())
+  {
+    Standard_Real aTol = BRep_Tool::Tolerance(theEdge);
+    Standard_Real aFirst, aLast;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(theEdge, aFirst, aLast);
+    Handle(Geom_Curve) aNewCurve = newCurve(myMap, theEdge, aFirst, aLast);
+    if (!aCurve.IsNull() && !aNewCurve.IsNull()) // skip processing degenerated edges
+    {
+      TColStd_Array1OfReal& aParams = thePoly->ChangeParameters();
+      for (Standard_Integer anInd = aParams.Lower(); anInd <= aParams.Upper(); ++anInd)
+      {
+        Standard_Real& aParam = aParams(anInd);
+        gp_Pnt aPoint = aCurve->Value(aParam);
+        newParameter(aPoint, aNewCurve, aFirst, aLast, aTol, aParam);
+      }
+    }
+  }
+  return Standard_True;
+}
+
+//=======================================================================
 //function : NewPoint
 //purpose  : 
 //=======================================================================
@@ -340,7 +554,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
 
   Tol = BRep_Tool::Tolerance(E);
   Standard_Real f2d,l2d;
-  Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(E,F,f2d,l2d);
+  Handle(Geom2d_Curve) aBaseC2d = BRep_Tool::CurveOnSurface(E,F,f2d,l2d);
   Standard_Real f3d,l3d;
   TopLoc_Location Loc;
   Handle(Geom_Curve) C3d = BRep_Tool::Curve(E, Loc, f3d,l3d);
@@ -348,6 +562,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
     !C3d->IsKind(STANDARD_TYPE(Geom_BezierCurve))) ||
     IsConvert(E));
 
+  Handle(Geom2d_Curve) C2d = aBaseC2d;
   if(BRep_Tool::Degenerated(E)) {
     //Curve2d = C2d;
     if(!C2d->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve)))
@@ -356,6 +571,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       C2d = aTrimC;
     }
     Curve2d = Geom2dConvert::CurveToBSplineCurve(C2d);
+    myMap.Add(aBaseC2d, Curve2d);
     return Standard_True;
   }
   if(!BRepTools::IsReallyClosed(E,F)) {
@@ -381,9 +597,11 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
     if(!newE.IsNull()) {
       C3d = BRep_Tool::Curve(newE, f3d, l3d);
     }
-    else {
+    if (C3d.IsNull()) {
       C3d = BRep_Tool::Curve(E,f3d,l3d);
     }
+    if (C3d.IsNull())
+      return Standard_False;
     GeomAdaptor_Curve   G3dAC(C3d, f3d, l3d);
     Handle(GeomAdaptor_Curve) G3dAHC = new GeomAdaptor_Curve(G3dAC);
     
@@ -403,13 +621,16 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
               Tol = newTol;
               myUpdatedEdges.Append(newE);
             }
+            myMap.Add(aBaseC2d, Curve2d);
             return Standard_True;
           }
           return Standard_False;
         }
       }
       else {
-        S = BRep_Tool::Surface(newF);
+        Handle(Geom_Surface) aNewS = BRep_Tool::Surface(newF);
+        if (!aNewS.IsNull())
+          S = aNewS;
       }
       S->Bounds(Uinf, Usup, Vinf, Vsup);
       //Uinf -= 1e-9; Usup += 1e-9; Vinf -= 1e-9; Vsup += 1e-9;
@@ -451,6 +672,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
           Tol = newTol;
           myUpdatedEdges.Append(newE);
         }
+        myMap.Add(aBaseC2d, Curve2d);
         return Standard_True;
       }
       Curve2d = ProjOnCurve.BSpline();
@@ -460,6 +682,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
         Tol = newTol;
         myUpdatedEdges.Append(newE);
       }
+      myMap.Add(aBaseC2d, Curve2d);
       return Standard_True;
     }
 
@@ -502,6 +725,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
         Tol = newTol;
         myUpdatedEdges.Append(newE);
       }
+      myMap.Add(aBaseC2d, Curve2d);
       return Standard_True;
     }
     else {
@@ -512,6 +736,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
         Tol = newTol;
         myUpdatedEdges.Append(newE);
       }
+      myMap.Add(aBaseC2d, Curve2d);
       return Standard_True;
     }
   }
@@ -557,6 +782,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
              Tol = newTol;
              myUpdatedEdges.Append(newE);
            }
+           myMap.Add(aBaseC2d, Curve2d);
            return Standard_True;
          }
         return Standard_False;
@@ -582,6 +808,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
               Tol = newTol;
               myUpdatedEdges.Append(newE);
             }
+            myMap.Add(aBaseC2d, Curve2d);
             return Standard_True;
           }
           return Standard_False;
@@ -629,6 +856,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
           Tol = newTol;
           myUpdatedEdges.Append(newE);
         }
+        myMap.Add(aBaseC2d, Curve2d);
         return Standard_True;
       }
       else {
@@ -640,6 +868,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
           myUpdatedEdges.Append(newE);
         }
         mylcu.Append(C2dBis);
+        myMap.Add(aBaseC2d, Curve2d);
         return Standard_True;
       }
     }
@@ -651,9 +880,56 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
         return Standard_False;
       }
       Curve2d = Geom2dConvert::CurveToBSplineCurve(C2d);
+      myMap.Add(aBaseC2d, Curve2d);
       return Standard_True;
     }
   }
+}
+
+//=======================================================================
+//function : NewPolygonOnTriangulation
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepTools_NurbsConvertModification::NewPolygonOnTriangulation(
+  const TopoDS_Edge&                   theEdge,
+  const TopoDS_Face&                   theFace,
+  Handle(Poly_PolygonOnTriangulation)& thePoly)
+{
+  if (!BRepTools_CopyModification::NewPolygonOnTriangulation(theEdge, theFace, thePoly))
+  {
+    return Standard_False;
+  }
+
+  // update parameters of 2D polygon
+  if (thePoly->HasParameters())
+  {
+    Standard_Real aTol = Max(BRep_Tool::Tolerance(theEdge), thePoly->Deflection());
+    TopLoc_Location aLoc;
+    Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace, aLoc);
+    Handle(Geom_Surface) aNewSurf = newSurface(myMap, theFace);
+    Standard_Real aFirst, aLast;
+    Handle(Geom2d_Curve) aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, aFirst, aLast);
+    Handle(Geom2d_Curve) aNewC2d = newCurve(myMap, theEdge, theFace, aFirst, aLast);
+    if (!aSurf.IsNull() && !aC2d.IsNull() && !aNewSurf.IsNull() && !aNewC2d.IsNull())
+    {
+      // compute 2D tolerance
+      GeomAdaptor_Surface aSurfAdapt(aSurf);
+      Standard_Real aTol2D = Max(aSurfAdapt.UResolution(aTol), aSurfAdapt.VResolution(aTol));
+
+      for (Standard_Integer anInd = 1; anInd <= thePoly->NbNodes(); ++anInd)
+      {
+        Standard_Real aParam = thePoly->Parameter(anInd);
+        gp_Pnt2d aUV = aC2d->Value(aParam);
+        gp_Pnt aPoint = aSurf->Value(aUV.X(), aUV.Y());
+        if (newUV(aPoint, aNewSurf, aTol, aUV) &&
+            newParameter(aUV, aNewC2d, aFirst, aLast, aTol2D, aParam))
+        {
+          thePoly->SetParameter(anInd, aParam);
+        }
+      }
+    }
+  }
+  return Standard_True;
 }
 
 //=======================================================================
@@ -670,30 +946,12 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewParameter
   Tol =  BRep_Tool::Tolerance(V);
   if(BRep_Tool::Degenerated(E))
     return Standard_False;
-  Standard_Real f, l, param = BRep_Tool::Parameter(V,E);
-  TopLoc_Location L;
 
-  Handle(Geom_Curve) gc = BRep_Tool::Curve(E, L, f, l);
-  if(!myMap.Contains(gc))
-    return Standard_False;
-
-  Handle(Geom_BSplineCurve) gcc = 
-    Handle(Geom_BSplineCurve)::DownCast(myMap.FindFromKey(gc));
-
-  gcc = Handle(Geom_BSplineCurve)::DownCast(gcc->Transformed(L.Transformation()));
-
-  GeomAdaptor_Curve ac(gcc);
   gp_Pnt pnt = BRep_Tool::Pnt(V);
-
-  Extrema_LocateExtPC proj(pnt, ac, param, f, l, Tol);
-  if(proj.IsDone()) {
-    Standard_Real Dist2Min = proj.SquareDistance();
-    if (Dist2Min < Tol*Tol) {
-      P = proj.Point().Parameter();
-      return Standard_True;
-    }
-  }
-  return Standard_False;
+  P = BRep_Tool::Parameter(V,E);
+  Standard_Real aFirst, aLast;
+  Handle(Geom_Curve) aNewCurve = newCurve(myMap, E, aFirst, aLast);
+  return !aNewCurve.IsNull() && newParameter(pnt, aNewCurve, aFirst, aLast, Tol, P);
 }
 
 //=======================================================================

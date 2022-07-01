@@ -14,6 +14,7 @@ regexp {([0-9]+) triangles} $trinfo_s str nbtri_s
 # face converted to NURBS
 nurbsconvert r s
 checkshape r
+tclean r
 incmesh r 0.001
 set trinfo_r [trinfo r]
 regexp {([0-9]+) triangles} $trinfo_r str nbtri_r

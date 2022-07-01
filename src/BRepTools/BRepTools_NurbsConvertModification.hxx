@@ -22,7 +22,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TColStd_ListOfTransient.hxx>
 #include <TColStd_IndexedDataMapOfTransientTransient.hxx>
-#include <BRepTools_Modification.hxx>
+#include <BRepTools_CopyModification.hxx>
 #include <Standard_Real.hxx>
 #include <GeomAbs_Shape.hxx>
 class TopoDS_Face;
@@ -36,12 +36,12 @@ class Geom2d_Curve;
 
 
 class BRepTools_NurbsConvertModification;
-DEFINE_STANDARD_HANDLE(BRepTools_NurbsConvertModification, BRepTools_Modification)
+DEFINE_STANDARD_HANDLE(BRepTools_NurbsConvertModification, BRepTools_CopyModification)
 
 //! Defines a modification of the  geometry by a  Trsf
 //! from gp. All methods return True and transform the
 //! geometry.
-class BRepTools_NurbsConvertModification : public BRepTools_Modification
+class BRepTools_NurbsConvertModification : public BRepTools_CopyModification
 {
 
 public:
@@ -100,11 +100,27 @@ public:
   //! (resp. <F2>).
   Standard_EXPORT GeomAbs_Shape Continuity (const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_Face& F2, const TopoDS_Edge& NewE, const TopoDS_Face& NewF1, const TopoDS_Face& NewF2) Standard_OVERRIDE;
 
+  //! Returns true if the face has been modified according to changed triangulation.
+  //! If the face has been modified:
+  //! - theTri is a new triangulation on the face
+  Standard_EXPORT Standard_Boolean NewTriangulation(const TopoDS_Face& theFace, Handle(Poly_Triangulation)& theTri) Standard_OVERRIDE;
+
+  //! Returns true if the edge has been modified according to changed polygon.
+  //! If the edge has been modified:
+  //! - thePoly is a new polygon
+  Standard_EXPORT Standard_Boolean NewPolygon(const TopoDS_Edge& theEdge, Handle(Poly_Polygon3D)& thePoly) Standard_OVERRIDE;
+
+  //! Returns true if the edge has been modified according to changed polygon on triangulation.
+  //! If the edge has been modified:
+  //! - thePoly is a new polygon on triangulation
+  Standard_EXPORT Standard_Boolean NewPolygonOnTriangulation(const TopoDS_Edge&                   theEdge,
+                                                             const TopoDS_Face&                   theFace,
+                                                             Handle(Poly_PolygonOnTriangulation)& thePoly) Standard_OVERRIDE;
+
   Standard_EXPORT const TopTools_ListOfShape& GetUpdatedEdges() const;
 
 
-
-  DEFINE_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_Modification)
+  DEFINE_STANDARD_RTTIEXT(BRepTools_NurbsConvertModification,BRepTools_CopyModification)
 
 protected:
 

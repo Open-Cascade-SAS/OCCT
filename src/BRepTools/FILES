@@ -1,5 +1,7 @@
 BRepTools.cxx
 BRepTools.hxx
+BRepTools_CopyModification.cxx
+BRepTools_CopyModification.hxx
 BRepTools_DataMapIteratorOfMapOfVertexPnt2d.hxx
 BRepTools_Debug.cxx
 BRepTools_GTrsfModification.cxx
