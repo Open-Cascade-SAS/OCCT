@@ -54,7 +54,10 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const S
       aSubDiag(i) = 0.;
     }
   
-    // Initialization of temporary data structures.
+    // Algorithm calculates weights and points symmetrically and uses -1 index
+    // by design. Memory corruption is avoided by moving pointer `s` to the 
+    // next element and saving original pointer into `ss` for the proper memory
+    // releasing. Similarly, `t` and `tt` are addressed.
     Standard_Integer  aNd2 =     Number/2;
     Standard_Real    *s    = new Standard_Real[aNd2 + 2];
     Standard_Real    *t    = new Standard_Real[aNd2 + 2];

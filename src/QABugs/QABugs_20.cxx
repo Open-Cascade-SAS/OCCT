@@ -65,6 +65,7 @@
 #include <OSD_Timer.hxx>
 #include <TDataStd_Name.hxx>
 #include <AppCont_Function.hxx>
+#include <math_ComputeKronrodPointsAndWeights.hxx>
 
 #include <limits>
 
@@ -4261,6 +4262,28 @@ static Standard_Integer OCC33009(Draw_Interpretor&, Standard_Integer, const char
   return 0;
 }
 
+static Standard_Integer OCC33048(Draw_Interpretor&, Standard_Integer, const char**)
+{
+  Standard_Real isOK = true;
+  try
+  {
+    // This method uses raw pointers for memory manipulations and not used in OCCT.
+    math_ComputeKronrodPointsAndWeights aCalc(125);
+    isOK = aCalc.IsDone();
+  }
+  catch (...)
+  {
+    isOK = false;
+  }
+
+  if (isOK)
+    std::cout << "OK: Kronrod points and weights are calculated successfully." << std::endl;
+  else
+    std::cout << "Error: Problem occurred during calculation of Kronrod points and weights." << std::endl;
+
+  return 0;
+}
+
 //=======================================================================
 //function : QACheckBends
 //purpose :
@@ -4434,6 +4457,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC33009", 
                  "Tests the case when", 
                  __FILE__, OCC33009, group);
+
+  theCommands.Add("OCC33048",
+                 "Kronrod points and weights calculation", 
+                 __FILE__, OCC33048, group);
 
   theCommands.Add("QACheckBends",
     "QACheckBends curve [CosMaxAngle [theNbPoints]]",
