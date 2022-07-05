@@ -20,12 +20,15 @@
 #include <ShapeProcess_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <Standard_Mutex.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <sys/stat.h>
 IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_Context,Standard_Transient)
+
+static Standard_Mutex THE_SHAPE_PROCESS_MUTEX;
 
 //=======================================================================
 //function : ShapeProcess_Context
@@ -73,6 +76,9 @@ Standard_Boolean ShapeProcess_Context::Init (const Standard_CString file,
 
 Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standard_CString name)
 {
+  // Mutex is needed because we are initializing and changing static variables here, so
+  // without mutex it leads to race condition.
+  Standard_Mutex::Sentry aLock(&THE_SHAPE_PROCESS_MUTEX);
   // Optimisation of loading resource file: file is load only once
   // and reloaded only if file date has changed
   static Handle(Resource_Manager) sRC;
@@ -127,7 +133,10 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standa
       sUMtime = aUMtime;
     }
   }
-  return sRC;
+  // Creating copy of sRC for thread safety of Resource_Manager variables
+  // We should return copy because calling of Resource_Manager::SetResource() for one object
+  // in multiple threads causes race condition
+  return new Resource_Manager(*sRC);
 }
 
 //=======================================================================
