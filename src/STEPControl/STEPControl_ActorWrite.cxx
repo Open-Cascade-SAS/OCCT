@@ -341,6 +341,43 @@ void STEPControl_ActorWrite::mergeInfoForNM(const Handle(Transfer_FinderProcess)
   }
 }
 
+//=======================================================================
+//function : separateShapeToSoloVertex
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPControl_ActorWrite::separateShapeToSoloVertex(const TopoDS_Shape& theShape,
+                                                                   TopTools_SequenceOfShape& theVertices)
+{
+  if (theShape.IsNull())
+  {
+    return Standard_False;
+  }
+  switch (theShape.ShapeType())
+  {
+    case TopAbs_COMPOUND:
+    {
+      for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
+      {
+        if (!separateShapeToSoloVertex(anIter.Value(), theVertices))
+        {
+          return Standard_False;
+        }
+      }
+      break;
+    }
+    case TopAbs_VERTEX:
+    {
+      theVertices.Append(theShape);
+      break;
+    }
+    default:
+    {
+      theVertices.Clear();
+      return Standard_False;
+    }
+  }
+  return Standard_True;
+}
 
 //=======================================================================
 //function : SetMode
@@ -814,42 +851,49 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
 
   // create a list of items to translate
   Handle(TopTools_HSequenceOfShape) RepItemSeq = new TopTools_HSequenceOfShape();
-  
-  Standard_Boolean isSeparateVertices = 
+
+  Standard_Boolean isSeparateVertices =
     Interface_Static::IVal("write.step.vertex.mode") == 0;//bug 23950
   // PTV 16.09.2002 OCC725 separate shape from solo vertices.
   Standard_Boolean isOnlyVertices = Standard_False;
-  if (theShape.ShapeType() == TopAbs_COMPOUND) {
-    Standard_Integer countVrtx = 0;
-    Standard_Integer countSh = 0;
+  if (theShape.ShapeType() == TopAbs_COMPOUND && isSeparateVertices)
+  {
     TopoDS_Compound aNewShape, aCompOfVrtx;
-    BRep_Builder aB;
-    aB.MakeCompound(aNewShape);
-    aB.MakeCompound(aCompOfVrtx);
-    TopoDS_Iterator anCompIt(theShape);
-    if (isSeparateVertices) {
-      for (; anCompIt.More(); anCompIt.Next()) {
-        TopoDS_Shape aCurSh = anCompIt.Value();
-        if (aCurSh.ShapeType() != TopAbs_VERTEX) {
-          aB.Add(aNewShape, aCurSh);
-          countSh++;
+    BRep_Builder aBuilder;
+    aBuilder.MakeCompound(aNewShape);
+    aBuilder.MakeCompound(aCompOfVrtx);
+    TopTools_SequenceOfShape aVertices;
+    isOnlyVertices = separateShapeToSoloVertex(theShape, aVertices);
+    if (!isOnlyVertices)
+    {
+      for (TopoDS_Iterator anCompIt(theShape); anCompIt.More(); anCompIt.Next())
+      {
+        const TopoDS_Shape& aCurSh = anCompIt.Value();
+        TopTools_SequenceOfShape aVerticesOfSubSh;
+        if (separateShapeToSoloVertex(aCurSh, aVerticesOfSubSh))
+        {
+          aVertices.Append(aVerticesOfSubSh);
         }
-        else {
-          aB.Add(aCompOfVrtx, aCurSh);
-          countVrtx++;
+        else
+        {
+          aBuilder.Add(aNewShape, aCurSh);
         }
       }
-      // replace the shapes
-      if (countSh)
-        theShape = aNewShape;
-      if (countVrtx)
-        RepItemSeq->Append(aCompOfVrtx);
-      if (countSh == 0) 
-        isOnlyVertices = Standard_True;
+      theShape = aNewShape;
     }
-  } 
-  
-  if (theShape.ShapeType() == TopAbs_COMPOUND) {
+    for (TopTools_HSequenceOfShape::Iterator anIterV(aVertices);
+         anIterV.More(); anIterV.Next())
+    {
+      aBuilder.Add(aCompOfVrtx, anIterV.Value());
+    }
+    if (!aVertices.IsEmpty())
+    {
+      RepItemSeq->Append(aCompOfVrtx);
+    }
+  }
+
+  if (theShape.ShapeType() == TopAbs_COMPOUND)
+  {
     TopExp_Explorer SolidExp, ShellExp, FaceExp;
     if (mymode != STEPControl_GeometricCurveSet) {
       for (SolidExp.Init(theShape, TopAbs_SOLID);

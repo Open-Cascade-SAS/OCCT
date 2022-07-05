@@ -1,0 +1,23 @@
+puts "===================================="
+puts "0033053: Data Exchange, Step Export - Compound with vertex is ignored"
+puts "===================================="
+puts ""
+
+pload OCAF
+
+Close D_orig -silent
+Close D_comp -silent
+
+ReadStep D_orig [locate_data_file bug33053_shapes_2d.stp]
+
+WriteStep D_orig $imagedir/${casename}_D.stp
+
+ReadStep D_comp $imagedir/${casename}_D.stp
+
+file delete $imagedir/${casename}_D.stp
+
+XGetOneShape orig D_orig
+XGetOneShape comp D_comp
+
+checkshape comp
+checknbshapes orig -ref [nbshapes comp]
