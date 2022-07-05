@@ -232,14 +232,15 @@ Standard_Real LProp_CLProps::Curvature ()
   {
     Standard_Real N = myDerivArr[0].CrossSquareMagnitude(myDerivArr[1]);
     // if d[0] and d[1] are colinear the curvature is null.
-    Standard_Real t = N/(DD1*DD2);
+    //Standard_Real t = N/(DD1*DD2);
+    Standard_Real t = N / DD1 / DD2;
     if (t<=Tol)
     {
       myCurvature = 0.0;
     }
     else
     {
-      myCurvature = sqrt(N) / (DD1*sqrt(DD1));
+      myCurvature = sqrt(N) / DD1 / sqrt(DD1);
     }
   }
 
