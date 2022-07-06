@@ -19,7 +19,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DEXCAFCascade_ConfigurationNode, DE_ConfigurationNode)
 
-static const TCollection_AsciiString THE_CONFIGURATION_SCOPE = "provider";
+namespace
+{
+  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+  {
+    static const TCollection_AsciiString aScope = "provider";
+    return aScope;
+  }
+}
 
 //=======================================================================
 // function : DEXCAFCascade_ConfigurationNode
@@ -48,7 +55,7 @@ DEXCAFCascade_ConfigurationNode::DEXCAFCascade_ConfigurationNode(const Handle(DE
 //=======================================================================
 bool DEXCAFCascade_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor();
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.ReadAppendMode = (PCDM_ReaderFilter::AppendMode)
     theResource->IntegerVal("read.append.mode", InternalParameters.ReadAppendMode, aScope);
@@ -67,7 +74,7 @@ TCollection_AsciiString DEXCAFCascade_ConfigurationNode::Save() const
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
   aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor() + ".";
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Read parameters:\n";

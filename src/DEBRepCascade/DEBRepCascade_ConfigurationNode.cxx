@@ -19,7 +19,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DEBRepCascade_ConfigurationNode, DE_ConfigurationNode)
 
-static const TCollection_AsciiString THE_CONFIGURATION_SCOPE = "provider";
+namespace
+{
+  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+  {
+    static const TCollection_AsciiString aScope = "provider";
+    return aScope;
+  }
+}
 
 //=======================================================================
 // function : DEBRepCascade_ConfigurationNode
@@ -48,7 +55,7 @@ DEBRepCascade_ConfigurationNode::DEBRepCascade_ConfigurationNode(const Handle(DE
 //=======================================================================
 bool DEBRepCascade_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor();
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.WriteBinary =
     theResource->BooleanVal("write.binary", InternalParameters.WriteBinary, aScope);
@@ -72,7 +79,7 @@ TCollection_AsciiString DEBRepCascade_ConfigurationNode::Save() const
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
   aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor() + ".";
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Write parameters:\n";

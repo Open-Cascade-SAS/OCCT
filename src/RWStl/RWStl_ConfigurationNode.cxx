@@ -19,7 +19,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWStl_ConfigurationNode, DE_ConfigurationNode)
 
-static const TCollection_AsciiString THE_CONFIGURATION_SCOPE = "provider";
+namespace
+{
+  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+  {
+    static const TCollection_AsciiString aScope = "provider";
+    return aScope;
+  }
+}
 
 //=======================================================================
 // function : STEPCAFControl_ConfigurationNode
@@ -48,7 +55,7 @@ RWStl_ConfigurationNode::RWStl_ConfigurationNode(const Handle(RWStl_Configuratio
 //=======================================================================
 bool RWStl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor();
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.ReadMergeAngle = 
     theResource->RealVal("read.merge.angle", InternalParameters.ReadMergeAngle, aScope);
@@ -68,7 +75,7 @@ TCollection_AsciiString RWStl_ConfigurationNode::Save() const
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
   aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor() + ".";
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Read parameters:\n";

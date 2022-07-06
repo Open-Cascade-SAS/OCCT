@@ -1,4 +1,3 @@
-TKBinXCAF
 TKernel
 TKMath
 TKMesh
@@ -7,6 +6,7 @@ TKLCAF
 TKV3d
 TKBRep
 TKG3d
+TKTopAlgo
 TKXDE
 TKService
 CSF_RapidJSON

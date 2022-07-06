@@ -7,6 +7,10 @@ TKOpenGlesTest
 TKViewerTest
 TKDraw
 TKMeshVS
+TKXDECascade
+TKTObj
+TKBinTObj
+TKXmlTObj
 TKXDESTEP
 TKSTEP
 TKSTEPAttr
@@ -18,6 +22,7 @@ TKXSBase
 TKVRML
 TKSTL
 TKRWMesh
+TKXDE
 TKBinXCAF
 TKXmlXCAF
 TKBin

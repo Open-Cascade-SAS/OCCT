@@ -18,7 +18,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(RWObj_ConfigurationNode, DE_ConfigurationNode)
 
-static const TCollection_AsciiString THE_CONFIGURATION_SCOPE = "provider";
+namespace
+{
+  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+  {
+    static const TCollection_AsciiString aScope = "provider";
+    return aScope;
+  }
+}
 
 //=======================================================================
 // function : RWObj_ConfigurationNode
@@ -47,7 +54,7 @@ RWObj_ConfigurationNode::RWObj_ConfigurationNode(const Handle(RWObj_Configuratio
 //=======================================================================
 bool RWObj_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor();
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
   InternalParameters.FileLengthUnit = 
     theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
   InternalParameters.SystemCS = (RWMesh_CoordinateSystem)
@@ -84,7 +91,7 @@ TCollection_AsciiString RWObj_ConfigurationNode::Save() const
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
   aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE + "." + GetFormat() + "." + GetVendor() + ".";
+  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Common parameters:\n";

@@ -27,7 +27,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DE_Wrapper, Standard_Transient)
 
-static const TCollection_AsciiString THE_CONFIGURATION_SCOPE = "global";
+namespace
+{
+  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+  {
+    static const TCollection_AsciiString aScope ("global");
+    return aScope;
+  }
+}
 
 //=======================================================================
 // function : DE_Wrapper
@@ -253,7 +260,7 @@ Standard_Boolean DE_Wrapper::Load(const TCollection_AsciiString& theResource,
 Standard_Boolean DE_Wrapper::Load(const Handle(DE_ConfigurationContext)& theResource,
                                   const Standard_Boolean theIsRecursive)
 {
-  GlobalParameters.LengthUnit = theResource->RealVal("general.length.unit", GlobalParameters.LengthUnit, THE_CONFIGURATION_SCOPE);
+  GlobalParameters.LengthUnit = theResource->RealVal("general.length.unit", GlobalParameters.LengthUnit, THE_CONFIGURATION_SCOPE());
   if (theIsRecursive)
   {
     for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);
@@ -326,7 +333,7 @@ TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean theIsRecursive,
        aFormatIter.More(); aFormatIter.Next())
   {
     const TCollection_AsciiString& aFormat = aFormatIter.Key();
-    aResult += THE_CONFIGURATION_SCOPE + '.' + "priority" + '.' + aFormat + " :\t ";
+    aResult += THE_CONFIGURATION_SCOPE() + '.' + "priority" + '.' + aFormat + " :\t ";
     for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value());
          aVendorIter.More(); aVendorIter.Next())
     {
@@ -337,7 +344,7 @@ TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean theIsRecursive,
   }
   aResult += "!Global parameters. Used for all providers\n";
   aResult += "!Length scale unit value. Should be more the 0. Default value: 1.0(MM)\n";
-  aResult += THE_CONFIGURATION_SCOPE + ".general.length.unit :\t " + GlobalParameters.LengthUnit + "\n";
+  aResult += THE_CONFIGURATION_SCOPE() + ".general.length.unit :\t " + GlobalParameters.LengthUnit + "\n";
   if (theIsRecursive)
   {
     for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);
@@ -525,7 +532,7 @@ Standard_Boolean DE_Wrapper::findProvider(const TCollection_AsciiString& thePath
 //=======================================================================
 void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
 {
-  const TCollection_AsciiString aScope(THE_CONFIGURATION_SCOPE + '.' + "priority");
+  const TCollection_AsciiString aScope(THE_CONFIGURATION_SCOPE() + '.' + "priority");
   NCollection_List<Handle(DE_ConfigurationNode)> aVendors;
   for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);
        aFormatIter.More(); aFormatIter.Next())

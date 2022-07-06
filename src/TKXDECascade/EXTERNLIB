@@ -2,6 +2,7 @@ TKBin
 TKBinL
 TKBinTObj
 TKBinXCAF
+TKBRep
 TKStd
 TKXml
 TKXmlL
@@ -9,4 +10,8 @@ TKXmlTObj
 TKXmlXCAF
 TKXDE
 TKernel
+TKMath
 TKLCAF
+TKXCAF
+TKStdL
+TKCDF
