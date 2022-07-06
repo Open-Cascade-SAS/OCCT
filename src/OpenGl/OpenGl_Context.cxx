@@ -237,7 +237,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myRenderMode (GL_RENDER),
   myShadeModel (GL_SMOOTH),
   myPolygonMode (GL_FILL),
-  myToCullBackFaces (false),
+  myFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided),
   myReadBuffer (0),
   myDrawBuffers (0, 7),
   myDefaultVao (0),
@@ -547,26 +547,35 @@ void OpenGl_Context::SetFrameBufferSRGB (bool theIsFbo, bool theIsFboSRgb)
 }
 
 // =======================================================================
-// function : SetCullBackFaces
+// function : SetFaceCulling
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetCullBackFaces (bool theToEnable)
+void OpenGl_Context::SetFaceCulling (Graphic3d_TypeOfBackfacingModel theMode)
 {
-  if (myToCullBackFaces == theToEnable)
+  if (myFaceCulling == theMode)
   {
     return;
   }
 
-  myToCullBackFaces = theToEnable;
-  if (theToEnable)
+  if (theMode == Graphic3d_TypeOfBackfacingModel_BackCulled)
   {
-    //glCullFace (GL_BACK); GL_BACK by default
+    if (myFaceCulling == Graphic3d_TypeOfBackfacingModel_FrontCulled)
+    {
+      core11fwd->glCullFace (GL_BACK);
+    }
+    core11fwd->glEnable (GL_CULL_FACE);
+  }
+  else if (theMode == Graphic3d_TypeOfBackfacingModel_FrontCulled)
+  {
+    core11fwd->glCullFace (GL_FRONT);
     core11fwd->glEnable (GL_CULL_FACE);
   }
   else
   {
+    core11fwd->glCullFace (GL_BACK);
     core11fwd->glDisable (GL_CULL_FACE);
   }
+  myFaceCulling = theMode;
 }
 
 // =======================================================================
@@ -3084,7 +3093,7 @@ void OpenGl_Context::DumpJson (Standard_OStream& theOStream, Standard_Integer th
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRenderMode)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPolygonMode)
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToCullBackFaces)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFaceCulling)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myReadBuffer)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDefaultVao)

@@ -1,0 +1,42 @@
+puts "========"
+puts "0033056: Visualization - add front face culling option"
+puts "Check face culling options"
+puts "========"
+
+set THE_NB_BOXES 4
+set THE_COLORS { ORANGE ORANGE ORANGE ORANGE }
+set THE_MODES  { AUTO BACK FRONT DOUBLESIDED }
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+vcamera -persp -fovy 80
+vfront
+
+set x 1
+set z 1
+for { set i 1 } { $i <= $THE_NB_BOXES } { incr i } {
+  box b$i [expr $x * 300] 0 [expr $z * 400] 200 300 300
+  vdisplay -dispMode 1 b$i
+  vsetcolor b$i [lindex $THE_COLORS [expr $i - 1]]
+  vaspects  b$i -faceCulling [lindex $THE_MODES [expr $i - 1]]
+  
+  vdrawtext t$i [lindex $THE_MODES [expr $i - 1]] -pos [expr $x * 300] 0 [expr $z * 400 + 300] -height 16 -color RED -font MONOSPACE -aspect BOLD -valign top
+
+  incr x
+  if { $i == 2 } {
+    set x 1
+    set z 2
+  }
+}
+vfit
+
+vaspects -faceBoundaryDraw 1 -faceBoundaryColor RED
+vdump $::imagedir/${::casename}_bnds.png
+
+vaspects -faceBoundaryDraw 0
+vclipplane c -equation 0 1 0 -100 -set
+vdump $::imagedir/${::casename}_clip.png
+
+vclipplane c off
+vdump $::imagedir/${::casename}.png

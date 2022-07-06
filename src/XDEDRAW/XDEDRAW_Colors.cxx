@@ -99,6 +99,7 @@ static const char* faceCullToString (Graphic3d_TypeOfBackfacingModel theMode)
   {
     case Graphic3d_TypeOfBackfacingModel_Auto:        return "Auto";
     case Graphic3d_TypeOfBackfacingModel_BackCulled:  return "BackCulled";
+    case Graphic3d_TypeOfBackfacingModel_FrontCulled: return "FrontCulled";
     case Graphic3d_TypeOfBackfacingModel_DoubleSided: return "DoubleSided";
   }
   return "";
@@ -1160,6 +1161,12 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
             || aCullStr == "back")
       {
         aMode = Graphic3d_TypeOfBackfacingModel_BackCulled;
+      }
+      else if (aCullStr == "frontculled"
+            || aCullStr == "frontcull"
+            || aCullStr == "front")
+      {
+        aMode = Graphic3d_TypeOfBackfacingModel_FrontCulled;
       }
       else if (aCullStr == "doublesided")
       {

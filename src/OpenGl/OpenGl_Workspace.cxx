@@ -255,27 +255,34 @@ const OpenGl_Aspects* OpenGl_Workspace::SetAspects (const OpenGl_Aspects* theAsp
 // =======================================================================
 const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
 {
-  bool toSuppressBackFaces = myView->BackfacingModel() == Graphic3d_TypeOfBackfacingModel_BackCulled;
-  if (myView->BackfacingModel() == Graphic3d_TypeOfBackfacingModel_Auto)
+  //bool toSuppressBackFaces = myView->BackfacingModel() == Graphic3d_TypeOfBackfacingModel_BackCulled;
+  Graphic3d_TypeOfBackfacingModel aCullFacesMode = myView->BackfacingModel();
+  if (aCullFacesMode == Graphic3d_TypeOfBackfacingModel_Auto)
   {
-    toSuppressBackFaces = myAspectsSet->Aspect()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_BackCulled;
-    if (myAspectsSet->Aspect()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_Auto
-     && myToAllowFaceCulling)
+    aCullFacesMode = myAspectsSet->Aspect()->FaceCulling();
+    if (aCullFacesMode == Graphic3d_TypeOfBackfacingModel_Auto)
     {
-      toSuppressBackFaces = true;
-      if (myAspectsSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
-       || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
-       || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
-       || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend
-       || (myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
-        && myAspectsSet->Aspect()->FrontMaterial().Transparency() != 0.0f))
+      aCullFacesMode = Graphic3d_TypeOfBackfacingModel_DoubleSided;
+      if (myToAllowFaceCulling)
       {
-        // disable culling in case of translucent shading aspect
-        toSuppressBackFaces = false;
+        if (myAspectsSet->Aspect()->InteriorStyle() == Aspect_IS_HATCH
+         || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Blend
+         || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_Mask
+         || myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_MaskBlend
+         || (myAspectsSet->Aspect()->AlphaMode() == Graphic3d_AlphaMode_BlendAuto
+          && myAspectsSet->Aspect()->FrontMaterial().Transparency() != 0.0f))
+        {
+          // disable culling in case of translucent shading aspect
+          aCullFacesMode = Graphic3d_TypeOfBackfacingModel_DoubleSided;
+        }
+        else
+        {
+          aCullFacesMode = Graphic3d_TypeOfBackfacingModel_BackCulled;
+        }
       }
     }
   }
-  myGlContext->SetCullBackFaces (toSuppressBackFaces);
+  myGlContext->SetFaceCulling (aCullFacesMode);
 
   if (myAspectsSet->Aspect() == myAspectsApplied
    && myHighlightStyle == myAspectFaceAppliedWithHL)

@@ -1030,10 +1030,9 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       anOutlineProgram->SetUniform (aCtx, anOutlineProgram->GetStateLocation (OpenGl_OCCT_ORTHO_SCALE),          anOrthoScale);
       aCtx->SetColor4fv (anAspectFace->Aspect()->EdgeColorRGBA());
 
-      aCtx->core11fwd->glCullFace (GL_FRONT);
+      aCtx->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_FrontCulled);
       drawArray (theWorkspace, NULL, false);
-
-      aCtx->core11fwd->glCullFace (GL_BACK);
+      aCtx->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_BackCulled);
     }
 
     if (isForcedBlend)

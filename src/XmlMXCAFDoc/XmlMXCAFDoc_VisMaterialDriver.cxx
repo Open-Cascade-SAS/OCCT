@@ -256,11 +256,14 @@ Standard_Boolean XmlMXCAFDoc_VisMaterialDriver::Paste (const XmlObjMgt_Persisten
   aDoubleSidedStr.GetInteger (aDoubleSidedInt);
   Standard_ShortReal anAlphaCutOff = 0.5f;
   readReal (theSource, ::AlphaCutOff(), anAlphaCutOff);
-  aMat->SetFaceCulling (aDoubleSidedInt == 1
-                      ? Graphic3d_TypeOfBackfacingModel_DoubleSided
-                      : (aDoubleSidedInt == 2
-                       ? Graphic3d_TypeOfBackfacingModel_BackCulled
-                       : Graphic3d_TypeOfBackfacingModel_Auto));
+  switch (aDoubleSidedInt)
+  {
+    case 1:  aMat->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_DoubleSided); break;
+    case 2:  aMat->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_BackCulled);  break;
+    case 3:  aMat->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_FrontCulled); break;
+    case 0:
+    default: aMat->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_Auto); break;
+  }
   aMat->SetAlphaMode (alphaModeFromString (theSource.Element().getAttribute (::AlphaMode()).GetString()), anAlphaCutOff);
 
   Quantity_ColorRGBA aBaseColor;
@@ -307,11 +310,14 @@ void XmlMXCAFDoc_VisMaterialDriver::Paste (const Handle(TDF_Attribute)& theSourc
                                            XmlObjMgt_SRelocationTable&  ) const
 {
   Handle(XCAFDoc_VisMaterial) aMat = Handle(XCAFDoc_VisMaterial)::DownCast(theSource);
-  Standard_Integer aDoubleSidedInt = aMat->FaceCulling() == Graphic3d_TypeOfBackfacingModel_DoubleSided
-                                   ? 1
-                                   : (aMat->FaceCulling() == Graphic3d_TypeOfBackfacingModel_BackCulled
-                                    ? 2
-                                    : 0);
+  Standard_Integer aDoubleSidedInt = 0;
+  switch (aMat->FaceCulling())
+  {
+    case Graphic3d_TypeOfBackfacingModel_DoubleSided: aDoubleSidedInt = 1; break;
+    case Graphic3d_TypeOfBackfacingModel_BackCulled:  aDoubleSidedInt = 2; break;
+    case Graphic3d_TypeOfBackfacingModel_FrontCulled: aDoubleSidedInt = 3; break;
+    case Graphic3d_TypeOfBackfacingModel_Auto:        aDoubleSidedInt = 0; break;
+  }
   theTarget.Element().setAttribute (::IsDoubleSided(), aDoubleSidedInt);
   theTarget.Element().setAttribute (::AlphaMode(),     alphaModeToString (aMat->AlphaMode()));
   writeReal (theTarget, ::AlphaCutOff(), aMat->AlphaCutOff());

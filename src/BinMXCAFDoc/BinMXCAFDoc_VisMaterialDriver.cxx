@@ -54,6 +54,7 @@ static Standard_Byte faceCullToChar (Graphic3d_TypeOfBackfacingModel theMode)
   {
     case Graphic3d_TypeOfBackfacingModel_Auto:        return '0';
     case Graphic3d_TypeOfBackfacingModel_BackCulled:  return 'B';
+    case Graphic3d_TypeOfBackfacingModel_FrontCulled: return 'F';
     case Graphic3d_TypeOfBackfacingModel_DoubleSided: return '1';
   }
   return '0';
@@ -66,6 +67,7 @@ static Graphic3d_TypeOfBackfacingModel faceCullFromChar (Standard_Byte theMode)
   {
     case '0': return Graphic3d_TypeOfBackfacingModel_Auto;
     case 'B': return Graphic3d_TypeOfBackfacingModel_BackCulled;
+    case 'F': return Graphic3d_TypeOfBackfacingModel_FrontCulled;
     case '1': return Graphic3d_TypeOfBackfacingModel_DoubleSided;
   }
   return Graphic3d_TypeOfBackfacingModel_Auto;

@@ -493,7 +493,8 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
     // as both may share the same material having "auto" flag
     if (theStyle.Material().IsNull()
      || theStyle.Material()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_Auto
-     || theStyle.Material()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_DoubleSided)
+     || theStyle.Material()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_DoubleSided
+     || theStyle.Material()->FaceCulling() == Graphic3d_TypeOfBackfacingModel_FrontCulled) // front culling flag cannot be exported to glTF
     {
       myWriter->Key ("doubleSided");
       myWriter->Bool (true);
