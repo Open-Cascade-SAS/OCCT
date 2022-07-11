@@ -56,14 +56,6 @@ bool RWPly_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRes
   InternalParameters.FileCS = 
     (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs", (int)InternalParameters.SystemCS, aScope) % 2);
 
-  InternalParameters.WritePntSet = 
-    theResource->BooleanVal("write.pnt.set", InternalParameters.WritePntSet, aScope);
-  InternalParameters.WriteDistance =
-    theResource->RealVal("write.distance", InternalParameters.WriteDistance, aScope);
-  InternalParameters.WriteDensity =
-    theResource->RealVal("write.density", InternalParameters.WriteDensity, aScope);
-  InternalParameters.WriteTolerance =
-    theResource->RealVal("write.tolerance", InternalParameters.WriteTolerance, aScope);
   InternalParameters.WriteNormals =
     theResource->BooleanVal("write.normals", InternalParameters.WriteNormals, aScope);
   InternalParameters.WriteColors =
@@ -116,30 +108,6 @@ TCollection_AsciiString RWPly_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Write parameters:\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Flag for write point cloud instead without triangulation indices\n";
-  aResult += "!Default value: 0(false). Available values: 0(false), 1(true)\n";
-  aResult += aScope + "write.pnt.set :\t " + InternalParameters.WritePntSet + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Distance from shape into the range [0, Value]\n";
-  aResult += "!Default value: 0. Available values: [0, Value]\n";
-  aResult += aScope + "write.distance :\t " + InternalParameters.WriteDistance + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Density of points to generate randomly on surface\n";
-  aResult += "!Default value: 2.e+100. Available values: [0, inf]\n";
-  aResult += aScope + "write.density :\t " + InternalParameters.WriteDensity + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Internal tolerance\n";
-  aResult += "!Default value: 1.e-7. Available values: [0, inf]\n";
-  aResult += aScope + "write.tolerance :\t " + InternalParameters.WriteTolerance + "\n";
   aResult += "!\n";
 
   aResult += "!\n";

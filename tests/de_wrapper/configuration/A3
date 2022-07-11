@@ -145,10 +145,6 @@ provider.IGES.OCC.write.layer :  1
 provider.PLY.OCC.file.length.unit :      1
 provider.PLY.OCC.system.cs :     0
 provider.PLY.OCC.file.cs :       1
-provider.PLY.OCC.write.pnt.set :         0
-provider.PLY.OCC.write.distance :        0
-provider.PLY.OCC.write.density :         2e+100
-provider.PLY.OCC.write.tolerance :       1e-07
 provider.PLY.OCC.write.normals :         1
 provider.PLY.OCC.write.colors :  1
 provider.PLY.OCC.write.tex.coords :      0

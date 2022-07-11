@@ -94,10 +94,6 @@ public:
     RWMesh_CoordinateSystem SystemCS = RWMesh_CoordinateSystem_Zup; //!< System origin coordinate system to perform conversion into during read
     RWMesh_CoordinateSystem FileCS = RWMesh_CoordinateSystem_Yup; //!< File origin coordinate system to perform conversion during read
     // Writing
-    bool WritePntSet = false; //!< Flag for write point cloud instead without triangulation indices
-    double WriteDistance = 0.0; //!< Distance from shape into the range [0, Value]
-    double WriteDensity = Precision::Infinite(); //!< Density of points to generate randomly on surface
-    double WriteTolerance = Precision::Confusion(); //!< Internal tolerance
     bool WriteNormals = true; //!< Flag for write normals
     bool WriteColors = true; //!< Flag for write colors
     bool WriteTexCoords = false; //!< Flag for write UV / texture coordinates
