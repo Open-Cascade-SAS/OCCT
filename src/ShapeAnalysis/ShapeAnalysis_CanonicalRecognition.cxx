@@ -51,9 +51,9 @@
 #include <BRepLib_FindSurface.hxx>
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <math_Vector.hxx>
-#include <ShapeAnalysis_FuncSphereLSDist.hxx>
-#include <ShapeAnalysis_FuncCylinderLSDist.hxx>
-#include <ShapeAnalysis_FuncConeLSDist.hxx>
+#include <GeomConvert_FuncSphereLSDist.hxx>
+#include <GeomConvert_FuncCylinderLSDist.hxx>
+#include <GeomConvert_FuncConeLSDist.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_QuasiUniformAbscissa.hxx>
@@ -834,9 +834,9 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS
   //
   Standard_Real aTol = Precision::Confusion();
   math_MultipleVarFunction* aPFunc; 
-  ShapeAnalysis_FuncSphereLSDist aFuncSph(aPoints);
-  ShapeAnalysis_FuncCylinderLSDist aFuncCyl(aPoints, thePos.Direction());
-  ShapeAnalysis_FuncConeLSDist aFuncCon(aPoints, thePos.Direction());
+  GeomConvert_FuncSphereLSDist aFuncSph(aPoints);
+  GeomConvert_FuncCylinderLSDist aFuncCyl(aPoints, thePos.Direction());
+  GeomConvert_FuncConeLSDist aFuncCon(aPoints, thePos.Direction());
   if (theTarget == GeomAbs_Sphere)
   {
     aPFunc = (math_MultipleVarFunction*)&aFuncSph;

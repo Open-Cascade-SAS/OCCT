@@ -13,16 +13,16 @@
 // commercial license or contractual agreement.
 
 
-#include <ShapeAnalysis_FuncCylinderLSDist.hxx>
+#include <GeomConvert_FuncCylinderLSDist.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Vector.hxx>
 
 //=======================================================================
-//function : ShapeAnalysis_FuncCylinderLSDist
+//function : GeomConvert_FuncCylinderLSDist
 //purpose  : 
 //=======================================================================
-ShapeAnalysis_FuncCylinderLSDist::ShapeAnalysis_FuncCylinderLSDist(
+GeomConvert_FuncCylinderLSDist::GeomConvert_FuncCylinderLSDist(
                                   const Handle(TColgp_HArray1OfXYZ)& thePoints,
                                   const gp_Dir& theDir):
   myPoints(thePoints), myDir(theDir)
@@ -33,7 +33,7 @@ ShapeAnalysis_FuncCylinderLSDist::ShapeAnalysis_FuncCylinderLSDist(
 //function : NbVariables
 //purpose  : 
 //=======================================================================
-Standard_Integer ShapeAnalysis_FuncCylinderLSDist::NbVariables () const
+Standard_Integer GeomConvert_FuncCylinderLSDist::NbVariables () const
 {
   return 4;
 }
@@ -42,7 +42,7 @@ Standard_Integer ShapeAnalysis_FuncCylinderLSDist::NbVariables () const
 //function : Value
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncCylinderLSDist::Value(const math_Vector& X,Standard_Real& F)
+Standard_Boolean GeomConvert_FuncCylinderLSDist::Value(const math_Vector& X,Standard_Real& F)
 {
   gp_XYZ aLoc(X(1), X(2), X(3));
   Standard_Real anR2 = X(4)*X(4);
@@ -64,7 +64,7 @@ Standard_Boolean ShapeAnalysis_FuncCylinderLSDist::Value(const math_Vector& X,St
 //function : Gradient
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncCylinderLSDist::Gradient(const math_Vector& X,math_Vector& G)
+Standard_Boolean GeomConvert_FuncCylinderLSDist::Gradient(const math_Vector& X,math_Vector& G)
 
 {
   gp_XYZ aLoc(X(1), X(2), X(3));
@@ -102,7 +102,7 @@ Standard_Boolean ShapeAnalysis_FuncCylinderLSDist::Gradient(const math_Vector& X
 //function : Values
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncCylinderLSDist::Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
+Standard_Boolean GeomConvert_FuncCylinderLSDist::Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
 {
   gp_XYZ aLoc(X(1), X(2), X(3));
   Standard_Real anR = X(4), anR2 = anR * anR;

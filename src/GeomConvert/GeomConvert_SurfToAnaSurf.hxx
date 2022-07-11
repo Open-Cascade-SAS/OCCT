@@ -25,8 +25,10 @@
 #include <Standard_Boolean.hxx>
 #include <GeomConvert_ConvType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <TColgp_HArray1OfXYZ.hxx>
 class Geom_Surface;
-
+class Geom_SurfaceOfRevolution;
+class Geom_Circle;
 
 //! Converts a surface to the analitical form with given
 //! precision. Conversion is done only the surface is bspline
@@ -74,6 +76,48 @@ public:
   
   //! Returns true, if surface is canonical
   Standard_EXPORT static Standard_Boolean IsCanonical (const Handle(Geom_Surface)& S);
+
+private:
+  //!static method for checking surface of revolution
+  //!To avoid two-parts cone-like surface
+  static void CheckVTrimForRevSurf(const Handle(Geom_SurfaceOfRevolution)& aRevSurf,
+    Standard_Real& V1, Standard_Real& V2);
+
+  //!static method to try create cylindrical or conical surface
+  static Handle(Geom_Surface) TryCylinerCone(const Handle(Geom_Surface)& theSurf, const Standard_Boolean theVCase,
+    const Handle(Geom_Curve)& theUmidiso, const Handle(Geom_Curve)& theVmidiso,
+    const Standard_Real theU1, const Standard_Real theU2, const Standard_Real theV1, const Standard_Real theV2,
+    const Standard_Real theToler);
+
+  //!static method to try create cylinrical surface using least square method
+  static Standard_Boolean GetCylByLS(const Handle(TColgp_HArray1OfXYZ)& thePoints,
+    const Standard_Real theTol,
+    gp_Ax3& thePos, Standard_Real& theR,
+    Standard_Real& theGap);
+
+  //!static method to try create cylinrical surface based on its Gauss field
+  static Handle(Geom_Surface) TryCylinderByGaussField(const Handle(Geom_Surface)& theSurf,
+    const Standard_Real theU1, const Standard_Real theU2, const Standard_Real theV1, const Standard_Real theV2,
+    const Standard_Real theToler, const Standard_Integer theNbU = 20, const Standard_Integer theNbV = 20,
+    const Standard_Boolean theLeastSquare = Standard_False);
+
+  //! static method to try create toroidal surface.
+  //! In case <isTryUMajor> = Standard_True try to use V isoline radius as minor radaius.
+  static Handle(Geom_Surface) TryTorusSphere(const Handle(Geom_Surface)& theSurf,
+    const Handle(Geom_Circle)& circle,
+    const Handle(Geom_Circle)& otherCircle,
+    const Standard_Real Param1,
+    const Standard_Real Param2,
+    const Standard_Real aParam1ToCrv,
+    const Standard_Real aParam2ToCrv,
+    const Standard_Real toler,
+    const Standard_Boolean isTryUMajor);
+
+  static Standard_Real ComputeGap(const Handle(Geom_Surface)& theSurf,
+    const Standard_Real theU1, const Standard_Real theU2, const Standard_Real theV1, const Standard_Real theV2,
+    const Handle(Geom_Surface) theNewSurf, const Standard_Real theTol = RealLast());
+
+
 
 
 protected:

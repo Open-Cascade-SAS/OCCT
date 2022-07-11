@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _ShapeAnalysis_FuncSphereLSDist_HeaderFile
-#define _ShapeAnalysis_FuncSphereLSDist_HeaderFile
+#ifndef _GeomConvert_FuncSphereLSDist_HeaderFile
+#define _GeomConvert_FuncSphereLSDist_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -41,16 +41,16 @@
 //! dF/dR : G4(x0, y0, z0, R) = -4*R*Sum[...]
 //! [...] = [(x(i) - x0)^2 + (y(i) - y0)^2 + (z(i) - z0)^2 - R^2]
 //!
-class ShapeAnalysis_FuncSphereLSDist : public math_MultipleVarFunctionWithGradient
+class GeomConvert_FuncSphereLSDist : public math_MultipleVarFunctionWithGradient
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  Standard_EXPORT ShapeAnalysis_FuncSphereLSDist() {};
+  Standard_EXPORT GeomConvert_FuncSphereLSDist() {};
   
-  Standard_EXPORT ShapeAnalysis_FuncSphereLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints);
+  Standard_EXPORT GeomConvert_FuncSphereLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints);
 
   void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints)
   {
@@ -74,4 +74,4 @@ private:
   Handle(TColgp_HArray1OfXYZ) myPoints;
   
 };
-#endif // _ShapeAnalysis_FuncSphereLSDist_HeaderFile
+#endif // _GeomConvert_FuncSphereLSDist_HeaderFile

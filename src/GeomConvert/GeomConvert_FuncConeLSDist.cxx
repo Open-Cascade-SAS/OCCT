@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 
-#include <ShapeAnalysis_FuncConeLSDist.hxx>
+#include <GeomConvert_FuncConeLSDist.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Ax3.hxx>
@@ -21,10 +21,10 @@
 #include <ElSLib.hxx>
 
 //=======================================================================
-//function : ShapeAnalysis_FuncConeLSDist
+//function : GeomConvert_FuncConeLSDist
 //purpose  : 
 //=======================================================================
-ShapeAnalysis_FuncConeLSDist::ShapeAnalysis_FuncConeLSDist(
+GeomConvert_FuncConeLSDist::GeomConvert_FuncConeLSDist(
                                   const Handle(TColgp_HArray1OfXYZ)& thePoints,
                                   const gp_Dir& theDir):
   myPoints(thePoints), myDir(theDir)
@@ -35,7 +35,7 @@ ShapeAnalysis_FuncConeLSDist::ShapeAnalysis_FuncConeLSDist(
 //function : NbVariables
 //purpose  : 
 //=======================================================================
-Standard_Integer ShapeAnalysis_FuncConeLSDist::NbVariables () const
+Standard_Integer GeomConvert_FuncConeLSDist::NbVariables () const
 {
   return 5;
 }
@@ -44,7 +44,7 @@ Standard_Integer ShapeAnalysis_FuncConeLSDist::NbVariables () const
 //function : Value
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncConeLSDist::Value(const math_Vector& X, Standard_Real& F)
+Standard_Boolean GeomConvert_FuncConeLSDist::Value(const math_Vector& X, Standard_Real& F)
 {
   gp_Pnt aLoc(X(1), X(2), X(3));
   Standard_Real aSemiAngle = X(4), anR = X(5);

@@ -46,9 +46,3 @@ ShapeAnalysis_WireVertex.cxx
 ShapeAnalysis_WireVertex.hxx
 ShapeAnalysis_CanonicalRecognition.cxx
 ShapeAnalysis_CanonicalRecognition.hxx
-ShapeAnalysis_FuncSphereLSDist.cxx
-ShapeAnalysis_FuncSphereLSDist.hxx
-ShapeAnalysis_FuncCylinderLSDist.cxx
-ShapeAnalysis_FuncCylinderLSDist.hxx
-ShapeAnalysis_FuncConeLSDist.cxx
-ShapeAnalysis_FuncConeLSDist.hxx

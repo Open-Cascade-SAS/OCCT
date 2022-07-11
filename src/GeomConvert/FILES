@@ -25,3 +25,9 @@ GeomConvert_CurveToAnaCurve.hxx
 GeomConvert_SurfToAnaSurf.cxx
 GeomConvert_SurfToAnaSurf.hxx
 GeomConvert_ConvType.hxx
+GeomConvert_FuncSphereLSDist.cxx
+GeomConvert_FuncSphereLSDist.hxx
+GeomConvert_FuncCylinderLSDist.cxx
+GeomConvert_FuncCylinderLSDist.hxx
+GeomConvert_FuncConeLSDist.cxx
+GeomConvert_FuncConeLSDist.hxx

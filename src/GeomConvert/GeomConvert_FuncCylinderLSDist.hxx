@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _ShapeAnalysis_FuncCylinderLSDist_HeaderFile
-#define _ShapeAnalysis_FuncCylinderLSDist_HeaderFile
+#ifndef _GeomConvert_FuncCylinderLSDist_HeaderFile
+#define _GeomConvert_FuncCylinderLSDist_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -57,16 +57,16 @@
 //! dF/dz0 : G3(...) = 2*Sum{[...]*Dz0}
 //! dF/dR : G4(...) = -4*R*Sum[...]
 //! [...] = [|(P(i) - Loc)^dir|^2 - R^2]
-class ShapeAnalysis_FuncCylinderLSDist : public math_MultipleVarFunctionWithGradient
+class GeomConvert_FuncCylinderLSDist : public math_MultipleVarFunctionWithGradient
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  Standard_EXPORT ShapeAnalysis_FuncCylinderLSDist() {};
+  Standard_EXPORT GeomConvert_FuncCylinderLSDist() {};
   
-  Standard_EXPORT ShapeAnalysis_FuncCylinderLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
+  Standard_EXPORT GeomConvert_FuncCylinderLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
                                                    const gp_Dir& theDir);
 
   void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints)
@@ -97,4 +97,4 @@ private:
   gp_Dir myDir;
   
 };
-#endif // _ShapeAnalysis_FuncCylinderLSDist_HeaderFile
+#endif // _GeomConvert_FuncCylinderLSDist_HeaderFile

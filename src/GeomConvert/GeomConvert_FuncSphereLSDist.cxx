@@ -15,16 +15,16 @@
 // commercial license or contractual agreement.
 
 
-#include <ShapeAnalysis_FuncSphereLSDist.hxx>
+#include <GeomConvert_FuncSphereLSDist.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <math_Vector.hxx>
 
 //=======================================================================
-//function : ShapeAnalysis_FuncSphereLSDist
+//function : GeomConvert_FuncSphereLSDist
 //purpose  : 
 //=======================================================================
-ShapeAnalysis_FuncSphereLSDist::ShapeAnalysis_FuncSphereLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints):
+GeomConvert_FuncSphereLSDist::GeomConvert_FuncSphereLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints):
   myPoints(thePoints)
 {
 }
@@ -33,7 +33,7 @@ ShapeAnalysis_FuncSphereLSDist::ShapeAnalysis_FuncSphereLSDist(const Handle(TCol
 //function : NbVariables
 //purpose  : 
 //=======================================================================
-Standard_Integer ShapeAnalysis_FuncSphereLSDist::NbVariables () const
+Standard_Integer GeomConvert_FuncSphereLSDist::NbVariables () const
 {
   return 4;
 }
@@ -42,7 +42,7 @@ Standard_Integer ShapeAnalysis_FuncSphereLSDist::NbVariables () const
 //function : Value
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncSphereLSDist::Value(const math_Vector& X,Standard_Real& F)
+Standard_Boolean GeomConvert_FuncSphereLSDist::Value(const math_Vector& X,Standard_Real& F)
 {
   gp_XYZ aLoc(X(1), X(2), X(3));
   Standard_Real anR2 = X(4)*X(4);
@@ -62,7 +62,7 @@ Standard_Boolean ShapeAnalysis_FuncSphereLSDist::Value(const math_Vector& X,Stan
 //function : Gradient
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncSphereLSDist::Gradient(const math_Vector& X,math_Vector& G)
+Standard_Boolean GeomConvert_FuncSphereLSDist::Gradient(const math_Vector& X,math_Vector& G)
 
 {
   gp_XYZ aLoc(X(1), X(2), X(3));
@@ -89,7 +89,7 @@ Standard_Boolean ShapeAnalysis_FuncSphereLSDist::Gradient(const math_Vector& X,m
 //function : Values
 //purpose  : 
 //=======================================================================
-Standard_Boolean ShapeAnalysis_FuncSphereLSDist::Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
+Standard_Boolean GeomConvert_FuncSphereLSDist::Values(const math_Vector& X,Standard_Real& F,math_Vector& G)
 {
   gp_XYZ aLoc(X(1), X(2), X(3));
   Standard_Real anR = X(4), anR2 = anR * anR;

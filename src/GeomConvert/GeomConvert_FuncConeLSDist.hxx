@@ -12,8 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _ShapeAnalysis_FuncConeLSDist_HeaderFile
-#define _ShapeAnalysis_FuncConeLSDist_HeaderFile
+#ifndef _GeomConvert_FuncConeLSDist_HeaderFile
+#define _GeomConvert_FuncConeLSDist_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -28,16 +28,16 @@
 //! by least square method.
 //! 
 //!
-class ShapeAnalysis_FuncConeLSDist : public math_MultipleVarFunction
+class GeomConvert_FuncConeLSDist : public math_MultipleVarFunction
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  Standard_EXPORT ShapeAnalysis_FuncConeLSDist() {};
+  Standard_EXPORT GeomConvert_FuncConeLSDist() {};
   
-  Standard_EXPORT ShapeAnalysis_FuncConeLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
+  Standard_EXPORT GeomConvert_FuncConeLSDist(const Handle(TColgp_HArray1OfXYZ)& thePoints,
                                                    const gp_Dir& theDir);
 
   void SetPoints(const Handle(TColgp_HArray1OfXYZ)& thePoints)
@@ -63,4 +63,4 @@ private:
   gp_Dir myDir;
   
 };
-#endif // _ShapeAnalysis_FuncConeLSDist_HeaderFile
+#endif // _GeomConvert_FuncConeLSDist_HeaderFile
