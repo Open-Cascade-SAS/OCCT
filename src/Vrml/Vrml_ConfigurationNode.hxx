@@ -15,6 +15,7 @@
 #define _Vrml_ConfigurationNode_HeaderFile
 
 #include <DE_ConfigurationNode.hxx>
+#include <RWMesh_CoordinateSystem.hxx>
 
 //! The purpose of this class is to configure the transfer process for VRML format
 //! Stores the necessary settings for Vrml_Provider.
@@ -93,6 +94,12 @@ public:
 
   struct Vrml_InternalSection
   {
+    // Read
+    double ReadFileUnit = 1.; //<! file length units to convert from while reading the file, defined as scale factor for meters
+    RWMesh_CoordinateSystem ReadFileCoordinateSys = RWMesh_CoordinateSystem_Yup; //<! coordinate system defined by Vrml file
+    RWMesh_CoordinateSystem ReadSystemCoordinateSys = RWMesh_CoordinateSystem_Zup; //<! result coordinate system 
+    bool ReadFillIncomplete = true; //<! fill the document with partially retrieved data even if reader has failed with error
+
     // Write
     WriteMode_WriterVersion WriterVersion = WriteMode_WriterVersion_2; //!< Setting up writer version (1/2)
     WriteMode_RepresentationType WriteRepresentationType = WriteMode_RepresentationType_Wireframe; //!< Setting up representation (shaded/wireframe/both) 

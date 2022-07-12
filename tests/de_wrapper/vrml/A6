@@ -79,7 +79,7 @@ if [catch {WriteFile D0 $write_path} catch_result] {
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {ReadFile D6 $write_path -conf "global.general.length.unit : 1 "} catch_result] {
+if [catch {ReadFile D6 $write_path -conf "provider.VRML.OCC.read.file.unit : 1"} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"
@@ -91,7 +91,7 @@ if [catch {writefile S1 $write_path} catch_result] {
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {ReadFile D7 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
+if [catch {ReadFile D7 $write_path -conf "provider.VRML.OCC.read.file.unit : 0.001"} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"

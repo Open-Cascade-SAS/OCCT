@@ -13,7 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
 #include <DE_ConfigurationContext.hxx>
@@ -39,6 +38,7 @@
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAW_Vars.hxx>
+#include <VrmlAPI_CafReader.hxx>
 #include <VrmlAPI_Writer.hxx>
 #include <DDF.hxx>
 
@@ -49,6 +49,7 @@
 #include <TDF_Tool.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Interface_Static.hxx>
+#include <UnitsAPI.hxx>
 #include <UnitsMethods.hxx>
 
 #include <stdio.h>
@@ -57,6 +58,30 @@
 // Support for several models in DRAW
 //============================================================
 static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> thedictws;
+
+//=======================================================================
+//function : parseCoordinateSystem
+//purpose  : Parse RWMesh_CoordinateSystem enumeration.
+//=======================================================================
+static bool parseCoordinateSystem(const char* theArg,
+                                  RWMesh_CoordinateSystem& theSystem)
+{
+  TCollection_AsciiString aCSStr(theArg);
+  aCSStr.LowerCase();
+  if (aCSStr == "zup")
+  {
+    theSystem = RWMesh_CoordinateSystem_Zup;
+  }
+  else if (aCSStr == "yup")
+  {
+    theSystem = RWMesh_CoordinateSystem_Yup;
+  }
+  else
+  {
+    return Standard_False;
+  }
+  return Standard_True;
+}
 
 static Standard_Boolean ClearDicWS()
 {
@@ -722,6 +747,142 @@ static Standard_Integer Extract(Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : ReadVrml
+//purpose  :
+//=======================================================================
+static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
+                                 Standard_Integer  theArgc,
+                                 const char**      theArgv)
+{
+  if(theArgc < 3)
+  {
+    theDI.PrintHelp(theArgv[0]);
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc;
+  Standard_Real aFileUnitFactor = 1.0;
+  RWMesh_CoordinateSystem aFileCoordSys = RWMesh_CoordinateSystem_Yup, aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
+  Standard_Boolean toUseExistingDoc = Standard_False;
+  Standard_Boolean toFillIncomplete = Standard_True;
+  Standard_CString aDocName = NULL;
+  TCollection_AsciiString aFilePath;
+
+  for(Standard_Integer anArgIt = 1; anArgIt < theArgc; anArgIt++)
+  {
+    TCollection_AsciiString anArg(theArgv[anArgIt]);
+    anArg.LowerCase();
+    if(anArgIt + 1 < theArgc && anArg == "-fileunit")
+    {
+      const TCollection_AsciiString aUnitStr(theArgv[++anArgIt]);
+      aFileUnitFactor = UnitsAPI::AnyToSI(1.0, aUnitStr.ToCString());
+      if (aFileUnitFactor <= 0.0)
+      {
+        Message::SendFail() << "Error: wrong length unit '" << aUnitStr << "'";
+        return 1;
+      }
+    }
+    else if (anArgIt + 1 < theArgc && anArg == "-filecoordsys")
+    {
+      if (!parseCoordinateSystem(theArgv[++anArgIt], aFileCoordSys))
+      {
+        Message::SendFail() << "Error: unknown coordinate system '" << theArgv[anArgIt] << "'";
+        return 1;
+      }
+    }
+    else if (anArgIt + 1 < theArgc && anArg == "-systemcoordsys")
+    {
+      if (!parseCoordinateSystem(theArgv[++anArgIt], aSystemCoordSys))
+      {
+        Message::SendFail() << "Error: unknown coordinate system '" << theArgv[anArgIt] << "'";
+        return 1;
+      }
+    }
+    else if (anArg == "-fillincomplete")
+    {
+      toFillIncomplete = true;
+      if (anArgIt + 1 < theArgc && Draw::ParseOnOff(theArgv[anArgIt + 1], toFillIncomplete))
+      {
+        ++anArgIt;
+      }
+    }
+    else if (anArg == "-nocreatedoc")
+    {
+      toUseExistingDoc = true;
+    }
+    else if (aDocName == nullptr)
+    {
+      aDocName = theArgv[anArgIt];
+      DDocStd::GetDocument(aDocName, aDoc, Standard_False);
+    }
+    else if(aFilePath.IsEmpty())
+    {
+      aFilePath = theArgv[anArgIt];
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgv[anArgIt] << "'";
+      return 1;
+    }
+  }
+
+  if (aFilePath.IsEmpty() || aDocName == nullptr)
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+  
+  if (aDoc.IsNull())
+  {
+    if(toUseExistingDoc)
+    {
+      Message::SendFail() << "Error: document with name " << aDocName << " does not exist";
+      return 1;
+    }
+    Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+    anApp->NewDocument("BinXCAF", aDoc);
+  }
+  else if (!toUseExistingDoc)
+  {
+    Message::SendFail() << "Error: document with name " << aDocName << " already exists\n";
+    return 1;
+  }
+
+  Standard_Real aScaleFactor = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactor))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer();
+    aScaleFactor = UnitsMethods::GetCasCadeLengthUnit();
+  }
+
+  VrmlAPI_CafReader aVrmlReader;
+  aVrmlReader.SetDocument(aDoc);
+  aVrmlReader.SetFileLengthUnit(aFileUnitFactor);
+  aVrmlReader.SetSystemLengthUnit(aScaleFactor);
+  aVrmlReader.SetFileCoordinateSystem(aFileCoordSys);
+  aVrmlReader.SetSystemCoordinateSystem(aSystemCoordSys);
+  aVrmlReader.SetFillIncompleteDocument(toFillIncomplete);
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
+  if (!aVrmlReader.Perform(aFilePath, aProgress->Start()))
+  {
+    if (aVrmlReader.ExtraStatus() != RWMesh_CafReaderStatusEx_Partial)
+    {
+      Message::SendFail() << "Error: file reading failed '" << aFilePath << "'";
+      return 1;
+    }
+    Message::SendWarning() <<
+      "Warning: file has been read paratially (due to unexpected EOF, syntax error, memory limit) " << aFilePath;
+  }
+
+  TDataStd_Name::Set(aDoc->GetData()->Root(), aDocName);
+  Handle(DDocStd_DrawDocument) aDD = new DDocStd_DrawDocument(aDoc);
+  Draw::Set(aDocName, aDD);
+
+  return 0;
+}
+
+//=======================================================================
 //function : WriteVrml
 //purpose  : Write DECAF document to Vrml
 //=======================================================================
@@ -1126,7 +1287,20 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& di)
          "Extracts given srcLabel1 srcLabel2 ... from srcDoc into given Doc or assembly shape",
          __FILE__, Extract, g);
 
-  di.Add("WriteVrml", "Doc filename [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 0 by default]", __FILE__, WriteVrml, g);
+  di.Add("ReadVrml",
+         "ReadVrml docName filePath [-fileCoordSys {Zup|Yup}] [-fileUnit Unit]"
+         "\n\t\t:                   [-systemCoordSys {Zup|Yup}] [-noCreateDoc] [-fillIncomplete {ON|OFF}]"
+         "\n\t\t: Read Vrml file into XDE document."
+         "\n\t\t:   -fileCoordSys   coordinate system defined by Vrml file; Yup when not specified."
+         "\n\t\t:   -fileUnit       length unit of Vrml file content."
+         "\n\t\t:   -systemCoordSys result coordinate system; Zup when not specified."
+         "\n\t\t:   -noCreateDoc    read into existing XDE document."
+         "\n\t\t:   -fillIncomplete fill the document with partially retrieved data even if reader has failed with "
+         "error; true when not specified", 
+         __FILE__, ReadVrml, g);
+  di.Add("WriteVrml",
+         "WriteVrml Doc filename [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 0 by default]",
+         __FILE__, WriteVrml, g);
 
   di.Add("DumpConfiguration",
          "DumpConfiguration [-path <path>] [-recursive {on|off}] [-format fmt1 fmt2 ...] [-vendor vend1 vend2 ...]\n"

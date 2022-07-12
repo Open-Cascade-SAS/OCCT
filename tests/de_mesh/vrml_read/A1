@@ -1,0 +1,32 @@
+puts "============"
+puts "0032820: Data Exchange - add VRML reader to XCAF document"
+puts "============"
+puts ""
+
+set aFile [locate_data_file bug29597_vrml2.wrl]
+
+catch { Close D }
+
+loadvrml S_${casename} $aFile
+vinit Driver1/View_${casename}_1/${casename}_1
+vdisplay S_${casename} -dispmode 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}_1.png
+
+XNewDoc D
+ReadVrml D $aFile -nocreatedoc
+vinit Driver1/View_${casename}_2/${casename}_2
+XDisplay D -dispMode 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}_2.png
+
+XGetOneShape S_New D
+checktrinfo S_New -ref [trinfo S_${casename}]
+
+set ref_colors "TEAL "
+set new_colors [ XGetAllColors D ]
+if {[ string equal $new_colors $ref_colors ] == 0} {
+  puts "Error: Colors have been read incorrectly."
+}  
+
+Close D

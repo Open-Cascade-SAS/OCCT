@@ -1,5 +1,7 @@
 VrmlAPI.cxx
 VrmlAPI.hxx
+VrmlAPI_CafReader.cxx
+VrmlAPI_CafReader.hxx
 VrmlAPI_RepresentationOfShape.hxx
 VrmlAPI_Writer.cxx
 VrmlAPI_Writer.hxx

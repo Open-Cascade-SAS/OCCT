@@ -17,6 +17,7 @@
 #include <Message.hxx>
 #include <OSD_Path.hxx>
 #include <TDocStd_Document.hxx>
+#include <VrmlAPI_CafReader.hxx>
 #include <VrmlAPI_Writer.hxx>
 #include <VrmlData_Scene.hxx>
 #include <Vrml_ConfigurationNode.hxx>
@@ -87,14 +88,27 @@ bool Vrml_Provider::Read(const TCollection_AsciiString& thePath,
     return false;
   }
   Handle(Vrml_ConfigurationNode) aNode = Handle(Vrml_ConfigurationNode)::DownCast(GetNode());
-  TopoDS_Shape aShape;
-  if(!Read(thePath, aShape, theProgress))
+
+  VrmlAPI_CafReader aVrmlReader;
+  aVrmlReader.SetDocument(theDocument);
+  aVrmlReader.SetFileLengthUnit(aNode->InternalParameters.ReadFileUnit);
+  aVrmlReader.SetSystemLengthUnit(aNode->GlobalParameters.LengthUnit);
+  aVrmlReader.SetFileCoordinateSystem(aNode->InternalParameters.ReadFileCoordinateSys);
+  aVrmlReader.SetSystemCoordinateSystem(aNode->InternalParameters.ReadSystemCoordinateSys);
+  aVrmlReader.SetFillIncompleteDocument(aNode->InternalParameters.ReadFillIncomplete);
+
+  XCAFDoc_DocumentTool::SetLengthUnit(theDocument, aNode->InternalParameters.ReadFileUnit);
+
+  if (!aVrmlReader.Perform(thePath, theProgress))
   {
-    return false;
+    if (aVrmlReader.ExtraStatus() != RWMesh_CafReaderStatusEx_Partial)
+    {
+      Message::SendFail() << "Error in the Vrml_Provider during reading the file '" << thePath << "'";
+      return false;
+    }
+    Message::SendWarning() << "Warning in the Vrml_Provider during reading the file: file has been read paratially " <<
+      "(due to unexpected EOF, syntax error, memory limit) '" << thePath << "'";
   }
-  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
-  aShTool->AddShape(aShape);
-  XCAFDoc_DocumentTool::SetLengthUnit(theDocument, aNode->GlobalParameters.LengthUnit, UnitsMethods_LengthUnit_Millimeter);
   return true;
 }
 
@@ -117,7 +131,7 @@ bool Vrml_Provider::Write(const TCollection_AsciiString& thePath,
 
   VrmlAPI_Writer aWriter;
   aWriter.SetRepresentation(static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
-  Standard_Real aScaleFactorM = aNode->GlobalParameters.LengthUnit / 1000;
+  Standard_Real aScaleFactorM = aNode->GlobalParameters.LengthUnit;
   if (!aWriter.WriteDoc(theDocument, thePath.ToCString(), aScaleFactorM))
   {
     Message::SendFail() << "Error in the Vrml_Provider during wtiting the file " <<
@@ -199,8 +213,7 @@ bool Vrml_Provider::Read(const TCollection_AsciiString& thePath,
     }
 
     VrmlData_Scene aScene;
-    Standard_Real anOCCUnitMM = aNode->GlobalParameters.LengthUnit;
-    aScene.SetLinearScale(1000. / anOCCUnitMM);
+    aScene.SetLinearScale(aNode->GlobalParameters.LengthUnit);
 
     aScene.SetVrmlDir(aVrmlDir);
     aScene << aStream;
