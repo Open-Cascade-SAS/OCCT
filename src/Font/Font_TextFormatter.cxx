@@ -60,6 +60,7 @@ Font_TextFormatter::Font_TextFormatter()
   myAlignY (Graphic3d_VTA_TOP),
   myTabSize (8),
   myWrappingWidth (0.0f),
+  myIsWordWrapping (true),
   myLastSymbolWidth (0.0f),
   myMaxSymbolWidth (0.0f),
   //
@@ -249,6 +250,7 @@ void Font_TextFormatter::Format()
     }
   }
 
+  Standard_Utf32Char aCharPrev = 0;
   for (Font_TextFormatter::Iterator aFormatterIt(*this);
        aFormatterIt.More(); aFormatterIt.Next())
   {
@@ -269,12 +271,30 @@ void Font_TextFormatter::Format()
       Font_Rect aBndBox;
       GlyphBoundingBox (aRectIter, aBndBox);
       const Standard_ShortReal aNextXPos = aBndBox.Right - BottomLeft (aFirstCornerId).x();
-      if (aNextXPos > aMaxLineWidth) // wrap the line and do processing of the symbol
+      Standard_Boolean isCurWordFits = true;
+      if(myIsWordWrapping && IsSeparatorSymbol(aCharPrev))
+      {
+        for (Font_TextFormatter::Iterator aWordIt = aFormatterIt; aWordIt.More(); aWordIt.Next())
+        {
+          if (IsSeparatorSymbol(aWordIt.Symbol()))
+          {
+            break;
+          }
+          float aWordWidthPx = myCorners[aWordIt.SymbolPosition()].x() - myCorners[aRectIter].x();
+          if (aNextXPos + aWordWidthPx > aMaxLineWidth)
+          {
+            isCurWordFits = false;
+            break;
+          }
+        }
+      }
+      if (aNextXPos > aMaxLineWidth || !isCurWordFits) // wrap the line and do processing of the symbol
       {
         const Standard_Integer aLastRect = aRectIter - 1; // last rect on current line
         newLine (aLastRect, aMaxLineWidth);
       }
     }
+    aCharPrev = aCharThis;
   }
 
   myBndWidth = aMaxLineWidth;

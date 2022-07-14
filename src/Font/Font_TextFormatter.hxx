@@ -220,6 +220,12 @@ public:
   //! Returns text maximum width, zero means that the text is not bounded by width
   Standard_ShortReal Wrapping() const { return myWrappingWidth; }
 
+  //! returns TRUE when trying not to break words when wrapping text
+  Standard_Boolean WordWrapping () const { return myIsWordWrapping; }
+
+  //! returns TRUE when trying not to break words when wrapping text
+  void SetWordWrapping (const Standard_Boolean theIsWordWrapping)  { myIsWordWrapping = theIsWordWrapping; }
+
   //! @return width of formatted text.
   inline Standard_ShortReal ResultWidth() const
   {
@@ -274,6 +280,14 @@ public:
     return Standard_False;
   }
 
+  //! Returns true if the symbol separates words when wrapping is enabled
+  static Standard_Boolean IsSeparatorSymbol (const Standard_Utf32Char& theSymbol)
+  {
+    return theSymbol == '\x0A'    // new line
+        || theSymbol == ' '       // space
+        || theSymbol == '\x09';   // tab
+  }
+
   DEFINE_STANDARD_RTTIEXT (Font_TextFormatter, Standard_Transient)
 
 protected: //! @name class auxiliary methods
@@ -288,6 +302,7 @@ protected: //! @name configuration
   Graphic3d_VerticalTextAlignment   myAlignY;  //!< vertical   alignment style
   Standard_Integer                  myTabSize; //!< horizontal tabulation width (number of space symbols)
   Standard_ShortReal                myWrappingWidth; //!< text is wrapped by the width if defined (more 0)
+  Standard_Boolean                  myIsWordWrapping;  //!< if TRUE try not to break words when wrapping text (true by default)
   Standard_ShortReal                myLastSymbolWidth; //!< width of the last symbol
   Standard_ShortReal                myMaxSymbolWidth; //!< maximum symbol width of the formatter string
 

@@ -2500,6 +2500,11 @@ static int VDrawText (Draw_Interpretor& theDI,
       }
       aTextFormatter->SetWrapping ((Standard_ShortReal)Draw::Atof(theArgVec[++anArgIt]));
     }
+    else if (aParam == "-wordwrapping")
+    {
+      const bool isWordWrapping = Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIt);
+      aTextFormatter->SetWordWrapping(isWordWrapping);
+    }
     else if (aParam == "-aspect"
           && anArgIt + 1 < theArgsNb)
     {
@@ -6925,6 +6930,7 @@ vdrawtext name text
           [-zoom {0|1}]=0
           [-height height]=16
           [-wrapping width]=40
+          [-wordwrapping {0|1}]=1
           [-aspect {regular|bold|italic|boldItalic}]=regular
           [-font font]=Times
           [-2d] [-perspos {X Y Z}]={0 0 0}
