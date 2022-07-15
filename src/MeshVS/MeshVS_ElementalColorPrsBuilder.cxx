@@ -625,7 +625,10 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     }
 
     aGroup2->AddPrimitiveArray (aFaceTriangles);
-    aSGroup->AddPrimitiveArray (anEdgeSegments);
+    if (anEdgeOn)
+    {
+      aSGroup->AddPrimitiveArray (anEdgeSegments);
+    }
   }
 }
 
