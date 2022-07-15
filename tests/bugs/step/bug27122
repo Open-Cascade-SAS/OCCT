@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC27122"
+puts "================"
+puts ""
+#####################################################################
+# STEP import regression: invalid shapes are produced during model translation due to huge face tolerance
+#####################################################################
+
+pload XDE
+
+# Empty resource file name to take params from InterfaceStatic
+param "read.step.resource.name" "\"\""
+# Add FixFaceSize operator
+param "FromSTEP.exec.op" FixShape,FixFaceSize
+# Set a tolerance exceeding the size of the problem face to FixFaceSize operator
+param "FromSTEP.FixFaceSize.Tolerance" 0.0508
+
+stepread [locate_data_file bug27122_280696.stp] a *
+
+# restore old params
+param "read.step.resource.name" STEP
+param "FromSTEP.exec.op" FixShape
+param "FromSTEP.FixFaceSize.Tolerance" 1.e-7
+
+checknbshapes a_1 -t -face 10
+
+checkview -display a_1 -3d -path ${imagedir}/${test_image}.png
