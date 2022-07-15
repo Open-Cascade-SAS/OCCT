@@ -239,6 +239,7 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixNonAdjacentIntersectingEdgesMode", 't', "-1");
     Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixVertexPositionMode",       't', "0");
     Interface_Static::Init ("XSTEP", "FromSTEP.FixShape.FixVertexToleranceMode",      't', "-1"); 
+    Interface_Static::Init ("XSTEP", "FromSTEP.FixFaceSize.Tolerance",                't', "1.e-7"); 
 
     // ika 28.07.16: Parameter to read all top level solids and shells,
     // should be used only in case of invalid shape_representation without links to shapes.
