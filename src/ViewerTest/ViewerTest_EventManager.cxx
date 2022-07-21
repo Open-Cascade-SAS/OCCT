@@ -22,6 +22,7 @@
 #include <AIS_Shape.hxx>
 #include <Aspect_Grid.hxx>
 #include <Draw.hxx>
+#include <Message.hxx>
 #include <ViewerTest_ContinuousRedrawer.hxx>
 #include <ViewerTest_V3dView.hxx>
 #include <ViewerTest.hxx>
