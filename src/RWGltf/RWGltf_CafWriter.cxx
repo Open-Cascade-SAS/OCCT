@@ -45,7 +45,9 @@
 #endif
 
 #ifdef HAVE_DRACO
+  #include <Standard_WarningsDisable.hxx>
   #include <draco/compression/encode.h>
+  #include <Standard_WarningsRestore.hxx>
 #endif
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafWriter, Standard_Transient)
