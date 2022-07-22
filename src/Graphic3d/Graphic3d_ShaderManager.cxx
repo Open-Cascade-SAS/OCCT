@@ -1547,7 +1547,7 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
   }
 
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
-  aProgramSrc->SetPBR (theIsPBR);
+  aProgramSrc->SetPBR (theIsPBR); // should be set before defaultGlslVersion()
 
   TCollection_AsciiString aSrcVert, aSrcVertExtraFunc, aSrcVertExtraMain;
   TCollection_AsciiString aSrcFrag, aSrcFragGetVertColor, aSrcFragExtraMain;
@@ -1987,6 +1987,8 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getPBREnvBakingProgram 
 {
   Standard_ASSERT_RAISE (theIndex >= 0 && theIndex <= 2,"");
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  aProgramSrc->SetPBR (true); // should be set before defaultGlslVersion()
+
   Graphic3d_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
 
   TCollection_AsciiString aSrcVert = TCollection_AsciiString()
@@ -2033,7 +2035,6 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getPBREnvBakingProgram 
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbShadowMaps (0);
   aProgramSrc->SetNbClipPlanesMax (0);
-  aProgramSrc->SetPBR (true);
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
   aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   return aProgramSrc;
