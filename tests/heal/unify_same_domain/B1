@@ -1,5 +1,3 @@
-puts "TODO OCC29040 ALL: Error: the history of the removed edges is incorrect"
-
 puts "======="
 puts "0028913"
 puts "======="

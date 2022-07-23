@@ -9,7 +9,7 @@ unifysamedom result a
 
 checkshape result
 
-checknbshapes result -solid 1 -shell 1 -face 21 -wire 22 -edge 58 -vertex 38
+checknbshapes result -solid 1 -shell 1 -face 21 -wire 22 -edge 57 -vertex 37
 
 set tolres [checkmaxtol result]
 
