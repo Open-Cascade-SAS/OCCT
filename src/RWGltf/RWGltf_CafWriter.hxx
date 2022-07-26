@@ -125,6 +125,12 @@ public:
   //! May reduce binary data size thanks to smaller triangle indexes.
   void SetSplitIndices16 (bool theToSplit) { myToSplitIndices16 = theToSplit; }
 
+  //! Return TRUE if multithreaded optimizations are allowed; FALSE by default.
+  bool ToParallel() const { return myToParallel; }
+
+  //! Setup multithreaded execution.
+  void SetParallel (bool theToParallel) { myToParallel = theToParallel; }
+
   //! Return Draco parameters
   const RWGltf_DracoParameters& CompressionParameters() const { return myDracoParameters; }
 
@@ -397,6 +403,7 @@ protected:
   int64_t                                       myBinDataLen64;      //!< length of binary file
 
   std::vector<RWGltf_GltfBufferView>            myBuffViewsDraco;    //!< vector of buffers view with compression data
+  Standard_Boolean                              myToParallel;        //!< flag to use multithreading; FALSE by default
   RWGltf_DracoParameters                        myDracoParameters;   //!< Draco parameters
 };
 

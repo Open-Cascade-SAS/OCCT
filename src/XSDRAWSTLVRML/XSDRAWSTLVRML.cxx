@@ -383,6 +383,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   RWMesh_CoordinateSystem aSystemCoordSys = RWMesh_CoordinateSystem_Zup;
   bool toForceUVExport = false, toEmbedTexturesInGlb = true;
   bool toMergeFaces = false, toSplitIndices16 = false;
+  bool isParallel = false;
   RWMesh_NameFormat aNodeNameFormat = RWMesh_NameFormat_InstanceOrProduct;
   RWMesh_NameFormat aMeshNameFormat = RWMesh_NameFormat_Product;
   RWGltf_DracoParameters aDracoParameters;
@@ -556,6 +557,10 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
     {
       aDracoParameters.UnifiedQuantization = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
     }
+    else if (anArgCase == "-parallel")
+    {
+      isParallel = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
     else
     {
       Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
@@ -587,6 +592,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   aWriter.SetToEmbedTexturesInGlb (toEmbedTexturesInGlb);
   aWriter.SetMergeFaces (toMergeFaces);
   aWriter.SetSplitIndices16 (toSplitIndices16);
+  aWriter.SetParallel(isParallel);
   aWriter.SetCompressionParameters(aDracoParameters);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aScaleFactorM);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (aSystemCoordSys);
@@ -2450,7 +2456,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:            [-meshNameFormat {empty|product|instance|instOrProd|prodOrInst|prodAndInst|verbose}]=product"
                    "\n\t\t:            [-draco]=0 [-compressionLevel {0-10}]=7 [-quantizePositionBits Value]=14 [-quantizeNormalBits Value]=10"
                    "\n\t\t:            [-quantizeTexcoordBits Value]=12 [-quantizeColorBits Value]=8 [-quantizeGenericBits Value]=12"
-                   "\n\t\t:            [-unifiedQuantization]=0"
+                   "\n\t\t:            [-unifiedQuantization]=0 [-parallel]=0"
                    "\n\t\t: Write XDE document into glTF file."
                    "\n\t\t:   -trsfFormat       preferred transformation format"
                    "\n\t\t:   -systemCoordSys   system coordinate system; Zup when not specified"
@@ -2460,7 +2466,7 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:   -texturesSeparate write textures to separate files"
                    "\n\t\t:   -nodeNameFormat   name format for Nodes"
                    "\n\t\t:   -meshNameFormat   name format for Meshes"
-                   "\n\t\t:   -draco use Draco  compression 3D geometric meshes"
+                   "\n\t\t:   -draco            use Draco compression 3D geometric meshes"
                    "\n\t\t:   -compressionLevel draco compression level [0-10] (by default 7), a value of 0 will apply sequential encoding and preserve face order"
                    "\n\t\t:   -quantizePositionBits quantization bits for position attribute when using Draco compression (by default 14)"
                    "\n\t\t:   -quantizeNormalBits   quantization bits for normal attribute when using Draco compression (by default 10)"
@@ -2468,7 +2474,8 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t:   -quantizeColorBits    quantization bits for color attribute when using Draco compression (by default 8)"
                    "\n\t\t:   -quantizeGenericBits  quantization bits for skinning attribute (joint indices and joint weights)"
                    "\n                        and custom attributes when using Draco compression (by default 12)"
-                   "\n\t\t:   -unifiedQuantization  quantization is applied on each primitive separately if this option is false",
+                   "\n\t\t:   -unifiedQuantization  quantization is applied on each primitive separately if this option is false"
+                   "\n\t\t:   -parallel             use multithreading for Draco compression",
                    __FILE__, WriteGltf, g);
   theCommands.Add ("writegltf",
                    "writegltf shape file",

@@ -1,0 +1,13 @@
+puts "========"
+puts "0032867: Data Exchange - Implement Draco compression for writing glTF"
+puts "Test case exporting model into glb (binary glTF) file."
+puts "========"
+
+Close D0 -silent
+ReadGltf D0 [locate_data_file bug32867_bull.glb]
+
+set aGltfFile1 "${imagedir}/${casename}_tmp1.glb"
+
+WriteGltf D0 "$aGltfFile1" -draco on -parallel
+
+ReadGltf D "$aGltfFile1"
