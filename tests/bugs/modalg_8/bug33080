@@ -1,0 +1,30 @@
+puts "================================"
+puts "OCC33080: Wrong projection point"
+puts "================================"
+puts ""
+
+restore [locate_data_file bug33080.brep] a
+
+set log [projface a -0.21115 1.17515 1.4504]
+
+regexp {n0 1 Distance ([0-9+-.eE]*)} $log full dist
+
+if { $dist > 0.1240364 } {
+  puts "Error distance: projection is wrong"
+}
+
+regexp {U = ([0-9+-.eE]*)} $log full uparam
+
+if { $uparam < 869.174321 || $uparam > 869.174322 } {
+  puts "Error point: projection is wrong"
+}
+
+regexp {V = ([0-9+-.eE]*)} $log full vparam
+
+if { $vparam < 732.602489 || $vparam > 732.602490 } {
+  puts "Error point: projection is wrong"
+}
+
+if {![regexp "Found 1 Points" $log]} {
+  puts "Error number of points: projection is wrong"
+}

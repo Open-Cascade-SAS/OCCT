@@ -141,13 +141,18 @@ static Standard_Integer tolerance
 static Standard_Integer projface
   (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 4) { di<<"Give FACE name and X Y [Z]\n"; return 1 /* Error */; }
+  if (argc < 4)
+  {
+    di << "Give FACE name and X Y [Z]\n";
+    return 1;
+  }
   Standard_CString arg1 = argv[1];
   TopoDS_Shape Shape = DBRep::Get(arg1);
   if (Shape.IsNull()) { di<<"Shape unknown : "<<arg1<<"\n"; return 1 /* Error */; }
   if (Shape.ShapeType() != TopAbs_FACE) { di<<"Not a face\n"; return 1 /* Error */; }
   TopoDS_Face F = TopoDS::Face (Shape);
   Handle(Geom_Surface) thesurf = BRep_Tool::Surface (F);  // pas locface
+  BRepTopAdaptor_FClass2d aClassifier (F, Precision::Confusion());
 //  On y va
   Standard_Real X,Y,Z,U,V;
   X = U = Draw::Atof (argv[2]);
@@ -167,28 +172,52 @@ static Standard_Integer projface
 
     GeomAPI_ProjectPointOnSurf proj(P3D, thesurf, uf-du, ul+du, vf-dv, vl+dv);
     Standard_Integer sol, nPSurf = proj.NbPoints();
-    di<<" Found "<<nPSurf<<" Points\n";
+    Standard_Integer anIndSol = 0, anIndMin = 0;
+    Standard_Real aMinDist = RealLast();
     for (sol = 1; sol <= nPSurf; sol ++) {
-      di<<"n0 "<<sol<<" Distance "<<proj.Distance(sol);
+      
       proj.Parameters(sol, U,V);
-      di<<"  U = "<<U<<"  V = "<<V<<"\n";
+      TopAbs_State aStatus = aClassifier.Perform (gp_Pnt2d (U,V));
+      if (aStatus == TopAbs_OUT)
+        continue;
+
+      anIndSol++;
+      Standard_Real aDist = proj.Distance(sol);
+      di << "n0 " << anIndSol << " Distance " << aDist;
+      di << "  U = " << U << "  V = " << V << "\n";
+
+      if (aDist < aMinDist)
+      {
+        aMinDist = aDist;
+        anIndMin = sol;
+      }
+      
 //  reprojection
       P3D = thesurf->Value (U,V);
       di<<"  => reproj  X = "<<P3D.X()<<"  Y = "<<P3D.Y()<<"  Z = "<<P3D.Z()<<"\n";
     }
-//    Que donne ShapeTool ?
-    P3D.SetCoord (X,Y,Z);
-    Handle(ShapeAnalysis_Surface) su = new ShapeAnalysis_Surface(thesurf);
-    gp_Pnt2d suval = su->ValueOfUV (P3D,BRep_Tool::Tolerance(F));
-    suval.Coord(U,V);
-    di<<"**  ShapeAnalysis_Surface gives  U = "<<U<<"  V = "<<V<<"\n";
-    P3D = thesurf->Value(U,V);
-      di<<"  => reproj  X = "<<P3D.X()<<"  Y = "<<P3D.Y()<<"  Z = "<<P3D.Z()<<"\n";
+    di<<" Found "<<anIndSol<<" Points\n";
 
-  } else {
-    di<<" Point UV  U = "<<U<<"  V = "<<V<<"\n";
-    gp_Pnt P3D = thesurf->Value(U,V);
-      di<<"  =>   proj  X = "<<P3D.X()<<"  Y = "<<P3D.Y()<<"  Z = "<<P3D.Z()<<"\n";
+    if (anIndMin != 0) //there is at least one suitable solution
+    {
+      di << "** Minimal distance to face = " << aMinDist << "\n";
+      proj.Parameters(anIndMin, U,V);
+      di << "**  Solution of minimal distance:  U = " << U << "  V = " << V << "\n";
+      P3D = thesurf->Value(U,V);
+      di<<"  => reproj  X = "<<P3D.X()<<"  Y = "<<P3D.Y()<<"  Z = "<<P3D.Z()<<"\n";
+    }
+  }
+  else //Check 2D point
+  {
+    di << " Point UV  U = " << U << "  V = " << V << "\n";
+    TopAbs_State aStatus = aClassifier.Perform (gp_Pnt2d (U,V));
+    if (aStatus == TopAbs_OUT)
+      di << "does not belong to the face" << "\n";
+    else
+    {
+      gp_Pnt P3D = thesurf->Value(U,V);
+      di << " => proj  X = " << P3D.X() << "  Y = " << P3D.Y() << "  Z = " << P3D.Z() << "\n";
+    }
   }
   return 0;
 }
@@ -1199,7 +1228,7 @@ Standard_Integer getanacurve(Draw_Interpretor& di,
   Standard_CString g = SWDRAW::GroupName();
 
   theCommands.Add ("tolerance","shape [tolmin tolmax:real]", __FILE__,tolerance,g);
-  theCommands.Add ("projface","nom_face X Y [Z]", __FILE__,projface,g);
+  theCommands.Add ("projface","nom_face X Y [Z] - returns the closest orthogonal projection if exists", __FILE__,projface,g);
   theCommands.Add ("projcurve","nom_edge | curve3d | curve3d first last + X Y Z",
 		   __FILE__,projcurve,g);
   theCommands.Add("projpcurve", "edge face tol x y z [start_param]",
