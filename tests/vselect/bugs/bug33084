@@ -1,0 +1,26 @@
+puts "============="
+puts "0033084: Visualization - Cylindrical prism is selectable only by its base when extruded in some directions"
+puts "============="
+
+pload MODELING VISUALIZATION
+profile p1 c 1 360 ww
+mkplane f p1 
+prism pr1 f 0 0 2
+prism pr2 f 0 0 -2
+ttranslate pr1 1 1 1
+ttranslate pr2 -1 -1 -1
+
+vinit View1
+vclear
+vaxo
+vdisplay -dispmode 1 pr1 pr2
+vfit
+vsensdis
+
+vdump $imagedir/${casename}_prism_sensitive_prs.png
+
+vmoveto 130 330
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }
+
+vmoveto 270 130
+if { ![string match "*Select3D_SensitiveCylinder*" [vstate -entities]] } { puts "Error: cylinder should be detected" }

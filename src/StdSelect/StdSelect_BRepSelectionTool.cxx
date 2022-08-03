@@ -390,15 +390,23 @@ void StdSelect_BRepSelectionTool::ComputeSensitive (const TopoDS_Shape& theShape
         {
           if (!aGeomPlanes[0].IsNull()
            && !aGeomPlanes[1].IsNull()
-           &&  aGeomPlanes[0]->Position().Direction().IsEqual (aGeomCyl->Position().Direction(), Precision::Angular())
-           &&  aGeomPlanes[1]->Position().Direction().IsEqual (aGeomCyl->Position().Direction(), Precision::Angular()))
+           &&  aGeomPlanes[0]->Position().Direction().IsParallel (aGeomCyl->Position().Direction(), Precision::Angular())
+           &&  aGeomPlanes[1]->Position().Direction().IsParallel (aGeomCyl->Position().Direction(), Precision::Angular()))
           {
             const gp_Cylinder aCyl = BRepAdaptor_Surface (*aFaces[aConIndex]).Cylinder();
             const Standard_Real aRad = aCyl.Radius();
             const Standard_Real aHeight = aGeomPlanes[0]->Location().Transformed (*aGeomPlanesLoc[0])
                                .Distance (aGeomPlanes[1]->Location().Transformed (*aGeomPlanesLoc[1]));
+
             gp_Trsf aTrsf;
-            aTrsf.SetTransformation (aCyl.Position(), gp_Ax3());
+            gp_Ax3 aPos = aCyl.Position();
+            if (aGeomPlanes[0]->Position().IsCoplanar (aGeomPlanes[1]->Position(), Precision::Angular(), Precision::Angular()))
+            {
+              // cylinders created as a prism have an inverse vector of the cylindrical surface
+              aPos.SetDirection (aPos.Direction().Reversed());
+            }
+            aTrsf.SetTransformation (aPos, gp_Ax3());
+
             Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad, aRad, aHeight, aTrsf);
             theSelection->Add (aSensSCyl);
             break;

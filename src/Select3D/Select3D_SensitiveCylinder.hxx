@@ -54,6 +54,18 @@ public:
   //! Returns center of the cylinder with transformation applied
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
+  //! Returns cylinder transformation
+  const gp_Trsf& Transformation() const { return myTrsf; }
+
+  //! Returns cylinder top radius
+  Standard_Real TopRadius() const { return myTopRadius; }
+
+  //! Returns cylinder bottom radius
+  Standard_Real BottomRadius() const { return myBottomRadius; }
+
+  //! Returns cylinder height
+  Standard_Real Height() const { return myHeight; }
+
 protected:
   gp_Trsf       myTrsf;         //!< cylinder transformation to apply
   Standard_Real myBottomRadius; //!< cylinder bottom radius
