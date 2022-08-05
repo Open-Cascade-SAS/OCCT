@@ -1,0 +1,29 @@
+puts "============"
+puts "0033017: Implement an algorithm to find a proximity between a pair of shapes"
+puts "==========="
+puts "" 
+
+plane p1 0 0 0 0 0 1
+trim p1 p1 -2 2 -2 2
+mkface f1 p1
+incmesh f1 1.e-3
+
+dset lo pi/2. la pi/4.
+cylinder cy1 0 0 1 cos(la)*cos(lo) cos(la)*sin(lo) sin(la) 0.1
+trimv cy1 cy1 0 1
+mkface fcy1 cy1
+incmesh fcy1 1.e-3
+
+set log [proximity f1 fcy1 -value -profile]
+regexp {Proximity value: ([0-9+-.eE]*)} $log full val;
+
+set tol 1.e-3
+set expected [expr {1. + 1.1 * sqrt(2.)/2.}]
+
+regexp {Status of ProxPnt1 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status1 ${val2}
+set expected_status1 Middle
+
+regexp {Status of ProxPnt2 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status2 ${val2}
+set expected_status2 Border

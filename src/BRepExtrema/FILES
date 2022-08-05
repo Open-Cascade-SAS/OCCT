@@ -18,6 +18,10 @@ BRepExtrema_OverlapTool.cxx
 BRepExtrema_OverlapTool.hxx
 BRepExtrema_Poly.cxx
 BRepExtrema_Poly.hxx
+BRepExtrema_ProximityValueTool.cxx
+BRepExtrema_ProximityValueTool.hxx
+BRepExtrema_ProximityDistTool.cxx
+BRepExtrema_ProximityDistTool.hxx
 BRepExtrema_SelfIntersection.cxx
 BRepExtrema_SelfIntersection.hxx
 BRepExtrema_SeqOfSolution.hxx

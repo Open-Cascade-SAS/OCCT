@@ -16,11 +16,14 @@
 #ifndef _BRepExtrema_TriangleSet_HeaderFile
 #define _BRepExtrema_TriangleSet_HeaderFile
 
-#include <TopoDS_Face.hxx>
 #include <BVH_PrimitiveSet3d.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_DataMapOfIntegerInteger.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 
 //! List of shapes and their IDs for collision detection.
-typedef NCollection_Vector<TopoDS_Face> BRepExtrema_ShapeList;
+typedef NCollection_Vector<TopoDS_Shape> BRepExtrema_ShapeList;
 
 //! Triangle set corresponding to specific face.
 class BRepExtrema_TriangleSet : public BVH_PrimitiveSet3d
@@ -59,7 +62,10 @@ public:
   Standard_EXPORT void Clear();
 
   //! Initializes triangle set.
-  Standard_EXPORT Standard_Boolean Init (const BRepExtrema_ShapeList& theFaces);
+  Standard_EXPORT Standard_Boolean Init (const BRepExtrema_ShapeList& theShapes);
+
+  //! Returns all vertices.
+  Standard_EXPORT const BVH_Array3d& GetVertices() const { return myVertexArray; }
 
   //! Returns vertices of the given triangle.
   Standard_EXPORT void GetVertices (const Standard_Integer theIndex,
@@ -67,8 +73,36 @@ public:
                                     BVH_Vec3d&             theVertex2,
                                     BVH_Vec3d&             theVertex3) const;
 
+  //! Returns vertex indices of the given triangle.
+  Standard_EXPORT void GetVtxIndices (const Standard_Integer theIndex,
+                                      NCollection_Array1<Standard_Integer>& theVtxIndices) const;
+
   //! Returns face ID of the given triangle.
   Standard_EXPORT Standard_Integer GetFaceID (const Standard_Integer theIndex) const;
+
+  //! Returns shape ID of the given vertex index.
+  Standard_EXPORT Standard_Integer GetShapeIDOfVtx (const Standard_Integer theIndex) const;
+
+  //! Returns vertex index in tringulation of the shape, which vertex belongs,
+  //! with the given vtx ID in whole set.
+  Standard_EXPORT Standard_Integer GetVtxIdxInShape (const Standard_Integer theIndex) const;
+
+  //! Returns triangle index (before swapping) in tringulation of the shape, which triangle belongs,
+  //! with the given trg ID in whole set (after swapping).
+  Standard_EXPORT Standard_Integer GetTrgIdxInShape (const Standard_Integer theIndex) const;
+
+private:
+
+  //! Initializes triangle set from the face
+  Standard_Boolean initFace (const TopoDS_Face& theFace, const Standard_Integer theIndex);
+
+  //! Initializes polygon from the edge
+  Standard_Boolean initEdge (const TopoDS_Edge& theEdge, const Standard_Integer theIndex);
+
+  //! Initializes nodes
+  void initNodes (const TColgp_Array1OfPnt& theNodes,
+                  const gp_Trsf& theTrsf,
+                  const Standard_Integer theIndex);
 
 protected:
 
@@ -77,6 +111,19 @@ protected:
 
   //! Array of vertex coordinates.
   BVH_Array3d myVertexArray;
+
+  //! Vector of shapes' indices where index of item corresponds to index of vertex,
+  //! belonging to this shape.
+  NCollection_Vector<Standard_Integer> myShapeIdxOfVtxVec;
+
+  //! Vector of vertexes' number belonging to shape which index corresponds item's index.
+  NCollection_Vector<Standard_Integer> myNumVtxInShapeVec;
+
+  //! Vector of triangles' number belonging to shape which index corresponds item's index.
+  NCollection_Vector<Standard_Integer> myNumTrgInShapeVec;
+
+  //! Map of triangles' indices after (key) and before (value) swapping.
+  TColStd_DataMapOfIntegerInteger myTrgIdxMap;
 
 public:
 

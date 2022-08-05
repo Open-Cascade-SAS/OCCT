@@ -18,6 +18,8 @@
 
 #include <BRepExtrema_OverlapTool.hxx>
 
+#include <TopoDS.hxx>
+
 //! Tool class for detection of self-sections in the given shape.
 //! This class is based on BRepExtrema_OverlapTool and thus uses
 //! shape tessellation to detect incorrect mesh fragments (pairs
@@ -76,7 +78,7 @@ public:
   //! Returns sub-shape from the shape for the given index (started from 0).
   const TopoDS_Face& GetSubShape (const Standard_Integer theID) const
   {
-    return myFaceList.Value (theID);
+    return TopoDS::Face(myFaceList.Value(theID));
   }
 
   //! Returns set of all the face triangles of the shape.
