@@ -30,6 +30,15 @@ public: //! @name public types
 
   typedef typename BVH::VectorType<T, N>::Type BVH_VecNt;
 
+public:
+
+  enum BVH_PrjStateInTriangle
+  {
+    BVH_PrjStateInTriangle_VERTEX,
+    BVH_PrjStateInTriangle_EDGE,
+    BVH_PrjStateInTriangle_INNER
+  };
+
 public: //! @name Box-Box Square distance
 
   //! Computes Square distance between Axis aligned bounding boxes
@@ -113,11 +122,14 @@ public: //! @name Point-Box projection
 
 public: //! @name Point-Triangle Square distance
 
-  //! Computes square distance between point and triangle
-  static T PointTriangleSquareDistance (const BVH_VecNt& thePoint,
-                                        const BVH_VecNt& theNode0,
-                                        const BVH_VecNt& theNode1,
-                                        const BVH_VecNt& theNode2)
+  //! Find nearest point on a triangle for the given point
+  static BVH_VecNt PointTriangleProjection (const BVH_VecNt& thePoint,
+                                            const BVH_VecNt& theNode0,
+                                            const BVH_VecNt& theNode1,
+                                            const BVH_VecNt& theNode2,
+                                            BVH_PrjStateInTriangle* thePrjState = nullptr,
+                                            Standard_Integer* theNumberOfFirstNode = nullptr,
+                                            Standard_Integer* theNumberOfLastNode = nullptr)
   {
     const BVH_VecNt aAB = theNode1 - theNode0;
     const BVH_VecNt aAC = theNode2 - theNode0;
@@ -128,68 +140,110 @@ public: //! @name Point-Triangle Square distance
   
     if (aABdotAP <= 0. && aACdotAP <= 0.)
     {
-      return aAP.Dot(aAP);
+      if (thePrjState != nullptr)
+      {
+        *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+        *theNumberOfFirstNode = 0;
+        *theNumberOfLastNode = 0;
+      }
+      return theNode0;
     }
-  
+
     const BVH_VecNt aBC = theNode2 - theNode1;
     const BVH_VecNt aBP = thePoint - theNode1;
-  
-    T aBAdotBP = -(aAB.Dot(aBP));
-    T aBCdotBP =  (aBC.Dot(aBP));
-  
+
+    T aBAdotBP = -(aAB.Dot (aBP));
+    T aBCdotBP = (aBC.Dot (aBP));
+
     if (aBAdotBP <= 0. && aBCdotBP <= 0.)
     {
-      return (aBP.Dot(aBP));
+      if (thePrjState != nullptr)
+      {
+        *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+        *theNumberOfFirstNode = 1;
+        *theNumberOfLastNode = 1;
+      }
+      return theNode1;
     }
-  
+
     const BVH_VecNt aCP = thePoint - theNode2;
-  
-    T aCBdotCP = -(aBC.Dot(aCP));
-    T aCAdotCP = -(aAC.Dot(aCP));
-  
+
+    T aCBdotCP = -(aBC.Dot (aCP));
+    T aCAdotCP = -(aAC.Dot (aCP));
+
     if (aCAdotCP <= 0. && aCBdotCP <= 0.)
     {
-      return (aCP.Dot(aCP));
+      if (thePrjState != nullptr)
+      {
+        *thePrjState = BVH_PrjStateInTriangle_VERTEX;
+        *theNumberOfFirstNode = 2;
+        *theNumberOfLastNode = 2;
+      }
+      return theNode2;
     }
-  
-    T aACdotBP = (aAC.Dot(aBP));
-  
+
+    T aACdotBP = (aAC.Dot (aBP));
+
     T aVC = aABdotAP * aACdotBP + aBAdotBP * aACdotAP;
-  
+
     if (aVC <= 0. && aABdotAP > 0. && aBAdotBP > 0.)
     {
-      const BVH_VecNt aDirect = aAP - aAB * (aABdotAP / (aABdotAP + aBAdotBP));
-  
-      return (aDirect.Dot(aDirect));
+      if (thePrjState != nullptr)
+      {
+        *thePrjState = BVH_PrjStateInTriangle_EDGE;
+        *theNumberOfFirstNode = 0;
+        *theNumberOfLastNode = 1;
+      }
+      return theNode0 + aAB * (aABdotAP / (aABdotAP + aBAdotBP));
     }
-  
-    T aABdotCP = (aAB.Dot(aCP));
-  
+
+    T aABdotCP = (aAB.Dot (aCP));
+
     T aVA = aBAdotBP * aCAdotCP - aABdotCP * aACdotBP;
-  
+
     if (aVA <= 0. && aBCdotBP > 0. && aCBdotCP > 0.)
     {
-      const BVH_VecNt aDirect = aBP - aBC * (aBCdotBP / (aBCdotBP + aCBdotCP));
-  
-      return (aDirect.Dot(aDirect));
+      if (thePrjState != nullptr)
+      {
+        *thePrjState = BVH_PrjStateInTriangle_EDGE;
+        *theNumberOfFirstNode = 1;
+        *theNumberOfLastNode = 2;
+      }
+      return theNode1 + aBC * (aBCdotBP / (aBCdotBP + aCBdotCP));
     }
-  
+
     T aVB = aABdotCP * aACdotAP + aABdotAP * aCAdotCP;
-  
+
     if (aVB <= 0. && aACdotAP > 0. && aCAdotCP > 0.)
     {
-      const BVH_VecNt aDirect = aAP - aAC * (aACdotAP / (aACdotAP + aCAdotCP));
-  
-      return (aDirect.Dot(aDirect));
+      if (thePrjState != nullptr)
+      {
+        *thePrjState = BVH_PrjStateInTriangle_EDGE;
+        *theNumberOfFirstNode = 2;
+        *theNumberOfLastNode = 0;
+      }
+      return theNode0 + aAC * (aACdotAP / (aACdotAP + aCAdotCP));
     }
-  
+
     T aNorm = aVA + aVB + aVC;
-  
-    const BVH_VecNt& aDirect = thePoint - (theNode0 * aVA +
-                                           theNode1 * aVB +
-                                           theNode2 * aVC) / aNorm;
-  
-    return (aDirect.Dot(aDirect));
+
+    if (thePrjState != nullptr)
+    {
+      *thePrjState = BVH_PrjStateInTriangle_INNER;
+    }
+
+    return (theNode0 * aVA + theNode1 * aVB + theNode2 * aVC) / aNorm;
+  }
+
+  //! Computes square distance between point and triangle
+  static T PointTriangleSquareDistance (const BVH_VecNt& thePoint,
+                                        const BVH_VecNt& theNode0,
+                                        const BVH_VecNt& theNode1,
+                                        const BVH_VecNt& theNode2)
+  {
+    const BVH_VecNt aProj = PointTriangleProjection(thePoint, theNode0, theNode1, theNode2);
+    const BVH_VecNt aPP = aProj - thePoint;
+    return aPP.Dot(aPP);
   }
 
 public: //! @name Ray-Box Intersection

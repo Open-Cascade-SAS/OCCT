@@ -18,6 +18,28 @@
 #include <Precision.hxx>
 #include <TopExp_Explorer.hxx>
 
+// Assign a map of sub-shapes (edges/faces) of a given shape
+static Standard_Boolean initSubShapes(const TopoDS_Shape&              theShape,
+                                      BRepExtrema_ShapeList&           theSubshapesList,
+                                      Handle(BRepExtrema_TriangleSet)& theTriangleSet)
+{
+  theSubshapesList.Clear();
+
+  for (TopExp_Explorer anIter(theShape, TopAbs_FACE); anIter.More(); anIter.Next())
+  {
+    theSubshapesList.Append(anIter.Current());
+  }
+
+  for (TopExp_Explorer anIter(theShape, TopAbs_EDGE); anIter.More(); anIter.Next())
+  {
+    theSubshapesList.Append(anIter.Current());
+  }
+
+  if (theTriangleSet.IsNull())
+    theTriangleSet = new BRepExtrema_TriangleSet;
+  return theTriangleSet->Init(theSubshapesList);
+}
+
 //=======================================================================
 //function : BRepExtrema_ShapeProximity
 //purpose  : Creates uninitialized proximity tool
@@ -25,7 +47,9 @@
 BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity (const Standard_Real theTolerance)
 : myTolerance   (theTolerance),
   myElementSet1 (new BRepExtrema_TriangleSet),
-  myElementSet2 (new BRepExtrema_TriangleSet)
+  myElementSet2 (new BRepExtrema_TriangleSet),
+  myNbSamples1  (0),
+  myNbSamples2  (0)
 {
   // Should be initialized later
   myIsInitS1 = myIsInitS2 = Standard_False;
@@ -40,7 +64,9 @@ BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity (const TopoDS_Shape& theS
                                                         const Standard_Real theTolerance)
 : myTolerance   (theTolerance),
   myElementSet1 (new BRepExtrema_TriangleSet),
-  myElementSet2 (new BRepExtrema_TriangleSet)
+  myElementSet2 (new BRepExtrema_TriangleSet),
+  myNbSamples1  (0),
+  myNbSamples2  (0)
 {
   LoadShape1 (theShape1);
   LoadShape2 (theShape2);
@@ -52,16 +78,18 @@ BRepExtrema_ShapeProximity::BRepExtrema_ShapeProximity (const TopoDS_Shape& theS
 //=======================================================================
 Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1 (const TopoDS_Shape& theShape1)
 {
-  myFaceList1.Clear();
+  myIsInitS1 = initSubShapes(theShape1, myShapeList1, myElementSet1);
 
-  for (TopExp_Explorer anIter (theShape1, TopAbs_FACE); anIter.More(); anIter.Next())
+  if (myTolerance == Precision::Infinite())
   {
-    myFaceList1.Append (static_cast<const TopoDS_Face&> (anIter.Current()));
+    myProxValTool.MarkDirty();
+  }
+  else
+  {
+    myOverlapTool.MarkDirty();
   }
 
-  myOverlapTool.MarkDirty();
-
-  return myIsInitS1 = myElementSet1->Init (myFaceList1);
+  return myIsInitS1;
 }
 
 //=======================================================================
@@ -70,16 +98,18 @@ Standard_Boolean BRepExtrema_ShapeProximity::LoadShape1 (const TopoDS_Shape& the
 //=======================================================================
 Standard_Boolean BRepExtrema_ShapeProximity::LoadShape2 (const TopoDS_Shape& theShape2)
 {
-  myFaceList2.Clear();
+  myIsInitS2 = initSubShapes(theShape2, myShapeList2, myElementSet2);
 
-  for (TopExp_Explorer anIter (theShape2, TopAbs_FACE); anIter.More(); anIter.Next())
+  if (myTolerance == Precision::Infinite())
   {
-    myFaceList2.Append (static_cast<const TopoDS_Face&> (anIter.Current()));
+    myProxValTool.MarkDirty();
+  }
+  else
+  {
+    myOverlapTool.MarkDirty();
   }
 
-  myOverlapTool.MarkDirty();
-
-  return myIsInitS2 = myElementSet2->Init (myFaceList2);
+  return myIsInitS2;
 }
 
 //=======================================================================
@@ -88,13 +118,32 @@ Standard_Boolean BRepExtrema_ShapeProximity::LoadShape2 (const TopoDS_Shape& the
 //=======================================================================
 void BRepExtrema_ShapeProximity::Perform()
 {
-  if (!myIsInitS1 || !myIsInitS2 || myOverlapTool.IsDone())
+  if (myTolerance == Precision::Infinite())
   {
-    return;
+    if (!myIsInitS1 || !myIsInitS2 || myProxValTool.IsDone())
+    {
+      return;
+    }
+
+    myProxValTool.LoadTriangleSets (myElementSet1,
+                                    myElementSet2);
+    myProxValTool.LoadShapeLists (myShapeList1,
+                                  myShapeList2);
+
+    myProxValTool.Perform (myTolerance);
+    myProxValTool.ProximityPoints(myProxPoint1, myProxPoint2);
+    myProxValTool.ProximityPointsStatus (myProxPntStatus1, myProxPntStatus2);
   }
+  else
+  {
+    if (!myIsInitS1 || !myIsInitS2 || myOverlapTool.IsDone())
+    {
+      return;
+    }
 
-  myOverlapTool.LoadTriangleSets (myElementSet1,
-                                  myElementSet2);
+    myOverlapTool.LoadTriangleSets (myElementSet1,
+                                    myElementSet2);
 
-  myOverlapTool.Perform (myTolerance);
+    myOverlapTool.Perform (myTolerance);
+  }
 }

@@ -173,7 +173,7 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 {
   if (theNbArgs < 3 || theNbArgs > 6)
   {
-    Message::SendFail() << "Usage: " << theArgs[0] << " Shape1 Shape2 [-tol <value>] [-profile]";
+    Message::SendFail() << "Usage: " << theArgs[0] << " Shape1 Shape2 [-tol <value> | -value] [-profile]";
     return 1;
   }
 
@@ -186,9 +186,11 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
     return 1;
   }
 
-  BRepExtrema_ShapeProximity aTool;
+  BRepExtrema_ShapeProximity aTool(0.0);
 
   Standard_Boolean aProfile = Standard_False;
+  Standard_Boolean isTolerance = Standard_False;
+  Standard_Boolean isValue = Standard_False;
 
   for (Standard_Integer anArgIdx = 3; anArgIdx < theNbArgs; ++anArgIdx)
   {
@@ -197,6 +199,7 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 
     if (aFlag == "-tol")
     {
+      isTolerance = Standard_True;
       if (++anArgIdx >= theNbArgs)
       {
         Message::SendFail() << "Error: wrong syntax at argument '" << aFlag;
@@ -214,11 +217,21 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
         aTool.SetTolerance (aTolerance);
       }
     }
-
-    if (aFlag == "-profile")
+    else if (aFlag == "-value")
+    {
+      isValue = Standard_True;
+      aTool.SetTolerance(Precision::Infinite());
+    }
+    else if (aFlag == "-profile")
     {
       aProfile = Standard_True;
     }
+  }
+
+  if (isTolerance && isValue)
+  {
+    Message::SendFail() << "Error: Proximity value could not be computed if the tolerance is set";
+    return 1;
   }
 
   Standard_Real aInitTime = 0.0;
@@ -264,38 +277,73 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
     theDI << "Executing proximity test: " << aWorkTime << "\n";
   }
 
-  TopoDS_Builder aCompBuilder;
-
-  TopoDS_Compound aFaceCompound1;
-  aCompBuilder.MakeCompound (aFaceCompound1);
-
-  for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt1 (aTool.OverlapSubShapes1()); anIt1.More(); anIt1.Next())
+  if (isValue)
   {
-    TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[1]) + "_" + (anIt1.Key() + 1);
+    theDI << "Proximity value: " << aTool.Proximity() << "\n";
 
-    const TopoDS_Face& aFace = aTool.GetSubShape1 (anIt1.Key());
-    aCompBuilder.Add (aFaceCompound1, aFace);
-    DBRep::Set (aStr.ToCString(), aFace);
+    // proximity points
+    TopoDS_Vertex aProxVtx1 = BRepLib_MakeVertex (aTool.ProximityPoint1());
+    TopoDS_Vertex aProxVtx2 = BRepLib_MakeVertex (aTool.ProximityPoint2());
 
-    theDI << aStr << " \n";
+    DBRep::Set ("ProxPnt1", aProxVtx1);
+    DBRep::Set ("ProxPnt2", aProxVtx2);
+
+    // proximity points' status
+    TCollection_AsciiString ProxPntStatus1;
+    TCollection_AsciiString ProxPntStatus2;
+
+    switch (aTool.ProxPntStatus1()) 
+    {
+      case 0: ProxPntStatus1 = "Border"; break;
+      case 1: ProxPntStatus1 = "Middle"; break;
+      default: ProxPntStatus1 = "Unknown";
+    }
+
+    switch (aTool.ProxPntStatus2())
+    {
+    case 0: ProxPntStatus2 = "Border"; break;
+    case 1: ProxPntStatus2 = "Middle"; break;
+    default: ProxPntStatus2 = "Unknown";
+    }
+
+    theDI << " Status of ProxPnt1 on " << theArgs[1] << " : " << ProxPntStatus1 << "\n";
+    theDI << " Status of ProxPnt2 on " << theArgs[2] << " : " << ProxPntStatus2 << "\n";
   }
-
-  TopoDS_Compound aFaceCompound2;
-  aCompBuilder.MakeCompound (aFaceCompound2);
-
-  for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt2 (aTool.OverlapSubShapes2()); anIt2.More(); anIt2.Next())
+  else
   {
-    TCollection_AsciiString aStr = TCollection_AsciiString (theArgs[2]) + "_" + (anIt2.Key() + 1);
+    TopoDS_Builder aCompBuilder;
 
-    const TopoDS_Face& aFace = aTool.GetSubShape2 (anIt2.Key());
-    aCompBuilder.Add (aFaceCompound2, aFace);
-    DBRep::Set (aStr.ToCString(), aFace);
+    TopoDS_Compound aFaceCompound1;
+    aCompBuilder.MakeCompound(aFaceCompound1);
 
-    theDI << aStr << " \n";
+    for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt1(aTool.OverlapSubShapes1()); anIt1.More(); anIt1.Next())
+    {
+      TCollection_AsciiString aStr = TCollection_AsciiString(theArgs[1]) + "_" + (anIt1.Key() + 1);
+
+      const TopoDS_Shape& aShape = aTool.GetSubShape1(anIt1.Key());
+      aCompBuilder.Add(aFaceCompound1, aShape);
+      DBRep::Set(aStr.ToCString(), aShape);
+
+      theDI << aStr << " \n";
+    }
+
+    TopoDS_Compound aFaceCompound2;
+    aCompBuilder.MakeCompound(aFaceCompound2);
+
+    for (BRepExtrema_MapOfIntegerPackedMapOfInteger::Iterator anIt2(aTool.OverlapSubShapes2()); anIt2.More(); anIt2.Next())
+    {
+      TCollection_AsciiString aStr = TCollection_AsciiString(theArgs[2]) + "_" + (anIt2.Key() + 1);
+
+      const TopoDS_Shape& aShape = aTool.GetSubShape2(anIt2.Key());
+      aCompBuilder.Add(aFaceCompound2, aShape);
+      DBRep::Set(aStr.ToCString(), aShape);
+
+      theDI << aStr << " \n";
+    }
+
+    DBRep::Set((TCollection_AsciiString(theArgs[1]) + "_" + "overlapped").ToCString(), aFaceCompound1);
+    DBRep::Set((TCollection_AsciiString(theArgs[2]) + "_" + "overlapped").ToCString(), aFaceCompound2);
   }
-
-  DBRep::Set ((TCollection_AsciiString (theArgs[1]) + "_" + "overlapped").ToCString(), aFaceCompound1);
-  DBRep::Set ((TCollection_AsciiString (theArgs[2]) + "_" + "overlapped").ToCString(), aFaceCompound2);
 
   return 0;
 }
@@ -445,12 +493,14 @@ void BRepTest::ExtremaCommands (Draw_Interpretor& theCommands)
                    aGroup);
 
   theCommands.Add ("proximity",
-                   "proximity Shape1 Shape2 [-tol <value>] [-profile]"
+                   "proximity Shape1 Shape2 [-tol <value> | -value] [-profile]"
                    "\n\t\t: Searches for pairs of overlapping faces of the given shapes."
                    "\n\t\t: The options are:"
                    "\n\t\t:   -tol     : non-negative tolerance value used for overlapping"
                    "\n\t\t:              test (for zero tolerance, the strict intersection"
                    "\n\t\t:              test will be performed)"
+                   "\n\t\t:   -value   : compute the proximity value (minimal value which"
+                   "\n\t\t:              shows both shapes fully overlapped)"
                    "\n\t\t:   -profile : outputs execution time for main algorithm stages",
                    __FILE__,
                    ShapeProximity,

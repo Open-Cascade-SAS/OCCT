@@ -1,0 +1,19 @@
+set er [expr abs(${expected} - ${val})]
+
+if {${er} > ${tol}} {
+   puts "Error: bad proximity value"
+} else {
+   puts "OK"
+}
+
+if {${status1} != ${expected_status1}} {
+   puts "Error: bad 1st proximity point status"
+} else {
+   puts "OK"
+}
+
+if {${status2} != ${expected_status2}} {
+   puts "Error: bad 2nd proximity point status"
+} else {
+   puts "OK"
+}

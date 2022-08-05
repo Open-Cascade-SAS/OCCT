@@ -1,0 +1,27 @@
+puts "============"
+puts "0033017: Implement an algorithm to find a proximity between a pair of shapes"
+puts "==========="
+puts "" 
+
+beziercurve bc1 6 54 96 0 145 146 0 167 167 0 185 212 0 187 234 0 176 302 0
+beziercurve bc2 7 120 72 0 170 87 0 227 118 0 238 126 0 243 157 0 203 216 0 134 281 0
+
+mkedge e1 bc1
+mkedge e2 bc2
+
+incmesh e1 1.e-3
+incmesh e2 1.e-3
+
+set log [proximity e1 e2 -value -profile]
+regexp {Proximity value: ([0-9+-.eE]*)} $log full val;
+
+set tol 1.e-3
+set expected 76.34
+
+regexp {Status of ProxPnt1 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status1 ${val2}
+set expected_status1 Middle
+
+regexp {Status of ProxPnt2 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status2 ${val2}
+set expected_status2 Middle

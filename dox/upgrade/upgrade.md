@@ -2338,3 +2338,8 @@ or to include system OpenGL headers in advance (with help of `OpenGl_GlNative.hx
 
 Method `StdPrs_ToolTriangulatedShape::Normal()` has been removed.
 Please use `BRepLib_ToolTriangulatedShape::ComputeNormals()` to fill in normal attributes in triangulation and fetch them directly using `Poly_Triangulation::Normal()`.
+
+@subsection upgrade_occt770_shapeproximity BRepExtrema_ShapeProximity
+
+A new way of using the `BRepExtrema_ShapeProximity` class was provided for computing a proximity value between two shapes.
+If at initialization of the `BRepExtrema_ShapeProximity` class the *theTolerance* parameter is not defined (Precision::Infinite() by default), the proximity value will be computed.

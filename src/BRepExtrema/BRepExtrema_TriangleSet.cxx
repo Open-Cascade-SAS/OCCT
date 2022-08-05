@@ -18,6 +18,7 @@
 #include <BRep_Tool.hxx>
 #include <BVH_LinearBuilder.hxx>
 #include <Poly_Triangulation.hxx>
+#include <TopoDS.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepExtrema_TriangleSet, BVH_PrimitiveSet3d)
 
@@ -114,15 +115,63 @@ void BRepExtrema_TriangleSet::Swap (const Standard_Integer theIndex1, const Stan
 {
   std::swap (myTriangles[theIndex1],
              myTriangles[theIndex2]);
+
+  std::swap (myTrgIdxMap (theIndex1),
+             myTrgIdxMap (theIndex2));
 }
 
 //=======================================================================
 //function : GetFaceID
-//purpose  : Returns face ID of the given triangle
+//purpose  : Returns face ID of the given vertex
 //=======================================================================
 Standard_Integer BRepExtrema_TriangleSet::GetFaceID (const Standard_Integer theIndex) const
 {
   return myTriangles[theIndex].w();
+}
+
+//=======================================================================
+//function : GetShapeIDOfVtx
+//purpose  : Returns shape ID of the given vertex index
+//=======================================================================
+Standard_Integer BRepExtrema_TriangleSet::GetShapeIDOfVtx (const Standard_Integer theIndex) const
+{
+  return myShapeIdxOfVtxVec.Value (theIndex);
+}
+
+//=======================================================================
+//function : GetVtxIdxInShape
+//purpose  : Returns vertex index in tringulation of the shape, which vertex belongs,
+//           with the given vtx ID in whole set
+//=======================================================================
+Standard_Integer BRepExtrema_TriangleSet::GetVtxIdxInShape (const Standard_Integer theIndex) const
+{
+  Standard_Integer aShID = myShapeIdxOfVtxVec.Value (theIndex);
+  Standard_Integer aNumVertices = 0;
+
+  for (Standard_Integer aSIdx = 0; aSIdx < aShID; aSIdx++)
+  {
+    aNumVertices += myNumVtxInShapeVec.Value (aSIdx);
+  }
+
+  return theIndex - aNumVertices;
+}
+
+//=======================================================================
+//function : GetTrgIdxInShape
+//purpose  :  Returns triangle index (before swapping) in tringulation of the shape, which triangle belongs,
+//            with the given trg ID in whole set (after swapping)
+//=======================================================================
+Standard_Integer BRepExtrema_TriangleSet::GetTrgIdxInShape (const Standard_Integer theIndex) const
+{
+  Standard_Integer aShID = GetFaceID (theIndex);
+  Standard_Integer aNumTriangles = 0;
+
+  for (Standard_Integer aSIdx = 0; aSIdx < aShID; aSIdx++)
+  {
+    aNumTriangles += myNumTrgInShapeVec.Value (aSIdx);
+  }
+
+  return myTrgIdxMap (theIndex) - aNumTriangles;
 }
 
 //=======================================================================
@@ -142,6 +191,21 @@ void BRepExtrema_TriangleSet::GetVertices (const Standard_Integer theIndex,
 }
 
 //=======================================================================
+//function : GetVertices
+//purpose  : Returns vertices of the given triangle
+//=======================================================================
+void BRepExtrema_TriangleSet::GetVtxIndices (const Standard_Integer theIndex,
+                                             NCollection_Array1<Standard_Integer>& theVtxIndices) const
+{
+  BVH_Vec4i aTriangle = myTriangles[theIndex];
+
+  theVtxIndices = NCollection_Array1<Standard_Integer> (0, 2);
+  theVtxIndices.SetValue (0, aTriangle.x());
+  theVtxIndices.SetValue (1, aTriangle.y());
+  theVtxIndices.SetValue (2, aTriangle.z());
+}
+
+//=======================================================================
 //function : Clear
 //purpose  : Clears triangle set data
 //=======================================================================
@@ -158,41 +222,26 @@ void BRepExtrema_TriangleSet::Clear()
 //function : Init
 //purpose  : Initializes triangle set
 //=======================================================================
-Standard_Boolean BRepExtrema_TriangleSet::Init (const BRepExtrema_ShapeList& theFaces)
+Standard_Boolean BRepExtrema_TriangleSet::Init (const BRepExtrema_ShapeList& theShapes)
 {
   Clear();
 
-  for (Standard_Integer aFaceIdx = 0; aFaceIdx < theFaces.Size(); ++aFaceIdx)
+  Standard_Boolean isOK = Standard_True;
+  for (Standard_Integer aShapeIdx = 0; aShapeIdx < theShapes.Size() && isOK; ++aShapeIdx)
   {
-    TopLoc_Location aLocation;
+    if (theShapes (aShapeIdx).ShapeType() == TopAbs_FACE)
+      isOK = initFace (TopoDS::Face (theShapes(aShapeIdx)), aShapeIdx);
+    else if (theShapes (aShapeIdx).ShapeType() == TopAbs_EDGE)
+      isOK = initEdge (TopoDS::Edge (theShapes(aShapeIdx)), aShapeIdx);
+  }
 
-    Handle(Poly_Triangulation) aTriangulation =
-      BRep_Tool::Triangulation (theFaces (aFaceIdx), aLocation);
+  Standard_Integer aNumTrg = static_cast<Standard_Integer> (myTriangles.size());
+  myTrgIdxMap.Clear();
+  myTrgIdxMap.ReSize (aNumTrg);
 
-    if (aTriangulation.IsNull())
-    {
-      return Standard_False;
-    }
-
-    const Standard_Integer aVertOffset =
-      static_cast<Standard_Integer> (myVertexArray.size()) - 1;
-
-    for (Standard_Integer aVertIdx = 1; aVertIdx <= aTriangulation->NbNodes(); ++aVertIdx)
-    {
-      gp_Pnt aVertex = aTriangulation->Node (aVertIdx);
-      aVertex.Transform (aLocation.Transformation());
-      myVertexArray.push_back (BVH_Vec3d (aVertex.X(), aVertex.Y(), aVertex.Z()));
-    }
-
-    for (Standard_Integer aTriIdx = 1; aTriIdx <= aTriangulation->NbTriangles(); ++aTriIdx)
-    {
-      Standard_Integer aVertex1, aVertex2, aVertex3;
-      aTriangulation->Triangle (aTriIdx).Get (aVertex1, aVertex2, aVertex3);
-      myTriangles.push_back (BVH_Vec4i (aVertex1 + aVertOffset,
-                                        aVertex2 + aVertOffset,
-                                        aVertex3 + aVertOffset,
-                                        aFaceIdx));
-    }
+  for (Standard_Integer aTrgIdx = 0; aTrgIdx < aNumTrg; ++aTrgIdx)
+  {
+    myTrgIdxMap.Bind (aTrgIdx, aTrgIdx);
   }
 
   MarkDirty(); // needs BVH rebuilding
@@ -203,3 +252,95 @@ Standard_Boolean BRepExtrema_TriangleSet::Init (const BRepExtrema_ShapeList& the
   return Standard_True;
 }
 
+//=======================================================================
+//function : initFace
+//purpose  : Initializes triangle set
+//=======================================================================
+Standard_Boolean BRepExtrema_TriangleSet::initFace (const TopoDS_Face& theFace, const Standard_Integer theIndex)
+{
+  TopLoc_Location aLocation;
+
+  Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation (theFace, aLocation);
+  if (aTriangulation.IsNull())
+  {
+    return Standard_False;
+  }
+
+  const Standard_Integer aVertOffset =
+    static_cast<Standard_Integer> (myVertexArray.size()) - 1;
+
+  initNodes (aTriangulation->MapNodeArray()->ChangeArray1(), aLocation.Transformation(), theIndex);
+
+  for (Standard_Integer aTriIdx = 1; aTriIdx <= aTriangulation->NbTriangles(); ++aTriIdx)
+  {
+    Standard_Integer aVertex1;
+    Standard_Integer aVertex2;
+    Standard_Integer aVertex3;
+
+    aTriangulation->Triangle (aTriIdx).Get (aVertex1,
+                                            aVertex2,
+                                            aVertex3);
+
+    myTriangles.push_back (BVH_Vec4i (aVertex1 + aVertOffset,
+                                      aVertex2 + aVertOffset,
+                                      aVertex3 + aVertOffset,
+                                      theIndex));
+  }
+
+  myNumTrgInShapeVec.SetValue (theIndex, aTriangulation->NbTriangles());
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : initEdge
+//purpose  : Initializes triangle set
+//=======================================================================
+Standard_Boolean BRepExtrema_TriangleSet::initEdge (const TopoDS_Edge& theEdge, const Standard_Integer theIndex)
+{
+  TopLoc_Location aLocation;
+
+  Handle(Poly_Polygon3D) aPolygon = BRep_Tool::Polygon3D (theEdge, aLocation);
+  if (aPolygon.IsNull())
+  {
+    return Standard_False;
+  }
+
+  const Standard_Integer aVertOffset =
+    static_cast<Standard_Integer> (myVertexArray.size()) - 1;
+
+  initNodes (aPolygon->Nodes(), aLocation.Transformation(), theIndex);
+
+  for (Standard_Integer aVertIdx = 1; aVertIdx < aPolygon->NbNodes(); ++aVertIdx)
+  {
+    // segment as degenerate triangle
+    myTriangles.push_back (BVH_Vec4i (aVertIdx + aVertOffset,
+                                      aVertIdx + aVertOffset + 1,
+                                      aVertIdx + aVertOffset + 1,
+                                      theIndex));
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : initNodes
+//purpose  : Initializes nodes
+//=======================================================================
+void BRepExtrema_TriangleSet::initNodes (const TColgp_Array1OfPnt& theNodes,
+                                         const gp_Trsf& theTrsf,
+                                         const Standard_Integer theIndex)
+{
+  for (Standard_Integer aVertIdx = 1; aVertIdx <= theNodes.Size(); ++aVertIdx)
+  {
+    gp_Pnt aVertex = theNodes.Value (aVertIdx);
+
+    aVertex.Transform (theTrsf);
+
+    myVertexArray.push_back (BVH_Vec3d (aVertex.X(),
+                                        aVertex.Y(),
+                                        aVertex.Z()));
+    myShapeIdxOfVtxVec.Append (theIndex);
+  }
+
+  myNumVtxInShapeVec.SetValue (theIndex, theNodes.Size());
+}
