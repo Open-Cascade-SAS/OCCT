@@ -1,0 +1,32 @@
+puts "======="
+puts "0033095: Data Exchange, Step Import - Wrong PMI values when loading a *.stp file in m"
+puts "======="
+
+pload OCAF
+
+catch { Close D_mm }
+catch { Close D_m }
+
+# Read file in mm
+ReadStep D_mm [locate_data_file bug33095_cad_with_pmi.stp]
+set plusMinusTol_mm [XGetDimensionPlusMinusTol D_mm 0:1:4:77]
+
+# Read file in m
+XNewDoc D_m
+XSetLengthUnit D_m m
+ReadStep D_m [locate_data_file bug33095_cad_with_pmi.stp]
+set plusMinusTol_m [XGetDimensionPlusMinusTol D_m 0:1:4:77]
+
+# Checking
+regexp {lower +([-0-9.+eE]+) +upper +([-0-9.+eE]+)} $plusMinusTol_m full lower_m upper_m
+regexp {lower +([-0-9.+eE]+) +upper +([-0-9.+eE]+)} $plusMinusTol_mm full lower_mm upper_mm
+
+set lower_m_to_mm [expr {$lower_m * 1000}]
+set upper_m_to_mm [expr {$upper_m * 1000}]
+
+if {[expr {abs($lower_m_to_mm - $lower_mm)}] > 1e-2} {
+ puts "Error: incorrect scaling lower toleranse value"
+}
+if {[expr {abs($upper_m_to_mm - $upper_mm)}] > 1e-2} {
+ puts "Error: incorrect scaling upper toleranse value"
+}

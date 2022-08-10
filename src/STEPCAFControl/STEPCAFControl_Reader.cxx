@@ -3365,17 +3365,17 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         if (anUnit.IsNull()) continue;
         if (!(anUnit.CaseNum(anUnit.Value()) == 1)) continue;
         Handle(StepBasic_NamedUnit) NU = anUnit.NamedUnit();
-        STEPConstruct_UnitContext anUnitCtx;
-        anUnitCtx.ComputeFactors(NU);
-        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)) ||
-          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
-        {
-          aVal = aVal * anUnitCtx.LengthFactor();
-        }
-        else if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) ||
+        STEPConstruct_UnitContext anUnitCtxUpperBound;
+        anUnitCtxUpperBound.ComputeFactors(NU);
+        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) ||
           aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
         {
-          convertAngleValue(anUnitCtx, aVal);
+          convertAngleValue(anUnitCtxUpperBound, aVal);
+        }
+        else if ((aMWU->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)) && anUnitCtxUpperBound.LengthFactor() > 0.) ||
+          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+        {
+          aVal = aVal * anUnitCtxUpperBound.LengthFactor();
         }
         aDim3 = aVal;
 
@@ -3401,16 +3401,17 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
         if (anUnit.IsNull()) continue;
         if (!(anUnit.CaseNum(anUnit.Value()) == 1)) continue;
         NU = anUnit.NamedUnit();
-        anUnitCtx.ComputeFactors(NU);
-        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_LengthMeasureWithUnit)) ||
-          aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
-        {
-          aVal = aVal * anUnitCtx.LengthFactor();
-        }
-        else if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) ||
+        STEPConstruct_UnitContext anUnitCtxLowerBound;
+        anUnitCtxLowerBound.ComputeFactors(NU);
+        if (aMWU->IsKind(STANDARD_TYPE(StepBasic_PlaneAngleMeasureWithUnit)) ||
           aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI)))
         {
-          convertAngleValue(anUnitCtx, aVal);
+          convertAngleValue(anUnitCtxLowerBound, aVal);
+        }
+        else if ((aMWU->IsKind(STANDARD_TYPE(StepBasic_MeasureWithUnit)) && anUnitCtxLowerBound.LengthFactor() > 0.) ||
+                 aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
+        {
+          aVal = aVal * anUnitCtxLowerBound.LengthFactor();
         }
         aDim2 = Abs(aVal);
       }
