@@ -1836,7 +1836,7 @@ void XDEDRAW::Init(Draw_Interpretor& di)
          "Doc [-names]: Prints number of assembly instances",
          __FILE__, XDumpNomenclature, g);
   di.Add("XRescaleGeometry",
-         "Doc -scale factor [-root label]: Applies geometrical scale to assembly",
+         "Doc factor [-root label] [-force]: Applies geometrical scale to assembly",
          __FILE__, XRescaleGeometry, g);
 
   // Specialized commands

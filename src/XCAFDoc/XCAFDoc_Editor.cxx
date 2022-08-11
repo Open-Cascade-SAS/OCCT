@@ -515,7 +515,7 @@ static void rescaleDimensionRefLabels(const TDF_LabelSequence& theRefLabels,
       if (aL.FindAttribute(TNaming_NamedShape::GetID(), aNS))
       {
         TopoDS_Shape aShape = aNS->Get();
-        theBRepTrsf.Perform(aShape, Standard_True);
+        theBRepTrsf.Perform(aShape, Standard_True, Standard_True);
         if (!theBRepTrsf.IsDone())
         {
           Standard_SStream aSS;
@@ -664,7 +664,7 @@ Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label& theLabel,
       if (aNodeType == XCAFDoc_AssemblyGraph::NodeType_Part)
       {
         const TopoDS_Shape aShape = aShapeTool->GetShape(aLabel);
-        aBRepTrsf.Perform(aShape, Standard_True);
+        aBRepTrsf.Perform(aShape, Standard_True, Standard_True);
         if (!aBRepTrsf.IsDone())
         {
           Standard_SStream aSS;

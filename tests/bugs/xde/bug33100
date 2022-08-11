@@ -1,0 +1,15 @@
+puts "0033100: Modeling Algorithms - XCAFDoc_Editor::RescaleGeometry does not rescale triangulations"
+
+pload DCAF
+Close d -silent
+ReadStep d [locate_data_file "bug33100_window.step"]
+
+XGetOneShape a d
+set ref_diag [eval distpp [bounding a]]
+
+XRescaleGeometry d 1000
+
+XGetOneShape a d
+set diag [eval distpp [bounding a]]
+
+checkreal "bounding box diagonal" $diag [expr $ref_diag * 1000] 0 0.001
