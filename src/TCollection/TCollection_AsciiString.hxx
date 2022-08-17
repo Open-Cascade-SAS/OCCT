@@ -26,6 +26,7 @@
 #include <Standard_Real.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
+#include <Standard_Macro.hxx>
 class TCollection_ExtendedString;
 
 //! Class defines a variable-length sequence of 8-bit characters.
@@ -74,7 +75,7 @@ public:
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& astring);
 
   //! Move constructor
-  TCollection_AsciiString (TCollection_AsciiString&& theOther) noexcept
+  TCollection_AsciiString (TCollection_AsciiString&& theOther) Standard_Noexcept
   : mystring (theOther.mystring),
     mylength (theOther.mylength)
   {
@@ -276,7 +277,7 @@ void operator = (const TCollection_AsciiString& fromwhere)
   Standard_EXPORT void Swap (TCollection_AsciiString& theOther);
 
   //! Move assignment operator
-  TCollection_AsciiString& operator= (TCollection_AsciiString&& theOther) noexcept { Swap (theOther); return *this; }
+  TCollection_AsciiString& operator= (TCollection_AsciiString&& theOther) Standard_Noexcept { Swap (theOther); return *this; }
 
   //! Frees memory allocated by AsciiString.
   Standard_EXPORT ~TCollection_AsciiString();

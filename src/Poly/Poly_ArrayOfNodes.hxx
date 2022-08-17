@@ -17,6 +17,7 @@
 #include <NCollection_AliasedArray.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec3f.hxx>
+#include <Standard_Macro.hxx>
 
 //! Defines an array of 3D nodes of single/double precision configurable at construction time.
 class Poly_ArrayOfNodes : public NCollection_AliasedArray<>
@@ -85,14 +86,14 @@ public:
   Poly_ArrayOfNodes& operator= (const Poly_ArrayOfNodes& theOther) { return Assign (theOther); }
 
   //! Move constructor
-  Poly_ArrayOfNodes (Poly_ArrayOfNodes&& theOther) noexcept
+  Poly_ArrayOfNodes (Poly_ArrayOfNodes&& theOther) Standard_Noexcept
   : NCollection_AliasedArray (std::move (theOther))
   {
     //
   }
 
   //! Move assignment operator; @sa Move()
-  Poly_ArrayOfNodes& operator= (Poly_ArrayOfNodes&& theOther) noexcept
+  Poly_ArrayOfNodes& operator= (Poly_ArrayOfNodes&& theOther) Standard_Noexcept
   {
     return Move (theOther);
   }

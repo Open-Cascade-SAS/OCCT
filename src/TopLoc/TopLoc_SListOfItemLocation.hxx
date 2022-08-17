@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Standard_Macro.hxx>
 class TopLoc_SListNodeOfItemLocation;
 class TopLoc_ItemLocation;
 
@@ -69,13 +70,13 @@ public:
   }
   
   //! Move constructor
-  TopLoc_SListOfItemLocation (TopLoc_SListOfItemLocation&& theOther) noexcept
+  TopLoc_SListOfItemLocation (TopLoc_SListOfItemLocation&& theOther) Standard_Noexcept
     : myNode(std::move (theOther.myNode))
   {
   }
 
   //! Move operator
-  TopLoc_SListOfItemLocation& operator= (TopLoc_SListOfItemLocation&& theOther) noexcept
+  TopLoc_SListOfItemLocation& operator= (TopLoc_SListOfItemLocation&& theOther) Standard_Noexcept
   {
     myNode = std::move (theOther.myNode);
     return *this;

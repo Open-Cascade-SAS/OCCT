@@ -18,6 +18,7 @@
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_TypeMismatch.hxx>
+#include <Standard_Macro.hxx>
 
 //! Defines an array of values of configurable size.
 //! For instance, this class allows defining an array of 32-bit or 64-bit integer values with bitness determined in runtime.
@@ -63,7 +64,7 @@ public:
   }
 
   //! Move constructor
-  NCollection_AliasedArray (NCollection_AliasedArray&& theOther) noexcept
+  NCollection_AliasedArray (NCollection_AliasedArray&& theOther) Standard_Noexcept
   : myData (theOther.myData), myStride (theOther.myStride), mySize (theOther.mySize), myDeletable (theOther.myDeletable)
   {
     theOther.myDeletable = false;

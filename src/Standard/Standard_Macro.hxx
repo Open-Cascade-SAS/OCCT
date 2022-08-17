@@ -315,5 +315,21 @@
   #define Standard_ATOMIC(theType) theType
 #endif
 
+//! @def Standard_Noexcept
+//! Definition of Standard_Noexcept:
+//! if noexcept is accessible, Standard_Noexcept is "noexcept" and "throw()" otherwise.
+#ifdef _MSC_VER
+  #if _MSC_VER >= 1900
+    #define Standard_Noexcept noexcept
+  #else
+    #define Standard_Noexcept throw()
+  #endif
+#else
+  #if __cplusplus >= 201103L
+    #define Standard_Noexcept noexcept
+  #else
+    #define Standard_Noexcept throw()
+  #endif
+#endif
 
 #endif
