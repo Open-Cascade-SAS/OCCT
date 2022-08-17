@@ -46,6 +46,7 @@
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_BSplineSurfaceForm.hxx>
 #include <StepGeom_OffsetSurface.hxx>
@@ -488,9 +489,11 @@ StepToTopoDS_TranslateFace::createMesh(const Handle(StepVisual_TriangulatedFace)
   const Standard_Boolean aHasNormals = (theTF->NbNormals() > 0);
   Handle(Poly_Triangulation) aMesh = new Poly_Triangulation(theTF->NbPnindex(), theTF->NbTriangles(), aHasUVNodes, aHasNormals);
 
+  const Standard_Real aLF = StepData_GlobalFactors::Intance().LengthFactor();
   for (Standard_Integer j = 1; j <= theTF->NbPnindex(); ++j)
   {
-    aMesh->SetNode(j, aNodes->Value(theTF->PnindexValue(j)));
+    const gp_XYZ& aPoint = aNodes->Value(theTF->PnindexValue(j));
+    aMesh->SetNode(j, aPoint * aLF);
   }
 
   for (Standard_Integer k = 1; k <= theTF->NbTriangles(); ++k)
@@ -573,9 +576,11 @@ StepToTopoDS_TranslateFace::createMesh(const Handle(StepVisual_ComplexTriangulat
   Handle(Poly_Triangulation) aMesh = new Poly_Triangulation(theTF->NbPnindex(), 
     aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
 
+  const Standard_Real aLF = StepData_GlobalFactors::Intance().LengthFactor();
   for (Standard_Integer j = 1; j <= theTF->NbPnindex(); ++j)
   {
-    aMesh->SetNode(j, aNodes->Value(theTF->PnindexValue(j)));
+    const gp_XYZ& aPoint = aNodes->Value(theTF->PnindexValue(j));
+    aMesh->SetNode(j, aLF * aPoint);
   }
 
   Standard_Integer k = 1;
