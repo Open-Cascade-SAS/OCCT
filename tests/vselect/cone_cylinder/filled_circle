@@ -1,0 +1,67 @@
+puts "================================="
+puts "0032547: Visualization, Select3D_SensitiveCylinder - implement picking of a hollow cylinder"
+puts ""
+puts "================================="
+
+pload VISUALIZATION OPENGL 
+vinit View1
+
+vpoint radP1 0 0 0 
+vpoint radP2 50 50 0 
+vpoint radP3 100 0 0 
+vcircle circle radP1 radP2 radP3 1 
+vaxo
+vfit
+
+# Single click selection
+# point inside a circle
+vselect 200 200 
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle should be detected" }
+
+# point on circle
+vselect 177 279 
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle should be detected" }
+
+# point outside a circle
+vselect 360 360
+if { [string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle should not be detected" }
+
+
+# Selection with polygon
+# circle inside a polygon
+vselect 50 300 360 300 360 100 50 100 
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle inside a polygon should be detected" }
+
+# circle is partially covered by a polygon
+vselect 250 300 360 300 360 100 250 100 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle partially covered by a polygon should not be detected" }
+
+vselect 250 300 360 300 360 100 250 100 -allowoverlap 1
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle partially covered by a polygon should be detected" }
+
+# polygon inside a circle
+vselect 150 200 200 200 200 150 150 150 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle around the polygon should not be detected" }
+
+vselect 150 200 200 200 200 150 150 150 -allowoverlap 1
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle around the polygon should be detected" }
+
+
+# Selection with rectangle
+# circle inside a rectangle
+vselect 50 300 360 100
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle inside a rectangle should be detected" }
+
+# circle is partially covered by a rectangle
+vselect 250 300 360 100 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle partially covered by a rectangle should not be detected" }
+
+vselect 250 300 360 100 -allowoverlap 1
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle partially covered by a rectangle should be detected" }
+
+# rectangle inside a circle
+vselect 150 200 200 150 -allowoverlap 0
+if { [string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle around the rectangle should not be detected" }
+
+vselect 150 200 200 150 -allowoverlap 1
+if { ![string match "*Select3D_SensitiveCircle*" [vstate -entities]] } { puts "Error: circle around the rectangle should be detected" }

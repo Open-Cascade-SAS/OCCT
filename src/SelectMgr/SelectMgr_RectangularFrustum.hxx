@@ -66,6 +66,18 @@ public:
   Standard_EXPORT void Init (const gp_Pnt2d& theMinPnt,
                              const gp_Pnt2d& theMaxPnt);
 
+  //! Returns True if Frustum (theVertices) intersects the circle.
+  Standard_EXPORT Standard_Boolean isIntersectCircle (const Standard_Real theRadius,
+                                                      const gp_Pnt& theCenter,
+                                                      const gp_Trsf& theTrsf,
+                                                      const TColgp_Array1OfPnt& theVertices) const;
+
+  //! Returns True if Seg1 (thePnt1Seg1, thePnt2Seg1) and Seg2 (thePnt1Seg2, thePnt2Seg2) intersect.
+  Standard_EXPORT Standard_Boolean isSegmentsIntersect (const gp_Pnt& thePnt1Seg1,
+                                                        const gp_Pnt& thePnt2Seg1,
+                                                        const gp_Pnt& thePnt1Seg2,
+                                                        const gp_Pnt& thePnt2Seg2) const;
+
   //! Builds volume according to internal parameters.
   //! NOTE: it should be called after Init() method
   Standard_EXPORT virtual void Build() Standard_OVERRIDE;
@@ -150,6 +162,7 @@ public:
                                                              const Standard_Real theTopRad,
                                                              const Standard_Real theHeight,
                                                              const gp_Trsf& theTrsf,
+                                                             const Standard_Boolean theIsHollow,
                                                              const SelectMgr_ViewClipRange& theClipRange,
                                                              SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
@@ -159,7 +172,27 @@ public:
                                                              const Standard_Real theTopRad,
                                                              const Standard_Real theHeight,
                                                              const gp_Trsf& theTrsf,
+                                                             const Standard_Boolean theIsHollow,
                                                              Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! boolean theIsFilled and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  Standard_EXPORT virtual Standard_Boolean OverlapsCircle (const Standard_Real theBottomRad,
+                                                           const gp_Trsf& theTrsf,
+                                                           const Standard_Boolean theIsFilled,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
+                                                           SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! boolean theIsFilled and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  Standard_EXPORT virtual Standard_Boolean OverlapsCircle (const Standard_Real theBottomRad,
+                                                           const gp_Trsf& theTrsf,
+                                                           const Standard_Boolean theIsFilled,
+                                                           Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG.

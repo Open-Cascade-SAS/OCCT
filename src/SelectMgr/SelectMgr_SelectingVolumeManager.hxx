@@ -168,6 +168,7 @@ public:
                                                              const Standard_Real theTopRad,
                                                              const Standard_Real theHeight,
                                                              const gp_Trsf& theTrsf,
+                                                             const Standard_Boolean theIsHollow,
                                                              SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
@@ -176,7 +177,26 @@ public:
                                                              const Standard_Real theTopRad,
                                                              const Standard_Real theHeight,
                                                              const gp_Trsf& theTrsf,
+                                                             const Standard_Boolean theIsHollow,
                                                              Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! boolean theIsFilled and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  Standard_EXPORT virtual Standard_Boolean OverlapsCircle (const Standard_Real theBottomRad,
+                                                           const gp_Trsf& theTrsf,
+                                                           const Standard_Boolean theIsFilled,
+                                                           SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! boolean theIsFilled and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  Standard_EXPORT virtual Standard_Boolean OverlapsCircle (const Standard_Real theBottomRad,
+                                                           const gp_Trsf& theTrsf,
+                                                           const Standard_Boolean theIsFilled,
+                                                           Standard_Boolean* theInside = NULL) const Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
   //! screen point and given point theCOG

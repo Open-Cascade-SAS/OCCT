@@ -132,6 +132,7 @@
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <Select3D_SensitivePoint.hxx>
+#include <Select3D_SensitivePoly.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <StdPrs_Curve.hxx>
 
@@ -1965,8 +1966,14 @@ public:
   // CASCADE RTTI
   DEFINE_STANDARD_RTTI_INLINE(FilledCircle, AIS_InteractiveObject);
 
-  FilledCircle (const gp_Pnt& theCenter, Standard_Real theRadius);
-  FilledCircle (Handle(Geom_Circle) theCircle);
+  FilledCircle (const Handle(Geom_Circle)& theCircle,
+                const Standard_Real theUStart,
+                const Standard_Real theUEnd);
+
+  FilledCircle (const gp_Pnt& theCenter,
+                const Standard_Real theRadius,
+                const Standard_Real theUStart,
+                const Standard_Real theUEnd);
 
 private:
   TopoDS_Face ComputeFace();
@@ -1982,35 +1989,50 @@ private:
 protected:
 
   Handle(Geom_Circle) myCircle;
-  Standard_Boolean myFilledStatus;
+  Standard_Real       myUStart;
+  Standard_Real       myUEnd;
+  Standard_Boolean    myFilledStatus;
 
 }; 
 
+FilledCircle::FilledCircle (const Handle(Geom_Circle)& theCircle,
+                            const Standard_Real theUStart,
+                            const Standard_Real theUEnd)
+: myCircle (theCircle),
+  myUStart (theUStart),
+  myUEnd (theUEnd),
+  myFilledStatus (Standard_True)
+{ }
 
-FilledCircle::FilledCircle(const gp_Pnt& theCenter, Standard_Real theRadius) 
+FilledCircle::FilledCircle (const gp_Pnt& theCenter,
+                            const Standard_Real theRadius,
+                            const Standard_Real theUStart,
+                            const Standard_Real theUEnd)
+: FilledCircle (CreateCircle (theCenter, theRadius), theUStart, theUEnd)
+{ }
+
+TopoDS_Face FilledCircle::ComputeFace()
 {
-  myCircle = CreateCircle(theCenter, theRadius);
-  myFilledStatus = Standard_True;
-}
+  // Create edge from myCircle
+  BRepBuilderAPI_MakeEdge anEdgeMaker (myCircle->Circ(), myUStart, myUEnd);
+  TopoDS_Edge anEdge = anEdgeMaker.Edge();
 
-FilledCircle::FilledCircle(Handle(Geom_Circle) theCircle) 
-{
-  myCircle = theCircle;
-  myFilledStatus = Standard_True;
-}
-
-TopoDS_Face FilledCircle::ComputeFace() 
-{
-  // Create edge from myCircle 
-  BRepBuilderAPI_MakeEdge anEdgeMaker(myCircle->Circ());
-  TopoDS_Edge anEdge = anEdgeMaker.Edge(); 
-
-  // Create wire from anEdge 
-  BRepBuilderAPI_MakeWire aWireMaker(anEdge);
+  // Create wire from anEdge
+  BRepBuilderAPI_MakeWire aWireMaker;
+  if (Abs (Abs (myUEnd - myUStart) - 2.0 * M_PI) > gp::Resolution())
+  {
+    TopoDS_Edge anEndCenterEdge = BRepBuilderAPI_MakeEdge (myCircle->Value (myUEnd), myCircle->Location()).Edge();
+    TopoDS_Edge aStartCenterEdge = BRepBuilderAPI_MakeEdge (myCircle->Location(), myCircle->Value (myUStart)).Edge();
+    aWireMaker = BRepBuilderAPI_MakeWire (anEdge, anEndCenterEdge, aStartCenterEdge);
+  }
+  else
+  {
+    aWireMaker = BRepBuilderAPI_MakeWire (anEdge);
+  }
   TopoDS_Wire aWire = aWireMaker.Wire();
 
   // Create face from aWire
-  BRepBuilderAPI_MakeFace aFaceMaker(aWire);
+  BRepBuilderAPI_MakeFace aFaceMaker (aWire);
   TopoDS_Face aFace = aFaceMaker.Face();
 
   return aFace;
@@ -2030,12 +2052,22 @@ void FilledCircle::Compute (const Handle(PrsMgr_PresentationManager)& ,
   StdPrs_ShadedShape::Add (thePrs, aFace, myDrawer);
 }
 
-void FilledCircle::ComputeSelection(const Handle(SelectMgr_Selection) &theSelection, 
-                                    const Standard_Integer /*theMode*/)
+void FilledCircle::ComputeSelection (const Handle(SelectMgr_Selection) &theSelection,
+                                     const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) aSensitiveCircle = new Select3D_SensitiveCircle (anEntityOwner, myCircle->Circ(), myFilledStatus);
-  theSelection->Add(aSensitiveCircle);
+  Handle(Select3D_SensitiveEntity) aSensitiveCircle;
+
+  if (Abs (Abs (myUEnd - myUStart) - 2.0 * M_PI) > gp::Resolution())
+  {
+    aSensitiveCircle = new Select3D_SensitivePoly (anEntityOwner, myCircle->Circ(), myUStart, myUEnd, myFilledStatus);
+  }
+  else
+  {
+    aSensitiveCircle = new Select3D_SensitiveCircle (anEntityOwner, myCircle->Circ(), myFilledStatus);
+  }
+
+  theSelection->Add (aSensitiveCircle);
 }
 
 //==============================================================================
@@ -2046,51 +2078,63 @@ void FilledCircle::ComputeSelection(const Handle(SelectMgr_Selection) &theSelect
 //==============================================================================
 //function : VCircleBuilder
 //purpose  : Build an AIS_Circle
-//Draw arg : vcircle CircleName PlaneName PointName Radius IsFilled
-//                              PointName PointName PointName IsFilled
+//Draw arg : vcircle CircleName PlaneName PointName Radius IsFilled UStart UEnd
+//                              PointName PointName PointName IsFilled UStart UEnd
 //==============================================================================
 
-void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
-                    TCollection_AsciiString theName, 
-                    Standard_Boolean isFilled) 
+void DisplayCircle (const Handle(Geom_Circle)& theGeomCircle,
+                    const TCollection_AsciiString& theName,
+                    const Standard_Boolean isFilled,
+                    const Standard_Real theUStart,
+                    const Standard_Real theUEnd)
 {
   Handle(AIS_InteractiveObject) aCircle;
-  if (isFilled) 
+  if (isFilled)
   {
-    aCircle = new FilledCircle(theGeomCircle);
+    aCircle = new FilledCircle (theGeomCircle, theUStart, theUEnd);
   }
   else
   {
-    aCircle = new AIS_Circle(theGeomCircle);
-    Handle(AIS_Circle)::DownCast (aCircle)->SetFilledCircleSens (Standard_False);
+    aCircle = new AIS_Circle (theGeomCircle, theUStart, theUEnd, Standard_False);
   }
 
   // Check if there is an object with given name
   // and remove it from context
-  if (GetMapOfAIS().IsBound2(theName)) 
+  if (GetMapOfAIS().IsBound2(theName))
   {
-    Handle(AIS_InteractiveObject) anInterObj = GetMapOfAIS().Find2(theName);
-    TheAISContext()->Remove(anInterObj, Standard_False);
-    GetMapOfAIS().UnBind2(theName);
+    Handle(AIS_InteractiveObject) anInterObj = GetMapOfAIS().Find2 (theName);
+    TheAISContext()->Remove (anInterObj, Standard_False);
+    GetMapOfAIS().UnBind2 (theName);
    }
 
    // Bind the circle to its name
-   GetMapOfAIS().Bind(aCircle, theName);
+   GetMapOfAIS().Bind (aCircle, theName);
 
    // Display the circle
    TheAISContext()->Display (aCircle, Standard_True);
-  
 }
 
-static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
+static int VCircleBuilder (Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
-  if (argc > 6 || argc < 2)
-  { 
+  if (argc > 8 || argc < 2)
+  {
     Message::SendFail ("Syntax error: wrong number of arguments");
     return 1;
   }
 
-  if (argc == 6) 
+  Standard_Real anUStart = 0, anUEnd = M_PI * 2.0;
+  if (argc == 8)
+  {
+    anUStart = Draw::Atof (argv[6]) * M_PI / 180.0;
+    anUEnd  = Draw::Atof (argv[7]) * M_PI / 180.0;
+  }
+  else if (argc == 4)
+  {
+    anUStart = Draw::Atof (argv[2]) * M_PI / 180.0;
+    anUEnd  = Draw::Atof (argv[3]) * M_PI / 180.0;
+  }
+
+  if (argc == 6 || argc == 8)
   {
     TCollection_AsciiString aName (argv[1]);
     Standard_Boolean isFilled = Draw::Atoi(argv[5]) != 0;
@@ -2159,7 +2203,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         return 1;
       }
 
-      DisplayCircle (aGeomCircle, aName, isFilled);
+      DisplayCircle (aGeomCircle, aName, isFilled, anUStart, anUEnd);
     }
 
     // Arguments: AIS_Plane AIS_Point Real
@@ -2203,7 +2247,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         return 1;
       }
 
-      DisplayCircle (aGeomCircle, aName, isFilled);
+      DisplayCircle (aGeomCircle, aName, isFilled, anUStart, anUEnd);
     }
     else
     {
@@ -2263,7 +2307,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         return 1;
       }
 
-      DisplayCircle (aGeomCircle, aName, isFilled);
+      DisplayCircle (aGeomCircle, aName, isFilled, anUStart, anUEnd);
     }
     else if (aShapeA.ShapeType() == TopAbs_FACE)
     {
@@ -2307,7 +2351,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
         return 1;
       }
 
-      DisplayCircle (aGeomCircle, aName, isFilled);
+      DisplayCircle (aGeomCircle, aName, isFilled, anUStart, anUEnd);
     }
     else
     {
@@ -6914,8 +6958,8 @@ Creates a line from coordinates, named or interactively selected vertices.
 )" /* [vline] */);
 
   addCmd ("vcircle", VCircleBuilder, /* [vcircle] */ R"(
-vcircle CircleName [PointName PointName PointName IsFilled]
-                   [PlaneName PointName Radius IsFilled]
+vcircle CircleName [PointName PointName PointName IsFilled] [UStart UEnd]
+                   [PlaneName PointName Radius IsFilled] [UStart UEnd]
 Creates a circle from named or interactively selected entities.
 Parameter IsFilled is defined as 0 or 1.
 )" /* [vcircle] */);

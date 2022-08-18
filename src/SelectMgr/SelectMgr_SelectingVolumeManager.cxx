@@ -426,13 +426,15 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsCylinder (const Stand
                                                                      const Standard_Real theTopRad,
                                                                      const Standard_Real theHeight,
                                                                      const gp_Trsf& theTrsf,
+                                                                     const Standard_Boolean theIsHollow,
                                                                      SelectBasics_PickResult& thePickResult) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return false;
   }
-  return myActiveSelectingVolume->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, myViewClipRange, thePickResult);
+  return myActiveSelectingVolume->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf,
+                                                    theIsHollow, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -443,13 +445,47 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsCylinder (const Stand
                                                                      const Standard_Real theTopRad,
                                                                      const Standard_Real theHeight,
                                                                      const gp_Trsf& theTrsf,
+                                                                     const Standard_Boolean theIsHollow,
                                                                      Standard_Boolean* theInside) const
 {
   if (myActiveSelectingVolume.IsNull())
   {
     return false;
   }
-  return myActiveSelectingVolume->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theInside);
+  return myActiveSelectingVolume->OverlapsCylinder (theBottomRad, theTopRad, theHeight,
+                                                    theTrsf, theIsHollow, theInside);
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsCircle (const Standard_Real theRadius,
+                                                                   const gp_Trsf& theTrsf,
+                                                                   const Standard_Boolean theIsFilled,
+                                                                   SelectBasics_PickResult& thePickResult) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return false;
+  }
+  return myActiveSelectingVolume->OverlapsCircle (theRadius, theTrsf, theIsFilled, myViewClipRange, thePickResult);
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_SelectingVolumeManager::OverlapsCircle (const Standard_Real theRadius,
+                                                                   const gp_Trsf& theTrsf,
+                                                                   const Standard_Boolean theIsFilled,
+                                                                   Standard_Boolean* theInside) const
+{
+  if (myActiveSelectingVolume.IsNull())
+  {
+    return false;
+  }
+  return myActiveSelectingVolume->OverlapsCircle (theRadius, theTrsf, theIsFilled, theInside);
 }
 
 //=======================================================================

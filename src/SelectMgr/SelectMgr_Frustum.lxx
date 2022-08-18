@@ -1,4 +1,4 @@
-// Created on: 2015-03-16
+﻿// Created on: 2015-03-16
 // Created by: Varvara POSKONINA
 // Copyright (c) 2005-2014 OPEN CASCADE SAS
 //
@@ -520,7 +520,7 @@ Standard_Boolean SelectMgr_Frustum<N>::hasSphereOverlap (const gp_Pnt& thePnt,
 // purpose  :
 // =======================================================================
 template<int N>
-Standard_Boolean SelectMgr_Frustum<N>::IsDotInside (const gp_Pnt& thePnt,
+Standard_Boolean SelectMgr_Frustum<N>::isDotInside (const gp_Pnt& thePnt,
                                                     const TColgp_Array1OfPnt& theVertices) const
 {
   Standard_Real anAngle = 0.0;
@@ -598,14 +598,14 @@ Standard_Boolean SelectMgr_Frustum<N>::isSegmentsIntersect (const gp_Pnt& thePnt
 }
 
 // =======================================================================
-// function : isIntersectCylinderEndFace
+// function : isIntersectCircle
 // purpose  :
 // =======================================================================
 template<int N>
-Standard_Boolean SelectMgr_Frustum<N>::isIntersectCylinderEndFace (const Standard_Real theRad,
-                                                                   const gp_Pnt& theCenter,
-                                                                   const gp_Trsf& theTrsf,
-                                                                   const TColgp_Array1OfPnt& theVertices) const
+Standard_Boolean SelectMgr_Frustum<N>::isIntersectCircle (const Standard_Real theRadius,
+                                                          const gp_Pnt& theCenter,
+                                                          const gp_Trsf& theTrsf,
+                                                          const TColgp_Array1OfPnt& theVertices) const
 {
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
   const gp_Dir aRayDir = gp_Dir (myEdgeDirs[N == 4 ? 4 : 0]).Transformed (aTrsfInv);
@@ -633,7 +633,7 @@ Standard_Boolean SelectMgr_Frustum<N>::isIntersectCylinderEndFace (const Standar
     // Solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
     const Standard_Real anA = (aX1 - aX2) * (aX1 - aX2) + (anY1 - anY2) * (anY1 - anY2);
     const Standard_Real aK = aX1 * (aX2 - aX1) + anY1 * (anY2 - anY1);
-    const Standard_Real aC = aX1 * aX1 + anY1 * anY1 - theRad * theRad;
+    const Standard_Real aC = aX1 * aX1 + anY1 * anY1 - theRadius * theRadius;
 
     const Standard_Real aDiscr = aK * aK - anA * aC;
     if (aDiscr >= 0.0)
@@ -650,6 +650,47 @@ Standard_Boolean SelectMgr_Frustum<N>::isIntersectCylinderEndFace (const Standar
 }
 
 // =======================================================================
+// function : isInsideCylinderEndFace
+// purpose  :
+// =======================================================================
+template<int N>
+Standard_Boolean SelectMgr_Frustum<N>::isInsideCylinderEndFace (const Standard_Real theBottomRad,
+                                                                const Standard_Real theTopRad,
+                                                                const Standard_Real theHeight,
+                                                                const gp_Trsf& theTrsf,
+                                                                const TColgp_Array1OfPnt& theVertices) const
+{
+  const gp_Trsf aTrsfInv = theTrsf.Inverted();
+  const gp_Dir aRayDir = gp_Dir (myEdgeDirs[N == 4 ? 4 : 0]).Transformed (aTrsfInv);
+  if (aRayDir.Z() == 0.0)
+  {
+    return false;
+  }
+
+  for (Standard_Integer anIdx = theVertices.Lower(); anIdx <= theVertices.Upper(); anIdx++)
+  {
+    const gp_Pnt aLoc = theVertices.Value (anIdx).Transformed (aTrsfInv);
+
+    const Standard_Real aTime1 = (0 - aLoc.Z()) / aRayDir.Z();
+    const Standard_Real aX1 = aLoc.X() + aRayDir.X() * aTime1;
+    const Standard_Real anY1 = aLoc.Y() + aRayDir.Y() * aTime1;
+
+    const Standard_Real aTime2 = (theHeight - aLoc.Z()) / aRayDir.Z();
+    const Standard_Real aX2 = aLoc.X() + aRayDir.X() * aTime2;
+    const Standard_Real anY2 = aLoc.Y() + aRayDir.Y() * aTime2;
+
+    if (aX1 * aX1 + anY1 * anY1 <= theBottomRad * theBottomRad
+     && aX2 * aX2 + anY2 * anY2 <= theTopRad * theTopRad)
+    {
+      continue;
+    }
+
+    return false;
+  }
+  return true;
+}
+
+// =======================================================================
 // function : hasCylinderOverlap
 // purpose  :
 // =======================================================================
@@ -658,8 +699,37 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap (const Standard_Real t
                                                            const Standard_Real theTopRad,
                                                            const Standard_Real theHeight,
                                                            const gp_Trsf& theTrsf,
+                                                           const Standard_Boolean theIsHollow,
                                                            Standard_Boolean* theInside) const
 {
+  gp_Pnt aVerticesBuf[N];
+  TColgp_Array1OfPnt aVertices (aVerticesBuf[0], 0, N - 1);
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
+  if (anIncFactor == 2)
+  {
+    const Standard_Integer anIndices[] = { 0, 2, 6, 4 };
+    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+    {
+      aVertices.SetValue (anIdx, myVertices[anIndices[anIdx]]);
+    }
+  }
+  else
+  {
+    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+    {
+      aVertices.SetValue (anIdx, myVertices[anIdx]);
+    }
+  }
+
+  if (theIsHollow && isInsideCylinderEndFace (theBottomRad, theTopRad, theHeight, theTrsf, aVertices))
+  {
+    if (theInside != NULL)
+    {
+      *theInside = false;
+    }
+    return false;
+  }
+
   const gp_Dir aCylNorm (gp::DZ().Transformed (theTrsf));
   const gp_Pnt aBottomCenter (gp::Origin().Transformed (theTrsf));
   const gp_Pnt aTopCenter = aBottomCenter.XYZ() + aCylNorm.XYZ() * theHeight;
@@ -698,29 +768,11 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap (const Standard_Real t
   aPoints[5] = aBottomCenterProject.XYZ() - aDirEndFaces.XYZ() * theBottomRad;
   const TColgp_Array1OfPnt aPointsArr (aPoints[0], 0, 5);
 
-  gp_Pnt aVerticesBuf[N];
-  TColgp_Array1OfPnt aVertices (aVerticesBuf[0], 0, N - 1);
-  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
-  if (anIncFactor == 2)
-  {
-    const Standard_Integer anIndices[] = { 0, 2, 6, 4 };
-    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
-    {
-      aVertices.SetValue (anIdx, myVertices[anIndices[anIdx]]);
-    }
-  }
-  else
-  {
-    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
-    {
-      aVertices.SetValue (anIdx, myVertices[anIdx]);
-    }
-  }
   for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
   {
     if ((aCylNormProject.Dot (aCylNormProject) == 0.0
      && aVertices.Value (anIdx).Distance (aPoints[0]) <= Max (theTopRad, theBottomRad))
-     || IsDotInside (aVertices.Value (anIdx), aPointsArr))
+     || isDotInside (aVertices.Value (anIdx), aPointsArr))
     {
       if (theInside != NULL)
       {
@@ -747,8 +799,9 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap (const Standard_Real t
     }
   }
 
-  if (isIntersectCylinderEndFace (theBottomRad, gp_Pnt (0, 0, 0), theTrsf, aVertices)
-   || isIntersectCylinderEndFace (theTopRad, gp_Pnt (0, 0, theHeight), theTrsf, aVertices))
+  if (!theIsHollow
+   && (isIntersectCircle (theBottomRad, gp_Pnt (0, 0, 0), theTrsf, aVertices)
+    || isIntersectCircle (theTopRad, gp_Pnt (0, 0, theHeight), theTrsf, aVertices)))
   {
     if (theInside != NULL)
     {
@@ -759,13 +812,89 @@ Standard_Boolean SelectMgr_Frustum<N>::hasCylinderOverlap (const Standard_Real t
   bool isCylInsideRec = true;
   for (int i = 0; i < 6; ++i)
   {
-    isCylInsideRec &= IsDotInside (aPoints[i], aVertices);
+    isCylInsideRec &= isDotInside (aPoints[i], aVertices);
   }
   if (theInside != NULL)
   {
     *theInside &= isCylInsideRec;
   }
   return isCylInsideRec;
+}
+
+// =======================================================================
+// function : hasCircleOverlap
+// purpose  :
+// =======================================================================
+template<int N>
+Standard_Boolean SelectMgr_Frustum<N>::hasCircleOverlap (const Standard_Real theRadius,
+                                                         const gp_Trsf& theTrsf,
+                                                         const Standard_Boolean theIsFilled,
+                                                         Standard_Boolean* theInside) const
+{
+  gp_Pnt aVerticesBuf[N];
+  TColgp_Array1OfPnt aVertices (aVerticesBuf[0], 0, N - 1);
+  const Standard_Integer anIncFactor = (Camera()->IsOrthographic() && N == 4) ? 2 : 1;
+  if (anIncFactor == 2)
+  {
+    const Standard_Integer anIndices[] = { 0, 2, 6, 4 };
+    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+    {
+      aVertices.SetValue (anIdx, myVertices[anIndices[anIdx]]);
+    }
+  }
+  else
+  {
+    for (Standard_Integer anIdx = 0; anIdx < N; anIdx++)
+    {
+      aVertices.SetValue (anIdx, myVertices[anIdx]);
+    }
+  }
+
+  if (isIntersectCircle (theRadius, gp_Pnt (0, 0, 0), theTrsf, aVertices))
+  {
+    if (theInside != NULL)
+    {
+      *theInside = false;
+    }
+    return true;
+  }
+
+  gp_Pnt aCircCenter = gp::Origin();//.Transformed (theTrsf);
+  const gp_Dir aViewRayDir = gp_Dir (myEdgeDirs[N == 4 ? 4 : 0]);
+  const gp_Pln aPln (myVertices[0], aViewRayDir);
+  Standard_Real aCoefA, aCoefB, aCoefC, aCoefD;
+  aPln.Coefficients (aCoefA, aCoefB, aCoefC, aCoefD);
+
+  const Standard_Real aTCenter = -(aCircCenter.XYZ().Dot (aViewRayDir.XYZ()) + aCoefD);
+  const gp_Pnt aCenterProject (aCoefA * aTCenter,
+                               aCoefB * aTCenter,
+                               aCoefC * aTCenter);
+  if (isDotInside (aCenterProject, aVertices))
+  {
+    return true;
+  }
+
+  Standard_Boolean isInside = true;
+  for (Standard_Integer anIdx = aVertices.Lower(); anIdx <= aVertices.Upper(); anIdx++)
+  {
+    if (aVertices.Value (anIdx).Distance (aCenterProject) > theRadius)
+    {
+      isInside = false;
+      break;
+    }
+  }
+
+  if (theInside != NULL)
+  {
+    *theInside = false;
+  }
+
+  if (!theIsFilled && isInside)
+  {
+    return false;
+  }
+
+  return isInside;
 }
 
 //=======================================================================

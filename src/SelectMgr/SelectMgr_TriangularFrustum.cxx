@@ -337,12 +337,13 @@ Standard_Boolean SelectMgr_TriangularFrustum::OverlapsCylinder (const Standard_R
                                                                 const Standard_Real theTopRad,
                                                                 const Standard_Real theHeight,
                                                                 const gp_Trsf& theTrsf,
+                                                                const Standard_Boolean theIsHollow,
                                                                 const SelectMgr_ViewClipRange& theClipRange,
                                                                 SelectBasics_PickResult& thePickResult) const
 {
   (void)theClipRange;
   (void)thePickResult;
-  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf);
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow);
 }
 
 //=======================================================================
@@ -353,10 +354,39 @@ Standard_Boolean SelectMgr_TriangularFrustum::OverlapsCylinder (const Standard_R
                                                                 const Standard_Real theTopRad,
                                                                 const Standard_Real theHeight,
                                                                 const gp_Trsf& theTrsf,
+                                                                const Standard_Boolean theIsHollow,
                                                                 Standard_Boolean* theInside) const
 {
   (void) theInside;
-  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf);
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow);
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustum::OverlapsCircle (const Standard_Real theRadius,
+                                                              const gp_Trsf& theTrsf,
+                                                              const Standard_Boolean theIsFilled,
+                                                              const SelectMgr_ViewClipRange& theClipRange,
+                                                              SelectBasics_PickResult& thePickResult) const
+{
+  (void)theClipRange;
+  (void)thePickResult;
+  return hasCircleOverlap (theRadius, theTrsf, theIsFilled);
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustum::OverlapsCircle (const Standard_Real theRadius,
+                                                              const gp_Trsf& theTrsf,
+                                                              const Standard_Boolean theIsFilled,
+                                                              Standard_Boolean* theInside) const
+{
+  (void)theInside;
+  return hasCircleOverlap (theRadius, theTrsf, theIsFilled);
 }
 
 // =======================================================================

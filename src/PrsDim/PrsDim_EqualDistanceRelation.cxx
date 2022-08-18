@@ -36,7 +36,7 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Select3D_SensitiveBox.hxx>
-#include <Select3D_SensitiveCircle.hxx>
+#include <Select3D_SensitivePoly.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <TopoDS_Edge.hxx>
@@ -202,124 +202,141 @@ void PrsDim_EqualDistanceRelation::Compute (const Handle(PrsMgr_PresentationMana
 
 //=======================================================================
 //function : ComputeSelection
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-void PrsDim_EqualDistanceRelation::ComputeSelection( const Handle( SelectMgr_Selection )& aSelection,
-						  const Standard_Integer ) 
+void PrsDim_EqualDistanceRelation::ComputeSelection (const Handle( SelectMgr_Selection )& aSelection,
+                                                     const Standard_Integer)
 {
   Handle( SelectMgr_EntityOwner ) own = new SelectMgr_EntityOwner( this, 7 );
   Handle( Select3D_SensitiveSegment ) seg;
 
   seg = new Select3D_SensitiveSegment( own, myPoint1, myPoint2 );
-  aSelection->Add( seg );
+  aSelection->Add (seg);
 
   seg = new Select3D_SensitiveSegment( own, myPoint3, myPoint4 );
-  aSelection->Add( seg );
+  aSelection->Add (seg);
 
   // Line between two middles
-  gp_Pnt Middle12( (myPoint1.XYZ() + myPoint2.XYZ()) * 0.5 ), 
+  gp_Pnt Middle12( (myPoint1.XYZ() + myPoint2.XYZ()) * 0.5 ),
          Middle34( (myPoint3.XYZ() + myPoint4.XYZ()) *0.5 );
   seg = new Select3D_SensitiveSegment( own, Middle12, Middle34 );
-  aSelection->Add( seg );
+  aSelection->Add (seg);
 
   gp_Pnt Middle((Middle12.XYZ() +  Middle34.XYZ())*0.5);
   Standard_Real SmallDist = .001;
-  Handle( Select3D_SensitiveBox ) box = new Select3D_SensitiveBox( own,
-								  Middle.X() - SmallDist,
-								  Middle.Y() - SmallDist,
-								  Middle.Z() - SmallDist,
-								  Middle.X() + SmallDist,
-								  Middle.Y() + SmallDist,
-								  Middle.Z() + SmallDist );
-  aSelection->Add(box);
+  Handle( Select3D_SensitiveBox ) box = new Select3D_SensitiveBox(own,
+                                                                  Middle.X() - SmallDist,
+                                                                  Middle.Y() - SmallDist,
+                                                                  Middle.Z() - SmallDist,
+                                                                  Middle.X() + SmallDist,
+                                                                  Middle.Y() + SmallDist,
+                                                                  Middle.Z() + SmallDist);
+  aSelection->Add (box);
 
-  if (myFShape.ShapeType() == TopAbs_EDGE){
+  if (myFShape.ShapeType() == TopAbs_EDGE)
+  {
     BRepAdaptor_Curve aCurve(TopoDS::Edge(myFShape));
-    if (aCurve.GetType() == GeomAbs_Line){
-	//add sensetive element - line
+    if (aCurve.GetType() == GeomAbs_Line)
+    {
+      //add sensetive element - line
       seg = new Select3D_SensitiveSegment( own, myAttachPoint1, myPoint1);
-      aSelection->Add( seg );
+      aSelection->Add (seg);
     }
-    else if (aCurve.GetType() == GeomAbs_Circle){
+    else if (aCurve.GetType() == GeomAbs_Circle)
+    {
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint1),
                     LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint1);
-      if (LastPar < FirstPar ) LastPar+=M_PI*2;
-      Handle(Select3D_SensitiveCircle) circ = new Select3D_SensitiveCircle (own, aCircle->Circ(), FirstPar, LastPar);
-      aSelection->Add( circ );
+      if (LastPar < FirstPar ) LastPar += M_PI * 2;
+      Handle(Select3D_SensitivePoly) circ = new Select3D_SensitivePoly (own, aCircle->Circ(), FirstPar, LastPar);
+      aSelection->Add (circ);
     }
   }
-  else {
+  else
+  {
       seg = new Select3D_SensitiveSegment( own, myAttachPoint1, myPoint1);
-      aSelection->Add( seg );
-    }
-  
-  if (mySShape.ShapeType() == TopAbs_EDGE){
+      aSelection->Add (seg);
+  }
+
+  if (mySShape.ShapeType() == TopAbs_EDGE)
+  {
     BRepAdaptor_Curve aCurve(TopoDS::Edge(mySShape));
-    if (aCurve.GetType() == GeomAbs_Line) {
+    if (aCurve.GetType() == GeomAbs_Line)
+    {
       //add sensetive element - line
       seg = new Select3D_SensitiveSegment( own, myAttachPoint2, myPoint2);
-      aSelection->Add( seg );
+      aSelection->Add (seg);
     }
-    else if (aCurve.GetType() == GeomAbs_Circle){
+    else if (aCurve.GetType() == GeomAbs_Circle)
+    {
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint2),
       LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint2);
-      if (LastPar < FirstPar ) LastPar+=M_PI*2;
-      Handle(Select3D_SensitiveCircle) circ = new Select3D_SensitiveCircle (own, aCircle->Circ(), FirstPar, LastPar);
-      aSelection->Add( circ );
+      if (LastPar < FirstPar) LastPar += M_PI * 2;
+      Handle(Select3D_SensitivePoly) circ = new Select3D_SensitivePoly (own, aCircle->Circ(), FirstPar, LastPar);
+      aSelection->Add (circ);
     }
   }
-  else {
+  else
+  {
     seg = new Select3D_SensitiveSegment( own, myAttachPoint2, myPoint2);
-    aSelection->Add( seg );
+    aSelection->Add (seg);
   }
     
-  if (myShape3.ShapeType() == TopAbs_EDGE){
+  if (myShape3.ShapeType() == TopAbs_EDGE)
+  {
     BRepAdaptor_Curve aCurve(TopoDS::Edge(myShape3));
-    if (aCurve.GetType() == GeomAbs_Line) {
+    if (aCurve.GetType() == GeomAbs_Line)
+    {
       //add sensetive element - line
       seg = new Select3D_SensitiveSegment( own, myAttachPoint3, myPoint3);
-      aSelection->Add( seg );
+      aSelection->Add (seg);
     }
-    else if (aCurve.GetType() == GeomAbs_Circle){
+    else if (aCurve.GetType() == GeomAbs_Circle)
+    {
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint3),
       LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint3);
-      if (LastPar < FirstPar ) LastPar+=M_PI*2;
-      Handle(Select3D_SensitiveCircle) circ = new Select3D_SensitiveCircle (own, aCircle->Circ(), FirstPar, LastPar);
-      aSelection->Add( circ );
+      if (LastPar < FirstPar) LastPar += M_PI * 2;
+      Handle(Select3D_SensitivePoly) circ = new Select3D_SensitivePoly (own, aCircle->Circ(), FirstPar, LastPar);
+      aSelection->Add (circ);
     }
-    else {
+    else
+    {
       seg = new Select3D_SensitiveSegment( own, myAttachPoint3, myPoint3);
-      aSelection->Add( seg );
+      aSelection->Add (seg);
     }
   }
-  else {
+  else
+  {
     seg = new Select3D_SensitiveSegment( own, myAttachPoint3, myPoint3);
-    aSelection->Add( seg );
+    aSelection->Add (seg);
   }
 
-  if (myShape4.ShapeType() == TopAbs_EDGE){
+  if (myShape4.ShapeType() == TopAbs_EDGE)
+  {
     BRepAdaptor_Curve aCurve(TopoDS::Edge(myShape4));
-    if (aCurve.GetType() == GeomAbs_Line) {
+    if (aCurve.GetType() == GeomAbs_Line)
+    {
       //add sensetive element - line
       seg = new Select3D_SensitiveSegment( own, myAttachPoint4, myPoint4);
-      aSelection->Add( seg );
+      aSelection->Add (seg);
     }
-    else if (aCurve.GetType() == GeomAbs_Circle){
+    else if (aCurve.GetType() == GeomAbs_Circle)
+    {
       Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(aCurve.Curve().Curve());
       Standard_Real FirstPar = ElCLib::Parameter(aCircle->Circ(), myAttachPoint4),
       LastPar  = ElCLib::Parameter(aCircle->Circ(), myPoint4);
-      if (LastPar < FirstPar ) LastPar+=M_PI*2;
-      Handle(Select3D_SensitiveCircle) circ = new Select3D_SensitiveCircle (own, aCircle->Circ(), FirstPar, LastPar);
+      if (LastPar < FirstPar) LastPar += M_PI * 2;
+      Handle(Select3D_SensitivePoly) circ = new Select3D_SensitivePoly (own, aCircle->Circ(), FirstPar, LastPar);
       aSelection->Add( circ );
     }
   }
-  else {
+  else
+  {
     seg = new Select3D_SensitiveSegment( own, myAttachPoint4, myPoint4);
-    aSelection->Add( seg );
+    aSelection->Add (seg);
   }
 }
 

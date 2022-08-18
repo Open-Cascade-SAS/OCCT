@@ -84,9 +84,8 @@ namespace
   public:
     //! Main constructor.
     ManipSensCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                     const gp_Circ& theCircle,
-                     const Standard_Integer theNbPnts)
-    : Select3D_SensitiveCircle (theOwnerId, theCircle, Standard_False, theNbPnts),
+                     const gp_Circ& theCircle)
+    : Select3D_SensitiveCircle (theOwnerId, theCircle, Standard_False),
       ManipSensRotation (theCircle.Position().Direction()) {}
 
     //! Checks whether the circle overlaps current selecting volume
@@ -1168,7 +1167,7 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
       }
       // define sensitivity by circle
       const gp_Circ aGeomCircle (gp_Ax2 (gp::Origin(), anAxis.ReferenceAxis().Direction()), anAxis.RotatorDiskRadius());
-      Handle(Select3D_SensitiveCircle) aCircle = new ManipSensCircle (anOwner, aGeomCircle, anAxis.FacettesNumber());
+      Handle(Select3D_SensitiveCircle) aCircle = new ManipSensCircle (anOwner, aGeomCircle);
       aCircle->SetSensitivityFactor (15);
       theSelection->Add (aCircle);
       // enlarge sensitivity by triangulation

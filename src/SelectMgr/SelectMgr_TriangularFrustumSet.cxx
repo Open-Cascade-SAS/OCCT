@@ -17,6 +17,10 @@
 
 #include <BRepMesh_DataStructureOfDelaun.hxx>
 #include <BRepMesh_Delaun.hxx>
+#include <Geom_Plane.hxx>
+#include <GeomInt_IntSS.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Line.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <SelectMgr_FrustumBuilder.hxx>
 
@@ -506,6 +510,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standar
                                                                    const Standard_Real theTopRad,
                                                                    const Standard_Real theHeight,
                                                                    const gp_Trsf& theTrsf,
+                                                                   const Standard_Boolean theIsHollow,
                                                                    const SelectMgr_ViewClipRange& theClipRange,
                                                                    SelectBasics_PickResult& thePickResult) const
 {
@@ -513,7 +518,8 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standar
     "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
   for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theClipRange, thePickResult))
+    if (anIter.Value()->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf,
+                                          theIsHollow, theClipRange, thePickResult))
     {
       return true;
     }
@@ -529,6 +535,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standar
                                                                    const Standard_Real theTopRad,
                                                                    const Standard_Real theHeight,
                                                                    const gp_Trsf& theTrsf,
+                                                                   const Standard_Boolean theIsHollow,
                                                                    Standard_Boolean* theInside) const
 {
   const gp_Dir aCylNorm (gp::DZ().Transformed (theTrsf));
@@ -589,7 +596,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standar
       {
         aVertices[anIdx] = anIter.Value()->myVertices[anIdx];
       }
-      if (anIter.Value()->IsDotInside (aPoints[i], aVertices))
+      if (anIter.Value()->isDotInside (aPoints[i], aVertices))
       {
         isInside = true;
         break;
@@ -607,12 +614,115 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCylinder (const Standar
   }
   for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theInside))
+    if (anIter.Value()->OverlapsCylinder (theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow, theInside))
     {
       return true;
     }
   }
   return false;
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle (const Standard_Real theRadius,
+                                                                 const gp_Trsf& theTrsf,
+                                                                 const Standard_Boolean theIsFilled,
+                                                                 const SelectMgr_ViewClipRange& theClipRange,
+                                                                 SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::Overlaps() should be called after selection frustum initialization");
+  for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->OverlapsCircle (theRadius, theTrsf, theIsFilled, theClipRange, thePickResult))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::OverlapsCircle (const Standard_Real theRadius,
+                                                                 const gp_Trsf& theTrsf,
+                                                                 const Standard_Boolean theIsFilled,
+                                                                 Standard_Boolean* theInside) const
+{
+  const gp_Pnt aCenter (gp::Origin().Transformed (theTrsf));
+  const gp_Vec aVecPlane1 (myFrustums.First()->myVertices[0], myFrustums.First()->myVertices[1]);
+  const gp_Vec aVecPlane2 (myFrustums.First()->myVertices[0], myFrustums.First()->myVertices[2]);
+
+  const gp_Dir aDirNorm (aVecPlane1.Crossed (aVecPlane2));
+  const gp_Pln aPln (myFrustums.First()->myVertices[0], aDirNorm);
+  Standard_Real aCoefA, aCoefB, aCoefC, aCoefD;
+  aPln.Coefficients (aCoefA, aCoefB, aCoefC, aCoefD);
+
+  const Standard_Real aT = -(aCenter.XYZ().Dot (aDirNorm.XYZ()) + aCoefD) / aDirNorm.Dot (aDirNorm);
+  const gp_Pnt aCenterProject (aCoefA * aT + aCenter.X(),
+                               aCoefB * aT + aCenter.Y(),
+                               aCoefC * aT + aCenter.Z());
+
+  gp_Pnt aVerticesBuf[3];
+  TColgp_Array1OfPnt aVertices (aVerticesBuf[0], 0, 2);
+
+  if (!theIsFilled)
+  {
+    for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+    {
+      if (!anIter.Value()->OverlapsCircle (theRadius, theTrsf, theIsFilled, theInside))
+      {
+        continue;
+      }
+
+      if (myToAllowOverlap)
+      {
+        return Standard_True;
+      }
+
+      if (isIntersectBoundary (theRadius, theTrsf, theIsFilled))
+      {
+        if (theInside != NULL)
+        {
+          *theInside &= Standard_False;
+        }
+        return Standard_False;
+      }
+      return Standard_True;
+    }
+  }
+  else
+  {
+    for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+    {
+      if (!anIter.Value()->OverlapsCircle (theRadius, theTrsf, theIsFilled, theInside))
+      {
+        continue;
+      }
+
+      if (myToAllowOverlap)
+      {
+        return Standard_True;
+      }
+
+      if (isIntersectBoundary (theRadius, theTrsf, theIsFilled))
+      {
+        return Standard_False;
+      }
+      return Standard_True;
+    }
+  }
+
+  if (theInside != NULL)
+  {
+    *theInside &= Standard_False;
+  }
+
+  return Standard_False;
 }
 
 // =======================================================================
@@ -636,6 +746,127 @@ void SelectMgr_TriangularFrustumSet::GetPlanes (NCollection_Vector<SelectMgr_Vec
 void SelectMgr_TriangularFrustumSet::SetAllowOverlapDetection (const Standard_Boolean theIsToAllow)
 {
   myToAllowOverlap = theIsToAllow;
+}
+
+//=======================================================================
+// function : PointInTriangle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::pointInTriangle (const gp_Pnt& thePnt,
+                                                                  const gp_Pnt& theV1, const gp_Pnt& theV2, const gp_Pnt& theV3)
+{
+  gp_Vec a = theV1.XYZ() - thePnt.XYZ();
+  gp_Vec b = theV2.XYZ() - thePnt.XYZ();
+  gp_Vec c = theV3.XYZ() - thePnt.XYZ();
+
+  gp_Vec u = b.Crossed (c);
+  gp_Vec v = c.Crossed (a);
+  gp_Vec w = a.Crossed (b);
+
+  if (u.Dot (v) < 0.0 || u.Dot (w) < 0.0) {
+    return false;
+  }
+
+  return true;
+}
+
+//=======================================================================
+// function : segmentSegmentIntersection
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::segmentSegmentIntersection (const gp_Pnt& theStartPnt1,
+                                                                             const gp_Pnt& theEndPnt1,
+                                                                             const gp_Pnt& theStartPnt2,
+                                                                             const gp_Pnt& theEndPnt2)
+{
+  gp_XYZ aVec1 = theEndPnt1.XYZ() - theStartPnt1.XYZ();
+  gp_XYZ aVec2 = theEndPnt2.XYZ() - theStartPnt2.XYZ();
+  gp_XYZ aVec21 = theStartPnt2.XYZ() - theStartPnt1.XYZ();
+  gp_XYZ aVec12 = theStartPnt1.XYZ() - theStartPnt2.XYZ();
+  if (Abs (aVec21.DotCross (aVec1, aVec2)) > Precision::Confusion() ||
+      Abs (aVec12.DotCross (aVec2, aVec1)) > Precision::Confusion())
+  {
+    // lines are not coplanar
+    return false;
+  }
+
+  double aValue1 = aVec21.Crossed (aVec2).Dot (aVec1.Crossed (aVec2)) / aVec1.Crossed (aVec2).SquareModulus();
+  double aValue2 = aVec12.Crossed (aVec1).Dot (aVec2.Crossed (aVec1)) / aVec2.Crossed (aVec1).SquareModulus();
+  if (aValue1 < 0.0 || aValue1 > 1.0 || aValue2 < 0.0 || aValue2 > 1.0)
+  {
+    return false;
+  }
+  return true;
+}
+
+//=======================================================================
+// function : isIntersectBoundary
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary (const Standard_Real theRadius,
+                                                                      const gp_Trsf& theTrsf,
+                                                                      const Standard_Boolean theIsFilled) const
+{
+  Standard_Integer aFacesNb = myBoundaryPoints.Size() / 2;
+
+  const gp_Pnt& aCircCenter = theTrsf.TranslationPart();
+  gp_Ax2 anAxis;
+  anAxis.Transform (theTrsf);
+  Handle(Geom_Circle) aCirc = new Geom_Circle (anAxis, theRadius);
+
+  gp_Dir aCircNorm = gp_Dir(0, 0, 1).Transformed (theTrsf);
+  Handle(Geom_Surface) aCircPlane = new Geom_Plane(aCircCenter, aCircNorm);
+
+  for (Standard_Integer anIdx = myBoundaryPoints.Lower(); anIdx < aFacesNb + myBoundaryPoints.Lower(); anIdx++)
+  {
+    gp_Pnt aFace[4] = { myBoundaryPoints.Value (anIdx),
+                        myBoundaryPoints.Value (anIdx + aFacesNb),
+                        myBoundaryPoints.Value (anIdx % aFacesNb + 1 + aFacesNb),
+                        myBoundaryPoints.Value (anIdx % aFacesNb + 1) };
+
+    gp_Dir aBndPlaneNorm = gp_Vec (aFace[0], aFace[1]).Crossed (gp_Vec(aFace[0], aFace[2]));
+    Handle(Geom_Surface) aBndPlane = new Geom_Plane(aFace[0], aBndPlaneNorm);
+
+    GeomInt_IntSS anInterSS (aCircPlane, aBndPlane, Precision::Confusion());
+    if (!anInterSS.IsDone() || anInterSS.NbLines() == 0)
+    {
+      continue;
+    }
+
+    const Handle(Geom_Line)& anInterLine = Handle(Geom_Line)::DownCast (anInterSS.Line(1));
+    Standard_Real aDistance = anInterLine->Lin().Distance (aCircCenter);
+    if (aDistance > theRadius)
+    {
+      continue;
+    }
+
+    gp_Lin aLine = anInterLine->Lin();
+    gp_Lin aNormalLine = aLine.Normal (aCircCenter);
+    gp_Pnt aCrossPoint = aCircCenter.Translated (aNormalLine.Direction().Reversed().XYZ() * aDistance);
+
+    Standard_Real anOffset = Sqrt (theRadius * theRadius - aDistance * aDistance);
+    // Line-circle intersection points
+    gp_Pnt aP1 = aCrossPoint.Translated (aLine.Direction().XYZ() * anOffset);
+    gp_Pnt aP2 = aCrossPoint.Translated (aLine.Direction().Reversed().XYZ() * anOffset);
+
+    if (pointInTriangle (aP1, aFace[0], aFace[1], aFace[2])
+     || pointInTriangle (aP1, aFace[0], aFace[2], aFace[3])
+     || pointInTriangle (aP2, aFace[0], aFace[1], aFace[2])
+     || pointInTriangle (aP2, aFace[0], aFace[2], aFace[3]))
+    {
+      return Standard_True;
+    }
+
+    if (theIsFilled
+     || segmentSegmentIntersection (aP1, aP2, aFace[0], aFace[1])
+     || segmentSegmentIntersection (aP1, aP2, aFace[1], aFace[2])
+     || segmentSegmentIntersection (aP1, aP2, aFace[2], aFace[3])
+     || segmentSegmentIntersection (aP1, aP2, aFace[0], aFace[3]))
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }
 
 //=======================================================================
@@ -669,7 +900,7 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::isIntersectBoundary (const gp_P
 // purpose  : Moller-Trumbore ray-triangle intersection test
 //=======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection (const gp_Pnt& theOrig, const gp_Vec& theDir,
-                                                                              const gp_Pnt& theV1, const gp_Pnt& theV2, const gp_Pnt& theV3) const
+                                                                              const gp_Pnt& theV1, const gp_Pnt& theV2, const gp_Pnt& theV3)
 {
   gp_Vec        aPVec, aTVec, aQVec;
   Standard_Real aD, aInvD, anU, aV, aT;

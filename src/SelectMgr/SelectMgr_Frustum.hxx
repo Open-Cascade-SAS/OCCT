@@ -98,11 +98,25 @@ protected:
                                        const Standard_Real theTopRad,
                                        const Standard_Real theHeight,
                                        const gp_Trsf& theTrsf,
+                                       const Standard_Boolean theIsHollow,
                                        Standard_Boolean* theInside = NULL) const;
+
+  //! Intersection test between defined volume and given circle.
+  Standard_Boolean hasCircleOverlap (const Standard_Real theRadius,
+                                     const gp_Trsf& theTrsf,
+                                     const Standard_Boolean theIsFilled,
+                                     Standard_Boolean* theInside = NULL) const;
+
+  //! Returns True if all vertices (theVertices) are inside the top and bottom sides of the cylinder.
+  Standard_Boolean isInsideCylinderEndFace (const Standard_Real theBottomRad,
+                                            const Standard_Real theTopRad,
+                                            const Standard_Real theHeight,
+                                            const gp_Trsf& theTrsf,
+                                            const TColgp_Array1OfPnt& theVertices) const;
 
   //! Checking whether the point thePnt is inside the shape with borders theVertices.
   //! thePnt and theVertices lie in the same plane.
-  Standard_Boolean IsDotInside (const gp_Pnt& thePnt,
+  Standard_Boolean isDotInside (const gp_Pnt& thePnt,
                                 const TColgp_Array1OfPnt& theVertices) const;
 
 private:
@@ -116,10 +130,10 @@ private:
 
   //! Checking whether the borders theVertices of the shape intersect
   //! the cylinder (or cone) end face with the center theCenter and radius theRadius
-  Standard_Boolean isIntersectCylinderEndFace (const Standard_Real theRad,
-                                               const gp_Pnt& theCenter,
-                                               const gp_Trsf& theTrsf,
-                                               const TColgp_Array1OfPnt& theVertices) const;
+  Standard_Boolean isIntersectCircle (const Standard_Real theRadius,
+                                      const gp_Pnt& theCenter,
+                                      const gp_Trsf& theTrsf,
+                                      const TColgp_Array1OfPnt& theVertices) const;
 
   //! Checks if AABB and frustum are separated along the given axis
   Standard_Boolean isSeparated (const SelectMgr_Vec3& theBoxMin,

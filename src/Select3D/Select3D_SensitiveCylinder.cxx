@@ -25,12 +25,14 @@ Select3D_SensitiveCylinder::Select3D_SensitiveCylinder (const Handle(SelectMgr_E
                                                         const Standard_Real theBottomRad,
                                                         const Standard_Real theTopRad,
                                                         const Standard_Real    theHeight,
-                                                        const gp_Trsf& theTrsf)
+                                                        const gp_Trsf& theTrsf,
+                                                        const Standard_Boolean theIsHollow)
 : Select3D_SensitiveEntity (theOwnerId),
   myTrsf (theTrsf),
   myBottomRadius (theBottomRad),
   myTopRadius (theTopRad),
-  myHeight (theHeight)
+  myHeight (theHeight),
+  myIsHollow (theIsHollow)
 {
 }
 
@@ -46,14 +48,14 @@ Standard_Boolean Select3D_SensitiveCylinder::Matches (SelectBasics_SelectingVolu
     if (!theMgr.IsOverlapAllowed())
     {
       bool isInside = true;
-      return theMgr.OverlapsCylinder (myBottomRadius, myTopRadius, myHeight, myTrsf, &isInside) && isInside;
+      return theMgr.OverlapsCylinder (myBottomRadius, myTopRadius, myHeight, myTrsf, myIsHollow, &isInside) && isInside;
     }
     else
     {
-      return theMgr.OverlapsCylinder (myBottomRadius, myTopRadius, myHeight, myTrsf, NULL);
+      return theMgr.OverlapsCylinder (myBottomRadius, myTopRadius, myHeight, myTrsf, myIsHollow, NULL);
     }
   }
-  if (!theMgr.OverlapsCylinder (myBottomRadius, myTopRadius, myHeight, myTrsf, thePickResult))
+  if (!theMgr.OverlapsCylinder (myBottomRadius, myTopRadius, myHeight, myTrsf, myIsHollow, thePickResult))
   {
     return false;
   }

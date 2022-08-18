@@ -27,6 +27,7 @@
 #include <Prs3d_Presentation.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveCircle.hxx>
+#include <Select3D_SensitivePoly.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <Standard_Type.hxx>
@@ -41,9 +42,9 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_Circle,AIS_InteractiveObject)
 AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& aComponent):
 AIS_InteractiveObject(PrsMgr_TOP_AllView),
 myComponent(aComponent),
-myUStart(0.),
-myUEnd(2*M_PI),
-myCircleIsArc(Standard_False),
+myUStart (0.0),
+myUEnd (2.0 * M_PI),
+myCircleIsArc (Standard_False),
 myIsFilledCircleSens (Standard_False)
 {
 }
@@ -60,7 +61,7 @@ AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& theComponent,
   myComponent (theComponent),
   myUStart (theUStart),
   myUEnd (theUEnd),
-  myCircleIsArc (Standard_True),
+  myCircleIsArc (Abs (Abs (theUEnd - theUStart) - 2.0 * M_PI) > gp::Resolution()),
   myIsFilledCircleSens (theIsFilledCircleSens)
 {
 }
@@ -207,14 +208,14 @@ void AIS_Circle::UnsetWidth()
 //function : ComputeCircle
 //purpose  : 
 //=======================================================================
-void AIS_Circle::ComputeCircle( const Handle(Prs3d_Presentation)& aPresentation)
+void AIS_Circle::ComputeCircle (const Handle(Prs3d_Presentation)& thePresentation)
 {
 
   GeomAdaptor_Curve curv(myComponent);
   Standard_Real prevdev = myDrawer->DeviationCoefficient();
-  myDrawer->SetDeviationCoefficient(1.e-5);
-  StdPrs_DeflectionCurve::Add(aPresentation,curv,myDrawer);
-  myDrawer->SetDeviationCoefficient(prevdev);
+  myDrawer->SetDeviationCoefficient (1.e-5);
+  StdPrs_DeflectionCurve::Add (thePresentation, curv, myDrawer);
+  myDrawer->SetDeviationCoefficient (prevdev);
 
 }
 
@@ -223,13 +224,13 @@ void AIS_Circle::ComputeCircle( const Handle(Prs3d_Presentation)& aPresentation)
 
 //purpose  : 
 //=======================================================================
-void AIS_Circle::ComputeArc( const Handle(Prs3d_Presentation)& aPresentation)
+void AIS_Circle::ComputeArc (const Handle(Prs3d_Presentation)& thePresentation)
 {
-  GeomAdaptor_Curve curv(myComponent,myUStart,myUEnd);
+  GeomAdaptor_Curve curv(myComponent, myUStart, myUEnd);
   Standard_Real prevdev = myDrawer->DeviationCoefficient();
-  myDrawer->SetDeviationCoefficient(1.e-5);
-  StdPrs_DeflectionCurve::Add(aPresentation,curv,myDrawer);
-  myDrawer->SetDeviationCoefficient(prevdev);
+  myDrawer->SetDeviationCoefficient (1.e-5);
+  StdPrs_DeflectionCurve::Add (thePresentation, curv, myDrawer);
+  myDrawer->SetDeviationCoefficient (prevdev);
 }
 
 //=======================================================================
@@ -237,27 +238,25 @@ void AIS_Circle::ComputeArc( const Handle(Prs3d_Presentation)& aPresentation)
 //purpose  : 
 //=======================================================================
 
-void AIS_Circle::ComputeCircleSelection(const Handle(SelectMgr_Selection)& aSelection)
+void AIS_Circle::ComputeCircleSelection (const Handle(SelectMgr_Selection)& theSelection)
 {
-  Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle (eown,
-                                                                       myComponent->Circ(),
-                                                                       myIsFilledCircleSens);
-  aSelection->Add(seg);
+  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);
+  Handle(Select3D_SensitiveCircle) aCirc = new Select3D_SensitiveCircle (anOwner,
+                                                                         myComponent->Circ(),
+                                                                         myIsFilledCircleSens);
+  theSelection->Add (aCirc);
 }
 //=======================================================================
 //function : ComputeArcSelection
 //purpose  : 
 //=======================================================================
 
-void AIS_Circle::ComputeArcSelection(const Handle(SelectMgr_Selection)& aSelection)
+void AIS_Circle::ComputeArcSelection (const Handle(SelectMgr_Selection)& theSelection)
 {
-
-
-  Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle (eown,
-                                                                       myComponent->Circ(),
-                                                                       myUStart, myUEnd,
-                                                                       myIsFilledCircleSens);
-  aSelection->Add(seg);
+  Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);
+  Handle(Select3D_SensitivePoly) aSeg = new Select3D_SensitivePoly (anOwner,
+                                                                    myComponent->Circ(),
+                                                                    myUStart, myUEnd,
+                                                                    myIsFilledCircleSens);
+  theSelection->Add (aSeg);
 }

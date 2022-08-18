@@ -113,7 +113,7 @@ vmanipulator m -followRotation 0
 # test rotation around y axis (world reference frame)
 # ---------------------------------------------------
 
-set mouse_pick {211 087}
+set mouse_pick {205 087}
 set mouse_drag {232 127}
 
 vmoveto {*}$mouse_pick

@@ -187,6 +187,7 @@ public:
                                              const Standard_Real theTopRad,
                                              const Standard_Real theHeight,
                                              const gp_Trsf& theTrsf,
+                                             const Standard_Boolean theIsHollow,
                                              const SelectMgr_ViewClipRange& theClipRange,
                                              SelectBasics_PickResult& thePickResult) const = 0;
 
@@ -196,7 +197,27 @@ public:
                                              const Standard_Real theTopRad,
                                              const Standard_Real theHeight,
                                              const gp_Trsf& theTrsf,
+                                             const Standard_Boolean theIsHollow,
                                              Standard_Boolean* theInside = NULL) const = 0;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! boolean theIsFilled and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  virtual Standard_Boolean OverlapsCircle (const Standard_Real theBottomRad,
+                                           const gp_Trsf& theTrsf,
+                                           const Standard_Boolean theIsFilled,
+                                           const SelectMgr_ViewClipRange& theClipRange,
+                                           SelectBasics_PickResult& thePickResult) const = 0;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! boolean theIsFilled and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  virtual Standard_Boolean OverlapsCircle (const Standard_Real theBottomRad,
+                                           const gp_Trsf& theTrsf,
+                                           const Standard_Boolean theIsFilled,
+                                           Standard_Boolean* theInside = NULL) const = 0;
 
 public:
 
@@ -224,14 +245,36 @@ public:
                                                                   Standard_Real& theTimeLeave) const;
 
   //! Checks whether the ray that starts at the point theLoc and directs with the direction theRayDir intersects
-  //! with the cylinder (or cone) with radiuses theBottomRad and theTopRad and height theHeights
+  //! with the hollow cylinder (or cone)
+  //! @param[in]  theBottomRadius the bottom cylinder radius
+  //! @param[in]  theTopRadius    the top cylinder radius
+  //! @param[in]  theHeight       the cylinder height
+  //! @param[in]  theLoc          the location of the ray
+  //! @param[in]  theRayDir       the ray direction
+  //! @param[in]  theIsHollow     true if the cylinder is hollow
+  //! @param[out] theTimeEnter    the entering the intersection
+  //! @param[out] theTimeLeave    the leaving the intersection
   Standard_EXPORT virtual Standard_Boolean RayCylinderIntersection (const Standard_Real theBottomRadius,
                                                                     const Standard_Real theTopRadius,
                                                                     const Standard_Real theHeight,
                                                                     const gp_Pnt& theLoc,
                                                                     const gp_Dir& theRayDir,
+                                                                    const Standard_Boolean theIsHollow,
                                                                     Standard_Real& theTimeEnter,
                                                                     Standard_Real& theTimeLeave) const;
+
+  //! Checks whether the ray that starts at the point theLoc and directs with the direction theRayDir intersects
+  //! with the circle
+  //! @param[in]  theRadius   the circle radius
+  //! @param[in]  theLoc      the location of the ray
+  //! @param[in]  theRayDir   the ray direction
+  //! @param[in]  theIsFilled true if it's a circle, false if it's a circle outline
+  //! @param[out] theTime     the intersection
+  Standard_EXPORT virtual Standard_Boolean RayCircleIntersection (const Standard_Real theRadius,
+                                                                  const gp_Pnt& theLoc,
+                                                                  const gp_Dir& theRayDir,
+                                                                  const Standard_Boolean theIsFilled,
+                                                                  Standard_Real& theTime) const;
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_BaseIntersector,Standard_Transient)
 

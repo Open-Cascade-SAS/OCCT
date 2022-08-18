@@ -748,6 +748,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_
                                                                  const Standard_Real theTopRad,
                                                                  const Standard_Real theHeight,
                                                                  const gp_Trsf& theTrsf,
+                                                                 const Standard_Boolean theIsHollow,
                                                                  const SelectMgr_ViewClipRange& theClipRange,
                                                                  SelectBasics_PickResult& thePickResult) const
 {
@@ -757,7 +758,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_
   const gp_Trsf aTrsfInv = theTrsf.Inverted();
   const gp_Pnt  aLoc     = myNearPickedPnt.Transformed (aTrsfInv);
   const gp_Dir  aRayDir  = myViewRayDir   .Transformed (aTrsfInv);
-  if (!RayCylinderIntersection (theBottomRad, theTopRad, theHeight, aLoc, aRayDir, aTimes[0], aTimes[1]))
+  if (!RayCylinderIntersection (theBottomRad, theTopRad, theHeight, aLoc, aRayDir, theIsHollow, aTimes[0], aTimes[1]))
   {
     return Standard_False;
   }
@@ -788,6 +789,165 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_
 }
 
 //=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCircle (const Standard_Real theRadius,
+                                                               const gp_Trsf& theTrsf,
+                                                               const Standard_Boolean theIsFilled,
+                                                               const SelectMgr_ViewClipRange& theClipRange,
+                                                               SelectBasics_PickResult& thePickResult) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+  Standard_Real aTime = 0.0;
+  const gp_Trsf aTrsfInv = theTrsf.Inverted();
+  const gp_Pnt  aLoc = myNearPickedPnt.Transformed (aTrsfInv);
+  const gp_Dir  aRayDir = myViewRayDir.Transformed (aTrsfInv);
+  if (!theIsFilled)
+  {
+    if (!hasCircleOverlap (theRadius, theTrsf, theIsFilled, NULL))
+    {
+      return Standard_False;
+    }
+    if (aRayDir.Z() != 0)
+    {
+      aTime = (0 - aLoc.Z()) / aRayDir.Z();
+    }
+  }
+  else if (!RayCircleIntersection (theRadius, aLoc, aRayDir, theIsFilled, aTime))
+  {
+    return Standard_False;
+  }
+
+  thePickResult.SetDepth (aTime * myScale);
+  if (theClipRange.IsClipped (thePickResult.Depth()))
+  {
+    thePickResult.SetDepth (aTime * myScale);
+  }
+
+  const gp_Pnt aPntOnCircle = aLoc.XYZ() + aRayDir.XYZ() * aTime;
+  if (Abs (aPntOnCircle.Z()) < Precision::Confusion())
+  {
+    thePickResult.SetSurfaceNormal (-gp::DZ().Transformed (theTrsf));
+  }
+  else
+  {
+    thePickResult.SetSurfaceNormal (gp_Vec (aPntOnCircle.X(), aPntOnCircle.Y(), 0.0).Transformed (theTrsf));
+  }
+  thePickResult.SetPickedPoint (aPntOnCircle.Transformed (theTrsf));
+  return !theClipRange.IsClipped (thePickResult.Depth());
+}
+
+//=======================================================================
+// function : isIntersectCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::isIntersectCircle (const Standard_Real theRadius,
+                                                                  const gp_Pnt& theCenter,
+                                                                  const gp_Trsf& theTrsf,
+                                                                  const TColgp_Array1OfPnt& theVertices) const
+{
+  const gp_Trsf aTrsfInv = theTrsf.Inverted();
+  const gp_Dir aRayDir = gp_Dir (myEdgeDirs[4 == 4 ? 4 : 0]).Transformed (aTrsfInv);
+  if (aRayDir.Z() == 0.0)
+  {
+    return false;
+  }
+
+  for (Standard_Integer anIdx = theVertices.Lower(); anIdx <= theVertices.Upper(); anIdx++)
+  {
+    const gp_Pnt aPntStart = theVertices.Value (anIdx).Transformed (aTrsfInv);
+    const gp_Pnt aPntFinish = anIdx == theVertices.Upper()
+      ? theVertices.Value (theVertices.Lower()).Transformed (aTrsfInv)
+      : theVertices.Value (anIdx + 1).Transformed (aTrsfInv);
+
+    // Project points on the end face plane
+    const Standard_Real aParam1 = (theCenter.Z() - aPntStart.Z()) / aRayDir.Z();
+    const Standard_Real aX1 = aPntStart.X() + aRayDir.X() * aParam1;
+    const Standard_Real anY1 = aPntStart.Y() + aRayDir.Y() * aParam1;
+
+    const Standard_Real aParam2 = (theCenter.Z() - aPntFinish.Z()) / aRayDir.Z();
+    const Standard_Real aX2 = aPntFinish.X() + aRayDir.X() * aParam2;
+    const Standard_Real anY2 = aPntFinish.Y() + aRayDir.Y() * aParam2;
+
+    // Solving quadratic equation anA * T^2 + 2 * aK * T + aC = 0
+    const Standard_Real anA = (aX1 - aX2) * (aX1 - aX2) + (anY1 - anY2) * (anY1 - anY2);
+    const Standard_Real aK = aX1 * (aX2 - aX1) + anY1 * (anY2 - anY1);
+    const Standard_Real aC = aX1 * aX1 + anY1 * anY1 - theRadius * theRadius;
+
+    const Standard_Real aDiscr = aK * aK - anA * aC;
+    if (aDiscr >= 0.0)
+    {
+      const Standard_Real aT1 = (-aK + Sqrt (aDiscr)) / anA;
+      const Standard_Real aT2 = (-aK - Sqrt (aDiscr)) / anA;
+      if ((aT1 >= 0 && aT1 <= 1) || (aT2 >= 0 && aT2 <= 1))
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+//=======================================================================
+// function : isSegmentsIntersect
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::isSegmentsIntersect (const gp_Pnt& thePnt1Seg1,
+                                                                    const gp_Pnt& thePnt2Seg1,
+                                                                    const gp_Pnt& thePnt1Seg2,
+                                                                    const gp_Pnt& thePnt2Seg2) const
+{
+  const gp_Mat aMatPln (thePnt2Seg1.X() - thePnt1Seg1.X(), thePnt2Seg1.Y() - thePnt1Seg1.Y(), thePnt2Seg1.Z() - thePnt1Seg1.Z(),
+                        thePnt1Seg2.X() - thePnt1Seg1.X(), thePnt1Seg2.Y() - thePnt1Seg1.Y(), thePnt1Seg2.Z() - thePnt1Seg1.Z(),
+                        thePnt2Seg2.X() - thePnt1Seg1.X(), thePnt2Seg2.Y() - thePnt1Seg1.Y(), thePnt2Seg2.Z() - thePnt1Seg1.Z());
+  if (Abs (aMatPln.Determinant()) > Precision::Confusion())
+  {
+    return false;
+  }
+
+  Standard_Real aFst[4] = { thePnt1Seg1.X(), thePnt2Seg1.X(), thePnt1Seg2.X(), thePnt2Seg2.X() };
+  Standard_Real aSnd[4] = { thePnt1Seg1.Y(), thePnt2Seg1.Y(), thePnt1Seg2.Y(), thePnt2Seg2.Y() };
+  if (aFst[0] == aFst[2] && aFst[1] == aFst[3])
+  {
+    aFst[0] = thePnt1Seg1.Z();
+    aFst[1] = thePnt2Seg1.Z();
+    aFst[2] = thePnt1Seg2.Z();
+    aFst[3] = thePnt2Seg2.Z();
+  }
+  if (aSnd[0] == aSnd[2]
+   && aSnd[1] == aSnd[3])
+  {
+    aSnd[0] = thePnt1Seg1.Z();
+    aSnd[1] = thePnt2Seg1.Z();
+    aSnd[2] = thePnt1Seg2.Z();
+    aSnd[3] = thePnt2Seg2.Z();
+  }
+  const gp_Mat2d aMat (gp_XY (aFst[0] - aFst[1], aSnd[0] - aSnd[1]),
+                       gp_XY (aFst[3] - aFst[2], aSnd[3] - aSnd[2]));
+
+  const gp_Mat2d aMatU (gp_XY (aFst[0] - aFst[2], aSnd[0] - aSnd[2]),
+                        gp_XY (aFst[3] - aFst[2], aSnd[3] - aSnd[2]));
+
+  const gp_Mat2d aMatV (gp_XY (aFst[0] - aFst[1], aSnd[0] - aSnd[1]),
+                        gp_XY (aFst[0] - aFst[2], aSnd[0] - aSnd[2]));
+  if (aMat.Determinant() == 0.0)
+  {
+    return false;
+  }
+
+  const Standard_Real anU = aMatU.Determinant() / aMat.Determinant();
+  const Standard_Real aV = aMatV.Determinant() / aMat.Determinant();
+  if (anU >= 0.0 && anU <= 1.0
+   && aV >= 0.0 && aV <= 1.0)
+  {
+    return true;
+  }
+  return false;
+}
+
+//=======================================================================
 // function : OverlapsCylinder
 // purpose  :
 //=======================================================================
@@ -795,12 +955,28 @@ Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCylinder (const Standard_
                                                                  const Standard_Real theTopRad,
                                                                  const Standard_Real theHeight,
                                                                  const gp_Trsf& theTrsf,
+                                                                 const Standard_Boolean theIsHollow,
                                                                  Standard_Boolean* theInside) const
 {
   Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
     "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
 
-  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theInside);
+  return hasCylinderOverlap (theBottomRad, theTopRad, theHeight, theTrsf, theIsHollow, theInside);
+}
+
+//=======================================================================
+// function : OverlapsCircle
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_RectangularFrustum::OverlapsCircle (const Standard_Real theRadius,
+                                                               const gp_Trsf& theTrsf,
+                                                               const Standard_Boolean theIsFilled,
+                                                               Standard_Boolean* theInside) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
+    "Error! SelectMgr_RectangularFrustum::Overlaps() should be called after selection frustum initialization");
+
+  return hasCircleOverlap (theRadius, theTrsf, theIsFilled, theInside);
 }
 
 // =======================================================================

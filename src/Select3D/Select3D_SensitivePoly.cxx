@@ -13,7 +13,70 @@
 
 #include <Select3D_SensitivePoly.hxx>
 
+#include <ElCLib.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitivePoly,Select3D_SensitiveSet)
+
+namespace
+{
+  static Standard_Integer GetCircleNbPoints (const gp_Circ& theCircle,
+                                             const Standard_Integer theNbPnts,
+                                             const Standard_Real theU1,
+                                             const Standard_Real theU2,
+                                             const Standard_Boolean theIsFilled)
+  {
+    // Check if number of points is invalid.
+    // In this case myPolyg raises Standard_ConstructionError
+    // exception (see constructor below).
+    if (theNbPnts <= 0)
+    {
+      return 0;
+    }
+
+    if (theCircle.Radius() > Precision::Confusion())
+    {
+      const Standard_Boolean isSector = theIsFilled && Abs (Abs (theU2 - theU1) - 2.0 * M_PI) > gp::Resolution();
+      return 2 * theNbPnts + 1 + (isSector ? 2 : 0);
+    }
+
+    // The radius is too small and circle degenerates into point
+    return 1;
+  }
+
+  //! Definition of circle polyline
+  static void initCircle (Select3D_PointData& thePolygon,
+                          const gp_Circ&      theCircle,
+                          const Standard_Real theU1,
+                          const Standard_Real theU2,
+                          const Standard_Boolean theIsFilled,
+                          const Standard_Integer theNbPnts)
+  {
+    const Standard_Real aStep = (theU2 - theU1) / theNbPnts;
+    const Standard_Real aRadius = theCircle.Radius();
+    Standard_Integer aPntIdx = 0;
+    Standard_Real aCurU = theU1;
+    gp_Pnt aP1;
+    gp_Vec aV1;
+
+    const Standard_Boolean isSector = Abs (theU2 - theU1 - 2.0 * M_PI) > gp::Resolution();
+
+    if (isSector && theIsFilled) { thePolygon.SetPnt (aPntIdx++, theCircle.Location()); }
+
+    for (Standard_Integer anIndex = 1; anIndex <= theNbPnts; ++anIndex, aCurU += aStep)
+    {
+      ElCLib::CircleD1 (aCurU, theCircle.Position(), theCircle.Radius(), aP1, aV1);
+      thePolygon.SetPnt (aPntIdx++, aP1);
+
+      aV1.Normalize();
+      const gp_Pnt aP2 = aP1.XYZ() + aV1.XYZ() * Tan (aStep * 0.5) * aRadius;
+      thePolygon.SetPnt (aPntIdx++, aP2);
+    }
+    aP1 = ElCLib::CircleValue (theU2, theCircle.Position(), theCircle.Radius());
+    thePolygon.SetPnt (aPntIdx++, aP1);
+
+    if (isSector && theIsFilled) { thePolygon.SetPnt (aPntIdx++, theCircle.Location()); }
+  }
+}
 
 //==================================================
 // Function: Select3D_SensitivePoly
@@ -23,7 +86,8 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwn
                                                 const TColgp_Array1OfPnt& thePoints,
                                                 const Standard_Boolean theIsBVHEnabled)
 : Select3D_SensitiveSet (theOwnerId),
-  myPolyg (thePoints.Upper() - thePoints.Lower() + 1)
+  myPolyg (thePoints.Upper() - thePoints.Lower() + 1),
+  mySensType (Select3D_TOS_BOUNDARY)
 {
   Standard_Integer aLowerIdx = thePoints.Lower();
   Standard_Integer anUpperIdx = thePoints.Upper();
@@ -64,7 +128,8 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwn
                                                 const Handle(TColgp_HArray1OfPnt)& thePoints,
                                                 const Standard_Boolean theIsBVHEnabled)
 : Select3D_SensitiveSet (theOwnerId),
-  myPolyg (thePoints->Upper() - thePoints->Lower() + 1)
+  myPolyg (thePoints->Upper() - thePoints->Lower() + 1),
+  mySensType (Select3D_TOS_BOUNDARY)
 {
   Standard_Integer aLowerIdx = thePoints->Lower();
   Standard_Integer anUpperIdx = thePoints->Upper();
@@ -105,7 +170,8 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwn
                                                 const Standard_Boolean theIsBVHEnabled,
                                                 const Standard_Integer theNbPnts)
 : Select3D_SensitiveSet (theOwnerId),
-  myPolyg (theNbPnts)
+  myPolyg (theNbPnts),
+  mySensType (Select3D_TOS_BOUNDARY)
 {
   if (theIsBVHEnabled)
   {
@@ -117,6 +183,80 @@ Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwn
   }
   myCOG = gp_Pnt (RealLast(), RealLast(), RealLast());
   myIsComputed = Standard_False;
+}
+
+//==================================================
+// Function: Creation
+// Purpose :
+//==================================================
+Select3D_SensitivePoly::Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                                const gp_Circ& theCircle,
+                                                const Standard_Real theU1,
+                                                const Standard_Real theU2,
+                                                const Standard_Boolean theIsFilled,
+                                                const Standard_Integer theNbPnts)
+: Select3D_SensitivePoly (theOwnerId, !theIsFilled, GetCircleNbPoints (theCircle, theNbPnts, theU1, theU2, theIsFilled))
+{
+  mySensType = theIsFilled ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
+
+  if (myPolyg.Size() != 1)
+  {
+    initCircle (myPolyg, theCircle, Min (theU1, theU2), Max (theU1, theU2), theIsFilled, theNbPnts);
+  }
+  else
+  {
+    myPolyg.SetPnt (0, theCircle.Position().Location());
+  }
+
+  if (!theIsFilled)
+  {
+    SetSensitivityFactor (6);
+  }
+}
+
+//=======================================================================
+// function : Matches
+// purpose  :
+//=======================================================================
+Standard_Boolean Select3D_SensitivePoly::Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                  SelectBasics_PickResult& thePickResult)
+{
+  if (mySensType == Select3D_TOS_BOUNDARY)
+  {
+    if (!Select3D_SensitiveSet::Matches (theMgr, thePickResult))
+    {
+      return Standard_False;
+    }
+  }
+  else if (mySensType == Select3D_TOS_INTERIOR)
+  {
+    Handle(TColgp_HArray1OfPnt) anArrayOfPnt;
+    Points3D (anArrayOfPnt);
+    if (!theMgr.IsOverlapAllowed())
+    {
+      if (theMgr.GetActiveSelectionType() == SelectMgr_SelectionType_Polyline)
+      {
+        SelectBasics_PickResult aDummy;
+        return theMgr.OverlapsPolygon (anArrayOfPnt->Array1(), mySensType, aDummy);
+      }
+      for (Standard_Integer aPntIdx = anArrayOfPnt->Lower(); aPntIdx <= anArrayOfPnt->Upper(); ++aPntIdx)
+      {
+        if (!theMgr.OverlapsPoint (anArrayOfPnt->Value(aPntIdx)))
+        {
+          return Standard_False;
+        }
+      }
+      return Standard_True;
+    }
+
+    if (!theMgr.OverlapsPolygon (anArrayOfPnt->Array1(), Select3D_TOS_INTERIOR, thePickResult))
+    {
+      return Standard_False;
+    }
+    thePickResult.SetDistToGeomCenter (distanceToCOG(theMgr));
+  }
+
+  return Standard_True;
 }
 
 //==================================================

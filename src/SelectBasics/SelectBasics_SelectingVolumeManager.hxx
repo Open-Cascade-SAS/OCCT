@@ -96,20 +96,40 @@ public:
                                            Standard_Boolean* theInside = NULL) const = 0;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
-  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  //! and theTopRad, height theHeight, the boolean theIsHollow and transformation to apply theTrsf.
   virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
                                              const Standard_Real theTopRad,
                                              const Standard_Real theHeight,
                                              const gp_Trsf& theTrsf,
+                                             const Standard_Boolean theIsHollow,
                                              SelectBasics_PickResult& thePickResult) const = 0;
 
   //! Returns true if selecting volume is overlapped by cylinder (or cone) with radiuses theBottomRad
-  //! and theTopRad, height theHeight and transformation to apply theTrsf.
+  //! and theTopRad, height theHeight, the boolean theIsHollow and transformation to apply theTrsf.
   virtual Standard_Boolean OverlapsCylinder (const Standard_Real theBottomRad,
                                              const Standard_Real theTopRad,
                                              const Standard_Real theHeight,
                                              const gp_Trsf& theTrsf,
+                                             const Standard_Boolean theIsHollow,
                                              Standard_Boolean* theInside = NULL) const = 0;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! the boolean theIsFilled, and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  virtual Standard_Boolean OverlapsCircle (const Standard_Real theRadius,
+                                           const gp_Trsf& theTrsf,
+                                           const Standard_Boolean theIsFilled,
+                                           SelectBasics_PickResult& thePickResult) const = 0;
+
+  //! Returns true if selecting volume is overlapped by circle with radius theRadius,
+  //! the boolean theIsFilled, and transformation to apply theTrsf.
+  //! The position and orientation of the circle are specified
+  //! via theTrsf transformation for gp::XOY() with center in gp::Origin().
+  virtual Standard_Boolean OverlapsCircle (const Standard_Real theRadius,
+                                           const gp_Trsf& theTrsf,
+                                           const Standard_Boolean theIsFilled,
+                                           Standard_Boolean* theInside = NULL) const = 0;
 
 public:
 

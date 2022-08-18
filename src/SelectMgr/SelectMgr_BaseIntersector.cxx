@@ -176,15 +176,15 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection (const Stand
                                                                      const Standard_Real theHeight,
                                                                      const gp_Pnt& theLoc,
                                                                      const gp_Dir& theRayDir,
+                                                                     const Standard_Boolean theIsHollow,
                                                                      Standard_Real& theTimeEnter,
                                                                      Standard_Real& theTimeLeave) const
 {
   Standard_Integer aNbIntersections = 0;
   Standard_Real anIntersections[4] = { RealLast(), RealLast(), RealLast(), RealLast() };
-  //NCollection_Vector<Standard_Real> anIntersections; // vector for all intersections
   // Check intersections with end faces
   // point of intersection theRayDir and z = 0
-  if (theRayDir.Z() != 0)
+  if (!theIsHollow && theRayDir.Z() != 0)
   {
     const Standard_Real aTime1 = (0 - theLoc.Z()) / theRayDir.Z();
     const Standard_Real aX1 = theLoc.X() + theRayDir.X() * aTime1;
@@ -291,6 +291,33 @@ Standard_Boolean SelectMgr_BaseIntersector::RayCylinderIntersection (const Stand
     theTimeLeave = anIntersections[1];
   }
   return true;
+}
+
+//=======================================================================
+// function : RayCircleIntersection
+// purpose  :
+//=======================================================================
+Standard_Boolean SelectMgr_BaseIntersector::RayCircleIntersection (const Standard_Real theRadius,
+                                                                   const gp_Pnt& theLoc,
+                                                                   const gp_Dir& theRayDir,
+                                                                   const Standard_Boolean theIsFilled,
+                                                                   Standard_Real& theTime) const
+{
+  if (theRayDir.Z() != 0)
+  {
+    const Standard_Real aTime = (0 - theLoc.Z()) / theRayDir.Z();
+    const Standard_Real aX1 = theLoc.X() + theRayDir.X() * aTime;
+    const Standard_Real anY1 = theLoc.Y() + theRayDir.Y() * aTime;
+
+    const Standard_Real aK = aX1 * aX1 + anY1 * anY1;
+    if ((theIsFilled && aK <= theRadius * theRadius)
+     || (!theIsFilled && Abs (sqrt (aK) - theRadius) <= Precision::Confusion()))
+    {
+      theTime = aTime;
+      return true;
+    }
+  }
+  return false;
 }
 
 //=======================================================================

@@ -8,7 +8,7 @@ proc check_output {theInfo} {
   for {set i 0} {$i < $aSize} {incr i} {
     if {[string equal [lindex $theInfo $i] "Depth:"]} {
       set aDepth [lindex $theInfo [expr $i + 1]]
-      if {[string equal $aDepth "17.5691"]} {
+      if {[string equal $aDepth "17.4833"]} {
         return 1
       } else {
         return $aDepth
@@ -35,7 +35,7 @@ set aResult [check_output $anInfo]
 if {$aResult == 1} {
   puts "OK"
   } else {
-    puts "ERROR: the depth value is incorrect: should be 17.5691, but is equal to:"
+    puts "ERROR: the depth value is incorrect: should be 17.4833, but is equal to:"
     puts $aResult
   }
 

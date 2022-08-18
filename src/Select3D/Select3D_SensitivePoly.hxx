@@ -14,12 +14,12 @@
 #ifndef _Select3D_SensitivePoly_HeaderFile
 #define _Select3D_SensitivePoly_HeaderFile
 
+#include <gp_Circ.hxx>
 #include <Select3D_PointData.hxx>
 #include <Select3D_SensitiveSet.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-
 
 //! Sensitive Entity to make a face selectable.
 //! In some cases this class can raise Standard_ConstructionError and
@@ -46,12 +46,27 @@ public:
                                           const Handle(TColgp_HArray1OfPnt)& thePoints,
                                           const Standard_Boolean theIsBVHEnabled);
 
-  //! Constructs the sensitive circle object defined by the
-  //! owner OwnerId, the circle Circle, the Boolean
-  //! FilledCircle and the number of points NbOfPoints.
+  //! Constructs the sensitive arc object defined by the
+  //! owner theOwnerId, the circle theCircle, the parameters theU1
+  //! and theU2, the boolean theIsFilled and the number of points theNbPnts.
+  //! theU1 and theU2 define the first and last points of the arc on theCircle.
+  Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                                          const gp_Circ& theCircle,
+                                          const Standard_Real theU1,
+                                          const Standard_Real theU2,
+                                          const Standard_Boolean theIsFilled = Standard_False,
+                                          const Standard_Integer theNbPnts = 12);
+
+  //! Constructs a sensitive curve or arc object defined by the
+  //! owner theOwnerId, the theIsBVHEnabled flag, and the
+  //! maximum number of points on the curve: theNbPnts.
   Standard_EXPORT Select3D_SensitivePoly (const Handle(SelectMgr_EntityOwner)& theOwnerId,
                                           const Standard_Boolean theIsBVHEnabled,
                                           const Standard_Integer theNbPnts = 6);
+
+  //! Checks whether the poly overlaps current selecting volume
+  Standard_EXPORT  virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
+                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
   //! Returns the amount of segments in poly
   Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
@@ -128,11 +143,12 @@ protected:
 
 protected:
 
-  Select3D_PointData              myPolyg;              //!< Points of the poly
-  mutable gp_Pnt                  myCOG;                //!< Center of the poly
-  Handle(TColStd_HArray1OfInteger) mySegmentIndexes;     //!< Segment indexes for BVH tree build
-  Select3D_BndBox3d               myBndBox;             //!< Bounding box of the poly
-  mutable Standard_Boolean        myIsComputed;         //!< Is true if all the points and data structures of polygon are initialized
+  Select3D_PointData               myPolyg;          //!< Points of the poly
+  mutable gp_Pnt                   myCOG;            //!< Center of the poly
+  Handle(TColStd_HArray1OfInteger) mySegmentIndexes; //!< Segment indexes for BVH tree build
+  Select3D_BndBox3d                myBndBox;         //!< Bounding box of the poly
+  Select3D_TypeOfSensitivity       mySensType;       //!< Type of sensitivity: boundary or interior
+  mutable Standard_Boolean         myIsComputed;     //!< Is true if all the points and data structures of polygon are initialized
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitivePoly, Select3D_SensitiveSet)

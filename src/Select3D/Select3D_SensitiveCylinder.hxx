@@ -32,7 +32,8 @@ public:
                                               const Standard_Real theBottomRad,
                                               const Standard_Real theTopRad,
                                               const Standard_Real theHeight,
-                                              const gp_Trsf& theTrsf);
+                                              const gp_Trsf& theTrsf,
+                                              const Standard_Boolean theIsHollow = Standard_False);
 
   //! Checks whether the cylinder overlaps current selecting volume
   Standard_EXPORT virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
@@ -66,11 +67,15 @@ public:
   //! Returns cylinder height
   Standard_Real Height() const { return myHeight; }
 
+  //! Returns true if the cylinder is empty inside
+  Standard_Boolean IsHollow() const { return myIsHollow; }
+
 protected:
-  gp_Trsf       myTrsf;         //!< cylinder transformation to apply
-  Standard_Real myBottomRadius; //!< cylinder bottom radius
-  Standard_Real myTopRadius;    //!< cylinder top radius
-  Standard_Real myHeight;       //!< cylinder height
+  gp_Trsf          myTrsf;         //!< cylinder transformation to apply
+  Standard_Real    myBottomRadius; //!< cylinder bottom radius
+  Standard_Real    myTopRadius;    //!< cylinder top radius
+  Standard_Real    myHeight;       //!< cylinder height
+  Standard_Boolean myIsHollow;     //!< true if the cylinder is empty inside
 };
 
 #endif // _Select3D_SensitiveSphere_HeaderFile
