@@ -21,6 +21,7 @@
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Wire;
 class TopoDS_Edge;
+class TopoDS_Face;
 class TopoDS_Shape;
 
 
@@ -43,6 +44,28 @@ public:
   //! Junction points between edges of wire may be sharp,
   //! resulting curve of the resulting edge may be C0.
   Standard_EXPORT static TopoDS_Edge ConcatenateWireC0 (const TopoDS_Wire& Wire);
+
+  //! Method of wire conversion, calls BRepAlgo_Approx internally.
+  //! @param theWire
+  //!   Input Wire object.
+  //! @param theAngleTolerance
+  //!   Angle (in radians) defining the continuity of the wire: if two vectors
+  //!   differ by less than this angle, the result will be smooth (zero angle of
+  //!   tangent lines between curve elements).
+  //! @return
+  //!   The new TopoDS_Wire object consisting of edges each representing an arc
+  //!   of circle or a linear segment. The accuracy of conversion is defined
+  //!   as the maximal tolerance of edges in theWire.
+  static Standard_EXPORT TopoDS_Wire ConvertWire
+                                (const TopoDS_Wire&  theWire,
+                                 const Standard_Real theAngleTolerance,
+                                 const TopoDS_Face&  theFace);
+
+  //! Method of face conversion. The API corresponds to the method ConvertWire.
+  //! This is a shortcut for calling ConvertWire() for each wire in theFace.
+  static Standard_EXPORT TopoDS_Face ConvertFace
+                                (const TopoDS_Face&  theFace,
+                                 const Standard_Real theAngleTolerance);
   
   //! Checks if the  shape is "correct". If not, returns
   //! <Standard_False>, else returns <Standard_True>.

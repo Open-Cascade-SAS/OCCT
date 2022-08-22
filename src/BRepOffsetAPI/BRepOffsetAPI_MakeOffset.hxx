@@ -63,6 +63,11 @@ public:
   //! Initialize the evaluation of Offsetting.
   Standard_EXPORT void Init (const GeomAbs_JoinType Join = GeomAbs_Arc, const Standard_Boolean IsOpenResult = Standard_False);
   
+  //! Set approximation flag
+  //! for convertion input contours into ones consisting of
+  //! 2D circular arcs and 2D linear segments only.
+  Standard_EXPORT void SetApprox (const Standard_Boolean ToApprox);
+  
   //! Initializes the algorithm to construct parallels to the wire Spine.
   Standard_EXPORT void AddWire (const TopoDS_Wire& Spine);
   
@@ -96,6 +101,7 @@ private:
   Standard_Boolean myLastIsLeft;
   GeomAbs_JoinType myJoin;
   Standard_Boolean myIsOpenResult;
+  Standard_Boolean myIsToApprox;
   TopoDS_Face myFace;
   TopTools_ListOfShape myWires;
   BRepFill_ListOfOffsetWire myLeft;

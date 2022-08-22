@@ -15,8 +15,13 @@
 // commercial license or contractual agreement.
 
 
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepAdaptor_Curve2d.hxx>
 #include <BRepAlgo.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeEdge.hxx>
@@ -25,10 +30,13 @@
 #include <ElCLib.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dConvert_ApproxArcsSegments.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomConvert.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomLProp.hxx>
+#include <NCollection_Vector.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -40,12 +48,173 @@
 #include <TColStd_SequenceOfBoolean.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+
+// The minimal tolerance of approximation (edges can be defined with yet smaller tolerance)
+static const Standard_Real MINIMAL_TOLERANCE = 0.0001;
+
+namespace {
+
+struct OrientedCurve
+{
+  Handle(Geom2d_TrimmedCurve) Curve;
+  Standard_Boolean           IsReverse;
+  inline gp_Pnt2d Point (const Standard_Boolean isEnd) const
+  {
+    if (isEnd == IsReverse)
+      return Curve->StartPoint();
+    return Curve->EndPoint();
+  }  
+};
+
+}
+
+//=======================================================================
+//function : ConvertWire
+//purpose  : 
+//=======================================================================
+
+TopoDS_Wire BRepAlgo::ConvertWire(const TopoDS_Wire&          theWire,
+                                  const Standard_Real         theAngleTol,
+                                  const TopoDS_Face&          theFace)
+{
+  TopoDS_Wire aResult;
+  Standard_Real aMaxTol(0.);
+  const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace);
+  NCollection_Vector<OrientedCurve> vecCurve;
+
+  BRepTools_WireExplorer anExpE(theWire, theFace);
+  // Explore the edges in the current wire, in their connection order
+  for (; anExpE.More(); anExpE.Next()) {
+    const TopoDS_Edge& anEdge = anExpE.Current();
+    BRepAdaptor_Curve2d aCurve(anEdge, theFace);
+    Standard_Real aTol = BRep_Tool::Tolerance(anEdge);
+    if (aTol < MINIMAL_TOLERANCE)
+      aTol = MINIMAL_TOLERANCE;
+    if (aTol > aMaxTol)
+      aMaxTol = aTol;
+    Geom2dConvert_ApproxArcsSegments anAlgo(aCurve, aTol, theAngleTol);
+    const TColGeom2d_SequenceOfCurve& aResultApprox = anAlgo.GetResult();
+
+    // Form the array of approximated elementary curves
+    if (anEdge.Orientation() == TopAbs_REVERSED) {
+      for (Standard_Integer iCrv = aResultApprox.Length(); iCrv > 0 ; iCrv--) {
+        const Handle(Geom2d_Curve)& aCrv = aResultApprox(iCrv);
+        if (aCrv.IsNull() == Standard_False) {
+          OrientedCurve& anOCurve = vecCurve.Append(OrientedCurve());
+          anOCurve.Curve = Handle(Geom2d_TrimmedCurve)::DownCast(aCrv);
+          anOCurve.IsReverse = Standard_True;
+        }
+      }
+    } else {
+      for (Standard_Integer iCrv = 1; iCrv <= aResultApprox.Length(); iCrv++) {
+        const Handle(Geom2d_Curve)& aCrv = aResultApprox(iCrv);
+        if (aCrv.IsNull() == Standard_False) {
+          OrientedCurve& anOCurve = vecCurve.Append(OrientedCurve());
+          anOCurve.Curve = Handle(Geom2d_TrimmedCurve)::DownCast(aCrv);
+          anOCurve.IsReverse = Standard_False;
+        }
+      }
+    }
+  }
+
+  if (vecCurve.Length() > 0)
+  {
+    // Build the first vertex
+    BRep_Builder aVBuilder;
+    gp_Pnt2d aPnt[2] = {
+      vecCurve(0).Point(Standard_False),
+      vecCurve(vecCurve.Length() - 1).Point(Standard_True)
+    };
+    Standard_Real aDist = aPnt[0].Distance(aPnt[1]);
+    if (aDist > aMaxTol + Precision::Confusion())
+      aDist = Precision::Confusion();
+    else {
+      aDist = 0.5 * aDist + Precision::Confusion();
+      aPnt[0] = 0.5 * (aPnt[0].XY() + aPnt[1].XY());
+    }
+    gp_Pnt aPnt3d;
+    aSurf->D0(aPnt[0].X(), aPnt[0].Y(), aPnt3d);
+    TopoDS_Vertex aFirstVertex;
+    aVBuilder.MakeVertex(aFirstVertex, aPnt3d, aDist);
+
+    // Loop creating edges
+    BRepBuilderAPI_MakeWire aMkWire;
+    TopoDS_Edge anEdgeRes;
+    TopoDS_Vertex aVertex = aFirstVertex;
+    for (Standard_Integer iCrv = 0; iCrv < vecCurve.Length(); iCrv++) {
+      const OrientedCurve& anOCurve = vecCurve(iCrv);
+      TopoDS_Vertex aNextVertex;
+      aPnt[0] = anOCurve.Point(Standard_True);
+      if (iCrv == vecCurve.Length() - 1) {
+        aPnt[1] = vecCurve(0).Point(Standard_False);
+        aDist = aPnt[0].Distance(aPnt[1]);
+        if (aDist > aMaxTol + Precision::Confusion()) {
+          aSurf->D0(aPnt[0].X(), aPnt[0].Y(), aPnt3d);
+          aVBuilder.MakeVertex(aNextVertex, aPnt3d, Precision::Confusion());
+        } else {
+          aNextVertex = aFirstVertex;
+        }
+      } else {
+        aPnt[1] = vecCurve(iCrv + 1).Point(Standard_False);
+        aDist = 0.5 * (aPnt[0].Distance(aPnt[1])) + Precision::Confusion();
+        aPnt[0] = 0.5 * (aPnt[0].XY() + aPnt[1].XY());
+        aSurf->D0(aPnt[0].X(), aPnt[0].Y(), aPnt3d);
+        aVBuilder.MakeVertex(aNextVertex, aPnt3d, aDist);
+      }
+      const Standard_Real aParam[2] = {
+        anOCurve.Curve->FirstParameter(),
+        anOCurve.Curve->LastParameter()
+      };
+      if (anOCurve.IsReverse) {
+        BRepBuilderAPI_MakeEdge aMkEdge(anOCurve.Curve, aSurf, aNextVertex,
+                                        aVertex, aParam[0], aParam[1]);
+        anEdgeRes = aMkEdge.Edge();
+        anEdgeRes.Orientation(TopAbs_REVERSED);
+      } else {
+        BRepBuilderAPI_MakeEdge aMkEdge(anOCurve.Curve, aSurf, aVertex,
+                                        aNextVertex, aParam[0], aParam[1]);
+        anEdgeRes = aMkEdge.Edge();
+      }
+      aVertex = aNextVertex;
+      aMkWire.Add(anEdgeRes);
+    }
+
+    if (aMkWire.IsDone())
+      aResult = aMkWire.Wire();
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : ConvertFace
+//purpose  : 
+//=======================================================================
+
+TopoDS_Face BRepAlgo::ConvertFace (const TopoDS_Face&  theFace,
+                                   const Standard_Real theAngleTolerance)
+{
+  TopoDS_Face aResult;
+  const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(theFace);
+  BRepBuilderAPI_MakeFace aMkFace(aSurf,Precision::Confusion());
+
+  TopExp_Explorer anExp(theFace, TopAbs_WIRE);
+  for (; anExp.More(); anExp.Next()) {
+    const TopoDS_Wire& aWire = TopoDS::Wire(anExp.Current());
+    const TopoDS_Wire aNewWire = ConvertWire(aWire, theAngleTolerance, theFace);
+    aMkFace.Add(aNewWire);
+  }
+  if (aMkFace.IsDone()) {
+    aResult = aMkFace.Face();
+  }
+  return aResult;
+}
 
 //=======================================================================
 //function : ConcatenateWire

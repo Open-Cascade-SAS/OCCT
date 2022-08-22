@@ -326,7 +326,8 @@ The <i>Geom2dConvert</i> package provides the following:
   * a global function which is used to construct a BSpline curve from a bounded curve based on a 2D curve from the Geom2d package,
   * a splitting algorithm which computes the points at which a 2D BSpline curve should be cut in order to obtain arcs with the same degree of continuity,
   * global functions used to construct the BSpline curves created by this splitting algorithm, or by other types of segmentation of the BSpline curve,
-  * an algorithm which converts a 2D BSpline curve into a series of adjacent Bezier curves.
+  * an algorithm which converts a 2D BSpline curve into a series of adjacent Bezier curves,
+  * an algorithm which converts an arbitrary 2D curve into a series of adjacent 2D circular arcs and 2D linear segments.
 
 The <i>GeomConvert</i> package also provides the following:
 
