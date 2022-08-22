@@ -17,11 +17,14 @@
 
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepAlgo.hxx>
 #include <BRepAlgo_FaceRestrictor.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepFill_ListIteratorOfListOfOffsetWire.hxx>
 #include <BRepFill_OffsetWire.hxx>
+#include <BRepLib.hxx>
 #include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Extrema_ExtPS.hxx>
@@ -44,6 +47,49 @@
 static Standard_Boolean AffichSpine = Standard_False;
 #endif
 
+static Standard_Boolean NeedsConvertion (const TopoDS_Wire& theWire)
+{
+  TopoDS_Iterator anIter (theWire);
+  for (; anIter.More(); anIter.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge (anIter.Value());
+    BRepAdaptor_Curve aBAcurve (anEdge);
+    GeomAbs_CurveType aType = aBAcurve.GetType();
+    if (aType != GeomAbs_Line &&
+        aType != GeomAbs_Circle)
+      return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+static TopoDS_Face ConvertFace (const TopoDS_Face&  theFace,
+                                const Standard_Real theAngleTolerance)
+{
+  TopAbs_Orientation anOr = theFace.Orientation();
+  TopoDS_Face aFace = theFace;
+  aFace.Orientation (TopAbs_FORWARD);
+
+  TopoDS_Face aNewFace = TopoDS::Face (aFace.EmptyCopied());
+  BRep_Builder aBB;
+  TopoDS_Iterator anIter (aFace);
+  for (; anIter.More(); anIter.Next())
+  {
+    TopoDS_Wire aWire = TopoDS::Wire (anIter.Value());
+    if (NeedsConvertion (aWire))
+    {
+      TopAbs_Orientation anOrOfWire = aWire.Orientation();
+      aWire = BRepAlgo::ConvertWire (aWire, theAngleTolerance, aFace);
+      BRepLib::BuildCurves3d (aWire);
+      aWire.Orientation (anOrOfWire);
+    }
+    aBB.Add (aNewFace, aWire);
+  }
+  aNewFace.Orientation (anOr);
+
+  return aNewFace;
+}
+
 //=======================================================================
 //function : BRepOffsetAPI_MakeOffset
 //purpose  : 
@@ -52,7 +98,8 @@ static Standard_Boolean AffichSpine = Standard_False;
 BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset()
   : myIsInitialized( Standard_False),
     myJoin(GeomAbs_Arc),
-    myIsOpenResult(Standard_False)
+    myIsOpenResult(Standard_False),
+    myIsToApprox(Standard_False)
 {
 }
 
@@ -83,6 +130,7 @@ void BRepOffsetAPI_MakeOffset::Init(const TopoDS_Face&     Spine,
   myIsInitialized = Standard_True;
   myJoin          = Join;
   myIsOpenResult  = IsOpenResult;
+  myIsToApprox = Standard_False;
   TopExp_Explorer exp;
   for (exp.Init(myFace,TopAbs_WIRE); exp.More();exp.Next()) {
     myWires.Append(exp.Current());
@@ -102,6 +150,7 @@ BRepOffsetAPI_MakeOffset::BRepOffsetAPI_MakeOffset(const TopoDS_Wire& Spine,
   myIsInitialized = Standard_True;
   myJoin = Join;
   myIsOpenResult  = IsOpenResult;
+  myIsToApprox = Standard_False;
 }
 
 //=======================================================================
@@ -114,6 +163,18 @@ void BRepOffsetAPI_MakeOffset::Init(const GeomAbs_JoinType Join,
 {
   myJoin = Join;
   myIsOpenResult  = IsOpenResult;
+}
+
+//=======================================================================
+//function : SetApprox
+//purpose  : Set approximation flag
+//           for convertion input contours into ones consisting of
+//           2D circular arcs and 2D linear segments only
+//=======================================================================
+
+void BRepOffsetAPI_MakeOffset::SetApprox(const Standard_Boolean ToApprox)
+{
+  myIsToApprox = ToApprox;
 }
 
 //=======================================================================
@@ -290,6 +351,46 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
 
   try
   {
+    if (myIsToApprox)
+    {
+      Standard_Real aTol = 0.01;
+      if (myFace.IsNull())
+      {
+        TopoDS_Face aFace;
+        Standard_Boolean OnlyPlane = Standard_True;
+        TopTools_ListIteratorOfListOfShape anItl (myWires);
+        for (; anItl.More(); anItl.Next())
+        {
+          BRepBuilderAPI_MakeFace aFaceMaker (TopoDS::Wire(anItl.Value()), OnlyPlane);
+          if (aFaceMaker.Error() == BRepBuilderAPI_FaceDone)
+          {
+            aFace = aFaceMaker.Face();
+            break;
+          }
+        }
+        for (anItl.Initialize(myWires); anItl.More(); anItl.Next())
+        {
+          const TopoDS_Wire& aWire = TopoDS::Wire(anItl.Value());
+          if (NeedsConvertion (aWire))
+          {
+            TopoDS_Wire aNewWire = BRepAlgo::ConvertWire (aWire, aTol, aFace);
+            BRepLib::BuildCurves3d (aNewWire);
+            aNewWire.Orientation (aWire.Orientation());
+            anItl.ChangeValue() = aNewWire;
+          }
+        }
+      }
+      else
+      {
+        myFace = ConvertFace (myFace, aTol);
+        BRepLib::BuildCurves3d (myFace);
+        myWires.Clear();
+        TopoDS_Iterator anIter (myFace);
+        for (; anIter.More(); anIter.Next())
+          myWires.Append (anIter.Value());
+      }
+    }
+    
     Standard_Integer i = 1;
     BRepFill_ListIteratorOfListOfOffsetWire itOW;
     TopoDS_Compound Res;

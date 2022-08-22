@@ -1,0 +1,30 @@
+puts "========================================="
+puts "OCC32214: 2d Offset produces wrong result"
+puts "========================================="
+puts ""
+
+beziercurve c1 9  3 3 0 10  0 10 0 100  -3 3 0 10  -10 0 0 100  -3 -3 0 10  0 -10 0 100  3 -3 0 10  10 0 0 100  3 3 0 10
+beziercurve c2 5  3 0 0  0 3 0  -3 0 0  0 -3 0  3 0 0
+mkedge e1 c1
+mkedge e2 c2
+wire w1 e1
+wire w2 e2
+orientation w2 R
+mkplane a w1
+add w2 a
+
+arclinconvert result a
+build3d result
+
+checkshape result
+
+checknbshapes result -t -vertex 170 -edge 170 -wire 2 -face 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.001e-7} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -s 106.6
+
