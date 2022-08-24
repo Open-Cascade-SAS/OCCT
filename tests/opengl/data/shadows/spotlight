@@ -1,0 +1,39 @@
+puts "========"
+puts "0032172: Visualization, TKOpenGl - implement simple shadow mapping for a spot light source"
+puts "Test shadow map from a spot light source on a box geometry."
+puts "========"
+
+pload MODELING VISUALIZATION
+if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
+box b 1 2 3
+box bb -5 -5 0 10 10 0 -preview
+vclear
+vinit View1
+vrenderparams -shadingModel phong
+vdisplay -dispMode 1 b bb
+vaspects b -material STONE -color blue
+vaspects bb -material STONE -color red
+vfit
+vlight -clear
+vlight lamp1 -add spot -castShadows 1 -direction 1 1 -1 -position -10 -10 10 
+vlight lamp2 -add spot -castShadows 1 -direction -1 -1 -1 -position 10 10 10 -intensity 1000
+vdump $::imagedir/${::casename}_two_spots.png
+
+vlight -remove lamp1
+
+vline lin1 10 10 10 -5 -5 -0.5
+vline lin2 10 10 10 -3.5 -5 -0.5
+vline lin3 10 10 10 -5 -2 -0.5
+
+if { ![string match "OpenGL ES 2.0*" [vglinfo VERSION]] && ![string match "OpenGL ES 3.0*" [vglinfo VERSION]] } {
+  vraytrace 1
+  vdump $::imagedir/${::casename}_raytrace.png
+}
+
+vraytrace 0
+vrenderparams -shadingModel phong
+vrenderparams -shadowMapBias 0.001
+vdump $::imagedir/${::casename}_phong.png
+
+vrenderparams -shadingModel pbr
+vdump $::imagedir/${::casename}_pbr.png

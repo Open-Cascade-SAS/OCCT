@@ -268,7 +268,7 @@ public:
   {
     if (myLightSourceState.ShadowMaps().IsNull()
      || myLightSourceState.ToCastShadows() == theToCast)
-	{
+    {
       return myLightSourceState.ToCastShadows();
     }
 

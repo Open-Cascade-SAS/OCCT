@@ -1,6 +1,6 @@
-// This file has been automatically generated from resource file src/Shaders/DirectionalLightShadow.glsl
+// This file has been automatically generated from resource file src/Shaders/LightShadow.glsl
 
-static const char Shaders_DirectionalLightShadow_glsl[] =
+static const char Shaders_LightShadow_glsl[] =
   "#if (__VERSION__ >= 120)\n"
   "//! Coefficients for gathering close samples for antialiasing.\n"
   "//! Use only with decent OpenGL (array constants cannot be initialized with GLSL 1.1 / GLSL ES 1.1)\n"
@@ -12,10 +12,10 @@ static const char Shaders_DirectionalLightShadow_glsl[] =
   ");\n"
   "#endif\n"
   "\n"
-  "//! Function computes directional light shadow attenuation (1.0 means no shadow).\n"
-  "float occDirectionalLightShadow (in sampler2D theShadow,\n"
-  "                                 in int  theId,\n"
-  "                                 in vec3 theNormal)\n"
+  "//! Function computes directional and spot light shadow attenuation (1.0 means no shadow).\n"
+  "float occLightShadow (in sampler2D theShadow,\n"
+  "                      in int  theId,\n"
+  "                      in vec3 theNormal)\n"
   "{\n"
   "  vec4 aPosLightSpace = PosLightSpace[occLight_Index(theId)];\n"
   "  vec3 aLightDir = occLight_Position (theId);\n"

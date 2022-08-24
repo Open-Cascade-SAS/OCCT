@@ -1,6 +1,6 @@
 srcinc:::Declarations.glsl
 srcinc:::DeclarationsImpl.glsl
-srcinc:::DirectionalLightShadow.glsl
+srcinc:::LightShadow.glsl
 srcinc:::PBRCookTorrance.glsl
 srcinc:::PBRDirectionalLight.glsl
 srcinc:::PBRDistribution.glsl
@@ -27,7 +27,7 @@ srcinc:::TangentSpaceNormal.glsl
 srcinc:::SkydomBackground.fs
 Shaders_Declarations_glsl.pxx
 Shaders_DeclarationsImpl_glsl.pxx
-Shaders_DirectionalLightShadow_glsl.pxx
+Shaders_LightShadow_glsl.pxx
 Shaders_Display_fs.pxx
 Shaders_PBRCookTorrance_glsl.pxx
 Shaders_PBRDirectionalLight_glsl.pxx

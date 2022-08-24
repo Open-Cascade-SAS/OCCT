@@ -5,11 +5,13 @@
 //! @param theView    view direction
 //! @param thePoint   3D position (world space)
 //! @param theIsFront front/back face flag
+//! @param theShadow  the value from shadow map
 void occSpotLight (in int  theId,
                    in vec3 theNormal,
                    in vec3 theView,
                    in vec3 thePoint,
-                   in bool theIsFront)
+                   in bool theIsFront,
+                   in float theShadow)
 {
   vec3 aLight = occLight_Position (theId) - thePoint;
 
@@ -45,6 +47,6 @@ void occSpotLight (in int  theId,
     aSpecl = pow (aNdotH, occMaterial_Shininess (theIsFront));
   }
 
-  Diffuse  += occLight_Diffuse (theId) * aNdotL * anAtten;
-  Specular += occLight_Specular(theId) * aSpecl * anAtten;
+  Diffuse  += occLight_Diffuse (theId) * aNdotL * anAtten * theShadow;
+  Specular += occLight_Specular(theId) * aSpecl * anAtten * theShadow;
 }

@@ -9858,13 +9858,13 @@ static int VLight (Draw_Interpretor& theDi,
             << (aLight->IsEnabled() ? "ON" : "OFF") << "\n";
       switch (aLight->Type())
       {
-        case V3d_AMBIENT:
+        case Graphic3d_TypeOfLightSource_Ambient:
         {
           theDi << "  Type:       Ambient\n"
                 << "  Intensity:  " << aLight->Intensity() << "\n";
           break;
         }
-        case V3d_DIRECTIONAL:
+        case Graphic3d_TypeOfLightSource_Directional:
         {
           theDi << "  Type:       Directional\n"
                 << "  Intensity:  " << aLight->Intensity() << "\n"
@@ -9874,7 +9874,7 @@ static int VLight (Draw_Interpretor& theDi,
                 << "  Direction:  " << aLight->PackedDirection().x() << " " << aLight->PackedDirection().y() << " " << aLight->PackedDirection().z() << "\n";
           break;
         }
-        case V3d_POSITIONAL:
+        case Graphic3d_TypeOfLightSource_Positional:
         {
           theDi << "  Type:       Positional\n"
                 << "  Intensity:  " << aLight->Intensity() << "\n"
@@ -9886,7 +9886,7 @@ static int VLight (Draw_Interpretor& theDi,
                 << "  Range:      " << aLight->Range() << "\n";
           break;
         }
-        case V3d_SPOT:
+        case Graphic3d_TypeOfLightSource_Spot:
         {
           theDi << "  Type:       Spot\n"
                 << "  Intensity:  " << aLight->Intensity() << "\n"
@@ -14592,6 +14592,7 @@ Spot light parameters:
  -spotAngle   sets spotlight angle;
  -spotExp     sets spotlight exponenta;
  -headlight   sets headlight flag;
+ -castShadows enables/disables shadow casting;
  -constAtten  (obsolete) sets constant attenuation factor;
  -linearAtten (obsolete) sets linear   attenuation factor.
 

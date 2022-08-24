@@ -18,7 +18,7 @@
 #include <Graphic3d_TextureSetBits.hxx>
 #include <Message.hxx>
 
-#include "../Shaders/Shaders_DirectionalLightShadow_glsl.pxx"
+#include "../Shaders/Shaders_LightShadow_glsl.pxx"
 #include "../Shaders/Shaders_PBRDistribution_glsl.pxx"
 #include "../Shaders/Shaders_PBRDirectionalLight_glsl.pxx"
 #include "../Shaders/Shaders_PBRGeometry_glsl.pxx"
@@ -1165,20 +1165,6 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
     if (theNbLights <= THE_NB_UNROLLED_LIGHTS_MAX)
     {
       Standard_Integer anIndex = 0;
-      if (theNbShadowMaps > 0)
-      {
-        for (Graphic3d_LightSet::Iterator aLightIter (theLights, Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
-             aLightIter.More(); aLightIter.Next())
-        {
-          if (aLightIter.Value()->Type() == Graphic3d_TypeOfLightSource_Directional
-           && aLightIter.Value()->ToCastShadows())
-          {
-            aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront,"
-                                        EOL"                         occDirectionalLightShadow (occShadowMapSamplers[" + anIndex + "], " + anIndex + ", theNormal));";
-            ++anIndex;
-          }
-        }
-      }
       for (Graphic3d_LightSet::Iterator aLightIter (theLights, Graphic3d_LightSet::IterationFilter_ExcludeDisabledAndAmbient);
            aLightIter.More(); aLightIter.Next())
       {
@@ -1193,9 +1179,14 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
             if (theNbShadowMaps > 0
              && aLightIter.Value()->ToCastShadows())
             {
-              break;
+              aLightsLoop = aLightsLoop +
+                EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront,"
+                EOL"                         occLightShadow (occShadowMapSamplers[" + anIndex + "], " + anIndex + ", theNormal));";
             }
-            aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront, 1.0);";
+            else
+            {
+              aLightsLoop = aLightsLoop + EOL"    occDirectionalLight (" + anIndex + ", theNormal, theView, theIsFront, 1.0);";
+            }
             ++anIndex;
             break;
           }
@@ -1207,7 +1198,17 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
           }
           case Graphic3d_TypeOfLightSource_Spot:
           {
-            aLightsLoop = aLightsLoop + EOL"    occSpotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront);";
+            if (theNbShadowMaps > 0
+             && aLightIter.Value()->ToCastShadows())
+            {
+              aLightsLoop = aLightsLoop +
+                EOL"    occSpotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront,"
+                EOL"                  occLightShadow (occShadowMapSamplers[" + anIndex + "], " + anIndex + ", theNormal));";
+            }
+            else
+            {
+              aLightsLoop = aLightsLoop + EOL"    occSpotLight (" + anIndex + ", theNormal, theView, aPoint, theIsFront, 1.0);";
+            }
             ++anIndex;
             break;
           }
@@ -1254,7 +1255,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
         aLightsLoop +=
           EOL"      if (aType == OccLightType_Spot)"
           EOL"      {"
-          EOL"        occSpotLight (anIndex, theNormal, theView, aPoint, theIsFront);"
+          EOL"        occSpotLight (anIndex, theNormal, theView, aPoint, theIsFront, 1.0);"
           EOL"      }";
       }
       aLightsLoop += EOL"    }";
@@ -1269,6 +1270,7 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
       aLightsFunc += Shaders_PBRIllumination_glsl;
     }
 
+    bool isShadowShaderAdded = false;
     if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Directional) == 1
      && theNbLights == 1
      && !theIsPBR
@@ -1280,9 +1282,10 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
     }
     else if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Directional) > 0)
     {
-      if (theNbShadowMaps > 0)
+      if (theNbShadowMaps > 0 && !isShadowShaderAdded)
       {
-        aLightsFunc += Shaders_DirectionalLightShadow_glsl;
+        aLightsFunc += Shaders_LightShadow_glsl;
+        isShadowShaderAdded = true;
       }
       aLightsFunc += theIsPBR ? Shaders_PBRDirectionalLight_glsl : Shaders_PhongDirectionalLight_glsl;
     }
@@ -1292,6 +1295,10 @@ TCollection_AsciiString Graphic3d_ShaderManager::stdComputeLighting (Standard_In
     }
     if (theLights->NbEnabledLightsOfType (Graphic3d_TypeOfLightSource_Spot) > 0)
     {
+      if (theNbShadowMaps > 0 && !isShadowShaderAdded)
+      {
+        aLightsFunc += Shaders_LightShadow_glsl;
+      }
       aLightsFunc += theIsPBR ? Shaders_PBRSpotLight_glsl : Shaders_PhongSpotLight_glsl;
     }
   }

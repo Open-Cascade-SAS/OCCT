@@ -149,7 +149,8 @@ void Graphic3d_CLight::SetEnabled (Standard_Boolean theIsOn)
 // =======================================================================
 void Graphic3d_CLight::SetCastShadows (Standard_Boolean theToCast)
 {
-  if (myType != Graphic3d_TypeOfLightSource_Directional)
+  if (myType != Graphic3d_TypeOfLightSource_Directional
+   && myType != Graphic3d_TypeOfLightSource_Spot)
   {
     throw Standard_NotImplemented ("Graphic3d_CLight::SetCastShadows() is not implemented for this light type");
   }

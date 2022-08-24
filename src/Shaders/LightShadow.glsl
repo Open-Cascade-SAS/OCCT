@@ -9,10 +9,10 @@ const vec2 occPoissonDisk16[16] = vec2[](
 );
 #endif
 
-//! Function computes directional light shadow attenuation (1.0 means no shadow).
-float occDirectionalLightShadow (in sampler2D theShadow,
-                                 in int  theId,
-                                 in vec3 theNormal)
+//! Function computes directional and spot light shadow attenuation (1.0 means no shadow).
+float occLightShadow (in sampler2D theShadow,
+                      in int  theId,
+                      in vec3 theNormal)
 {
   vec4 aPosLightSpace = PosLightSpace[occLight_Index(theId)];
   vec3 aLightDir = occLight_Position (theId);
