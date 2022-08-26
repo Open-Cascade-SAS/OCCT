@@ -1,0 +1,21 @@
+puts "========="
+puts "OCC32982: Mesh - Meshing the shape takes too long and visualization is bad"
+puts "========="
+puts ""
+
+restore [locate_data_file bug32982.brep] result
+
+tscale result 9.7978019714355504 25.567642604431001 42.7875250671255 0.001
+incmesh result 0.00558
+
+checktrinfo result -nod 4036 -tri 7450
+
+vinit
+vdefaults -autoTriang 0
+vdisplay result
+vsetdispmode 1
+vfit
+vpan -5 198
+vzoom 150
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

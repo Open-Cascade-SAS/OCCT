@@ -6,4 +6,4 @@ puts ""
 restore [locate_data_file bug32767.brep] s
 tclean s
 incmesh s 0.01
-checktrinfo s -tri 3220 -nod 1770 -defl 0.018398669654253779 -tol_abs_defl 1e-6
+checktrinfo s -tri 1512 -nod 909 -defl 0.035378595363471328 -tol_abs_defl 1e-6

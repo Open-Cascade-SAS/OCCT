@@ -41,10 +41,13 @@ std::pair<Standard_Real, Standard_Real> BRepMesh_ConeRangeSplitter::GetSplitStep
 
   const Standard_Real aDiffU = aRangeU.second - aRangeU.first;
   const Standard_Real aDiffV = aRangeV.second - aRangeV.first;
-  Standard_Integer nbU = (Standard_Integer) (aDiffU / Du);
-  Standard_Integer nbV = (Standard_Integer) (nbU * (aDiffV) / (aDiffU * aRadius));
+  const Standard_Real aScale = (Du * aRadius);
+  const Standard_Real aRatio = Max(1., Log(aDiffV / aScale));
+  const Standard_Integer nbU = (Standard_Integer)(aDiffU / Du);
+  const Standard_Integer nbV = (Standard_Integer)(aDiffV / aScale / aRatio);
+
   Du = aDiffU / (nbU + 1);
-  Dv = aDiffV / (nbV + 1);
+  Dv = aDiffV / (nbV + static_cast<Standard_Integer>(aRatio));
 
   theStepsNb.first  = nbU;
   theStepsNb.second = nbV;
