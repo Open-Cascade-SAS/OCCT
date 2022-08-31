@@ -51,12 +51,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Returns the outer wire on the face <Face>.
-  //! This is replacement of the method BRepTools::OuterWire
-  //! until it works badly.
-  //! Returns the first wire oriented as outer according to
-  //! FClass2d_Classifier. If none, last wire is returned.
-  Standard_EXPORT static TopoDS_Wire OuterWire (const TopoDS_Face& face);
+  //! Returns positively oriented wire in the face.
+  //! If there is no such wire - returns the last wire of the face.
+  Standard_EXPORT static TopoDS_Wire OuterWire (const TopoDS_Face& theFace);
   
   //! Returns a total area of 2d wire
   Standard_EXPORT static Standard_Real TotCross2D (const Handle(ShapeExtend_WireData)& sewd, const TopoDS_Face& aFace);

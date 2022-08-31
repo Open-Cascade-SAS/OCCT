@@ -1,0 +1,39 @@
+puts "========"
+puts "0031926: Shape Healing - ShapeAnalysis::OuterWire() considers next iteration element always to be a wire causing skipping of primal one"
+puts "========"
+puts ""
+
+vertex v11 0 1 0; vertex v12 1 0 0; vertex v13 0 0 0
+edge e11 v11 v12; edge e12 v12 v13; edge e13 v13 v11
+wire w1 e11 e12 e13
+mkplane f1 w1
+
+vertex v21 0 0 2; vertex v22 1 0 0; vertex v23 0 0 0
+edge e21 v21 v22; edge e22 v22 v23; edge e23 v23 v21
+wire w2 e21 e22 e23
+mkplane f2 w2
+
+vertex v31 0 0 2; vertex v32 0 1 0; vertex v33 1 0 0
+edge e31 v31 v32; edge e32 v32 v33; edge e33 v33 v31
+wire w3 e31 e32 e33
+mkplane f3 w3
+
+vertex v41 0 0 2; vertex v42 0 0 0; vertex v43 0 1 0
+edge e41 v41 v42; edge e42 v42 v43; edge e43 v43 v41
+wire w4 e41 e42 e43
+mkplane f4 w4
+
+psphere s1 1
+sewing sh2 f1 f2 f3 f4
+ssolid sh2 s2
+bcut result s1 s2
+incmesh result 1
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
