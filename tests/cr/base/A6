@@ -1,0 +1,15 @@
+ellipse bz 0 0 0 0 0 1 1 .5
+convert bz bz
+mkedge e1 bz 0 1
+mkedge e2 bz 1 2.5
+mkedge e3 bz 2.5 6
+wire w e1 e2 e3
+getanacurve c w ell 1.e-7
+if {[isdraw c]} {
+  set log [dump c]
+  if { [regexp {Ellipse} $log ] != 1 } {
+     puts "Error: curve is not an ellipse"
+  }
+} else {
+  puts "Error: required curve is not got"
+}

@@ -1,0 +1,12 @@
+sphere surf 1
+convert surf surf
+mkface f surf
+getanasurf asurf f sph  1.e-7
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {SphericalSurface} $log ] != 1 } {
+     puts "Error: surface is not a spherical surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}

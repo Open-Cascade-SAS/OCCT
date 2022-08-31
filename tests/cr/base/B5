@@ -1,0 +1,25 @@
+plane surf 
+trim surf1 surf -1 0 -1 0
+convert surf1 surf1
+mkface f1 surf1
+trim surf2 surf -1 0 0 1
+convert surf2 surf2
+mkface f2 surf2
+trim surf3 surf 0 1 0 1
+convert surf3 surf3
+mkface f3 surf3
+trim surf4 surf 0 1 -1 0
+convert surf4 surf4
+mkface f4 surf4
+sewing sh f1 f2 f3 f4
+getanasurf asurf sh pln  1.e-7
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {Plane} $log ] != 1 } {
+     puts "Error: surface is not a plane"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+
+

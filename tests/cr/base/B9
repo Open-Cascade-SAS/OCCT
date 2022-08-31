@@ -1,0 +1,40 @@
+cylinder surf 1
+trim surf1 surf 0 1 -1 1
+convert surf1 surf1
+mkface f1 surf1
+trim surf2 surf 1 2 -1 1
+convert surf2 surf2
+mkface f2 surf2
+trim surf3 surf 2 3 -1 1
+convert surf3 surf3
+mkface f3 surf3
+trim surf4 surf 3 4 -1 1
+convert surf4 surf4
+mkface f4 surf4
+sewing sh f1 f2 f3 f4
+cylinder cyl 0 0 -2.5 1 0 0 3
+trimv cyl1 cyl -2 2
+mkface fcyl cyl1 
+nurbsconvert fcyl fcyl
+bsection ss fcyl sh
+explode ss e
+shape w w
+add ss_1 w
+add ss_2 w
+add ss_3 w
+add ss_4 w
+add ss_5 w
+getanasurf asurf w cyl 1.e-7 cyl
+if {[isdraw asurf]} {
+  set log [dump asurf]
+  if { [regexp {CylindricalSurface} $log ] != 1 } {
+     puts "Error: surface is not a cylindrical surface"
+  }
+  if { [regexp {Radius :3} $log ] != 1 } {
+     puts "Error: surface is not a sample surface"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+
+

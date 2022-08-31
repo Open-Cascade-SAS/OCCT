@@ -1,0 +1,12 @@
+polyline w 0 0 0 1 0 0 1 1 0 0 1 0 0 0 0
+getanasurf res w pln  1.e-3
+if {[isdraw res]} {
+  set log [dump res]
+  if { [regexp {Plane} $log ] != 1 } {
+     puts "Error: surface is not a plane"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+
+

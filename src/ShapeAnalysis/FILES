@@ -45,3 +45,5 @@ ShapeAnalysis_WireOrder.cxx
 ShapeAnalysis_WireOrder.hxx
 ShapeAnalysis_WireVertex.cxx
 ShapeAnalysis_WireVertex.hxx
+ShapeAnalysis_CanonicalRecognition.cxx
+ShapeAnalysis_CanonicalRecognition.hxx
