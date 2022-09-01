@@ -1,0 +1,29 @@
+puts "============================"
+puts "0032876: Modeling algorithms - BRepClass_FaceClassifier issue"
+puts "============================"
+puts ""
+
+plane p
+trim p p 0 4 0 2
+mkface face p
+
+point p1 4.02 -0.02
+point p2 4.06 -0.02
+point p3 3.8 -0.08
+point p4 4.09 0
+
+if ![regexp "ON" [b2dclassify face p1 0.1]] {
+  puts "Error: point p1 is classified as OUT"
+}
+
+if ![regexp "ON" [b2dclassify face p2 0.1]] {
+  puts "Error: point p2 is classified as OUT"
+}
+
+if ![regexp "ON" [b2dclassify face p3 0.1]] {
+  puts "Error: point p2 is classified as OUT"
+}
+
+if ![regexp "ON" [b2dclassify face p4 0.1]] {
+  puts "Error: point p2 is classified as OUT"
+}

@@ -197,10 +197,12 @@ Standard_Boolean CheckOn(IntRes2d_IntersectionPoint& thePntInter,
     if (aMinDist <= theTolZ) {
       IntRes2d_Transition aTrOnLin(IntRes2d_Head);
       IntRes2d_Position aPosOnCurve = IntRes2d_Middle;
-      if (Abs(aPar - theDeb) <= Precision::Confusion()) {
+      if ((Abs(aPar - theDeb) <= Precision::Confusion())
+        || (aPar < theDeb)) {
         aPosOnCurve = IntRes2d_Head;
       }
-      else if (Abs(aPar - theFin) <= Precision::Confusion()) {
+      else if ((Abs(aPar - theFin) <= Precision::Confusion()) 
+        || (aPar > theFin)) {
         aPosOnCurve = IntRes2d_End;
       }
       //
@@ -381,8 +383,16 @@ void  BRepClass_Intersector::Perform(const gp_Lin2d& L,
   {
     Standard_Boolean aStatusOn = Standard_False;
     IntRes2d_IntersectionPoint aPntInter;
+    Standard_Real aDebTol = deb;
+    Standard_Real aFinTol = fin;
+    if (aTolZ > Precision::Confusion())
+    {
+      aDebTol = deb - aTolZ;
+      aFinTol = fin + aTolZ;
+    }
+    Geom2dAdaptor_Curve aCurAdaptor(aC2D, aDebTol, aFinTol);
 
-    aStatusOn = CheckOn(aPntInter, F, L, C, aTolZ, fin, deb);
+    aStatusOn = CheckOn(aPntInter, F, L, aCurAdaptor, aTolZ, fin, deb);
     if (aStatusOn)
     {
       Append(aPntInter);

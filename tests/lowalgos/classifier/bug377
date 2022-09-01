@@ -1,5 +1,3 @@
-puts "TODO OCC11111 ALL: Error : OCC377"
-
 pload QAcommands
 
 puts "========"
