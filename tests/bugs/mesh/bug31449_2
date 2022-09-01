@@ -1,0 +1,17 @@
+puts "================"
+puts "0031449: Mesh - BRepMesh works too long and produces many free nodes on a valid face"
+puts "================"
+puts ""
+
+restore [locate_data_file bug31449_face_loopback_M.brep] result
+
+incmesh result 0.0001
+
+set info_good [tricheck result]
+if { [string compare $info_good "" ] != 0 } {
+    puts "Error : something wierd has been produced, like free nodes, or links"
+}
+
+checktrinfo result -tri 65 -nod 67
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png
