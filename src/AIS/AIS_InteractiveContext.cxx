@@ -1,4 +1,4 @@
-// Created on: 1997-01-17
+﻿// Created on: 1997-01-17
 // Created by: Robert COUBLANC
 // Copyright (c) 1997-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
@@ -1001,6 +1001,14 @@ void AIS_InteractiveContext::RecomputeSelectionOnly (const Handle(AIS_Interactiv
     return;
   }
 
+  TColStd_ListOfInteger aModes;
+  ActivatedModes (theIO, aModes);
+
+  for (TColStd_ListIteratorOfListOfInteger aModesIter (aModes); aModesIter.More(); aModesIter.Next())
+  {
+    mgrSelector->Deactivate (theIO, aModesIter.Value());
+  }
+
   mgrSelector->RecomputeSelection (theIO);
 
   const Handle(AIS_GlobalStatus)* aStatus = myObjects.Seek (theIO);
@@ -1010,10 +1018,7 @@ void AIS_InteractiveContext::RecomputeSelectionOnly (const Handle(AIS_Interactiv
     return;
   }
 
-  TColStd_ListOfInteger aModes;
-  ActivatedModes (theIO, aModes);
-  TColStd_ListIteratorOfListOfInteger aModesIter (aModes);
-  for (; aModesIter.More(); aModesIter.Next())
+  for (TColStd_ListIteratorOfListOfInteger aModesIter (aModes); aModesIter.More(); aModesIter.Next())
   {
     mgrSelector->Activate (theIO, aModesIter.Value());
   }
