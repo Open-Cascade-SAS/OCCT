@@ -1221,6 +1221,105 @@ static void ComputeSphere (const gp_Sphere& Sphere,
   }
 }
 
+//=======================================================================
+//function : computeDegeneratedTorus
+//purpose  : compute bounding box for degenerated torus
+//=======================================================================
+
+static void computeDegeneratedTorus (const gp_Torus& theTorus, 
+                           const Standard_Real theUMin, const Standard_Real theUMax, 
+                           const Standard_Real theVMin, const Standard_Real theVMax, 
+                           Bnd_Box& theB)
+{
+  gp_Pnt aP = theTorus.Location();
+  Standard_Real aRa = theTorus.MajorRadius();
+  Standard_Real aRi = theTorus.MinorRadius();
+  Standard_Real aXmin,anYmin,aZmin,aXmax,anYmax,aZmax;
+  aXmin = aP.X() - aRa - aRi;
+  aXmax = aP.X() + aRa + aRi;
+  anYmin = aP.Y() - aRa - aRi;
+  anYmax = aP.Y() + aRa + aRi;
+  aZmin = aP.Z() - aRi;
+  aZmax = aP.Z() + aRi;
+
+  Standard_Real aPhi = ACos (-aRa / aRi);
+  
+  Standard_Real anUper = 2. * M_PI - Precision::PConfusion();
+  Standard_Real aVper = 2. * aPhi - Precision::PConfusion();
+  if (theUMax - theUMin >= anUper && theVMax - theVMin >= aVper)
+  {
+    // a whole torus
+    theB.Update(aXmin, anYmin, aZmin, aXmax, anYmax, aZmax);
+    return;
+  }
+  
+  Standard_Real anU,aV;
+  Standard_Real anUmax = theUMin + 2. * M_PI;
+  const gp_Ax3& aPos = theTorus.Position();
+  gp_Pnt aPExt = aP;
+  aPExt.SetX(aXmin);
+  ElSLib::TorusParameters(aPos,aRa,aRi,aPExt,anU,aV);
+  anU = ElCLib::InPeriod(anU,theUMin,anUmax);
+  if(anU >= theUMin && anU <= theUMax && aV >= theVMin && aV <= theVMax)
+  {
+    theB.Add(aPExt);
+  }
+  //
+  aPExt.SetX(aXmax);
+  ElSLib::TorusParameters(aPos,aRa,aRi,aPExt,anU,aV);
+  anU = ElCLib::InPeriod(anU,theUMin,anUmax);
+  if(anU >= theUMin && anU <= theUMax && aV >= theVMin && aV <= theVMax)
+  {
+    theB.Add(aPExt);
+  }
+  aPExt.SetX(aP.X());
+  //
+  aPExt.SetY(anYmin);
+  ElSLib::TorusParameters(aPos,aRa,aRi,aPExt,anU,aV);
+  anU = ElCLib::InPeriod(anU,theUMin,anUmax);
+  if(anU >= theUMin && anU <= theUMax && aV >= theVMin && aV <= theVMax)
+  {
+    theB.Add(aPExt);
+  }
+  //
+  aPExt.SetY(anYmax);
+  ElSLib::TorusParameters(aPos,aRa,aRi,aPExt,anU,aV);
+  anU = ElCLib::InPeriod(anU,theUMin,anUmax);
+  if(anU >= theUMin && anU <= theUMax && aV >= theVMin && aV <= theVMax)
+  {
+    theB.Add(aPExt);
+  }
+  aPExt.SetY(aP.Y());
+  //
+  aPExt.SetZ(aZmin);
+  ElSLib::TorusParameters(aPos,aRa,aRi,aPExt,anU,aV);
+  anU = ElCLib::InPeriod(anU,theUMin,anUmax);
+  if(anU >= theUMin && anU <= theUMax && aV >= theVMin && aV <= theVMax)
+  {
+    theB.Add(aPExt);
+  }
+  //
+  aPExt.SetZ(aZmax);
+  ElSLib::TorusParameters(aPos,aRa,aRi,aPExt,anU,aV);
+  anU = ElCLib::InPeriod(anU,theUMin,anUmax);
+  if(anU >= theUMin && anU <= theUMax && aV >= theVMin && aV <= theVMax)
+  {
+    theB.Add(aPExt);
+  }
+  //
+  // Add boundaries of patch
+  // UMin, UMax
+  gp_Circ aC = ElSLib::TorusUIso(aPos,aRa,aRi,theUMin);
+  BndLib::Add(aC,theVMin,theVMax,0.,theB);
+  aC = ElSLib::TorusUIso(aPos,aRa,aRi,theUMax);
+  BndLib::Add(aC,theVMin,theVMax,0.,theB);
+  // VMin, VMax
+  aC = ElSLib::TorusVIso(aPos,aRa,aRi,theVMin);
+  BndLib::Add(aC,theUMin,theUMax,0.,theB);
+  aC = ElSLib::TorusVIso(aPos,aRa,aRi,theVMax);
+  BndLib::Add(aC,theUMin,theUMax,0.,theB);
+}
+
 void BndLib::Add(const gp_Sphere& S,const Standard_Real UMin,
                  const Standard_Real UMax,const Standard_Real VMin,
                  const Standard_Real VMax,const Standard_Real Tol, Bnd_Box& B) 
@@ -1264,6 +1363,13 @@ void BndLib::Add(const gp_Torus& S,const Standard_Real UMin,
   Standard_Real Ri = S.MinorRadius();
 
   if (Fi2<Fi1) return;
+
+  if (Ra<Ri)
+  {
+    computeDegeneratedTorus(S,UMin,UMax,VMin,VMax,B);
+    B.Enlarge(Tol);
+    return;
+  }
 
 #define SC 0.71
 #define addP0    (Compute(UMin,UMax,Ra+Ri,Ra+Ri,gp_Pnt(S.XAxis().Direction().XYZ()),gp_Pnt(S.YAxis().Direction().XYZ()),S.Location(),B))

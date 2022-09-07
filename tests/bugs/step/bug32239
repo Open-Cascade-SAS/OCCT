@@ -1,0 +1,57 @@
+puts "===================================="
+puts "0032239: Data Exchange, STEP import - bounding box is too large"
+puts "===================================="
+puts ""
+
+pload ALL
+
+# Read file
+
+stepread [locate_data_file bug32239.STEP] b *
+
+# Check that shape is valid
+
+checkshape b_1
+
+# Check bounding box
+
+set xmin0 -62.992562093513783
+set ymin0 -51.45371311501097
+set zmin0 -33.223762093513777
+set xmax0 43.263112093513783
+set ymax0 33.211062093513789
+set zmax0 37.744962093513792
+set bb [bounding b_1]
+set xmin [lindex $bb 0]
+set ymin [lindex $bb 1]
+set zmin [lindex $bb 2]
+set xmax [lindex $bb 3]
+set ymax [lindex $bb 4]
+set zmax [lindex $bb 5]
+
+if { [expr abs($xmin - $xmin0)] > 1.0e-5 } {
+  set bb_changed 1
+}
+if { [expr abs($xmax - $xmax0)] > 1.0e-5 } {
+  set bb_changed 1
+}
+if { [expr abs($ymin - $ymin0)] > 1.0e-5 } {
+  set bb_changed 1
+}
+if { [expr abs($ymax - $ymax0)] > 1.0e-5 } {
+  set bb_changed 1
+}
+if { [expr abs($zmin - $zmin0)] > 1.0e-5 } {
+  set bb_changed 1
+}
+if { [expr abs($zmax - $zmax0)] > 1.0e-5 } {
+  set bb_changed 1
+}
+
+if { [info exists bb_changed] } {
+  puts "Error: not expected bounding box"
+}
+
+renamevar b_1 result
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
