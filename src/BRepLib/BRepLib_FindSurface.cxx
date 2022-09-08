@@ -506,7 +506,14 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
 
   if (!isSolved)
     return;
-
+  //Removing very small values
+  Standard_Real aMaxV = Max(Abs(aVec(1)), Max(Abs(aVec(2)), Abs(aVec(3))));
+  Standard_Real eps = Epsilon(aMaxV);
+  for (i = 1; i <= 3; ++i)
+  {
+    if (Abs(aVec(i)) <= eps)
+      aVec(i) = 0.;
+  }
   gp_Vec aN (aVec (1), aVec (2), aVec (3));
   Handle(Geom_Plane) aPlane = new Geom_Plane (aBaryCenter, aN);
   myTolReached = Controle (aPoints, aPlane);

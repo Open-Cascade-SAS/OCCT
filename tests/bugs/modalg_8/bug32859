@@ -1,0 +1,21 @@
+puts "============================================================================================="
+puts "0032859: Modeling Algorithms - BRepLib_FindSurface not return an expect plane"
+puts "============================================================================================="
+puts ""
+
+vertex v1 -500  25 -6
+vertex v2 -450 -25 -6
+vertex v3  450 -25 -6
+vertex v4  500  25 -6
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+edge e4 v4 v1
+
+wire w e1 e2 e3 e4
+mkplane p w
+mksurface s p
+set log [eval dump s]
+if {[regexp "Axis   :0, 0, 1" ${log}] != 1} {
+    puts "Error: BRepLib_FindSurface algorithm does not return valid result" 
+}                                                           
