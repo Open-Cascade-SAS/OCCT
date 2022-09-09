@@ -1,5 +1,3 @@
-puts "TODO OCC23954 ALL: Error: result is not Toroidal surface"
-
 puts "============"
 puts "OCC23954"
 puts "============"

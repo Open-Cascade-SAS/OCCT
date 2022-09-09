@@ -23,8 +23,8 @@ if { ${E_Length} < 6} {
 
    set good_umin 0
    set good_umax 6.28319
-   set good_vmin 0
-   set good_vmax 6.28319
+   set good_vmin 3.14159
+   set good_vmax 9.42478
 
    set xlist [xbounds f]
    set umin [lindex $xlist 0]

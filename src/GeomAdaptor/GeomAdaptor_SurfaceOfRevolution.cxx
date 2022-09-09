@@ -502,16 +502,7 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
       MajorRadius = aLin.Distance(aLC);
       if(MajorRadius > aR)
       {
-        Standard_Real aT = 0., aDx, dX;
-        gp_Pnt aPx;
-
-        aPx = ElCLib::Value(aT, C);
-        aDx = aLin.Distance(aPx);
-        dX = aDx - MajorRadius - aR;
-        if (dX < 0.)
-          dX = -dX;
-        if (dX < TolConf)
-          return GeomAbs_Torus;
+        return GeomAbs_Torus;
       }
     }
     break;
