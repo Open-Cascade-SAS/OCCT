@@ -13,7 +13,7 @@ restore [locate_data_file OCC396_f2903.brep] result
 incmesh result 0.01
 triangles result 
 
-checktrinfo result -tri 57 -nod 59
+checktrinfo result -tri 75 -nod 68
 
 vinit
 vdisplay result

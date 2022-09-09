@@ -1,0 +1,31 @@
+puts "========"
+puts "0032241: Mesh - wrong shading display of thrusections"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+
+circle c0 0 0 0 0 0 1 30
+circle c1 0 0 0 0 0 1 30
+rotate c1 2000 0 0 0 1 0 15
+circle c2 0 0 0 0 0 1 30
+rotate c2 2000 0 0 0 1 0 30
+circle c3 0 0 0 0 0 1 30
+rotate c3 2000 0 0 0 1 0 45
+circle c4 0 0 0 0 0 1 30
+rotate c4 2000 0 0 0 1 0 60
+mkedge e0 c0
+mkedge e1 c1
+mkedge e2 c2
+mkedge e3 c3
+mkedge e4 c4
+wire w0 e0
+wire w1 e1
+wire w2 e2
+wire w3 e3
+wire w4 e4
+thrusections result issolid w0 w1 w2 w3 w4 
+
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+checktrinfo result -tri 2744 -nod 1420

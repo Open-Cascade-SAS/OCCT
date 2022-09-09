@@ -12,6 +12,6 @@ vdisplay result
 vfit
 
 tricheck result
-checktrinfo result -tri 3424 -nod 1801 -max_defl 0.55846824898476011 -tol_abs_defl 1.0e-6
+checktrinfo result -tri 2954 -nod 1566 -max_defl 0.66166700094601016 -tol_abs_defl 1.0e-6
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

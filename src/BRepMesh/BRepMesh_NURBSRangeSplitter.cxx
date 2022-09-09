@@ -393,26 +393,72 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
 }
 
 //=======================================================================
+// Function: getUndefinedIntervalNb
+// Purpose : 
+//=======================================================================
+Standard_Integer BRepMesh_NURBSRangeSplitter::getUndefinedIntervalNb(
+  const Handle(Adaptor3d_Surface)& theSurface,
+  const Standard_Boolean           isU,
+  const GeomAbs_Shape              /*theContinuity*/) const
+{
+  return (isU ? theSurface->NbUPoles() : theSurface->NbVPoles()) - 1;
+}
+
+//=======================================================================
+// Function: getUndefinedInterval
+// Purpose : 
+//=======================================================================
+void BRepMesh_NURBSRangeSplitter::getUndefinedInterval(
+  const Handle(Adaptor3d_Surface)&               theSurface,
+  const Standard_Boolean                         isU,
+  const GeomAbs_Shape                            theContinuity,
+  const std::pair<Standard_Real, Standard_Real>& theRange,
+  TColStd_Array1OfReal&                          theIntervals) const
+{
+  Standard_Integer aIntervalsNb = isU ? 
+    theSurface->NbUIntervals(theContinuity) :
+    theSurface->NbVIntervals(theContinuity);
+
+  if (aIntervalsNb == 1)
+  {
+    aIntervalsNb = getUndefinedIntervalNb(theSurface, isU, theContinuity);
+    if (aIntervalsNb > 1)
+    {
+      theIntervals = TColStd_Array1OfReal(1, aIntervalsNb - 1);
+      const Standard_Real aDiff = (theRange.second - theRange.first) / aIntervalsNb;
+      for (Standard_Integer i = theIntervals.Lower(); i <= theIntervals.Upper(); ++i)
+      {
+        theIntervals.SetValue(i, theRange.first + i * aDiff);
+      }
+    }
+  }
+
+  if (theIntervals.IsEmpty())
+  {
+    theIntervals = TColStd_Array1OfReal(1, aIntervalsNb + 1);
+    if (isU)
+    {
+      theSurface->UIntervals(theIntervals, theContinuity);
+    }
+    else
+    {
+      theSurface->VIntervals(theIntervals, theContinuity);
+    }
+  }
+}
+
+//=======================================================================
 // Function: initParameters
 // Purpose : 
 //=======================================================================
 Standard_Boolean BRepMesh_NURBSRangeSplitter::initParameters() const
 {
+  const GeomAbs_Shape aContinuity = GeomAbs_CN;
   const Handle(BRepAdaptor_Surface)& aSurface = GetSurface();
 
-  const GeomAbs_Shape aContinuity = GeomAbs_CN;
-  const std::pair<Standard_Integer, Standard_Integer> aIntervalsNb(
-    aSurface->NbUIntervals(aContinuity),
-    aSurface->NbVIntervals(aContinuity)
-  );
-
-  TColStd_Array1OfReal aIntervals[2] = {
-    TColStd_Array1OfReal(1, aIntervalsNb.first  + 1),
-    TColStd_Array1OfReal(1, aIntervalsNb.second + 1)
-  };
-
-  aSurface->UIntervals(aIntervals[0], aContinuity);
-  aSurface->VIntervals(aIntervals[1], aContinuity);
+  TColStd_Array1OfReal aIntervals[2];
+  getUndefinedInterval(aSurface, Standard_True,  aContinuity, GetRangeU(), aIntervals[0]);
+  getUndefinedInterval(aSurface, Standard_False, aContinuity, GetRangeV(), aIntervals[1]);
 
   const Standard_Boolean isSplitIntervals = toSplitIntervals (aSurface->Surface().Surface(), aIntervals);
 

@@ -40,6 +40,8 @@ BRepMesh_EdgeDiscret.hxx
 BRepMesh_EdgeParameterProvider.hxx
 BRepMesh_EdgeTessellationExtractor.cxx
 BRepMesh_EdgeTessellationExtractor.hxx
+BRepMesh_ExtrusionRangeSplitter.cxx
+BRepMesh_ExtrusionRangeSplitter.hxx
 BRepMesh_FaceChecker.cxx
 BRepMesh_FaceChecker.hxx
 BRepMesh_FaceDiscret.cxx
@@ -80,6 +82,8 @@ BRepMesh_SphereRangeSplitter.hxx
 BRepMesh_TorusRangeSplitter.cxx
 BRepMesh_TorusRangeSplitter.hxx
 BRepMesh_Triangle.hxx
+BRepMesh_UndefinedRangeSplitter.cxx
+BRepMesh_UndefinedRangeSplitter.hxx
 BRepMesh_UVParamRangeSplitter.hxx
 BRepMesh_Vertex.hxx
 BRepMesh_VertexInspector.hxx

@@ -14,7 +14,7 @@ vdisplay result
 vfit 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 
-checktrinfo result -tri 3006 -nod 4360 -defl 3.0544822246414993 -tol_abs_defl 1e-6
+checktrinfo result -tri 3828 -nod 4771 -defl 3.0544822246414993 -tol_abs_defl 1e-6
 
 set log [tricheck result]
 if { [llength $log] != 0 } {

@@ -49,7 +49,21 @@ protected:
   //! Initializes U and V parameters lists using CN continuity intervals.
   Standard_EXPORT virtual Standard_Boolean initParameters() const;
 
+  //! Returns number of intervals computed using available geometrical parameters.
+  Standard_EXPORT virtual Standard_Integer getUndefinedIntervalNb(
+    const Handle(Adaptor3d_Surface)& theSurface,
+    const Standard_Boolean           isU,
+    const GeomAbs_Shape              theContinuity) const;
+
 private:
+  //! Tries to compute intervals even for cases with no intervals 
+  //! at all using available geometrical parameters.
+  void getUndefinedInterval(
+    const Handle(Adaptor3d_Surface)&               theSurface,
+    const Standard_Boolean                         isU,
+    const GeomAbs_Shape                            theContinuity,
+    const std::pair<Standard_Real, Standard_Real>& theRange,
+    TColStd_Array1OfReal&                          theIntervals) const;
 
   //! Computes parameters of filter and applies it to the source parameters.
   Handle(IMeshData::SequenceOfReal) computeGrainAndFilterParameters(

@@ -7,5 +7,5 @@ if { [string compare $command "shading"] != 0 } {
   set rel_tol 0.19838215623500813
 } else {
   set max_rel_tol_diff 0.01
-  set rel_tol 0.12561722204279838
+  set rel_tol 0.18116134043436827
 }

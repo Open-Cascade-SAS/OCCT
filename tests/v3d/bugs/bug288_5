@@ -14,5 +14,5 @@ isos result 0
 triangles result
 vfit
 
-checktrinfo result -tri 8048 -nod 8247
+checktrinfo result -tri 8130 -nod 8288
 vdump $imagedir/${casename}.png

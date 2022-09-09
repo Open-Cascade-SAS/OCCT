@@ -3,7 +3,7 @@ set max_rel_tol_diff 1
 if { [string compare $command "shading"] == 0 } {
   set rel_tol 0.241
 } else {
-  set rel_tol 6.376860334255998
+  set rel_tol 3.2394842919345677
 }
 #set bug_freenodes "M8"
 #set nbfreenodes(All) 1

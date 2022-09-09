@@ -21,6 +21,8 @@
 #include <BRepMesh_DelaunayBaseMeshAlgo.hxx>
 #include <BRepMesh_DelaunayDeflectionControlMeshAlgo.hxx>
 #include <BRepMesh_BoundaryParamsRangeSplitter.hxx>
+#include <BRepMesh_ExtrusionRangeSplitter.hxx>
+#include <BRepMesh_UndefinedRangeSplitter.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_MeshAlgoFactory, IMeshTools_MeshAlgoFactory)
 
@@ -98,7 +100,18 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_MeshAlgoFactory::GetAlgo(
     return new DeflectionControlMeshAlgo<BRepMesh_BoundaryParamsRangeSplitter>::Type;
     break;
 
-  default:
+  case GeomAbs_SurfaceOfExtrusion:
+    return new DeflectionControlMeshAlgo<BRepMesh_ExtrusionRangeSplitter>::Type;
+    break;
+
+  case GeomAbs_BezierSurface:
+  case GeomAbs_BSplineSurface:
     return new DeflectionControlMeshAlgo<BRepMesh_NURBSRangeSplitter>::Type;
+    break;
+
+  case GeomAbs_OffsetSurface:
+  case GeomAbs_OtherSurface:
+  default:
+    return new DeflectionControlMeshAlgo<BRepMesh_UndefinedRangeSplitter>::Type;
   }
 }

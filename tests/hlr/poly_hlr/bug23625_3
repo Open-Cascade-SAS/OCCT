@@ -4,7 +4,7 @@ puts "============"
 puts ""
 
 set viewname "vtop"
-set length 19604.4
+set length 19259.1
 
 restore [locate_data_file bug23625_a3.brep] a
 COMPUTE_HLR $viewname $algotype

@@ -7,7 +7,7 @@ restore [locate_data_file bug29149.brep] result
 tclean result
 incmesh result 0.1
 
-checktrinfo result -tri 7998 -nod 4931 -defl 1.9852316024615062 -tol_abs_defl 1e-6
+checktrinfo result -tri 8972 -nod 5418 -defl 1.4639409344792007 -tol_abs_defl 1e-6
 
 # Reduce shape tolerance in order to hard check of mesh quality
 settolerance result 1.0e-7

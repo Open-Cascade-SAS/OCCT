@@ -12,5 +12,5 @@ tclean result
 incmesh result 0.1
 triangles result
 
-checktrinfo result -tri 638 -nod 564
+checktrinfo result -tri 736 -nod 613
 checkview -display result -2d -path ${imagedir}/${test_image}.png
