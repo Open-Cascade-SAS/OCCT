@@ -341,7 +341,7 @@ The tables below describe the recommended software configurations for which OCCT
 
 | OS        | Compiler |
 | --------- | ----------- |
-| Windows   | Microsoft Visual Studio: 2013 Update 5, 2015 Update 3, 2017 <sup>1</sup>, 2019, 2022 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
+| Windows   | Microsoft Visual Studio: 2015 Update 3, 2017 <sup>1</sup>, 2019, 2022 <br>, LLVM (ClangCL), GCC 4.3+ (Mingw-w64)|
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
 | OS X / macOS | XCode 6 or newer |
 | Android   | NDK r12, GNU gcc 4.9 or newer |
