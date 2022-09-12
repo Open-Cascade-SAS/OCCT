@@ -33,7 +33,12 @@ class Standard_Mutex;
  *  type "aligned_t". To  modify the size of memory  blocks requested from the
  *  OS,  use the parameter  of the  constructor (measured  in bytes);  if this
  *  parameter is  smaller than  25 bytes on  32bit or  49 bytes on  64bit, the
- *  block size will be the default 24 kbytes
+ *  block size will be the default 12 kbytes.
+ *
+ *  It is not recommended  to use memory blocks  larger than 16KB  on  Windows
+ *  platform  for the repeated operations  because  Low Fragmentation Heap  is
+ *  not going to be  used  for  these  allocations  which  may lead  to memory
+ *  fragmentation and the general performance slow down.
  *
  *  Note that this allocator is most suitable for single-threaded algorithms
  *  (consider creating dedicated allocators per working thread),
@@ -50,6 +55,12 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   //! Constructor.
   //! Note that this constructor does NOT setup mutex for using allocator concurrently from different threads,
   //! see SetThreadSafe() method.
+  //! 
+  //! The default size of the memory blocks is 12KB.
+  //! It is not recommended to use memory blocks larger than 16KB on Windows
+  //! platform for the repeated operations (and thus multiple allocations)
+  //! because Low Fragmentation Heap is not going to be used for these allocations,
+  //! leading to memory fragmentation and eventual performance slow down.
   Standard_EXPORT NCollection_IncAllocator (size_t theBlockSize = DefaultBlockSize);
 
   //! Setup mutex for thread-safe allocations.
@@ -83,7 +94,8 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   Standard_EXPORT void          Reset           (const Standard_Boolean
                                                  doReleaseMem=Standard_True);
 
-  static const size_t DefaultBlockSize = 24600;
+  //! Default size for the memory blocks - 12KB
+  static const size_t DefaultBlockSize = 12300;
 
  protected:
   struct         IBlock;

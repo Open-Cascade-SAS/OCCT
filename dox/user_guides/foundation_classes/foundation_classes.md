@@ -1331,7 +1331,7 @@ Therefore if the user of *NCollection* does not specify any allocator as a param
 Nevertheless, it is possible to define a custom *Allocator* type to manage the memory in the most optimal or convenient way for this algorithm.
 
 As one possible choice, the class *NCollection_IncAllocator* is included.
-Unlike *NCollection_BaseAllocator*, the memory is allocated in big blocks (about 20kB) and the allocator keeps track of the amount of occupied memory.
+Unlike *NCollection_BaseAllocator*, the memory is allocated in big blocks (about 12kB) and the allocator keeps track of the amount of occupied memory.
 The method *Allocate* just increments the pointer to non-occupied memory and returns its previous value.
 Memory is only released in the destructor of *NCollection_IncAllocator*, the method *Free* is empty.
 If used properly, this Allocator can greatly improve the performance of specific algorithms.
