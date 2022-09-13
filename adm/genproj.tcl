@@ -1233,28 +1233,11 @@ proc osutils:convertModules { theModules theSrcDir theSourceDirOther theProjects
       lappend aProjectsInModule($aModule) $aToolKit
       lappend aDependencies [LibToLink $aToolKit $theSrcDir $theSourceDirOther]
     }
-    # executables, assume one project per cxx file...
+    # executables
     foreach aUnit [OS:executable ${aModule}] {
-      set aUnitLoc $aUnit
-      set src_files [_get_used_files $aUnit $theSrcDir false]
-      set aSrcFiles {}
-      foreach s $src_files {
-        regexp {source ([^\s]+)} $s dummy name
-        lappend aSrcFiles $name
-      }
-      foreach aSrcFile $aSrcFiles {
-        set aFileExtension [file extension $aSrcFile]
-        if { $aFileExtension == ".cxx" } {
-          set aPrjName [file rootname $aSrcFile]
-          lappend aProjects $aPrjName
-          lappend aProjectsInModule($aModule) $aPrjName
-          if {[file isdirectory $path/$theSrcDir/$aUnitLoc]} {
-            lappend aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile] $theSrcDir $theSourceDirOther]
-          } else {
-            lappend aDependencies {}
-          }
-        }
-      }
+      lappend aProjects $aUnit
+      lappend aProjectsInModule($aModule) $aUnit
+      lappend aDependencies [LibToLink $aUnit $theSrcDir $theSourceDirOther]
     }
   }
 }
@@ -2110,98 +2093,106 @@ proc osutils:tk:execfiles { theFiles theOutDir theCommand thePrefix theExtension
 # Generate Visual Studio project file for executable
 proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir theSourceDirOther } {
   set aVcFiles {}
-  foreach f [osutils:tk:cxxfiles $theToolKit wnt $theSrcDir] {
-    set aProjTmpl [osutils:vcproj:readtemplate $theVcVer $isUWP 1]
+  set aProjTmpl [osutils:vcproj:readtemplate $theVcVer $isUWP 1]
 
-    set aProjName [file rootname [file tail $f]]
-    set l_compilable [osutils:compilable wnt]
-    regsub -all -- {__XQTNAM__} $aProjTmpl $aProjName aProjTmpl
+  set aProjName $theToolKit
+  set l_compilable [osutils:compilable wnt]
+  regsub -all -- {__XQTNAM__} $aProjTmpl $aProjName aProjTmpl
 
-    upvar $theGuidsMap aGuidsMap
-    if { ! [info exists aGuidsMap($aProjName)] } {
-      set aGuidsMap($aProjName) [OS:genGUID]
-    }
-    regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
+  upvar $theGuidsMap aGuidsMap
+  if { ! [info exists aGuidsMap($aProjName)] } {
+    set aGuidsMap($aProjName) [OS:genGUID]
+  }
+  regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
 
-    set aUsedLibs [list]
-    foreach tkx [osutils:commonUsedTK  $theToolKit $theSrcDir $theSourceDirOther] {
-      lappend aUsedLibs "${tkx}.lib"
-    }
+  set aUsedLibs [list]
+  foreach tkx [osutils:commonUsedTK  $theToolKit $theSrcDir $theSourceDirOther] {
+    lappend aUsedLibs "${tkx}.lib"
+  }
 
-    set anOsReleaseLibs {}
-    set anOsDebugLibs {}
-    osutils:usedOsLibs $theToolKit "wnt" anOsReleaseLibs aFrameworks $theSrcDir true
-    osutils:usedOsLibs $theToolKit "wnt" anOsDebugLibs aFrameworks $theSrcDir false
+  set anOsReleaseLibs {}
+  set anOsDebugLibs {}
+  osutils:usedOsLibs $theToolKit "wnt" anOsReleaseLibs aFrameworks $theSrcDir true
+  osutils:usedOsLibs $theToolKit "wnt" anOsDebugLibs   aFrameworks $theSrcDir false
 
-    set aVCRTVer [string range $theVcVer 0 3]
-    regsub -all -- {__TKDEP__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsReleaseLibs $theVcVer] aProjTmpl
-    regsub -all -- {__TKDEP_DEBUG__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsDebugLibs $theVcVer] aProjTmpl
-    regsub -all -- {__TKDEFINES__} $aProjTmpl "" aProjTmpl
+  set aVCRTVer [string range $theVcVer 0 3]
+  regsub -all -- {__TKDEP__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsReleaseLibs $theVcVer] aProjTmpl
+  regsub -all -- {__TKDEP_DEBUG__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsDebugLibs $theVcVer] aProjTmpl
+  regsub -all -- {__TKDEFINES__} $aProjTmpl "" aProjTmpl
 
-    set aFilesSection ""
-    set aVcFilesCxx(units) ""
-	set aVcFilesHxx(units) ""
+  set aFilesSection ""
+  set aVcFilesCxx(units) ""
+  set aVcFilesHxx(units) ""
 
-    if { ![info exists written([file tail $f])] } {
-      set written([file tail $f]) 1
-
-      if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
+  if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
+    foreach f [osutils:tk:cxxfiles $theToolKit wnt $theSrcDir] {
+      if { ![info exists written([file tail $f])] } {
+        set written([file tail $f]) 1
         append aFilesSection [osutils:vcxproj:cxxfile $f "" 3]
         if { ! [info exists aVcFilesCxx($theToolKit)] } { lappend aVcFilesCxx(units) $theToolKit }
         lappend aVcFilesCxx($theToolKit) $f
       } else {
-        append aFilesSection "\t\t\t<Filter\n"
-        append aFilesSection "\t\t\t\tName=\"$theToolKit\"\n"
-        append aFilesSection "\t\t\t\t>\n"
-        append aFilesSection [osutils:vcproj:file $theVcVer $f ""]
-        append aFilesSection "\t\t\t</Filter>"
+        puts "Warning : in vcproj there are more than one occurrences for [file tail $f]"
       }
-    } else {
-      puts "Warning : in vcproj there are more than one occurrences for [file tail $f]"
     }
-    #puts "$aProjTmpl $aFilesSection"
-    set anIncPaths "..\\..\\..\\inc"
-    regsub -all -- {__TKINC__}  $aProjTmpl $anIncPaths    aProjTmpl
-    regsub -all -- {__FILES__}  $aProjTmpl $aFilesSection aProjTmpl
-    regsub -all -- {__CONF__}   $aProjTmpl Application    aProjTmpl
+  } else {
+    append aFilesSection "\t\t\t<Filter\n"
+    append aFilesSection "\t\t\t\tName=\"$theToolKit\"\n"
+    append aFilesSection "\t\t\t\t>\n"
+    foreach f [osutils:tk:cxxfiles $theToolKit wnt $theSrcDir] {
+      if { ![info exists written([file tail $f])] } {
+        set written([file tail $f]) 1
+        append aFilesSection [osutils:vcproj:file $theVcVer $f ""]
+      } else {
+        puts "Warning : in vcproj there are more than one occurrences for [file tail $f]"
+      }
+    }
+    append aFilesSection "\t\t\t</Filter>"
+  }
 
-    regsub -all -- {__XQTEXT__} $aProjTmpl "exe" aProjTmpl
+  #puts "$aProjTmpl $aFilesSection"
+  set anIncPaths "..\\..\\..\\inc"
+  regsub -all -- {__TKINC__}  $aProjTmpl $anIncPaths    aProjTmpl
+  regsub -all -- {__FILES__}  $aProjTmpl $aFilesSection aProjTmpl
+  regsub -all -- {__CONF__}   $aProjTmpl Application    aProjTmpl
 
-    set aFile [open [set aVcFilePath [file join $theOutDir ${aProjName}.[osutils:vcproj:ext $theVcVer]]] w]
+  regsub -all -- {__XQTEXT__} $aProjTmpl "exe" aProjTmpl
+
+  set aFile [open [set aVcFilePath [file join $theOutDir ${aProjName}.[osutils:vcproj:ext $theVcVer]]] w]
+  fconfigure $aFile -translation crlf
+  puts $aFile $aProjTmpl
+  close $aFile
+
+  set aCommonSettingsFile "$aVcFilePath.user"
+  lappend aVcFiles $aVcFilePath
+
+  # write filters file for vc10
+  if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
+    lappend aVcFiles [osutils:vcxproj:filters $theOutDir $aProjName aVcFilesCxx aVcFilesHxx]
+  }
+
+  # write resource file
+  lappend aVcFiles [osutils:readtemplate:rc $theOutDir $aProjName]
+
+  set aCommonSettingsFileTmpl ""
+  if { "$theVcVer" == "vc7" || "$theVcVer" == "vc8" } {
+    # nothing
+  } elseif { "$theVcVer" == "vc9" } {
+    set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$::THE_CASROOT/adm/templates/vcproj.user.vc9x"]
+  } else {
+    set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$::THE_CASROOT/adm/templates/vcxproj.user.vc10x"]
+  }
+  if { "$aCommonSettingsFileTmpl" != "" } {
+    regsub -all -- {__VCVER__} $aCommonSettingsFileTmpl $aVCRTVer aCommonSettingsFileTmpl
+
+    set aFile [open [set aVcFilePath "$aCommonSettingsFile"] w]
     fconfigure $aFile -translation crlf
-    puts $aFile $aProjTmpl
+    puts $aFile $aCommonSettingsFileTmpl
     close $aFile
 
-    set aCommonSettingsFile "$aVcFilePath.user"
-    lappend aVcFiles $aVcFilePath
-
-    # write filters file for vc10
-    if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
-      lappend aVcFiles [osutils:vcxproj:filters $theOutDir $aProjName aVcFilesCxx aVcFilesHxx]
-    }
-
-    # write resource file
-    lappend aVcFiles [osutils:readtemplate:rc $theOutDir $aProjName]
-
-    set aCommonSettingsFileTmpl ""
-    if { "$theVcVer" == "vc7" || "$theVcVer" == "vc8" } {
-      # nothing
-    } elseif { "$theVcVer" == "vc9" } {
-      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$::THE_CASROOT/adm/templates/vcproj.user.vc9x"]
-    } else {
-      set aCommonSettingsFileTmpl [wokUtils:FILES:FileToString "$::THE_CASROOT/adm/templates/vcxproj.user.vc10x"]
-    }
-    if { "$aCommonSettingsFileTmpl" != "" } {
-      regsub -all -- {__VCVER__} $aCommonSettingsFileTmpl $aVCRTVer aCommonSettingsFileTmpl
-
-      set aFile [open [set aVcFilePath "$aCommonSettingsFile"] w]
-      fconfigure $aFile -translation crlf
-      puts $aFile $aCommonSettingsFileTmpl
-      close $aFile
-
-      lappend aVcFiles "$aCommonSettingsFile"
-    }
+    lappend aVcFiles "$aCommonSettingsFile"
   }
+
   return $aVcFiles
 }
 
