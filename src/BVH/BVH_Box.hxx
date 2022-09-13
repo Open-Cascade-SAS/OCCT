@@ -64,19 +64,18 @@ public:
   //! given transformation to this box.
   BVH_Box<T, 3> Transformed (const NCollection_Mat4<T>& theTransform) const
   {
-    BVH_Box<T, 3> aResultBox;
-
+    const BVH_Box<T, 3> *aThis = static_cast<const BVH_Box<T, 3>*>(this);
     if (theTransform.IsIdentity())
     {
-      return aResultBox;
+      return *aThis;
     }
 
-    const BVH_Box<T, 3> *aThis = static_cast<const BVH_Box<T, 3>*>(this);
     if (!aThis->IsValid())
     {
-      return aResultBox;
+      return *aThis;
     }
 
+    BVH_Box<T, 3> aResultBox;
     for (size_t aX = 0; aX <= 1; ++aX)
     {
       for (size_t aY = 0; aY <= 1; ++aY)
