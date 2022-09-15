@@ -100,7 +100,7 @@ namespace
       {
         for (OSD_Parallel::UniversalIterator anIter = myRange.It(); anIter != myRange.End(); anIter = myRange.It())
         {
-          myPerformer (anIter);
+          myPerformer (*anIter);
         }
       }
 

@@ -128,8 +128,9 @@ You can download its sources from https://freetype.org/
 
 @subsection dev_guides__building_3rdparty_win_3_1 TBB
 
-This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/intel/tbb.
-Go to the **Download** page, find the release version you need (e.g. `tbb30_018oss`) and pick the archive for Windows platform.
+This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
+Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Windows platform.
+To install, unpack the downloaded archive of TBB product (`oneapi-tbb-2021.5.0-win.zip`)
 
 Unpack the downloaded archive of TBB product into the `3rdparty` folder.
 
@@ -304,9 +305,9 @@ Download the necessary archive from https://freetype.org/ and unpack it.
 
 @subsection dev_guides__building_3rdparty_linux_3_1 TBB
 
-This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/intel/tbb.
-Go to the **Download** page, find the release version you need and pick the archive for Linux platform.
-To install, unpack the downloaded archive of TBB product.
+This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
+Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Linux platform.
+To install, unpack the downloaded archive of TBB product (`oneapi-tbb-2021.5.0-lin.tgz`).
 
 @subsection dev_guides__building_3rdparty_linux_3_3 FreeImage
 
@@ -477,9 +478,9 @@ Download the necessary archive from https://freetype.org/ and unpack it.
 
 @subsection dev_guides__building_3rdparty_osx_3_1 TBB
 
-This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/intel/tbb.
-Go to the **Download** page, find the release version you need (e.g. `tbb30_018oss`) and pick the archive for Mac OS X platform.
-To install, unpack the downloaded archive of TBB product (`tbb30_018oss_osx.tgz`).
+This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
+Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Mac OS X platform.
+To install, unpack the downloaded archive of TBB product (`oneapi-tbb-2021.5.0-mac.tgz`).
 
 @subsection dev_guides__building_3rdparty_osx_3_3 FreeImage
 

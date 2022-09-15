@@ -360,7 +360,7 @@ https://dev.opencascade.org/resources/download/3rd-party-components
 | Component | Where to find | Used for | Purpose |
 | --------- | ------------- | -------- | -------------------- |
 | CMake 3.1+ | https://cmake.org/ | Configuration | Build from sources |
-| Intel TBB 4.x or later | https://oneapi-src.github.io/oneTBB/ | All | Parallelization of algorithms (alternative to built-in thread pool) |
+| Intel oneTBB 2021.5.0 | https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0 | All | Parallelization of algorithms (alternative to built-in thread pool) |
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required for using 3D Viewer |
 | OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | VR (Virtual Reality) support in 3D Viewer |
 | FreeType 2.4+ | https://www.freetype.org/download.html | Visualization | Text rendering in 3D Viewer |
@@ -572,8 +572,7 @@ FreeType 2 is released under two open-source licenses: BSD-like FreeType License
 It is a library that helps you to take advantage of multi-core processor performance without having to be a threading expert. 
 Threading Building Blocks is not just a threads-replacement library. It represents a higher-level, task-based parallelism that 
 abstracts platform details and threading mechanisms for scalability and performance. 
-TBB version 2017 is available under Apache 2.0 license, while older versions 
-until 4.4 are available under GPLv2 license with the runtime exception (https://www.threadingbuildingblocks.org).
+Intel oneTBB 2021.5.0 is available under Apache 2.0 license (https://www.threadingbuildingblocks.org).
 
 **OpenGL** is an industry standard API for 3D graphics used by OCCT for 
 implementation of 3D viewer. OpenGL specification is developed by the

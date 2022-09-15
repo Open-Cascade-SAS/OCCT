@@ -1,5 +1,13 @@
 # tbb
 
+if (NOT DEFINED 3RDPARTY_DIR)
+  message (FATAL_ERROR "3RDPARTY_DIR is not defined.")
+endif()
+
+if ((NOT EXISTS "${3RDPARTY_DIR}") OR ("${3RDPARTY_DIR}" STREQUAL ""))
+  message (FATAL_ERROR "Directory ${3RDPARTY_DIR} is not set.")
+endif()
+
 if (NOT DEFINED INSTALL_TBB AND BUILD_SHARED_LIBS)
   set (INSTALL_TBB OFF CACHE BOOL "${INSTALL_TBB_DESCR}")
 endif()
@@ -69,226 +77,186 @@ else()
   set (3RDPARTY_TBB_INCLUDE_DIR "" CACHE PATH "the path to tbb.h" FORCE)
 endif()
 
-# common steps for tbb and tbbmalloc
-macro (TBB_PRODUCT_SEARCH PRODUCT_LIBRARY_NAME)
+# Throw execution if 3RDPARTY_TBB_DIR is equal to void string.
+if ("${3RDPARTY_TBB_DIR}" STREQUAL "")
+  message (FATAL_ERROR "Directory with one TBB have not found.")
+endif()
 
-  string (TOUPPER ${PRODUCT_LIBRARY_NAME} upper_PRODUCT_LIBRARY_NAME)
+# Searching TBBConfig.cmake and TBBTargets-release.cmake in 3RDPARTY_TBB_DIR
+# TBBConfig.cmake - is required, TBBTargets-release.cmake is optional.
+file (GLOB_RECURSE TBB_CONFIG_CMAKE_FILE "${3RDPARTY_TBB_DIR}/*TBBConfig.cmake")
+if (NOT EXISTS "${TBB_CONFIG_CMAKE_FILE}")
+  message (FATAL_ERROR "TBBConfig.cmake has not been found.")
+endif()
+include ("${TBB_CONFIG_CMAKE_FILE}")
 
-  # define required tbb/tbbmalloc variables
-  if (NOT DEFINED 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY OR NOT 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR OR NOT EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR}")
-    set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY "" CACHE FILEPATH "${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
-  endif()
+file (GLOB_RECURSE TBB_TARGET_CMAKE_FILE "${3RDPARTY_TBB_DIR}/*TBBTargets-release.cmake")
+if (EXISTS "${TBB_TARGET_CMAKE_FILE}")
+  include ("${TBB_TARGET_CMAKE_FILE}")
+endif()
 
-  if (NOT DEFINED 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR)
-    set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR "" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} library")
-  endif()
-
-  if (WIN32)
-    if (NOT DEFINED 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL OR NOT 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR OR NOT EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR}")
-      set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL "" CACHE FILEPATH "${upper_PRODUCT_LIBRARY_NAME} shared library" FORCE)
-    endif()
-  endif()
-
-  if (WIN32 AND NOT DEFINED 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR)
-    set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR "" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} shared library")
-  endif()
-
-  # check 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_ paths for consistency with specified 3RDPARTY_TBB_DIR
-  if (3RDPARTY_TBB_DIR AND EXISTS "${3RDPARTY_TBB_DIR}")
-    CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_TBB_DIR 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY FILEPATH "the path to ${upper_PRODUCT_LIBRARY_NAME} library")
-
-    if (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}")
-      get_filename_component (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}" PATH)
-      set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR}" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
-    else()
-      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_TBB_DIR 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} library")
-    endif()
-
-    if (WIN32)
-      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_TBB_DIR 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL FILEPATH "the path to ${upper_PRODUCT_LIBRARY_NAME} shared library")
-
-      if (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL AND EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}")
-        get_filename_component (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}" PATH)
-        set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR}" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} shared library" FORCE)
-      else()
-
-      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_TBB_DIR 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} shared library")
-      endif()
-    endif()
-  endif()
-
-  OCCT_MAKE_COMPILER_SHORT_NAME()
-  OCCT_MAKE_COMPILER_BITNESS()
-
-  if (${COMPILER_BITNESS} EQUAL 32)
-    set (${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME ia32)
+# We do not know, full path to file is pointed, or local.
+# So, we should check it and output FULL PATH to FILE.
+macro (TBB_FILE_NAME_TO_FILEPATH FL_NAME FL_PATH)
+  if (EXISTS "${FL_NAME}")
+    # FL_NAME is full path.
+    set (${FL_PATH} "${FL_NAME}")
   else()
-    set (${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME intel64)
-  endif()
-
-  # tbb/tbbmalloc library
-  if (NOT 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY OR NOT EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}")
-    
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib .a)
-    set (PRODUCT_PATH_SUFFIXES lib ${PRODUCT_LIBRARY_NAME})
-
-    # set 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY
-    set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY "3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to ${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
-
-    if (3RDPARTY_TBB_DIR AND EXISTS "${3RDPARTY_TBB_DIR}")
-      if (NOT EXISTS "${3RDPARTY_TBB_DIR}/lib/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/${COMPILER}")
-        if (EXISTS "${3RDPARTY_TBB_DIR}/lib/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}")
-          file (GLOB ${upper_PRODUCT_LIBRARY_NAME}_COMPILER_LIST "${3RDPARTY_TBB_DIR}/lib/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/*")
-          if (${upper_PRODUCT_LIBRARY_NAME}_COMPILER_LIST)
-            list (GET ${upper_PRODUCT_LIBRARY_NAME}_COMPILER_LIST -1 THE_MOST_FRESH_COMPILER_VERSION)
-            if (THE_MOST_FRESH_COMPILER_VERSION)
-              get_filename_component (THE_MOST_FRESH_COMPILER_VERSION_NAME "${THE_MOST_FRESH_COMPILER_VERSION}" NAME)
-              set (PRODUCT_PATH_SUFFIXES lib ${PRODUCT_LIBRARY_NAME} lib/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/${THE_MOST_FRESH_COMPILER_VERSION_NAME})
-            endif()
-          endif()
-        endif()
-      else()
-        set (PRODUCT_PATH_SUFFIXES lib ${PRODUCT_LIBRARY_NAME} lib/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/${COMPILER})
-      endif()
-
-      find_library (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY ${PRODUCT_LIBRARY_NAME}
-                                         PATHS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR}" "${3RDPARTY_TBB_DIR}"
-                                         PATH_SUFFIXES ${PRODUCT_PATH_SUFFIXES}
-                                         CMAKE_FIND_ROOT_PATH_BOTH
-                                         NO_DEFAULT_PATH)
-    else()
-      find_library (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY ${PRODUCT_LIBRARY_NAME}
-                                         PATH_SUFFIXES ${PRODUCT_PATH_SUFFIXES}
-                                         CMAKE_FIND_ROOT_PATH_BOTH)
-    endif()
-
-    if (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY AND EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}")
-      get_filename_component (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}" PATH)
-      set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR}" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
-    else()
-      set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR "" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
+    # Here we deal with local path, so assign to var full path to file.
+    # Acquire full path.
+    set (${FL_PATH} "${3RDPARTY_TBB_DIR}${FL_NAME}")
+    if (NOT EXISTS "${${FL_PATH}}")
+      message (FATAL_ERROR "TBB: needed file not found (${FL_PATH}).")
     endif()
   endif()
-
-  if (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR AND EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR}")
-    list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR}")
-  else()
-    list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY_DIR)
-
-    set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY "" CACHE FILEPATH "The path to ${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
-  endif()
-
-  # tbb/tbbmalloc shared library
-  if (WIN32)
-    if (NOT 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL OR NOT EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}")
-      set (CMAKE_FIND_LIBRARY_SUFFIXES .dll)
-      set (PRODUCT_PATH_SUFFIXES bin)
-
-      # set 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL
-      set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL "3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL-NOTFOUND" CACHE FILEPATH "${upper_PRODUCT_LIBRARY_NAME} shared library" FORCE)
-
-      if (3RDPARTY_TBB_DIR AND EXISTS "${3RDPARTY_TBB_DIR}")
-        if (NOT EXISTS "${3RDPARTY_TBB_DIR}/bin/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/${COMPILER}")
-          if (EXISTS "${3RDPARTY_TBB_DIR}/bin/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}")
-            file (GLOB ${upper_PRODUCT_LIBRARY_NAME}_COMPILER_LIST "${3RDPARTY_TBB_DIR}/bin/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/*")
-            if (${upper_PRODUCT_LIBRARY_NAME}_COMPILER_LIST)
-              list (GET ${upper_PRODUCT_LIBRARY_NAME}_COMPILER_LIST -1 THE_MOST_FRESH_COMPILER_VERSION)
-              if (THE_MOST_FRESH_COMPILER_VERSION)
-                get_filename_component (THE_MOST_FRESH_COMPILER_VERSION_NAME "${THE_MOST_FRESH_COMPILER_VERSION}" NAME)
-                set (PRODUCT_PATH_SUFFIXES bin bin/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/${THE_MOST_FRESH_COMPILER_VERSION_NAME})
-              endif()
-            endif()
-          endif()
-        else()
-          set (PRODUCT_PATH_SUFFIXES bin bin/${${upper_PRODUCT_LIBRARY_NAME}_ARCH_NAME}/${COMPILER})
-        endif()
-
-        if (3RDPARTY_TBB_DIR AND EXISTS "${3RDPARTY_TBB_DIR}")
-          find_library (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL ${PRODUCT_LIBRARY_NAME}
-                                         PATHS "${3RDPARTY_TBB_DIR}"
-                                         PATH_SUFFIXES ${PRODUCT_PATH_SUFFIXES}
-                                         NO_DEFAULT_PATH)
-        else()
-          find_library (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL ${PRODUCT_LIBRARY_NAME} PATH_SUFFIXES ${PRODUCT_PATH_SUFFIXES})
-        endif()
-
-        if (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL AND EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}")
-          get_filename_component (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}" PATH)
-          set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR}" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} library" FORCE)
-        else()
-          set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR "" CACHE PATH "The directory containing ${upper_PRODUCT_LIBRARY_NAME} shared library" FORCE)
-
-          set (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL "" CACHE FILEPATH "${upper_PRODUCT_LIBRARY_NAME} shared library" FORCE)
-        endif()
-      endif()
-    endif()
-
-    if (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR OR EXISTS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR}")
-      list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR}")
-    else()
-      list (APPEND 3RDPARTY_NO_DLLS 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL_DIR)
-    endif()
-  endif()
-
-  # install tbb/tbbmalloc
-  if (INSTALL_TBB)
-    OCCT_MAKE_OS_WITH_BITNESS()
-    OCCT_MAKE_COMPILER_SHORT_NAME()
-
-    if (WIN32)
-      if (SINGLE_GENERATOR)
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL} DESTINATION "${INSTALL_DIR_BIN}")
-      else()
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}
-                 CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR_BIN}")
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}
-                 CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR_BIN}i")
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL}
-                 CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR_BIN}d")
-      endif()
-    else()
-      get_filename_component (PRODUCT_LIBRARY_NAME ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY} NAME)
-
-      if (SINGLE_GENERATOR)
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}.2
-                 DESTINATION "${INSTALL_DIR_LIB}"
-                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
-      else()
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}.2
-                 CONFIGURATIONS Release
-                 DESTINATION "${INSTALL_DIR_LIB}"
-                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}.2
-                 CONFIGURATIONS RelWithDebInfo
-                 DESTINATION "${INSTALL_DIR_LIB}i"
-                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
-        install (FILES ${3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY}.2
-                 CONFIGURATIONS Debug
-                 DESTINATION "${INSTALL_DIR_LIB}d"
-                 RENAME ${PRODUCT_LIBRARY_NAME}.2)
-      endif()
-    endif()
-  endif()
-  mark_as_advanced (3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_LIBRARY 3RDPARTY_${upper_PRODUCT_LIBRARY_NAME}_DLL)
 endmacro()
 
-#if (BUILD_SHARED_LIBS)
-  separate_arguments (CSF_TBB)
-  foreach (LIB IN LISTS CSF_TBB)
-    TBB_PRODUCT_SEARCH (${LIB})
-  endforeach()
+# TARGET_NAME - is target name from oneTBB cmake file
+# it is either "TBB::tbb", or "TBB::tbbmalloc"
+# LIB_NAME_UC - is library id (TBB or TBBMALLOC)
+# PROPERTY_TO_SET - LIBRARY or DLL
+macro (WIN_TBB_PARSE TARGET_NAME LIB_NAME PROPERTY_TO_SET)
+  set (FILE_NAME "")
+  set (FILE_PATH "")
+  set (FILE_DIR "")
 
-  if (INSTALL_TBB)
-    set (USED_3RDPARTY_TBB_DIR "")
+  if ("${PROPERTY_TO_SET}" STREQUAL "LIBRARY")
+    get_target_property (FILE_NAME "${TARGET_NAME}" IMPORTED_IMPLIB_RELEASE)
   else()
-    # the library directory for using by the executable
-    if (WIN32)
-      set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_DLL_DIR})
+    get_target_property (FILE_NAME "${TARGET_NAME}" IMPORTED_LOCATION_RELEASE)
+  endif()
+
+  # acquire full path
+  TBB_FILE_NAME_TO_FILEPATH("${FILE_NAME}" FILE_PATH)
+
+  get_filename_component (FILE_NAME "${FILE_PATH}" NAME)
+  get_filename_component (FILE_DIR "${FILE_PATH}" DIRECTORY)
+
+  if (NOT EXISTS "${FILE_DIR}/${FILE_NAME}")
+    set (3RDPARTY_${LIB_NAME}_${PROPERTY_TO_SET} "" CACHE FILEPATH "${LIB_NAME} library" FORCE)
+    set (3RDPARTY_${LIB_NAME}_${PROPERTY_TO_SET}_DIR "" CACHE PATH "The directory containing ${LIB_NAME} shared library")
+
+    if ("${PROPERTY_TO_SET}" STREQUAL "LIBRARY")
+      list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_${LIB_NAME}_${PROPERTY_TO_SET}_DIR)
     else()
-      set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_LIBRARY_DIR})
+      list (APPEND 3RDPARTY_NO_DLLS 3RDPARTY_${LIB_NAME}_${PROPERTY_TO_SET}_DIR)
+    endif()
+  else()
+    set (3RDPARTY_${LIB_NAME}_${PROPERTY_TO_SET} "${FILE_DIR}/${FILE_NAME}" CACHE FILEPATH "${LIB_NAME} library" FORCE)
+    set (3RDPARTY_${LIB_NAME}_${PROPERTY_TO_SET}_DIR "${FILE_DIR}" CACHE PATH "The directory containing ${LIB_NAME} shared library")
+
+    if ("${PROPERTY_TO_SET}" STREQUAL "LIBRARY")
+      list (APPEND 3RDPARTY_LIBRARY_DIRS "${FILE_DIR}")
+    else()
+      list (APPEND 3RDPARTY_DLL_DIRS "${FILE_DIR}")
     endif()
   endif()
-#endif()
+endmacro()
+
+# TARGET_NAME - is target name from oneTBB cmake file
+# it is either "TBB::tbb", or "TBB::tbbmalloc"
+# LIB_NAME_UC - is library id (TBB or TBBMALLOC)
+macro (LIN_TBB_PARSE TARGET_NAME LIB_NAME)
+  set (FILE_NAME "")
+  set (FILE_PATH "")
+  set (FILE_DIR "")
+
+  get_target_property (FILE_NAME "${TARGET_NAME}" IMPORTED_LOCATION_RELEASE)
+
+  # acquire full path
+  TBB_FILE_NAME_TO_FILEPATH("${FILE_NAME}" FILE_PATH)
+
+  get_filename_component (FILE_NAME "${FILE_PATH}" NAME)
+  get_filename_component (FILE_DIR "${FILE_PATH}" DIRECTORY)
+
+  if (NOT EXISTS "${FILE_DIR}/${FILE_NAME}")
+    set (3RDPARTY_${LIB_NAME}_LIBRARY "" CACHE FILEPATH "${LIB_NAME} library" FORCE)
+    set (3RDPARTY_${LIB_NAME}_LIBRARY_DIR "" CACHE PATH "The directory containing ${LIB_NAME} shared library")
+
+    list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_${LIB_NAME}_LIBRARY_DIR)
+  else()
+    set (3RDPARTY_${LIB_NAME}_LIBRARY "${FILE_DIR}/${FILE_NAME}" CACHE FILEPATH "${LIB_NAME} library" FORCE)
+    set (3RDPARTY_${LIB_NAME}_LIBRARY_DIR "${FILE_DIR}" CACHE PATH "The directory containing ${LIB_NAME} shared library")
+
+    list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${LIB_NAME}_LIBRARY_DIR}")
+  endif()
+endmacro()
+
+if (WIN32)
+  # Here we should set:
+  #  - 3RDPARTY_*_LIBRARY
+  #  - 3RDPARTY_*_LIBRARY_DIR
+  #  - 3RDPARTY_*_DLL
+  #  - 3RDPARTY_*_DLL_DIR
+  # where * - is TBB or TBBMALLOC
+
+  separate_arguments (CSF_TBB)
+  foreach (LIB IN LISTS CSF_TBB)
+    string(TOLOWER "${LIB}" LIB_LOWER)
+    string(TOUPPER "${LIB}" LIB_UPPER)
+    WIN_TBB_PARSE("TBB::${LIB_LOWER}" "${LIB_UPPER}" "LIBRARY")
+    WIN_TBB_PARSE("TBB::${LIB_LOWER}" "${LIB_UPPER}" "DLL")
+  endforeach()
+else()
+  # Here we should set:
+  #  - 3RDPARTY_*_LIBRARY
+  #  - 3RDPARTY_*_LIBRARY_DIR
+
+  separate_arguments (CSF_TBB)
+  foreach (LIB IN LISTS CSF_TBB)
+    string(TOLOWER "${LIB}" LIB_LOWER)
+    string(TOUPPER "${LIB}" LIB_UPPER)
+    LIN_TBB_PARSE("TBB::${LIB_LOWER}" "${LIB_UPPER}")
+  endforeach()
+endif()
+
+# install tbb/tbbmalloc
+if (INSTALL_TBB)
+  OCCT_MAKE_OS_WITH_BITNESS()
+  OCCT_MAKE_COMPILER_SHORT_NAME()
+
+  if (WIN32)
+    if (SINGLE_GENERATOR)
+      foreach (LIB IN LISTS CSF_TBB)
+        string(TOUPPER "${LIB}" LIB_UPPER)
+        install (FILES ${3RDPARTY_${LIB_UPPER}_DLL} DESTINATION "${INSTALL_DIR_BIN}")
+      endforeach()
+    else()
+      foreach (LIB IN LISTS CSF_TBB)
+        string(TOUPPER "${LIB}" LIB_UPPER)
+        install (FILES ${3RDPARTY_${LIB_UPPER}_DLL} CONFIGURATIONS Release DESTINATION "${INSTALL_DIR_BIN}")
+        install (FILES ${3RDPARTY_${LIB_UPPER}_DLL} CONFIGURATIONS RelWithDebInfo DESTINATION "${INSTALL_DIR_BIN}i")
+        install (FILES ${3RDPARTY_${LIB_UPPER}_DLL} CONFIGURATIONS Debug DESTINATION "${INSTALL_DIR_BIN}d")
+      endforeach()
+    endif()
+  else()
+    if (SINGLE_GENERATOR)
+      foreach (LIB IN LISTS CSF_TBB)
+        string(TOUPPER "${LIB}" LIB_UPPER)
+        install (FILES ${3RDPARTY_${LIB_UPPER}_LIBRARY} DESTINATION "${INSTALL_DIR_LIB}")
+      endforeach()
+    else()
+      foreach (LIB IN LISTS CSF_TBB)
+        string(TOUPPER "${LIB}" LIB_UPPER)
+        install (FILES ${3RDPARTY_${LIB_UPPER}_LIBRARY} CONFIGURATIONS Release DESTINATION "${INSTALL_DIR_LIB}")
+        install (FILES ${3RDPARTY_${LIB_UPPER}_LIBRARY} CONFIGURATIONS RelWithDebInfo DESTINATION "${INSTALL_DIR_LIB}i")
+        install (FILES ${3RDPARTY_${LIB_UPPER}_LIBRARY} CONFIGURATIONS Debug DESTINATION "${INSTALL_DIR_LIB}d")
+      endforeach()
+    endif()
+  endif()
+endif()
+foreach (LIB IN LISTS CSF_TBB)
+  string(TOUPPER "${LIB}" LIB_UPPER)
+  mark_as_advanced (3RDPARTY_${LIB_UPPER}_LIBRARY 3RDPARTY_${LIB_UPPER}_DLL)
+endforeach()
+
+if (INSTALL_TBB)
+  set (USED_3RDPARTY_TBB_DIR "")
+else()
+  # the library directory for using by the executable
+  if (WIN32)
+    set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_DLL_DIR})
+  else()
+    set (USED_3RDPARTY_TBB_DIR ${3RDPARTY_TBB_LIBRARY_DIR})
+  endif()
+endif()

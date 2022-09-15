@@ -125,10 +125,10 @@ protected:
 
     // Since C++20 inheritance from std::iterator is deprecated, so define predefined types manually:
     using iterator_category = std::forward_iterator_tag;
-    using value_type = UniversalIterator;
+    using value_type = IteratorInterface*;
     using difference_type = ptrdiff_t;
-    using pointer = UniversalIterator*;
-    using reference = UniversalIterator&;
+    using pointer = value_type;
+    using reference = value_type;
 
     UniversalIterator() {}
 
@@ -171,18 +171,8 @@ protected:
       return aValue;
     }
 
-    const UniversalIterator& operator* () const { return *this; }
-          UniversalIterator& operator* ()       { return *this; }
-
-    const UniversalIterator* operator->() const { return this; }
-          UniversalIterator* operator->()       { return this; }
-
-    // type cast to actual iterator
-    template <typename Iterator>
-    const Iterator& DownCast () const
-    {
-      return dynamic_cast<OSD_Parallel::IteratorWrapper<Iterator>*>(myPtr.get())->Value();
-    }
+    reference operator* () const { return myPtr.get(); }
+    reference operator* () { return myPtr.get(); }
 
   private:
     std::unique_ptr<IteratorInterface> myPtr;
@@ -196,7 +186,14 @@ protected:
   public:
     virtual ~FunctorInterface() {}
 
-    virtual void operator () (UniversalIterator& theIterator) const = 0;
+    virtual void operator () (IteratorInterface* theIterator) const = 0;
+
+    // type cast to actual iterator
+    template <typename Iterator>
+    static const Iterator& DownCast(IteratorInterface* theIterator)
+    {
+      return dynamic_cast<OSD_Parallel::IteratorWrapper<Iterator>*>(theIterator)->Value();
+    }
   };
 
 private:
@@ -211,9 +208,9 @@ private:
     {
     }
 
-    virtual void operator() (UniversalIterator& theIterator) const Standard_OVERRIDE
+    virtual void operator() (IteratorInterface* theIterator) const Standard_OVERRIDE
     {
-      const Iterator& anIt = theIterator.DownCast<Iterator>();
+      const Iterator& anIt = DownCast<Iterator>(theIterator);
       myFunctor(*anIt);
     }
 
@@ -233,9 +230,9 @@ private:
     {
     }
 
-    virtual void operator() (UniversalIterator& theIterator) const Standard_OVERRIDE
+    virtual void operator() (IteratorInterface* theIterator) const Standard_OVERRIDE
     {
-      Standard_Integer anIndex = theIterator.DownCast<Standard_Integer>();
+      Standard_Integer anIndex = DownCast<Standard_Integer>(theIterator);
       myFunctor(anIndex);
     }
 
