@@ -6,7 +6,7 @@ puts ""
 puts "REQUIRED All: Meshing statuses: SelfIntersectingWire Failure"
 
 set viewname "vfront"
-set length 26881.1
+set length 26411.7
 
 restore [locate_data_file bug23625_a1.brep] a
 

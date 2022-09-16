@@ -3,6 +3,14 @@ puts "0032241: Mesh - wrong shading display of thrusections"
 puts "========"
 puts ""
 
+if { [regexp {Windows} [dversion]] } {
+  set tri_n 2702
+  set nod_n 1399
+} else {
+  set tri_n 2766
+  set nod_n 1431
+}
+
 pload MODELING VISUALIZATION
 
 circle c0 0 0 0 0 0 1 30
@@ -28,4 +36,4 @@ thrusections result issolid w0 w1 w2 w3 w4
 
 checkview -display result -3d -path ${imagedir}/${test_image}.png
 
-checktrinfo result -tri 2744 -nod 1420
+checktrinfo result -tri $tri_n -nod $nod_n

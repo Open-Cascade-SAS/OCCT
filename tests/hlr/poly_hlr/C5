@@ -1,7 +1,5 @@
-puts "TODO OCC30286 ALL: Error : The length of result shape is 1723.\\d+, expected 1721.69"
-
 set viewname "vright"
-set length 1721.69
+set length 1718.9
 
 testreadstep [locate_data_file bug27341_ABS_Adapter_CAD.stp] a
 COMPUTE_HLR $viewname $algotype

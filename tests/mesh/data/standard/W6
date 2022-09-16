@@ -1,6 +1,6 @@
 set TheFileName shading_wrongshape_026.brep
 if { [string compare $command "shading"] == 0 } {
-  set rel_tol 0.08526389274308782
+  set rel_tol 0.1487107687729918
 } else {
   set rel_tol 0.0020125629706199506
 }

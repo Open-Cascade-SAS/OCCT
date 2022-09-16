@@ -1,12 +1,10 @@
-puts "TODO OCC30286 ALL: Error : The length of result shape is 12.\\d+, expected 12."
-
 puts "========================================================================"
 puts "OCC27979: Parasolid converted BREP shows weird lines on hidden line Algo"
 puts "========================================================================"
 puts ""
 
 set viewname "vtop"
-set length 12.
+set length 13.0106
 
 restore [locate_data_file bug27979_parsed.brep] a
 COMPUTE_HLR $viewname $algotype

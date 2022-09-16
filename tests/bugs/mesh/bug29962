@@ -15,7 +15,7 @@ if { [llength $log1] != 0 } {
   puts "Mesh is OK"
 }
 
-checktrinfo result -tri 2 -nod 4 -defl 5.5579174982152475 -tol_abs_defl 1e-6
+checktrinfo result -tri 344 -nod 175 -defl 48.278808345584679 -tol_abs_defl 1e-6
 
 tclean result
 incmesh result 0.01

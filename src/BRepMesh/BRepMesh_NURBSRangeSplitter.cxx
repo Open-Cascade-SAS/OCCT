@@ -553,12 +553,17 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFi
     aMinDiff /= theDelta;
   }
 
-  aMinDiff = Max(theParameters.MinSize, aMinDiff);
+  const Handle(BRepAdaptor_Surface)& aSurface = GetSurface();
+  const Standard_Real aMinSize2d = Max(
+    aSurface->UResolution(theParameters.MinSize),
+    aSurface->UResolution(theParameters.MinSize));
+
+  aMinDiff = Max(aMinSize2d, aMinDiff);
 
   const Standard_Real aDiffMaxLim = 0.1 * theRangeDiff;
   const Standard_Real aDiffMinLim = Max(0.005 * theRangeDiff,
                                         2. * theTol2d);
-  const Standard_Real aDiff = Max(theParameters.MinSize,
+  const Standard_Real aDiff = Max(aMinSize2d,
                                   Min(aDiffMaxLim, aDiffMinLim));
   return filterParameters(theSourceParams, aMinDiff, aDiff, theAllocator);
 }

@@ -16,6 +16,6 @@ if { [llength $log] != 0 } {
   puts "Mesh is OK"
 }
 
-checktrinfo result -tri 148 -nod 103 -defl 0.34778084099529977 -tol_abs_defl 1e-6
+checktrinfo result -tri 156 -nod 107 -defl 0.29785837547864635 -tol_abs_defl 1e-6
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
