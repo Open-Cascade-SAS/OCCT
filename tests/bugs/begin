@@ -59,3 +59,47 @@ proc checktime {value expected tol_rel message} {
       puts "Improvement. ${message}, ${value} seconds, is less than expected time - ${expected} seconds"
    }
 }
+
+# Reads resource file, returns options from file as key-value dict
+proc parse_resource_file {theFileName} {
+    # Creating empty dictionary
+    set aDict [dict create];
+    # Check for resource file
+    if { [info exists theFileName] == 0 } {
+       puts "Error: resource file \"${theFileName}\" isn't found"
+       return $aDict
+   }
+   # Open a resource file
+   set aFD [open "${theFileName}" "rb"]
+   set aLineNo 0
+   # Read line by line
+   while {[gets $aFD aLine] !=-1 } {
+       incr aLineNo
+       # Clear the line from comment
+       if {[regexp {(^[^!]+)} $aLine match aClearLine]} {
+          # remove spaces
+          set aClearLine [string trim $aClearLine]
+          if {[string length $aClearLine] != 0} {
+             if {[regexp {(\S+)\s*:\s*(\S*)} $aClearLine match aKey aValue]} {
+                 dict set aDict $aKey $aValue
+             } else {
+                puts "Error: syntax error in resource file at line: ${aLineNo}"
+             }
+          }   
+       }
+   }
+   close $aFD
+   return $aDict
+}
+
+# Creates new resource file with options as key-value dict
+proc create_resource_file {theFileName theOptions} {
+   # Open a resource file
+   set aFD [open "${theFileName}" "wb"]
+   set aLineNo 0
+   # Write line by line
+   dict for {aKey aValue} $theOptions {
+       puts $aFD "${aKey} : ${aValue}"
+   }
+   close $aFD
+}

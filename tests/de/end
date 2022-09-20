@@ -67,11 +67,23 @@ if { [string length $filename] > 1} {
        set tmp [param read.step.product.mode OFF]
     }
     set path_file [locate_data_file $filename]
+    
+    if { [info exists de_use_custom_scripts] } {
+        puts "Executing custom script for the test before reading data from file..."
+        set old_resource_path [de_before_script $filename]
+    }
+    
     if { [catch { $ReadCommand D_First $path_file } catch_result] } {
         set err_msg "Error: First - file was not read - exception "
 	puts $err_msg
 	append todo_msg $todo_mask $err_msg $end_line
         set mist 1
+    }
+    
+    if { [info exists de_use_custom_scripts] } {
+        puts "Executing custom script for the test after reading data from file..."
+        de_after_script $old_resource_path
+        unset de_use_custom_scripts
     }
 
 } else {

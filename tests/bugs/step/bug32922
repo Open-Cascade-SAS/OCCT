@@ -15,80 +15,18 @@ if { [info exists imagedir] == 0 } {
        file mkdir ${imagedir}
    }
 }
-
-# Generating resource file where all shape healing is off
-set fdata {
-ToSTEP.exec.op : SplitCommonVertex,DirectFaces
-
-FromSTEP.exec.op : FixShape
-
-FromSTEP.FixShape.Tolerance3d                         : &Runtime.Tolerance
-FromSTEP.FixShape.MaxTolerance3d                      : &Runtime.MaxTolerance
-FromSTEP.FixShape.MinTolerance3d                      : 1.e-7
-FromSTEP.FixShape.FixFreeShellMode                    : 0
-FromSTEP.FixShape.FixFreeFaceMode                     : 0
-FromSTEP.FixShape.FixFreeWireMode                     : 0
-FromSTEP.FixShape.FixSameParameterMode                : 0
-
-FromSTEP.FixShape.FixSolidMode                        : 0
-FromSTEP.FixShape.FixShellOrientationMode             : 0
-FromSTEP.FixShape.CreateOpenSolidMode                 : 0
-
-FromSTEP.FixShape.FixShellMode                        : 0
-FromSTEP.FixShape.FixFaceOrientationMode              : 0
-
-FromSTEP.FixShape.FixFaceMode                         : 0
-FromSTEP.FixShape.FixWireMode                         : 0
-FromSTEP.FixShape.FixOrientationMode                  : 0
-FromSTEP.FixShape.FixAddNaturalBoundMode              : 0
-FromSTEP.FixShape.FixMissingSeamMode                  : 0
-FromSTEP.FixShape.FixSmallAreaWireMode                : 0
-FromSTEP.FixShape.RemoveSmallAreaFaceMode             : 0
-FromSTEP.FixShape.FixIntersectingWiresMode            : 0
-FromSTEP.FixShape.FixLoopWiresMode                    : 0
-FromSTEP.FixShape.FixSplitFaceMode                    : 0
-FromSTEP.FixShape.AutoCorrectPrecisionMode            : 0
-FromSTEP.FixShape.ModifyTopologyMode                  : 0
-FromSTEP.FixShape.ModifyGeometryMode                  : 0
-FromSTEP.FixShape.ClosedWireMode                      : 0
-FromSTEP.FixShape.PreferencePCurveMode                : 0
-FromSTEP.FixShape.FixReorderMode                      : 0
-FromSTEP.FixShape.FixSmallMode                        : 0
-FromSTEP.FixShape.FixConnectedMode                    : 0
-FromSTEP.FixShape.FixEdgeCurvesMode                   : 0
-FromSTEP.FixShape.FixDegeneratedMode                  : 0
-FromSTEP.FixShape.FixLackingMode                      : 0
-FromSTEP.FixShape.FixSelfIntersectionMode             : 0
-FromSTEP.FixShape.RemoveLoopMode                      : 0
-FromSTEP.FixShape.FixReversed2dMode                   : 0
-FromSTEP.FixShape.FixRemovePCurveMode                 : 0
-FromSTEP.FixShape.FixRemoveCurve3dMode                : 0
-FromSTEP.FixShape.FixAddPCurveMode                    : 0
-FromSTEP.FixShape.FixAddCurve3dMode                   : 0
-FromSTEP.FixShape.FixSeamMode                         : 0
-FromSTEP.FixShape.FixShiftedMode                      : 0
-FromSTEP.FixShape.FixEdgeSameParameterMode            : 0
-FromSTEP.FixShape.FixNotchedEdgesMode                 : 0
-FromSTEP.FixShape.FixTailMode                         : 0
-FromSTEP.FixShape.MaxTailAngle                        : 0
-FromSTEP.FixShape.MaxTailWidth                        : 0
-FromSTEP.FixShape.FixSelfIntersectingEdgeMode         : 0
-FromSTEP.FixShape.FixIntersectingEdgesMode            : 0
-FromSTEP.FixShape.FixNonAdjacentIntersectingEdgesMode : 0
-
-FromSTEP.FixShape.FixVertexPositionMode               : 0
-FromSTEP.FixShape.FixVertexToleranceMode              : 0
-}
-
-set new_resource_path ${imagedir}
-set resource_file STEP
-set fo [open "${new_resource_path}/${resource_file}" "wb"]
-puts -nonewline $fo $fdata
-close $fo
-
-# Changing the path to the resource file
+# remember the path to the old resource file
 set old_resource_path $::env(CSF_STEPDefaults)
-set env(CSF_STEPDefaults) ${new_resource_path}
+# reading old resource file
+set anOptions [parse_resource_file "${old_resource_path}/STEP"]
+# turn off shape healing
+dict set anOptions "FromSTEP.exec.op" ""
+# path to new resource file
+set new_resource_path ${imagedir}
+# creating resource file
+create_resource_file "${new_resource_path}/STEP" $anOptions
+# changing the path to the resource file
+set ::env(CSF_STEPDefaults) ${new_resource_path}
 
 # Generating, writing and reading the torus
 ptorus tor 20 5
@@ -108,4 +46,4 @@ view 1 -2D- 728 20 400 400
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
 
 # Restoring the path to the old resource file
-set env(CSF_STEPDefaults) ${old_resource_path}
+set ::env(CSF_STEPDefaults) ${old_resource_path}

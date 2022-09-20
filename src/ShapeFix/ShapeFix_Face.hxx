@@ -261,7 +261,9 @@ protected:
 
 private:
 
-  
+  //! Returns True if the face needs to add natural bound and corresponded option of shape healing is ON
+  Standard_Boolean isNeedAddNaturalBound(const TopTools_SequenceOfShape& theOrientedWires);
+
   Standard_EXPORT Standard_Boolean SplitEdge (const Handle(ShapeExtend_WireData)& sewd, const Standard_Integer num, const Standard_Real param, const TopoDS_Vertex& vert, const Standard_Real preci, ShapeFix_DataMapOfShapeBox2d& boxes);
   
   Standard_EXPORT Standard_Boolean SplitEdge (const Handle(ShapeExtend_WireData)& sewd, const Standard_Integer num, const Standard_Real param1, const Standard_Real param2, const TopoDS_Vertex& vert, const Standard_Real preci, ShapeFix_DataMapOfShapeBox2d& boxes);
