@@ -90,7 +90,10 @@ public:
   //! from the shape <S>.
   Standard_EXPORT virtual const TopTools_ListOfShape& Generated (const TopoDS_Shape& S) Standard_OVERRIDE;
 
-
+  //! Converts each wire of the face into contour consisting only of
+  //! arcs and segments. New 3D curves are built too.
+  Standard_EXPORT static TopoDS_Face ConvertFace (const TopoDS_Face& theFace,
+                                                  const Standard_Real theAngleTolerance);
 
 
 protected:
