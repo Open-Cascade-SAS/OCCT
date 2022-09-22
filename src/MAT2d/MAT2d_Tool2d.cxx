@@ -27,9 +27,7 @@
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
 #include <GCE2d_MakeSegment.hxx>
-#include <DrawTrSurf.hxx>
 #endif
-
 
 #include <Bisector_Bisec.hxx>
 #include <Bisector_BisecAna.hxx>
@@ -229,10 +227,22 @@ Standard_Integer MAT2d_Tool2d::TangentBefore(const Standard_Integer anitem,
   type = theCircuit->Value(anitem)->DynamicType();
   if ( type != STANDARD_TYPE(Geom2d_CartesianPoint)){
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(anitem));
+#ifdef DRAW
+    char  *name = new char[100];
+    sprintf(name, "c%d", anitem);
+    DrawTrSurf::Set(name, curve);
+    delete [] name;
+#endif
     theGeomVecs.Bind(theNumberOfVecs,curve->DN(curve->LastParameter(),1));
   }
   else {
     curve = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(item));
+#ifdef DRAW
+    char  *name = new char[100];
+    sprintf(name, "c%d", item);
+    DrawTrSurf::Set(name, curve);
+    delete [] name;
+#endif
     Standard_Real param = (IsOpenResult && anitem == theCircuit->NumberOfItems())?
       curve->LastParameter() : curve->FirstParameter();
     theGeomVecs.Bind(theNumberOfVecs,curve->DN(param,1));
@@ -265,6 +275,12 @@ Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem,
   type = theCircuit->Value(anitem)->DynamicType();
   if ( type != STANDARD_TYPE(Geom2d_CartesianPoint)){
     curve     = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(anitem));
+#ifdef DRAW
+    char  *name = new char[100];
+    sprintf(name, "c%d", anitem);
+    DrawTrSurf::Set(name, curve);
+    delete [] name;
+#endif
     thevector = curve->DN(curve->FirstParameter(),1);
   }
   else {
@@ -272,7 +288,14 @@ Standard_Integer MAT2d_Tool2d::TangentAfter(const Standard_Integer anitem,
     item      = (anitem == 1) ? theCircuit->NumberOfItems() : (anitem - 1);
     else
       item = (anitem == 1) ? 2 : (anitem - 1);
+    
     curve     = Handle(Geom2d_Curve)::DownCast(theCircuit->Value(item));
+#ifdef DRAW
+    char  *name = new char[100];
+    sprintf(name, "c%d", item);
+    DrawTrSurf::Set(name, curve);
+    delete [] name;
+#endif
     Standard_Real param = (IsOpenResult && anitem == 1)?
       curve->FirstParameter() : curve->LastParameter();
     thevector = curve->DN(param,1);
@@ -396,6 +419,14 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
 
   abisector->BisectorNumber(theNumberOfBisectors);
   abisector->Sense(1);
+
+#ifdef DRAW
+  char  *name = new char[100];
+  sprintf(name, "b%d", theNumberOfBisectors);
+  DrawTrSurf::Set(name, bisector.Value());
+  Dump(abisector->BisectorNumber(),1);
+  delete [] name;
+#endif
 
 #ifdef OCCT_DEBUG
   Standard_Boolean AffichDraw = Standard_False;

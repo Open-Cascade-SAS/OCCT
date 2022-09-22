@@ -60,8 +60,8 @@ static Standard_Boolean NeedsConvertion (const TopoDS_Wire& theWire)
   return Standard_False;
 }
 
-static TopoDS_Face ConvertFace (const TopoDS_Face&  theFace,
-                                const Standard_Real theAngleTolerance)
+TopoDS_Face BRepOffsetAPI_MakeOffset::ConvertFace (const TopoDS_Face&  theFace,
+                                                   const Standard_Real theAngleTolerance)
 {
   TopAbs_Orientation anOr = theFace.Orientation();
   TopoDS_Face aFace = theFace;
@@ -76,6 +76,7 @@ static TopoDS_Face ConvertFace (const TopoDS_Face&  theFace,
     if (NeedsConvertion (aWire))
     {
       TopAbs_Orientation anOrOfWire = aWire.Orientation();
+      aWire.Orientation (TopAbs_FORWARD);
       aWire = BRepAlgo::ConvertWire (aWire, theAngleTolerance, aFace);
       BRepLib::BuildCurves3d (aWire);
       aWire.Orientation (anOrOfWire);
@@ -352,7 +353,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
   {
     if (myIsToApprox)
     {
-      Standard_Real aTol = 0.01;
+      Standard_Real aTol = 0.1;
       if (myFace.IsNull())
       {
         TopoDS_Face aFace;

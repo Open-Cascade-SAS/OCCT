@@ -35,6 +35,7 @@
 #include <Bisector_BisecAna.hxx>
 #include <Precision.hxx>
 
+#include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepMAT2d_Explorer.hxx>
 #include <BRepMAT2d_BisectingLocus.hxx>
 #include <BRepMAT2d_LinkTopoBilo.hxx>
@@ -44,6 +45,7 @@
 
 #include <DBRep.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
@@ -70,7 +72,16 @@ static Standard_Integer topoload (Draw_Interpretor& , Standard_Integer argc, con
 
   if (C1.IsNull()) return 1;
 
-  anExplo.Perform (TopoDS::Face(C1));
+  TopoDS_Face aFace = TopoDS::Face(C1);
+  
+  if (argc >= 3 &&
+      (strcmp(argv[2], "-approx") == 0))
+  {
+    Standard_Real aTol = 0.1;
+    aFace = BRepOffsetAPI_MakeOffset::ConvertFace (aFace, aTol);
+  }
+
+  anExplo.Perform (aFace);
   return 0;
 }
 
@@ -267,7 +278,7 @@ void DrawCurve(const Handle(Geom2d_Curve)& aCurve,
 
 void BRepTest::MatCommands (Draw_Interpretor& theCommands)
 {
-  theCommands.Add("topoload","load face",__FILE__,topoload);
+  theCommands.Add("topoload","load face: topoload face [-approx]",__FILE__,topoload);
   theCommands.Add("drawcont","display current contour",__FILE__,drawcont);
   theCommands.Add("mat","computes the mat: mat [a/i [o]]",__FILE__,mat);
   theCommands.Add("side","side left/right",__FILE__,side);
