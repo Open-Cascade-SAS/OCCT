@@ -8,7 +8,7 @@ restore [locate_data_file bug32424.brep] result
 
 incmesh result 0.17 -a 20
 
-checktrinfo result -tri 16168 -nod 8206
+checktrinfo result -tri 2360 -nod 1302
 
 vinit
 vdefaults -autoTriang 0

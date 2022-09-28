@@ -6,7 +6,7 @@ set TheFileName shading_wrongshape_030.brep
 set bug_cross "OCC22687"
 set nbcross(All) 4
 if { [string compare $command "shading"] == 0 } {
-  set rel_tol 0.48575382373356474
+  set rel_tol 0.4953655446472135
 } else {
   set rel_tol 0.1856053577754922
 }

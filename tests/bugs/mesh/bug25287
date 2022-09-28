@@ -11,7 +11,7 @@ renamevar a_1 result
 
 incmesh result 0.0001 -a 30 -force_face_def -parallel
 
-checktrinfo result -tri 14494 -nod 9510 -defl 0.00031502118964205414 -tol_abs_defl 1e-6
+checktrinfo result -tri 14058 -nod 9292 -defl 0.00031502118964205414 -tol_abs_defl 1e-6
 
 vinit
 vsetdispmode 1

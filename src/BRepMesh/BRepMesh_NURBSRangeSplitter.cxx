@@ -556,7 +556,7 @@ Handle(IMeshData::SequenceOfReal) BRepMesh_NURBSRangeSplitter::computeGrainAndFi
   const Handle(BRepAdaptor_Surface)& aSurface = GetSurface();
   const Standard_Real aMinSize2d = Max(
     aSurface->UResolution(theParameters.MinSize),
-    aSurface->UResolution(theParameters.MinSize));
+    aSurface->VResolution(theParameters.MinSize));
 
   aMinDiff = Max(aMinSize2d, aMinDiff);
 

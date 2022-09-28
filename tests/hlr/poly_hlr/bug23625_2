@@ -4,7 +4,7 @@ puts "============"
 puts ""
 
 set viewname "vfront"
-set length 27126.9
+set length 27223.1
 
 restore [locate_data_file bug23625_a2.brep] a
 COMPUTE_HLR $viewname $algotype

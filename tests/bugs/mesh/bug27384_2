@@ -17,7 +17,7 @@ vdefaults -autoTriang 0
 vdisplay result
 vfit
 
-set rel_tol 0.7607262575544315
+set rel_tol 0.7558889057543047
 set max_rel_tol_diff 0.001
 set area_eps 1
 

@@ -1,5 +1,4 @@
 puts "TODO OCC12345 ALL: Error: Number of triangles"
-puts "TODO OCC12345 ALL: Error: Number of nodes"
 
 puts "============"
 puts "FRA62476"
