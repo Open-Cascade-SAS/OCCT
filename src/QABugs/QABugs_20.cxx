@@ -4359,6 +4359,120 @@ static Standard_Integer QACheckBends(Draw_Interpretor& theDI,
   return 0;
 }
 
+static Standard_Integer OCC26441(Draw_Interpretor& theDi, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs < 3)
+  {
+    theDi << "Syntax error: wrong number of arguments!\n";
+    return 1;
+  }
+
+  const TopoDS_Shape& aShape = DBRep::Get(theArgVec[1]);
+  if (aShape.IsNull())
+  {
+    theDi << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  const TopoDS_Shape& aRefShape = DBRep::Get(theArgVec[2]);
+  if (aRefShape.IsNull())
+  {
+    theDi << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  if(aShape.ShapeType() != aRefShape.ShapeType())
+  {
+    theDi << " Shape types are not the same\n";
+    return 1;
+  }
+
+  Standard_Real anEps = Precision::Confusion();
+  if (theNbArgs > 3)
+  {
+    anEps = Draw::Atof(theArgVec[3]);
+  }
+
+  Standard_Boolean isAllDiff = Standard_False;
+  if (theNbArgs > 4)
+  {
+    Standard_Integer Inc = Draw::Atoi(theArgVec[4]);
+    if (Inc > 0)
+      isAllDiff = Standard_True;
+  }
+
+  BRep_Builder aBB;
+  TopExp_Explorer anExp, anExpRef;
+  Standard_Real aMaxE = 0., aMaxV = 0.;
+  TopTools_MapOfShape aChecked;
+  TopoDS_Vertex aV[2], aRefV[2];
+
+  //Checking edge and vertex tolerances
+  TopoDS_Compound aBadEdges;
+  aBB.MakeCompound(aBadEdges);
+  TopoDS_Compound aBadVerts;
+  aBB.MakeCompound(aBadVerts);
+  anExp.Init(aShape, TopAbs_EDGE);
+  anExpRef.Init(aRefShape, TopAbs_EDGE);
+  for (; anExpRef.More(); anExpRef.Next())
+  {
+    const TopoDS_Edge& aRefE = TopoDS::Edge(anExpRef.Current());
+    if (!anExp.More())
+    {
+      theDi << " Different number of edges\n";
+      return 1;
+    }
+    const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
+    if (!aChecked.Add(anE))
+      continue;
+    Standard_Real aTolRef = BRep_Tool::Tolerance(aRefE);
+    Standard_Real aTol = BRep_Tool::Tolerance(anE);
+    Standard_Real aDiff = aTol - aTolRef;
+    if (isAllDiff && aDiff < 0)
+      aDiff = -aDiff;
+    if (aDiff > anEps)
+    {
+      if (aDiff > aMaxE)
+        aMaxE = aDiff;
+
+      aBB.Add(aBadEdges, anE);
+    }
+    TopExp::Vertices(aRefE, aRefV[0], aRefV[1]);
+    TopExp::Vertices(anE, aV[0], aV[1]);
+
+    for (int i = 0; i < 2; ++i)
+    {
+      if (aRefV[i].IsNull())
+        continue;
+      if (!aChecked.Add(aV[i]))
+        continue;
+      aTolRef = BRep_Tool::Tolerance(aRefV[i]);
+      aTol = BRep_Tool::Tolerance(aV[i]);
+      aDiff = aTol - aTolRef;
+      if (aDiff > anEps)
+      {
+        if (aDiff > aMaxV)
+          aMaxV = aDiff;
+
+        aBB.Add(aBadVerts, aV[i]);
+      }
+    }
+
+    anExp.Next();
+
+  }
+
+  if (aMaxE > anEps)
+  {
+    theDi << " Maximal difference for edges : " << aMaxE << "\n";
+    DBRep::Set("BadEdges", aBadEdges);
+  }
+  if (aMaxV > anEps)
+  {
+    theDi << " Maximal difference for vertices : " << aMaxV << "\n";
+    DBRep::Set("BadVerts", aBadVerts);
+  }
+
+  return 0;
+}
 
 
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
@@ -4466,6 +4580,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
     "QACheckBends curve [CosMaxAngle [theNbPoints]]",
     __FILE__,
     QACheckBends, group);
+  theCommands.Add("OCC26441",
+    "OCC26441 shape ref_shape [tol [all_diff 0/1]] \nif all_diff = 0, only icreasing tolerances is considered" ,
+    __FILE__,
+    OCC26441, group);
 
   return;
 }

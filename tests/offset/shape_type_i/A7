@@ -1,5 +1,4 @@
 puts "TODO OCC23068 ALL: Error : The volume of result shape "
-puts "TODO OCC25406 ALL: Error: bsection of the result and s is not equal to zero"
 
 pcone s 5 0 12 270
 

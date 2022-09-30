@@ -1,5 +1,6 @@
 puts "TODO OCC23068 ALL: Error : The volume of result shape is"
 puts "TODO OCC23068 ALL: Error: bsection of the result and s is not equal to zero"
+puts "TODO OCC23068 ALL: Faulty shapes"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2
