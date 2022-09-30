@@ -336,8 +336,10 @@ static BRepOffset_Error checkSinglePoint(const Standard_Real theUParam,
                                          const NCollection_Vector<gp_Pnt>& theBadPoints);
 
 //---------------------------------------------------------------------
-static void UpdateTolerance (      TopoDS_Shape&               myShape,
-                             const TopTools_IndexedMapOfShape& myFaces);
+static void UpdateTolerance (      TopoDS_Shape&               theShape,
+                             const TopTools_IndexedMapOfShape& theFaces,
+                             const TopoDS_Shape& theInitShape);
+
 static Standard_Real ComputeMaxDist(const gp_Pln& thePlane, 
                                     const Handle(Geom_Curve)& theCrv,
                                     const Standard_Real theFirst,
@@ -1036,8 +1038,16 @@ void BRepOffset_MakeOffset::MakeOffsetShape(const Message_ProgressRange& theRang
   // MAJ Tolerance edge and Vertex
   // ----------------------------
   if (!myOffsetShape.IsNull()) {
-    UpdateTolerance (myOffsetShape,myFaces);
-    BRepLib::UpdateTolerances( myOffsetShape );
+    if (myThickening)
+    {
+      UpdateTolerance(myOffsetShape, myFaces, myShape);
+    }
+    else
+    {
+      TopoDS_Shape aDummy;
+      UpdateTolerance(myOffsetShape, myFaces, aDummy);
+    }
+    BRepLib::UpdateTolerances(myOffsetShape);
   }
 
   CorrectConicalFaces();
@@ -3165,13 +3175,38 @@ void BRepOffset_MakeOffset::MakeMissingWalls (const Message_ProgressRange& theRa
       } //if both edges are arcs of circles
       if (NewFace.IsNull())
       {
-        BRepLib_MakeFace MF(theWire, Standard_True); //Only plane
-        if (MF.Error() == BRepLib_FaceDone)
+        Standard_Real anEdgeTol = BRep_Tool::Tolerance(anEdge);
+        //Tolerances of input shape should not be increased by BRepLib_MakeFace
+        BRepLib_FindSurface aFindPlane(theWire, anEdgeTol, Standard_True); //only plane
+        IsPlanar = Standard_False;
+        if(aFindPlane.Found() && aFindPlane.ToleranceReached() <= anEdgeTol)
         {
-          NewFace = MF.Face();
-          IsPlanar = Standard_True;
+          Standard_Real f, l;
+          Handle(Geom_Curve) aGC = BRep_Tool::Curve(anEdge, f, l);
+          Handle(Geom_Plane) aPln = Handle(Geom_Plane)::DownCast(aFindPlane.Surface());
+          Standard_Real aMaxDist = ComputeMaxDist(aPln->Pln(), aGC, f, l);
+          if (aMaxDist <= anEdgeTol)
+          {
+            BRepLib_MakeFace MF(aPln->Pln(), theWire);
+            if (MF.IsDone())
+            {
+              NewFace = MF.Face();
+              TopoDS_Iterator anItE(theWire);
+              for (; anItE.More(); anItE.Next())
+              {
+                const TopoDS_Edge& anE = TopoDS::Edge(anItE.Value());
+                if (anE.IsSame(anEdge))
+                  continue;
+                aGC = BRep_Tool::Curve(anE, f, l);
+                aMaxDist = ComputeMaxDist(aPln->Pln(), aGC, f, l);
+                BB.UpdateEdge(anE, aMaxDist);
+              }
+              IsPlanar = Standard_True;
+            }
+          }
         }
-        else //Extrusion (by thrusections)
+        //
+        if(!IsPlanar) //Extrusion (by thrusections)
         {
           Handle(Geom_Curve) EdgeCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
           Handle(Geom_TrimmedCurve) TrEdgeCurve =
@@ -3185,7 +3220,6 @@ void BRepOffset_MakeOffset::MakeMissingWalls (const Message_ProgressRange& theRa
           ThrusecGenerator.AddCurve( TrOffsetCurve );
           ThrusecGenerator.Perform( Precision::PConfusion() );
           theSurf = ThrusecGenerator.Surface();
-          //theSurf = new Geom_SurfaceOfLinearExtrusion( TrOffsetCurve, OffsetDir );
           Standard_Real Uf, Ul, Vf, Vl;
           theSurf->Bounds(Uf, Ul, Vf, Vl);
           TopLoc_Location Loc;
@@ -3272,8 +3306,14 @@ void BRepOffset_MakeOffset::MakeMissingWalls (const Message_ProgressRange& theRa
           BB.Range( anE3, FirstPar, LastPar );
         }
       }
-      BRepLib::SameParameter(NewFace);
-      BRepTools::Update(NewFace);
+
+      if (!IsPlanar)
+      {
+        // For planar faces these operations are useless,
+        // because there are no curves on surface
+        BRepLib::SameParameter(NewFace);
+        BRepTools::Update(NewFace);
+      }
       //Check orientation
       TopAbs_Orientation anOr = OrientationOfEdgeInFace(anEdge, aFaceOfEdge);
       TopAbs_Orientation OrInNewFace = OrientationOfEdgeInFace(anEdge, NewFace);
@@ -3781,6 +3821,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
 #endif
 }
 
+
 //=======================================================================
 //function : ComputeMaxDist
 //purpose  : 
@@ -3807,13 +3848,15 @@ Standard_Real ComputeMaxDist(const gp_Pln& thePlane,
   }
   return sqrt(aMaxDist)*1.05;
 }
+
 //=======================================================================
-//function : UpDateTolerance
+//function : UpdateTolerance
 //purpose  : 
 //=======================================================================
 
 void UpdateTolerance (TopoDS_Shape& S,
-                      const TopTools_IndexedMapOfShape& Faces)
+                      const TopTools_IndexedMapOfShape& Faces,
+                      const TopoDS_Shape& theInitShape)
 {
   BRep_Builder B;
   TopTools_MapOfShape View;
@@ -3829,12 +3872,31 @@ void UpdateTolerance (TopoDS_Shape& S,
     }
   }
   
-  Standard_Real Tol;
-  TopExp_Explorer ExpF;
-  for (ExpF.Init(S, TopAbs_FACE); ExpF.More(); ExpF.Next())
+  // The edges of initial shape are  not modified
+  TopTools_MapOfShape aMapInitF;
+  if (!theInitShape.IsNull())
   {
-    const TopoDS_Shape& F = ExpF.Current();
-    if (Faces.Contains(F))
+    TopExp_Explorer anExpF(theInitShape, TopAbs_FACE);
+    for (; anExpF.More(); anExpF.Next()) {
+      aMapInitF.Add(anExpF.Current());
+      TopExp_Explorer anExpE;
+      for (anExpE.Init(anExpF.Current(), TopAbs_EDGE); anExpE.More(); anExpE.Next()) {
+        View.Add(anExpE.Current());
+        TopoDS_Iterator anItV(anExpE.Current());
+        for (; anItV.More(); anItV.Next())
+        {
+          View.Add(anItV.Value());
+        }
+      }
+    }
+  }
+  
+  Standard_Real Tol;
+  TopExp_Explorer anExpF(S, TopAbs_FACE);
+  for (; anExpF.More(); anExpF.Next())
+  {
+    const TopoDS_Shape& F = anExpF.Current();
+    if (Faces.Contains(F) || aMapInitF.Contains(F))
     {
       continue;
     }
@@ -3843,6 +3905,7 @@ void UpdateTolerance (TopoDS_Shape& S,
     for (Exp.Init(F, TopAbs_EDGE); Exp.More(); Exp.Next()) {
       TopoDS_Edge E = TopoDS::Edge(Exp.Current());
       Standard_Boolean isUpdated = Standard_False;
+      Standard_Real aCurrTol = BRep_Tool::Tolerance(E);
       if (aBAS.GetType() == GeomAbs_Plane)
       {
         //Edge does not seem to have pcurve on plane,
@@ -3850,17 +3913,22 @@ void UpdateTolerance (TopoDS_Shape& S,
         Standard_Real aFirst, aLast;
         Handle(Geom_Curve) aCrv = BRep_Tool::Curve(E, aFirst, aLast);
         Standard_Real aMaxDist = ComputeMaxDist(aBAS.Plane(), aCrv, aFirst, aLast);
-        E.Locked (Standard_False);
-        B.UpdateEdge(E, aMaxDist);
-        isUpdated = Standard_True;
+        if (aMaxDist > aCurrTol)
+        {
+          B.UpdateEdge(E, aMaxDist);
+          isUpdated = Standard_True;
+        }
       }
       if (View.Add(E))
       {
-
+        E.Locked(Standard_False);       
         BRepCheck_Edge EdgeCorrector(E);
         Tol = EdgeCorrector.Tolerance();
-        B.UpdateEdge(E, Tol);
-        isUpdated = Standard_True;
+        if (Tol > aCurrTol)
+        {
+          B.UpdateEdge(E, Tol);
+          isUpdated = Standard_True;
+        }
       }
       if (isUpdated)
       {
@@ -3869,11 +3937,11 @@ void UpdateTolerance (TopoDS_Shape& S,
         TopExp::Vertices(E, V[0], V[1]);
 
         for (Standard_Integer i = 0; i <= 1; i++) {
+          V[i].Locked(Standard_False);
           if (View.Add(V[i])) {
             Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V[i].TShape());
             TV->Tolerance(0.);
             BRepCheck_Vertex VertexCorrector(V[i]);
-            V[i].Locked (Standard_False);
             B.UpdateVertex(V[i], VertexCorrector.Tolerance());
             // use the occasion to clean the vertices.
             (TV->ChangePoints()).Clear();

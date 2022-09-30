@@ -2,7 +2,7 @@ puts "================================================="
 puts "0030054: BRepOffset_MakeOffset fails to build joints in intersection mode"
 puts "================================================="
 puts ""
-
+puts "TODO OCC33166 ALL: Faulty shapes"
 restore [locate_data_file bug30054.brep] a
 
 thickshell result a 1 i
