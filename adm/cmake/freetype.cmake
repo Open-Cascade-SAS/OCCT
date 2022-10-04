@@ -110,7 +110,18 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
     set (ENV{FREETYPE_DIR} "${3RDPARTY_FREETYPE_DIR}")
   endif()
 
+  unset (FREETYPE_LIBRARY_RELEASE)
   find_package(Freetype)
+
+  # Only for UNIX (not APPLE)
+  if ((NOT WIN32) AND (NOT APPLE))
+    # To avoid linker error on Ubuntu 18.04 and others linux distributives we should
+    # link with freetype library, compiled as Position Independent Code (PIC),
+    # for example, with shared object.
+    if ((DEFINED FREETYPE_LIBRARY_RELEASE) AND (NOT "${FREETYPE_LIBRARY_RELEASE}" STREQUAL "") AND (EXISTS "${FREETYPE_LIBRARY_RELEASE}"))
+      string (REPLACE "\.a" "\.so" FREETYPE_LIBRARY_RELEASE "${FREETYPE_LIBRARY_RELEASE}")
+    endif()
+  endif()
 
   # restore ENV{FREETYPE_DIR}
   if (3RDPARTY_FREETYPE_DIR AND EXISTS "${3RDPARTY_FREETYPE_DIR}")
@@ -122,7 +133,7 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
     CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_ft2build FILEPATH "The directory containing ft2build.h header")
     CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_INCLUDE_DIR_freetype2 FILEPATH "The directory containing ftheader.h header")
     if (BUILD_SHARED_LIBS)
-      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_LIBRARY FILEPATH "freetype library")
+      CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_FREETYPE_DIR FREETYPE_LIBRARY_RELEASE FILEPATH "freetype library")
     endif()
   endif()
 
@@ -141,8 +152,8 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
 
   if (BUILD_SHARED_LIBS)
     if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-      if (FREETYPE_LIBRARY AND EXISTS "${FREETYPE_LIBRARY}")
-        set (3RDPARTY_FREETYPE_LIBRARY  "${FREETYPE_LIBRARY}" CACHE FILEPATH "The path to freetype library" FORCE)
+      if (FREETYPE_LIBRARY_RELEASE AND EXISTS "${FREETYPE_LIBRARY_RELEASE}")
+        set (3RDPARTY_FREETYPE_LIBRARY  "${FREETYPE_LIBRARY_RELEASE}" CACHE FILEPATH "The path to freetype library" FORCE)
       endif()
     endif()
 
@@ -220,7 +231,7 @@ endif()
 # freetype library
 #if (BUILD_SHARED_LIBS)
   if (NOT 3RDPARTY_FREETYPE_LIBRARY OR NOT EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib .a)
+    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .so .dylib)
 
     set (FREETYPE_PATH_SUFFIXES lib)
     if (ANDROID)
@@ -240,6 +251,16 @@ endif()
       find_library (3RDPARTY_FREETYPE_LIBRARY ${CSF_FREETYPE}
                                               PATH_SUFFIXES ${FREETYPE_PATH_SUFFIXES}
                                               CMAKE_FIND_ROOT_PATH_BOTH)
+    endif()
+
+    # Only for UNIX (not APPLE)
+    if ((NOT WIN32) AND (NOT APPLE))
+      # To avoid linker error on Ubuntu 18.04 and some others linux distributives we should
+      # link with freetype library, compiled as Position Independent Code (PIC),
+      # for example, with shared object.
+      if ((DEFINED 3RDPARTY_FREETYPE_LIBRARY) AND (NOT "${3RDPARTY_FREETYPE_LIBRARY}" STREQUAL "") AND (EXISTS "${3RDPARTY_FREETYPE_LIBRARY}"))
+        string (REPLACE "\.a" "\.so" 3RDPARTY_FREETYPE_LIBRARY "${3RDPARTY_FREETYPE_LIBRARY}")
+      endif()
     endif()
 
     if (3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
@@ -350,7 +371,7 @@ endif()
 # unset all redundant variables
 OCCT_CHECK_AND_UNSET(FREETYPE_INCLUDE_DIR_ft2build)
 OCCT_CHECK_AND_UNSET(FREETYPE_INCLUDE_DIR_freetype2)
-OCCT_CHECK_AND_UNSET(FREETYPE_LIBRARY)
+OCCT_CHECK_AND_UNSET(FREETYPE_LIBRARY_RELEASE)
 
 if (BUILD_SHARED_LIBS)
   mark_as_advanced (3RDPARTY_FREETYPE_LIBRARY 3RDPARTY_FREETYPE_DLL)
