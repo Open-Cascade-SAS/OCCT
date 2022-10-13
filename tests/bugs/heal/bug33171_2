@@ -1,0 +1,57 @@
+puts "========================"
+puts " 	0033171: Modeling Algorithms - Invalid result of faces unification"
+puts "========================"
+puts ""
+
+# make two solids
+box b1 10 10 5
+box b2 10 0 0 5 5 5
+# make shared
+bclearobjects
+bcleartools
+baddobjects b1 b2
+bfillds
+bbuild r
+
+checkshape r
+if {![regexp "This shape seems to be OK" [bopcheck r]]} {
+    puts "Error: invalid shape after fuse"
+}
+
+# try to unify faces in the result compound
+unifysamedom ru1 r
+unifysamedom ru2 r +i
+
+checkshape ru1
+checkshape ru2
+
+checknbshapes ru1 -ref [nbshapes r -t] -t
+checknbshapes ru2 -ref [nbshapes r -t] -t
+
+if {![regexp "This shape seems to be OK" [bopcheck ru1]]} {
+    puts "Error: invalid shape after faces unification"
+}
+if {![regexp "This shape seems to be OK" [bopcheck ru2]]} {
+    puts "Error: invalid shape after faces unification"
+}
+
+# make compound of shells
+eval compound [explode r] shs
+
+unifysamedom shsu1 r
+unifysamedom shsu2 r +i
+
+checkshape shsu1
+checkshape shsu2
+
+checknbshapes shsu1 -ref [nbshapes shs -t] -t
+checknbshapes shsu2 -ref [nbshapes shs -t] -t
+
+if {![regexp "This shape seems to be OK" [bopcheck shsu1]]} {
+    puts "Error: invalid shape after faces unification"
+}
+if {![regexp "This shape seems to be OK" [bopcheck shsu2]]} {
+    puts "Error: invalid shape after faces unification"
+}
+
+checkview -display ru2 -2d -path ${imagedir}/${test_image}.png
