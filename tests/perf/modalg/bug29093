@@ -1,0 +1,30 @@
+puts "========"
+puts "0029093: BOP PaveFiller hungs and constantly consumes memory"
+puts "========"
+puts ""
+
+bclearobjects;
+bcleartools;
+
+restore [locate_data_file bug29093.brep] a
+
+explode a So
+baddobjects a_7
+baddtools a_9
+
+dchrono cr restart
+
+bfillds
+bbuild result
+
+dchrono cr stop counter bbuild
+
+checkshape result
+checkprops result -s 1329680 -v 34507100
+checknbshapes result -vertex 5 -edge 13 -wire 9 -face 9 -shell 3 -solid 3 
+
+smallview
+donly result
+fit
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
