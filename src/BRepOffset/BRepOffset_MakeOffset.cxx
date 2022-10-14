@@ -4641,6 +4641,53 @@ Standard_Boolean BRepOffset_MakeOffset::IsPlanar()
       if (aPlanarityChecker.IsPlanar())
       {
         gp_Pln aPln = aPlanarityChecker.Plan();
+        Standard_Real u1, u2, v1, v2, um, vm;
+        aSurf->Bounds(u1, u2, v1, v2);
+        Standard_Boolean isInf1 = Precision::IsInfinite(u1), isInf2 = Precision::IsInfinite(u2);
+        if (!isInf1 && !isInf2)
+        {
+          um = (u1 + u2) / 2.;
+        }
+        else if(isInf1 && !isInf2)
+        {
+          um = u2 - 1.;
+        }
+        else if(!isInf1 && isInf2)
+        {
+          um = u1 + 1.;
+        }
+        else //isInf1 && isInf2
+        {
+          um = 0.;
+        }
+        isInf1 = Precision::IsInfinite(v1), isInf2 = Precision::IsInfinite(v2);
+        if (!isInf1 && !isInf2)
+        {
+          vm = (v1 + v2) / 2.;
+        }
+        else if (isInf1 && !isInf2)
+        {
+          vm = v2 - 1.;
+        }
+        else if(!isInf1 && isInf2)
+        {
+          vm = v1 + 1.;
+        }
+        else //isInf1 && isInf2
+        {
+          vm = 0.;
+        }
+        gp_Pnt aP;
+        gp_Vec aD1, aD2;
+        aBAS.D1(um, vm, aP, aD1, aD2);
+        gp_Vec aNorm = aD1.Crossed(aD2);
+        gp_Dir aPlnNorm = aPln.Position().Direction();
+        if (aNorm.Dot(aPlnNorm) < 0.)
+        {
+          aPlnNorm.Reverse();
+          gp_Ax1 anAx(aPln.Position().Location(), aPlnNorm);
+          aPln.SetAxis(anAx);
+        }
         Handle(Geom_Plane) aPlane = new Geom_Plane(aPln);
         TopoDS_Face aPlanarFace;
         aBB.MakeFace(aPlanarFace, aPlane, aTolForFace);
