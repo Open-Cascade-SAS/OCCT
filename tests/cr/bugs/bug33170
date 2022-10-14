@@ -1,0 +1,30 @@
+puts "============"
+puts "0033170: Modeling Algorithms - Checking for canonical geometry: plane detection problems" 
+puts "============"  
+puts ""               
+
+set ExpectGap 0.0051495320504590563
+brestore [locate_data_file bug33170.brep] f
+set log1 [getanasurf asurf1 f pln  0.006]
+regexp {Gap = +([-0-9.+eE]+)} $log1 full gap1
+if {[isdraw asurf1]} {
+  set log [dump asurf1]
+  if { [regexp {Plane} $log ] != 1 } {
+     puts "Error: surface is not a plane"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+checkreal FoundGap1 $gap1 $ExpectGap 1.0e-9 0.0
+# 
+set log2 [getanasurf asurf2 f pln  1.]
+regexp {Gap = +([-0-9.+eE]+)} $log1 full gap2
+if {[isdraw asurf2]} {
+  set log [dump asurf2]
+  if { [regexp {Plane} $log ] != 1 } {
+     puts "Error: surface is not a plane"
+  }
+} else {
+  puts "Error: required surface is not got"
+}
+checkreal FoundGap2 $gap2 $ExpectGap 1.0e-9 0.0
