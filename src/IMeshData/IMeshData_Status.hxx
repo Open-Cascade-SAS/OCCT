@@ -28,7 +28,7 @@ enum IMeshData_Status
   IMeshData_TooFewPoints          = 0x20,  //!< Discrete model contains too few boundary points to generate mesh.
   IMeshData_Outdated              = 0x40,  //!< Existing triangulation of some faces corresponds to greater deflection than specified by parameter.
   IMeshData_Reused                = 0x80,  //!< Existing triangulation of some faces is reused as far as it fits specified deflection.
-  IMeshData_UserBreak             = 0x160  //!< User break
+  IMeshData_UserBreak             = 0x100  //!< User break
 };
 
 #endif
