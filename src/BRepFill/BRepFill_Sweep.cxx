@@ -3002,7 +3002,7 @@ void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
         }
       }
 
-    if (aNbFaces == 0)
+    if ((NbTrous > 0) ? (aNbFaces < NbLaw) : (aNbFaces == 0))
     {
       isDone = Standard_False;
       return;
