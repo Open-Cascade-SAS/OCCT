@@ -1595,8 +1595,10 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   //   SINON, la shape est prise et transferee telle quelle
   TopoDS_Shape sh0 = shape;
   gp_Trsf aLoc;
+  Standard_Boolean isShapeLocated = Standard_False;
   if ( GroupMode() >0) {
     TopLoc_Location shloc = shape.Location();
+    isShapeLocated = !shloc.IsIdentity();
     aLoc = shloc.Transformation();
     TopLoc_Location shident;
     sh0.Location (shident);
@@ -1676,7 +1678,7 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   myContext.NextIndex();
 
   // abv 16.10.00: bind CDSR (et al) to located shape in order to be able to track instances
-  if (mapper != start && aLoc.Form() != gp_Identity) {
+  if (mapper != start && isShapeLocated) {
     Handle(Transfer_Binder) bnd = FP->Find ( start );
     for ( Standard_Integer j=1; j <= roots->Length(); j++ ) 
       if ( bnd.IsNull() ) bnd = TransientResult ( roots->Value(j) );
