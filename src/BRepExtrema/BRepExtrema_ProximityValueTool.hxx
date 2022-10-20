@@ -1,4 +1,4 @@
-// Created on: 2022-08-08
+﻿// Created on: 2022-08-08
 // Created by: Kseniya NOSULKO
 // Copyright (c) 2022 OPEN CASCADE SAS
 //
@@ -18,9 +18,67 @@
 
 #include <BRepExtrema_ProximityDistTool.hxx>
 #include <BRepExtrema_TriangleSet.hxx>
+#include <NCollection_CellFilter.hxx>
+#include <Precision.hxx>
+
+typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
+
+//! Class BRepExtrema_VertexInspector
+//!   derived from NCollection_CellFilter_InspectorXYZ
+//!   This class define the Inspector interface for CellFilter algorithm,
+//!   working with gp_XYZ points in 3d space.
+//!   Used in search of coincidence points with a certain tolerance.
+class BRepExtrema_VertexInspector : public NCollection_CellFilter_InspectorXYZ
+{
+public:
+  typedef Standard_Integer Target;
+
+  //! Constructor; remembers the tolerance
+  BRepExtrema_VertexInspector()
+  : myTol (Precision::SquareConfusion()),
+    myIsNeedAdd (Standard_True)
+  {}
+
+  //! Keep the points used for comparison
+  void Add (const gp_XYZ& thePnt)
+  {
+    myPoints.Append (thePnt);
+  }
+
+  //! Set tolerance for comparison of point coordinates
+  void SetTol (const Standard_Real theTol)
+  {
+    myTol = theTol;
+  }
+
+  //! Set current point to search for coincidence
+  void SetCurrent (const gp_XYZ& theCurPnt)
+  {
+    myCurrent = theCurPnt;
+    myIsNeedAdd = Standard_True;
+  }
+
+  Standard_Boolean IsNeedAdd()
+  {
+    return myIsNeedAdd;
+  }
+
+  //! Implementation of inspection method
+  Standard_EXPORT NCollection_CellFilter_Action Inspect (const Standard_Integer theTarget);
+
+private:
+  Standard_Real myTol;
+  Standard_Boolean myIsNeedAdd;
+  VectorOfPoint myPoints;
+  gp_XYZ myCurrent;
+};
+
+typedef NCollection_CellFilter<BRepExtrema_VertexInspector> BRepExtrema_CellFilter;
+typedef typename BRepExtrema_ProximityDistTool::ProxPnt_Status ProxPnt_Status;
 
 //! Tool class for computation of the proximity value from one BVH
 //! primitive set to another, solving max(min) problem.
+//! Handles only edge/edge or face/face cases.
 //! This tool is not intended to be used independently, and is integrated
 //! in other classes, implementing algorithms based on shape tessellation
 //! (BRepExtrema_ShapeProximity and BRepExtrema_SelfIntersection).
@@ -29,8 +87,6 @@
 //! on the quality of input tessellation(s).
 class BRepExtrema_ProximityValueTool
 {
-public:
-  typedef typename BRepExtrema_ProximityDistTool::ProxPnt_Status ProxPnt_Status;
 
 public:
 
@@ -86,9 +142,17 @@ public:
 
 private:
 
+  //! Gets shape data for further refinement.
+  Standard_Boolean getInfoForRefinement (const TopoDS_Shape& theShapes,
+                                         TopAbs_ShapeEnum& theShapeType,
+                                         Standard_Integer& theNbNodes,
+                                         Standard_Real& theStep);
+
   //! Returns the computed proximity value from first BVH to another one.
   Standard_Real computeProximityDist (const Handle(BRepExtrema_TriangleSet)& theSet1,
                                       const Standard_Integer theNbSamples1,
+                                      const BVH_Array3d& theAddVertices1,
+                                      const NCollection_Vector<ProxPnt_Status>& theAddStatus1,
                                       const Handle(BRepExtrema_TriangleSet)& theSet2,
                                       const BRepExtrema_ShapeList& theShapeList1,
                                       const BRepExtrema_ShapeList& theShapeList2,
@@ -97,6 +161,29 @@ private:
                                       ProxPnt_Status& thePointStatus1,
                                       ProxPnt_Status& thePointStatus2) const;
 
+  //! Gets additional vertices on shapes with refining a coarser one if it's needed.
+  Standard_Boolean getShapesAdditionalVertices();
+
+  //! Gets additional vertices and their statuses on the edge with the input step.
+  Standard_Boolean getEdgeAdditionalVertices (const TopoDS_Edge& theEdge,
+                                              const Standard_Real theStep,
+                                              BVH_Array3d& theAddVertices,
+                                              NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+
+  //! Gets additional vertices and their statuses on the face with the input step (triangle square).
+  Standard_Boolean getFaceAdditionalVertices (const TopoDS_Face& theFace,
+                                              const Standard_Real theStep,
+                                              BVH_Array3d& theAddVertices,
+                                              NCollection_Vector<ProxPnt_Status>& theAddStatuses);
+
+  //! Splits the triangle recursively, halving the longest side
+  //! to the area of ​​the current triangle > input step
+  void doRecurTrgSplit (const gp_Pnt (&theTrg)[3],
+                        const ProxPnt_Status (&theEdgesStatus)[3],
+                        const Standard_Real theTol,
+                        const Standard_Real theStep,
+                        BVH_Array3d& theAddVertices,
+                        NCollection_Vector<ProxPnt_Status>& theAddStatuses);
 private:
 
   //! Set of all mesh primitives of the 1st shape.
@@ -108,6 +195,35 @@ private:
   BRepExtrema_ShapeList myShapeList1;
   //! List of subshapes of the 2nd shape.
   BRepExtrema_ShapeList myShapeList2;
+
+  //! The 1st shape.
+  TopoDS_Shape myShape1;
+  //! The 2nd shape.
+  TopoDS_Shape myShape2;
+
+  BVH_Array3d myAddVertices1; //!< Additional vertices on the 1st shape if its mesh is coarser.
+  BVH_Array3d myAddVertices2; //!< Additional vertices on the 2nd shape if its mesh is coarser.
+
+  NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape.
+  NCollection_Vector<ProxPnt_Status> myAddStatus2; //!< Status of additional vertices on the 2nd shape.
+
+  Standard_Boolean myIsInitS1; //!< Is the 1st shape initialized?
+  Standard_Boolean myIsInitS2; //!< Is the 2nd shape initialized?
+
+  Standard_Boolean myIsRefinementRequired1; //!< Flag about the need to refine the 1st shape.
+  Standard_Boolean myIsRefinementRequired2; //!< Flag about the need to refine the 2nd shape.
+
+  Standard_Integer myNbNodes1; //!< Number of nodes in triangulation of the 1st shape.
+  Standard_Integer myNbNodes2; //!< Number of nodes in triangulation of the 2nd shape.
+
+  Standard_Real myStep1; //!< Step for getting vertices on the 1st shape.
+  Standard_Real myStep2; //!< Step for getting vertices on the 2nd shape.
+
+  BRepExtrema_CellFilter myCells;
+  BRepExtrema_VertexInspector myInspector;
+
+  TopAbs_ShapeEnum myShapeType1; //!< 1st shape type.
+  TopAbs_ShapeEnum myShapeType2; //!< 2nd shape type.
 
   Standard_Real myDistance;  //!< Distance
   Standard_Boolean myIsDone; //!< State of the algorithm
