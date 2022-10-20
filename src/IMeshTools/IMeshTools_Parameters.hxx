@@ -35,6 +35,7 @@ struct IMeshTools_Parameters {
     Relative (Standard_False),
     InternalVerticesMode (Standard_True),
     ControlSurfaceDeflection (Standard_True),
+    EnableControlSurfaceDeflectionAllSurfaces(Standard_False),
     CleanModel (Standard_True),
     AdjustMinSize (Standard_False),
     ForceFaceDeflection (Standard_False),
@@ -84,6 +85,10 @@ struct IMeshTools_Parameters {
   //! Parameter to check the deviation of triangulation and interior of
   //! the face
   Standard_Boolean                                 ControlSurfaceDeflection;
+
+  // Enables/disables check triggered by ControlSurfaceDeflection flag 
+  // for all types of surfaces including analytical.
+  Standard_Boolean                                 EnableControlSurfaceDeflectionAllSurfaces;
 
   //! Cleans temporary data model when algorithm is finished.
   Standard_Boolean                                 CleanModel;

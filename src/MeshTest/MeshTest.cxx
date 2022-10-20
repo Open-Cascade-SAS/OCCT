@@ -116,6 +116,10 @@ static Standard_Integer incrementalmesh (Draw_Interpretor& theDI,
     {
       aMeshParams.ControlSurfaceDeflection = !Draw::ParseOnOffIterator (theNbArgs, theArgVec, anArgIter);
     }
+    else if (aNameCase == "-surf_def_all")
+    {
+      aMeshParams.EnableControlSurfaceDeflectionAllSurfaces = Draw::ParseOnOffIterator(theNbArgs, theArgVec, anArgIter);
+    }
     else if (aNameCase == "-adjust_min")
     {
       aMeshParams.AdjustMinSize = Draw::ParseOnOffNoIterator (theNbArgs, theArgVec, anArgIter);
@@ -1620,6 +1624,8 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
     "\n\t\t:  -ai             angular deflection inside of faces in deg (~57.29 deg = 1 rad by default);"
     "\n\t\t:  -int_vert_off   disables insertion of internal vertices into mesh (enabled by default);"
     "\n\t\t:  -surf_def_off   disables control of deflection of mesh from real surface (enabled by default);"
+    "\n\t\t:  -surf_def_all   enables control of deflection of mesh from real surface for all types of surfaces"
+    "\n\t\t:                  (FALSE by default);"
     "\n\t\t:  -adjust_min     enables local adjustment of min size depending on edge size (FALSE by default);"
     "\n\t\t:  -force_face_def disables usage of shape tolerances for computing face deflection (FALSE by default);"
     "\n\t\t:  -decrease       enforces the meshing of the shape even if current mesh satisfies the new criteria"

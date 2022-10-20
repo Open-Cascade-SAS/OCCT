@@ -73,27 +73,37 @@ Handle(IMeshTools_MeshAlgo) BRepMesh_MeshAlgoFactory::GetAlgo(
   switch (theSurfaceType)
   {
   case GeomAbs_Plane:
-    return theParameters.InternalVerticesMode ?
-      new NodeInsertionMeshAlgo<BRepMesh_DefaultRangeSplitter>::Type :
-      new BaseMeshAlgo::Type;
+    return theParameters.EnableControlSurfaceDeflectionAllSurfaces ?
+      new DeflectionControlMeshAlgo<BRepMesh_DefaultRangeSplitter>::Type :
+        (theParameters.InternalVerticesMode ?
+         new NodeInsertionMeshAlgo<BRepMesh_DefaultRangeSplitter>::Type :
+         new BaseMeshAlgo::Type);
     break;
 
   case GeomAbs_Sphere:
-    return new NodeInsertionMeshAlgo<BRepMesh_SphereRangeSplitter>::Type;
+    return theParameters.EnableControlSurfaceDeflectionAllSurfaces ?
+      new DeflectionControlMeshAlgo<BRepMesh_SphereRangeSplitter>::Type :
+      new NodeInsertionMeshAlgo<BRepMesh_SphereRangeSplitter>::Type;
     break;
 
   case GeomAbs_Cylinder:
-    return theParameters.InternalVerticesMode ?
-      new NodeInsertionMeshAlgo<BRepMesh_CylinderRangeSplitter>::Type :
-      new BaseMeshAlgo::Type;
+    return theParameters.EnableControlSurfaceDeflectionAllSurfaces ?
+      new DeflectionControlMeshAlgo<BRepMesh_CylinderRangeSplitter>::Type :
+        (theParameters.InternalVerticesMode ?
+        new NodeInsertionMeshAlgo<BRepMesh_CylinderRangeSplitter>::Type :
+        new BaseMeshAlgo::Type);
     break;
 
   case GeomAbs_Cone:
-    return new NodeInsertionMeshAlgo<BRepMesh_ConeRangeSplitter>::Type;
+    return theParameters.EnableControlSurfaceDeflectionAllSurfaces ? 
+      new DeflectionControlMeshAlgo<BRepMesh_ConeRangeSplitter>::Type :
+      new NodeInsertionMeshAlgo<BRepMesh_ConeRangeSplitter>::Type;
     break;
 
   case GeomAbs_Torus:
-    return new NodeInsertionMeshAlgo<BRepMesh_TorusRangeSplitter>::Type;
+    return theParameters.EnableControlSurfaceDeflectionAllSurfaces ?
+      new DeflectionControlMeshAlgo<BRepMesh_TorusRangeSplitter>::Type :
+      new NodeInsertionMeshAlgo<BRepMesh_TorusRangeSplitter>::Type;
     break;
 
   case GeomAbs_SurfaceOfRevolution:
