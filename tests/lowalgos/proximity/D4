@@ -1,0 +1,29 @@
+puts "============"
+puts "0033144: Modeling Algorithms - Wrong result of Shape Proximity"
+puts "==========="
+puts "" 
+
+sphere s1 0 1 0 0 0 1 1
+trimu s1 s1 0 pi
+mkface fs1 s1
+incmesh fs1 1e-3
+
+plane p1 0 0 0 0 1 0
+trim p1 p1 -1 1 -1 1 
+mkface f2 p1
+incmesh f2 1e-3
+
+set log [proximity fs1 f2 -value -profile]
+
+regexp {Proximity value: ([0-9+-.eE]*)} $log full val;
+
+set tol 1.e-2
+set expected 2.0
+
+regexp {Status of ProxPnt1 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status1 ${val2}
+set expected_status1 Middle
+
+regexp {Status of ProxPnt2 on ([A-Za-z0-9._-]*) : ([A-Za-z]*)} $log full val1 val2
+set status2 ${val2}
+set expected_status2 Middle
