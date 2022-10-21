@@ -112,6 +112,7 @@ static Standard_Boolean pidef = Standard_False;
 static Standard_Boolean lfdef = Standard_False;
 static Standard_Boolean rfdef = Standard_False;
 
+static Standard_Real tesp = 1.0e-4;
 static Standard_Real t3d = 1.e-4;
 static Standard_Real t2d = 1.e-5;
 static Standard_Real ta = 1.e-2;
@@ -2361,7 +2362,7 @@ static Standard_Integer BOSS(Draw_Interpretor& theCommands,
     if (Rakk)
       delete Rakk;
     Rakk = new BRepFilletAPI_MakeFillet(V, FSh);
-    Rakk->SetParams(ta, t3d, t2d, t3d, t2d, fl);
+    Rakk->SetParams(ta, tesp, t2d, t3d, t2d, fl);
     Rakk->SetContinuity(blend_cont, tapp_angle);
     Standard_Real Rad;
     TopoDS_Shape S;

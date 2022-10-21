@@ -2053,7 +2053,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   // Using constraint order > 0 very often causes  unpredicable undulations of solution
   Standard_Integer degree = 3, nbcurvpnt = 10, nbiter = 1;
   Standard_Integer constr = 1; //G1
-  GeomPlate_BuildPlateSurface PSurf(degree, nbcurvpnt, nbiter, tol2d, tolesp, angular);
+  GeomPlate_BuildPlateSurface PSurf(degree, nbcurvpnt, nbiter, tol2d, tolapp3d, angular);
 // calculation of curves on surface for each stripe 
   for (ic=0;ic<nedge;ic++) {
     gp_Pnt2d p2d1, p2d2;
@@ -2081,7 +2081,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       //Order.SetValue(ic,1);
       Order.SetValue(ic, constr);
       Handle(GeomPlate_CurveConstraint) Cont =
-	new GeomPlate_CurveConstraint(HCons,Order.Value(ic), nbcurvpnt,tolesp,angular,0.1);
+	new GeomPlate_CurveConstraint(HCons,Order.Value(ic),nbcurvpnt,tolapp3d,angular,0.1);
       PSurf.Add(Cont);
       
       // calculate indexes of points and of the curve for the DS         
@@ -2378,7 +2378,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
          if (isG1.Value(ic)) 
            Order.SetValue(n3d,1);
          Handle(GeomPlate_CurveConstraint) Cont =
-           new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolesp,angular,0.1);
+           new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolapp3d,angular,0.1);
          PSurf.Add(Cont);
 
          //calculation of curve 3d if it is not a projection 
@@ -2502,7 +2502,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	  Handle(Adaptor3d_CurveOnSurface) HCons =new Adaptor3d_CurveOnSurface(CurvOnS);
 	  Order.SetValue(n3d,1);
 	  Handle(GeomPlate_CurveConstraint) Cont =
-	    new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolesp,angular,0.1);
+	    new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolapp3d,angular,0.1);
 	  PSurf.Add(Cont);
 	  TopOpeBRepDS_Curve tcurv3d( cproj,error);
 	  indcurve3d.SetValue(n3d, DStr.AddCurve(tcurv3d));
@@ -2615,7 +2615,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 	Handle(Adaptor3d_CurveOnSurface) HCons =new Adaptor3d_CurveOnSurface(CurvOnS);
 	Order.SetValue(n3d,0);
 	Handle(GeomPlate_CurveConstraint) Cont =
-	  new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolesp,angular,0.1);
+	  new GeomPlate_CurveConstraint(HCons,Order.Value(n3d),10,tolapp3d,angular,0.1);
 	PSurf.Add(Cont);
 	TopOpeBRepDS_Curve tcurv3d( ctrim,1.e-4);
 	indcurve3d.SetValue(n3d, DStr.AddCurve(tcurv3d));

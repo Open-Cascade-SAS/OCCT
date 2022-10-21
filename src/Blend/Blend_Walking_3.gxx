@@ -125,7 +125,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
   infb(2) -= Extrap;
   supb(2) += Extrap;
   
-  FuncInv.GetTolerance(toler,tolesp/10);//Il vaut mieux garder un peu de marge
+  FuncInv.GetTolerance(toler,0.1 * tolpoint3d);//Il vaut mieux garder un peu de marge
   math_FunctionSetRoot rsnld(FuncInv,toler,35);
   toler *= 10; // Mais on fait les tests correctements
 
@@ -262,7 +262,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
       else solrst(1) = pmin;
     }
     // On verifie le jalon
-    jalons_Trouve = (FuncInv.IsSolution(solrst,tolesp));
+    jalons_Trouve = (FuncInv.IsSolution(solrst,tolpoint3d));
   }
 
   if (!jalons_Trouve) {
@@ -276,7 +276,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     }
     else {
       rsnld.Root(solrst);
-      recadre = FuncInv.IsSolution(solrst,tolesp);
+      recadre = FuncInv.IsSolution(solrst,tolpoint3d);
     }
   }
 
@@ -310,7 +310,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     // Le probleme a resoudre
     FuncInv.Set(OnFirst,thecur);
     FuncInv.GetBounds(infb,supb);
-    FuncInv.GetTolerance(toler,tolesp/10);//Il vaut mieux garder un peu de marge
+    FuncInv.GetTolerance(toler,0.1 * tolpoint3d);//Il vaut mieux garder un peu de marge
     math_FunctionSetRoot aRsnld(FuncInv,toler,35);
     toler *= 10; // Mais on fait les tests correctements
     // Resolution...
@@ -324,7 +324,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     }
     else {
       aRsnld.Root(solrst);
-      recadre = FuncInv.IsSolution(solrst,tolesp);
+      recadre = FuncInv.IsSolution(solrst,tolpoint3d);
     }
   }
 
@@ -453,7 +453,7 @@ void Blend_Walking::MakeExtremity(TheExtremity& Extrem,
   if (OnFirst) {
     Extrem.SetValue(previousP.PointOnS1(),
 		    sol(1),sol(2),
-		    previousP.Parameter(), tolesp);
+		    previousP.Parameter(), tolpoint3d);
     if (!previousP.IsTangencyPoint())  
       Extrem.SetTangent(previousP.TangentOnS1());
     Iter = recdomain1;
@@ -461,7 +461,7 @@ void Blend_Walking::MakeExtremity(TheExtremity& Extrem,
   else {
     Extrem.SetValue(previousP.PointOnS2(),
 		    sol(3),sol(4),
-		    previousP.Parameter(), tolesp);
+		    previousP.Parameter(), tolpoint3d);
     if (!previousP.IsTangencyPoint())  
       Extrem.SetTangent(previousP.TangentOnS2());
     Iter = recdomain2;

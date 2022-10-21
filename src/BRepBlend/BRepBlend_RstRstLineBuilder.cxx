@@ -173,7 +173,7 @@ BRepBlend_RstRstLineBuilder::BRepBlend_RstRstLineBuilder
  done(Standard_False), sol(1, 2), surf1(Surf1),
  domain1(Domain1), surf2(Surf2),
  domain2(Domain2), rst1(Rst1), rst2(Rst2),
- tolesp(0.0), tolgui(0.0), pasmax(0.0),
+ tolpoint3d(0.0), tolgui(0.0), pasmax(0.0),
  fleche(0.0), param(0.0), rebrou(Standard_False),
  iscomplete(Standard_False), comptra(Standard_False), sens(0.0),
  decrochdeb(Blend_NoDecroch), decrochfin(Blend_NoDecroch)
@@ -193,9 +193,9 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
 					  const Standard_Real     Pdep,
 					  const Standard_Real     Pmax,
 					  const Standard_Real     MaxStep,
+            const Standard_Real     Tol3d,
 					  const Standard_Real     TolGuide,
 					  const math_Vector&      ParDep,
-					  const Standard_Real     Tolesp,
 					  const Standard_Real     Fleche,
 					  const Standard_Boolean  Appro) 
 {
@@ -203,7 +203,7 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
   iscomplete = Standard_False;
   comptra    = Standard_False;
   line       = new BRepBlend_Line();
-  tolesp     = Abs(Tolesp);
+  tolpoint3d   = Tol3d;
   tolgui     = Abs(TolGuide);
   fleche     = Abs(Fleche);
   rebrou     = Standard_False;
@@ -225,7 +225,7 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
     TopAbs_State siturst1, siturst2;
     Blend_DecrochStatus decroch;
     math_Vector tolerance(1, 2), infbound(1, 2), supbound(1, 2);
-    Func.GetTolerance(tolerance, tolesp);
+    Func.GetTolerance(tolerance, tolpoint3d);
     Func.GetBounds(infbound, supbound);
     math_FunctionSetRoot rsnld(Func, tolerance, 30);
     
@@ -258,9 +258,9 @@ void BRepBlend_RstRstLineBuilder::Perform(Blend_RstRstFunction&   Func,
   U = previousP.ParameterOnC1();
   V = previousP.ParameterOnC2();
   BRepBlend_Extremity ptf1 (previousP.PointOnC1(),
-			    U, previousP.Parameter(),tolesp);
+			    U, previousP.Parameter(),tolpoint3d);
   BRepBlend_Extremity ptf2 (previousP.PointOnC2(),
-			    V, previousP.Parameter(),tolesp);
+			    V, previousP.Parameter(),tolpoint3d);
   if (!previousP.IsTangencyPoint()) {
     ptf1.SetTangent(previousP.TangentOnC1());
     ptf2.SetTangent(previousP.TangentOnC2());
@@ -291,7 +291,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::PerformFirstSection
  const Standard_Real     Pdep,
  const Standard_Real     Pmax,
  const math_Vector&      ParDep,
- const Standard_Real     Tolesp,
+ const Standard_Real     Tol3d,
  const Standard_Real     TolGuide,
  const Standard_Boolean  RecRst1,
  const Standard_Boolean  RecP1,
@@ -304,7 +304,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::PerformFirstSection
   iscomplete = Standard_False;
   comptra    = Standard_False;
   line       = new BRepBlend_Line();
-  tolesp     = Abs(Tolesp);
+  tolpoint3d   = Tol3d;
   tolgui     = Abs(TolGuide);
   rebrou     = Standard_False;
   
@@ -327,7 +327,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::PerformFirstSection
   wp1   = wp2 = wrst1 = wrst2 = Pmax;
   param = Pdep;
   Func.Set(param);
-  Func.GetTolerance(tolerance, tolesp);
+  Func.GetTolerance(tolerance, tolpoint3d);
   Func.GetBounds(infbound, supbound);
 
   math_FunctionSetRoot rsnld(Func, tolerance, 30);
@@ -573,7 +573,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
   //IntSurf_Transition Tline, Tarc;
 
-  Func.GetTolerance(tolerance, tolesp);
+  Func.GetTolerance(tolerance, tolpoint3d);
   Func.GetBounds(infbound, supbound);
 
   math_FunctionSetRoot rsnld(Func, tolerance, 30);
@@ -595,14 +595,14 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
     if (rsnld.IsDone()) {
       rsnld.Root(sol);
       Blend_Point bp1;
-      if(BBPP(param, Func, sol, tolesp, bp1)){
+      if(BBPP(param, Func, sol, tolpoint3d, bp1)){
 	Standard_Real dw = 1.e-10;
 	Func.Set(param + dw);
 	rsnld.Perform(Func, parinit, infbound, supbound);
 	if (rsnld.IsDone()) {
 	  rsnld.Root(sol);
 	  Blend_Point bp2;
-	  if(BBPP(param + dw, Func, sol, tolesp, bp2)){
+	  if(BBPP(param + dw, Func, sol, tolpoint3d, bp2)){
 	    tracederiv(Func, bp1, bp2);
 	  }
 	}
@@ -854,7 +854,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 	  Arrive = Standard_True;
 	  Extrst1.SetValue(previousP.PointOnC1(),
 			   previousP.ParameterOnC1(),
-			   previousP.Parameter(), tolesp);
+			   previousP.Parameter(), tolpoint3d);
 	  MakeExtremity(Extrst2, Standard_False, rst2, sol(2), IsVtxrst2, Vtxrst2);
 	  // Show that end is on Bound.
 	}
@@ -873,10 +873,10 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 	if (Abs(stepw) < tolgui) {
 	  Extrst1.SetValue(previousP.PointOnC1(),
 			   previousP.ParameterOnC1(),
-			   previousP.Parameter(), tolesp);
+			   previousP.Parameter(), tolpoint3d);
 	  Extrst2.SetValue(previousP.PointOnC2(),
 			   previousP.ParameterOnC2(),
-			   previousP.Parameter(), tolesp);
+			   previousP.Parameter(), tolpoint3d);
 	  Arrive = Standard_True;
 #ifdef OCCT_DEBUG
 	  if (line->NbPoints()>=2) {
@@ -913,7 +913,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 	  Arrive = Standard_True;
 	  Extrst1.SetValue(previousP.PointOnC1(),
 			   previousP.ParameterOnC1(),
-			   previousP.Parameter(), tolesp);
+			   previousP.Parameter(), tolpoint3d);
 	  MakeExtremity(Extrst2, Standard_False, rst2, sol(2), IsVtxrst2, Vtxrst2);
 	  // Indicate that end is on Bound.
 	}
@@ -993,10 +993,10 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 #endif
 	Extrst1.SetValue(previousP.PointOnC1(),
 			 previousP.ParameterOnC1(),
-			 previousP.Parameter(), tolesp);
+			 previousP.Parameter(), tolpoint3d);
 	Extrst2.SetValue(previousP.PointOnC2(),
 			 previousP.ParameterOnC2(),
-			 previousP.Parameter(), tolesp);
+			 previousP.Parameter(), tolpoint3d);
 	Arrive = Standard_True;
       }
       break;
@@ -1029,7 +1029,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
 						       Handle(Adaptor3d_HVertex)& Vtx) 
 {
   math_Vector toler(1, 3), infb(1, 3), supb(1, 3);
-  Finv.GetTolerance(toler, tolesp);
+  Finv.GetTolerance(toler, tolpoint3d);
   Finv.GetBounds(infb, supb);
   Solinv(1) = param;
   Solinv(2) = sol(2);
@@ -1049,7 +1049,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
 
   // It is necessary to check if the function value meets the
   // second restriction
-  if (Finv.IsSolution(Solinv, tolesp)) {
+  if (Finv.IsSolution(Solinv, tolpoint3d)) {
     Standard_Real w = Solinv(2);
     if(w < rst2->FirstParameter() - toler(2)||
        w > rst2->LastParameter() + toler(2)){
@@ -1079,7 +1079,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_RstRstFunction&    
 
     math_Vector infbound(1, 2), supbound(1, 2);
     math_Vector parinit(1, 2), tolerance(1, 2);
-    Func.GetTolerance(tolerance, tolesp);
+    Func.GetTolerance(tolerance, tolpoint3d);
     Func.GetBounds(infbound, supbound);
 
     math_FunctionSetRoot rsnld2(Func, tolerance, 30);
@@ -1112,7 +1112,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&    
 						       Handle(Adaptor3d_HVertex)& Vtx) 
 {
   math_Vector toler(1, 3), infb(1, 3), supb(1, 3);
-  Finv.GetTolerance(toler, tolesp);
+  Finv.GetTolerance(toler, tolpoint3d);
   Finv.GetBounds(infb, supb);
   Solinv(1) = param;
   Solinv(2) = sol(1);
@@ -1130,7 +1130,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&    
   rsnld.Root(Solinv);
 
   // It is necessary to check the value of the function
-  if (Finv.IsSolution(Solinv, tolesp)) {
+  if (Finv.IsSolution(Solinv, tolpoint3d)) {
     Standard_Real w = Solinv(2);
     if(w < rst1->FirstParameter() - toler(2)||
        w > rst1->LastParameter() + toler(2)){
@@ -1159,7 +1159,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_RstRstFunction&    
    
     math_Vector infbound(1, 2), supbound(1, 2);
     math_Vector parinit(1,2), tolerance(1,2);
-    Func.GetTolerance(tolerance, tolesp);
+    Func.GetTolerance(tolerance, tolpoint3d);
     Func.GetBounds(infbound, supbound);
 
     math_FunctionSetRoot rsnld2(Func, tolerance, 30);
@@ -1199,7 +1199,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&  
 
   FinvP.Set(thepoint);
   math_Vector toler(1,2), infb(1, 2), supb(1, 2);
-  FinvP.GetTolerance(toler, tolesp);
+  FinvP.GetTolerance(toler, tolpoint3d);
   FinvP.GetBounds(infb, supb);
   Solinv(1) = param;
   Solinv(2) = sol(2);
@@ -1214,7 +1214,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre1(Blend_CurvPointFuncInv&  
   }
   rsnld.Root(Solinv);
   
-  if(FinvP.IsSolution(Solinv, tolesp)){
+  if(FinvP.IsSolution(Solinv, tolpoint3d)){
     gp_Pnt2d p2drst2  = rst2->Value(Solinv(2));
     TopAbs_State situ = domain2->Classify(p2drst2, toler(2), 0);
     if ((situ != TopAbs_IN) && (situ != TopAbs_ON)) {
@@ -1267,7 +1267,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&  
 
   FinvP.Set(thepoint);
   math_Vector toler(1,2), infb(1, 2), supb(1, 2);
-  FinvP.GetTolerance(toler, tolesp);
+  FinvP.GetTolerance(toler, tolpoint3d);
   FinvP.GetBounds(infb, supb);
   Solinv(1) = param;
   Solinv(2) = sol(1);
@@ -1282,7 +1282,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::Recadre2(Blend_CurvPointFuncInv&  
   }
   rsnld.Root(Solinv);
   
-  if(FinvP.IsSolution(Solinv, tolesp)){
+  if(FinvP.IsSolution(Solinv, tolpoint3d)){
     gp_Pnt2d p2drst1  = rst1->Value(Solinv(2));
     TopAbs_State situ = domain1->Classify(p2drst1, toler(2), 0);
     if ((situ != TopAbs_IN) && (situ != TopAbs_ON)) {
@@ -1378,7 +1378,7 @@ void BRepBlend_RstRstLineBuilder::MakeExtremity(BRepBlend_Extremity&            
   if (OnFirst) {
     Extrem.SetValue(previousP.PointOnC1(),
 		    sol(1),
-		    previousP.Parameter(), tolesp);
+		    previousP.Parameter(), tolpoint3d);
     if (!previousP.IsTangencyPoint()) 
       Extrem.SetTangent(previousP.TangentOnC1());
     Iter = domain1;
@@ -1386,7 +1386,7 @@ void BRepBlend_RstRstLineBuilder::MakeExtremity(BRepBlend_Extremity&            
   else {
     Extrem.SetValue(previousP.PointOnC2(),
 		    sol(2),
-		    previousP.Parameter(), tolesp);
+		    previousP.Parameter(), tolpoint3d);
     if (!previousP.IsTangencyPoint()) 
       Extrem.SetTangent(previousP.TangentOnC1());
     Iter = domain2;
@@ -1453,12 +1453,13 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst1(const Blend_Poin
   Norme = Corde.SquareMagnitude();
   if (!prevpointistangent) prevNorme = prevTg.SquareMagnitude();
 
-  if (Norme <= tolesp * tolesp) {
+  const Standard_Real toler3d = 0.01 * tolpoint3d;
+  if (Norme <= toler3d * toler3d) {
     // it can be necessary to force the same point
     return Blend_SamePoints;
   }
   if(!prevpointistangent){
-    if (prevNorme <= tolesp * tolesp) {
+    if (prevNorme <= toler3d * toler3d) {
       return Blend_SamePoints;
     }
     Cosi = sens * Corde * prevTg;
@@ -1530,12 +1531,13 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst2(const Blend_Poin
   Norme = Corde.SquareMagnitude();
   if (!prevpointistangent) prevNorme = prevTg.SquareMagnitude();
 
-  if (Norme <= tolesp * tolesp){
+  const Standard_Real toler3d = 0.01 * tolpoint3d;
+  if (Norme <= toler3d * toler3d){
     // it can be necessary to force the same point
     return Blend_SamePoints;
   }
   if (!prevpointistangent) {
-    if (prevNorme <= tolesp * tolesp) {
+    if (prevNorme <= toler3d * toler3d) {
       return Blend_SamePoints;
     }
     Cosi = sens * Corde * prevTg;
@@ -1597,7 +1599,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction& Func,
   IntSurf_TypeTrans trarst1 = IntSurf_Undecided, trarst2 = IntSurf_Undecided;
   Blend_Point curpoint;
 
-  if (Func.IsSolution(sol, tolesp)) {
+  if (Func.IsSolution(sol, tolpoint3d)) {
     Standard_Boolean curpointistangent = Func.IsTangencyPoint();
     ptrst1   = Func.PointOnRst1();
     ptrst2   = Func.PointOnRst2();
@@ -1644,7 +1646,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction& Func,
       Standard_Real testra = tg2drst1.Dot(tg2drstref);
       TopAbs_Orientation Or = domain1->Orientation(rst1);
 
-      if (Abs(testra) > tolesp) {
+      if (Abs(testra) > tolpoint3d) {
 	if (testra < 0.) {
           trarst1 = ConvOrToTra(TopAbs::Reverse(Or));
 	}
@@ -1656,7 +1658,7 @@ Blend_Status BRepBlend_RstRstLineBuilder::TestArret(Blend_RstRstFunction& Func,
 	testra = tg2drst2.Dot(tg2drstref);
 
 	Or = domain2->Orientation(rst2);
-	if (Abs(testra) > tolesp) {
+	if (Abs(testra) > tolpoint3d) {
 	  if (testra < 0.) {
 	    trarst2 = ConvOrToTra(TopAbs::Reverse(Or));
 	  }
@@ -1705,7 +1707,7 @@ Standard_Boolean BRepBlend_RstRstLineBuilder::CheckInside(Blend_RstRstFunction& 
 {
 //  Standard_Boolean inside = Standard_True;
   math_Vector tolerance(1, 2);
-  Func.GetTolerance(tolerance, tolesp);
+  Func.GetTolerance(tolerance, tolpoint3d);
 
   //face pcurve 1.
   Standard_Real v = sol(1);

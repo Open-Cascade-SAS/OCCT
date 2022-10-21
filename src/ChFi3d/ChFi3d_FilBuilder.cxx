@@ -689,13 +689,13 @@ ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   Data->SetSimul(sec);
   Data->Set2dPoints(pf1,pl1,pf2,pl2);
   ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			Standard_False,Data->ChangeVertexLastOnS1(),tolesp);
+			Standard_False,Data->ChangeVertexLastOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS2(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
+			Standard_False, Data->ChangeVertexLastOnS2(),tolapp3d);
   Standard_Boolean reverse = (!Forward || Inside);
   if(intf && reverse){
     Standard_Boolean ok = Standard_False;
@@ -857,13 +857,13 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 //  gp_Pnt2d pbid;
   Data->Set2dPoints(ppcf,ppcl,pf,pl);
   ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS2(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			Standard_False,Data->ChangeVertexLastOnS2(),tolesp);
+			Standard_False,Data->ChangeVertexLastOnS2(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			Standard_False, Data->ChangeVertexLastOnS1(),tolesp);
+			Standard_False, Data->ChangeVertexLastOnS1(),tolapp3d);
 }
 
 //=======================================================================
@@ -989,13 +989,13 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
   //gp_Pnt2d pbid;
   Data->Set2dPoints(pf,pl,ppcf,ppcl);
   ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			Standard_False,Data->ChangeVertexLastOnS1(),tolesp);
+			Standard_False,Data->ChangeVertexLastOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS2(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
+			Standard_False, Data->ChangeVertexLastOnS2(),tolapp3d);
 }
 
 
@@ -1153,13 +1153,13 @@ void  ChFi3d_FilBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
 //  Data->Set2dPoints(pf,pl,pbid,pbid);
 
   ChFi3d_FilCommonPoint(lin->StartPointOnFirst(),lin->TransitionOnS1(),
-			Standard_True, Data->ChangeVertexFirstOnS1(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnFirst(),lin->TransitionOnS1(),
-			Standard_False,Data->ChangeVertexLastOnS1(),tolesp);
+			Standard_False,Data->ChangeVertexLastOnS1(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->StartPointOnSecond(),lin->TransitionOnS2(),
-			Standard_True, Data->ChangeVertexFirstOnS2(),tolesp);
+			Standard_True, Data->ChangeVertexFirstOnS2(),tolapp3d);
   ChFi3d_FilCommonPoint(lin->EndPointOnSecond(),lin->TransitionOnS2(),
-			Standard_False, Data->ChangeVertexLastOnS2(),tolesp);
+			Standard_False, Data->ChangeVertexLastOnS2(),tolapp3d);
 }
 
 
@@ -1188,14 +1188,14 @@ Standard_Boolean ChFi3d_FilBuilder::PerformFirstSection
 {
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
-  Standard_Real TolGuide = HGuide->Resolution(tolesp);
+  Standard_Real TolGuide = HGuide->Resolution(tolapp3d);
   if(fsp->IsConstant()){
     BRepBlend_ConstRad Func(S1,S2,HGuide);
     Func.Set(fsp->Radius(),Choix);
     Func.Set(myShape);
     BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     return TheWalk.PerformFirstSection(Func,Par,SolDep,
-				       tolesp,TolGuide,Pos1,Pos2);
+               tolapp3d,TolGuide,Pos1,Pos2);
   }
   else {
     BRepBlend_EvolRad Func(S1,S2,HGuide,fsp->Law(HGuide));
@@ -1203,7 +1203,7 @@ Standard_Boolean ChFi3d_FilBuilder::PerformFirstSection
     Func.Set(myShape);
     BRepBlend_Walking TheWalk(S1,S2,I1,I2,HGuide);
     return TheWalk.PerformFirstSection(Func,Par,SolDep,
-				       tolesp,TolGuide,Pos1,Pos2);
+               tolapp3d,TolGuide,Pos1,Pos2);
   }
 }
 
