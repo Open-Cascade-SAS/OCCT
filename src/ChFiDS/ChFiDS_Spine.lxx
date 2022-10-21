@@ -214,3 +214,12 @@ inline ChFiDS_ChamfMode  ChFiDS_Spine::Mode() const
 
   return myMode;
 }
+
+//=======================================================================
+//function : GetTolesp
+//purpose  : 
+//=======================================================================
+inline Standard_Real ChFiDS_Spine::GetTolesp() const
+{
+  return tolesp;
+}

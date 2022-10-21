@@ -230,7 +230,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
   }
   gp_Pnt psp1 = Hpivot->Value(parCP1);
   gp_Pnt psp2 = Hpivot->Value(parCP2);
-  Standard_Real sameparam = (psp1.Distance(psp2) < 10 * tolesp);
+  Standard_Real sameparam = (psp1.Distance(psp2) < 10.0 * tolapp3d);
    
   TopoDS_Face FF1 = TopoDS::Face(DStr.Shape(Fd1->Index(IFaArc1)));
   TopoDS_Face FF2 = TopoDS::Face(DStr.Shape(Fd2->Index(IFaArc2)));
@@ -289,10 +289,10 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
       Reduce(UIntPC1,UIntPC2,HS1,HS2);
     }
     
-    Standard_Real tolreached = tolesp;
+    Standard_Real tolreached = tolapp3d;
     if (IFaCo1 == 1 && 
 	!ChFi3d_ComputeCurves(HS1,HS2,Pardeb,Parfin,Gc,
-			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
+			      PGc1,PGc2,tolapp3d,tol2d,tolreached)) {
 #ifdef OCCT_DEBUG
       std::cout<<"failed to calculate bevel error interSS"<<std::endl;
 #endif
@@ -301,7 +301,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     }
     else if (IFaCo1 == 2 && 
 	     !ChFi3d_ComputeCurves(HS1,HS2,Parfin,Pardeb,Gc,
-				   PGc1,PGc2,tolesp,tol2d,tolreached)) {
+				   PGc1,PGc2,tolapp3d,tol2d,tolreached)) {
 #ifdef OCCT_DEBUG
       std::cout<<"failed to calculate bevel error interSS"<<std::endl;
 #endif
@@ -451,7 +451,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     
     Standard_Real tolreached;
     if (!ChFi3d_ComputeCurves(SmaHS,BigHS,Pardeb,Parfin,Gc,
-			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
+			      PGc1,PGc2,tolapp3d,tol2d,tolreached)) {
 #ifdef OCCT_DEBUG
       std::cout<<"failed to calculate bevel failed interSS"<<std::endl;
 #endif
@@ -573,7 +573,7 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
     ChFi3d_BoundFac (*HF, uu1, uu2, vv1, vv2, Standard_True);
 
     if (!ChFi3d_ComputeCurves(HF,BigHS,Pardeb,Parfin,Gc,
-			      PGc1,PGc2,tolesp,tol2d,tolreached)) {
+			      PGc1,PGc2,tolapp3d,tol2d,tolreached)) {
 #ifdef OCCT_DEBUG
       std::cout<<"fail calculation bevel fail interSS"<<std::endl;
 #endif
@@ -638,7 +638,26 @@ Standard_Boolean ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
 }
 
 
+//=======================================================================
+//function : UpdateTolesp
+//purpose  : Update tolesp field to fit it to range of parameter of spine curve
+//=======================================================================
 
+void ChFi3d_Builder::UpdateTolesp()
+{
+  ChFiDS_ListIteratorOfListOfStripe itel;
+  // tolesp = Precision::Infinite();
+  for (itel.Initialize(myListStripe); itel.More(); itel.Next())
+  {
+    Handle(ChFiDS_Stripe)& curStripe = itel.Value();
+    Handle(ChFiDS_Spine)& Spine = curStripe->ChangeSpine();
+    const Standard_Real current_stripe_tolesp = Spine->GetTolesp();
+    if (tolesp > current_stripe_tolesp)
+    {
+      tolesp = current_stripe_tolesp;
+    }
+  }
+}
 
 
 

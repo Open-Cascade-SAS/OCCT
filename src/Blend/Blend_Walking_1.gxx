@@ -62,9 +62,9 @@ void Blend_Walking::Perform(Blend_Function& Func,
 			    const Standard_Real Pdep,   
 			    const Standard_Real Pmax,
 			    const Standard_Real MaxStep,
+          const Standard_Real Tol3d,
 			    const Standard_Real TolGuide,
 			    const math_Vector& ParDep,
-			    const Standard_Real Tolesp,
 			    const Standard_Real Fleche,
 			    const Standard_Boolean Appro)
 {
@@ -75,7 +75,7 @@ void Blend_Walking::Perform(Blend_Function& Func,
   Standard_Boolean doextremities = 1;
   if(line.IsNull()) line = new TheLine ();
   else {line->Clear();doextremities = 0;}
-  tolesp = Abs(Tolesp);
+  tolpoint3d = Tol3d;
   tolgui = Abs(TolGuide);
   fleche = Abs(Fleche);
   rebrou = Standard_False;
@@ -96,7 +96,7 @@ void Blend_Walking::Perform(Blend_Function& Func,
 
     TopAbs_State situ1,situ2;
     math_Vector tolerance(1,4),infbound(1,4),supbound(1,4);
-    Func.GetTolerance(tolerance,tolesp);
+    Func.GetTolerance(tolerance,tolpoint3d);
     Func.GetBounds(infbound,supbound);
     math_FunctionSetRoot rsnld(Func,tolerance,30);
 
@@ -143,9 +143,9 @@ void Blend_Walking::Perform(Blend_Function& Func,
 
   if(doextremities){
     TheExtremity ptf1 (previousP.PointOnS1(),
-		       sol(1),sol(2),tolesp);
+		       sol(1),sol(2),tolpoint3d);
     TheExtremity ptf2 (previousP.PointOnS2(),
-		       sol(3),sol(4),tolesp);
+		       sol(3),sol(4),tolpoint3d);
     if (!previousP.IsTangencyPoint()) {
       ptf1.SetTangent(previousP.TangentOnS1());
       ptf2.SetTangent(previousP.TangentOnS2());
@@ -168,7 +168,7 @@ void Blend_Walking::Perform(Blend_Function& Func,
 Standard_Boolean Blend_Walking::PerformFirstSection(Blend_Function&     Func,
                                                     const Standard_Real Pdep,
                                                     math_Vector&        ParDep,
-                                                    const Standard_Real Tolesp,
+                                                    const Standard_Real Tol3d,
                                                     const Standard_Real TolGuide,
                                                     TopAbs_State&       Pos1,
                                                     TopAbs_State&       Pos2)
@@ -176,7 +176,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection(Blend_Function&     Func,
   iscomplete = Standard_False;
   comptra = Standard_False;
   line = new TheLine ();
-  tolesp = Abs(Tolesp);
+  tolpoint3d = Tol3d;
   tolgui = Abs(TolGuide);
 
   Pos1 = Pos2 = TopAbs_UNKNOWN;
@@ -185,7 +185,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection(Blend_Function&     Func,
   Func.Set(param);
 
   math_Vector tolerance(1, 4),infbound(1, 4),supbound(1, 4);
-  Func.GetTolerance(tolerance, tolesp);
+  Func.GetTolerance(tolerance, tolpoint3d);
   Func.GetBounds(infbound, supbound);
   math_FunctionSetRoot rsnld(Func, tolerance, 30);
 
@@ -220,7 +220,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
                                                      const Standard_Real Pdep,
                                                      const Standard_Real Pmax,
                                                      const math_Vector& ParDep,
-                                                     const Standard_Real Tolesp,
+                                                     const Standard_Real Tol3d,
                                                      const Standard_Real TolGuide,
                                                      const Standard_Boolean RecOnS1,
                                                      const Standard_Boolean RecOnS2,
@@ -235,7 +235,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
   Standard_Real w1, w2, extrapol;
   Standard_Boolean recad1, recad2;
 
-  tolesp = Abs(Tolesp);
+  tolpoint3d = Tol3d;
   tolgui = Abs(TolGuide);
   if (Pmax - Pdep >= 0.0)
   {
@@ -262,7 +262,7 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
   Standard_Real CorrectedU = 0., CorrectedV = 0.;
   gp_Pnt CorrectedPnt;
 
-  Func.GetTolerance(tolerance, tolesp);
+  Func.GetTolerance(tolerance, tolpoint3d);
   Func.GetBounds(infbound, supbound);
   math_FunctionSetRoot rsnld(Func, tolerance, 30);
 
@@ -409,9 +409,9 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
 #endif
       MakeExtremity(Ext1, Standard_True, Index1, solrst1(1), Isvtx1, Vtx1);
       if (ToCorrectOnRst1)
-        Ext2.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolesp);
+        Ext2.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolpoint3d);
       else
-        Ext2.SetValue(previousP.PointOnS2(), sol(3), sol(4), tolesp);
+        Ext2.SetValue(previousP.PointOnS2(), sol(3), sol(4), tolpoint3d);
     }
     break;
 
@@ -424,9 +424,9 @@ Standard_Boolean Blend_Walking::PerformFirstSection (Blend_Function& Func,
       }
 #endif
       if (ToCorrectOnRst2)
-        Ext1.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolesp);
+        Ext1.SetValue(CorrectedPnt, CorrectedU, CorrectedV, tolpoint3d);
       else
-        Ext1.SetValue(previousP.PointOnS1(), sol(1), sol(2), tolesp);
+        Ext1.SetValue(previousP.PointOnS1(), sol(1), sol(2), tolpoint3d);
       MakeExtremity(Ext2, Standard_False, Index2, solrst2(1), Isvtx2, Vtx2);
     }
     break;

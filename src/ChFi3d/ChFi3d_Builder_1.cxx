@@ -325,7 +325,7 @@ ChFi3d_Builder::ChFi3d_Builder(const TopoDS_Shape& S,
   myEShMap.Fill(S,TopAbs_EDGE,TopAbs_SHELL);
   myVFMap.Fill(S,TopAbs_VERTEX,TopAbs_FACE);
   myVEMap.Fill(S,TopAbs_VERTEX,TopAbs_EDGE);
-  SetParams(Ta,1.e-4,1.e-5,1.e-4,1.e-5,1.e-3);
+  SetParams(Ta, 1.0e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
   SetContinuity(GeomAbs_C1, Ta);
 }
 
@@ -336,7 +336,7 @@ ChFi3d_Builder::ChFi3d_Builder(const TopoDS_Shape& S,
 
 void ChFi3d_Builder::SetParams(const Standard_Real Tang, 
 			       const Standard_Real Tesp, 
-			       const Standard_Real T2d, 
+             const Standard_Real T2d, 
 			       const Standard_Real TApp3d, 
 			       const Standard_Real TolApp2d, 
 			       const Standard_Real Fleche)

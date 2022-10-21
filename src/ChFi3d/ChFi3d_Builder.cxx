@@ -198,7 +198,8 @@ void  ChFi3d_Builder::Compute()
   ChFi3d_InitChron(cl_total);
   ChFi3d_InitChron(cl_extent);
 #endif 
-  
+  UpdateTolesp();
+
   if (myListStripe.IsEmpty())
     throw Standard_Failure("There are no suitable edges for chamfer or fillet");
   
@@ -335,7 +336,7 @@ void  ChFi3d_Builder::Compute()
       }
       // 05/02/02 akm ^^^
       Standard_Integer solidindex = st->SolidIndex();
-      ChFi3d_FilDS(solidindex,st,DStr,myRegul,tolesp,tol2d);
+      ChFi3d_FilDS(solidindex,st,DStr,myRegul,tolapp3d,tol2d);
       if (!done) break;
     }
     

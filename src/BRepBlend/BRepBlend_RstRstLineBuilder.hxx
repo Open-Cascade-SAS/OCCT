@@ -72,9 +72,9 @@ public:
   
   Standard_EXPORT BRepBlend_RstRstLineBuilder(const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor2d_Curve2d)& Rst1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor2d_Curve2d)& Rst2, const Handle(Adaptor3d_TopolTool)& Domain2);
   
-  Standard_EXPORT void Perform (Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& Finv1, Blend_CurvPointFuncInv& FinvP1, Blend_SurfCurvFuncInv& Finv2, Blend_CurvPointFuncInv& FinvP2, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
+  Standard_EXPORT void Perform (Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& Finv1, Blend_CurvPointFuncInv& FinvP1, Blend_SurfCurvFuncInv& Finv2, Blend_CurvPointFuncInv& FinvP2, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real Tol3d, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
   
-  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& Finv1, Blend_CurvPointFuncInv& FinvP1, Blend_SurfCurvFuncInv& Finv2, Blend_CurvPointFuncInv& FinvP2, const Standard_Real Pdep, const Standard_Real Pmax, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real TolGuide, const Standard_Boolean RecRst1, const Standard_Boolean RecP1, const Standard_Boolean RecRst2, const Standard_Boolean RecP2, Standard_Real& Psol, math_Vector& ParSol);
+  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& Finv1, Blend_CurvPointFuncInv& FinvP1, Blend_SurfCurvFuncInv& Finv2, Blend_CurvPointFuncInv& FinvP2, const Standard_Real Pdep, const Standard_Real Pmax, const math_Vector& Soldep, const Standard_Real Tol3d, const Standard_Real TolGuide, const Standard_Boolean RecRst1, const Standard_Boolean RecP1, const Standard_Boolean RecRst2, const Standard_Boolean RecP2, Standard_Real& Psol, math_Vector& ParSol);
   
   Standard_EXPORT Standard_Boolean Complete (Blend_RstRstFunction& Func, Blend_SurfCurvFuncInv& Finv1, Blend_CurvPointFuncInv& FinvP1, Blend_SurfCurvFuncInv& Finv2, Blend_CurvPointFuncInv& FinvP2, const Standard_Real Pmin);
   
@@ -134,7 +134,7 @@ private:
   Handle(Adaptor3d_TopolTool) domain2;
   Handle(Adaptor2d_Curve2d) rst1;
   Handle(Adaptor2d_Curve2d) rst2;
-  Standard_Real tolesp;
+  Standard_Real tolpoint3d;
   Standard_Real tolgui;
   Standard_Real pasmax;
   Standard_Real fleche;

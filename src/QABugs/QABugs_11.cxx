@@ -1864,6 +1864,7 @@ static Standard_Integer OCC1487 (Draw_Interpretor& di, Standard_Integer argc, co
 //=======================================================================
 TopoDS_Shape OCC1077_boolbl(BRepAlgoAPI_BooleanOperation& aBoolenaOperation,const Standard_Real aRadius)
 {
+  Standard_Real tesp = 1.e-4;
   Standard_Real t3d = 1.e-4;
   Standard_Real t2d = 1.e-5;
   Standard_Real ta  = 1.e-2;
@@ -1885,7 +1886,7 @@ TopoDS_Shape OCC1077_boolbl(BRepAlgoAPI_BooleanOperation& aBoolenaOperation,cons
       const TopoDS_Shape& cutsol = ex.Current();
 
       BRepFilletAPI_MakeFillet fill(cutsol);
-      fill.SetParams(ta, t3d, t2d, t3d, t2d, fl);
+      fill.SetParams(ta, tesp, t2d, t3d, t2d, fl);
       fill.SetContinuity(blend_cont, tapp_angle);
       its = aBoolenaOperation.SectionEdges();
       while (its.More())
