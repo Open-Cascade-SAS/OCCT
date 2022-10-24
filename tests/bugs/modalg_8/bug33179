@@ -1,0 +1,9 @@
+puts "================================"
+puts "0033179: Modeling Algorithms - Crash in in ShapeFix_Shape with the attached object, when healing for fixing SameParameterFlag"
+puts "================================"
+
+restore [locate_data_file bug33179.brep] s
+
+fsameparameter s
+checkshape s
+
