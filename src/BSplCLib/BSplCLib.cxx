@@ -4235,6 +4235,133 @@ void BSplCLib::Resolution(      Standard_Real&        Poles,
 }
 
 //=======================================================================
+// function : Intervals 
+// purpose  : 
+//=======================================================================
+Standard_Integer BSplCLib::Intervals (const TColStd_Array1OfReal& theKnots,
+                                      const TColStd_Array1OfInteger& theMults,
+                                      Standard_Integer theDegree,
+                                      Standard_Boolean isPeriodic,
+                                      Standard_Integer theContinuity,
+                                      Standard_Real theFirst,
+                                      Standard_Real theLast,
+                                      Standard_Real theTolerance,
+                                      TColStd_Array1OfReal* theIntervals) 
+{
+  // remove all knots with multiplicity less or equal than (degree - continuity) except first and last
+  Standard_Integer aFirstIndex = isPeriodic ? 1 : FirstUKnotIndex (theDegree, theMults);
+  Standard_Integer aLastIndex = isPeriodic ? theKnots.Size() : LastUKnotIndex (theDegree, theMults);
+  TColStd_Array1OfReal aNewKnots (1, aLastIndex - aFirstIndex + 1);
+  Standard_Integer aNbNewKnots = 0;
+  for (Standard_Integer anIndex = aFirstIndex; anIndex <= aLastIndex; anIndex++)
+  {
+    if (theMults(anIndex) > (theDegree - theContinuity) ||
+    anIndex == aFirstIndex ||
+    anIndex == aLastIndex)
+    {
+      aNbNewKnots++;
+      aNewKnots(aNbNewKnots) = theKnots[anIndex];
+    }
+  }
+  aNewKnots.Resize (1, aNbNewKnots, Standard_True);
+
+  // the range boundaries 
+  Standard_Real aCurFirst = theFirst;
+  Standard_Real aCurLast = theLast;
+  Standard_Real aPeriod = 0.0;
+  Standard_Integer aFirstPeriod = 0;
+  Standard_Integer aLastPeriod = 0;
+  // move boundaries into period
+  if (isPeriodic)
+  {
+    Standard_Real aLower = theKnots.First();
+    Standard_Real anUpper = theKnots.Last();
+    aPeriod = anUpper - aLower;
+    
+    while (aCurFirst < aLower)
+    {
+      aCurFirst += aPeriod;
+      aFirstPeriod--;
+    }
+    while (aCurLast < aLower)
+    {
+      aCurLast += aPeriod;
+      aLastPeriod--;
+    }
+    while (aCurFirst >= anUpper)
+    {
+      aCurFirst -= aPeriod;
+      aFirstPeriod += 1;
+    }
+    while (aCurLast >= anUpper)
+    {
+      aCurLast -= aPeriod;
+      aLastPeriod += 1;
+    }
+  }
+  // locate the left and nearest knot for boundaries
+  Standard_Integer anIndex1 = 0;
+  Standard_Integer anIndex2 = 0;
+  Standard_Real aDummyDouble;
+  // we use version of LocateParameter that doesn't need multiplicities
+  LocateParameter(theDegree, aNewKnots, TColStd_Array1OfInteger(), aCurFirst, Standard_False, 1, aNbNewKnots, anIndex1, aDummyDouble);
+  LocateParameter(theDegree, aNewKnots, TColStd_Array1OfInteger(), aCurLast, Standard_False, 1, aNbNewKnots, anIndex2, aDummyDouble);
+  // the case when the beginning of the range coincides with the next knot
+  if (anIndex1 < aNbNewKnots && Abs(aNewKnots[anIndex1 + 1] - aCurFirst) < theTolerance)
+  {
+    anIndex1 += 1;
+  }
+  // the case when the ending of the range coincides with the current knot
+  if (aNbNewKnots && Abs(aNewKnots[anIndex2] - aCurLast) < theTolerance)
+  {
+    anIndex2 -= 1;
+  }
+  Standard_Integer aNbIntervals = anIndex2 - anIndex1 + 1 + (aLastPeriod - aFirstPeriod) * (aNbNewKnots - 1);
+  
+  // fill the interval array
+  if (theIntervals)
+  {
+    theIntervals->Resize (1, aNbIntervals + 1, Standard_False);
+    if (isPeriodic && aLastPeriod != aFirstPeriod)
+    {
+      Standard_Integer anIndex = 1;
+      // part from the begging of range to the end of the first period
+      for (Standard_Integer i = anIndex1; i < aNewKnots.Size(); i++, anIndex++)
+      {
+        theIntervals->ChangeValue(anIndex) = aNewKnots[i] + aFirstPeriod * aPeriod;
+      }
+      // full periods
+      for (Standard_Integer aPeriodNum = aFirstPeriod + 1; aPeriodNum < aLastPeriod; aPeriodNum++)
+      {
+        for (Standard_Integer i = 1; i < aNewKnots.Size(); i++, anIndex++)
+        {
+          theIntervals->ChangeValue(anIndex) = aNewKnots[i] + aPeriodNum * aPeriod;
+        }
+      }
+      // part from the begging of the last period to the end of range
+      for (Standard_Integer i = 1; i <= anIndex2; i++, anIndex++)
+      {
+        theIntervals->ChangeValue(anIndex) = aNewKnots[i] + aLastPeriod * aPeriod;
+      }
+    }
+    else
+    {
+      Standard_Integer anIndex = 1;
+      for (Standard_Integer i = anIndex1; i <= anIndex2; i++, anIndex++)
+      {
+        theIntervals->ChangeValue(anIndex) = aNewKnots[i] + aFirstPeriod * aPeriod;
+      }
+    }
+    // update the first position (the begging of range doesn't coincide with the knot at anIndex1 in general)
+    theIntervals->ChangeValue(1) = theFirst;
+    // write the ending of the range (we didn't write it at all)
+    theIntervals->ChangeValue(aNbIntervals + 1) = theLast;
+  }
+  
+  return aNbIntervals;
+}
+
+//=======================================================================
 // function: FlatBezierKnots
 // purpose :
 //=======================================================================

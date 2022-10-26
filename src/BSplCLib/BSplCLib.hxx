@@ -1456,8 +1456,26 @@ public:
   //! we have |f (u1) - f (u0)| < Tolerance3D
   Standard_EXPORT static void Resolution (const TColgp_Array1OfPnt2d& Poles, const TColStd_Array1OfReal* Weights, const Standard_Integer NumPoles, const TColStd_Array1OfReal& FlatKnots, const Standard_Integer Degree, const Standard_Real Tolerance3D, Standard_Real& UTolerance);
 
-
-
+  //! Splits the given range to BSpline intervals of given continuity
+  //! @param[in] theKnots the knots of BSpline
+  //! @param[in] theMults the knots' multiplicities
+  //! @param[in] theDegree the degree of BSpline
+  //! @param[in] isPeriodic the periodicity of BSpline
+  //! @param[in] theContinuity the target interval's continuity 
+  //! @param[in] theFirst the begin of the target range
+  //! @param[in] theLast the end of the target range
+  //! @param[in] theTolerance the tolerance
+  //! @param[in,out] theIntervals the array to store intervals if isn't nullptr
+  //! @return the number of intervals
+  Standard_EXPORT static Standard_Integer Intervals (const TColStd_Array1OfReal& theKnots,
+                                                     const TColStd_Array1OfInteger& theMults,
+                                                     Standard_Integer theDegree,
+                                                     Standard_Boolean isPeriodic,
+                                                     Standard_Integer theContinuity,
+                                                     Standard_Real theFirst,
+                                                     Standard_Real theLast,
+                                                     Standard_Real theTolerance,
+                                                     TColStd_Array1OfReal* theIntervals);
 
 protected:
 

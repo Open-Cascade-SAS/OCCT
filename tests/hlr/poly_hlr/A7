@@ -4,7 +4,7 @@ puts "====================================="
 puts ""
 
 set viewname "vright"
-set length 9.30381
+set length 9.30402
 
 restore [locate_data_file bug27341_hlrsave.brep] a
 COMPUTE_HLR $viewname $algotype

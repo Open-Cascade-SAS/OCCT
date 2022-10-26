@@ -1,0 +1,9 @@
+puts "================================"
+puts "0033187: Modeling Algorithms - Crash in postprocessing of imported shape"
+puts "================================"
+
+restore [locate_data_file bug33187.brep] s
+
+if [catch { fixshape r s } catch_result] {
+  puts "${BugNumber}: Faulty"
+}
