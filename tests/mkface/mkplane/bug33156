@@ -1,0 +1,10 @@
+puts "============="
+puts "0033156: Modeling Algorithms - Planar face creation problem"
+puts "============="
+
+brestore [locate_data_file bug33156_face.brep] Face
+
+explode Face W
+#Face_1
+
+mkplane result Face_1 1
