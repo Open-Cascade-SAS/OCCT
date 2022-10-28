@@ -256,7 +256,7 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
     myError = BRepLib_NotPlanar;
     return;
   }
- 
+
   // build the face and add the wire
   BRep_Builder B;
   myError = BRepLib_FaceDone;
@@ -264,13 +264,40 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
   Standard_Real tol = Max(1.2*FS.ToleranceReached(), FS.Tolerance());
 
   B.MakeFace(TopoDS::Face(myShape),FS.Surface(),FS.Location(),tol);
-  Add(W);
+
+  TopoDS_Wire aW;
+  if (OnlyPlane)
+  {
+    // get rid of degenerative edges in the input wire
+    BRep_Builder aB;
+    aB.MakeWire (aW);
+
+    TopoDS_Wire aWForw = W;
+    aWForw.Orientation (TopAbs_FORWARD);
+    TopoDS_Iterator anIter (aWForw);
+    for (; anIter.More(); anIter.Next())
+    {
+      const TopoDS_Edge& aE = TopoDS::Edge (anIter.Value());
+
+      if (!BRep_Tool::Degenerated (aE))
+        aB.Add (aW, aE);
+    }
+
+    aW.Orientation (W.Orientation()); // return to original orient
+    aW.Closed (W.Closed());
+  }
+  else
+  {
+    aW = W;
+  }
+
+  Add (aW);
   //
   BRepLib::UpdateTolerances(myShape);
   //
   BRepLib::SameParameter(myShape, tol, Standard_True);
   //
-  if (BRep_Tool::IsClosed(W))
+  if (BRep_Tool::IsClosed(aW))
     CheckInside();
 }
 
