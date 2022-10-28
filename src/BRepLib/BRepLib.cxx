@@ -987,6 +987,9 @@ static void InternalSameParameter(const TopoDS_Shape& theSh, BRepTools_ReShape& 
     TopExp_Explorer ex2;
     for(ex2.Init(curface,TopAbs_EDGE); ex2.More(); ex2.Next()){
       const TopoDS_Edge& E = TopoDS::Edge(ex2.Current());
+      if (BRep_Tool::Degenerated(E))
+        continue;
+
       TopoDS_Shape aNe = theReshaper.Value(E);
       Standard_Real aNewEtol = -1;
       GetEdgeTol(TopoDS::Edge(aNe), curface, aNewEtol);
