@@ -462,12 +462,18 @@ Standard_Boolean BRepExtrema_ProximityValueTool::getShapesAdditionalVertices()
 
     if (myIsRefinementRequired1)
     {
-      return getEdgeAdditionalVertices (TopoDS::Edge (myShape1), aStep1, myAddVertices1, myAddStatus1);
+      if (!getEdgeAdditionalVertices (TopoDS::Edge (myShape1), aStep1, myAddVertices1, myAddStatus1))
+      {
+        return Standard_False;
+      }
     }
 
     if (myIsRefinementRequired2)
     {
-      return getEdgeAdditionalVertices (TopoDS::Edge (myShape2), aStep2, myAddVertices2, myAddStatus2);
+      if (!getEdgeAdditionalVertices (TopoDS::Edge (myShape2), aStep2, myAddVertices2, myAddStatus2))
+      {
+        return Standard_False;
+      }
     }
   }
   else if ((myShapeType1 == TopAbs_FACE) && (myShapeType2 == TopAbs_FACE))
