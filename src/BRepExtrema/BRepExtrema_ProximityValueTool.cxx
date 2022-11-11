@@ -512,7 +512,7 @@ void BRepExtrema_ProximityValueTool::Perform (Standard_Real& theTolerance)
   if (!myIsInitS1 || !myIsInitS2 || (myShapeType1 != myShapeType2))
     return;
 
-  //get vertices on shapes with refining a coarser mesh if it's needed
+  // get vertices on shapes with refining a coarser mesh if it's needed
   if (!getShapesAdditionalVertices())
     return;
 
@@ -530,37 +530,11 @@ void BRepExtrema_ProximityValueTool::Perform (Standard_Real& theTolerance)
   if (aProximityDist1 < 0.)
     return;
 
-  // max(min) dist from the 2nd shape to t he 1st one
-  BVH_Vec3d aP2_1, aP2_2;
-  ProxPnt_Status aPointStatus2_1 = ProxPnt_Status::ProxPnt_Status_UNKNOWN;
-  ProxPnt_Status aPointStatus2_2 = ProxPnt_Status::ProxPnt_Status_UNKNOWN;
-
-  Standard_Real aProximityDist2 = computeProximityDist (mySet2, myNbSamples2, myAddVertices2, myAddStatus2,
-                                                        mySet1,
-                                                        myShapeList2, myShapeList1,
-                                                        aP2_2, aP2_1,
-                                                        aPointStatus2_2, aPointStatus2_1);
-
-  if (aProximityDist2 < 0.)
-    return;
-
-  // min dist of the two max(min) dists
-  if (aProximityDist1 < aProximityDist2)
-  {
-    myDistance = aProximityDist1;
-    myPnt1.SetCoord(aP1_1.x(), aP1_1.y(), aP1_1.z());
-    myPnt2.SetCoord(aP1_2.x(), aP1_2.y(), aP1_2.z());
-    myPntStatus1 = aPointStatus1_1;
-    myPntStatus2 = aPointStatus1_2;
-  }
-  else
-  {
-    myDistance = aProximityDist2;
-    myPnt1.SetCoord(aP2_1.x(), aP2_1.y(), aP2_1.z());
-    myPnt2.SetCoord(aP2_2.x(), aP2_2.y(), aP2_2.z());
-    myPntStatus1 = aPointStatus2_1;
-    myPntStatus2 = aPointStatus2_2;
-  }
+  myDistance = aProximityDist1;
+  myPnt1.SetCoord(aP1_1.x(), aP1_1.y(), aP1_1.z());
+  myPnt2.SetCoord(aP1_2.x(), aP1_2.y(), aP1_2.z());
+  myPntStatus1 = aPointStatus1_1;
+  myPntStatus2 = aPointStatus1_2;
 
   myIsDone = Standard_True;
   theTolerance = myDistance;
