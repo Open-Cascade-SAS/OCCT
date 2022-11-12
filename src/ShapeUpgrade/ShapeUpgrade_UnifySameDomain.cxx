@@ -752,7 +752,25 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theRemovedEdge
       if ((theUperiod != 0. && aUdiff > theUperiod/2) ||
           (theVperiod != 0. && aVdiff > theVperiod/2))
       {
-        anEdge.Reverse();
+        if (aLastVertex.IsSame(theCurVertex) || (theUperiod != 0. && theVperiod != 0.))
+        {
+          anEdge.Reverse();
+        }
+        else
+        {
+          TopAbs_Orientation anOri = anEdge.Orientation();
+          anEdge.Orientation(TopAbs_FORWARD);
+          Handle(Geom2d_Curve) aPC1 = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
+          anEdge.Reverse();
+          Handle(Geom2d_Curve) aPC2 = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
+          anEdge.Reverse(); // again FORWARD
+          TopLoc_Location aLoc;
+          BRep_Builder aBB;
+          Standard_Real aTol = BRep_Tool::Tolerance(anEdge);
+          const  Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(theFrefFace, aLoc);
+          aBB.UpdateEdge(anEdge, aPC2, aPC1, aSurf, aLoc, aTol);
+          anEdge.Orientation(anOri);
+        }
         aPC = BRep_Tool::CurveOnSurface(anEdge, theFrefFace, Param1, Param2);
         aParam = (anEdge.Orientation() == TopAbs_FORWARD)? Param1 : Param2;
         aPoint = aPC->Value(aParam);
