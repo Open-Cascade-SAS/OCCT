@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <BRepFill_ThruSectionErrorStatus.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -49,6 +50,11 @@ public:
   Standard_EXPORT void Perform (const Standard_Boolean WithRotation = Standard_True);
   
   Standard_EXPORT Standard_Boolean IsDone() const;
+
+  BRepFill_ThruSectionErrorStatus GetStatus() const
+  {
+    return myStatus;
+  }
   
   //! returns the generated sequence.
   Standard_EXPORT const TopTools_SequenceOfShape& Shape() const;
@@ -101,7 +107,7 @@ private:
   Standard_Real myPercent;
   Standard_Boolean myDegen1;
   Standard_Boolean myDegen2;
-  Standard_Boolean myIsDone;
+  BRepFill_ThruSectionErrorStatus myStatus;
   TopTools_DataMapOfShapeListOfShape myMap;
 
 

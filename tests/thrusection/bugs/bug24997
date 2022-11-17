@@ -1,5 +1,4 @@
-puts "TODO OCC24997 ALL: An exception was caught"
-puts "TODO OCC24997 ALL: TEST INCOMPLETE"
+puts "REQUIRED ALL: Error : The command cannot be built."
 
 puts "========"
 puts "0024997: S I G S E G V in BRepOffsetAPI_ThruSections"
