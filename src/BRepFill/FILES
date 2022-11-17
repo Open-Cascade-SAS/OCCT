@@ -77,6 +77,7 @@ BRepFill_ShapeLaw.hxx
 BRepFill_ShapeLaw.lxx
 BRepFill_Sweep.cxx
 BRepFill_Sweep.hxx
+BRepFill_ThruSectionErrorStatus.hxx
 BRepFill_TransitionStyle.hxx
 BRepFill_TrimEdgeTool.cxx
 BRepFill_TrimEdgeTool.hxx

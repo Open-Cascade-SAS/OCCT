@@ -656,7 +656,7 @@ static void BuildConnectedEdges(const TopoDS_Wire& aWire,
 //=======================================================================
 
 BRepFill_CompatibleWires::BRepFill_CompatibleWires() 
-:myIsDone(Standard_False)
+:myStatus(BRepFill_ThruSectionErrorStatus_NotDone)
 {
 }
 
@@ -682,7 +682,7 @@ void BRepFill_CompatibleWires::Init(const TopTools_SequenceOfShape& Sections)
   myInit = Sections;
   myWork = Sections;
   myPercent = 0.01;
-  myIsDone = Standard_False;
+  myStatus = BRepFill_ThruSectionErrorStatus_NotDone;
   myMap.Clear();
 
 }
@@ -707,7 +707,7 @@ void BRepFill_CompatibleWires::SetPercent(const Standard_Real Percent)
 
 Standard_Boolean BRepFill_CompatibleWires::IsDone() const 
 {
-  return myIsDone;
+  return myStatus == BRepFill_ThruSectionErrorStatus_Done;
 }
 
 
@@ -766,6 +766,7 @@ Standard_Boolean BRepFill_CompatibleWires::IsDegeneratedLastSection() const
 
 void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
 {
+  myStatus = BRepFill_ThruSectionErrorStatus_Done;
   // compute origin and orientation on wires to avoid twisted results
   // and update wires to have same number of edges
 
@@ -838,7 +839,7 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
     allClosed = (allClosed && wClosed);
     allOpen = (allOpen && !wClosed);
   }
-  
+
   if (allClosed) {
     // All sections are closed 
     if (report) {
@@ -849,24 +850,26 @@ void BRepFill_CompatibleWires::Perform (const Standard_Boolean WithRotation)
       // origin
       ComputeOrigin(Standard_False);
     }
-    myIsDone = Standard_True;
   }
   else if (allOpen) {
     // All sections are open
     // origin
     SearchOrigin();
+    if (myStatus != BRepFill_ThruSectionErrorStatus_Done)
+    {
+      return;
+    }
     // same number of elements
     if (report) {
       SameNumberByACR(report);
     }
-    myIsDone = Standard_True;
   }
   else {
     // There are open and closed sections :
     // not processed
-    throw Standard_DomainError("Sections must be all closed or all open");
+    myStatus = BRepFill_ThruSectionErrorStatus_NotSameTopology;
+    return;
   }
-  
 }
 
 
@@ -906,7 +909,10 @@ void BRepFill_CompatibleWires::
     //allClosed = (allClosed && myWork(i).Closed());
   }
   if (!allClosed)
-    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SameNumberByPolarMethod : the wires must be closed");
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_NotSameTopology;
+    return;
+  }
   
   // sections ponctuelles, sections bouclantes ?
   if (myDegen1) ideb++;
@@ -986,8 +992,11 @@ void BRepFill_CompatibleWires::
     
     // sequence of vertices of the first wire
     SeqOfVertices(wire1,SeqV);
-    if (SeqV.Length()>NbMaxV) 
-      throw Standard_NoSuchObject("BRepFill::SameNumberByPolarMethod failed");
+    if (SeqV.Length() > NbMaxV)
+    {
+      myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+      return;
+    }
     
     // loop on vertices of wire1
     for (ii=1;ii<=SeqV.Length();ii++) {
@@ -1062,7 +1071,10 @@ void BRepFill_CompatibleWires::
     // sequence of vertices of the first wire
     SeqOfVertices(wire1,SeqV);
     if ( SeqV.Length()>NbMaxV || SeqV.Length()>SizeMap ) 
-      throw Standard_NoSuchObject("BRepFill::SameNumberByPolarMethod failed");
+    {
+      myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+      return;
+    }
     
 
     // next wire 
@@ -1184,14 +1196,17 @@ void BRepFill_CompatibleWires::
 	}
       } //end of for(; itW.More(); itW.Next())
     if (Esol.IsNull())
-      throw Standard_ConstructionError("BRepFill :: profiles are inconsistent");
+    {
+      myStatus = BRepFill_ThruSectionErrorStatus_ProfilesInconsistent;
+      return;
+    }
     MW.Add(Esol);
 
     TopTools_ListOfShape ConnectedEdges;
     BuildConnectedEdges( TopoDS::Wire(myWork(i)), Esol, V2, ConnectedEdges );
 
     TopTools_ListIteratorOfListOfShape itCE(ConnectedEdges);
-    for(; anExp.More(), itCE.More(); anExp.Next(), itCE.Next())
+    for(; anExp.More() && itCE.More(); anExp.Next(), itCE.Next())
       {
 	ECur = anExp.Current();
 	TopExp::Vertices(ECur,VF,VL,Standard_True);
@@ -1264,8 +1279,10 @@ void BRepFill_CompatibleWires::
     if (nbmax<nbEdges) nbmax = nbEdges;
     if (nbmin>nbEdges) nbmin = nbEdges;
   }
-  if (nbmin!=nbmax) {
-    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SameNumberByPolarMethod failed");
+  if (nbmin!=nbmax) 
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+    return;
   }
 
   //Fill <myMap>
@@ -1487,7 +1504,10 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
     if (nbmin>nbEdges(i)) nbmin = nbEdges(i);
   }
   if (nbmax!=nbmin) 
-    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SameNumberByACR failed");
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_Failed;
+    return;
+  }
 }
 
 //=======================================================================
@@ -1532,7 +1552,10 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
   }
 */
   if (!allClosed) 
-    throw Standard_NoSuchObject("BRepFill_CompatibleWires::ComputeOrigin : the wires must be closed");
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_NotSameTopology;
+    return;
+  }
 
 /*  
   // Max number of possible cuts
@@ -1869,7 +1892,10 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
       gp_Pnt Pmini,P1,P2;
       SeqOfVertices(wire,SeqV);
       if (SeqV.Length()>NbMaxV) 
-	throw Standard_NoSuchObject("BRepFill::ComputeOrigin failed");
+      {
+        myStatus = BRepFill::ThruSectionsError_Failed;
+        return;
+      }
       if (!polar) {
 	// choix du vertex le plus proche comme origine
 	distmini = Precision::Infinite();
@@ -2094,7 +2120,10 @@ void BRepFill_CompatibleWires::SearchOrigin()
     allOpen = (allOpen && !myWork(i).Closed());
   }
   if (!allOpen)
-    throw Standard_NoSuchObject("BRepFill_CompatibleWires::SearchOrigin : the wires must be open");
+  {
+    myStatus = BRepFill_ThruSectionErrorStatus_NotSameTopology;
+    return;
+  }
 
   // init
 
