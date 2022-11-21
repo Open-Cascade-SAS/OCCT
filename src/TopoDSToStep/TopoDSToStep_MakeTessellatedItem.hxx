@@ -40,6 +40,7 @@ public:
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem(const TopoDS_Face& theFace,
                                                    TopoDSToStep_Tool& theTool,
                                                    const Handle(Transfer_FinderProcess)& theFP,
+                                                   const Standard_Boolean theToPreferSurfaceSet,
                                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT TopoDSToStep_MakeTessellatedItem(const TopoDS_Shell& theShell,
@@ -50,6 +51,7 @@ public:
   Standard_EXPORT void Init(const TopoDS_Face& theFace,
                             TopoDSToStep_Tool& theTool,
                             const Handle(Transfer_FinderProcess)& theFP,
+                            const Standard_Boolean theToPreferSurfaceSet,
                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT void Init(const TopoDS_Shell& theShell,
@@ -59,28 +61,10 @@ public:
   
   Standard_EXPORT const Handle(StepVisual_TessellatedItem)& Value() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Handle(StepVisual_TessellatedItem) theTessellatedItem;
 
-
 };
-
-
-
-
-
-
 
 #endif // _TopoDSToStep_MakeTessellatedItem_HeaderFile

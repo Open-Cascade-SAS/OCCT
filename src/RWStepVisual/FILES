@@ -190,3 +190,5 @@ RWStepVisual_RWTessellatedWire.cxx
 RWStepVisual_RWTessellatedWire.hxx
 RWStepVisual_RWTriangulatedFace.cxx
 RWStepVisual_RWTriangulatedFace.hxx
+RWStepVisual_RWTriangulatedSurfaceSet.cxx
+RWStepVisual_RWTriangulatedSurfaceSet.hxx

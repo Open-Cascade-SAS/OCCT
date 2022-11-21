@@ -1,0 +1,8 @@
+# load from mesh (STEP) format 
+ReadStep D1 [locate_data_file "bug30024_tessell.stp"] 
+XGetOneShape S D1
+newmodel
+
+set nb_faces     131
+set nb_nodes     2216
+set nb_triangles 2118

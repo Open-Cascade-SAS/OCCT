@@ -36,7 +36,7 @@
 #include <Transfer_FinderProcess.hxx>
 
 // ============================================================================
-// Method  : TopoDSToStep_Builder::TopoDSToStep_Builder
+// Method  : TopoDSToStep_Builder
 // Purpose :
 // ============================================================================
 TopoDSToStep_Builder::TopoDSToStep_Builder()
@@ -46,10 +46,9 @@ TopoDSToStep_Builder::TopoDSToStep_Builder()
 }
 
 // ============================================================================
-// Method  : TopoDSToStep_Builder::TopoDSToStep_Builder
+// Method  : TopoDSToStep_Builder
 // Purpose :
 // ============================================================================
-
 TopoDSToStep_Builder::TopoDSToStep_Builder
 (const TopoDS_Shape& aShape,
   TopoDSToStep_Tool& aTool,
@@ -63,10 +62,9 @@ TopoDSToStep_Builder::TopoDSToStep_Builder
 }
 
 // ============================================================================
-// Method  : TopoDSToStep_Builder::Init
+// Method  : Init
 // Purpose :
 // ============================================================================
-
 void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
   TopoDSToStep_Tool& myTool,
   const Handle(Transfer_FinderProcess)& FP,
@@ -107,8 +105,6 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
     //     et la recombinaison en lecture est sans malice
     //  Il reste ici et la du code relatif a "en Faceted on combine differemment"
     //  -> reste encore du menage a faire
-
-
 
     TopExp_Explorer anExp;
 
@@ -182,7 +178,6 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
         done = Standard_True;
       }
     }
-
     break;
   }
 
@@ -199,7 +194,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
     
     if (theTessellatedGeomParam == 1 || (theTessellatedGeomParam == 2 && !MkFace.IsDone())) {
       Message_ProgressScope aPS(theProgress, NULL, 1);
-      MkTessFace.Init(Face, myTool, FP, aPS.Next());
+      // fourth parameter is true in order to create a tessellated_surface_set entity
+      // or put false to create a triangulated_face instead
+      MkTessFace.Init(Face, myTool, FP, Standard_True, aPS.Next());
     }
 
     if (MkFace.IsDone() || MkTessFace.IsDone()) {
@@ -229,10 +226,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
 }
 
 // ============================================================================
-// Method  : TopoDSToStep_Builder::Value
+// Method  : Value
 // Purpose : Returns TopologicalRepresentationItem as the result
 // ============================================================================
-
 const Handle(StepShape_TopologicalRepresentationItem)& 
 TopoDSToStep_Builder::Value() const 
 {
@@ -241,10 +237,9 @@ TopoDSToStep_Builder::Value() const
 }
 
 // ============================================================================
-// Method  : TopoDSToStep_Builder::TessellatedValue
+// Method  : TessellatedValue
 // Purpose : Returns TopologicalRepresentationItem as the optional result
 // ============================================================================
-
 const Handle(StepVisual_TessellatedItem)&
 TopoDSToStep_Builder::TessellatedValue() const
 {
@@ -253,10 +248,9 @@ TopoDSToStep_Builder::TessellatedValue() const
 }
 
 // ============================================================================
-// Method  : TopoDSToStep_Builder::Error
+// Method  : Error
 // Purpose : Returns builder error if the process is not done
 // ============================================================================
-
 TopoDSToStep_BuilderError TopoDSToStep_Builder::Error() const 
 {
   return myError;

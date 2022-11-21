@@ -308,3 +308,5 @@ StepVisual_TessellatedWire.cxx
 StepVisual_TessellatedWire.hxx
 StepVisual_TriangulatedFace.cxx
 StepVisual_TriangulatedFace.hxx
+StepVisual_TriangulatedSurfaceSet.cxx
+StepVisual_TriangulatedSurfaceSet.hxx

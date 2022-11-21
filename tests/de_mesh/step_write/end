@@ -1,4 +1,3 @@
-
 # save the initial shape to STEP
 stepwrite a S "${imagedir}/${casename}.stp"
 
@@ -29,5 +28,6 @@ unset S
 unset S1
 
 # restore reading/writing tessellated STEP geometry default parameters
+param write.step.schema AP214CD
 param read.step.tessellated On
 param write.step.tessellated OnNoBRep

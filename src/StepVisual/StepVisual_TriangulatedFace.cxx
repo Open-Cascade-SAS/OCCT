@@ -23,7 +23,8 @@ IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TriangulatedFace, StepVisual_TessellatedFa
 //purpose  : 
 //=======================================================================
 
-StepVisual_TriangulatedFace::StepVisual_TriangulatedFace ()
+StepVisual_TriangulatedFace::StepVisual_TriangulatedFace()
+  : StepVisual_TessellatedFace()
 {
 }
 

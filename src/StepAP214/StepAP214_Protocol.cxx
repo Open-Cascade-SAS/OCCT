@@ -748,9 +748,10 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include <StepVisual_CubicBezierTessellatedEdge.hxx>
 #include <StepVisual_CubicBezierTriangulatedFace.hxx>
+#include <StepVisual_TriangulatedSurfaceSet.hxx>
 
 static int THE_StepAP214_Protocol_init = 0;
-static Interface_DataMapOfTransientInteger types(803);
+static Interface_DataMapOfTransientInteger types(819);
 
 //=======================================================================
 //function : StepAP214_Protocol
@@ -1558,6 +1559,7 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind(STANDARD_TYPE(StepVisual_ComplexTriangulatedSurfaceSet), 816);
   types.Bind(STANDARD_TYPE(StepVisual_CubicBezierTessellatedEdge), 817);
   types.Bind(STANDARD_TYPE(StepVisual_CubicBezierTriangulatedFace), 818);
+  types.Bind(STANDARD_TYPE(StepVisual_TriangulatedSurfaceSet), 819);
 }
 
 

@@ -89,6 +89,7 @@
 #include <StepShape_ShapeRepresentation.hxx>
 #include <StepShape_ShellBasedSurfaceModel.hxx>
 #include <StepVisual_TriangulatedFace.hxx>
+#include <StepVisual_TriangulatedSurfaceSet.hxx>
 #include <StepVisual_TessellatedShell.hxx>
 #include <StepVisual_TessellatedShapeRepresentation.hxx>
 #include <StepVisual_TessellatedSolid.hxx>
@@ -256,6 +257,7 @@ Standard_Boolean  STEPControl_ActorRead::Recognize
   if (start->IsKind(STANDARD_TYPE(StepShape_EdgeBasedWireframeModel))) return Standard_True;
   if (start->IsKind(STANDARD_TYPE(StepShape_FaceBasedSurfaceModel))) return Standard_True;
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedFace))) return Standard_True;
+  if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSurfaceSet))) return Standard_True;
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShell))) return Standard_True;
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSolid))) return Standard_True;
   if (aCanReadTessGeom && start->IsKind(STANDARD_TYPE(StepVisual_TessellatedShapeRepresentation))) return Standard_True;
@@ -1484,6 +1486,11 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
     {
       myShapeBuilder.Init(GetCasted(StepVisual_TessellatedFace, start), TP, 
                           aReadTessellatedWhenNoBRepOnly, aHasGeom, aLocalFactors);
+      found = Standard_True;
+    }
+    else if (start->IsKind(STANDARD_TYPE(StepVisual_TessellatedSurfaceSet)))
+    {
+      myShapeBuilder.Init(GetCasted(StepVisual_TessellatedSurfaceSet, start), TP, aLocalFactors, aHasGeom);
       found = Standard_True;
     }
   }

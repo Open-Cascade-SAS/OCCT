@@ -1372,6 +1372,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include <StepVisual_CubicBezierTessellatedEdge.hxx>
 #include <StepVisual_CubicBezierTriangulatedFace.hxx>
+#include <StepVisual_TriangulatedSurfaceSet.hxx>
 
 #include <RWStepVisual_RWTessellatedConnectingEdge.hxx>
 #include <RWStepVisual_RWTessellatedEdge.hxx>
@@ -1388,6 +1389,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <RWStepVisual_RWComplexTriangulatedSurfaceSet.hxx>
 #include <RWStepVisual_RWCubicBezierTessellatedEdge.hxx>
 #include <RWStepVisual_RWCubicBezierTriangulatedFace.hxx>
+#include <RWStepVisual_RWTriangulatedSurfaceSet.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -5867,6 +5869,13 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
     aTool.Share(anEnt, iter);
   }
   break;
+  case 819:
+  {
+    DeclareAndCast(StepVisual_TriangulatedSurfaceSet, anEnt, ent);
+    RWStepVisual_RWTriangulatedSurfaceSet aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
   default : break;
   }
 }
@@ -8172,6 +8181,9 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
      break;
    case 818:
      ent = new StepVisual_CubicBezierTriangulatedFace;
+     break;
+   case 819:
+     ent = new StepVisual_TriangulatedSurfaceSet;
      break;
 
   default: 

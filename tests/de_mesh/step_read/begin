@@ -1,5 +1,7 @@
 pload XDE OCAF MODELING
 
 # enable reading/writing tessellated STEP geometry
+param write.step.schema AP242DIS
 param read.step.tessellated On
 param write.step.tessellated On
+newmodel

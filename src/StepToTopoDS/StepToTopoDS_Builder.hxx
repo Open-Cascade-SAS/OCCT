@@ -39,6 +39,7 @@ class StepShape_FaceBasedSurfaceModel;
 class StepVisual_TessellatedFace;
 class StepVisual_TessellatedShell;
 class StepVisual_TessellatedSolid;
+class StepVisual_TessellatedSurfaceSet;
 class Transfer_ActorOfTransientProcess;
 
 
@@ -52,23 +53,23 @@ public:
   
   Standard_EXPORT StepToTopoDS_Builder();
   
-  Standard_EXPORT void Init (const Handle(StepShape_ManifoldSolidBrep)& S,
-                             const Handle(Transfer_TransientProcess)& TP,
+  Standard_EXPORT void Init (const Handle(StepShape_ManifoldSolidBrep)& theManifoldSolid,
+                             const Handle(Transfer_TransientProcess)& theTP,
                              const StepData_Factors& theLocalFactors,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT void Init (const Handle(StepShape_BrepWithVoids)& S,
-                             const Handle(Transfer_TransientProcess)& TP,
+  Standard_EXPORT void Init (const Handle(StepShape_BrepWithVoids)& theBRepWithVoids,
+                             const Handle(Transfer_TransientProcess)& theTP,
                              const StepData_Factors& theLocalFactors,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT void Init (const Handle(StepShape_FacetedBrep)& S,
-                             const Handle(Transfer_TransientProcess)& TP,
+  Standard_EXPORT void Init (const Handle(StepShape_FacetedBrep)& theFB,
+                             const Handle(Transfer_TransientProcess)& theTP,
                              const StepData_Factors& theLocalFactors,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT void Init (const Handle(StepShape_FacetedBrepAndBrepWithVoids)& S,
-                             const Handle(Transfer_TransientProcess)& TP,
+  Standard_EXPORT void Init (const Handle(StepShape_FacetedBrepAndBrepWithVoids)& theFBABWV,
+                             const Handle(Transfer_TransientProcess)& theTP,
                              const StepData_Factors& theLocalFactors,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
@@ -112,6 +113,11 @@ public:
                              const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                              Standard_Boolean& theHasGeom,
                              const StepData_Factors& theLocalFactors);
+
+  Standard_EXPORT void Init (const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
+                             const Handle(Transfer_TransientProcess)& theTP,
+                             const StepData_Factors& theLocalFactors,
+                             Standard_Boolean& theHasGeom);
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

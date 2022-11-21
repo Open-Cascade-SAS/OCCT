@@ -16,5 +16,6 @@ vdump ${imagedir}/${casename}.png
 Close D -silent
 unset S
 
+param write.step.schema AP214CD
 param read.step.tessellated Off
 param write.step.tessellated Off

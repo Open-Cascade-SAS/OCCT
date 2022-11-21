@@ -29,10 +29,11 @@ class StepData_Factors;
 class StepShape_FaceSurface;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
-class StepVisual_TessellatedFace;
-class StepVisual_TriangulatedFace;
 class StepVisual_ComplexTriangulatedFace;
-
+class StepVisual_TessellatedFace;
+class StepVisual_TessellatedItem;
+class StepVisual_TessellatedSurfaceSet;
+class StepVisual_TriangulatedFace;
 
 class StepToTopoDS_TranslateFace  : public StepToTopoDS_Root
 {
@@ -54,6 +55,11 @@ public:
                                              const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                                              Standard_Boolean& theHasGeom,
                                              const StepData_Factors& theLocalFactors);
+
+  Standard_EXPORT StepToTopoDS_TranslateFace(const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
+                                             StepToTopoDS_Tool& theTool,
+                                             StepToTopoDS_NMTool& theNMTool,
+                                             const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT void Init (const Handle(StepShape_FaceSurface)& FS,
                              StepToTopoDS_Tool& T,
@@ -66,38 +72,27 @@ public:
                              const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                              Standard_Boolean& theHasGeom,
                              const StepData_Factors& theLocalFactors);
+
+  Standard_EXPORT void Init(const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
+                            StepToTopoDS_Tool& theTool,
+                            StepToTopoDS_NMTool& theNMTool,
+                            const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   
   Standard_EXPORT StepToTopoDS_TranslateFaceError Error() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_TriangulatedFace)& theTF,
+  Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_TessellatedItem)& theTI,
                                         const StepData_Factors& theLocalFactors) const;
-  Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_ComplexTriangulatedFace)& theTF,
-                                        const StepData_Factors& theLocalFactors) const;
-
-
+  Handle(Poly_Triangulation) createComplexMesh(const Handle(StepVisual_TessellatedItem)& theTI,
+                                               const StepData_Factors& theLocalFactors) const;
   StepToTopoDS_TranslateFaceError myError;
   TopoDS_Shape myResult;
 
 
 };
-
-
-
-
-
 
 
 #endif // _StepToTopoDS_TranslateFace_HeaderFile

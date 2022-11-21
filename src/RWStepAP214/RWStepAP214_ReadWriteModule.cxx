@@ -455,6 +455,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include <StepVisual_CubicBezierTessellatedEdge.hxx>
 #include <StepVisual_CubicBezierTriangulatedFace.hxx>
+#include <StepVisual_TriangulatedSurfaceSet.hxx>
 
 #include <RWStepVisual_RWTessellatedConnectingEdge.hxx>
 #include <RWStepVisual_RWTessellatedEdge.hxx>
@@ -471,6 +472,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepVisual_RWComplexTriangulatedSurfaceSet.hxx>
 #include <RWStepVisual_RWCubicBezierTessellatedEdge.hxx>
 #include <RWStepVisual_RWCubicBezierTriangulatedFace.hxx>
+#include <RWStepVisual_RWTriangulatedSurfaceSet.hxx>
 
 #include <RWStepBasic_RWAddress.hxx>
 #include <RWStepShape_RWAdvancedBrepShapeRepresentation.hxx>
@@ -2349,6 +2351,7 @@ static TCollection_AsciiString Reco_ComplexTriangulatedFace("COMPLEX_TRIANGULATE
 static TCollection_AsciiString Reco_ComplexTriangulatedSurfaceSet("COMPLEX_TRIANGULATED_SURFACE_SET");
 static TCollection_AsciiString Reco_CubicBezierTessellatedEdge("CUBIC_BEZIER_TESSELLATED_EDGE");
 static TCollection_AsciiString Reco_CubicBezierTriangulatedFace("CUBIC_BEZIER_TRIANGULATED_FACE");
+static TCollection_AsciiString Reco_TriangulatedSurfaceSet("TRIANGULATED_SURFACE_SET");
 
 // -- Definition of the libraries --
 
@@ -3105,6 +3108,7 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind(Reco_ComplexTriangulatedSurfaceSet, 816);
   typenums.Bind(Reco_CubicBezierTessellatedEdge, 817);
   typenums.Bind(Reco_CubicBezierTriangulatedFace, 818);
+  typenums.Bind(Reco_TriangulatedSurfaceSet, 819);
 
   
 //    SHORT NAMES
@@ -5092,6 +5096,7 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 816: return Reco_ComplexTriangulatedSurfaceSet;
   case 817: return Reco_CubicBezierTessellatedEdge;
   case 818: return Reco_CubicBezierTriangulatedFace;
+  case 819: return Reco_TriangulatedSurfaceSet;
   default : return PasReco;
   }
 }
@@ -10694,6 +10699,13 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     aTool.ReadStep(data, num, ach, anEnt);
   }
   break;
+  case 819:
+  {
+    DeclareAndCast(StepVisual_TriangulatedSurfaceSet, anEnt, ent);
+    RWStepVisual_RWTriangulatedSurfaceSet aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
   }
@@ -16235,6 +16247,13 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
   {
     DeclareAndCast(StepVisual_CubicBezierTriangulatedFace, anEnt, ent);
     RWStepVisual_RWCubicBezierTriangulatedFace aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 819:
+  {
+    DeclareAndCast(StepVisual_TriangulatedSurfaceSet, anEnt, ent);
+    RWStepVisual_RWTriangulatedSurfaceSet aTool;
     aTool.WriteStep(SW, anEnt);
   }
   break;

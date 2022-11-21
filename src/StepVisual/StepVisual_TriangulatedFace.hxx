@@ -32,7 +32,7 @@ class StepVisual_TriangulatedFace : public StepVisual_TessellatedFace
 
 public :
 
-  //! default constructor
+  //! Default constructor
   Standard_EXPORT StepVisual_TriangulatedFace();
 
   //! Initialize all fields (own and inherited)
