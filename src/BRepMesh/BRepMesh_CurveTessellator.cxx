@@ -101,9 +101,21 @@ void BRepMesh_CurveTessellator::init()
   myEdgeSqTol  = BRep_Tool::Tolerance (myEdge);
   myEdgeSqTol *= myEdgeSqTol;
 
-  const Standard_Integer aMinPntNb = Max(myMinPointsNb,
-    (myCurve.GetType() == GeomAbs_Circle) ? 4 : 2); //OCC287
+  Standard_Integer aMinPntThreshold = 2;
+  switch (myCurve.GetType())
+  {
+    case GeomAbs_Circle:
+    case GeomAbs_Ellipse:
+    case GeomAbs_Parabola:
+    case GeomAbs_Hyperbola:
+      aMinPntThreshold = 4;
+      break;
 
+    default:
+      break;
+  }
+
+  const Standard_Integer aMinPntNb = Max (myMinPointsNb, aMinPntThreshold); //OCC287
   myDiscretTool.Initialize (myCurve,
                             myCurve.FirstParameter(), myCurve.LastParameter(),
                             aPreciseAngDef, aPreciseLinDef, aMinPntNb,

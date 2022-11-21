@@ -15,6 +15,6 @@ vclear
 isos result 0
 triangles result
 
-checktrinfo result -tri 18 -nod 20
+checktrinfo result -tri 20 -nod 22
 checkprops result -s 19.2399 
 checkview -display result -3d -path ${imagedir}/${test_image}.png
