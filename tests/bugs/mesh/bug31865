@@ -1,0 +1,20 @@
+puts "========"
+puts "0031865: Mesh - triangulation fails with large deflection values due to unhandled Standard_OutOfRange, BRepMesh_PairOfIndex::Append()"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31865.brep] result
+
+tclean result
+incmesh result 0.2
+
+vinit
+vdefaults -autoTriang 0
+checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
