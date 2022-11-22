@@ -40,12 +40,12 @@ if { ![check_highlighting 0 $coords] } {
 }
 
 vselnext
-if { ![check_highlighting 1 $coords] } {
-  puts "ERROR: incorrect highlighting of edge 2 after vselnext call"
-}
-vselnext
 if { ![check_highlighting 2 $coords] } {
   puts "ERROR: incorrect highlighting of edge 1 after vselnext call"
+}
+vselnext
+if { ![check_highlighting 1 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 2 after vselnext call"
 }
 vselnext
 if { ![check_highlighting 0 $coords] } {
@@ -53,12 +53,12 @@ if { ![check_highlighting 0 $coords] } {
 }
 
 vselprev
-if { ![check_highlighting 2 $coords] } {
-  puts "ERROR: incorrect highlighting of edge 1 after vselprev call"
-}
-vselprev
 if { ![check_highlighting 1 $coords] } {
   puts "ERROR: incorrect highlighting of edge 2 after vselprev call"
+}
+vselprev
+if { ![check_highlighting 2 $coords] } {
+  puts "ERROR: incorrect highlighting of edge 1 after vselprev call"
 }
 vselprev
 if { ![check_highlighting 0 $coords] } {

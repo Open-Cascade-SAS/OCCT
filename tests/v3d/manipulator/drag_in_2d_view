@@ -15,8 +15,8 @@ vmanipulator m -attach b
 
 vdump $imagedir/${casename}_1.png
 
-set mouse_pick {226 214}
-set mouse_drag {306 265}
+set mouse_pick {231 207}
+set mouse_drag {311 258}
 
 # note: mouse events cannot be emulated here, so the original bug cannot be reproduced by this test case
 vmoveto {*}$mouse_pick
