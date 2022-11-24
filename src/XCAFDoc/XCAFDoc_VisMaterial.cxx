@@ -294,23 +294,23 @@ void XCAFDoc_VisMaterial::FillAspect (const Handle(Graphic3d_Aspects)& theAspect
   Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (aNbTexUnits);
   if (!aColorTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*aColorTexture, Graphic3d_TextureUnit_BaseColor));
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (aColorTexture, Graphic3d_TextureUnit_BaseColor));
   }
   if (!myPbrMat.EmissiveTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.EmissiveTexture, Graphic3d_TextureUnit_Emissive));
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.EmissiveTexture, Graphic3d_TextureUnit_Emissive));
   }
   if (!myPbrMat.OcclusionTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.OcclusionTexture, Graphic3d_TextureUnit_Occlusion));
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.OcclusionTexture, Graphic3d_TextureUnit_Occlusion));
   }
   if (!myPbrMat.NormalTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.NormalTexture, Graphic3d_TextureUnit_Normal));
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.NormalTexture, Graphic3d_TextureUnit_Normal));
   }
   if (!myPbrMat.MetallicRoughnessTexture.IsNull())
   {
-    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.MetallicRoughnessTexture, Graphic3d_TextureUnit_MetallicRoughness));
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (myPbrMat.MetallicRoughnessTexture, Graphic3d_TextureUnit_MetallicRoughness));
   }
 
   theAspect->SetTextureSet (aTextureSet);
