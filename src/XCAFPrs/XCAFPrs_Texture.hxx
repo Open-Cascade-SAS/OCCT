@@ -27,8 +27,8 @@ class XCAFPrs_Texture : public Graphic3d_Texture2D
 public:
 
   //! Constructor.
-  Standard_EXPORT explicit XCAFPrs_Texture (const Image_Texture& theImageSource,
-                                            const Graphic3d_TextureUnit theUnit);
+  Standard_EXPORT XCAFPrs_Texture (const Handle(Image_Texture)& theImageSource,
+                                   const Graphic3d_TextureUnit theUnit);
 
   //! Image reader.
   Standard_EXPORT virtual Handle(Image_CompressedPixMap) GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
@@ -37,12 +37,11 @@ public:
   Standard_EXPORT virtual Handle(Image_PixMap) GetImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Return image source.
-  const Image_Texture& GetImageSource() const { return myImageSource; }
+  const Handle(Image_Texture)& GetImageSource() const { return myImageSource; }
 
 protected:
 
-  Image_Texture myImageSource;
-
+  Handle(Image_Texture) myImageSource;
 };
 
 #endif // _XCAFPrs_Texture_HeaderFile
