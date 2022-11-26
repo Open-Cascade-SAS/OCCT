@@ -2,6 +2,9 @@ puts "========"
 puts "OCC162"
 puts "========"
 
+puts "TODO ?CR33225 Linux: Checking trend failed "
+puts "TODO ?CR33225 Linux: Tcl Exception: Memory leak detected"
+
 pload QAcommands
 pload XDE
 

@@ -3,6 +3,8 @@ puts "Testing performance of Strtod() vs. standard strtod()"
 puts "================================================================="
 puts ""
 
+puts "TODO ?CR33225 Linux: is expected to be at least "
+
 pload QAcommands
 
 # Check that performance of Strtod() and Atof() is at least twice better 

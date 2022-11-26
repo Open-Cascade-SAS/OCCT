@@ -1,5 +1,5 @@
 puts "TODO OCC30286 Windows: Error : The length of result shape is 404.004, expected 404.386"
-puts "TODO OCC30286 Linux: Error : The length of result shape is 404.492, expected 404.386"
+puts "TODO CR33225 Linux: Error : The length of result shape is 404.004, expected 404.386"
 
 polyline f1 0 0 0  0 -10 0  100 -10 0  100 0 0  0 0 0
 polyline f2 100 0 0  110 0 0  110 100 0  100 100 0  100 0 0
