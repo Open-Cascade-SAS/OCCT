@@ -34,6 +34,9 @@ namespace
     static const TCollection_AsciiString aScope ("global");
     return aScope;
   }
+
+  //! Global configuration of current DE Session
+  static Handle(DE_Wrapper) THE_GLOBAL_CONFIGURATION;
 }
 
 //=======================================================================
@@ -72,8 +75,23 @@ DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
 //=======================================================================
 Handle(DE_Wrapper) DE_Wrapper::GlobalWrapper()
 {
-  static const Handle(DE_Wrapper)& aConfiguration = new DE_Wrapper();
-  return aConfiguration;
+  if (THE_GLOBAL_CONFIGURATION.IsNull())
+  {
+    THE_GLOBAL_CONFIGURATION = new DE_Wrapper();
+  }
+  return THE_GLOBAL_CONFIGURATION;
+}
+
+//=======================================================================
+// function : SetGlobalWrapper
+// purpose  :
+//=======================================================================
+void DE_Wrapper::SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper)
+{
+  if (!theWrapper.IsNull())
+  {
+    THE_GLOBAL_CONFIGURATION = theWrapper;
+  }
 }
 
 //=======================================================================

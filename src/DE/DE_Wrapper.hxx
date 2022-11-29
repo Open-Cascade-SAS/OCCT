@@ -61,9 +61,14 @@ public:
   //! @param[in] theWrapper object to copy
   Standard_EXPORT DE_Wrapper(const Handle(DE_Wrapper)& theWrapper);
 
-  //! Gets global configuration singleton
+  //! Gets global configuration singleton.
+  //! If wrapper is not set, create it by default as base class object.
   //! @return point to global configuration
   Standard_EXPORT static Handle(DE_Wrapper) GlobalWrapper();
+
+  //! Sets global configuration singleton
+  //! @param[in] theWrapper object to set as global configuration
+  Standard_EXPORT static void SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper);
 
 public:
 
@@ -227,7 +232,7 @@ public:
 
   //! Copies values of all fields
   //! @return new object with the same field values
-  Standard_EXPORT Handle(DE_Wrapper) Copy() const;
+  Standard_EXPORT virtual Handle(DE_Wrapper) Copy() const;
 
 protected:
 
