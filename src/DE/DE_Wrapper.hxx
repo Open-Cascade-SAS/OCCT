@@ -211,6 +211,16 @@ public:
   Standard_EXPORT void ChangePriority(const TColStd_ListOfAsciiString& theVendorPriority,
                                       const Standard_Boolean theToDisable = Standard_False);
 
+  //! Find available provider from the configuration.
+  //! If there are several providers, choose the one with the highest priority.
+  //! @param[in] thePath path to the CAD file
+  //! @param[in] theToImport flag to finds for import. Standard_True-import, Standard_False-export
+  //! @param[out] theProvider created new provider
+  //! @return Standard_True if provider found and created
+  Standard_EXPORT virtual Standard_Boolean FindProvider(const TCollection_AsciiString& thePath,
+                                                        const Standard_Boolean theToImport,
+                                                        Handle(DE_Provider)& theProvider) const;
+
   //! Gets format map, contains vendor map with nodes
   //! @return internal map of formats
   Standard_EXPORT const DE_ConfigurationFormatMap& Nodes() const;
@@ -226,16 +236,6 @@ protected:
   //! Vendors omitted from the format scope are disabled
   //! @param[in] theResource resource to get priority
   void sort(const Handle(DE_ConfigurationContext)& theResource);
-
-  //! Find available provider from the configuration.
-  //! If there are several providers, choose the one with the highest priority.
-  //! @param[in] thePath path to the CAD file
-  //! @param[in] theToImport flag to finds for import. Standard_True-import, Standard_False-export
-  //! @param[out] theProvider created new provider
-  //! @return Standard_True if provider found and created
-  Standard_Boolean findProvider(const TCollection_AsciiString& thePath,
-                                const Standard_Boolean theToImport,
-                                Handle(DE_Provider)& theProvider) const;
 
 public:
 

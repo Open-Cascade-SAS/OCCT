@@ -94,7 +94,7 @@ Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
     return Read(thePath, theDocument, theProgress);
   }
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_True, aProvider))
+  if (!FindProvider(thePath, Standard_True, aProvider))
   {
     return Standard_False;
   }
@@ -119,7 +119,7 @@ Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
     return Write(thePath, theDocument, theProgress);
   }
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_False, aProvider))
+  if (!FindProvider(thePath, Standard_False, aProvider))
   {
     return Standard_False;
   }
@@ -139,7 +139,7 @@ Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
     return Standard_False;
   }
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_True, aProvider))
+  if (!FindProvider(thePath, Standard_True, aProvider))
   {
     return Standard_False;
   }
@@ -159,7 +159,7 @@ Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
     return Standard_False;
   }
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_False, aProvider))
+  if (!FindProvider(thePath, Standard_False, aProvider))
   {
     return Standard_False;
   }
@@ -180,7 +180,7 @@ Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
     return Read(thePath, theShape, theProgress);
   }
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_True, aProvider))
+  if (!FindProvider(thePath, Standard_True, aProvider))
   {
     return Standard_False;
   }
@@ -201,7 +201,7 @@ Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
     return Write(thePath, theShape, theProgress);
   }
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_False, aProvider))
+  if (!FindProvider(thePath, Standard_False, aProvider))
   {
     return Standard_False;
   }
@@ -218,7 +218,7 @@ Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
 {
 
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_True, aProvider))
+  if (!FindProvider(thePath, Standard_True, aProvider))
   {
     return Standard_False;
   }
@@ -234,7 +234,7 @@ Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
                                    const Message_ProgressRange& theProgress)
 {
   Handle(DE_Provider) aProvider;
-  if (!findProvider(thePath, Standard_False, aProvider))
+  if (!FindProvider(thePath, Standard_False, aProvider))
   {
     return Standard_False;
   }
@@ -482,10 +482,10 @@ Handle(DE_Wrapper) DE_Wrapper::Copy() const
 }
 
 //=======================================================================
-// function : findProvider
+// function : FindProvider
 // purpose  :
 //=======================================================================
-Standard_Boolean DE_Wrapper::findProvider(const TCollection_AsciiString& thePath,
+Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath,
                                           const Standard_Boolean theToImport,
                                           Handle(DE_Provider)& theProvider) const
 {
