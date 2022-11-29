@@ -74,7 +74,7 @@ public:
   //! @param theProgress[in] progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean Read(const TCollection_AsciiString& thePath,
-                                        Handle(TDocStd_Document)& theDocument,
+                                        const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -95,7 +95,7 @@ public:
   //! @param theProgress[in] progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean Read(const TCollection_AsciiString& thePath,
-                                        Handle(TDocStd_Document)& theDocument,
+                                        const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes a CAD file, according internal configuration

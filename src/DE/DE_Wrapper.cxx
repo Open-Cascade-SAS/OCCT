@@ -81,7 +81,7 @@ Handle(DE_Wrapper) DE_Wrapper::GlobalWrapper()
 // purpose  :
 //=======================================================================
 Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
-                                  Handle(TDocStd_Document)& theDocument,
+                                  const Handle(TDocStd_Document)& theDocument,
                                   Handle(XSControl_WorkSession)& theWS,
                                   const Message_ProgressRange& theProgress)
 {
@@ -131,7 +131,7 @@ Standard_Boolean DE_Wrapper::Write(const TCollection_AsciiString& thePath,
 // purpose  :
 //=======================================================================
 Standard_Boolean DE_Wrapper::Read(const TCollection_AsciiString& thePath,
-                                  Handle(TDocStd_Document)& theDocument,
+                                  const Handle(TDocStd_Document)& theDocument,
                                   const Message_ProgressRange& theProgress)
 {
   if (theDocument.IsNull())
