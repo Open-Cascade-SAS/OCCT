@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <limits>
 
 namespace
 {
