@@ -34,9 +34,7 @@ namespace
 //=======================================================================
 RWStl_ConfigurationNode::RWStl_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : STEPCAFControl_ConfigurationNode
@@ -46,7 +44,6 @@ RWStl_ConfigurationNode::RWStl_ConfigurationNode(const Handle(RWStl_Configuratio
   :DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
-  UpdateLoad();
 }
 
 //=======================================================================

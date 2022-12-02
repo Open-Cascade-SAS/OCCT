@@ -33,9 +33,7 @@ namespace
 //=======================================================================
 RWGltf_ConfigurationNode::RWGltf_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : RWGltf_ConfigurationNode
@@ -45,7 +43,6 @@ RWGltf_ConfigurationNode::RWGltf_ConfigurationNode(const Handle(RWGltf_Configura
   :DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
-  UpdateLoad();
 }
 
 //=======================================================================

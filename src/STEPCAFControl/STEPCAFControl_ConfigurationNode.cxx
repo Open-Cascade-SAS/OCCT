@@ -34,9 +34,7 @@ namespace
 //=======================================================================
 STEPCAFControl_ConfigurationNode::STEPCAFControl_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : STEPCAFControl_ConfigurationNode
@@ -45,9 +43,7 @@ STEPCAFControl_ConfigurationNode::STEPCAFControl_ConfigurationNode() :
 STEPCAFControl_ConfigurationNode::STEPCAFControl_ConfigurationNode(const Handle(STEPCAFControl_ConfigurationNode)& theNode)
   :DE_ConfigurationNode(theNode),
   InternalParameters(theNode->InternalParameters)
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : Load

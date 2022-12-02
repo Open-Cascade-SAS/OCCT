@@ -44,6 +44,7 @@ namespace
 // purpose  :
 //=======================================================================
 DE_Wrapper::DE_Wrapper()
+  :myKeepUpdates(Standard_False)
 {}
 
 //=======================================================================
@@ -67,6 +68,7 @@ DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
       Bind(aVendorIter.Value());
     }
   }
+  theWrapper->myKeepUpdates = myKeepUpdates;
 }
 
 //=======================================================================
@@ -445,7 +447,6 @@ void DE_Wrapper::ChangePriority(const TCollection_AsciiString& theFormat,
     if (aVendorMap.FindFromKey(aVendorName, aNode))
     {
       aNode->SetEnabled(Standard_True);
-      aNode->UpdateLoad();
       aNewVendorMap.Add(aVendorName, aNode);
     }
   }
@@ -532,7 +533,8 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
           ((theToImport && aNode->IsImportSupported()) ||
           (!theToImport && aNode->IsExportSupported())) &&
           (aNode->CheckExtension(anExtr) ||
-          (theToImport && aNode->CheckContent(aBuffer))))
+          (theToImport && aNode->CheckContent(aBuffer))) &&
+          aNode->UpdateLoad(theToImport, myKeepUpdates))
       {
         theProvider = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
@@ -542,6 +544,28 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
     }
   }
   return Standard_False;
+}
+
+//=======================================================================
+// function : UpdateLoad
+// purpose  :
+//=======================================================================
+Standard_EXPORT void DE_Wrapper::UpdateLoad(const Standard_Boolean theToForceUpdate) const
+{
+  for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);
+       aFormatIter.More(); aFormatIter.Next())
+  {
+    for (DE_ConfigurationVendorMap::Iterator aVendorIter(aFormatIter.Value());
+         aVendorIter.More(); aVendorIter.Next())
+    {
+      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
+      aNode->UpdateLoad(Standard_True, Standard_True);
+      aNode->UpdateLoad(Standard_False, Standard_True);
+      if (!theToForceUpdate)
+        continue;
+      aNode->SetEnabled(aNode->IsExportSupported() || aNode->IsImportSupported());
+    }
+  }
 }
 
 //=======================================================================

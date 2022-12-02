@@ -33,9 +33,7 @@ namespace
 //=======================================================================
 Vrml_ConfigurationNode::Vrml_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : STEPCAFControl_ConfigurationNode
@@ -45,7 +43,6 @@ Vrml_ConfigurationNode::Vrml_ConfigurationNode(const Handle(Vrml_ConfigurationNo
   :DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
-  UpdateLoad();
 }
 
 //=======================================================================
