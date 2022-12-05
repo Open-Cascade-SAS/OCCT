@@ -4078,11 +4078,15 @@ static void setDimObjectToXCAF(const occ::handle<Standard_Transient>&    theEnt,
               occ::handle<StepBasic_NamedUnit> NU = anUnit.NamedUnit();
               STEPConstruct_UnitContext        anUnitCtx;
               anUnitCtx.ComputeFactors(NU, theLocalFactors);
-              if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit)))
+              if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnit))
+                  || aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndLengthMeasureWithUnitAndQRI)))
               {
                 aVal = aVal * anUnitCtx.LengthFactor();
               }
-              else if (aMWU->IsKind(STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit)))
+              else if (aMWU->IsKind(
+                         STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnitAndQRI))
+                       || aMWU->IsKind(
+                         STANDARD_TYPE(StepRepr_ReprItemAndPlaneAngleMeasureWithUnit)))
               {
                 convertAngleValue(anUnitCtx, aVal);
               }
