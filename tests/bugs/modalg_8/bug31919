@@ -1,0 +1,17 @@
+puts "============================================================================================="
+puts "0031919: Modeling Algorithms - General Fuse raises ex-ception on attempt to imprint a contour to a shell"
+puts "============================================================================================="
+puts ""
+
+pload ALL
+restore [locate_data_file bug31919_Body.brep] body
+restore [locate_data_file bug31919_Contour.brep] contour
+bclearobjects
+bcleartools
+baddobjects body
+baddtools contour
+bfuzzyvalue 1
+bfillds
+bbop res 0
+
+checknbshapes res -wire 1
