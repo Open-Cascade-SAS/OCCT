@@ -1,0 +1,13 @@
+puts "============"
+puts "0033247: Modeling Algorithms - BOP report small edges problem and produce empty result"
+puts "============"
+puts ""
+
+restore [locate_data_file bug33247_object.brep] a 
+restore [locate_data_file bug33247_tool.brep] b 
+bcommon r a b 
+
+checknbshapes r -vertex 98 -edge 131 -wire 35 -face 26
+checkprops r -s 157.39
+
+checkview -display r -2d -path ${imagedir}/${test_image}.png
