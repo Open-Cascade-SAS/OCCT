@@ -1,0 +1,16 @@
+puts "============"
+puts "0033265: Modeling Algorithms - Boolean operation hangs on the attached shapes"
+puts "============"
+puts ""
+
+restore [locate_data_file bug33265.brep] hull
+plane p 0 0.0001 0 0 1 0
+mkface f p -150 150 -150 150
+bop hull f
+bopsection res
+
+checknbshapes res -vertex 16 -edge 16
+checkprops res -l 170.631
+checksection res -r 0
+
+checkview -display res -2d -path ${imagedir}/${test_image}.png
