@@ -1,8 +1,7 @@
 puts "TODO CR27414 ALL: Error: number of wire entities in the result"
 puts "TODO CR27414 ALL: Error: number of face entities in the result"
-puts "TODO CR27414 ALL: Error: operation with offset value 9 has failed"
 puts "TODO CR27414 ALL: Error: operation with offset value 10 has failed"
-puts "TODO CR27414 ALL: Operations with following offset values have failed: 9 10"
+puts "TODO CR27414 ALL: Operations with following offset values have failed: 10"
 
 puts "============================================================================================="
 puts "0032333: Modeling Algorithms - Empty(wrong) result of offset operation in mode \"Complete\" join type \"Intersection\""
