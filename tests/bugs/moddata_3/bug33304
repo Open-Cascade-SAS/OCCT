@@ -1,0 +1,9 @@
+puts "==========================================================="
+puts "0033304: Modeling Data - Floating point signal when converting a B-spline curve to analytical form"
+puts "==========================================================="
+
+puts "REQUIRED ALL: Conversion failed"
+
+binrestore [locate_data_file bug33304_bspl_curv.bbrep] a
+mkcurve c a
+tocanon r c
