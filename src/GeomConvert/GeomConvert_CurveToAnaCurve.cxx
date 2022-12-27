@@ -429,6 +429,8 @@ static Standard_Boolean ConicDefinition
     term2 = -gdet/(cprim*pdet);
       
     if (IsEllip) {
+      if (term1 <= eps || term2 <= eps)
+        return Standard_False;
       Xax = cost;
       Yax = sint;
       Rmin = sqrt ( term1);
@@ -439,12 +441,16 @@ static Standard_Boolean ConicDefinition
       }
     }
     else if (term1 <= eps){
+      if (-term1 <= eps || term2 <= eps)
+        return Standard_False;
       Xax  = -sint;
       Yax  =  cost;
       Rmin = sqrt (-term1);
       Rmax = sqrt (term2);
     } 
     else {
+      if (term1 <= eps || -term2 <= eps)
+        return Standard_False;
       Xax  =  cost;
       Yax  =  sint;
       Rmin = sqrt (-term2);
