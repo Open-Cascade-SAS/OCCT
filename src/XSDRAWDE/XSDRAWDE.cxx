@@ -256,6 +256,7 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
   }
 
   Handle(DE_Wrapper) aConf = DE_Wrapper::GlobalWrapper()->Copy();
+  Handle(XSControl_WorkSession) aWS = XSDRAW::Session();
   Standard_Boolean aStat = Standard_True;
   if (!aConfString.IsEmpty())
   {
@@ -264,7 +265,7 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
   if (aStat)
   {
     TopoDS_Shape aShape;
-    aStat = isNoDoc ? aConf->Read(aFilePath, aShape) : aConf->Read(aFilePath, aDoc);
+    aStat = isNoDoc ? aConf->Read(aFilePath, aShape, aWS) : aConf->Read(aFilePath, aDoc, aWS);
     if (isNoDoc && aStat)
     {
       DBRep::Set(aDocShapeName.ToCString(), aShape);
@@ -274,6 +275,7 @@ static Standard_Integer ReadFile(Draw_Interpretor& theDI,
   {
     return 1;
   }
+  XSDRAW::CollectActiveWorkSessions(aFilePath);
   return 0;
 }
 
@@ -335,6 +337,7 @@ static Standard_Integer WriteFile(Draw_Interpretor& theDI,
     return 1;
   }
   Handle(DE_Wrapper) aConf = DE_Wrapper::GlobalWrapper()->Copy();
+  Handle(XSControl_WorkSession) aWS = XSDRAW::Session();
   Standard_Boolean aStat = Standard_True;
   if (!aConfString.IsEmpty())
   {
@@ -350,17 +353,18 @@ static Standard_Integer WriteFile(Draw_Interpretor& theDI,
         theDI << "Error: incorrect shape " << aDocShapeName << "\n";
         return 1;
       }
-      aStat = aConf->Write(aFilePath, aShape);
+      aStat = aConf->Write(aFilePath, aShape, aWS);
     }
     else
     {
-      aStat = aConf->Write(aFilePath, aDoc);
+      aStat = aConf->Write(aFilePath, aDoc, aWS);
     }
   }
   if (!aStat)
   {
     return 1;
   }
+  XSDRAW::CollectActiveWorkSessions(aFilePath);
   return 0;
 }
 

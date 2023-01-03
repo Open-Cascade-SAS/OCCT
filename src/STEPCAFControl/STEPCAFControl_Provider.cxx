@@ -65,12 +65,10 @@ bool STEPCAFControl_Provider::Read(const TCollection_AsciiString& thePath,
     return false;
   }
   Handle(STEPCAFControl_ConfigurationNode) aNode = Handle(STEPCAFControl_ConfigurationNode)::DownCast(GetNode());
+  personizeWS(theWS);
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument, aNode->GlobalParameters.LengthUnit, UnitsMethods_LengthUnit_Millimeter);
   STEPCAFControl_Reader aReader;
-  if (!theWS.IsNull())
-  {
-    aReader.Init(theWS);
-  }
+  aReader.Init(theWS);
   aReader.SetColorMode(aNode->InternalParameters.ReadColor);
   aReader.SetNameMode(aNode->InternalParameters.ReadName);
   aReader.SetLayerMode(aNode->InternalParameters.ReadLayer);
@@ -114,11 +112,9 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   XCAFDoc_DocumentTool::SetLengthUnit(theDocument, 
     UnitsMethods::GetLengthUnitScale(aNode->InternalParameters.WriteUnit,
                                      UnitsMethods_LengthUnit_Millimeter), UnitsMethods_LengthUnit_Millimeter);
+  personizeWS(theWS);
   STEPCAFControl_Writer aWriter;
-  if (!theWS.IsNull())
-  {
-    aWriter.Init(theWS);
-  }
+  aWriter.Init(theWS);
   Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(aWriter.Writer().WS()->Model());
   STEPControl_StepModelType aMode =
     static_cast<STEPControl_StepModelType>(aNode->InternalParameters.WriteModelType);
@@ -166,7 +162,7 @@ bool STEPCAFControl_Provider::Read(const TCollection_AsciiString& thePath,
                                    const Handle(TDocStd_Document)& theDocument,
                                    const Message_ProgressRange& theProgress)
 {
-  Handle(XSControl_WorkSession) aWS;
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Read(thePath, theDocument, aWS, theProgress);
 }
 
@@ -178,7 +174,7 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
                                     const Handle(TDocStd_Document)& theDocument,
                                     const Message_ProgressRange& theProgress)
 {
-  Handle(XSControl_WorkSession) aWS;
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Write(thePath, theDocument, aWS, theProgress);
 }
 
@@ -199,11 +195,9 @@ bool STEPCAFControl_Provider::Read(const TCollection_AsciiString& thePath,
     return false;
   }
   Handle(STEPCAFControl_ConfigurationNode) aNode = Handle(STEPCAFControl_ConfigurationNode)::DownCast(GetNode());
+  personizeWS(theWS);
   STEPControl_Reader aReader;
-  if(!theWS.IsNull())
-  {
-    aReader.SetWS(theWS);
-  }
+  aReader.SetWS(theWS);
   IFSelect_ReturnStatus aReadstat = IFSelect_RetVoid;
   StepData_ConfParameters aParams;
   aReadstat = aReader.ReadFile(thePath.ToCString(), aParams);
@@ -242,11 +236,9 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   }
   Handle(STEPCAFControl_ConfigurationNode) aNode = Handle(STEPCAFControl_ConfigurationNode)::DownCast(GetNode());
 
+  personizeWS(theWS);
   STEPControl_Writer aWriter;
-  if(!theWS.IsNull())
-  {
-    aWriter.SetWS(theWS);
-  }
+  aWriter.SetWS(theWS);
   IFSelect_ReturnStatus aWritestat = IFSelect_RetVoid;
   Handle(StepData_StepModel) aModel = aWriter.Model();
   aModel->SetWriteLengthUnit(UnitsMethods::GetLengthUnitScale(aNode->InternalParameters.WriteUnit, UnitsMethods_LengthUnit_Millimeter));
@@ -274,7 +266,7 @@ bool STEPCAFControl_Provider::Read(const TCollection_AsciiString& thePath,
                                    TopoDS_Shape& theShape,
                                    const Message_ProgressRange& theProgress)
 {
-  Handle(XSControl_WorkSession) aWS;
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Read(thePath, theShape, aWS, theProgress);
 }
 
@@ -286,7 +278,7 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
                                     const TopoDS_Shape& theShape,
                                     const Message_ProgressRange& theProgress)
 {
-  Handle(XSControl_WorkSession) aWS;
+  Handle(XSControl_WorkSession) aWS = new XSControl_WorkSession();
   return Write(thePath, theShape, aWS, theProgress);
 }
 
@@ -306,4 +298,24 @@ TCollection_AsciiString STEPCAFControl_Provider::GetFormat() const
 TCollection_AsciiString STEPCAFControl_Provider::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
+}
+
+//=======================================================================
+// function : personizeWS
+// purpose  :
+//=======================================================================
+void STEPCAFControl_Provider::personizeWS(Handle(XSControl_WorkSession)& theWS)
+{
+  if (theWS.IsNull())
+  {
+    Message::SendWarning() << "Warning: STEPCAFControl_Provider :"
+      << " Null work session, use internal temporary session";
+    theWS = new XSControl_WorkSession();
+  }
+  Handle(STEPCAFControl_Controller) aCntrl = Handle(STEPCAFControl_Controller)::DownCast(theWS->NormAdaptor());
+  if (aCntrl.IsNull())
+  {
+    STEPCAFControl_Controller::Init();
+    theWS->SelectNorm("STEP");
+  }
 }

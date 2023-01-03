@@ -135,6 +135,11 @@ public:
 
 private:
 
+  //! Personizes work session with current format.
+  //! Creates new temporary session if current session is null
+  //! @param[in] theWS current work session
+  void personizeWS(Handle(XSControl_WorkSession)& theWS);
+
   //! Initialize static variables
   void initStatic(const Handle(DE_ConfigurationNode)& theNode);
 
