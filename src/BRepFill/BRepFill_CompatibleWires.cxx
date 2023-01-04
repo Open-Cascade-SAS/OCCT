@@ -351,6 +351,10 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
     for (j=1; j<=ndec; j++) {
       // piece of edge  
       m1 = (CutValues.Value(j)-t0)*(last-first)/(t1-t0)+first;
+      if (Abs(m0 - m1) < Precision::Confusion())
+      {
+        return;
+      }
       TopoDS_Edge CutE = BRepLib_MakeEdge(C,V0,Vbid,m0,m1);
       CutE.Orientation(CurrentOrient);
       S.Append(CutE);
@@ -358,6 +362,10 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
       V0 = TopExp::LastVertex(CutE);
       if (j==ndec) {
 	// last piece
+        if (Abs(m0 - last) < Precision::Confusion())
+        {
+          return;
+        }
 	TopoDS_Edge LastE = BRepLib_MakeEdge(C,V0,Vl,m0,last);
 	LastE.Orientation(CurrentOrient);
 	S.Append(LastE);
@@ -371,6 +379,10 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
     for (j=ndec; j>=1; j--) {
       // piece of edge  
       m0 = (CutValues.Value(j)-t0)*(last-first)/(t1-t0)+first;
+      if (Abs(m0 - m1) < Precision::Confusion())
+      {
+        return;
+      }
       TopoDS_Edge CutE = BRepLib_MakeEdge(C,Vbid,V1,m0,m1);
       CutE.Orientation(CurrentOrient);
       S.Append(CutE);
@@ -378,6 +390,10 @@ static void TrimEdge (const TopoDS_Edge&              CurrentEdge,
       V1 = TopExp::FirstVertex(CutE);
       if (j==1) {
 	// last piece
+        if (Abs(first - m1) < Precision::Confusion())
+        {
+          return;
+        }
 	TopoDS_Edge LastE = BRepLib_MakeEdge(C,Vf,V1,first,m1);
 	LastE.Orientation(CurrentOrient);
 	S.Append(LastE);
@@ -547,6 +563,10 @@ static Standard_Boolean EdgeIntersectOnWire (const gp_Pnt& P1,
 	  SR.Clear();
 	  SR.Append(param);
 	  TrimEdge(E,SR,first,last,SO,SE);
+          if (SE.IsEmpty())
+          {
+            return Standard_False;
+          }
           theEdgeNewEdges(E) = SE;
 	  TopoDS_Vertex VV1,VV2;
 	  TopExp::Vertices(TopoDS::Edge(SE.Value(1)),VV1,VV2);
