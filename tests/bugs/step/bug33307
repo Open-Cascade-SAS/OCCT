@@ -1,0 +1,11 @@
+puts "==================================================="
+puts "0033307: Data Exchange, Step Import - Crash after reading empty edge loop"
+puts "==================================================="
+puts ""
+
+pload XDE OCAF
+
+Close D -silent
+
+ReadStep D [locate_data_file "bug33307.stp"]
+Close D
