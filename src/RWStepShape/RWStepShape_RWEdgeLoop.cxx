@@ -106,6 +106,11 @@ void RWStepShape_RWEdgeLoop::Check
   Standard_Boolean headToTail = Standard_True;
   //Standard_Boolean noIdentVtx = Standard_True; //szv#4:S4163:12Mar99 unused
   Standard_Integer nbEdg = ent->NbEdgeList();
+  if (nbEdg == 0)
+  {
+    ach->AddFail("Edge loop contains empty edge list");
+    return;
+  }
   Handle(StepShape_OrientedEdge) theOE = ent->EdgeListValue(1);
   Handle(StepShape_Vertex) theVxFrst = theOE->EdgeStart();
   Handle(StepShape_Vertex) theVxLst  = theOE->EdgeEnd();
