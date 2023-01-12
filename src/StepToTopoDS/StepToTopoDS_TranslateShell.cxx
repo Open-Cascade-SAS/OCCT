@@ -138,7 +138,7 @@ void StepToTopoDS_TranslateShell::Init(const Handle(StepVisual_TessellatedShell)
   {
     Handle(TransferBRep_ShapeBinder) aBinder
       = Handle(TransferBRep_ShapeBinder)::DownCast(aTP->Find(theTSh->TopologicalLink()));
-    if (aBinder.IsNull()) 
+    if (!aBinder.IsNull()) 
     {
       aSh = aBinder->Shell();
       theHasGeom = Standard_True;
