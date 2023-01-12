@@ -60,7 +60,7 @@ public: //! @name public interfaces
   //! Clears the indices
   void Clear()
   {
-    myPairs.Clear();
+    myPairs.clear();
   }
 
   //! Sorts the indices
