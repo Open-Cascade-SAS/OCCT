@@ -23,13 +23,13 @@
 #include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
 
+class ShapeBuild_ReShape;
 class XSAlgo_ToolContainer;
 class TopoDS_Shape;
 class TopoDS_Edge;
 class TopoDS_Face;
 class Transfer_TransientProcess;
 class Transfer_FinderProcess;
-
 
 class XSAlgo_AlgoContainer;
 DEFINE_STANDARD_HANDLE(XSAlgo_AlgoContainer, Standard_Transient)
@@ -55,16 +55,44 @@ public:
   Standard_EXPORT virtual void PrepareForTransfer() const;
   
   //! Does shape processing with specified tolerances
-  //! and returns resulting shape and associated information
-  //! in the form of Transient.
-  //! This information should be later transmitted to
-  //! MergeTransferInfo in order to be recorded in the
-  //! translation map
-  Standard_EXPORT virtual TopoDS_Shape ProcessShape (
-      const TopoDS_Shape& shape, const Standard_Real Prec, const Standard_Real MaxTol,
-      const Standard_CString rscfile, const Standard_CString seq, Handle(Standard_Transient)& info,
-      const Message_ProgressRange& theProgress = Message_ProgressRange(),
-      const Standard_Boolean NonManifold = Standard_False) const;
+  //! @param[in] theShape shape to process
+  //! @param[in] thePrec basic precision and tolerance
+  //! @param[in] theMaxTol maximum allowed tolerance
+  //! @param[in] thePrscfile name of the resource file
+  //! @param[in] thePseq name of the sequence of operators defined in the resource file for Shape Processing
+  //! @param[out] theInfo information to be recorded in the translation map
+  //! @param[in] theProgress progress indicator
+  //! @param[in] theNonManifold flag to proceed with non-manifold topology
+  //! @return the processed shape
+  Standard_EXPORT virtual TopoDS_Shape ProcessShape (const TopoDS_Shape&          theShape,
+                                                     const Standard_Real          thePrec,
+                                                     const Standard_Real          theMaxTol,
+                                                     const Standard_CString       thePrscfile,
+                                                     const Standard_CString       thePseq,
+                                                     Handle(Standard_Transient)&  theInfo,
+                                                     const Message_ProgressRange& theProgress = Message_ProgressRange(),
+                                                     const Standard_Boolean       theNonManifold = Standard_False) const;
+
+  //! Does shape processing with specified tolerances
+  //! @param[in] theShape shape to process
+  //! @param[in] thePrec basic precision and tolerance
+  //! @param[in] theMaxTol maximum allowed tolerance
+  //! @param[in] thePrscfile name of the resource file
+  //! @param[in] thePseq name of the sequence of operators defined in the resource file for Shape Processing
+  //! @param[out] theInfo information to be recorded in the translation map
+  //! @param[in] theReShape tool to record the modifications of input shape
+  //! @param[in] theProgress progress indicator
+  //! @param[in] theNonManifold flag to proceed with non-manifold topology
+  //! @return the processed shape
+  Standard_EXPORT virtual TopoDS_Shape ProcessShape(const TopoDS_Shape&               theShape,
+                                                    const Standard_Real               thePrec,
+                                                    const Standard_Real               theMaxTol,
+                                                    const Standard_CString            thePrscfile,
+                                                    const Standard_CString            thePseq,
+                                                    Handle(Standard_Transient)&       theInfo,
+                                                    const Handle(ShapeBuild_ReShape)& theReShape,
+                                                    const Message_ProgressRange&      theProgress = Message_ProgressRange(),
+                                                    const Standard_Boolean            theNonManifold = Standard_False) const;
   
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.

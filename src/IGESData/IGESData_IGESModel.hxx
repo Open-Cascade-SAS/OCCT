@@ -22,9 +22,9 @@
 
 class IGESData_IGESEntity;
 class Interface_Check;
+class ShapeBuild_ReShape;
 class Standard_Transient;
 class TCollection_HAsciiString;
-
 
 class IGESData_IGESModel;
 DEFINE_STANDARD_HANDLE(IGESData_IGESModel, Interface_InterfaceModel)
@@ -151,8 +151,11 @@ public:
   //! i.e. a string "Dnn" with nn = directory entry number (2*N-1)
   Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
+  //! Gets ReShape used to store a model's shapes changes
+  const Handle(ShapeBuild_ReShape)& ReShape() const { return myReShape; }
 
-
+  //! Sets ReShape used to store a history of changes of the model's shapes
+  void SetReShape(const Handle(ShapeBuild_ReShape)& theReShape) { myReShape = theReShape; }
 
   DEFINE_STANDARD_RTTIEXT(IGESData_IGESModel,Interface_InterfaceModel)
 
@@ -166,7 +169,7 @@ private:
 
   Handle(TColStd_HSequenceOfHAsciiString) thestart;
   IGESData_GlobalSection theheader;
-
+  Handle(ShapeBuild_ReShape) myReShape;
 
 };
 

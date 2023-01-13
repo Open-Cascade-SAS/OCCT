@@ -82,103 +82,131 @@ void XSAlgo_AlgoContainer::PrepareForTransfer() const
 
 //=======================================================================
 //function : ProcessShape
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
-                                                 const Standard_Real Prec,
-                                                 const Standard_Real maxTol,
-                                                 const Standard_CString prscfile,
-                                                 const Standard_CString pseq,
-                                                 Handle(Standard_Transient)& info,
-                                                 const Message_ProgressRange& theProgress,
-                                                 const Standard_Boolean NonManifold) const
+TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
+                                                const Standard_Real thePrec,
+                                                const Standard_Real theMaxTol,
+                                                const Standard_CString thePrscfile,
+                                                const Standard_CString thePseq,
+                                                Handle(Standard_Transient)& theInfo,
+                                                const Handle(ShapeBuild_ReShape)& theReShape,
+                                                const Message_ProgressRange& theProgress,
+                                                const Standard_Boolean theNonManifold) const
 {
-  if ( shape.IsNull() ) return shape;
-  
-  Handle(ShapeProcess_ShapeContext) context = Handle(ShapeProcess_ShapeContext)::DownCast(info);
-  if ( context.IsNull() )
+  if (theShape.IsNull())
   {
-    Standard_CString rscfile = Interface_Static::CVal(prscfile);
-    if (rscfile != nullptr && strlen (rscfile) == 0)
+    return theShape;
+  }
+
+  Handle(ShapeProcess_ShapeContext) aContext = Handle(ShapeProcess_ShapeContext)::DownCast(theInfo);
+  if (aContext.IsNull())
+  {
+    Standard_CString aRscfile = Interface_Static::CVal(thePrscfile);
+    if (aRscfile != nullptr && strlen(aRscfile) == 0)
     {
-      context = new ShapeProcess_ShapeContext(shape, nullptr);
-      Interface_Static::FillMap(context->ResourceManager()->GetMap());
+      aContext = new ShapeProcess_ShapeContext(theShape, nullptr);
+      Interface_Static::FillMap(aContext->ResourceManager()->GetMap());
     }
     else
     {
-      if (!rscfile)
-        rscfile = prscfile;
-      context = new ShapeProcess_ShapeContext(shape, rscfile);
+      if (!aRscfile)
+        aRscfile = thePrscfile;
+      aContext = new ShapeProcess_ShapeContext(theShape, aRscfile);
     }
-    context->SetDetalisation(TopAbs_EDGE);
+    aContext->SetDetalisation(TopAbs_EDGE);
   }
-  context->SetNonManifold(NonManifold);
-  info = context;
-  
-  Standard_CString seq = Interface_Static::CVal ( pseq );
-  if ( ! seq ) seq = pseq;
-  
+  aContext->SetNonManifold(theNonManifold);
+  theInfo = aContext;
+
+  Standard_CString aSeq = Interface_Static::CVal(thePseq);
+  if (!aSeq) aSeq = thePseq;
+
   // if resource file is not loaded or does not define <seq>.exec.op, 
   // do default fixes
-  Handle(Resource_Manager) rsc = context->ResourceManager();
-  TCollection_AsciiString str ( seq );
-  str += ".exec.op";
-  if ( ! rsc->Find ( str.ToCString() ) ) {
+  Handle(Resource_Manager) aRsc = aContext->ResourceManager();
+  TCollection_AsciiString aStr(aSeq);
+  aStr += ".exec.op";
+  if (!aRsc->Find(aStr.ToCString()))
+  {
 #ifdef OCCT_DEBUG
     {
-      static Standard_Integer time = 0;
-      if ( ! time )
-	std::cout << "Warning: XSAlgo_AlgoContainer::ProcessShape(): Sequence " << str.ToCString() << 
-	        " is not defined in " << prscfile << " resource; do default processing" << std::endl;
-      time++;
+      static Standard_Integer aTime = 0;
+      if (!aTime)
+        std::cout << "Warning: XSAlgo_AlgoContainer::ProcessShape(): Sequence " << aStr.ToCString() <<
+        " is not defined in " << thePrscfile << " resource; do default processing" << std::endl;
+      aTime++;
     }
 #endif
     // if reading, do default ShapeFix
-    if ( ! strncmp ( pseq, "read.", 5 ) ) {
+    if (!strncmp(thePseq, "read.", 5))
+    {
       try {
         OCC_CATCH_SIGNALS
-	Handle(ShapeExtend_MsgRegistrator) msg = new ShapeExtend_MsgRegistrator;
-	Handle(ShapeFix_Shape) sfs = ShapeAlgo::AlgoContainer()->ToolContainer()->FixShape();
-	sfs->Init ( shape );
-	sfs->SetMsgRegistrator ( msg );
-	sfs->SetPrecision ( Prec );
-	sfs->SetMaxTolerance ( maxTol );
-	sfs->FixFaceTool()->FixWireTool()->FixSameParameterMode() = Standard_False;
-	sfs->FixSolidTool()->CreateOpenSolidMode() = Standard_False;
-	sfs->Perform(theProgress);
+        Handle(ShapeExtend_MsgRegistrator) aMsg = new ShapeExtend_MsgRegistrator;
+        Handle(ShapeFix_Shape) aSfs = ShapeAlgo::AlgoContainer()->ToolContainer()->FixShape();
+        aSfs->Init(theShape);
+        aSfs->SetMsgRegistrator(aMsg);
+        aSfs->SetPrecision(thePrec);
+        aSfs->SetMaxTolerance(theMaxTol);
+        aSfs->FixFaceTool()->FixWireTool()->FixSameParameterMode() = Standard_False;
+        aSfs->FixSolidTool()->CreateOpenSolidMode() = Standard_False;
+        aSfs->SetContext(theReShape);
+        aSfs->Perform(theProgress);
 
-	TopoDS_Shape S = sfs->Shape();
-	if ( ! S.IsNull() && S != shape ) {
-	  context->RecordModification ( sfs->Context(), msg );
-	  context->SetResult ( S );
-	}
+        TopoDS_Shape aShape = aSfs->Shape();
+        if (!aShape.IsNull() && aShape != theShape)
+        {
+          aContext->RecordModification(aSfs->Context(), aMsg);
+          aContext->SetResult(aShape);
+        }
       }
-      catch (Standard_Failure const& anException) {
+      catch (Standard_Failure const& anException)
+      {
 #ifdef OCCT_DEBUG
-	std::cout << "Error: XSAlgo_AlgoContainer::ProcessShape(): Exception in ShapeFix::Shape" << std::endl;
+        std::cout << "Error: XSAlgo_AlgoContainer::ProcessShape(): Exception in ShapeFix::Shape" << std::endl;
         anException.Print(std::cout); std::cout << std::endl;
 #endif
-	(void)anException;
+        (void)anException;
       }
-      return context->Result();
+      return aContext->Result();
     }
     // for writing, define default sequence of DirectFaces
-    else if ( ! strncmp ( pseq, "write.", 6 ) ) {
-      rsc->SetResource ( str.ToCString(), "DirectFaces" );
+    else if (!strncmp(thePseq, "write.", 6))
+    {
+      aRsc->SetResource(aStr.ToCString(), "DirectFaces");
     }
   }
-  
+
   // Define runtime tolerances and do Shape Processing 
-  rsc->SetResource ( "Runtime.Tolerance", Prec );
-  rsc->SetResource ( "Runtime.MaxTolerance", maxTol );
+  aRsc->SetResource("Runtime.Tolerance", thePrec);
+  aRsc->SetResource("Runtime.MaxTolerance", theMaxTol);
 
-  if ( !ShapeProcess::Perform(context, seq, theProgress) )
-    return shape; // return original shape
+  if (!ShapeProcess::Perform(aContext, aSeq, theProgress))
+    return theShape; // return original shape
 
-  return context->Result();
+  return aContext->Result();
 }
-						  
+
+//=======================================================================
+//function : ProcessShape
+//purpose  :
+//=======================================================================
+TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
+                                                const Standard_Real thePrec,
+                                                const Standard_Real theMaxTol,
+                                                const Standard_CString thePrscfile,
+                                                const Standard_CString thePseq,
+                                                Handle(Standard_Transient)& theInfo,
+                                                const Message_ProgressRange& theProgress,
+                                                const Standard_Boolean theNonManifold) const
+{
+  Handle(ShapeBuild_ReShape) aReShape = new ShapeBuild_ReShape();
+  return ProcessShape(theShape, thePrec, theMaxTol, thePrscfile,
+                      thePseq, theInfo, aReShape, theProgress, 
+                      theNonManifold);
+}
+
 //=======================================================================
 //function : PerformFixShape
 //purpose  : 
