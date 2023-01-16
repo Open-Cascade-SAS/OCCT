@@ -1,0 +1,24 @@
+puts "========"
+puts "0033315: Mesh - BRepMesh_IncrementalMesh takes forever to finish (ends up with system memory, etc)"
+puts "========"
+puts ""
+
+restore [locate_data_file bug33315.brep] result
+
+incmesh result 3.5 -a 20
+checktrinfo result -tri 1516 -nod 1118
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vfit
+
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Invalid mesh"
+} else {
+  puts "Mesh is OK"
+}
