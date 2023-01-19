@@ -196,6 +196,15 @@ public:
   //! For component, returns new shape with correct location
   //! Returns Null shape if label does not contain shape
   Standard_EXPORT static TopoDS_Shape GetShape (const TDF_Label& L);
+
+  //! Gets shape from a sequence of shape's labels
+  //! @param[in] theLabels a sequence of labels to get shapes from
+  //! @return original shape in case of one label and a compound of shapes in case of more
+  Standard_EXPORT static TopoDS_Shape GetOneShape(const TDF_LabelSequence& theLabels);
+
+  //! Gets shape from a sequence of all top-level shapes which are free
+  //! @return original shape in case of one label and a compound of shapes in case of more
+  Standard_EXPORT TopoDS_Shape GetOneShape() const;
   
   //! Creates new (empty) top-level shape.
   //! Initially it holds empty TopoDS_Compound
