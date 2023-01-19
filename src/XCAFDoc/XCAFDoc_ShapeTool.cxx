@@ -354,6 +354,47 @@ TopoDS_Shape XCAFDoc_ShapeTool::GetShape(const TDF_Label& L)
 }
 
 //=======================================================================
+//function : GetShapes
+//purpose  : 
+//=======================================================================
+TopoDS_Shape XCAFDoc_ShapeTool::GetOneShape(const TDF_LabelSequence& theLabels)
+{
+  TopoDS_Shape aShape;
+  if (theLabels.Length() == 1)
+  {
+    return GetShape(theLabels.Value(1));
+  }
+  TopoDS_Compound aCompound;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound(aCompound);
+  for (TDF_LabelSequence::Iterator anIt(theLabels); anIt.More(); anIt.Next())
+  {
+    TopoDS_Shape aFreeShape;
+    if (!GetShape(anIt.Value(), aFreeShape))
+    {
+      continue;
+    }
+    aBuilder.Add(aCompound, aFreeShape);
+  }
+  if (aCompound.NbChildren() > 0)
+  {
+    aShape = aCompound;
+  }
+  return aShape;
+}
+
+//=======================================================================
+//function : GetOneShape
+//purpose  :
+//=======================================================================
+TopoDS_Shape XCAFDoc_ShapeTool::GetOneShape() const
+{
+  TDF_LabelSequence aLabels;
+  GetFreeShapes(aLabels);
+  return GetOneShape(aLabels);
+}
+
+//=======================================================================
 //function : NewShape
 //purpose  : 
 //=======================================================================
