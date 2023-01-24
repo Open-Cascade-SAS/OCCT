@@ -194,29 +194,63 @@ const Handle(VrmlData_WorldInfo)& VrmlData_Scene::WorldInfo() const
 //purpose  : 
 //=======================================================================
 
-VrmlData_ErrorStatus VrmlData_Scene::readLine (VrmlData_InBuffer& theBuffer)
+VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
   if (theBuffer.Input.eof())
-    aStatus = VrmlData_EndOfFile;
-  else {
-    theBuffer.Input.getline (theBuffer.Line, sizeof(theBuffer.Line));
-    theBuffer.LineCount++;
-    const int stat = theBuffer.Input.rdstate();
-    if (stat & std::ios::badbit) {
-      aStatus = VrmlData_UnrecoverableError;
-    }
-    else if (stat & std::ios::failbit) {
-      if (stat & std::ios::eofbit) {
-        aStatus = VrmlData_EndOfFile;
-      }
-      else {
-        aStatus = VrmlData_GeneralError;
-      }
-    }
-    theBuffer.LinePtr = &theBuffer.Line[0];
-    theBuffer.IsProcessed = Standard_False;
+  {
+    return VrmlData_EndOfFile;
   }
+  // Read a line.
+  theBuffer.Input.getline(theBuffer.Line, sizeof(theBuffer.Line));
+
+  // Check the number of read symbols.
+  // If maximum number is read, process the array of symbols separately
+  // rolling back the array to the last comma or space symbol.
+  std::streamsize aNbChars = theBuffer.Input.gcount();
+  if (theBuffer.Input.rdstate() & std::ios::failbit &&
+      aNbChars == sizeof(theBuffer.Line) - 1)
+  {
+    // Clear the error.
+    // We will fix it here below.
+    theBuffer.Input.clear();
+    size_t anInd = aNbChars - 1;
+    for (; anInd > 0; anInd--)
+    {
+      Standard_Character aChar = theBuffer.Line[anInd];
+      if (aChar == ',' || aChar == ' ')
+      {
+        theBuffer.Line[anInd + 1] = '\0';
+        break;
+      }
+    }
+    if (anInd == 0) // no possible to rolling back
+    {
+      return VrmlData_UnrecoverableError;
+    }
+    theBuffer.Input.seekg(-(aNbChars - anInd - 1), std::ios::cur);
+  }
+
+  // Check the reading status.
+  theBuffer.LineCount++;
+  const int stat = theBuffer.Input.rdstate();
+  if (stat & std::ios::badbit)
+  {
+    aStatus = VrmlData_UnrecoverableError;
+  }
+  else if (stat & std::ios::failbit)
+  {
+    if (stat & std::ios::eofbit)
+    {
+      aStatus = VrmlData_EndOfFile;
+    }
+    else
+    {
+      aStatus = VrmlData_GeneralError;
+    }
+  }
+  theBuffer.LinePtr = &theBuffer.Line[0];
+  theBuffer.IsProcessed = Standard_False;
   return aStatus;
 }
 
