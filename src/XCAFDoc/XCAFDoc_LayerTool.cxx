@@ -416,19 +416,19 @@ Handle(TColStd_HSequenceOfExtendedString) XCAFDoc_LayerTool::GetLayers(const TDF
 //function : GetShapesOfLayer
 //purpose  : 
 //=======================================================================
-
-void XCAFDoc_LayerTool::GetShapesOfLayer(const TDF_Label& layerL,
-					 TDF_LabelSequence& ShLabels) const
+void XCAFDoc_LayerTool::GetShapesOfLayer(const TDF_Label& theLayerL,
+                                         TDF_LabelSequence& theShLabels)
 {
-  ShLabels.Clear();
+  theShLabels.Clear();
   Handle(XCAFDoc_GraphNode) aGNode;
-  if ( layerL.FindAttribute( XCAFDoc::LayerRefGUID(), aGNode) ) {
-    for (Standard_Integer i = 1; i <= aGNode->NbChildren(); i++) {
-      ShLabels.Append( aGNode->GetChild(i)->Label() );
+  if (theLayerL.FindAttribute(XCAFDoc::LayerRefGUID(), aGNode))
+  {
+    for (Standard_Integer aChildInd = 1; aChildInd <= aGNode->NbChildren(); aChildInd++)
+    {
+      theShLabels.Append(aGNode->GetChild(aChildInd)->Label());
     }
   }
 }
-
 
 //=======================================================================
 //function : IsVisible
