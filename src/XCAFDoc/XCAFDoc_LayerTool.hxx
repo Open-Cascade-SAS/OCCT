@@ -135,7 +135,7 @@ public:
   Standard_EXPORT Handle(TColStd_HSequenceOfExtendedString) GetLayers (const TDF_Label& L);
   
   //! Return sequanese of shape labels that assigned with layers to <ShLabels>.
-  Standard_EXPORT void GetShapesOfLayer (const TDF_Label& layerL, TDF_LabelSequence& ShLabels) const;
+  Standard_EXPORT static void GetShapesOfLayer (const TDF_Label& theLayerL, TDF_LabelSequence& theShLabels);
   
   //! Return TRUE if layer is visible, FALSE if invisible.
   Standard_EXPORT Standard_Boolean IsVisible (const TDF_Label& layerL) const;
