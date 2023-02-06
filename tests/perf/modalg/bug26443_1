@@ -1,3 +1,5 @@
+puts "TODO OCC25925 ALL: ERROR. Mixed connectivity of faces."
+
 puts "========"
 puts "OCC26443"
 puts "========"
@@ -15,6 +17,8 @@ offsetshape r a -2
 dchrono h stop counter offsetshape
 fit
 
+if { [isdraw r] } {
 checkshape r
 checknbshapes r -ref [lrange [nbshapes a] 8 19]
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+}

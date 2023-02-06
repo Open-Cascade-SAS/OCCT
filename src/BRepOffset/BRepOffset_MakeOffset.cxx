@@ -910,6 +910,19 @@ void BRepOffset_MakeOffset::MakeOffsetShape(const Message_ProgressRange& theRang
     myAnalyse.SetFaceOffsetMap (myFaceOffset);
   }
   myAnalyse.Perform(myFaceComp,TolAngle, aPS.Next(aSteps(PIOperation_Analyse)));
+  TopExp_Explorer anEExp(myFaceComp, TopAbs_EDGE);
+  for (; anEExp.More(); anEExp.Next())
+  {
+    const TopoDS_Edge& anE = TopoDS::Edge(anEExp.Current());
+    const BRepOffset_ListOfInterval& aLI = myAnalyse.Type(anE);
+    if (aLI.IsEmpty())
+      continue;
+    if (aLI.Last().Type() == ChFiDS_Mixed)
+    {
+      myError = BRepOffset_MixedConnectivity;
+      return;
+    }
+  }
   if (!aPS.More())
   {
     myError = BRepOffset_UserBreak;
@@ -2960,6 +2973,36 @@ void BRepOffset_MakeOffset::MakeMissingWalls (const Message_ProgressRange& theRa
       TopExp::Vertices(anEdge, V1, V2);
       Standard_Real aF, aL;
       const Handle(Geom_Curve) aC = BRep_Tool::Curve(anEdge, aF, aL);
+      if (V3.IsNull() && V4.IsNull())
+      {
+        // Initially offset edge is created without vertices.
+        // Then edge is trimmed by intersection line between  
+        // two adjacent extended offset faces and get vertices.
+        // When intersection lines are invalid for any reason, 
+        // (one of reson is mixed connectivity of faces)
+        // algoritm of cutting offset edge by intersection line 
+        // can fail and offset edge cannot get vertices.
+        // Follwing workaround is only to avoid exeption if V3 and V4 are Null
+        // Vertex points are invalid.
+        Standard_Real anOEF, anOEL;
+        TopAbs_Orientation anOEOri = OE.Orientation();
+        OE.Orientation(TopAbs_FORWARD);
+        Handle(Geom_Curve) anOEC = BRep_Tool::Curve(OE, anOEF, anOEL);
+        BRep_Builder aBB;
+        gp_Pnt aP1 = anOEC->Value(aF);
+        gp_Pnt aP2 = anOEC->Value(aL);
+        TopoDS_Vertex anOEV1, anOEV2;
+        Standard_Real aTol = Max(BRep_Tool::Tolerance(V1), BRep_Tool::Tolerance(V2));
+        aBB.MakeVertex(anOEV1, aP1, aTol);
+        anOEV1.Orientation(TopAbs_FORWARD);
+        aBB.MakeVertex(anOEV2, aP2, aTol);
+        anOEV2.Orientation(TopAbs_REVERSED);
+        aBB.Add(OE, anOEV1);
+        aBB.Add(OE, anOEV2);
+        aBB.Range(OE, aF, aL);
+        OE.Orientation(anOEOri);
+        TopExp::Vertices(OE, V4, V3);
+      }
       if (!aC.IsNull() &&
          (!aC->IsClosed() && !aC->IsPeriodic()))
       {

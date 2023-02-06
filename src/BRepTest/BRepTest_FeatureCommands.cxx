@@ -415,6 +415,11 @@ static void reportOffsetState(Draw_Interpretor& theCommands,
     theCommands << "ERROR. Can not extent edge.";
     break;
   }
+  case  BRepOffset_MixedConnectivity:
+  {
+    theCommands << "ERROR. Mixed connectivity of faces.";
+    break;
+  }
   default:
   {
     theCommands << "ERROR. offsetperform operation not done.";
@@ -974,7 +979,10 @@ Standard_Integer thickshell(Draw_Interpretor& theCommands,
   const BRepOffset_Error aRetCode = B.Error();
   reportOffsetState(theCommands, aRetCode);
 
-  DBRep::Set(a[1], B.Shape());
+  if (!B.Shape().IsNull())
+  {
+    DBRep::Set(a[1], B.Shape());
+  }
   return 0;
 }
 
@@ -1109,7 +1117,10 @@ Standard_Integer offsetshape(Draw_Interpretor& theCommands,
   const BRepOffset_Error aRetCode = B.Error();
   reportOffsetState(theCommands, aRetCode);
 
-  DBRep::Set(a[1], B.Shape());
+  if (!B.Shape().IsNull())
+  {
+    DBRep::Set(a[1], B.Shape());
+  }
 
   return 0;
 }
