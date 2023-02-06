@@ -1,7 +1,7 @@
 puts "TODO OCC23190 ALL: ERROR. C0 continuity of input data."
 puts "TODO OCC23190 ALL: Error: The command cannot be built"
-puts "TODO OCC23190 ALL: result is not a topological shape!!!"
-puts "TODO OCC23068 ALL: TEST INCOMPLETE"
+puts "TODO OCC23068 ALL: Error : The offset cannot be built."
+
 # Original bug : cts21271
 # Date : 11Sept98
 

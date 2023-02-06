@@ -1,0 +1,13 @@
+puts "REQUIRED All: ERROR. Mixed connectivity of faces."
+puts "REQUIRED All: Error : The offset cannot be built."
+puts "============"
+puts "0030055: BRepOffset_MakeOffset throws TopoDS_Vertex hasn't gp_Pnt in intersection mode"
+puts "============"
+
+restore [locate_data_file bug30055.brep] a
+
+thickshell result a 1 i
+
+if { [isdraw result] } {
+   puts "ERROR - result must not be buit"
+}
