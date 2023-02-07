@@ -84,6 +84,51 @@ void SelectMgr_EntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationMa
 }
 
 // =======================================================================
+// function : Select
+// purpose  :
+// =======================================================================
+Standard_Boolean SelectMgr_EntityOwner::Select (const AIS_SelectionScheme theSelScheme,
+                                                const Standard_Boolean theIsDetected) const
+{
+  switch (theSelScheme)
+  {
+    case AIS_SelectionScheme_UNKNOWN:
+    {
+      return myIsSelected;
+    }
+    case AIS_SelectionScheme_Replace:
+    {
+      return theIsDetected;
+    }
+    case AIS_SelectionScheme_Add:
+    {
+      return !myIsSelected || theIsDetected || IsForcedHilight();
+    }
+    case AIS_SelectionScheme_Remove:
+    {
+      return myIsSelected && !theIsDetected;
+    }
+    case AIS_SelectionScheme_XOR:
+    {
+      if (theIsDetected)
+      {
+        return !myIsSelected && !IsForcedHilight();
+      }
+      return myIsSelected;
+    }
+    case AIS_SelectionScheme_Clear:
+    {
+      return Standard_False;
+    }
+    case AIS_SelectionScheme_ReplaceExtra:
+    {
+      return theIsDetected;
+    }
+  }
+  return Standard_False;
+}
+
+// =======================================================================
 // function : DumpJson
 // purpose  :
 // =======================================================================

@@ -55,24 +55,38 @@ void AIS_Selection::Clear()
 //function : Select
 //purpose  :
 //=======================================================================
-AIS_SelectStatus AIS_Selection::Select (const Handle(SelectMgr_EntityOwner)& theObject)
+AIS_SelectStatus AIS_Selection::Select (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                        const Handle(SelectMgr_Filter)& theFilter,
+                                        const AIS_SelectionScheme theSelScheme,
+                                        const Standard_Boolean theIsDetected)
 {
-  if (theObject.IsNull()
-  || !theObject->HasSelectable())
+  if (theOwner.IsNull()
+  || !theOwner->HasSelectable())
   {
     return AIS_SS_NotDone;
   }
 
-  if (!myResultMap.IsBound (theObject))
+  const Standard_Boolean isDetected = theIsDetected
+                                   && (theFilter.IsNull() || theFilter->IsOk (theOwner));
+
+  const Standard_Boolean wasSelected = theOwner->IsSelected();
+  const Standard_Boolean toSelect = theOwner->Select (theSelScheme, isDetected);
+
+  if (toSelect && !wasSelected)
   {
     AIS_NListOfEntityOwner::Iterator aListIter;
-    myresult.Append  (theObject, aListIter);
-    myResultMap.Bind (theObject, aListIter);
-    theObject->SetSelected (Standard_True);
+    myresult.Append  (theOwner, aListIter);
+    myResultMap.Bind (theOwner, aListIter);
+    theOwner->SetSelected (Standard_True);
     return AIS_SS_Added;
   }
 
-  AIS_NListOfEntityOwner::Iterator aListIter = myResultMap.Find (theObject);
+  if (!toSelect && !wasSelected)
+  {
+    return AIS_SS_NotDone;
+  }
+
+  AIS_NListOfEntityOwner::Iterator aListIter = myResultMap.Find (theOwner);
   if (myIterator == aListIter)
   {
     if (myIterator.More())
@@ -88,14 +102,14 @@ AIS_SelectStatus AIS_Selection::Select (const Handle(SelectMgr_EntityOwner)& the
   // In the mode of advanced mesh selection only one owner is created for all selection modes.
   // It is necessary to check the current detected entity
   // and remove the owner from map only if the detected entity is the same as previous selected (IsForcedHilight call)
-  if (theObject->IsForcedHilight())
+  if (theOwner->IsForcedHilight())
   {
     return AIS_SS_Added;
   }
 
   myresult.Remove (aListIter);
-  myResultMap.UnBind (theObject);
-  theObject->SetSelected (Standard_False);
+  myResultMap.UnBind (theOwner);
+  theOwner->SetSelected (Standard_False);
 
   // update list iterator for next object in <myresult> list if any
   if (aListIter.More())
@@ -142,86 +156,39 @@ void AIS_Selection::SelectOwners (const AIS_NArray1OfEntityOwner& thePickedOwner
                                   const Standard_Boolean theToAllowSelOverlap,
                                   const Handle(SelectMgr_Filter)& theFilter)
 {
-  (void )theToAllowSelOverlap;
-  switch (theSelScheme)
+  (void)theToAllowSelOverlap;
+
+  if (theSelScheme == AIS_SelectionScheme_ReplaceExtra
+   && thePickedOwners.Size() == myresult.Size())
   {
-    case AIS_SelectionScheme_UNKNOWN:
+    // If picked owners is equivalent to the selected then just clear selected.
+    Standard_Boolean isTheSame = Standard_True;
+    for (AIS_NArray1OfEntityOwner::Iterator aPickedIter (thePickedOwners); aPickedIter.More(); aPickedIter.Next())
     {
-      return;
-    }
-    case AIS_SelectionScheme_ReplaceExtra:
-    {
-      // If picked owners is equivalent to the selected then just clear selected
-      // Else go to AIS_SelectionScheme_Replace
-      if (thePickedOwners.Size() == myresult.Size())
+      if (!myResultMap.IsBound (aPickedIter.Value()))
       {
-        Standard_Boolean isTheSame = Standard_True;
-        for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
-        {
-          if (!myResultMap.IsBound (aSelIter.Value()))
-          {
-            isTheSame = Standard_False;
-            break;
-          }
-        }
-        if (isTheSame)
-        {
-          Clear();
-          return;
-        }
+        isTheSame = Standard_False;
+        break;
       }
     }
-    Standard_FALLTHROUGH
-    case AIS_SelectionScheme_Replace:
+    if (isTheSame)
     {
-      Clear();
-      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
-      {
-        appendOwner (aSelIter.Value(), theFilter);
-      }
+       Clear();
+       return;
+    }
+  }
 
-      return;
-    }
-    case AIS_SelectionScheme_Add:
-    {
-      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
-      {
-        appendOwner (aSelIter.Value(), theFilter);
-      }
-      return;
-    }
-    case AIS_SelectionScheme_Remove:
-    {
-      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
-      {
-        if (myResultMap.IsBound (aSelIter.Value()))
-        {
-          Select (aSelIter.Value());
-        }
-      }
-      return;
-    }
-    case AIS_SelectionScheme_XOR:
-    {
-      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
-      {
-        const Handle(SelectMgr_EntityOwner)& anOwner = aSelIter.Value();
-        if (anOwner.IsNull()
-        || !anOwner->HasSelectable()
-        || !theFilter->IsOk (anOwner))
-        {
-          continue;
-        }
+  if (theSelScheme == AIS_SelectionScheme_Replace
+   || theSelScheme == AIS_SelectionScheme_ReplaceExtra
+   || theSelScheme == AIS_SelectionScheme_Clear)
+  {
+    Clear();
+  }
 
-        Select (anOwner);
-      }
-      return;
-    }
-    case AIS_SelectionScheme_Clear:
-    {
-      Clear();
-      return;
-    }
+  for (AIS_NArray1OfEntityOwner::Iterator aPickedIter (thePickedOwners); aPickedIter.More(); aPickedIter.Next())
+  {
+    const Handle(SelectMgr_EntityOwner)& anOwner = aPickedIter.Value();
+    Select (anOwner, theFilter, theSelScheme, true);
   }
 }
 
