@@ -1,0 +1,18 @@
+puts "================================"
+puts "OCC33113: Modeling Algorithms - BRepFilletAPI_MakeFillet::Build SIGSEGV"
+puts "================================"
+
+restore [locate_data_file bug33113.brep] sh
+
+explode sh e
+copy sh_4 e
+
+explode sh So
+copy sh_1 s
+
+fillet res s 0.1 e
+
+checkshape res
+
+checkview -display res -3d -path ${imagedir}/${test_image}.png
+
