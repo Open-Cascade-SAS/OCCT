@@ -692,7 +692,6 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     else{
       sst = Spine->LastStatus(); 
       iedge = Spine->NbEdges();
-      E[0] = Spine->Edges(iedge);
       V = Spine->LastVertex();
     }
     //Before all it is checked if the tangency is not dead.
@@ -703,6 +702,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     }
 
     if(sst == ChFiDS_BreakPoint){
+      Standard_Integer aLocNbG1Connections = 0;
       TopTools_ListIteratorOfListOfShape It;//,Jt;
       Standard_Boolean sommetpourri = Standard_False;
       TopTools_IndexedMapOfOrientedShape EdgesOfV;
@@ -720,7 +720,10 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
         if (!F2.IsNull() && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2)) //smooth edge
         {
           if (!F1.IsSame(F2))
+          {
             NbG1Connections++;
+            aLocNbG1Connections++;
+          }
           continue;
         }
         
@@ -759,7 +762,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
       if (EdgesOfV.Extent() != 3)
         sommetpourri = Standard_True;
       
-      if(!sommetpourri){
+      if(!sommetpourri && aLocNbG1Connections < 4){
 	sst = ChFi3d_EdgeState(E,myEFMap);
       }
       if(ii==1)Spine->SetFirstStatus(sst);
