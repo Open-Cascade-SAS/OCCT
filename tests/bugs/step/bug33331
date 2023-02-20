@@ -1,0 +1,14 @@
+puts "===================================="
+puts "0033331: Data Exchange, Step Import - Unsupported Representation Items"
+puts "===================================="
+puts ""
+
+pload DCAF
+catch {Close D}
+
+param "read.stepcaf.subshapes.name" 1
+
+ReadStep D [locate_data_file bug33331.stp]
+
+param "read.stepcaf.subshapes.name" 0
+Close D

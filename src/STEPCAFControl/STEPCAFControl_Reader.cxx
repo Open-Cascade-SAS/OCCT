@@ -4692,9 +4692,16 @@ void collectRepresentationItems(const Interface_Graph& theGraph,
   const Handle(StepShape_ShapeRepresentation)& theRepresentation,
   NCollection_Sequence<Handle(StepRepr_RepresentationItem)>& theItems)
 {
-  Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = theRepresentation->Items();
-  for (Standard_Integer itemIt = aReprItems->Lower(); itemIt <= aReprItems->Upper(); itemIt++)
-    theItems.Append(aReprItems->Value(itemIt));
+  for (StepRepr_HArray1OfRepresentationItem::Iterator anIter(theRepresentation->Items()->Array1());
+       anIter.More(); anIter.Next())
+  {
+    const Handle(StepRepr_RepresentationItem)& anReprItem = anIter.Value();
+    if (anReprItem.IsNull())
+    {
+      continue;
+    }
+    theItems.Append(anReprItem);
+  }
 
   Interface_EntityIterator entIt = theGraph.TypedSharings(theRepresentation, STANDARD_TYPE(StepRepr_RepresentationRelationship));
   for (entIt.Start(); entIt.More(); entIt.Next())
