@@ -200,7 +200,7 @@ public:
   //! For Message
   Standard_EXPORT Standard_Boolean ReadXYZ (const IGESData_ParamCursor& PC, const Standard_CString mess, gp_XYZ& val);
   
-  Standard_EXPORT Standard_Boolean ReadText (const IGESData_ParamCursor& PC, const Message_Msg& amsg, Handle(TCollection_HAsciiString)& val);
+  Standard_EXPORT Standard_Boolean ReadText (const IGESData_ParamCursor& thePC, const Message_Msg& theMsg, Handle(TCollection_HAsciiString)& theVal);
   
   //! Reads a Text value from parameter "num", as a String from
   //! Collection, that is, Hollerith text without leading "nnnH"
