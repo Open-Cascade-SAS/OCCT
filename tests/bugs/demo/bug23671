@@ -1,6 +1,3 @@
-puts "TODO CR23671 Linux: Error"
-puts "TODO CR23671 Linux: Draw_Failure: Could not open"
-
 puts "============"
 puts "CR23671"
 puts "============"
