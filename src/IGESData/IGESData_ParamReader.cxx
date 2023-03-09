@@ -633,34 +633,55 @@ Standard_Boolean IGESData_ParamReader::ReadXYZ
 
 //=======================================================================
 //function : ReadText
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean IGESData_ParamReader::ReadText
-  (const IGESData_ParamCursor& PC, const Message_Msg& amsg,
-   Handle(TCollection_HAsciiString)& val)
+Standard_Boolean IGESData_ParamReader::ReadText(const IGESData_ParamCursor& thePC,
+                                                const Message_Msg& theMsg,
+                                                Handle(TCollection_HAsciiString)& theVal)
 {
-  if (!PrepareRead(PC,Standard_False)) return Standard_False;
-  const Interface_FileParameter& FP = theparams->Value(theindex+thebase);
-  if (FP.ParamType() != Interface_ParamText) {
-    if (FP.ParamType() == Interface_ParamVoid) {
-      val = new TCollection_HAsciiString("");
+  if (!PrepareRead(thePC, Standard_False))
+  {
+    return Standard_False;
+  }
+  const Interface_FileParameter& aFP = theparams->Value(theindex + thebase);
+  if (aFP.ParamType() != Interface_ParamText)
+  {
+    theVal = new TCollection_HAsciiString("");
+    if (aFP.ParamType() == Interface_ParamVoid)
+    {
       return Standard_True;
     }
-    SendFail (amsg);
+    SendFail(theMsg);
     return Standard_False;
   }
-  Handle(TCollection_HAsciiString) tval = new TCollection_HAsciiString (FP.CValue());
-  Standard_Integer lnt = tval->Length();
-  Standard_Integer lnh = tval->Location(1,'H',1,lnt);
-  if (lnh <= 1 || lnh >= lnt) {
-    SendFail (amsg);
+  const Handle(TCollection_HAsciiString) aBaseValue = new TCollection_HAsciiString(aFP.CValue());
+  const Standard_Integer aBaseLength = aBaseValue->Length();
+  const Standard_Integer aSymbolLocation = aBaseValue->Location(1, 'H', 1, aBaseLength);
+  if (aSymbolLocation <= 1 || aSymbolLocation > aBaseLength)
+  {
+    theVal = new TCollection_HAsciiString("");
+    SendFail(theMsg);
     return Standard_False;
-  } else {
-    Standard_Integer hol = atoi (tval->SubString(1,lnh-1)->ToCString());
-    if (hol != (lnt-lnh)) SendWarning (amsg);
   }
-  val = new TCollection_HAsciiString(tval->SubString(lnh+1,lnt)->ToCString());
+  const TCollection_AsciiString aSpecialSubString = aBaseValue->String().SubString(1, aSymbolLocation - 1);
+  if (!aSpecialSubString.IsIntegerValue())
+  {
+    theVal = new TCollection_HAsciiString("");
+    SendFail(theMsg);
+    return Standard_False;
+  }
+  Standard_Integer aResLength = aSpecialSubString.IntegerValue();
+  if (aResLength != (aBaseLength - aSymbolLocation))
+  {
+    SendWarning(theMsg);
+    aResLength = aBaseLength - aSymbolLocation;
+  }
+  TCollection_AsciiString aResString;
+  if (aResLength > 0)
+  {
+    aResString = aBaseValue->String().SubString(aSymbolLocation + 1, aBaseLength);
+  }
+  theVal = new TCollection_HAsciiString(aResString);
   return Standard_True;
 }
 
