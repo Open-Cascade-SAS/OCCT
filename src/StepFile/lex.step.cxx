@@ -642,9 +642,11 @@ goto find_rule; \
     8bit                don't fail on 8-bit input characters
     warn                warn about inconsistencies
     nodefault           don't create default echo-all rule
+    noinput             disables the generation of code for reading input from standard input
     noyywrap            don't use yywrap() function
     yyclass             define name of the scanner class
 */
+#define YY_NO_INPUT 1
 
 #include <step.tab.hxx>
 #include "stdio.h"
@@ -654,6 +656,11 @@ goto find_rule; \
 # undef YY_DECL
 #endif
 #define YY_DECL int step::scanner::lex (step::parser::semantic_type* /*yylval*/)
+
+// Disable checking for eof
+#ifdef  YY_INTERACTIVE
+#undef YY_INTERACTIVE
+#endif
 
 typedef step::parser::token token;
 
