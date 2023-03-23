@@ -702,7 +702,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange&
     S.Free      (buffer[0] == '1');
     S.Modified  (buffer[1] == '1');
 
-    const bool isChecked = myFormatNb == TopTools_FormatVersion_VERSION_2
+    const bool isChecked = myFormatNb >= TopTools_FormatVersion_VERSION_2
                         && buffer[2] == '1';
     S.Checked (isChecked);
 
