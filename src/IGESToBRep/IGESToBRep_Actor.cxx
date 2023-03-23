@@ -198,7 +198,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
                                                   "read.iges.resource.name",
                                                   "read.iges.sequence",
                                                   info, mymodel->ReShape(),
-                                                  aPS.Next());
+                                                  aPS.Next(), false, TopAbs_EDGE);
     XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
   }
 

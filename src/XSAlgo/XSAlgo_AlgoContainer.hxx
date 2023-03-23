@@ -19,9 +19,10 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
+#include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 
 class ShapeBuild_ReShape;
 class XSAlgo_ToolContainer;
@@ -71,7 +72,8 @@ public:
                                                      const Standard_CString       thePseq,
                                                      Handle(Standard_Transient)&  theInfo,
                                                      const Message_ProgressRange& theProgress = Message_ProgressRange(),
-                                                     const Standard_Boolean       theNonManifold = Standard_False) const;
+                                                     const Standard_Boolean       theNonManifold = Standard_False,
+                                                     const TopAbs_ShapeEnum theDetalisationLevel = TopAbs_VERTEX) const;
 
   //! Does shape processing with specified tolerances
   //! @param[in] theShape shape to process
@@ -92,7 +94,8 @@ public:
                                                     Handle(Standard_Transient)&       theInfo,
                                                     const Handle(ShapeBuild_ReShape)& theReShape,
                                                     const Message_ProgressRange&      theProgress = Message_ProgressRange(),
-                                                    const Standard_Boolean            theNonManifold = Standard_False) const;
+                                                    const Standard_Boolean            theNonManifold = Standard_False,
+                                                    const TopAbs_ShapeEnum theDetalisationLevel = TopAbs_VERTEX) const;
   
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.

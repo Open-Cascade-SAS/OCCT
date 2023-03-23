@@ -73,7 +73,7 @@ Handle(Transfer_Binder)  IGESControl_ActorWrite::Transfer
     shape = XSAlgo::AlgoContainer()->ProcessShape( shape, Tol, maxTol, 
                                                    "write.iges.resource.name", 
                                                    "write.iges.sequence", info,
-                                                   theProgress );
+                                                   theProgress, false, TopAbs_EDGE);
 //  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
 
     BRepToIGES_BREntity   BR0; BR0.SetModel(modl);  BR0.SetTransferProcess(FP);

@@ -92,7 +92,8 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
                                                 Handle(Standard_Transient)& theInfo,
                                                 const Handle(ShapeBuild_ReShape)& theReShape,
                                                 const Message_ProgressRange& theProgress,
-                                                const Standard_Boolean theNonManifold) const
+                                                const Standard_Boolean theNonManifold,
+                                                const TopAbs_ShapeEnum theDetalisationLevel) const
 {
   if (theShape.IsNull())
   {
@@ -114,7 +115,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
         aRscfile = thePrscfile;
       aContext = new ShapeProcess_ShapeContext(theShape, aRscfile);
     }
-    aContext->SetDetalisation(TopAbs_EDGE);
+    aContext->SetDetalisation(theDetalisationLevel);
   }
   aContext->SetNonManifold(theNonManifold);
   theInfo = aContext;
@@ -199,12 +200,13 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
                                                 const Standard_CString thePseq,
                                                 Handle(Standard_Transient)& theInfo,
                                                 const Message_ProgressRange& theProgress,
-                                                const Standard_Boolean theNonManifold) const
+                                                const Standard_Boolean theNonManifold,
+                                                const TopAbs_ShapeEnum theDetalisationLevel) const
 {
   Handle(ShapeBuild_ReShape) aReShape = new ShapeBuild_ReShape();
   return ProcessShape(theShape, thePrec, theMaxTol, thePrscfile,
                       thePseq, theInfo, aReShape, theProgress, 
-                      theNonManifold);
+                      theNonManifold, theDetalisationLevel);
 }
 
 //=======================================================================

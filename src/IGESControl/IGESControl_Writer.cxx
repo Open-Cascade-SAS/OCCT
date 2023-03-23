@@ -92,7 +92,7 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape,
   TopoDS_Shape Shape = XSAlgo::AlgoContainer()->ProcessShape( theShape, Tol, maxTol, 
                                                               "write.iges.resource.name", 
                                                               "write.iges.sequence", info,
-                                                              aPS.Next());
+                                                              aPS.Next(), false, TopAbs_EDGE);
   if (!aPS.More())
     return Standard_False;
 

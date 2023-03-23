@@ -1,0 +1,27 @@
+puts "=================================="
+puts "0032681: Data Exchange - Missed dimension after STEP export"
+puts "Check adding of dimension"
+puts "=================================="
+
+pload DCAF
+
+ReadStep D [locate_data_file bug32681.stp]
+XGetOneShape s D
+explode s V
+XAddSubShape D s_1 0:1:1:1
+XAddSubShape D s_84 0:1:1:1
+XAddDimension D 0:1:1:1:57 0:1:1:1:58
+param write.step.schema 5
+param write.surfacecurve.mode 0
+set tmpFile ${imagedir}/tmpFile.stp
+WriteStep D $tmpFile
+Close D
+ReadStep D1 $tmpFile
+set str [XDumpDGTs D1 all]
+if {[string first "0:1:1:1:57" $str] == -1 || [string first "0:1:1:1:58" $str] == -1} {
+  puts "Error: don't find subshape"
+}
+Close D1
+file delete $tmpFile
+param write.step.schema 4
+param write.surfacecurve.mode 1
