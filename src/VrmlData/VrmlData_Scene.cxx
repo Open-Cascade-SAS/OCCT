@@ -314,12 +314,23 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadLine (VrmlData_InBuffer& theBuffer)
 
 VrmlData_ErrorStatus VrmlData_Scene::readHeader (VrmlData_InBuffer& theBuffer)
 {
-  VrmlData_ErrorStatus aStat = readLine (theBuffer);
-  if (aStat == VrmlData_StatusOK &&
-      !VRMLDATA_LCOMPARE(theBuffer.LinePtr, "#VRML V2.0"))
-    aStat = VrmlData_NotVrmlFile;
-  else 
+  VrmlData_ErrorStatus aStat = readLine(theBuffer);
+  if (aStat != VrmlData_StatusOK)
+  {
+    return VrmlData_NotVrmlFile;
+  }
+  TCollection_AsciiString aHeader(theBuffer.LinePtr);
+  // The max possible header size is 25 (with spaces)
+  // 4 (max BOM size) + 11 (search string) + 9 (max size for encoding)
+  if (aHeader.Length() <= 25 &&
+      aHeader.Search("#VRML V2.0") != -1)
+  {
     aStat = readLine(theBuffer);
+  }
+  else
+  {
+    aStat = VrmlData_NotVrmlFile;
+  }
   return aStat;
 }
 
