@@ -19,29 +19,29 @@
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakeToroidalSurface.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <StepData_GlobalFactors.hxx>
 
 //=============================================================================
 // Creation d' une toroidal_surface de prostep a partir d' une ToroidalSurface
 // de Geom
 //=============================================================================
 GeomToStep_MakeToroidalSurface::GeomToStep_MakeToroidalSurface
-  ( const Handle(Geom_ToroidalSurface)& S )
-	
+  ( const Handle(Geom_ToroidalSurface)& S,
+    const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_ToroidalSurface) Surf;
   Handle(StepGeom_Axis2Placement3d) aPosition;
   Standard_Real aMajorRadius, aMinorRadius;
   
-  GeomToStep_MakeAxis2Placement3d MkAxis2(S->Position());
+  GeomToStep_MakeAxis2Placement3d MkAxis2(S->Position(), theLocalFactors);
   aPosition = MkAxis2.Value();
   aMajorRadius = S->MajorRadius();
   aMinorRadius = S->MinorRadius();
   Surf = new StepGeom_ToroidalSurface;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
+  Standard_Real fact = theLocalFactors.LengthFactor();
   Surf->Init(name, aPosition, aMajorRadius/fact, aMinorRadius/fact);
   theToroidalSurface = Surf;
   done = Standard_True;

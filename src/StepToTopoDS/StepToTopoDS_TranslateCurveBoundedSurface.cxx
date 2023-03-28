@@ -23,6 +23,7 @@
 #include <Precision.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BoundaryCurve.hxx>
 #include <StepGeom_BSplineSurface.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
@@ -49,9 +50,10 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
 
 StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSurface (
 					   const Handle(StepGeom_CurveBoundedSurface) &CBS, 
-					   const Handle(Transfer_TransientProcess) &TP)
+					   const Handle(Transfer_TransientProcess) &TP,
+             const StepData_Factors& theLocalFactors)
 {
-  Init ( CBS, TP );
+  Init ( CBS, TP, theLocalFactors );
 }
 
 //=======================================================================
@@ -61,14 +63,15 @@ StepToTopoDS_TranslateCurveBoundedSurface::StepToTopoDS_TranslateCurveBoundedSur
 
 Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
 		 const Handle(StepGeom_CurveBoundedSurface) &CBS, 
-		 const Handle(Transfer_TransientProcess) &TP)
+		 const Handle(Transfer_TransientProcess) &TP,
+     const StepData_Factors& theLocalFactors)
 {
   myFace.Nullify();
   if ( CBS.IsNull() ) return Standard_False;
   
   // translate basis surface 
   Handle(StepGeom_Surface) S = CBS->BasisSurface();
-  Handle(Geom_Surface) Surf = StepToGeom::MakeSurface (S);
+  Handle(Geom_Surface) Surf = StepToGeom::MakeSurface (S, theLocalFactors);
   if (Surf.IsNull())
   {
     TP->AddFail ( CBS, "Basis surface not translated" );
@@ -105,7 +108,7 @@ Standard_Boolean StepToTopoDS_TranslateCurveBoundedSurface::Init (
   for ( Standard_Integer i=1; i <= nb; i++ ) {
     Handle(StepGeom_CompositeCurve) cc = bnd->Value ( i ).BoundaryCurve();
     if ( cc.IsNull() ) continue;
-    StepToTopoDS_TranslateCompositeCurve TrCC ( cc, TP, S, Surf );
+    StepToTopoDS_TranslateCompositeCurve TrCC ( cc, TP, S, Surf, theLocalFactors );
     if ( ! TrCC.IsDone() ) {
       TP->AddWarning ( CBS, "Boundary not translated" );
       continue;

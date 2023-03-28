@@ -39,9 +39,13 @@ STEPCAFControl_Controller::STEPCAFControl_Controller ()
 
 Standard_Boolean STEPCAFControl_Controller::Init ()
 {
-  static Standard_Boolean inic = Standard_False;
-  if (inic) return Standard_True;
-  inic = Standard_True;
+  static Standard_Mutex theMutex;
+  {
+    Standard_Mutex::Sentry aSentry(theMutex);
+    static Standard_Boolean inic = Standard_False;
+    if (inic) return Standard_True;
+    inic = Standard_True;
+  }
   // self-registering
   Handle(STEPCAFControl_Controller) STEPCTL = new STEPCAFControl_Controller;
   // do XSAlgo::Init, cause it does not called before.

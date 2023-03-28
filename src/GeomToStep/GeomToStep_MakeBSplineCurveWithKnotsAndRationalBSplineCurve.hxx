@@ -22,6 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
+
+class StepData_Factors;
 class StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
@@ -39,9 +41,11 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(const Handle(Geom_BSplineCurve)& Bsplin);
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(const Handle(Geom_BSplineCurve)& Bsplin,
+                                                                              const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(const Handle(Geom2d_BSplineCurve)& Bsplin);
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve(const Handle(Geom2d_BSplineCurve)& Bsplin,
+                                                                              const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)& Value() const;
 

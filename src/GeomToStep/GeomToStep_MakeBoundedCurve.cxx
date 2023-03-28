@@ -27,6 +27,7 @@
 #include <GeomToStep_MakeBSplineCurveWithKnots.hxx>
 #include <GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
@@ -34,7 +35,8 @@
 //=============================================================================
 // Creation d' une BoundedCurve de prostep a partir d' une BoundedCurve de Geom
 //=============================================================================
-GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_BoundedCurve)& C)
+GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_BoundedCurve)& C,
+                                                           const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
 
@@ -48,11 +50,11 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_Bou
       Bspli = newBspli;
     }
     if ( Bspli->IsRational() ) {
-      GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli);
+      GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli, theLocalFactors);
       theBoundedCurve = MkRatBSplineC.Value();
     }
     else {
-      GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli);
+      GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli, theLocalFactors);
       theBoundedCurve = MkBSplineC.Value();
     }
   }
@@ -60,11 +62,11 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_Bou
     Handle(Geom_BezierCurve) Cur = Handle(Geom_BezierCurve)::DownCast(C);
     Handle(Geom_BSplineCurve) Bspli = GeomConvert::CurveToBSplineCurve(Cur);
     if ( Bspli->IsRational() ) {
-      GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli);
+      GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli, theLocalFactors);
       theBoundedCurve = MkRatBSplineC.Value();
     }
     else {
-      GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli);
+      GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli, theLocalFactors);
       theBoundedCurve = MkBSplineC.Value();
     }
   }
@@ -81,7 +83,8 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_Bou
 // Geom2d
 //=============================================================================
 
-GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom2d_BoundedCurve)& C)
+GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom2d_BoundedCurve)& C,
+                                                           const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
   if (C->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
@@ -96,11 +99,11 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom2d_B
 	Bspli = newBspli;
       }
       if ( Bspli->IsRational() ) {
-	GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli);
+	GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve MkRatBSplineC(Bspli, theLocalFactors);
 	theBoundedCurve = MkRatBSplineC.Value();
       }
       else {
-	GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli);
+	GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli, theLocalFactors);
 	theBoundedCurve = MkBSplineC.Value();
       }
     }
@@ -108,7 +111,7 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom2d_B
     Handle(Geom2d_BezierCurve) Cur = Handle(Geom2d_BezierCurve)::DownCast(C);
     Handle(Geom2d_BSplineCurve) Bspli = 
       Geom2dConvert::CurveToBSplineCurve(Cur);
-    GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli);
+    GeomToStep_MakeBSplineCurveWithKnots MkBSplineC(Bspli, theLocalFactors);
     theBoundedCurve = MkBSplineC.Value();
     }
   else

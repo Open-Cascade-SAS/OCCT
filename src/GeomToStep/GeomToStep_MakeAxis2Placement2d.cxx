@@ -21,6 +21,7 @@
 #include <gp_Ax2.hxx>
 #include <gp_Ax22d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Direction.hxx>
@@ -30,13 +31,14 @@
 // Creation d' un axis2_placement_2d de prostep a partir d' un Ax2 de gp
 //=============================================================================
 GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d
-( const gp_Ax2& A)
+( const gp_Ax2& A,
+  const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_Axis2Placement2d) Axe;
   Handle(StepGeom_CartesianPoint) P;
   Handle(StepGeom_Direction) D;
 
-  GeomToStep_MakeCartesianPoint MkPoint(A.Location());
+  GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
   GeomToStep_MakeDirection      MkDir(A.Direction());
 
   P = MkPoint.Value();
@@ -56,13 +58,14 @@ GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d
 //=============================================================================
 
 GeomToStep_MakeAxis2Placement2d::GeomToStep_MakeAxis2Placement2d
-( const gp_Ax22d& A)
+( const gp_Ax22d& A,
+  const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_Axis2Placement2d) Axe;
   Handle(StepGeom_CartesianPoint) P;
   Handle(StepGeom_Direction) D1;
 
-  GeomToStep_MakeCartesianPoint MkPoint(A.Location());
+  GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
   GeomToStep_MakeDirection      MkDir(A.XDirection());
 
   P  = MkPoint.Value();

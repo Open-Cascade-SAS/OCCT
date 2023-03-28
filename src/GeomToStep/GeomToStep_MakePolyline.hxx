@@ -24,6 +24,8 @@
 #include <GeomToStep_Root.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+
+class StepData_Factors;
 class StepGeom_Polyline;
 
 
@@ -36,9 +38,11 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakePolyline(const TColgp_Array1OfPnt& P);
+  Standard_EXPORT GeomToStep_MakePolyline(const TColgp_Array1OfPnt& P,
+                                          const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakePolyline(const TColgp_Array1OfPnt2d& P);
+  Standard_EXPORT GeomToStep_MakePolyline(const TColgp_Array1OfPnt2d& P,
+                                          const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_Polyline)& Value() const;
 

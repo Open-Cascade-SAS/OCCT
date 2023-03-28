@@ -85,6 +85,8 @@ Standard_Boolean  STEPEdit_EditContext::Load
   if (modl.IsNull()) return Standard_False;
 
   STEPConstruct_ContextTool ctx (modl);
+  StepData_Factors aLocalFactors;
+  ctx.SetGlobalFactor(aLocalFactors);
 
   form->LoadValue (1, modl->StringLabel(ctx.GetAPD()) );
 
@@ -111,6 +113,8 @@ Standard_Boolean  STEPEdit_EditContext::Apply
   if (modl.IsNull()) return Standard_False;
 
   STEPConstruct_ContextTool ctx (modl);
+  StepData_Factors aLocalFactors;
+  ctx.SetGlobalFactor(aLocalFactors);
 
   ctx.AddAPD();  // on ne sait jamais
 //  ctx.AddPRPC();

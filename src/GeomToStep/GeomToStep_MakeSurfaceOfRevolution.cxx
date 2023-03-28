@@ -20,6 +20,7 @@
 #include <GeomToStep_MakeCurve.hxx>
 #include <GeomToStep_MakeSurfaceOfRevolution.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis1Placement.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SurfaceOfRevolution.hxx>
@@ -30,15 +31,15 @@
 // SurfaceOfRevolution de Geom
 //=============================================================================
 GeomToStep_MakeSurfaceOfRevolution::GeomToStep_MakeSurfaceOfRevolution
-  ( const Handle(Geom_SurfaceOfRevolution)& S )
-	
+  ( const Handle(Geom_SurfaceOfRevolution)& S,
+    const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_SurfaceOfRevolution) Surf;
   Handle(StepGeom_Curve) aSweptCurve;
   Handle(StepGeom_Axis1Placement) aAxisPosition;
   
-  GeomToStep_MakeCurve MkSwept(S->BasisCurve());
-  GeomToStep_MakeAxis1Placement MkAxis1(S->Axis());
+  GeomToStep_MakeCurve MkSwept(S->BasisCurve(), theLocalFactors);
+  GeomToStep_MakeAxis1Placement MkAxis1(S->Axis(), theLocalFactors);
   aSweptCurve = MkSwept.Value();
   aAxisPosition = MkAxis1.Value();
   Surf = new StepGeom_SurfaceOfRevolution;

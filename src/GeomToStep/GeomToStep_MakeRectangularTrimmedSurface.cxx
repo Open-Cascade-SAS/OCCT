@@ -25,7 +25,7 @@
 #include <GeomToStep_MakeRectangularTrimmedSurface.hxx>
 #include <GeomToStep_MakeSurface.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_RectangularTrimmedSurface.hxx>
 #include <StepGeom_Surface.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -36,15 +36,15 @@
 //=============================================================================
 GeomToStep_MakeRectangularTrimmedSurface::
   GeomToStep_MakeRectangularTrimmedSurface( const
-    Handle(Geom_RectangularTrimmedSurface)& RTSurf )
-								      
+    Handle(Geom_RectangularTrimmedSurface)& RTSurf,
+    const StepData_Factors& theLocalFactors)
 {
 
   Handle(StepGeom_RectangularTrimmedSurface) StepRTS = new StepGeom_RectangularTrimmedSurface;
 
   Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
 
-  GeomToStep_MakeSurface mkSurf(RTSurf->BasisSurface());
+  GeomToStep_MakeSurface mkSurf(RTSurf->BasisSurface(), theLocalFactors);
   if (!mkSurf.IsDone()) {
     done = Standard_False;
     return;
@@ -61,7 +61,7 @@ GeomToStep_MakeRectangularTrimmedSurface::
   Standard_Real AngleFact = 180./M_PI;
   Standard_Real uFact = 1.;
   Standard_Real vFact = 1.;
-  Standard_Real LengthFact  = StepData_GlobalFactors::Intance().LengthFactor();
+  Standard_Real LengthFact  = theLocalFactors.LengthFactor();
   Handle(Geom_Surface) theSurf = RTSurf->BasisSurface();
   if (theSurf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))) {
     uFact = AngleFact;

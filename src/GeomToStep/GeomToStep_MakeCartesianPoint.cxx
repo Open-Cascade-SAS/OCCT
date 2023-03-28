@@ -21,7 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -29,7 +29,8 @@
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point3d de gp
 //=============================================================================
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt& P)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt& P,
+                                                              const Standard_Real aFactor)
 {
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
 //  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,3);
@@ -42,8 +43,7 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt& P)
 //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
 //  Pstep->SetName(name);
-  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
-  Pstep->Init3D (name,X/fact,Y/fact,Z/fact);
+  Pstep->Init3D (name,X/aFactor,Y/aFactor,Z/aFactor);
   theCartesianPoint = Pstep;
   done = Standard_True;
 }
@@ -51,8 +51,10 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt& P)
 // Creation d' un cartesian_point de prostep a partir d' un point 2d de gp
 //=============================================================================
 
-GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt2d& P)
+GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt2d& P,
+                                                              const Standard_Real aFactor)
 {
+  (void)aFactor;
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
 //  Handle(TColStd_HArray1OfReal) Acoord = new TColStd_HArray1OfReal(1,2);
   Standard_Real X, Y;
@@ -73,7 +75,8 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt2d& P)
 //=============================================================================
 
 GeomToStep_MakeCartesianPoint::
-  GeomToStep_MakeCartesianPoint( const Handle(Geom_CartesianPoint)& P)
+  GeomToStep_MakeCartesianPoint( const Handle(Geom_CartesianPoint)& P,
+                                 const Standard_Real aFactor)
 
 {
   Handle(StepGeom_CartesianPoint) Pstep = new StepGeom_CartesianPoint;
@@ -87,8 +90,7 @@ GeomToStep_MakeCartesianPoint::
 //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
 //  Pstep->SetName(name);
-  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
-  Pstep->Init3D (name,X/fact,Y/fact,Z/fact);
+  Pstep->Init3D (name,X/aFactor,Y/aFactor,Z/aFactor);
   theCartesianPoint = Pstep;
   done = Standard_True;
 }

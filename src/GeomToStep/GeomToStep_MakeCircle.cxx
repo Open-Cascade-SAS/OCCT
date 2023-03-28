@@ -23,7 +23,7 @@
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Circle.hxx>
@@ -32,7 +32,8 @@
 //=============================================================================
 // Creation d' un cercle de prostep a partir d' un cercle 3d de gp
 //=============================================================================
-GeomToStep_MakeCircle::GeomToStep_MakeCircle( const gp_Circ& C)
+GeomToStep_MakeCircle::GeomToStep_MakeCircle( const gp_Circ& C,
+                                              const StepData_Factors& theLocalFactors)
 {
 #include "GeomToStep_MakeCircle_gen.pxx"
 }
@@ -43,7 +44,8 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle( const gp_Circ& C)
 // Geom
 //=============================================================================
 
-GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom_Circle)& Cer)
+GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom_Circle)& Cer,
+                                              const StepData_Factors& theLocalFactors)
 {
   gp_Circ C;
   C = Cer->Circ();
@@ -56,7 +58,8 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom_Circle)& Cer)
 // Geom2d
 //=============================================================================
 
-GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom2d_Circle)& Cer)
+GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom2d_Circle)& Cer,
+                                              const StepData_Factors& theLocalFactors)
 {
   gp_Circ2d C2d;
   C2d = Cer->Circ2d();
@@ -66,7 +69,7 @@ GeomToStep_MakeCircle::GeomToStep_MakeCircle( const Handle(Geom2d_Circle)& Cer)
   Handle(StepGeom_Axis2Placement2d) Ax2Step;
   Standard_Real Rayon;
   
-  GeomToStep_MakeAxis2Placement2d MkAxis2(C2d.Position());
+  GeomToStep_MakeAxis2Placement2d MkAxis2(C2d.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   Rayon = C2d.Radius();
   Ax2.SetValue(Ax2Step);

@@ -27,6 +27,7 @@ class gp_Pnt;
 class gp_Pnt2d;
 class Geom_CartesianPoint;
 class Geom2d_CartesianPoint;
+class StepData_StepModel;
 
 
 //! This class implements the mapping between classes
@@ -40,11 +41,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakeCartesianPoint(const gp_Pnt& P);
+  Standard_EXPORT GeomToStep_MakeCartesianPoint(const gp_Pnt& P,
+                                                const Standard_Real aFactor);
   
-  Standard_EXPORT GeomToStep_MakeCartesianPoint(const gp_Pnt2d& P);
+  Standard_EXPORT GeomToStep_MakeCartesianPoint(const gp_Pnt2d& P,
+                                                const Standard_Real aFactor);
   
-  Standard_EXPORT GeomToStep_MakeCartesianPoint(const Handle(Geom_CartesianPoint)& P);
+  Standard_EXPORT GeomToStep_MakeCartesianPoint(const Handle(Geom_CartesianPoint)& P,
+                                                const Standard_Real aFactor);
   
   Standard_EXPORT GeomToStep_MakeCartesianPoint(const Handle(Geom2d_CartesianPoint)& P);
   

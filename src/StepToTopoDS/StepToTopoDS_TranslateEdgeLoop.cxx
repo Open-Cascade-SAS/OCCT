@@ -43,6 +43,7 @@
 #include <ShapeExtend_WireData.hxx>
 #include <ShapeFix_EdgeProjAux.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Pcurve.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
@@ -188,8 +189,9 @@ StepToTopoDS_TranslateEdgeLoop::StepToTopoDS_TranslateEdgeLoop(const Handle(Step
   const Handle(StepGeom_Surface)& StepSurf,
   const Standard_Boolean sameSense,
   StepToTopoDS_Tool& T,
-  StepToTopoDS_NMTool& NMTool) {
-  Init(FB, Face, GeomSurf, StepSurf, sameSense, T, NMTool);
+  StepToTopoDS_NMTool& NMTool,
+  const StepData_Factors& theLocalFactors) {
+  Init(FB, Face, GeomSurf, StepSurf, sameSense, T, NMTool, theLocalFactors);
 }
 
 // ============================================================================
@@ -203,7 +205,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
   const Handle(StepGeom_Surface)& StepSurf,
   const Standard_Boolean sameSense,
   StepToTopoDS_Tool& aTool,
-  StepToTopoDS_NMTool& NMTool) {
+  StepToTopoDS_NMTool& NMTool,
+  const StepData_Factors& theLocalFactors) {
   done = Standard_True;
   Handle(StepShape_EdgeLoop) EL =
     Handle(StepShape_EdgeLoop)::DownCast(FaceBound->Bound());
@@ -304,7 +307,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
         OCC_CATCH_SIGNALS
           C1 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C));
         if (C1.IsNull()) {
-          C1 = StepToGeom::MakeCurve (C);
+          C1 = StepToGeom::MakeCurve (C, theLocalFactors);
           if (! C1.IsNull())
             TP->BindTransient (C, C1);
           else
@@ -334,8 +337,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     Standard_Boolean istV = aTool.IsBound(Vstart);
     Standard_Boolean iseV = aTool.IsBound(Vend);
     TopoDS_Vertex V1, V2;
-    StepToTopoDS_TranslateVertex myTranVertex1(Vstart, aTool, NMTool);
-    StepToTopoDS_TranslateVertex myTranVertex2(Vend, aTool, NMTool);
+    StepToTopoDS_TranslateVertex myTranVertex1(Vstart, aTool, NMTool, theLocalFactors);
+    StepToTopoDS_TranslateVertex myTranVertex2(Vend, aTool, NMTool, theLocalFactors);
 
     if (myTranVertex1.IsDone()) {
       V1 = TopoDS::Vertex(myTranVertex1.Value());
@@ -385,8 +388,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
     if ((Vs1 == Vs2) || (Vs1 == Vs22) || (Vs2 == Vs11) || (Vs22 == Vs11)) continue;
 
-    StepToTopoDS_TranslateVertex myTranVertex1 (Vs1, aTool, NMTool);
-    StepToTopoDS_TranslateVertex myTranVertex2 (Vs2, aTool, NMTool);
+    StepToTopoDS_TranslateVertex myTranVertex1 (Vs1, aTool, NMTool, theLocalFactors);
+    StepToTopoDS_TranslateVertex myTranVertex2 (Vs2, aTool, NMTool, theLocalFactors);
 
     TopoDS_Vertex V1, V2;
     if (myTranVertex1.IsDone())
@@ -443,7 +446,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 
     myTranEdge.SetPrecision(preci);
     myTranEdge.SetMaxTol(MaxTol());
-    myTranEdge.Init(OrEdge1, aTool, NMTool);
+    myTranEdge.Init(OrEdge1, aTool, NMTool, theLocalFactors);
 
     if (myTranEdge.IsDone()) {
 
@@ -474,7 +477,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       }
       else if (C->IsKind(STANDARD_TYPE(StepGeom_Pcurve))) {
         Handle(StepGeom_Pcurve) StepPCurve = Handle(StepGeom_Pcurve)::DownCast(C);
-        C2d = myTranEdge.MakePCurve(StepPCurve, ConvSurf);
+        C2d = myTranEdge.MakePCurve(StepPCurve, ConvSurf, theLocalFactors);
         // -- Statistics --
         aTool.AddContinuity(C2d);
       }
@@ -520,8 +523,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
           StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
           if (StepPCurve1.IsNull() || StepPCurve2.IsNull()) hasPcurve = Standard_False; //smh : BUC60810
           else {
-            C2d1 = myTranEdge.MakePCurve(StepPCurve1, ConvSurf);
-            C2d2 = myTranEdge.MakePCurve(StepPCurve2, ConvSurf);
+            C2d1 = myTranEdge.MakePCurve(StepPCurve1, ConvSurf, theLocalFactors);
+            C2d2 = myTranEdge.MakePCurve(StepPCurve2, ConvSurf, theLocalFactors);
             hasPcurve = (!C2d1.IsNull() && !C2d2.IsNull());
           }
 
@@ -534,7 +537,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
         else if (hasPcurve) {
           //  GeometricTool : Pcurve a retourne StepPCurve
           while (lastpcurve > 0) {
-            C2d1 = myTranEdge.MakePCurve(StepPCurve, ConvSurf);
+            C2d1 = myTranEdge.MakePCurve(StepPCurve, ConvSurf, theLocalFactors);
             if (C2d1.IsNull()) {
               TP->AddWarning(EC, "Incorrect pcurve is not translated. Pcurve definition is not correct");
               hasPcurve = Standard_False;

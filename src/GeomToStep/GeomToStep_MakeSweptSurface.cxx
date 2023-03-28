@@ -22,6 +22,7 @@
 #include <GeomToStep_MakeSurfaceOfRevolution.hxx>
 #include <GeomToStep_MakeSweptSurface.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_SurfaceOfLinearExtrusion.hxx>
 #include <StepGeom_SurfaceOfRevolution.hxx>
 #include <StepGeom_SweptSurface.hxx>
@@ -32,19 +33,20 @@
 // SweptSurface de Geom
 //=============================================================================
 GeomToStep_MakeSweptSurface::GeomToStep_MakeSweptSurface
-  ( const Handle(Geom_SweptSurface)& S)
+  ( const Handle(Geom_SweptSurface)& S,
+    const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
   if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))) {
     Handle(Geom_SurfaceOfLinearExtrusion) Sur = 
       Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(S);
-    GeomToStep_MakeSurfaceOfLinearExtrusion MkLinear(Sur);
+    GeomToStep_MakeSurfaceOfLinearExtrusion MkLinear(Sur, theLocalFactors);
     theSweptSurface = MkLinear.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
     Handle(Geom_SurfaceOfRevolution) Sur = 
       Handle(Geom_SurfaceOfRevolution)::DownCast(S);
-    GeomToStep_MakeSurfaceOfRevolution MkRevol(Sur);
+    GeomToStep_MakeSurfaceOfRevolution MkRevol(Sur, theLocalFactors);
     theSweptSurface = MkRevol.Value();
   }
   else

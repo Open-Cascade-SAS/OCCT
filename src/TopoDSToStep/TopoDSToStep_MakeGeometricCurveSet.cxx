@@ -17,6 +17,7 @@
 
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_GeometricCurveSet.hxx>
 #include <StepShape_GeometricSetSelect.hxx>
 #include <StepShape_HArray1OfGeometricSetSelect.hxx>
@@ -32,13 +33,14 @@
 //=============================================================================
 TopoDSToStep_MakeGeometricCurveSet::TopoDSToStep_MakeGeometricCurveSet(
                                     const TopoDS_Shape& aShape,
-				    const Handle(Transfer_FinderProcess)& FP)
+                                    const Handle(Transfer_FinderProcess)& FP,
+                                    const StepData_Factors& theLocalFactors)
 {
   done = Standard_False;
   Handle(TColStd_HSequenceOfTransient)  itemList;
   MoniTool_DataMapOfShapeTransient      aMap;
   TopoDSToStep_Tool                aTool (aMap, Standard_False);
-  TopoDSToStep_WireframeBuilder    wirefB (aShape, aTool, FP);
+  TopoDSToStep_WireframeBuilder    wirefB (aShape, aTool, theLocalFactors);
   TopoDSToStep::AddResult ( FP, aTool );
 
   Handle(StepShape_GeometricCurveSet) aGCSet =

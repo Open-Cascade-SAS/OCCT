@@ -25,6 +25,7 @@
 #include <GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
 #include <GeomToStep_MakeRectangularTrimmedSurface.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BoundedSurface.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface.hxx>
@@ -35,7 +36,8 @@
 // de Geom
 //=============================================================================
 GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface
-  ( const Handle(Geom_BoundedSurface)& S)
+  ( const Handle(Geom_BoundedSurface)& S,
+    const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
   if (S->IsKind(STANDARD_TYPE(Geom_BSplineSurface))) {
@@ -50,11 +52,11 @@ GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface
     }
     if ( BS->IsURational() || BS->IsVRational() ) {
       GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface 
-	MkRatBSplineS(BS);
+        MkRatBSplineS(BS, theLocalFactors);
       theBoundedSurface = MkRatBSplineS.Value();
     }
     else {
-      GeomToStep_MakeBSplineSurfaceWithKnots MkBSplineS(BS);
+      GeomToStep_MakeBSplineSurfaceWithKnots MkBSplineS(BS, theLocalFactors);
       theBoundedSurface = MkBSplineS.Value();
     }
   }
@@ -64,18 +66,18 @@ GeomToStep_MakeBoundedSurface::GeomToStep_MakeBoundedSurface
       GeomConvert::SurfaceToBSplineSurface(Sur);
     if ( BS->IsURational() || BS->IsVRational() ) {
       GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface 
-	MkRatBSplineS(BS);
+        MkRatBSplineS(BS, theLocalFactors);
       theBoundedSurface = MkRatBSplineS.Value();
     }
     else {
-      GeomToStep_MakeBSplineSurfaceWithKnots MkBSplineS(BS);
+      GeomToStep_MakeBSplineSurfaceWithKnots MkBSplineS(BS, theLocalFactors);
       theBoundedSurface = MkBSplineS.Value();
     }
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
     Handle(Geom_RectangularTrimmedSurface) Sur = 
       Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
-    GeomToStep_MakeRectangularTrimmedSurface MkRTSurf(Sur);
+    GeomToStep_MakeRectangularTrimmedSurface MkRTSurf(Sur, theLocalFactors);
     theBoundedSurface = MkRTSurf.Value();
   }
   else

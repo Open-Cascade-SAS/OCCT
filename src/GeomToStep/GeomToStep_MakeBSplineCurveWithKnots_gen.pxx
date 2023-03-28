@@ -33,7 +33,7 @@ Handle(StepGeom_BSplineCurveWithKnots) BSWK;
   BS->Poles(P);
   Listpoints = new StepGeom_HArray1OfCartesianPoint(1,N);
   for ( i=P.Lower(); i<=P.Upper(); i++) {
-    GeomToStep_MakeCartesianPoint MkPoint(P.Value(i));
+    GeomToStep_MakeCartesianPoint MkPoint(P.Value(i), theLocalFactors.LengthFactor());
     Pt = MkPoint.Value();
     Listpoints->SetValue(i, Pt);
   }

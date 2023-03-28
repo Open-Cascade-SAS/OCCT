@@ -29,6 +29,7 @@
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
+#include <StepData_Factors.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_GeometricRepresentationContextAndGlobalUnitAssignedContext.hxx>
@@ -623,7 +624,9 @@ TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape (const Handle(StepRepr_
 //=======================================================================
 
 Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRepr_RepresentationItem) &item,
-							     Standard_Real &Val, Standard_Boolean &isArea) const
+                                                             Standard_Real &Val,
+                                                             Standard_Boolean &isArea,
+                                                             const StepData_Factors& theLocalFactors) const
 {
   // decode volume & area
   if ( ! item->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem)) ) 
@@ -644,7 +647,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRe
       Standard_Real exp = DUE->Exponent();
       Handle(StepBasic_NamedUnit) NU = DUE->Unit();
       STEPConstruct_UnitContext unit;
-      unit.ComputeFactors(NU);
+      unit.ComputeFactors(NU, theLocalFactors);
       if(unit.LengthDone()) {
 	Standard_Real lengthFactor = unit.LengthFactor();
 	scale *= pow(lengthFactor,exp);
@@ -655,7 +658,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRe
     Handle(StepBasic_NamedUnit) NU = Unit.NamedUnit();
     if(!NU.IsNull()) {
       STEPConstruct_UnitContext unit;
-      unit.ComputeFactors(NU);
+      unit.ComputeFactors(NU, theLocalFactors);
       if(unit.AreaDone())
 	scale =  unit.AreaFactor();
       if(unit.VolumeDone())
@@ -682,8 +685,9 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRe
 //=======================================================================
 
 Standard_Boolean STEPConstruct_ValidationProps::GetPropPnt (const Handle(StepRepr_RepresentationItem) &item,
-							    const Handle(StepRepr_RepresentationContext) &Context,
-							    gp_Pnt &Pnt) const
+                                                            const Handle(StepRepr_RepresentationContext) &Context,
+                                                            gp_Pnt &Pnt,
+                                                            const StepData_Factors& theLocalFactors) const
 {
   // centroid
   if ( ! item->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)) ) 
@@ -713,7 +717,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropPnt (const Handle(StepRep
     }
     if ( ! theGUAC.IsNull() ) {
       STEPConstruct_UnitContext UnitTool;
-      UnitTool.ComputeFactors(theGUAC);
+      UnitTool.ComputeFactors(theGUAC, theLocalFactors);
       gp_Pnt zero(0,0,0);
       pos.Scale ( zero, UnitTool.LengthFactor() );
     }

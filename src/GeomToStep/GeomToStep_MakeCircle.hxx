@@ -22,6 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
+
+class StepData_Factors;
 class StepGeom_Circle;
 class gp_Circ;
 class Geom_Circle;
@@ -39,11 +41,14 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakeCircle(const gp_Circ& C);
+  Standard_EXPORT GeomToStep_MakeCircle(const gp_Circ& C,
+                                        const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeCircle(const Handle(Geom_Circle)& C);
+  Standard_EXPORT GeomToStep_MakeCircle(const Handle(Geom_Circle)& C,
+                                        const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeCircle(const Handle(Geom2d_Circle)& C);
+  Standard_EXPORT GeomToStep_MakeCircle(const Handle(Geom2d_Circle)& C,
+                                        const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_Circle)& Value() const;
 

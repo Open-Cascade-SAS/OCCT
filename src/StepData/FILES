@@ -13,6 +13,8 @@ StepData_EnumTool.cxx
 StepData_EnumTool.hxx
 StepData_ESDescr.cxx
 StepData_ESDescr.hxx
+StepData_Factors.cxx
+StepData_Factors.hxx
 StepData_Field.cxx
 StepData_Field.hxx
 StepData_FieldList.cxx
@@ -31,8 +33,6 @@ StepData_FreeFormEntity.cxx
 StepData_FreeFormEntity.hxx
 StepData_GeneralModule.cxx
 StepData_GeneralModule.hxx
-StepData_GlobalFactors.cxx
-StepData_GlobalFactors.hxx
 StepData_GlobalNodeOfWriterLib.hxx
 StepData_GlobalNodeOfWriterLib_0.cxx
 StepData_HArray1OfField.hxx

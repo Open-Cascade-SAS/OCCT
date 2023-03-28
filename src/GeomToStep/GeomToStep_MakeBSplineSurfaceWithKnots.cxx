@@ -20,6 +20,7 @@
 #include <GeomToStep_MakeBSplineSurfaceWithKnots.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_HArray2OfCartesianPoint.hxx>
@@ -34,10 +35,9 @@
 // Creation d' une bspline_Surface_with_knots_and_rational_bspline_Surface de
 // prostep a partir d' une BSplineSurface de Geom
 //=============================================================================
-GeomToStep_MakeBSplineSurfaceWithKnots::
-  GeomToStep_MakeBSplineSurfaceWithKnots( const
-    Handle(Geom_BSplineSurface)& BS )
-								      
+GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots
+( const Handle(Geom_BSplineSurface)& BS,
+  const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_BSplineSurfaceWithKnots) BSWK;
   Standard_Integer aUDegree, aVDegree, NU, NV, i, j, NUknots, NVknots, itampon;
@@ -62,7 +62,7 @@ GeomToStep_MakeBSplineSurfaceWithKnots::
   aControlPointsList = new StepGeom_HArray2OfCartesianPoint(1,NU,1,NV);
   for ( i=P.LowerRow(); i<=P.UpperRow(); i++) {
     for ( j=P.LowerCol(); j<=P.UpperCol(); j++) { 
-      GeomToStep_MakeCartesianPoint MkPoint(P.Value(i,j));
+      GeomToStep_MakeCartesianPoint MkPoint(P.Value(i,j), theLocalFactors.LengthFactor());
       Pt = MkPoint.Value();
       aControlPointsList->SetValue(i, j, Pt);
     }

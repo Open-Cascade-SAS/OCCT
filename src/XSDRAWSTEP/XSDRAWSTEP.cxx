@@ -30,6 +30,7 @@
 #include <STEPControl_StepModelType.hxx>
 #include <STEPControl_Writer.hxx>
 #include <StepData_StepModel.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepSelect_Activator.hxx>
 #include <STEPSelections_AssemblyExplorer.hxx>
@@ -332,7 +333,8 @@ static Standard_Integer steptrans (Draw_Interpretor& di, Standard_Integer argc, 
   if (n2 > 0) ax2 = Handle(StepGeom_Axis2Placement3d)::DownCast
     (XSDRAW::Entity(n2));
   StepToTopoDS_MakeTransformed mktrans;
-  if (mktrans.Compute (ax1,ax2)) {
+  StepData_Factors aLocalFactors;
+  if (mktrans.Compute (ax1,ax2, aLocalFactors)) {
     TopLoc_Location loc (mktrans.Transformation());
     shape.Move (loc);
 //    mktrans.Transform (shape);

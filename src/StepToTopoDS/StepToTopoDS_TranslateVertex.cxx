@@ -20,6 +20,7 @@
 #include <Geom_CartesianPoint.hxx>
 #include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_VertexPoint.hxx>
 #include <StepToGeom.hxx>
 #include <StepToTopoDS_NMTool.hxx>
@@ -49,9 +50,10 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
 
 StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const Handle(StepShape_Vertex)& V, 
                                                            StepToTopoDS_Tool& T,
-                                                           StepToTopoDS_NMTool& NMTool)
+                                                           StepToTopoDS_NMTool& NMTool,
+                                                           const StepData_Factors& theLocalFactors)
 {
-  Init(V, T, NMTool);
+  Init(V, T, NMTool, theLocalFactors);
 }
 
 // ============================================================================
@@ -61,7 +63,8 @@ StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex(const Handle(StepShap
 
 void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex, 
 				                                StepToTopoDS_Tool& aTool,
-                                        StepToTopoDS_NMTool& NMTool)
+                                        StepToTopoDS_NMTool& NMTool,
+                                        const StepData_Factors& theLocalFactors)
 {
   if (aVertex.IsNull()) {
     myError = StepToTopoDS_TranslateVertexOther;
@@ -94,7 +97,7 @@ void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
     const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(aVertex);
     const Handle(StepGeom_Point) P = VP->VertexGeometry();
     const Handle(StepGeom_CartesianPoint) P1 = Handle(StepGeom_CartesianPoint)::DownCast(P);
-    Handle(Geom_CartesianPoint) P2 = StepToGeom::MakeCartesianPoint (P1);
+    Handle(Geom_CartesianPoint) P2 = StepToGeom::MakeCartesianPoint (P1, theLocalFactors);
     BRep_Builder B;
     TopoDS_Vertex V;
     B.MakeVertex(V, P2->Pnt(), Precision::Confusion()); //:S4136: preci

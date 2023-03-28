@@ -83,6 +83,15 @@ void STEPConstruct_ContextTool::SetModel (const Handle(StepData_StepModel)& aSte
 }
 
 //=======================================================================
+//function : SetGlobalFactor
+//purpose  :
+//=======================================================================
+void STEPConstruct_ContextTool::SetGlobalFactor(const StepData_Factors& theGlobalFactor)
+{
+  myGlobalFactor = theGlobalFactor;
+}
+
+//=======================================================================
 //function : GetAPD
 //purpose  :
 //=======================================================================
@@ -445,7 +454,7 @@ void STEPConstruct_ContextTool::SetSDR (const Handle(StepShape_ShapeDefinitionRe
 Handle(StepGeom_Axis2Placement3d) STEPConstruct_ContextTool::GetDefaultAxis ()
 {
   if ( myAxis.IsNull() ) {
-    GeomToStep_MakeAxis2Placement3d mkax;
+    GeomToStep_MakeAxis2Placement3d mkax(myGlobalFactor);
     myAxis = mkax.Value();
   }
   return myAxis;

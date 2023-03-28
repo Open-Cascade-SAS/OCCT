@@ -21,6 +21,7 @@
 #include <GeomToStep_MakeBSplineCurveWithKnots.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_HArray1OfCartesianPoint.hxx>
@@ -35,10 +36,9 @@
 // Creation d' une bspline_curve_with_knots de
 // prostep a partir d' une BSplineCurve de Geom
 //=============================================================================
-GeomToStep_MakeBSplineCurveWithKnots::
-  GeomToStep_MakeBSplineCurveWithKnots( const
-    Handle(Geom_BSplineCurve)& BS )
-								      
+GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots
+( const Handle(Geom_BSplineCurve)& BS,
+  const StepData_Factors& theLocalFactors)
 {
 #define Array1OfPnt_gen TColgp_Array1OfPnt
 #include "GeomToStep_MakeBSplineCurveWithKnots_gen.pxx"
@@ -49,10 +49,9 @@ GeomToStep_MakeBSplineCurveWithKnots::
 // prostep a partir d' une BSplineCurve de Geom2d
 //=============================================================================
 
-GeomToStep_MakeBSplineCurveWithKnots::
-  GeomToStep_MakeBSplineCurveWithKnots( const
-    Handle(Geom2d_BSplineCurve)& BS )
-								      
+GeomToStep_MakeBSplineCurveWithKnots::GeomToStep_MakeBSplineCurveWithKnots
+( const Handle(Geom2d_BSplineCurve)& BS,
+  const StepData_Factors& theLocalFactors)
 {
 #define Array1OfPnt_gen TColgp_Array1OfPnt2d
 #include "GeomToStep_MakeBSplineCurveWithKnots_gen.pxx"

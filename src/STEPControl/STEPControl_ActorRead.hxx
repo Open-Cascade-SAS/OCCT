@@ -46,6 +46,7 @@ class StepShape_FaceSurface;
 class TopoDS_Shell;
 class TopoDS_Compound;
 class StepRepr_ConstructiveGeometryRepresentationRelationship;
+class StepData_Factors;
 
 
 class STEPControl_ActorRead;
@@ -75,26 +76,38 @@ public:
   Standard_EXPORT Handle(Transfer_Binder) TransferShape (
       const Handle(Standard_Transient)& start,
       const Handle(Transfer_TransientProcess)& TP,
+      const StepData_Factors& theLocalFactors,
       const Standard_Boolean isManifold = Standard_True,
       const Standard_Boolean theUseTrsf = Standard_False,
       const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! set units and tolerances context by given ShapeRepresentation
-  Standard_EXPORT void PrepareUnits (const Handle(StepRepr_Representation)& rep, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT void PrepareUnits (const Handle(StepRepr_Representation)& rep,
+                                     const Handle(Transfer_TransientProcess)& TP,
+                                     StepData_Factors& theLocalFactors);
 
   //! reset units and tolerances context to default
   //! (mm, radians, read.precision.val, etc.)
-  Standard_EXPORT void ResetUnits();
+  Standard_EXPORT void ResetUnits(StepData_Factors& theLocalFactors);
 
   //! Computes transformation defined by two axis placements (in MAPPED_ITEM
   //! or ITEM_DEFINED_TRANSFORMATION) taking into account their
   //! representation contexts (i.e. units, which may be different)
   //! Returns True if transformation is computed and is not an identity.
-  Standard_EXPORT Standard_Boolean ComputeTransformation (const Handle(StepGeom_Axis2Placement3d)& Origin, const Handle(StepGeom_Axis2Placement3d)& Target, const Handle(StepRepr_Representation)& OrigContext, const Handle(StepRepr_Representation)& TargContext, const Handle(Transfer_TransientProcess)& TP, gp_Trsf& Trsf);
+  Standard_EXPORT Standard_Boolean ComputeTransformation (const Handle(StepGeom_Axis2Placement3d)& Origin,
+                                                          const Handle(StepGeom_Axis2Placement3d)& Target,
+                                                          const Handle(StepRepr_Representation)& OrigContext,
+                                                          const Handle(StepRepr_Representation)& TargContext,
+                                                          const Handle(Transfer_TransientProcess)& TP,
+                                                          gp_Trsf& Trsf,
+                                                          const StepData_Factors& theLocalFactors);
 
   //! Computes transformation defined by given
   //! REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION
-  Standard_EXPORT Standard_Boolean ComputeSRRWT (const Handle(StepRepr_RepresentationRelationship)& SRR, const Handle(Transfer_TransientProcess)& TP, gp_Trsf& Trsf);
+  Standard_EXPORT Standard_Boolean ComputeSRRWT (const Handle(StepRepr_RepresentationRelationship)& SRR,
+                                                 const Handle(Transfer_TransientProcess)& TP,
+                                                 gp_Trsf& Trsf,
+                                                 const StepData_Factors& theLocalFactors);
 
 
 
@@ -109,6 +122,7 @@ protected:
     Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
       const Handle(StepBasic_ProductDefinition)& PD,
       const Handle(Transfer_TransientProcess)& TP,
+      const StepData_Factors& theLocalFactors,
       const Standard_Boolean theUseTrsf = Standard_False,
       const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -116,6 +130,7 @@ protected:
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
                    (const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO,
                     const Handle(Transfer_TransientProcess)& TP,
+                    const StepData_Factors& theLocalFactors,
                     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers shape representation entity
@@ -123,6 +138,7 @@ protected:
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
       const Handle(StepShape_ShapeRepresentation)& sr,
       const Handle(Transfer_TransientProcess)& TP,
+      const StepData_Factors& theLocalFactors,
       Standard_Boolean& isBound,
       const Standard_Boolean theUseTrsf = Standard_False,
       const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -131,6 +147,7 @@ protected:
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
                    (const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR,
                     const Handle(Transfer_TransientProcess)& TP,
+                    const StepData_Factors& theLocalFactors,
                     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers  shape representation relationship entity
@@ -138,6 +155,7 @@ protected:
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
       const Handle(StepRepr_ShapeRepresentationRelationship)& und,
       const Handle(Transfer_TransientProcess)& TP,
+      const StepData_Factors& theLocalFactors,
       const Standard_Integer nbrep = 0,
       const Standard_Boolean theUseTrsf = Standard_False,
       const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -146,6 +164,7 @@ protected:
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
                    (const Handle(StepGeom_GeometricRepresentationItem)& git,
                     const Handle(Transfer_TransientProcess)& TP,
+                    const StepData_Factors& theLocalFactors,
                     const Standard_Boolean isManifold,
                     const Message_ProgressRange& theProgress);
 
@@ -153,16 +172,19 @@ protected:
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
                    (const Handle(StepRepr_MappedItem)& mapit,
                     const Handle(Transfer_TransientProcess)& TP,
+                    const StepData_Factors& theLocalFactors,
                     const Message_ProgressRange& theProgress);
 
   //! Transfers  FaceSurface entity
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
                    (const Handle(StepShape_FaceSurface)& fs,
                     const Handle(Transfer_TransientProcess)& TP,
+                    const StepData_Factors& theLocalFactors,
                     const Message_ProgressRange& theProgress);
 
   Handle(TransferBRep_ShapeBinder) TransferEntity( const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& theCGRR,
-    const Handle(Transfer_TransientProcess)& theTP);
+                                                   const Handle(Transfer_TransientProcess)& theTP,
+                                                   const StepData_Factors& theLocalFactors);
 
   //! Translates file by old way when CDSR are roots . Acts only if "read.step.product_mode" is equal Off.
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay

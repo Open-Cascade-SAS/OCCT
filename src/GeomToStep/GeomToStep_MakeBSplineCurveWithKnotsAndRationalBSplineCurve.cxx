@@ -21,6 +21,7 @@
 #include <GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_HArray1OfCartesianPoint.hxx>
@@ -37,8 +38,7 @@
 //=============================================================================
 GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve( const
-    Handle(Geom_BSplineCurve)& BS )
-								      
+    Handle(Geom_BSplineCurve)& BS, const StepData_Factors& theLocalFactors)
 {
 #define Array1OfPnt_gen TColgp_Array1OfPnt
 #include "GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve_gen.pxx"
@@ -51,7 +51,7 @@ GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
 
 GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve::
   GeomToStep_MakeBSplineCurveWithKnotsAndRationalBSplineCurve( const
-    Handle(Geom2d_BSplineCurve)& BS )
+    Handle(Geom2d_BSplineCurve)& BS, const StepData_Factors& theLocalFactors)
 								      
 {
 #define Array1OfPnt_gen TColgp_Array1OfPnt2d

@@ -11,33 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 
 // ============================================================================
 // Method : Consturctor
 // Purpose:
 // ============================================================================
-StepData_GlobalFactors::StepData_GlobalFactors()
+StepData_Factors::StepData_Factors()
   :myLengthFactor(1.), myPlaneAngleFactor(1.),
    mySolidAngleFactor(1.), myFactRD(1.),
    myFactDR(1.), myCascadeUnit(1.)
 {}
 
 // ============================================================================
-// Method : Intance
-// Purpose:
-// ============================================================================
-StepData_GlobalFactors& StepData_GlobalFactors::Intance()
-{
-  static StepData_GlobalFactors THE_FACTORS;
-  return THE_FACTORS;
-}
-
-// ============================================================================
 // Method : InitializeFactors
 // Purpose:
 // ============================================================================
-void StepData_GlobalFactors::InitializeFactors(
+void StepData_Factors::InitializeFactors(
   const Standard_Real theLengthFactor,
   const Standard_Real thePlaneAngleFactor,
   const Standard_Real theSolidAngleFactor)
@@ -53,7 +43,7 @@ void StepData_GlobalFactors::InitializeFactors(
 // Method : LengthFactor
 // Purpose:
 // ============================================================================
-Standard_Real StepData_GlobalFactors::LengthFactor()
+Standard_Real StepData_Factors::LengthFactor() const
 {
   return myLengthFactor;
 }
@@ -62,7 +52,7 @@ Standard_Real StepData_GlobalFactors::LengthFactor()
 // Method : PlaneAngleFactor
 // Purpose:
 // ============================================================================
-Standard_Real StepData_GlobalFactors::PlaneAngleFactor()
+Standard_Real StepData_Factors::PlaneAngleFactor() const
 {
   return myPlaneAngleFactor;
 }
@@ -71,7 +61,7 @@ Standard_Real StepData_GlobalFactors::PlaneAngleFactor()
 // Method : SolidAngleFactor
 // Purpose:
 // ============================================================================
-Standard_Real StepData_GlobalFactors::SolidAngleFactor()
+Standard_Real StepData_Factors::SolidAngleFactor() const
 {
   return mySolidAngleFactor;
 }
@@ -80,7 +70,7 @@ Standard_Real StepData_GlobalFactors::SolidAngleFactor()
 // Method : FactorRadianDegree
 // Purpose:
 // ============================================================================
-Standard_Real StepData_GlobalFactors::FactorRadianDegree()
+Standard_Real StepData_Factors::FactorRadianDegree() const
 {
   return myFactRD;
 }
@@ -89,7 +79,7 @@ Standard_Real StepData_GlobalFactors::FactorRadianDegree()
 // Method : FactorDegreeRadian
 // Purpose:
 // ============================================================================
-Standard_Real StepData_GlobalFactors::FactorDegreeRadian()
+Standard_Real StepData_Factors::FactorDegreeRadian() const
 {
   return myFactDR;
 }
@@ -98,7 +88,7 @@ Standard_Real StepData_GlobalFactors::FactorDegreeRadian()
 // Method : SetCascadeUnit
 // Purpose:
 // ============================================================================
-void StepData_GlobalFactors::SetCascadeUnit(const Standard_Real theUnit)
+void StepData_Factors::SetCascadeUnit(const Standard_Real theUnit)
 {
   myCascadeUnit = theUnit;
 }
@@ -107,7 +97,7 @@ void StepData_GlobalFactors::SetCascadeUnit(const Standard_Real theUnit)
 // Method : CascadeUnit
 // Purpose:
 // ============================================================================
-Standard_Real StepData_GlobalFactors::CascadeUnit()
+Standard_Real StepData_Factors::CascadeUnit() const
 {
   return myCascadeUnit;
 }

@@ -18,6 +18,7 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_HGraph.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <STEPConstruct_Assembly.hxx>
@@ -137,15 +138,16 @@ static void AddInstances(const Handle(Standard_Transient)& start,
      
 Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interface_Graph &G) const
 {
+  static Standard_Mutex aMutex;
+  Standard_Mutex::Sentry aSentry(aMutex);
   if(myGraph.IsNull()||(G.Model()!=myGraph->Graph().Model()))
-    {
-      
-      Interface_EntityIterator roots = G.RootEntities();
-      myGraph = new Interface_HGraph(G);
-      myEntities.Destroy();
-      for (roots.Start(); roots.More(); roots.Next())
-	AddInstances(roots.Value(), G, myEntities);
-    }
+  {
+    Interface_EntityIterator roots = G.RootEntities();
+    myGraph = new Interface_HGraph(G);
+    myEntities.Destroy();
+    for (roots.Start(); roots.More(); roots.Next())
+      AddInstances(roots.Value(), G, myEntities);
+  }
 
   if(HasInput()||HasAlternate()) {
     Interface_EntityIterator select = InputResult(G);

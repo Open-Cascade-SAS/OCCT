@@ -35,6 +35,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NullObject.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Line.hxx>
 #include <StepGeom_TrimmedCurve.hxx>
@@ -66,18 +67,22 @@ TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder()
 // Purpose :
 // ============================================================================
 
- TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder(const TopoDS_Shape& aShape, TopoDSToStep_Tool& aTool, const Handle(Transfer_FinderProcess)& FP)
+ TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder(const TopoDS_Shape& aShape,
+                                                              TopoDSToStep_Tool& aTool,
+                                                              const StepData_Factors& theLocalFactors)
 {
   done = Standard_False;
-  Init(aShape, aTool, FP);
+  Init(aShape, aTool, theLocalFactors);
 }
 
-void TopoDSToStep_WireframeBuilder::Init(const TopoDS_Shape& aShape, TopoDSToStep_Tool& /* T */, const Handle(Transfer_FinderProcess)& /* FP */)
+void TopoDSToStep_WireframeBuilder::Init(const TopoDS_Shape& aShape,
+                                         TopoDSToStep_Tool& /* T */,
+                                         const StepData_Factors& theLocalFactors)
 {
   Handle(TColStd_HSequenceOfTransient) itemList =
     new TColStd_HSequenceOfTransient();
   MoniTool_DataMapOfShapeTransient aPmsMap;
-  done = GetTrimmedCurveFromShape(aShape, aPmsMap, itemList);
+  done = GetTrimmedCurveFromShape(aShape, aPmsMap, itemList, theLocalFactors);
   myResult = itemList;
 }
 
@@ -141,7 +146,8 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
   GetTrimmedCurveFromEdge(const TopoDS_Edge& theEdge,
                           const TopoDS_Face& theFace,
                           MoniTool_DataMapOfShapeTransient& theMap,
-                          Handle(TColStd_HSequenceOfTransient)& theCurveList) const
+                          Handle(TColStd_HSequenceOfTransient)& theCurveList,
+                          const StepData_Factors& theLocalFactors) const
 {
   if (theEdge.Orientation() == TopAbs_INTERNAL ||
       theEdge.Orientation() == TopAbs_EXTERNAL )
@@ -183,14 +189,14 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     {
       aVFirst = aVertex;
       // 1.point for trimming
-      GeomToStep_MakeCartesianPoint aGTSMCP(aGpP);
+      GeomToStep_MakeCartesianPoint aGTSMCP(aGpP, theLocalFactors.LengthFactor());
       aSGCP1 = aGTSMCP.Value();
     }
     if (aVertex.Orientation() == TopAbs_REVERSED)
     {
       aVLast = aVertex;
       // 2.point for trimming
-      GeomToStep_MakeCartesianPoint aGTSMCP(aGpP);
+      GeomToStep_MakeCartesianPoint aGTSMCP(aGpP, theLocalFactors.LengthFactor());
       aSGCP2 = aGTSMCP.Value();
     }
   }
@@ -204,7 +210,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     {
       aC = Handle(Geom_TrimmedCurve)::DownCast(aC)->BasisCurve();
     }
-    GeomToStep_MakeCurve aGTSMC(aC);
+    GeomToStep_MakeCurve aGTSMC(aC, theLocalFactors);
     if (!aGTSMC.IsDone())
     {
       return Standard_False;
@@ -217,7 +223,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 
     if (aVFirst.IsNull() && aVLast.IsNull() && Precision::IsInfinite(aFirst) && Precision::IsInfinite(aLast))
     {
-      GeomToStep_MakeCurve aCurveMaker(aC);
+      GeomToStep_MakeCurve aCurveMaker(aC, theLocalFactors);
       if (aCurveMaker.IsDone())
       {
         aSGC = aCurveMaker.Value();
@@ -228,12 +234,12 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     }
     if (aVFirst.IsNull())
     {
-      GeomToStep_MakeCartesianPoint aGTSMCP(aCA.Value(aFirst));
+      GeomToStep_MakeCartesianPoint aGTSMCP(aCA.Value(aFirst), theLocalFactors.LengthFactor());
       aSGCP1 = aGTSMCP.Value();
     }
     if (aVLast.IsNull())
     {
-      GeomToStep_MakeCartesianPoint aGTSMCP(aCA.Value(aLast));
+      GeomToStep_MakeCartesianPoint aGTSMCP(aCA.Value(aLast), theLocalFactors.LengthFactor());
       aSGCP2 = aGTSMCP.Value();
     }
 
@@ -276,7 +282,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       if (aLength >= Precision::Confusion())
       {
         Handle(Geom_Line) aL = new Geom_Line(aPnt1, gp_Dir(aV));
-        GeomToStep_MakeLine aGTSML(aL);
+        GeomToStep_MakeLine aGTSML(aL, theLocalFactors);
         aSGC = aGTSML.Value();
         aSGC = MakeTrimmedCurve(aGTSML.Value(), aSGCP1, aSGCP2, 0, aLength, Standard_True);
       }
@@ -304,7 +310,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       aMult.SetValue(1, 2);
       aMult.SetValue(Nbpt, 2);
       Handle(Geom_Curve) aBSCurve = new Geom_BSplineCurve(aPoints, aKnots, aMult, 1);
-      GeomToStep_MakeCurve aGTSMC(aBSCurve);
+      GeomToStep_MakeCurve aGTSMC(aBSCurve, theLocalFactors);
       aSGC = aGTSMC.Value();
     }
   }
@@ -322,8 +328,9 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 
 Standard_Boolean TopoDSToStep_WireframeBuilder::
   GetTrimmedCurveFromFace(const TopoDS_Face& aFace, 
-            MoniTool_DataMapOfShapeTransient& aMap, 
-            Handle(TColStd_HSequenceOfTransient)& aCurveList) const
+                          MoniTool_DataMapOfShapeTransient& aMap, 
+                          Handle(TColStd_HSequenceOfTransient)& aCurveList,
+                          const StepData_Factors& theLocalFactors) const
 {
   TopoDS_Shape curShape;
   TopoDS_Edge  curEdge;
@@ -333,15 +340,16 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
   for (exp.Init(aFace,TopAbs_EDGE); exp.More(); exp.Next()){
     curShape = exp.Current();
     curEdge  = TopoDS::Edge(curShape);
-    if (GetTrimmedCurveFromEdge(curEdge, aFace, aMap, aCurveList)) result = Standard_True;
+    if (GetTrimmedCurveFromEdge(curEdge, aFace, aMap, aCurveList, theLocalFactors)) result = Standard_True;
   }
   return result;
 }
 
 Standard_Boolean TopoDSToStep_WireframeBuilder::
   GetTrimmedCurveFromShape(const TopoDS_Shape& aShape, 
-			   MoniTool_DataMapOfShapeTransient& aMap,  
-			   Handle(TColStd_HSequenceOfTransient)& aCurveList) const
+                           MoniTool_DataMapOfShapeTransient& aMap,  
+                           Handle(TColStd_HSequenceOfTransient)& aCurveList,
+                           const StepData_Factors& theLocalFactors) const
 {
   TopoDS_Iterator  It;
   Standard_Boolean result = Standard_False; //szv#4:S4163:12Mar99 `done` hid one from this, initialisation needed
@@ -351,7 +359,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     case TopAbs_EDGE : {
       const TopoDS_Edge& curEdge = TopoDS::Edge(aShape);
       TopoDS_Face nulFace;
-      result = GetTrimmedCurveFromEdge(curEdge, nulFace, aMap, aCurveList);
+      result = GetTrimmedCurveFromEdge(curEdge, nulFace, aMap, aCurveList, theLocalFactors);
       break;
     }
     case TopAbs_WIRE : {
@@ -363,13 +371,13 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       for (exp.Init(aShape,TopAbs_EDGE); exp.More(); exp.Next()){
 	curShape = exp.Current();
 	curEdge  = TopoDS::Edge(curShape);
-	if (GetTrimmedCurveFromEdge(curEdge, nulFace, aMap, aCurveList)) result = Standard_True;
+	if (GetTrimmedCurveFromEdge(curEdge, nulFace, aMap, aCurveList, theLocalFactors)) result = Standard_True;
       }
       break;
     }
     case TopAbs_FACE : {
       const TopoDS_Face& curFace = TopoDS::Face(aShape);
-      result = GetTrimmedCurveFromFace(curFace, aMap, aCurveList);
+      result = GetTrimmedCurveFromFace(curFace, aMap, aCurveList, theLocalFactors);
       break;
     }
     case TopAbs_SHELL : {
@@ -377,7 +385,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       It.Initialize(Sh);
       for (;It.More();It.Next()) {
 	TopoDS_Face curFace = TopoDS::Face(It.Value());
-	if (GetTrimmedCurveFromFace(curFace, aMap, aCurveList)) result = Standard_True;
+	if (GetTrimmedCurveFromFace(curFace, aMap, aCurveList, theLocalFactors)) result = Standard_True;
 #ifdef OCCT_DEBUG
 	if(!result) {
 	  std::cout << "ERROR extracting trimmedCurve from Face" << std::endl;
@@ -391,7 +399,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
       It.Initialize(aShape);
       for (;It.More();It.Next()) {
 	if  (It.Value().ShapeType() == TopAbs_SHELL) {
-	  if (GetTrimmedCurveFromShape(It.Value(), aMap, aCurveList)) result = Standard_True;
+	  if (GetTrimmedCurveFromShape(It.Value(), aMap, aCurveList, theLocalFactors)) result = Standard_True;
 	}
       } 
       break;
@@ -408,7 +416,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 	    result = GetTrimmedCurveFromFace(TopoDS::Face(It.Value()), aMap, aCurveList);
 	    break;
 	  } */
-	if (GetTrimmedCurveFromShape(It.Value(), aMap, aCurveList)) result = Standard_True;
+	if (GetTrimmedCurveFromShape(It.Value(), aMap, aCurveList, theLocalFactors)) result = Standard_True;
       }
       break;
     }

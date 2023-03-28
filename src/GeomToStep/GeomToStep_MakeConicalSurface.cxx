@@ -20,7 +20,7 @@
 #include <GeomToStep_MakeConicalSurface.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ConicalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -30,14 +30,14 @@
 // de Geom
 //=============================================================================
 GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface
-  ( const Handle(Geom_ConicalSurface)& CS )
+  ( const Handle(Geom_ConicalSurface)& CS, const StepData_Factors& theLocalFactors)
 	
 {
   Handle(StepGeom_ConicalSurface) CSstep = new StepGeom_ConicalSurface;
   Handle(StepGeom_Axis2Placement3d) aPosition;
   Standard_Real aRadius, aSemiAngle;
   
-  GeomToStep_MakeAxis2Placement3d MkAxis(CS->Position());
+  GeomToStep_MakeAxis2Placement3d MkAxis(CS->Position(), theLocalFactors);
   aPosition = MkAxis.Value();
   aRadius = CS->RefRadius();
   aSemiAngle = CS->SemiAngle();
@@ -46,7 +46,7 @@ GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface
   }
   
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  CSstep->Init(name, aPosition, aRadius / StepData_GlobalFactors::Intance().LengthFactor(), aSemiAngle);
+  CSstep->Init(name, aPosition, aRadius / theLocalFactors.LengthFactor(), aSemiAngle);
   theConicalSurface = CSstep;
   done = Standard_True;
 }

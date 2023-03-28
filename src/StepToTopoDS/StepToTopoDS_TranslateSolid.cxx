@@ -14,6 +14,7 @@
 #include <BRep_Builder.hxx>
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_FaceSurface.hxx>
 #include <StepToTopoDS_NMTool.hxx>
@@ -50,6 +51,7 @@ void StepToTopoDS_TranslateSolid::Init(const Handle(StepVisual_TessellatedSolid)
                                        StepToTopoDS_NMTool& theNMTool,
                                        const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                                        Standard_Boolean& theHasGeom,
+                                       const StepData_Factors& theLocalFactors,
                                        const Message_ProgressRange& theProgress)
 {
   if (theTSo.IsNull())
@@ -95,7 +97,7 @@ void StepToTopoDS_TranslateSolid::Init(const Handle(StepVisual_TessellatedSolid)
     {
       Handle(StepVisual_TessellatedFace) aTFace = Handle(StepVisual_TessellatedFace)::DownCast(anItem);
       Standard_Boolean aHasFaceGeom = Standard_False;
-      aTranTF.Init(aTFace, theTool, theNMTool, theReadTessellatedWhenNoBRepOnly, aHasFaceGeom);
+      aTranTF.Init(aTFace, theTool, theNMTool, theReadTessellatedWhenNoBRepOnly, aHasFaceGeom, theLocalFactors);
       if (aTranTF.IsDone()) 
       {
         if (aNewSolid) 

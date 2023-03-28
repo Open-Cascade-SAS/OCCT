@@ -20,6 +20,7 @@
 #include <Message_ProgressScope.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_BrepWithVoids.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_HArray1OfOrientedClosedShell.hxx>
@@ -55,6 +56,7 @@
 TopoDSToStep_MakeBrepWithVoids::
   TopoDSToStep_MakeBrepWithVoids(const TopoDS_Solid& aSolid,
                                  const Handle(Transfer_FinderProcess)& FP,
+                                 const StepData_Factors& theLocalFactors,
                                  const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
@@ -98,7 +100,7 @@ TopoDSToStep_MakeBrepWithVoids::
       //:d7 abv 16 Mar 98: try to treat 'open' shells as closed since flag 
       // IsClosed() is often incorrect (taken from MakeManifoldSolid(Solid))
       aTool.Init(aMap, Standard_False);
-      StepB.Init(CurrentShell, aTool, FP, aWriteTessGeom, aPS.Next());
+      StepB.Init(CurrentShell, aTool, FP, aWriteTessGeom, theLocalFactors, aPS.Next());
       TopoDSToStep::AddResult(FP, aTool);
       if (StepB.IsDone()) 
       {

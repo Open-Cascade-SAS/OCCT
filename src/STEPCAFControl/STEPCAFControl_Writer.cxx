@@ -56,6 +56,7 @@
 #include <STEPConstruct_Styles.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
 #include <STEPControl_StepModelType.hxx>
+#include <StepData_Factors.hxx>
 #include <StepData_Logical.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepDimTol_AngularityTolerance.hxx>
@@ -348,18 +349,21 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write(const Standard_CString theFil
 //purpose  :
 //=======================================================================
 void STEPCAFControl_Writer::prepareUnit(const TDF_Label& theLabel,
-                                        const Handle(StepData_StepModel)& theModel)
+                                        const Handle(StepData_StepModel)& theModel,
+                                        StepData_Factors& theLocalFactors)
 {
   Handle(XCAFDoc_LengthUnit) aLengthAttr;
   if (!theLabel.IsNull() &&
       theLabel.Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aLengthAttr))
   {
     theModel->SetLocalLengthUnit(aLengthAttr->GetUnitValue() * 1000); // convert to mm
+    theLocalFactors.SetCascadeUnit(aLengthAttr->GetUnitValue() * 1000);
   }
   else
   {
     XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
     theModel->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+    theLocalFactors.SetCascadeUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
 }
 
@@ -511,8 +515,9 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
   Handle(STEPCAFControl_ActorWrite) anActor =
     Handle(STEPCAFControl_ActorWrite)::DownCast(theWriter.WS()->NormAdaptor()->ActorWrite());
 
+  StepData_Factors aLocalFactors;
   const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(theWriter.WS()->Model());
-  prepareUnit(theLabels.First(), aModel); // set local length unit to the model
+  prepareUnit(theLabels.First(), aModel, aLocalFactors); // set local length unit to the model
   // translate free top-level shapes of the DECAF document
   const Standard_Integer aStepSchema = Interface_Static::IVal("write.step.schema");
   TDF_LabelSequence aSubLabels;
@@ -614,7 +619,7 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
     {
       // translate final solids
       Message_ProgressScope aPS1(aRange, NULL, 2);
-      TopoDS_Shape aSass = transferExternFiles(aCurL, theMode, aSubLabels, theIsMulti, aPS1.Next());
+      TopoDS_Shape aSass = transferExternFiles(aCurL, theMode, aSubLabels, aLocalFactors, theIsMulti, aPS1.Next());
       if (aPS1.UserBreak())
         return Standard_False;
 
@@ -653,7 +658,7 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
     {
       if (aStepSchema == 5)
       {
-        writeDGTsAP242(theWriter.WS(), aSubLabels);
+        writeDGTsAP242(theWriter.WS(), aSubLabels, aLocalFactors);
       }
       else
       {
@@ -733,6 +738,7 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
 TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label& theLabel,
                                                         const STEPControl_StepModelType theMode,
                                                         TDF_LabelSequence& theLabels,
+                                                        const StepData_Factors& theLocalFactors,
                                                         const Standard_CString thePrefix,
                                                         const Message_ProgressRange& theProgress)
 {
@@ -815,7 +821,7 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label& theLabe
     TDF_Label aRefL;
     if (!XCAFDoc_ShapeTool::GetReferredShape(aCurL, aRefL))
       continue;
-    TopoDS_Shape aShComp = transferExternFiles(aRefL, theMode, theLabels, thePrefix, aPS.Next());
+    TopoDS_Shape aShComp = transferExternFiles(aRefL, theMode, theLabels, theLocalFactors, thePrefix, aPS.Next());
     aShComp.Location(XCAFDoc_ShapeTool::GetLocation(aCurL));
     aBuilder.Add(aComp, aShComp);
   }
@@ -2457,7 +2463,8 @@ void STEPCAFControl_Writer::writePresentation(const Handle(XSControl_WorkSession
                                               const Standard_Boolean theHasPlane,
                                               const gp_Ax2& theAnnotationPlane,
                                               const gp_Pnt& theTextPosition,
-                                              const Handle(Standard_Transient)& theDimension)
+                                              const Handle(Standard_Transient)& theDimension,
+                                              const StepData_Factors& theLocalFactors)
 {
   if (thePresentation.IsNull())
     return;
@@ -2508,7 +2515,7 @@ void STEPCAFControl_Writer::writePresentation(const Handle(XSControl_WorkSession
   aPrsStyles->SetValue(1, aPrsStyle);
   // Plane
   Handle(StepGeom_Plane) aPlane = new StepGeom_Plane();
-  GeomToStep_MakeAxis2Placement3d anAxisMaker(theAnnotationPlane);
+  GeomToStep_MakeAxis2Placement3d anAxisMaker(theAnnotationPlane, theLocalFactors);
   const Handle(StepGeom_Axis2Placement3d)& anAxis = anAxisMaker.Value();
   // Set text position to plane origin
   Handle(StepGeom_CartesianPoint) aTextPos = new StepGeom_CartesianPoint();
@@ -2540,7 +2547,8 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::writeDatumAP242(const Handle(XSC
                                                                 const TDF_LabelSequence& theShapeL,
                                                                 const TDF_Label& theDatumL,
                                                                 const Standard_Boolean theIsFirstDTarget,
-                                                                const Handle(StepDimTol_Datum)& theWrittenDatum)
+                                                                const Handle(StepDimTol_Datum)& theWrittenDatum,
+                                                                const StepData_Factors& theLocalFactors)
 {
   // Get working data
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
@@ -2694,7 +2702,7 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::writeDatumAP242(const Handle(XSC
         // Common for all datum targets
         StepBasic_Unit aUnit = GetUnit(aRC);
         gp_Ax2 aDTAxis = anObject->GetDatumTargetAxis();
-        GeomToStep_MakeAxis2Placement3d anAxisMaker(aDTAxis);
+        GeomToStep_MakeAxis2Placement3d anAxisMaker(aDTAxis, theLocalFactors);
         Handle(StepGeom_Axis2Placement3d) anA2P3D = anAxisMaker.Value();
         anA2P3D->SetName(new TCollection_HAsciiString("orientation"));
         Handle(StepRepr_HArray1OfRepresentationItem) anItems;
@@ -2788,7 +2796,7 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::writeDatumAP242(const Handle(XSC
 
   //Annotation plane and Presentation
   writePresentation(theWS, anObject->GetPresentation(), anObject->GetPresentationName(), Standard_True, anObject->HasPlane(),
-                    anObject->GetPlane(), anObject->GetPointTextAttach(), aSA);
+                    anObject->GetPlane(), anObject->GetPointTextAttach(), aSA, theLocalFactors);
 
   return aDatum;
 }
@@ -2801,7 +2809,8 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::writeDatumAP242(const Handle(XSC
 static void WriteDimValues(const Handle(XSControl_WorkSession)& theWS,
                            const Handle(XCAFDimTolObjects_DimensionObject)& theObject,
                            const Handle(StepRepr_RepresentationContext)& theRC,
-                           const StepShape_DimensionalCharacteristic& theDimension)
+                           const StepShape_DimensionalCharacteristic& theDimension,
+                           const StepData_Factors& theLocalFactors)
 {
   // Get working data
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
@@ -2928,7 +2937,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession)& theWS,
     Handle(StepGeom_Axis2Placement3d) anOrientation = new StepGeom_Axis2Placement3d();
     gp_Dir aDir;
     theObject->GetDirection(aDir);
-    GeomToStep_MakeCartesianPoint MkPoint(gp_Pnt(0, 0, 0));
+    GeomToStep_MakeCartesianPoint MkPoint(gp_Pnt(0, 0, 0), theLocalFactors.LengthFactor());
     const Handle(StepGeom_CartesianPoint)& aLoc = MkPoint.Value();
     Handle(StepGeom_Direction) anAxis = new StepGeom_Direction();
     Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
@@ -3025,13 +3034,14 @@ static void WriteDerivedGeometry(const Handle(XSControl_WorkSession)& theWS,
                                  const Handle(StepRepr_ConstructiveGeometryRepresentation)& theRepr,
                                  Handle(StepRepr_ShapeAspect)& theFirstSA,
                                  Handle(StepRepr_ShapeAspect)& theSecondSA,
-                                 NCollection_Vector<Handle(StepGeom_CartesianPoint)>& thePnts)
+                                 NCollection_Vector<Handle(StepGeom_CartesianPoint)>& thePnts,
+                                 const StepData_Factors& theLocalFactors)
 {
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
   // First point
   if (theObject->HasPoint())
   {
-    GeomToStep_MakeCartesianPoint aPointMaker(theObject->GetPoint());
+    GeomToStep_MakeCartesianPoint aPointMaker(theObject->GetPoint(), theLocalFactors.LengthFactor());
     Handle(StepGeom_CartesianPoint) aPoint = aPointMaker.Value();
     thePnts.Append(aPoint);
     Handle(StepRepr_DerivedShapeAspect) aDSA = new StepRepr_DerivedShapeAspect();
@@ -3052,7 +3062,7 @@ static void WriteDerivedGeometry(const Handle(XSControl_WorkSession)& theWS,
   // Second point (for locations)
   if (theObject->HasPoint2())
   {
-    GeomToStep_MakeCartesianPoint aPointMaker(theObject->GetPoint2());
+    GeomToStep_MakeCartesianPoint aPointMaker(theObject->GetPoint2(), theLocalFactors.LengthFactor());
     Handle(StepGeom_CartesianPoint) aPoint = aPointMaker.Value();
     thePnts.Append(aPoint);
     Handle(StepRepr_DerivedShapeAspect) aDSA = new StepRepr_DerivedShapeAspect();
@@ -3080,7 +3090,8 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
                                                                            const TDF_Label theGeomTolL,
                                                                            const TDF_LabelSequence& theDatumSeq,
                                                                            const STEPConstruct_DataMapOfAsciiStringTransient& theDatumMap,
-                                                                           const Handle(StepRepr_RepresentationContext)& theRC)
+                                                                           const Handle(StepRepr_RepresentationContext)& theRC,
+                                                                           const StepData_Factors& theLocalFactors)
 {
   // Get working data
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
@@ -3249,7 +3260,7 @@ static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const
   // Axis
   if (anObject->HasAxis())
   {
-    GeomToStep_MakeAxis2Placement3d anAxisMaker(anObject->GetAxis());
+    GeomToStep_MakeAxis2Placement3d anAxisMaker(anObject->GetAxis(), theLocalFactors);
     Handle(StepGeom_Axis2Placement3d) anAxis = anAxisMaker.Value();
     anAxis->SetName(new TCollection_HAsciiString("orientation"));
     Handle(StepAP242_GeometricItemSpecificUsage) aGISU = new StepAP242_GeometricItemSpecificUsage();
@@ -3335,7 +3346,8 @@ void STEPCAFControl_Writer::writeGeomTolerance(const Handle(XSControl_WorkSessio
                                                const TDF_LabelSequence& theShapeSeqL,
                                                const TDF_Label& theGeomTolL,
                                                const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
-                                               const Handle(StepRepr_RepresentationContext)& theRC)
+                                               const Handle(StepRepr_RepresentationContext)& theRC,
+                                               const StepData_Factors& theLocalFactors)
 {
   // Get working data
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
@@ -3532,7 +3544,7 @@ void STEPCAFControl_Writer::writeGeomTolerance(const Handle(XSControl_WorkSessio
   writeToleranceZone(theWS, anObject, aGeomTol, theRC);
   //Annotation plane and Presentation
   writePresentation(theWS, anObject->GetPresentation(), anObject->GetPresentationName(), Standard_True, anObject->HasPlane(),
-                    anObject->GetPlane(), anObject->GetPointTextAttach(), aGeomTol);
+                    anObject->GetPlane(), anObject->GetPointTextAttach(), aGeomTol, theLocalFactors);
 }
 
 //=======================================================================
@@ -3914,7 +3926,8 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTs(const Handle(XSControl_WorkSes
 //purpose  :
 //=======================================================================
 Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_WorkSession)& theWS,
-                                                       const TDF_LabelSequence& theLabels)
+                                                       const TDF_LabelSequence& theLabels,
+                                                       const StepData_Factors& theLocalFactors)
 {
   (void)theLabels;
   // Get working data
@@ -3970,7 +3983,8 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
     Handle(Standard_Transient) aWrittenDatum;
     Standard_Boolean isFirstDT = !aDatumMap.Find(aDatumName, aWrittenDatum);
     Handle(StepDimTol_Datum) aDatum = writeDatumAP242(theWS, aShapeL, aDatumL, isFirstDT,
-                                                      Handle(StepDimTol_Datum)::DownCast(aWrittenDatum));
+                                                      Handle(StepDimTol_Datum)::DownCast(aWrittenDatum),
+                                                      theLocalFactors);
     // Add created Datum into Map
     aDatumMap.Bind(aDatumName, aDatum);
   }
@@ -4012,7 +4026,7 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
       aSA->Init(new TCollection_HAsciiString(), new TCollection_HAsciiString(), myGDTCommonPDS, StepData_LTrue);
       aModel->AddWithRefs(aSA);
       writePresentation(theWS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->HasPlane(),
-                        Standard_False, anObject->GetPlane(), anObject->GetPointTextAttach(), aSA);
+                        Standard_False, anObject->GetPlane(), anObject->GetPointTextAttach(), aSA, theLocalFactors);
     }
 
     if (!XCAFDoc_DimTolTool::GetRefShapeLabel(aDimensionL, aFirstShapeL, aSecondShapeL))
@@ -4084,14 +4098,14 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
     if (anObject->GetType() == XCAFDimTolObjects_DimensionType_DimensionPresentation)
     {
       writePresentation(theWS, anObject->GetPresentation(), anObject->GetPresentationName(), anObject->HasPlane(),
-                        Standard_False, anObject->GetPlane(), anObject->GetPointTextAttach(), aFirstSA);
+                        Standard_False, anObject->GetPlane(), anObject->GetPointTextAttach(), aFirstSA, theLocalFactors);
       continue;
     }
 
     // Write dimensions
     StepShape_DimensionalCharacteristic aDimension;
     if (anObject->HasPoint() || anObject->HasPoint2())
-      WriteDerivedGeometry(theWS, anObject, aCGRepr, aFirstSA, aSecondSA, aConnectionPnts);
+      WriteDerivedGeometry(theWS, anObject, aCGRepr, aFirstSA, aSecondSA, aConnectionPnts, theLocalFactors);
     XCAFDimTolObjects_DimensionType aDimType = anObject->GetType();
     if (STEPCAFControl_GDTProperty::IsDimensionalLocation(aDimType))
     {
@@ -4165,10 +4179,10 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
     }
 
     // Write values
-    WriteDimValues(theWS, anObject, aRC, aDimension);
+    WriteDimValues(theWS, anObject, aRC, aDimension, theLocalFactors);
     //Annotation plane and Presentation
     writePresentation(theWS, anObject->GetPresentation(), anObject->GetPresentationName(), Standard_True, anObject->HasPlane(),
-                      anObject->GetPlane(), anObject->GetPointTextAttach(), aDimension.Value());
+                      anObject->GetPlane(), anObject->GetPointTextAttach(), aDimension.Value(), theLocalFactors);
   }
   // Write Derived geometry
   if (aConnectionPnts.Length() > 0)
@@ -4203,8 +4217,8 @@ Standard_Boolean STEPCAFControl_Writer::writeDGTsAP242(const Handle(XSControl_Wo
     XCAFDoc_DimTolTool::GetDatumWithObjectOfTolerLabels(aGeomTolL, aDatumSeq);
     Handle(StepDimTol_HArray1OfDatumSystemOrReference) aDatumSystem;
     if (aDatumSeq.Length() > 0)
-      aDatumSystem = WriteDatumSystem(theWS, aGeomTolL, aDatumSeq, aDatumMap, aRC);
-    writeGeomTolerance(theWS, aFirstShapeL, aGeomTolL, aDatumSystem, aRC);
+      aDatumSystem = WriteDatumSystem(theWS, aGeomTolL, aDatumSeq, aDatumMap, aRC, theLocalFactors);
+    writeGeomTolerance(theWS, aFirstShapeL, aGeomTolL, aDatumSystem, aRC, theLocalFactors);
   }
 
   // Write Draughting model for Annotation Planes

@@ -19,6 +19,7 @@
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_FaceSurface.hxx>
@@ -51,6 +52,7 @@
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& aFace,
                                           const Handle(Transfer_FinderProcess)& FP,
+                                          const StepData_Factors& theLocalFactors,
                                           const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
@@ -59,7 +61,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
   const Standard_Integer aWriteTessGeom = Interface_Static::IVal("write.step.tessellated");
 
   TopoDSToStep_Tool    aTool(aMap, Standard_False);
-  TopoDSToStep_Builder StepB(aFace, aTool, FP, aWriteTessGeom, theProgress);
+  TopoDSToStep_Builder StepB(aFace, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
     return;
 
@@ -106,6 +108,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Shell& aShell,
                                           const Handle(Transfer_FinderProcess)& FP,
+                                          const StepData_Factors& theLocalFactors,
                                           const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
@@ -118,7 +121,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
   const Standard_Integer aWriteTessGeom = Interface_Static::IVal("write.step.tessellated");
 
   TopoDSToStep_Tool    aTool(aMap, Standard_False);
-  TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theProgress);
+  TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())
     return;
   //TopoDSToStep::AddResult ( FP, aTool );
@@ -161,6 +164,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Solid& aSolid,
                                           const Handle(Transfer_FinderProcess)& FP,
+                                          const StepData_Factors& theLocalFactors,
                                           const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
@@ -187,7 +191,7 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
       aShell = TopoDS::Shell(It.Value());
 
       TopoDSToStep_Tool    aTool(aMap, Standard_False);
-      TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, aPS.Next());
+      TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, aPS.Next());
       TopoDSToStep::AddResult ( FP, aTool );
 
       if (StepB.IsDone()) {

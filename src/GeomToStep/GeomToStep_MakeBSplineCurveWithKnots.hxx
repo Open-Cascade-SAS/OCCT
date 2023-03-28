@@ -22,9 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
-class StepGeom_BSplineCurveWithKnots;
 class Geom_BSplineCurve;
 class Geom2d_BSplineCurve;
+class StepData_Factors;
+class StepGeom_BSplineCurveWithKnots;
 
 
 //! This class implements the mapping between classes
@@ -39,9 +40,11 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(const Handle(Geom_BSplineCurve)& Bsplin);
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(const Handle(Geom_BSplineCurve)& Bsplin,
+                                                       const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(const Handle(Geom2d_BSplineCurve)& Bsplin);
+  Standard_EXPORT GeomToStep_MakeBSplineCurveWithKnots(const Handle(Geom2d_BSplineCurve)& Bsplin,
+                                                       const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_BSplineCurveWithKnots)& Value() const;
 

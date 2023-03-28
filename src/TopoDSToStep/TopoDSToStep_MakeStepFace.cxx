@@ -47,7 +47,7 @@
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
 #include <StepGeom_Pcurve.hxx>
 #include <StepGeom_SeamCurve.hxx>
@@ -87,10 +87,11 @@ TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace()
 TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace
 (const TopoDS_Face& F,
  TopoDSToStep_Tool& T,
- const Handle(Transfer_FinderProcess)& FP)
+ const Handle(Transfer_FinderProcess)& FP,
+ const StepData_Factors& theLocalFactors)
 {
   done = Standard_False;
-  Init(F, T, FP);
+  Init(F, T, FP, theLocalFactors);
 }
 
 // ----------------------------------------------------------------------------
@@ -98,9 +99,10 @@ TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace
 // Purpose :
 // ----------------------------------------------------------------------------
 
-void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace, 
-				     TopoDSToStep_Tool& aTool,
-				     const Handle(Transfer_FinderProcess)& FP)
+void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
+                                     TopoDSToStep_Tool& aTool,
+                                     const Handle(Transfer_FinderProcess)& FP,
+                                     const StepData_Factors& theLocalFactors)
 {
   // --------------------------------------------------------------
   // the face is given with its relative orientation (in the Shell)
@@ -205,7 +207,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   //Standard_Boolean ReverseSurfaceOrientation = Standard_False; //szv#4:S4163:12Mar99 unused
   aTool.SetSurfaceReversed(Standard_False);
 
-  GeomToStep_MakeSurface MkSurface(Su);
+  GeomToStep_MakeSurface MkSurface(Su, theLocalFactors);
   Handle(StepGeom_Surface) Spms =  MkSurface.Value();
 
   //%pdn 30 Nov 98: TestRally 9 issue on r1001_ec.stp: 
@@ -257,12 +259,12 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
       if (aSurfaceIsOffset)
       {
         anOffsetSu->SetBasisSurface(Rev);
-        GeomToStep_MakeSurface MkRev(anOffsetSu);
+        GeomToStep_MakeSurface MkRev(anOffsetSu, theLocalFactors);
         Spms = MkRev.Value();
       }
       else
       {
-        GeomToStep_MakeSurface MkRev(Rev);
+        GeomToStep_MakeSurface MkRev(Rev, theLocalFactors);
         Spms = MkRev.Value();
       }
     }
@@ -292,7 +294,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
       //const TopoDS_Wire ForwardWire = TopoDS::Wire(ssh);
 
       //MkWire.Init(ForwardWire, aTool, FP);
-      MkWire.Init(CurrentWire, aTool, FP);
+      MkWire.Init(CurrentWire, aTool, FP, theLocalFactors);
       if (MkWire.IsDone()) Loop = Handle(StepShape_Loop)::DownCast(MkWire.Value());
       else {
 #ifdef OCCT_DEBUG
@@ -402,15 +404,15 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
 	  Handle(Geom_RectangularTrimmedSurface) alocalRTS =
 	    Handle(Geom_RectangularTrimmedSurface)::DownCast(Su);
 	  C2dMapped = GeomConvert_Units::RadianToDegree(C2d, alocalRTS->BasisSurface(),
-      StepData_GlobalFactors::Intance().LengthFactor(), StepData_GlobalFactors::Intance().FactorRadianDegree());
+      theLocalFactors.LengthFactor(), theLocalFactors.FactorRadianDegree());
 	}
 	else {
 	  C2dMapped = GeomConvert_Units::RadianToDegree(C2d, Su,
-      StepData_GlobalFactors::Intance().LengthFactor(), StepData_GlobalFactors::Intance().FactorRadianDegree());
+      theLocalFactors.LengthFactor(), theLocalFactors.FactorRadianDegree());
 	}
 //
 //	C2dMapped = C2d;  // cky : en remplacement de ce qui precede
-	GeomToStep_MakeCurve MkCurve(C2dMapped);
+	GeomToStep_MakeCurve MkCurve(C2dMapped, theLocalFactors);
 	
 	// --------------------
 	// Translate the Pcurve

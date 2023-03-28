@@ -15,6 +15,7 @@
 #include <Interface_InterfaceError.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Standard_Mutex.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_Protocol.hxx>
@@ -49,6 +50,8 @@ static TCollection_AsciiString lastvalue;
   (const Handle(Standard_Transient)& ent,
    const Handle(Interface_InterfaceModel)& /*model*/) const
 {
+  static Standard_Mutex aMutex;
+  Standard_Mutex::Sentry aSentry(aMutex);
   lastvalue.Clear();
   Handle(StepData_ReadWriteModule) module;
   Standard_Integer CN;

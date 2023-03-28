@@ -18,8 +18,8 @@ Handle(StepGeom_Line) Lin = new StepGeom_Line;
   Handle(StepGeom_CartesianPoint) aPnt;
   Handle(StepGeom_Vector) aDir;
 
-  GeomToStep_MakeCartesianPoint MkPoint(L.Location());
-  GeomToStep_MakeVector         MkVector(Vec_gen(L.Direction()));
+  GeomToStep_MakeCartesianPoint MkPoint(L.Location(), theLocalFactors.LengthFactor());
+  GeomToStep_MakeVector         MkVector(Vec_gen(L.Direction()), theLocalFactors);
   aPnt = MkPoint.Value();
   aDir = MkVector.Value();
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");

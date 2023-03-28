@@ -27,6 +27,7 @@
 #include <ShapeFix_Wire.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_CompositeCurveSegment.hxx>
 #include <StepGeom_Pcurve.hxx>
@@ -56,10 +57,11 @@ StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve ()
 //=======================================================================
 
 StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve (
-				      const Handle(StepGeom_CompositeCurve) &CC,
-				      const Handle(Transfer_TransientProcess) &TP)
+                                    const Handle(StepGeom_CompositeCurve) &CC,
+                                    const Handle(Transfer_TransientProcess) &TP,
+                                    const StepData_Factors& theLocalFactors)
 {
-  Init ( CC, TP );
+  Init ( CC, TP, theLocalFactors );
 }
 
 //=======================================================================
@@ -71,9 +73,10 @@ StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve (
 				      const Handle(StepGeom_CompositeCurve) &CC,
 				      const Handle(Transfer_TransientProcess) &TP,
 				      const Handle(StepGeom_Surface) &S,
-				      const Handle(Geom_Surface) &Surf)
+				      const Handle(Geom_Surface) &Surf,
+              const StepData_Factors& theLocalFactors)
 {
-  Init ( CC, TP, S, Surf );
+  Init ( CC, TP, S, Surf, theLocalFactors );
 }
 	
 //=======================================================================
@@ -82,11 +85,12 @@ StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve (
 //=======================================================================
 
 Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGeom_CompositeCurve) &CC,
-							     const Handle(Transfer_TransientProcess) &TP)
+                                                             const Handle(Transfer_TransientProcess) &TP,
+                                                             const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_Surface) S;
   Handle(Geom_Surface) Surf;
-  return Init ( CC, TP, S, Surf );
+  return Init ( CC, TP, S, Surf, theLocalFactors );
 }
 
 //=======================================================================
@@ -97,7 +101,8 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
 Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGeom_CompositeCurve) &CC,
 							     const Handle(Transfer_TransientProcess) &TP,
 							     const Handle(StepGeom_Surface) &S,
-							     const Handle(Geom_Surface) &Surf)
+							     const Handle(Geom_Surface) &Surf,
+                   const StepData_Factors& theLocalFactors)
 {
   myWire.Nullify();
   myInfiniteSegment = Standard_False;
@@ -133,7 +138,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
         continue;
       }
       Handle(StepGeom_CompositeCurve) cc = Handle(StepGeom_CompositeCurve)::DownCast ( crv );
-      if ( ! Init ( cc, TP, S, Surf ) || myWire.IsNull() )
+      if ( ! Init ( cc, TP, S, Surf, theLocalFactors ) || myWire.IsNull() )
         continue;
       Standard_Integer nb = sbwd->NbEdges() + 1;
       for (TopoDS_Iterator it(myWire); it.More(); it.Next()) {
@@ -181,7 +186,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
     if ( ! crv.IsNull() ) {
       try {
         OCC_CATCH_SIGNALS
-        Handle(Geom_Curve) c3d = StepToGeom::MakeCurve (crv);
+        Handle(Geom_Curve) c3d = StepToGeom::MakeCurve (crv, theLocalFactors);
         if (! c3d.IsNull()) {
           BRepBuilderAPI_MakeEdge MkEdge ( c3d, c3d->FirstParameter(), c3d->LastParameter() );
           if (MkEdge.IsDone())
@@ -209,7 +214,7 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
       try {
         OCC_CATCH_SIGNALS
         StepToTopoDS_TranslateEdge TrE;
-        Handle(Geom2d_Curve) c2d = TrE.MakePCurve(pcurve, Surf);
+        Handle(Geom2d_Curve) c2d = TrE.MakePCurve(pcurve, Surf, theLocalFactors);
         if (!c2d.IsNull()) {
           if (edge.IsNull()) {
             BRepBuilderAPI_MakeEdge MkEdge(c2d, Surf, c2d->FirstParameter(), c2d->LastParameter());

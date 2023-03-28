@@ -26,47 +26,48 @@
 #include <GeomToStep_MakeSweptSurface.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Logical.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_BoundedSurface.hxx>
 #include <StepGeom_ElementarySurface.hxx>
 #include <StepGeom_OffsetSurface.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SweptSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <StepData_GlobalFactors.hxx>
 
 //=============================================================================
 // Creation d' une Surface de prostep a partir d' une Surface de Geom
 //=============================================================================
-GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S)
+GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S,
+                                                 const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
   if (S->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) {
     Handle(Geom_BoundedSurface) S1 = 
       Handle(Geom_BoundedSurface)::DownCast(S);
-    GeomToStep_MakeBoundedSurface MkBoundedS(S1);
+    GeomToStep_MakeBoundedSurface MkBoundedS(S1, theLocalFactors);
     theSurface = MkBoundedS.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_ElementarySurface))) {
     Handle(Geom_ElementarySurface) S1 = 
       Handle(Geom_ElementarySurface)::DownCast(S);
-    GeomToStep_MakeElementarySurface MkElementaryS(S1);
+    GeomToStep_MakeElementarySurface MkElementaryS(S1, theLocalFactors);
     theSurface = MkElementaryS.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_SweptSurface))) {
     Handle(Geom_SweptSurface) S1 = 
       Handle(Geom_SweptSurface)::DownCast(S);
-    GeomToStep_MakeSweptSurface MkSwept(S1);
+    GeomToStep_MakeSweptSurface MkSwept(S1, theLocalFactors);
     theSurface = MkSwept.Value();
   }
   else if (S->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) {
     Handle(Geom_OffsetSurface) S1 =
       Handle(Geom_OffsetSurface)::DownCast(S);
-    GeomToStep_MakeSurface MkBasis(S1->BasisSurface());
+    GeomToStep_MakeSurface MkBasis(S1->BasisSurface(), theLocalFactors);
     done = MkBasis.IsDone();
     if (!done) return;
     Handle(StepGeom_OffsetSurface) Surf = new StepGeom_OffsetSurface;
     Surf->Init (new TCollection_HAsciiString(""),
-		     MkBasis.Value(),S1->Offset()/ StepData_GlobalFactors::Intance().LengthFactor(),StepData_LFalse);
+		     MkBasis.Value(),S1->Offset()/ theLocalFactors.LengthFactor(),StepData_LFalse);
     theSurface = Surf;
   }
   else {

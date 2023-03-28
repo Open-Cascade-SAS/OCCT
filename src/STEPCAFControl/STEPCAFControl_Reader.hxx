@@ -38,6 +38,7 @@ class StepShape_ConnectedFaceSet;
 class StepRepr_NextAssemblyUsageOccurrence;
 class STEPConstruct_Tool;
 class StepDimTol_Datum;
+class StepData_Factors;
 
 
 //! Provides a tool to read STEP file and put it into
@@ -212,7 +213,8 @@ protected:
   //! corresponding color assignments in the DECAF document
   Standard_EXPORT Standard_Boolean ReadColors
                 (const Handle(XSControl_WorkSession)& WS,
-                 const Handle(TDocStd_Document)& doc) const;
+                 const Handle(TDocStd_Document)& doc,
+                 const StepData_Factors& theLocalFactors) const;
   
   //! Reads names of parts defined in the STEP model and
   //! assigns them to corresponding labels in the DECAF document
@@ -221,7 +223,10 @@ protected:
   //! Reads validation properties assigned to shapes in the STEP
   //! model and assigns them to corresponding labels in the DECAF
   //! document
-  Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
+  Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS,
+                                                 const Handle(TDocStd_Document)& doc,
+                                                 const STEPCAFControl_DataMapOfPDExternFile& PDFileMap,
+                                                 const StepData_Factors& theLocalFactors) const;
   
   //! Reads layers of parts defined in the STEP model and
   //! set reference between shape and layers in the DECAF document
@@ -233,14 +238,21 @@ protected:
   
   //! Reads D&GT for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS,
+                                             const Handle(TDocStd_Document)& doc,
+                                             const StepData_Factors& theLocalFactors);
   
   //! Reads materials for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadMaterials (const Handle(XSControl_WorkSession)& WS, const Handle(TDocStd_Document)& doc, const Handle(TColStd_HSequenceOfTransient)& SeqPDS) const;
+  Standard_EXPORT Standard_Boolean ReadMaterials (const Handle(XSControl_WorkSession)& WS,
+                                                  const Handle(TDocStd_Document)& doc,
+                                                  const Handle(TColStd_HSequenceOfTransient)& SeqPDS,
+                                                  const StepData_Factors& theLocalFactors) const;
   
   //! Reads Views for instances defined in the STEP model
-  Standard_EXPORT Standard_Boolean ReadViews(const Handle(XSControl_WorkSession)& theWS, const Handle(TDocStd_Document)& theDoc) const;
+  Standard_EXPORT Standard_Boolean ReadViews(const Handle(XSControl_WorkSession)& theWS,
+                                             const Handle(TDocStd_Document)& theDoc,
+                                             const StepData_Factors& theLocalFactors) const;
 
   //! Populates the sub-Label of the passed TDF Label with shape
   //! data associated with the given STEP Representation Item,
@@ -281,22 +293,26 @@ private:
     const XCAFDimTolObjects_DatumModifWithValue theXCAFModifWithVal,
     const Standard_Real theModifValue,
     const Handle(TDocStd_Document)& theDoc,
-    const Handle(XSControl_WorkSession)& theWS);
+    const Handle(XSControl_WorkSession)& theWS,
+    const StepData_Factors& theLocalFactors);
   
   //! Internal method. Read Datums, connected to GeomTolerance theGDTL.
   Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt,
     const TDF_Label theGDTL,
     const Handle(TDocStd_Document)& theDoc,
-    const Handle(XSControl_WorkSession)& theWS);
+    const Handle(XSControl_WorkSession)& theWS,
+    const StepData_Factors& theLocalFactors);
 
   //! Internal method. Read Dimension or GeomTolerance.
   TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
     const Handle(TDocStd_Document)& theDoc,
-    const Handle(XSControl_WorkSession)& theWS);
+    const Handle(XSControl_WorkSession)& theWS,
+    const StepData_Factors& theLocalFactors);
 
   //! Prepares units for transfer
   void prepareUnits(const Handle(StepData_StepModel)& theModel,
-                    const Handle(TDocStd_Document)& theDoc) const;
+                    const Handle(TDocStd_Document)& theDoc,
+                    StepData_Factors& theLocalFactors) const;
 
 private:
 

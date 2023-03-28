@@ -23,7 +23,7 @@
 #include <gp_Elips.hxx>
 #include <gp_Elips2d.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Ellipse.hxx>
@@ -32,7 +32,8 @@
 //=============================================================================
 // Creation d'une ellipse de prostep a partir d'une ellipse 3d de gp
 //=============================================================================
-GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const gp_Elips& E)
+GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const gp_Elips& E,
+                                                const StepData_Factors& theLocalFactors)
 {
 #include "GeomToStep_MakeEllipse_gen.pxx"
 }
@@ -43,7 +44,8 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const gp_Elips& E)
 // Geom
 //=============================================================================
 
-GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom_Ellipse)& Cer)
+GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom_Ellipse)& Cer,
+                                                const StepData_Factors& theLocalFactors)
 {
   gp_Elips E;
   E = Cer->Elips();
@@ -56,7 +58,8 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom_Ellipse)& Cer)
 // Geom2d
 //=============================================================================
 
-GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom2d_Ellipse)& Cer)
+GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom2d_Ellipse)& Cer,
+                                                const StepData_Factors& theLocalFactors)
 {
   gp_Elips2d E2d;
   E2d = Cer->Elips2d();
@@ -66,7 +69,7 @@ GeomToStep_MakeEllipse::GeomToStep_MakeEllipse( const Handle(Geom2d_Ellipse)& Ce
   Handle(StepGeom_Axis2Placement2d) Ax2Step;
   Standard_Real majorR, minorR;
   
-  GeomToStep_MakeAxis2Placement2d MkAxis2(E2d.Axis());
+  GeomToStep_MakeAxis2Placement2d MkAxis2(E2d.Axis(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   majorR = E2d.MajorRadius();
   minorR = E2d.MinorRadius();

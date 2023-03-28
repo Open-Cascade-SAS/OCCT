@@ -23,7 +23,6 @@
 #include <Standard_Type.hxx>
 #include <StepData.hxx>
 #include <StepData_Protocol.hxx>
-#include <StepData_GlobalFactors.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -216,7 +215,7 @@ Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel
 //=======================================================================
 void StepData_StepModel::SetLocalLengthUnit(const Standard_Real theUnit)
 {
-  StepData_GlobalFactors::Intance().SetCascadeUnit(theUnit);
+  myLocalLengthUnit = theUnit;
   myReadUnitIsInitialized = Standard_True;
 }
 
@@ -226,7 +225,7 @@ void StepData_StepModel::SetLocalLengthUnit(const Standard_Real theUnit)
 //=======================================================================
 Standard_Real StepData_StepModel::LocalLengthUnit() const
 {
-  return StepData_GlobalFactors::Intance().CascadeUnit();
+  return myLocalLengthUnit;
 }
 
 //=======================================================================

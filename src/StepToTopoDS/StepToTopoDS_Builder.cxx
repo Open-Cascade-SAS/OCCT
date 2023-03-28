@@ -38,6 +38,7 @@
 #include <Standard_Failure.hxx>
 #include <StdFail_NotDone.hxx>
 #include <STEPControl_ActorRead.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
@@ -117,6 +118,7 @@ StepToTopoDS_Builder::StepToTopoDS_Builder()
 void StepToTopoDS_Builder::Init
 (const Handle(StepShape_ManifoldSolidBrep)& aManifoldSolid,
  const Handle(Transfer_TransientProcess)& TP,
+ const StepData_Factors& theLocalFactors,
  const Message_ProgressRange& theProgress)
 {
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
@@ -137,7 +139,7 @@ void StepToTopoDS_Builder::Init
   myTranShell.SetMaxTol(MaxTol());
   // Non-manifold topology is not referenced by ManifoldSolidBrep (ssv; 14.11.2010)
   StepToTopoDS_NMTool dummyNMTool;
-  myTranShell.Init(aShell, myTool, dummyNMTool, theProgress);
+  myTranShell.Init(aShell, myTool, dummyNMTool, theLocalFactors, theProgress);
 
   if (myTranShell.IsDone()) {
     TopoDS_Shape Sh = myTranShell.Value();
@@ -185,6 +187,7 @@ void StepToTopoDS_Builder::Init
 void StepToTopoDS_Builder::Init
 (const Handle(StepShape_BrepWithVoids)& aBRepWithVoids,
  const Handle(Transfer_TransientProcess)& TP,
+ const StepData_Factors& theLocalFactors,
  const Message_ProgressRange& theProgress)
 {
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
@@ -214,7 +217,7 @@ void StepToTopoDS_Builder::Init
   aCShell = Handle(StepShape_ClosedShell)::DownCast(aBRepWithVoids->Outer());
   // Non-manifold topology is not referenced by BrepWithVoids (ssv; 14.11.2010)
   StepToTopoDS_NMTool dummyNMTool;
-  myTranShell.Init(aCShell, myTool, dummyNMTool, PS.Next());
+  myTranShell.Init(aCShell, myTool, dummyNMTool, theLocalFactors, PS.Next());
 
   if (myTranShell.IsDone()) {
     Sh = myTranShell.Value();
@@ -238,7 +241,7 @@ void StepToTopoDS_Builder::Init
   for (Standard_Integer i=1; i<=Nb && PS.More(); i++) {
 
     aCShell = aBRepWithVoids->VoidsValue(i);
-    myTranShell.Init(aCShell, myTool, dummyNMTool, PS.Next());
+    myTranShell.Init(aCShell, myTool, dummyNMTool, theLocalFactors, PS.Next());
     if (myTranShell.IsDone()) {
       Sh = myTranShell.Value();
       Sh.Closed(Standard_True);
@@ -285,6 +288,7 @@ void StepToTopoDS_Builder::Init
 
 void StepToTopoDS_Builder::Init(const Handle(StepShape_FacetedBrep)& aFB,
                                 const Handle(Transfer_TransientProcess)& TP,
+                                const StepData_Factors& theLocalFactors,
                                 const Message_ProgressRange& theProgress)
 {
   // Initialisation of the Tool
@@ -305,7 +309,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_FacetedBrep)& aFB,
   myTranShell.SetMaxTol(MaxTol());  
   // Non-manifold topology is not referenced by FacetedBrep (ss; 14.11.2010)
   StepToTopoDS_NMTool dummyNMTool;
-  myTranShell.Init(aCShell, myTool, dummyNMTool, theProgress);
+  myTranShell.Init(aCShell, myTool, dummyNMTool, theLocalFactors, theProgress);
 
   if (myTranShell.IsDone()) {
     Sh = myTranShell.Value();
@@ -337,6 +341,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_FacetedBrep)& aFB,
 void StepToTopoDS_Builder::Init
 (const Handle(StepShape_FacetedBrepAndBrepWithVoids)& aFBABWV,
  const Handle(Transfer_TransientProcess)& TP,
+ const StepData_Factors& theLocalFactors,
  const Message_ProgressRange& theProgress)
 {
   // Initialisation of the Tool
@@ -359,7 +364,7 @@ void StepToTopoDS_Builder::Init
   myTranShell.SetMaxTol(MaxTol());
   // Non-manifold topology is not referenced by FacetedBrepAndBrepWithVoids (ss; 14.11.2010)
   StepToTopoDS_NMTool dummyNMTool;
-  myTranShell.Init(aCShell, myTool, dummyNMTool, aPSRoot.Next());
+  myTranShell.Init(aCShell, myTool, dummyNMTool, theLocalFactors, aPSRoot.Next());
 
   if (myTranShell.IsDone()) {
     Sh = myTranShell.Value();
@@ -374,7 +379,7 @@ void StepToTopoDS_Builder::Init
     Message_ProgressScope aPS (aPSRoot.Next(), NULL, Nb);
     for ( i=1; i<=Nb && aPS.More(); i++) {
       aCShell = aFBABWV->VoidsValue(i);
-      myTranShell.Init(aCShell, myTool, dummyNMTool, aPS.Next());
+      myTranShell.Init(aCShell, myTool, dummyNMTool, theLocalFactors, aPS.Next());
       if (myTranShell.IsDone()) {
         Sh = myTranShell.Value();
         Sh.Closed(Standard_True);
@@ -407,6 +412,7 @@ void StepToTopoDS_Builder::Init
 (const Handle(StepShape_ShellBasedSurfaceModel)& aSBSM,
  const Handle(Transfer_TransientProcess)& TP,
  StepToTopoDS_NMTool& NMTool,
+ const StepData_Factors& theLocalFactors,
  const Message_ProgressRange& theProgress)
 {
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
@@ -442,7 +448,7 @@ void StepToTopoDS_Builder::Init
     aOpenShell = aShell.OpenShell();
     aClosedShell = aShell.ClosedShell();
     if (!aOpenShell.IsNull()) {
-      myTranShell.Init(aOpenShell, myTool, NMTool, aRange);
+      myTranShell.Init(aOpenShell, myTool, NMTool, theLocalFactors, aRange);
       if (myTranShell.IsDone()) {
         Shl = TopoDS::Shell(myTranShell.Value());
         Shl.Closed(Standard_False);
@@ -454,7 +460,7 @@ void StepToTopoDS_Builder::Init
       }
     }
     else if (!aClosedShell.IsNull()) {
-      myTranShell.Init(aClosedShell, myTool, NMTool, aRange);
+      myTranShell.Init(aClosedShell, myTool, NMTool, theLocalFactors, aRange);
       if (myTranShell.IsDone()) {
         Shl = TopoDS::Shell(myTranShell.Value());
         Shl.Closed(Standard_True);
@@ -500,7 +506,8 @@ void StepToTopoDS_Builder::Init
 // ============================================================================
 
 void StepToTopoDS_Builder::Init (const Handle(StepShape_EdgeBasedWireframeModel)& aEBWM,
-                                 const Handle(Transfer_TransientProcess)& TP)
+                                 const Handle(Transfer_TransientProcess)& TP,
+                                 const StepData_Factors& theLocalFactors)
 {
   myResult.Nullify();
   
@@ -534,7 +541,7 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_EdgeBasedWireframeModel)
     }
     TopoDS_Wire W;
     for ( Standard_Integer j=1; j <= edges->Length(); j++ ) {
-      myTranEdge.Init (edges->Value(j), myTool, dummyNMTool);
+      myTranEdge.Init (edges->Value(j), myTool, dummyNMTool, theLocalFactors);
       if ( ! myTranEdge.IsDone() ) continue;
       TopoDS_Edge E = TopoDS::Edge(myTranEdge.Value());
       if (E.IsNull()) continue;  // NULL, on saute
@@ -560,7 +567,8 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_EdgeBasedWireframeModel)
 // ============================================================================
 
 void StepToTopoDS_Builder::Init (const Handle(StepShape_FaceBasedSurfaceModel)& aFBSM,
-                                 const Handle(Transfer_TransientProcess)& TP)
+                                 const Handle(Transfer_TransientProcess)& TP,
+                                 const StepData_Factors& theLocalFactors)
 {
   myResult.Nullify();
   
@@ -596,7 +604,7 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_FaceBasedSurfaceModel)& 
     TopoDS_Shell S;
     for ( Standard_Integer j=1; j <= faces->Length(); j++ ) {
       Handle(StepShape_FaceSurface) fs = Handle(StepShape_FaceSurface)::DownCast ( faces->Value(j) );
-      myTranFace.Init(fs, myTool, dummyNMTool);
+      myTranFace.Init(fs, myTool, dummyNMTool, theLocalFactors);
       if ( ! myTranFace.IsDone() ) continue;
       TopoDS_Face F = TopoDS::Face(myTranFace.Value());
       if (F.IsNull()) continue;  // NULL, on saute
@@ -625,11 +633,12 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_FaceBasedSurfaceModel)& 
 //:i6 abv 17 Sep 98: ProSTEP TR9 r0601-ct.stp: to be able read GS: GeometricCurveSet -> GeometricSet
 
 static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
-                                         const Standard_Real TolDegen)
+                                         const Standard_Real TolDegen,
+                                         const StepData_Factors& theLocalFactors)
 {
   TopoDS_Face res;
 
-  Handle(Geom_Surface) theSurf = StepToGeom::MakeSurface (surf);
+  Handle(Geom_Surface) theSurf = StepToGeom::MakeSurface (surf, theLocalFactors);
   if (theSurf.IsNull() || //:i6: protection
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) return res;
 
@@ -655,6 +664,7 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
 void StepToTopoDS_Builder::Init
 (const Handle(StepShape_GeometricSet)& GCS,
  const Handle(Transfer_TransientProcess)& TP,
+ const StepData_Factors& theLocalFactors,
  const Handle(Transfer_ActorOfTransientProcess)& RA,
  const Standard_Boolean isManifold,
  const Message_ProgressRange& theProgress)
@@ -697,7 +707,7 @@ void StepToTopoDS_Builder::Init
         StepToTopoDS_TranslateCompositeCurve TrCC;
         TrCC.SetPrecision(preci);
         TrCC.SetMaxTol(maxtol);
-        TrCC.Init(CC, TP);
+        TrCC.Init(CC, TP, theLocalFactors);
         if (TrCC.IsDone())
         {
           if (TrCC.IsInfiniteSegment())
@@ -718,7 +728,7 @@ void StepToTopoDS_Builder::Init
         Handle(Geom_Curve) aGeomCrv;
         try {
           OCC_CATCH_SIGNALS
-            aGeomCrv = StepToGeom::MakeCurve(aCrv);
+            aGeomCrv = StepToGeom::MakeCurve(aCrv, theLocalFactors);
         }
         catch (Standard_Failure const& anException) {
           Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
@@ -734,7 +744,7 @@ void StepToTopoDS_Builder::Init
     // try point
     else if ( ent->IsKind(STANDARD_TYPE(StepGeom_CartesianPoint)) ) {
       Handle(StepGeom_CartesianPoint) aPnt = Handle(StepGeom_CartesianPoint)::DownCast ( ent );
-      Handle(Geom_CartesianPoint) thePnt = StepToGeom::MakeCartesianPoint (aPnt);
+      Handle(Geom_CartesianPoint) thePnt = StepToGeom::MakeCartesianPoint (aPnt, theLocalFactors);
       if (! thePnt.IsNull()) {
         BRepBuilderAPI_MakeVertex myMkVtx(thePnt->Pnt());
         if ( myMkVtx.IsDone() ) res = myMkVtx.Vertex();
@@ -753,7 +763,7 @@ void StepToTopoDS_Builder::Init
         TrCBS.SetPrecision(preci);
         TrCBS.SetMaxTol(maxtol);
 
-        TrCBS.Init(CBS, TP);
+        TrCBS.Init(CBS, TP, theLocalFactors);
         if (TrCBS.IsDone()) res = TrCBS.Value();
       }
       // try RectangularCompositeSurface
@@ -767,13 +777,13 @@ void StepToTopoDS_Builder::Init
         for (Standard_Integer ii = 1; ii <= nbi; ii++)
           for (Standard_Integer j = 1; j <= nbj; j++) {
             Handle(StepGeom_SurfacePatch) patch = RCS->SegmentsValue(ii, j);
-            TopoDS_Face f = TranslateBoundedSurf(patch->ParentSurface(), preci);
+            TopoDS_Face f = TranslateBoundedSurf(patch->ParentSurface(), preci, theLocalFactors);
             if (!f.IsNull()) B.Add(C, f);
           }
         res = C;
       }
       // try other surfs
-      else res = TranslateBoundedSurf(aSurf, preci);
+      else res = TranslateBoundedSurf(aSurf, preci, theLocalFactors);
     }
     else if ( ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem)) )
     {
@@ -784,7 +794,7 @@ void StepToTopoDS_Builder::Init
         Handle(STEPControl_ActorRead) anActor = Handle(STEPControl_ActorRead)::DownCast(RA);
         Handle(Transfer_Binder) binder;
         if( !anActor.IsNull())
-          binder = anActor->TransferShape(GRI, TP, isManifold, Standard_False, aRange);
+          binder = anActor->TransferShape(GRI, TP, theLocalFactors, isManifold, Standard_False, aRange);
         if (!binder.IsNull())
         {
           res = TransferBRep::ShapeResult(binder);
@@ -813,6 +823,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedSolid)& theTS
                                 const Handle(Transfer_TransientProcess)& theTP,
                                 const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                                 Standard_Boolean& theHasGeom,
+                                const StepData_Factors& theLocalFactors,
                                 const Message_ProgressRange& theProgress)
 {
   StepToTopoDS_TranslateSolid aTranSolid;
@@ -825,7 +836,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedSolid)& theTS
 
   StepToTopoDS_NMTool dummyNMTool;
   aTranSolid.Init(theTSo, theTP, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, 
-                  theHasGeom, theProgress);
+                  theHasGeom, theLocalFactors, theProgress);
 
   if (aTranSolid.IsDone()) 
   {
@@ -852,6 +863,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedShell)& theTS
                                 const Handle(Transfer_TransientProcess)& theTP,
                                 const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                                 Standard_Boolean& theHasGeom,
+                                const StepData_Factors& theLocalFactors,
                                 const Message_ProgressRange& theProgress)
 {
   StepToTopoDS_TranslateShell aTranShell;
@@ -864,7 +876,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedShell)& theTS
 
   StepToTopoDS_NMTool dummyNMTool;
   aTranShell.Init(theTSh, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, 
-                  theHasGeom, theProgress);
+                  theHasGeom, theLocalFactors, theProgress);
 
   if (aTranShell.IsDone()) 
   {
@@ -890,7 +902,8 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedShell)& theTS
 void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedFace)& theTF,
                                 const Handle(Transfer_TransientProcess)& theTP,
                                 const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
-                                Standard_Boolean& theHasGeom)
+                                Standard_Boolean& theHasGeom,
+                                const StepData_Factors& theLocalFactors)
 {
   StepToTopoDS_TranslateFace aTranFace;
   aTranFace.SetPrecision(Precision());
@@ -901,7 +914,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedFace)& theTF,
   aTool.Init(aMap, theTP);
 
   StepToTopoDS_NMTool dummyNMTool;
-  aTranFace.Init(theTF, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, theHasGeom);
+  aTranFace.Init(theTF, aTool, dummyNMTool, theReadTessellatedWhenNoBRepOnly, theHasGeom, theLocalFactors);
 
   if (aTranFace.IsDone()) 
   {

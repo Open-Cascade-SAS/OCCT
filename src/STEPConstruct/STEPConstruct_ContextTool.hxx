@@ -23,6 +23,7 @@
 
 #include <TColStd_SequenceOfInteger.hxx>
 #include <STEPConstruct_AP203Context.hxx>
+#include <StepData_Factors.hxx>
 #include <Standard_Integer.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 class StepBasic_ApplicationProtocolDefinition;
@@ -54,6 +55,8 @@ public:
   //! Initialize ApplicationProtocolDefinition by the first
   //! entity of that type found in the model
   Standard_EXPORT void SetModel (const Handle(StepData_StepModel)& aStepModel);
+
+  Standard_EXPORT void SetGlobalFactor(const StepData_Factors& theGlobalFactor);
   
   Standard_EXPORT Handle(StepBasic_ApplicationProtocolDefinition) GetAPD();
   
@@ -139,7 +142,7 @@ private:
   Handle(StepBasic_ApplicationProtocolDefinition) theAPD;
   STEPConstruct_AP203Context theAP203;
   Handle(StepGeom_Axis2Placement3d) myAxis;
-
+  StepData_Factors myGlobalFactor;
 
 };
 

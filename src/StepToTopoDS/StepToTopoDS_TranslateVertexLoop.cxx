@@ -18,6 +18,7 @@
 
 #include <BRep_Builder.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_Vertex.hxx>
 #include <StepShape_VertexLoop.hxx>
 #include <StepToTopoDS_NMTool.hxx>
@@ -48,9 +49,10 @@ StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop()
 
 StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop(const Handle(StepShape_VertexLoop)& VL, 
                                                                    StepToTopoDS_Tool& T,
-                                                                   StepToTopoDS_NMTool& NMTool)
+                                                                   StepToTopoDS_NMTool& NMTool,
+                                                                   const StepData_Factors& theLocalFactors)
 {
-  Init(VL, T, NMTool);
+  Init(VL, T, NMTool, theLocalFactors);
 }
 
 // ============================================================================
@@ -60,7 +62,8 @@ StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop(const Handle(
 
 void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& VL,
                                             StepToTopoDS_Tool& aTool,
-                                            StepToTopoDS_NMTool& NMTool)
+                                            StepToTopoDS_NMTool& NMTool,
+                                            const StepData_Factors& theLocalFactors)
 {
   // A Vertex Loop shall be mapped onto a Vertex + Edge + Wire;
   if (!aTool.IsBound(VL)) {
@@ -73,7 +76,7 @@ void StepToTopoDS_TranslateVertexLoop::Init(const Handle(StepShape_VertexLoop)& 
     TopoDS_Edge E;
     TopoDS_Wire W;
     Vtx = VL->LoopVertex();
-    StepToTopoDS_TranslateVertex myTranVtx(Vtx, aTool, NMTool);
+    StepToTopoDS_TranslateVertex myTranVtx(Vtx, aTool, NMTool, theLocalFactors);
     if (myTranVtx.IsDone()) {
       V1 = TopoDS::Vertex(myTranVtx.Value());
       V2 = TopoDS::Vertex(myTranVtx.Value());

@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
+class StepData_Factors;
 class StepGeom_BSplineSurfaceWithKnots;
 class Geom_BSplineSurface;
 
@@ -38,7 +39,8 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakeBSplineSurfaceWithKnots(const Handle(Geom_BSplineSurface)& Bsplin);
+  Standard_EXPORT GeomToStep_MakeBSplineSurfaceWithKnots(const Handle(Geom_BSplineSurface)& Bsplin,
+                                                         const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_BSplineSurfaceWithKnots)& Value() const;
 

@@ -54,6 +54,8 @@ STEPControl_Controller::STEPControl_Controller ()
 : XSControl_Controller ("STEP", "step")
 {
   static Standard_Boolean init = Standard_False;
+  static Standard_Mutex aMutex;
+  aMutex.Lock();
   if (!init) {
     RWHeaderSection::Init();  RWStepAP214::Init();
 
@@ -318,6 +320,7 @@ STEPControl_Controller::STEPControl_Controller ()
 
     init = Standard_True;
   }
+  aMutex.Unlock();
 
   Handle(STEPControl_ActorWrite) ActWrite = new STEPControl_ActorWrite;
   ActWrite->SetGroupMode (Interface_Static::IVal("write.step.assembly"));

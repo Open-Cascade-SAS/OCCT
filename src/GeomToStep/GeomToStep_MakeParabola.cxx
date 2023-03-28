@@ -20,7 +20,7 @@
 #include <gp_Parab.hxx>
 #include <gp_Parab2d.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Parabola.hxx>
@@ -30,7 +30,8 @@
 // Creation d'une Parabola de prostep a partir d'une Parabola de
 // Geom2d
 //=============================================================================
-GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& C)
+GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& C,
+                                                 const StepData_Factors& theLocalFactors)
 {
   gp_Parab2d gpPar;
   gpPar = C->Parab2d();
@@ -40,7 +41,7 @@ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& 
   Handle(StepGeom_Axis2Placement2d)  Ax2Step;
   Standard_Real                   focal;
   
-  GeomToStep_MakeAxis2Placement2d MkAxis2(gpPar.Axis());
+  GeomToStep_MakeAxis2Placement2d MkAxis2(gpPar.Axis(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   focal = gpPar.Focal();
   Ax2.SetValue(Ax2Step);
@@ -55,7 +56,8 @@ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& 
 // Geom
 //=============================================================================
 
- GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom_Parabola)& C)
+ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom_Parabola)& C,
+                                                  const StepData_Factors& theLocalFactors)
 {
   gp_Parab gpPar;
   gpPar = C->Parab();
@@ -65,12 +67,12 @@ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& 
   Handle(StepGeom_Axis2Placement3d)  Ax2Step;
   Standard_Real                   focal;
   
-  GeomToStep_MakeAxis2Placement3d MkAxis2(gpPar.Position());
+  GeomToStep_MakeAxis2Placement3d MkAxis2(gpPar.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   focal = gpPar.Focal();
   Ax2.SetValue(Ax2Step);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  PStep->Init(name, Ax2, focal / StepData_GlobalFactors::Intance().LengthFactor());
+  PStep->Init(name, Ax2, focal / theLocalFactors.LengthFactor());
   theParabola = PStep;
   done = Standard_True;
 }

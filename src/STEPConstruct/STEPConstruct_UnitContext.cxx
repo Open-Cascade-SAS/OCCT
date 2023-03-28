@@ -33,8 +33,8 @@
 #include <StepBasic_SiUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_SiUnitAndSolidAngleUnit.hxx>
 #include <StepBasic_SiUnitAndVolumeUnit.hxx>
-#include <StepData_GlobalFactors.hxx>
 #include <STEPConstruct_UnitContext.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
@@ -63,7 +63,8 @@ STEPConstruct_UnitContext::STEPConstruct_UnitContext()
 //purpose  : 
 //=======================================================================
 
-void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d) 
+void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d,
+                                     const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
 
@@ -155,7 +156,7 @@ void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d)
   
   Handle(StepBasic_MeasureValueMember) mvs = new StepBasic_MeasureValueMember;
   mvs->SetName("LENGTH_MEASURE");
-  mvs->SetReal ( Tol3d / StepData_GlobalFactors::Intance().LengthFactor() );
+  mvs->SetReal ( Tol3d / theLocalFactors.LengthFactor() );
   StepBasic_Unit Unit;
   Unit.SetValue ( lengthUnit );
   theTol3d->Init(mvs, Unit, TolName, TolDesc);
@@ -242,7 +243,8 @@ Standard_Boolean STEPConstruct_UnitContext::SiUnitNameFactor(const Handle(StepBa
 // Purpose : 
 // ==========================================================================
 
-Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr_GlobalUnitAssignedContext)& aContext)
+Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr_GlobalUnitAssignedContext)& aContext,
+                                                           const StepData_Factors& theLocalFactors)
 {
   Standard_Integer status = 0;
 
@@ -268,7 +270,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
   
   for (Standard_Integer i = 1; i <= nbU; i++) {
     Handle(StepBasic_NamedUnit) theNamedUnit = aContext->UnitsValue(i);
-    status = ComputeFactors(theNamedUnit);
+    status = ComputeFactors(theNamedUnit, theLocalFactors);
 #ifdef OCCT_DEBUG
     if(status == -1)
       std::cout << " -- STEPConstruct_UnitContext:ComputeFactor: Unit item no." << i << " is not recognized" << std::endl;
@@ -278,7 +280,8 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
 } 
 
 
-Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasic_NamedUnit)& aUnit)
+Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasic_NamedUnit)& aUnit,
+                                                           const StepData_Factors& theLocalFactors)
 {
 
   //:f3 abv 8 Apr 98: ProSTEP TR8 tr8_as_sd_sw: the case of unrecognized entity
@@ -379,7 +382,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     return 0;
   }
   
-  const Standard_Real aCascadeUnit = StepData_GlobalFactors::Intance().CascadeUnit();
+  const Standard_Real aCascadeUnit = theLocalFactors.CascadeUnit();
   if (aUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))||
       aUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
 #ifdef METER

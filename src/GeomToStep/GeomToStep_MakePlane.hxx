@@ -22,6 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
+class StepData_Factors;
 class StepGeom_Plane;
 class gp_Pln;
 class Geom_Plane;
@@ -38,9 +39,11 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakePlane(const gp_Pln& P);
+  Standard_EXPORT GeomToStep_MakePlane(const gp_Pln& P,
+                                       const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakePlane(const Handle(Geom_Plane)& P);
+  Standard_EXPORT GeomToStep_MakePlane(const Handle(Geom_Plane)& P,
+                                       const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_Plane)& Value() const;
 

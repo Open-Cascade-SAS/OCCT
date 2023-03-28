@@ -19,12 +19,12 @@ Handle(StepGeom_Circle) CStep = new StepGeom_Circle;
   Handle(StepGeom_Axis2Placement3d) Ax2Step;
   Standard_Real Rayon;
   
-  GeomToStep_MakeAxis2Placement3d MkAxis2(C.Position());
+  GeomToStep_MakeAxis2Placement3d MkAxis2(C.Position(), theLocalFactors);
   Ax2Step = MkAxis2.Value();
   Rayon = C.Radius();
   Ax2.SetValue(Ax2Step);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  CStep->Init(name, Ax2, Rayon / StepData_GlobalFactors::Intance().LengthFactor());
+  CStep->Init(name, Ax2, Rayon / theLocalFactors.LengthFactor());
   theCircle = CStep;
   done = Standard_True;
 

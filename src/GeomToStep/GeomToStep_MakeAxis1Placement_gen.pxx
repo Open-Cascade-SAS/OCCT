@@ -18,7 +18,7 @@ Handle(StepGeom_Axis1Placement) Axe = new StepGeom_Axis1Placement;
   Handle(StepGeom_CartesianPoint) P;
   Handle(StepGeom_Direction) D;
 
-  GeomToStep_MakeCartesianPoint MkPoint(A.Location());
+  GeomToStep_MakeCartesianPoint MkPoint(A.Location(), theLocalFactors.LengthFactor());
   GeomToStep_MakeDirection      MkDir(A.Direction());
 
   P = MkPoint.Value();

@@ -42,9 +42,23 @@ public:
   
   Standard_EXPORT StepToTopoDS_TranslateEdgeLoop();
   
-  Standard_EXPORT StepToTopoDS_TranslateEdgeLoop(const Handle(StepShape_FaceBound)& FB, const TopoDS_Face& F, const Handle(Geom_Surface)& S, const Handle(StepGeom_Surface)& SS, const Standard_Boolean ss, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool);
+  Standard_EXPORT StepToTopoDS_TranslateEdgeLoop(const Handle(StepShape_FaceBound)& FB,
+                                                 const TopoDS_Face& F,
+                                                 const Handle(Geom_Surface)& S,
+                                                 const Handle(StepGeom_Surface)& SS,
+                                                 const Standard_Boolean ss,
+                                                 StepToTopoDS_Tool& T,
+                                                 StepToTopoDS_NMTool& NMTool,
+                                                 const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT void Init (const Handle(StepShape_FaceBound)& FB, const TopoDS_Face& F, const Handle(Geom_Surface)& S, const Handle(StepGeom_Surface)& SS, const Standard_Boolean ss, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool);
+  Standard_EXPORT void Init (const Handle(StepShape_FaceBound)& FB,
+                             const TopoDS_Face& F,
+                             const Handle(Geom_Surface)& S,
+                             const Handle(StepGeom_Surface)& SS,
+                             const Standard_Boolean ss,
+                             StepToTopoDS_Tool& T,
+                             StepToTopoDS_NMTool& NMTool,
+                             const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

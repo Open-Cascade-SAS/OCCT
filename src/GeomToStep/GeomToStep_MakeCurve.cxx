@@ -37,6 +37,7 @@
 #include <gp_Circ2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_BoundedCurve.hxx>
 #include <StepGeom_Conic.hxx>
@@ -47,17 +48,18 @@
 //=============================================================================
 // Creation d' une Curve de prostep a partir d' une Curve de Geom
 //=============================================================================
-GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom_Curve)& C)
+GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom_Curve)& C,
+                                             const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
   if (C->IsKind(STANDARD_TYPE(Geom_Line))) {
     Handle(Geom_Line) L = Handle(Geom_Line)::DownCast(C);
-    GeomToStep_MakeLine MkLine(L);
+    GeomToStep_MakeLine MkLine(L, theLocalFactors);
     theCurve = MkLine.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_Conic))) {
     Handle(Geom_Conic) L = Handle(Geom_Conic)::DownCast(C);
-    GeomToStep_MakeConic MkConic(L);
+    GeomToStep_MakeConic MkConic(L, theLocalFactors);
     theCurve = MkConic.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
@@ -82,12 +84,12 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom_Curve)& C)
       std::cout<<"BasisCurve Type : "<<B->DynamicType()->Name()<<std::endl;
 #endif
     }
-    GeomToStep_MakeCurve MkBasisC(B);
+    GeomToStep_MakeCurve MkBasisC(B, theLocalFactors);
     theCurve = MkBasisC.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom_BoundedCurve))) {
     Handle(Geom_BoundedCurve) L = Handle(Geom_BoundedCurve)::DownCast(C);
-    GeomToStep_MakeBoundedCurve MkBoundedC(L);
+    GeomToStep_MakeBoundedCurve MkBoundedC(L, theLocalFactors);
     theCurve = MkBoundedC.Value();
   }
   else
@@ -98,12 +100,13 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom_Curve)& C)
 // Creation d'une Curve de prostep a partir d' une Curve de Geom2d
 //=============================================================================
 
-GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
+GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C,
+                                             const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
   if (C->IsKind(STANDARD_TYPE(Geom2d_Line))) {
     Handle(Geom2d_Line) L = Handle(Geom2d_Line)::DownCast(C);
-    GeomToStep_MakeLine MkLine(L);
+    GeomToStep_MakeLine MkLine(L, theLocalFactors);
     theCurve = MkLine.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
@@ -124,12 +127,12 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
 	Handle(Geom2d_BSplineCurve) aBSplineCurve2d = 
 	  Geom2dConvert::CurveToBSplineCurve(theC2d);
         const Handle(Geom2d_BoundedCurve)& aBC2d = aBSplineCurve2d; // to avoid ambiguity
-	GeomToStep_MakeBoundedCurve MkBoundedC(aBC2d);
+	GeomToStep_MakeBoundedCurve MkBoundedC(aBC2d, theLocalFactors);
 	theCurve = MkBoundedC.Value();
       }
       else {
 	Handle(Geom2d_Conic) L = Handle(Geom2d_Conic)::DownCast(C);
-	GeomToStep_MakeConic MkConic(L);
+	GeomToStep_MakeConic MkConic(L, theLocalFactors);
 	theCurve = MkConic.Value();
       }
     }
@@ -143,28 +146,28 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
 	Handle(Geom2d_BSplineCurve) aBSplineCurve2d = 
 	  Geom2dConvert::CurveToBSplineCurve(theE2d);
         const Handle(Geom2d_BoundedCurve)& aBC2d = aBSplineCurve2d; // to avoid ambiguity
-	GeomToStep_MakeBoundedCurve MkBoundedC(aBC2d);
+	GeomToStep_MakeBoundedCurve MkBoundedC(aBC2d, theLocalFactors);
 	theCurve = MkBoundedC.Value();
       }
       else {
 	Handle(Geom2d_Conic) L = Handle(Geom2d_Conic)::DownCast(C);
-	GeomToStep_MakeConic MkConic(L);
+	GeomToStep_MakeConic MkConic(L, theLocalFactors);
 	theCurve = MkConic.Value();
       }
     }
     else {
       Handle(Geom2d_Conic) L = Handle(Geom2d_Conic)::DownCast(C);
-      GeomToStep_MakeConic MkConic(L);
+      GeomToStep_MakeConic MkConic(L, theLocalFactors);
       theCurve = MkConic.Value();
     }
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_BoundedCurve))) {
     Handle(Geom2d_BoundedCurve) L = Handle(Geom2d_BoundedCurve)::DownCast(C);
-    GeomToStep_MakeBoundedCurve MkBoundedC(L);
+    GeomToStep_MakeBoundedCurve MkBoundedC(L, theLocalFactors);
     theCurve = MkBoundedC.Value();
   }
   else if (C->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-    GeomToStep_MakeCurve aMaker = (Handle(Geom2d_TrimmedCurve)::DownCast(C)->BasisCurve());
+    GeomToStep_MakeCurve aMaker(Handle(Geom2d_TrimmedCurve)::DownCast(C)->BasisCurve(), theLocalFactors);
     theCurve = aMaker.Value();
   }
   else

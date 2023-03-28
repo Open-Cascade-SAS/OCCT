@@ -23,6 +23,7 @@
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_EdgeLoop.hxx>
 #include <StepShape_HArray1OfOrientedEdge.hxx>
 #include <StepShape_OrientedEdge.hxx>
@@ -54,10 +55,11 @@ TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire()
 TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire
 (const TopoDS_Wire& W, 
  TopoDSToStep_Tool& T,
- const Handle(Transfer_FinderProcess)& FP)
+ const Handle(Transfer_FinderProcess)& FP,
+ const StepData_Factors& theLocalFactors)
 {
   done = Standard_False;
-  Init(W, T, FP);
+  Init(W, T, FP, theLocalFactors);
 }
 
 
@@ -68,7 +70,8 @@ TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire
 
 void TopoDSToStep_MakeStepWire::Init (const TopoDS_Wire& aWire,
                                       TopoDSToStep_Tool& aTool,
-                                      const Handle(Transfer_FinderProcess)& FP)
+                                      const Handle(Transfer_FinderProcess)& FP,
+                                      const StepData_Factors& theLocalFactors)
 {
   // ----------------------------------------------------------------
   // The Wire is given in its relative orientation (i.e. in the face)
@@ -118,7 +121,7 @@ void TopoDSToStep_MakeStepWire::Init (const TopoDS_Wire& aWire,
         TopExp::Vertices (CurrentEdge, TopoDSVertex2, TopoDSVertex1);
       }
 
-      MkVertex.Init (TopoDSVertex1, aTool, FP);
+      MkVertex.Init (TopoDSVertex1, aTool, FP, theLocalFactors);
       if (MkVertex.IsDone())
       {
         VertexPoint = Handle(StepShape_VertexPoint)::DownCast (MkVertex.Value());
@@ -221,7 +224,7 @@ void TopoDSToStep_MakeStepWire::Init (const TopoDS_Wire& aWire,
           // make vertex_loop
           ShapeAnalysis_Edge sae;
           TopoDS_Vertex V = sae.FirstVertex (anExtWire2->Edge (1));
-          TopoDSToStep_MakeStepVertex mkV (V, aTool, FP);
+          TopoDSToStep_MakeStepVertex mkV (V, aTool, FP, theLocalFactors);
           Handle(StepShape_VertexLoop) vloop = new StepShape_VertexLoop;
           Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString ("");
           vloop->Init (name, Handle(StepShape_Vertex)::DownCast (mkV.Value()));
@@ -250,7 +253,7 @@ void TopoDSToStep_MakeStepWire::Init (const TopoDS_Wire& aWire,
       }
       else
       {
-        MkEdge.Init (anEdge, aTool, FP);
+        MkEdge.Init (anEdge, aTool, FP, theLocalFactors);
         if (MkEdge.IsDone())
         {
           OrientedEdge = new StepShape_OrientedEdge();

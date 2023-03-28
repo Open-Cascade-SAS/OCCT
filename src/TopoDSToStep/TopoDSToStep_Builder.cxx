@@ -17,6 +17,7 @@
 
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_Face.hxx>
@@ -54,10 +55,11 @@ TopoDSToStep_Builder::TopoDSToStep_Builder
   TopoDSToStep_Tool& aTool,
   const Handle(Transfer_FinderProcess)& FP,
   const Standard_Integer theTessellatedGeomParam,
+  const StepData_Factors& theLocalFactors,
   const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
-  Init(aShape, aTool, FP, theTessellatedGeomParam, theProgress);
+  Init(aShape, aTool, FP, theTessellatedGeomParam, theLocalFactors, theProgress);
 }
 
 // ============================================================================
@@ -69,6 +71,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
   TopoDSToStep_Tool& myTool,
   const Handle(Transfer_FinderProcess)& FP,
   const Standard_Integer theTessellatedGeomParam,
+  const StepData_Factors& theLocalFactors,
   const Message_ProgressRange& theProgress)
 {
 
@@ -121,7 +124,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
     {
       const TopoDS_Face Face = TopoDS::Face(anExp.Current());
 
-      MkFace.Init(Face, myTool, FP);
+      MkFace.Init(Face, myTool, FP, theLocalFactors);
 
       if (MkFace.IsDone()) {
         FS = Handle(StepShape_FaceSurface)::DownCast(MkFace.Value());
@@ -190,7 +193,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
     Handle(StepShape_FaceSurface)                   FS;
     Handle(StepShape_TopologicalRepresentationItem) Fpms;
 
-    TopoDSToStep_MakeStepFace MkFace(Face, myTool, FP);
+    TopoDSToStep_MakeStepFace MkFace(Face, myTool, FP, theLocalFactors);
 
     TopoDSToStep_MakeTessellatedItem MkTessFace;
     

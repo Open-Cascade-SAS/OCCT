@@ -22,6 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
+
+class StepData_Factors;
 class StepGeom_Vector;
 class gp_Vec;
 class gp_Vec2d;
@@ -40,13 +42,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT GeomToStep_MakeVector(const gp_Vec& V);
+  Standard_EXPORT GeomToStep_MakeVector(const gp_Vec& V,
+                                        const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeVector(const gp_Vec2d& V);
+  Standard_EXPORT GeomToStep_MakeVector(const gp_Vec2d& V,
+                                        const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeVector(const Handle(Geom_Vector)& V);
+  Standard_EXPORT GeomToStep_MakeVector(const Handle(Geom_Vector)& V,
+                                        const StepData_Factors& theLocalFactors);
   
-  Standard_EXPORT GeomToStep_MakeVector(const Handle(Geom2d_Vector)& V);
+  Standard_EXPORT GeomToStep_MakeVector(const Handle(Geom2d_Vector)& V,
+                                        const StepData_Factors& theLocalFactors);
   
   Standard_EXPORT const Handle(StepGeom_Vector)& Value() const;
 

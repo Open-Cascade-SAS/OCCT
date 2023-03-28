@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _StepData_GlobalFactors_HeaderFile
-#define _StepData_GlobalFactors_HeaderFile
+#ifndef _StepData_Factors_HeaderFile
+#define _StepData_Factors_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -20,20 +20,15 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 
-//! Class for using global units variables
-class StepData_GlobalFactors
+//! Class for using units variables
+class StepData_Factors
 {
-
-private:
-
-  Standard_EXPORT StepData_GlobalFactors();
-
 public:
 
   DEFINE_STANDARD_ALLOC
  
-  //! Returns a global static object
-  Standard_EXPORT static StepData_GlobalFactors& Intance();
+  //! Constructor
+  Standard_EXPORT StepData_Factors();
 
   //! Initializes the 3 factors for the conversion of units
   Standard_EXPORT void InitializeFactors(
@@ -45,27 +40,27 @@ public:
   Standard_EXPORT void SetCascadeUnit(const Standard_Real theUnit);
 
   //! Returns length unit for current transfer process (mm by default)
-  Standard_EXPORT Standard_Real CascadeUnit();
+  Standard_EXPORT Standard_Real CascadeUnit() const;
 
   //! Returns transient length factor for scaling of shapes
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real LengthFactor();
+  Standard_EXPORT Standard_Real LengthFactor() const;
 
   //! Returns transient plane angle factor for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real PlaneAngleFactor();
+  Standard_EXPORT Standard_Real PlaneAngleFactor() const;
 
   //! Returns transient solid angle factor for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real SolidAngleFactor();
+  Standard_EXPORT Standard_Real SolidAngleFactor() const;
 
   //! Returns transient factor radian degree for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real FactorRadianDegree();
+  Standard_EXPORT Standard_Real FactorRadianDegree() const;
 
   //! Returns transient factor degree radian for conversion of angles
   //! at one stage of transfer process
-  Standard_EXPORT Standard_Real FactorDegreeRadian();
+  Standard_EXPORT Standard_Real FactorDegreeRadian() const;
 
 private:
 
@@ -77,4 +72,4 @@ private:
   Standard_Real myCascadeUnit;
 };
 
-#endif // _StepData_GlobalFactors_HeaderFile
+#endif // _StepData_Factors_HeaderFile

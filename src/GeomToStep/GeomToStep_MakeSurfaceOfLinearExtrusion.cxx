@@ -21,6 +21,7 @@
 #include <GeomToStep_MakeVector.hxx>
 #include <gp_Vec.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_SurfaceOfLinearExtrusion.hxx>
 #include <StepGeom_Vector.hxx>
@@ -31,15 +32,15 @@
 // SurfaceOfLinearExtrusion de Geom
 //=============================================================================
 GeomToStep_MakeSurfaceOfLinearExtrusion::GeomToStep_MakeSurfaceOfLinearExtrusion
-  ( const Handle(Geom_SurfaceOfLinearExtrusion)& S )
-	
+  ( const Handle(Geom_SurfaceOfLinearExtrusion)& S,
+    const StepData_Factors& theLocalFactors)
 {
   Handle(StepGeom_SurfaceOfLinearExtrusion) Surf;
   Handle(StepGeom_Curve) aSweptCurve;
   Handle(StepGeom_Vector) aExtrusionAxis;
   
-  GeomToStep_MakeCurve MkCurve(S->BasisCurve());
-  GeomToStep_MakeVector MkVector(gp_Vec(S->Direction()));
+  GeomToStep_MakeCurve MkCurve(S->BasisCurve(), theLocalFactors);
+  GeomToStep_MakeVector MkVector(gp_Vec(S->Direction()), theLocalFactors);
 
   aSweptCurve = MkCurve.Value();
   aExtrusionAxis = MkVector.Value();

@@ -21,6 +21,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Resource_FormatType.hxx>
+#include <StepData_Factors.hxx>
 
 class Standard_Transient;
 class Interface_EntityIterator;
@@ -135,8 +136,7 @@ private:
   Resource_FormatType mySourceCodePage;
   Standard_Boolean myReadUnitIsInitialized;
   Standard_Real myWriteUnit;
-
-
+  Standard_Real myLocalLengthUnit;
 };
 
 

@@ -44,6 +44,7 @@ public:
   Standard_EXPORT void Init (const Handle(StepShape_ConnectedFaceSet)& CFS,
                              StepToTopoDS_Tool& T,
                              StepToTopoDS_NMTool& NMTool,
+                             const StepData_Factors& theLocalFactors,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT void Init (const Handle(StepVisual_TessellatedShell)& theTSh,
@@ -51,6 +52,7 @@ public:
                              StepToTopoDS_NMTool& theNMTool,
                              const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                              Standard_Boolean& theHasGeom,
+                             const StepData_Factors& theLocalFactors,
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;

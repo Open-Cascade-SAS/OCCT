@@ -34,7 +34,7 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeConstruct_Curve.hxx>
 #include <StdFail_NotDone.hxx>
-#include <StepData_GlobalFactors.hxx>
+#include <StepData_Factors.hxx>
 #include <StepGeom_Pcurve.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
 #include <StepRepr_DefinitionalRepresentation.hxx>
@@ -136,11 +136,12 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
 // ============================================================================
 
 static Handle(Geom_Curve) MakeCurve
-  (const Handle(StepGeom_Curve)& C1, const Handle(Transfer_TransientProcess)& TP)
+  (const Handle(StepGeom_Curve)& C1, const Handle(Transfer_TransientProcess)& TP,
+   const StepData_Factors& theLocalFactors)
 {
   Handle(Geom_Curve) C2 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C1));
   if (!C2.IsNull()) return C2;
-  C2 = StepToGeom::MakeCurve (C1);
+  C2 = StepToGeom::MakeCurve (C1, theLocalFactors);
   if (! C2.IsNull())
     TP->BindTransient (C1,C2);
   return C2;
@@ -178,9 +179,10 @@ StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge()
 
 StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge(const Handle(StepShape_Edge)& E, 
                                                        StepToTopoDS_Tool& T, 
-                                                       StepToTopoDS_NMTool& NMTool)
+                                                       StepToTopoDS_NMTool& NMTool,
+                                                       const StepData_Factors& theLocalFactors)
 {
-  Init(E, T, NMTool);
+  Init(E, T, NMTool, theLocalFactors);
 }
 
 // ============================================================================
@@ -192,7 +194,8 @@ StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge(const Handle(StepShape_Ed
 
 void StepToTopoDS_TranslateEdge::Init(const Handle(StepShape_Edge)& aEdge, 
                                       StepToTopoDS_Tool& aTool,
-                                      StepToTopoDS_NMTool& NMTool)
+                                      StepToTopoDS_NMTool& NMTool,
+                                      const StepData_Factors& theLocalFactors)
 {
   Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
 
@@ -277,8 +280,8 @@ void StepToTopoDS_TranslateEdge::Init(const Handle(StepShape_Edge)& aEdge,
 
   TopoDS_Vertex V1, V2;
 
-  StepToTopoDS_TranslateVertex myTranVertex1(Vstart, aTool, NMTool);
-  StepToTopoDS_TranslateVertex myTranVertex2(Vend, aTool, NMTool);
+  StepToTopoDS_TranslateVertex myTranVertex1(Vstart, aTool, NMTool, theLocalFactors);
+  StepToTopoDS_TranslateVertex myTranVertex2(Vend, aTool, NMTool, theLocalFactors);
 
   if (myTranVertex1.IsDone()) {
     V1 = TopoDS::Vertex(myTranVertex1.Value());
@@ -315,11 +318,11 @@ void StepToTopoDS_TranslateEdge::Init(const Handle(StepShape_Edge)& aEdge,
     Handle(StepGeom_SurfaceCurve) Sc =
       Handle(StepGeom_SurfaceCurve)::DownCast(C);
     Handle(StepGeom_Curve) C1 = Sc->Curve3d();
-      MakeFromCurve3D (C1,EC,Vend,Precision(), E,V1,V2 , aTool);
+      MakeFromCurve3D (C1,EC,Vend,Precision(), E,V1,V2 , aTool, theLocalFactors);
   }
   else {
     // --- The Edge Geometry is a Single 3d Curve ---
-    MakeFromCurve3D (C,EC,Vend,Precision(), E,V1,V2 , aTool);
+    MakeFromCurve3D (C,EC,Vend,Precision(), E,V1,V2 , aTool, theLocalFactors);
   }
   // Force set flags SameRange and SameParameter to Standard_False
   if (done) {
@@ -348,14 +351,14 @@ void StepToTopoDS_TranslateEdge::Init(const Handle(StepShape_Edge)& aEdge,
 // auxiliary function
 //:e6 abv 16 Apr 98: ProSTEP TR8, r0601_sy.stp, #14907
 static void GetCartesianPoints ( const Handle(StepShape_EdgeCurve)& EC, 
-				 gp_Pnt &P1, gp_Pnt &P2)
+				 gp_Pnt &P1, gp_Pnt &P2, const StepData_Factors& theLocalFactors)
 {
   for ( Standard_Integer i=1; i<=2; i++ ) {
     const Handle(StepShape_Vertex) V = ((i == 1) == EC->SameSense() ? EC->EdgeStart() : EC->EdgeEnd() );
     const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(V);
     if ( VP.IsNull() ) continue;
     const Handle(StepGeom_CartesianPoint) P = Handle(StepGeom_CartesianPoint)::DownCast(VP->VertexGeometry());
-    Handle(Geom_CartesianPoint) CP = StepToGeom::MakeCartesianPoint (P);
+    Handle(Geom_CartesianPoint) CP = StepToGeom::MakeCartesianPoint (P, theLocalFactors);
     ( i==1 ? P1 : P2 ) = CP->Pnt();
   }
 }
@@ -370,10 +373,11 @@ void  StepToTopoDS_TranslateEdge::MakeFromCurve3D
    const Handle(StepShape_Vertex)&  Vend,
    const Standard_Real preci, TopoDS_Edge& E,
    TopoDS_Vertex& V1, TopoDS_Vertex& V2,
-   StepToTopoDS_Tool&   aTool)
+   StepToTopoDS_Tool&   aTool,
+   const StepData_Factors& theLocalFactors)
 {
   Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
-  Handle(Geom_Curve) C1 = MakeCurve(C3D,TP);
+  Handle(Geom_Curve) C1 = MakeCurve(C3D,TP, theLocalFactors);
   if (C1.IsNull()) {
     TP->AddFail(C3D," Make Geom_Curve (3D) failed");
     myError = StepToTopoDS_TranslateEdgeOther;
@@ -390,7 +394,7 @@ void  StepToTopoDS_TranslateEdge::MakeFromCurve3D
 
   //:e6 abv
   gp_Pnt pnt1 = pv1, pnt2 = pv2;
-  if ( V1.IsSame ( V2 ) ) GetCartesianPoints ( EC, pnt1, pnt2 );
+  if ( V1.IsSame ( V2 ) ) GetCartesianPoints ( EC, pnt1, pnt2, theLocalFactors);
   ShapeAnalysis_Curve sac;
   temp1 = sac.Project (C1,pnt1,preci,pproj,U1,Standard_False);
   temp2 = sac.Project (C1,pnt2,preci,pproj,U2,Standard_False);
@@ -474,7 +478,8 @@ void  StepToTopoDS_TranslateEdge::MakeFromCurve3D
 // Purpose : Computes an individual pcurve (i.e. curve 2d)
 // ============================================================================
 Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
-  (const Handle(StepGeom_Pcurve)& PCU, const Handle(Geom_Surface)& ConvSurf) const
+  (const Handle(StepGeom_Pcurve)& PCU, const Handle(Geom_Surface)& ConvSurf,
+   const StepData_Factors& theLocalFactors) const
 {
   Handle(Geom2d_Curve) C2d;
   const Handle(StepRepr_DefinitionalRepresentation) DRI = PCU->ReferenceToCurve();
@@ -482,12 +487,12 @@ Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
   const Handle(StepGeom_Curve) StepCurve = Handle(StepGeom_Curve)::DownCast(DRI->ItemsValue(1));
   try
   {
-    C2d = StepToGeom::MakeCurve2d (StepCurve);
+    C2d = StepToGeom::MakeCurve2d (StepCurve, theLocalFactors);
     if (! C2d.IsNull()) {
     // -- if the surface is a RectangularTrimmedSurface, 
     // -- send the BasisSurface.
      C2d = GeomConvert_Units::DegreeToRadian(C2d, ConvSurf,
-       StepData_GlobalFactors::Intance().LengthFactor(), StepData_GlobalFactors::Intance().FactorDegreeRadian());
+       theLocalFactors.LengthFactor(), theLocalFactors.FactorDegreeRadian());
     }
     
   }
