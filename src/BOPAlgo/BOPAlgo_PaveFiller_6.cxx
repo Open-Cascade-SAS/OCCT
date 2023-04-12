@@ -606,13 +606,23 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   // Map of PaveBlocks with the faces to which it has to be added
   BOPAlgo_DataMapOfPaveBlockListOfInteger aPBFacesMap;
   //
-  for (i=0; i<aNbFF; ++i, aPS.Next()) {
+  // The vector aFFToRecheck contains indices of potentially problematic Face-Face intersections
+  NCollection_Vector<Standard_Integer> aFFToRecheck;
+  // aNbFF may be increased while processing this loop, because it is necessary to recheck 
+  // some of Face-Face intersections to avoid missing section edges
+  // aNbFF will be increased to the number of potentially problematic Face-Face intersections
+  const Standard_Integer aNbFFPrev = aNbFF;
+  for (i = 0; i < aNbFF; ++i, aPS.Next()) 
+  {
     if (UserBreak(aPS))
     {
       return;
     }
+    // after passing through all of Face-Face intersections it is necessary to return
+    // to potentially problematic Face-Face intersections and process them one more time
+    const Standard_Integer aCurInd = i < aNbFFPrev ? i : aFFToRecheck[i - aNbFFPrev];
     //
-    BOPDS_InterfFF& aFF=aFFs(i);
+    BOPDS_InterfFF& aFF=aFFs(aCurInd);
     aFF.Indices(nF1, nF2);
     //
     BOPDS_VectorOfPoint& aVP=aFF.ChangePoints();
@@ -735,6 +745,9 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
       }
     }
 
+    // Added additional check of Face-Face intersection to avoid missing section edges
+    // because of sequence of Face-Face interference processing 
+    Standard_Boolean isToRecheck = aNbC > 0 && i < aNbFFPrev;
     //
     // 3. Make section edges
     for (j=0; j<aNbC; ++j) {
@@ -748,6 +761,11 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
       aLPB.Clear();
       aPB1->Update(aLPB, Standard_False);
       //
+      if (aLPB.Extent() != 0)
+      {
+        isToRecheck = false;
+      }
+
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next()) {
         Handle(BOPDS_PaveBlock)& aPB=aItLPB.ChangeValue();
@@ -849,7 +867,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
             if (aMPBAdd.Add(aPBOut))
             {
               // Add edge for processing as the section edge
-              PreparePostTreatFF(i, j, aPBOut, aMSCPB, aMVI, aLPBC);
+              PreparePostTreatFF(aCurInd, j, aPBOut, aMSCPB, aMVI, aLPBC);
             }
           }
           continue;
@@ -868,7 +886,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
         //
         // Keep info for post treatment 
         BOPDS_CoupleOfPaveBlocks aCPB;
-        aCPB.SetIndexInterf(i);
+        aCPB.SetIndexInterf(aCurInd);
         aCPB.SetIndex(j);
         aCPB.SetPaveBlock1(aPB);
         //
@@ -880,12 +898,17 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
         aMVTol.UnBind(nV2);
 
         // Add existing pave blocks for post treatment
-        ProcessExistingPaveBlocks (i, j, nF1, nF2, aES, aMPBOnIn, aPBTree,
+        ProcessExistingPaveBlocks (aCurInd, j, nF1, nF2, aES, aMPBOnIn, aPBTree,
                                    aMSCPB, aMVI, aLPBC, aPBFacesMap, aMPBAdd);
       }
       //
       aLPBC.RemoveFirst();
     }//for (j=0; j<aNbC; ++j) {
+    if (isToRecheck)
+    {
+      aFFToRecheck.Append(aCurInd);
+      ++aNbFF;
+    }
     //
     //back to previous tolerance values for unused vertices
     //and forget about SD groups of such vertices
@@ -909,7 +932,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
         aDMVLV.UnBind(nV1);
     }
     //
-    ProcessExistingPaveBlocks(i, nF1, nF2, aMPBOnIn, aPBTree, aDMBV, aMSCPB, aMVI, aPBFacesMap, aMPBAdd);
+    ProcessExistingPaveBlocks(aCurInd, nF1, nF2, aMPBOnIn, aPBTree, aDMBV, aMSCPB, aMVI, aPBFacesMap, aMPBAdd);
   }//for (i=0; i<aNbFF; ++i) {
 
   // Remove "micro" section edges
