@@ -244,6 +244,9 @@ public:
   //! Return the mode of chamfers used
   Standard_EXPORT ChFiDS_ChamfMode Mode() const;
 
+  //! Return tolesp parameter
+  Standard_EXPORT Standard_Real GetTolesp() const;
+
 
 
   DEFINE_STANDARD_RTTIEXT(ChFiDS_Spine,Standard_Transient)

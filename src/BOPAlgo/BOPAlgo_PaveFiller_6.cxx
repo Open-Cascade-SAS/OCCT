@@ -62,6 +62,7 @@
 #include <IntTools_SequenceOfCurves.hxx>
 #include <IntTools_SequenceOfPntOn2Faces.hxx>
 #include <IntTools_Tools.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 #include <TColStd_ListOfInteger.hxx>
@@ -578,14 +579,12 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   Standard_Integer i, nF1, nF2, aNbC, aNbP, j;
   Standard_Integer nV1, nV2;
   Standard_Real aT1, aT2;
-  Handle(NCollection_BaseAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator = new NCollection_IncAllocator;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   TopoDS_Edge aES;
   Handle(BOPDS_PaveBlock) aPBOut;
   //
   //-----------------------------------------------------scope f
-  aAllocator=
-    NCollection_BaseAllocator::CommonBaseAllocator();
   //
   TColStd_ListOfInteger aLSE(aAllocator), aLBV(aAllocator);
   TColStd_MapOfInteger aMVOnIn(100, aAllocator), aMVCommon(100, aAllocator),

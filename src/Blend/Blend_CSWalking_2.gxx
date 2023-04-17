@@ -39,7 +39,7 @@ Blend_Status Blend_CSWalking::TestArret(Blend_CSFunction& Function,
   Blend_Status State1,State2;
   IntSurf_TypeTrans tras = IntSurf_Undecided;
 
-  if (Function.IsSolution(Sol,tolesp)) {
+  if (Function.IsSolution(Sol,tolpoint3d)) {
 
     pt1  = Function.PointOnS();
     pt2  = Function.PointOnC();
@@ -176,15 +176,16 @@ Blend_Status Blend_CSWalking::CheckDeflectionOnSurf
 
   prevP = previousP.PointOnS();
   prevTg = previousP.TangentOnS();
-  tolu = TheSurfaceTool::UResolution(surf,tolesp);
-  tolv = TheSurfaceTool::VResolution(surf,tolesp);
+  tolu = TheSurfaceTool::UResolution(surf,tolpoint3d);
+  tolv = TheSurfaceTool::VResolution(surf,tolpoint3d);
 
   gp_Vec Corde(prevP,Psurf);
   Norme = Corde.SquareMagnitude();
   prevNorme = prevTg.SquareMagnitude(); // JAG MODIF 25.04.94
 
 
-  if (Norme <= tolesp*tolesp || prevNorme <= tolesp*tolesp) { // JAG MODIF 25.04.94
+  const Standard_Real toler3d = tolpoint3d;
+  if (Norme <= toler3d * toler3d || prevNorme <= toler3d * toler3d) { // JAG MODIF 25.04.94
     // il faudra peut etre  forcer meme point  JAG MODIF 25.04.94
     return Blend_SamePoints;
   }
@@ -275,19 +276,20 @@ Blend_Status Blend_CSWalking::CheckDeflectionOnCurv
 
   prevP = previousP.PointOnC();
   prevTg = previousP.TangentOnC();
-  tolu = TheCurveTool::Resolution(curv,tolesp);
+  tolu = TheCurveTool::Resolution(curv,tolpoint3d);
 
   gp_Vec Corde(prevP,Pcurv);
   Norme = Corde.SquareMagnitude();
   prevNorme = prevTg.SquareMagnitude(); // JAG MODIF 25.04.94
 
 
+  const Standard_Real toler3d = tolpoint3d;
 // if (Norme <= tolesp*tolesp || prevNorme <= tolesp*tolesp) { // JAG MODIF 25.04.94
-  if (Norme <= tolesp*tolesp) { // le 95.01.10
+  if (Norme <= toler3d * toler3d) { // le 95.01.10
     // il faudra peut etre  forcer meme point  JAG MODIF 25.04.94
     return Blend_SamePoints;
   }
-  else if (prevNorme > tolesp*tolesp) {
+  else if (prevNorme > toler3d * toler3d) {
     Cosi = sens*Corde*prevTg;
     if (Cosi <0.) { // angle 3d>pi/2. --> retour arriere
       return Blend_Backward;
@@ -308,7 +310,7 @@ Blend_Status Blend_CSWalking::CheckDeflectionOnCurv
 
   // Voir s il faut faire le controle sur le signe de prevtg*Tgsurf
 
-  if (Tgcurv.Magnitude() <= tolesp) {
+  if (Tgcurv.Magnitude() <= tolpoint3d) {
     return Blend_SamePoints; // GROS BOBARD EN ATTENDANT
   }
 
@@ -318,7 +320,7 @@ Blend_Status Blend_CSWalking::CheckDeflectionOnCurv
     return Blend_StepTooLarge;
   }
 
-  if (prevNorme > tolesp*tolesp) {
+  if (prevNorme > toler3d * toler3d) {
 
     // Estimation de la fleche courante
 /*    

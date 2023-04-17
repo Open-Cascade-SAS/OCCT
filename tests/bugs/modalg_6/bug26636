@@ -1,4 +1,6 @@
-puts "REQUIRED All: Standard_ConstructionError\\: BRepFill \\:\\: profiles are inconsistent"
+puts "REQUIRED All: Profiles inconsistent"
+puts "REQUIRED All: Error: Algorithm has failed"
+
 puts "=========="
 puts "OCC26636"
 puts "=========="
@@ -10,4 +12,9 @@ puts ""
 restore [locate_data_file bug26636_w1.brep] w1
 restore [locate_data_file bug26636_w2.brep] w2
 
-catch {thrusections result 0 1 w1 w2}
+thrusections result 0 1 w1 w2
+
+
+if {![isdraw result]} {
+  puts "Error: Algorithm has failed"
+}

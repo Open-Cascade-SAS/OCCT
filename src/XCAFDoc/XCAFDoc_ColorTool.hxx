@@ -72,12 +72,12 @@ public:
   //! Returns color defined by label lab
   //! Returns False if the label is not in colortable
   //! or does not define a color
-  Standard_EXPORT Standard_Boolean GetColor (const TDF_Label& lab, Quantity_Color& col) const;
+  Standard_EXPORT static Standard_Boolean GetColor (const TDF_Label& lab, Quantity_Color& col);
 
   //! Returns color defined by label lab
   //! Returns False if the label is not in colortable
   //! or does not define a color
-  Standard_EXPORT Standard_Boolean GetColor(const TDF_Label& lab, Quantity_ColorRGBA& col) const;
+  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label& lab, Quantity_ColorRGBA& col);
   
   //! Finds a color definition in a colortable and returns
   //! its label if found
@@ -150,11 +150,11 @@ public:
   
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT Standard_Boolean GetColor (const TDF_Label& L, const XCAFDoc_ColorType type, Quantity_Color& color);
+  Standard_EXPORT static Standard_Boolean GetColor (const TDF_Label& L, const XCAFDoc_ColorType type, Quantity_Color& color);
 
   //! Returns color assigned to <L> as <type>
   //! Returns False if no such color is assigned
-  Standard_EXPORT Standard_Boolean GetColor(const TDF_Label& L, const XCAFDoc_ColorType type, Quantity_ColorRGBA& color);
+  Standard_EXPORT static Standard_Boolean GetColor(const TDF_Label& L, const XCAFDoc_ColorType type, Quantity_ColorRGBA& color);
   
   //! Sets a link with GUID defined by <type> (see
   //! XCAFDoc::ColorRefGUID()) from label <L> to color
@@ -198,7 +198,7 @@ public:
   Standard_EXPORT Standard_Boolean GetColor(const TopoDS_Shape& S, const XCAFDoc_ColorType type, Quantity_ColorRGBA& color);
   
   //! Return TRUE if object on this label is visible, FALSE if invisible.
-  Standard_EXPORT Standard_Boolean IsVisible (const TDF_Label& L) const;
+  Standard_EXPORT static Standard_Boolean IsVisible (const TDF_Label& L);
   
   //! Set the visibility of object on label. Do nothing if there no any object.
   //! Set UAttribute with corresponding GUID.

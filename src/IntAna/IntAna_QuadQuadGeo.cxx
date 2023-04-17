@@ -50,11 +50,21 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
+#include <gce_MakePln.hxx>
+#include <ProjLib.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_IntPoint.hxx>
+
+#ifdef DEBUGLINES
+#include <Geom2d_Line.hxx>
+#endif
 
 static
   gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D);
 static
   void RefineDir(gp_Dir& aDir);
+static
+  Standard_Real EstimDist(const gp_Cone& theCon1, const gp_Cone& theCon2);
 
 //=======================================================================
 //class :  AxeOperator
@@ -248,6 +258,72 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   else {
     return(gp_Ax2(P,D,gp_Dir(gp_Vec(-y,x,0.0))));
   }
+}
+
+//=======================================================================
+//function : EstimDist
+//purpose  : returns a minimal distance from apex to any solution
+//=======================================================================
+Standard_Real EstimDist(const gp_Cone& theCon1, const gp_Cone& theCon2)
+{
+  //It is supposed that axes of cones are coplanar and 
+  //distance between them > Precision::Confusion()
+  gp_Pnt aPA1 = theCon1.Apex(), aPA2 = theCon2.Apex();
+
+  gp_Pnt aP3 = aPA1.Translated(theCon1.Position().Direction());
+
+  gce_MakePln aMkPln(aPA1, aPA2, aP3);
+  if(!aMkPln.IsDone())
+    return Precision::Infinite();
+
+  const gp_Pln& aPln = aMkPln.Value();
+
+  gp_Lin anAx1(aPA1, theCon1.Position().Direction());
+  gp_Lin2d anAx12d = ProjLib::Project(aPln, anAx1);
+  gp_Lin2d Lines1[2];
+  Standard_Real anAng1 = theCon1.SemiAngle();
+  Lines1[0] = anAx12d.Rotated(anAx12d.Location(), anAng1);
+  Lines1[1] = anAx12d.Rotated(anAx12d.Location(), -anAng1);
+  //
+  gp_Lin anAx2(aPA2, theCon2.Position().Direction());
+  gp_Lin2d anAx22d = ProjLib::Project(aPln, anAx2);
+  gp_Lin2d Lines2[2];
+  Standard_Real anAng2 = theCon2.SemiAngle();
+  Lines2[0] = anAx22d.Rotated(anAx22d.Location(), anAng2);
+  Lines2[1] = anAx22d.Rotated(anAx22d.Location(), -anAng2);
+
+#ifdef DEBUGLINES
+  Handle(Geom2d_Line) L10 = new Geom2d_Line(Lines1[0]);
+  Handle(Geom2d_Line) L11 = new Geom2d_Line(Lines1[1]);
+  Handle(Geom2d_Line) L20 = new Geom2d_Line(Lines2[0]);
+  Handle(Geom2d_Line) L21 = new Geom2d_Line(Lines2[1]);
+#endif
+
+  Standard_Real aMinDist[2] = { Precision::Infinite(), Precision::Infinite() };
+  Standard_Integer i, j, k;
+  IntAna2d_AnaIntersection anInter;
+  for (i = 0; i < 2; ++i)
+  {
+    for (j = 0; j < 2; ++j)
+    {
+      anInter.Perform(Lines1[i], Lines2[j]);
+      if (anInter.IsDone())
+      {
+        Standard_Integer aNbPoints = anInter.NbPoints();
+        for (k = 1; k <= aNbPoints; ++k)
+        {
+          const IntAna2d_IntPoint& anIntP = anInter.Point(k);
+          Standard_Real aPar1 = Abs(anIntP.ParamOnFirst());
+          aMinDist[0] = Min(aPar1, aMinDist[0]);
+          Standard_Real aPar2 = Abs(anIntP.ParamOnSecond());
+          aMinDist[1] = Min(aPar2, aMinDist[1]);
+        }
+      }
+    }
+  }
+
+  Standard_Real aDist = Max(aMinDist[0], aMinDist[1]);
+  return aDist;
 }
 //=======================================================================
 //function : IntAna_QuadQuadGeo
@@ -1356,30 +1432,49 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con1,
                                    const gp_Cone& Con2,
-                                   const Standard_Real Tol) 
+                                   const Standard_Real Tol)
 {
-  done=Standard_True;
+  done = Standard_True;
   //
   Standard_Real tg1, tg2, aDA1A2, aTol2;
   gp_Pnt aPApex1, aPApex2;
 
   Standard_Real TOL_APEX_CONF = 1.e-10;
-  
-  //
-  tg1=Tan(Con1.SemiAngle());
-  tg2=Tan(Con2.SemiAngle());
 
-  if((tg1 * tg2) < 0.) {
+  //
+  tg1 = Tan(Con1.SemiAngle());
+  tg2 = Tan(Con2.SemiAngle());
+
+  if ((tg1 * tg2) < 0.) {
     tg2 = -tg2;
   }
   //
-  aTol2=Tol*Tol;
-  aPApex1=Con1.Apex();
-  aPApex2=Con2.Apex();
-  aDA1A2=aPApex1.SquareDistance(aPApex2);
+  aTol2 = Tol*Tol;
+  aPApex1 = Con1.Apex();
+  aPApex2 = Con2.Apex();
+  aDA1A2 = aPApex1.SquareDistance(aPApex2);
   //
-  AxeOperator A1A2(Con1.Axis(),Con2.Axis());
+  AxeOperator A1A2(Con1.Axis(), Con2.Axis());
   //
+  Standard_Real aTolAng = myEPSILON_ANGLE_CONE;
+  if ((Abs(tg1 - tg2) < Tol) && (A1A2.Parallel()))
+  {
+    Standard_Real DistA1A2 = A1A2.Distance();
+    if (DistA1A2 > 100. * Tol)
+    {
+      Standard_Real aMinSolDist = EstimDist(Con1, Con2);
+      if (aMinSolDist < Epsilon(1.))
+      {
+        aTolAng = Tol;
+      }
+      else
+      {
+        aTolAng = Max(myEPSILON_ANGLE_CONE, Tol / aMinSolDist);
+        aTolAng = Min(aTolAng, Tol);
+      }
+    }
+  }
+
   // 1
   if(A1A2.Same()) {
     //-- two circles 
@@ -1427,8 +1522,8 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
     }
   } //-- fin A1A2.Same
   // 2
-  else if((Abs(tg1-tg2)<myEPSILON_ANGLE_CONE) && (A1A2.Parallel())) {
-    //-- voir AnVer12mai98
+  else if((Abs(tg1-tg2) < aTolAng ) && (A1A2.Parallel())) {
+
     Standard_Real DistA1A2=A1A2.Distance();
     gp_Dir DA1=Con1.Position().Direction();
     gp_Vec O1O2(Con1.Apex(),Con2.Apex());

@@ -1,0 +1,17 @@
+puts "##################################################"
+puts "0030781: Sweep algorithm creates non-planar edges (orig. BOPAlgo_MakerVolume fails to build a solid)"
+puts "##################################################"
+
+binrestore [locate_data_file bug30781.bin] s
+explode s
+evolved result -s s_1 -p s_2 -solid -a -v -t 1.e-6
+
+checkshape result
+checknbshapes result -vertex 24 -edge 38 -wire 14 -face 14
+checkprops result -s 41330.7
+
+smallview
+don result 
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

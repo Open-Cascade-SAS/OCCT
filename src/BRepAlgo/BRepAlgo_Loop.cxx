@@ -42,12 +42,14 @@
 #include <TopTools_SequenceOfShape.hxx>
 
 #include <stdio.h>
+//#define OCCT_DEBUG_ALGO
+//#define DRAW
 #ifdef DRAW
 #include <DBRep.hxx>
 #pragma comment(lib,"TKDraw")
 #endif
 #ifdef OCCT_DEBUG_ALGO
-Standard_Boolean AffichLoop  = Standard_False;
+Standard_Boolean AffichLoop  = Standard_True;
 Standard_Integer NbLoops     = 0;
 Standard_Integer NbWires     = 1;
 static char* name = new char[100];
@@ -58,7 +60,8 @@ static char* name = new char[100];
 //purpose  : 
 //=======================================================================
 
-BRepAlgo_Loop::BRepAlgo_Loop()
+BRepAlgo_Loop::BRepAlgo_Loop():
+  myTolConf (0.001)
 {
 }
 
@@ -185,7 +188,6 @@ static TopoDS_Vertex  UpdateClosedEdge(const TopoDS_Edge&         E,
   Standard_Boolean OnStart = 0, OnEnd = 0;
   //// modified by jgv, 13.04.04 for OCC5634 ////
   TopExp::Vertices (E,V1,V2);
-  //Standard_Real    Tol = Precision::Confusion();
   Standard_Real    Tol = BRep_Tool::Tolerance( V1 );
   ///////////////////////////////////////////////
   
@@ -427,13 +429,12 @@ static void StoreInMVE (const TopoDS_Face&                  F,
 			TopoDS_Edge&                  E,
 			TopTools_IndexedDataMapOfShapeListOfShape& MVE,
 			Standard_Boolean&                   YaCouture,
-			TopTools_DataMapOfShapeShape& VerticesForSubstitute )
+			TopTools_DataMapOfShapeShape& VerticesForSubstitute,
+            const Standard_Real theTolConf)
 {      
   TopoDS_Vertex V1, V2, V;
   TopTools_ListOfShape Empty;
   
-  Standard_Real Tol = 0.001; //5.e-05; //5.e-07;
-//  gp_Pnt P1, P2, P;
   gp_Pnt P1, P;
   BRep_Builder BB;
   for (Standard_Integer iV = 1; iV <= MVE.Extent(); iV++)
@@ -449,7 +450,7 @@ static void StoreInMVE (const TopoDS_Face&                  F,
 	{
 	  V1 = TopoDS::Vertex( itl.Value() );
 	  P1 = BRep_Tool::Pnt( V1 );
-	  if (P.IsEqual( P1, Tol ) && !V.IsSame(V1))
+	  if (P.IsEqual( P1, theTolConf ) && !V.IsSame(V1))
 	    {
 	      V.Orientation( V1.Orientation() );
 	      if (VerticesForSubstitute.IsBound( V1 ))
@@ -574,7 +575,7 @@ void BRepAlgo_Loop::Perform()
         TopoDS_Edge& E = TopoDS::Edge(itl1.Value());
         if (!Emap.Add(E))
           continue;
-        StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute);
+        StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute, myTolConf);
       }
     }
   }
@@ -586,7 +587,7 @@ void BRepAlgo_Loop::Perform()
   for (itl.Initialize(myConstEdges); itl.More(); itl.Next()) {
     TopoDS_Edge& E = TopoDS::Edge(itl.Value());
     if (DejaVu.Add(E))
-      StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute);
+      StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute, myTolConf);
   }
 
 #ifdef DRAW
@@ -626,42 +627,42 @@ void BRepAlgo_Loop::Perform()
     //--------------------------------
     RemovePendingEdges(MVE);
 
-    if (MVE.Extent() == 0) break; 
+    if (MVE.Extent() == 0) break;
     //--------------------------------
     // Start edge.
     //--------------------------------
     EF = CE = TopoDS::Edge(MVE(1).First());
-    TopExp::Vertices(CE,V1,V2);
+    TopExp::Vertices(CE, V1, V2);
     //--------------------------------
     // VF vertex start of new wire
     //--------------------------------
-    if (CE.Orientation() == TopAbs_FORWARD) { CV = VF = V1;}
-    else                                    { CV = VF = V2;}
+    if (CE.Orientation() == TopAbs_FORWARD) { CV = VF = V1; }
+    else { CV = VF = V2; }
     if (!MVE.Contains(CV)) continue;
     TopTools_ListOfShape& aListEdges = MVE.ChangeFromKey(CV);
-    for ( itl.Initialize(aListEdges); itl.More(); itl.Next()) {
+    for (itl.Initialize(aListEdges); itl.More(); itl.Next()) {
       if (itl.Value().IsEqual(CE)) {
-	aListEdges.Remove(itl);
-	break;
+        aListEdges.Remove(itl);
+        break;
       }
     }
-    End  = Standard_False;
-    
+    End = Standard_False;
+
     while (!End) {
       //-------------------------------
       // Construction of a wire.
       //-------------------------------
-      TopExp::Vertices(CE,V1,V2);
+      TopExp::Vertices(CE, V1, V2);
       if (!CV.IsSame(V1)) CV = V1; else CV = V2;
 
-      B.Add (NW,CE);
+      B.Add(NW, CE);
       UsedEdges.Add(CE);
 
       if (!MVE.Contains(CV) || MVE.FindFromKey(CV).IsEmpty()) {
         End = Standard_True;
       }
       else {
-        End = !SelectEdge(myFace,CE,CV,NE,MVE.ChangeFromKey(CV));
+        End = !SelectEdge(myFace, CE, CV, NE, MVE.ChangeFromKey(CV));
         if (!End) {
           CE = NE;
           if (MVE.FindFromKey(CV).IsEmpty())
@@ -672,35 +673,41 @@ void BRepAlgo_Loop::Perform()
     //--------------------------------------------------
     // Add new wire to the set of wires
     //------------------------------------------------
-    Standard_Real Tol = 0.001; //5.e-05; //5.e-07;
-    TopExp_Explorer explo( NW, TopAbs_VERTEX );
-    for (; explo.More(); explo.Next())
-      {
-      const TopoDS_Vertex& aV = TopoDS::Vertex( explo.Current() );
-      Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*) &(aV).TShape());
-      TV->Tolerance( Tol );
-      TV->Modified( Standard_True );
-      }
-    for (explo.Init( NW, TopAbs_EDGE ); explo.More(); explo.Next())
-      {
-      const TopoDS_Edge& aE = TopoDS::Edge( explo.Current() );
-      Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &(aE).TShape());
-      TE->Tolerance( Tol );
-      TE->Modified( Standard_True );
-      }
 
-    if (VF.IsSame(CV) && SamePnt2d(VF,EF,CE,myFace))
+    if (VF.IsSame(CV))
     {
-      NW.Closed (Standard_True);
-      myNewWires.Append (NW);
+      if (SamePnt2d(VF, EF, CE, myFace))
+      {
+        NW.Closed(Standard_True);
+        myNewWires.Append(NW);
+      }
+      else if(BRep_Tool::Tolerance(VF) < myTolConf)
+      {
+        BRep_Builder aBB;
+        aBB.UpdateVertex(VF, myTolConf);
+        if (SamePnt2d(VF, EF, CE, myFace))
+        {
+          NW.Closed(Standard_True);
+          myNewWires.Append(NW);
+        }
+#ifdef OCCT_DEBUG_ALGO
+        else
+        {
+          std::cout << "BRepAlgo_Loop: Open Wire" << std::endl;
+          if (AffichLoop)
+            std::cout << "OpenWire is : NW_" << NbLoops << "_" << NbWires << std::endl;
+        }
+#endif
+      }
     }
 #ifdef OCCT_DEBUG_ALGO
     else {
-      std::cout <<"BRepAlgo_Loop: Open Wire"<<std::endl;
+      std::cout << "BRepAlgo_Loop: Open Wire" << std::endl;
       if (AffichLoop)
-        std::cout << "OpenWire is : NW_"<<NbLoops<<"_"<<NbWires<<std::endl;
-      }
+        std::cout << "OpenWire is : NW_" << NbLoops << "_" << NbWires << std::endl;
+    }
 #endif
+
 #ifdef DRAW
     if (AffichLoop) {
       sprintf(name,"NW_%d_%d",NbLoops,NbWires++);	
@@ -777,8 +784,6 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
       VF = TopoDS::Vertex(aLocalV);
       aLocalV = VCEI.Oriented(TopAbs_REVERSED); 
       VL = TopoDS::Vertex(aLocalV);
-//      VF = TopoDS::Vertex(VCEI.Oriented(TopAbs_FORWARD));
-//      VL = TopoDS::Vertex(VCEI.Oriented(TopAbs_REVERSED)); 
     }
     SV.Prepend(VF);
     SV.Append(VL);
@@ -813,13 +818,9 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
       B.Add  (NewEdge,aLocalEdge);
       aLocalEdge = V2.Oriented(TopAbs_REVERSED);
       B.Add  (TopoDS::Edge(NewEdge),aLocalEdge);
-//      B.Add  (NewEdge,V1.Oriented(TopAbs_FORWARD));
-//      B.Add  (NewEdge,V2.Oriented(TopAbs_REVERSED));
       if (V1.IsSame(VF)) 
 	U1 = f;
       else 
-//	U1=BRep_Tool::Parameter
-//	  (TopoDS::Vertex(V1.Oriented(TopAbs_INTERNAL)),WE);
 	{
 	  TopoDS_Shape aLocalV = V1.Oriented(TopAbs_INTERNAL);
 	  U1=BRep_Tool::Parameter(TopoDS::Vertex(aLocalV),WE);
@@ -830,8 +831,6 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
 	{
 	  TopoDS_Shape aLocalV = V2.Oriented(TopAbs_INTERNAL);
 	  U2=BRep_Tool::Parameter(TopoDS::Vertex(aLocalV),WE);
-//	U2=BRep_Tool::Parameter
-//	  (TopoDS::Vertex(V2.Oriented(TopAbs_INTERNAL)),WE);
 	}
       B.Range (TopoDS::Edge(NewEdge),U1,U2);
 #ifdef DRAW

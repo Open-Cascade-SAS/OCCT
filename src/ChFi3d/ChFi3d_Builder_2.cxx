@@ -188,7 +188,7 @@ static Standard_Boolean BonVoisin(const gp_Pnt& Point,
 				  Standard_Real& XDep,
 				  Standard_Real& YDep,
 				  const ChFiDS_Map& EFMap,
-				  const Standard_Real tolesp) 
+				  const Standard_Real tol3d) 
 {
   Standard_Boolean bonvoisin = 1;
   Standard_Real winter, Uf, Ul;
@@ -203,7 +203,7 @@ static Standard_Boolean BonVoisin(const gp_Pnt& Point,
     const TopoDS_Edge& ecur = TopoDS::Edge(Ex.Current());
     if(!ecur.IsSame(cured)){
       hc->Initialize(ecur);
-      Standard_Real tolc = hc->Resolution(tolesp);
+      Standard_Real tolc = hc->Resolution(tol3d);
       if(ChFi3d_InterPlaneEdge(plane,hc,winter,1,tolc)){
 	gp_Pnt np = hc->Value(winter);
 	Standard_Real ndist = np.SquareDistance(papp);
@@ -848,7 +848,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
     const BRepAdaptor_Curve& Ced = Spine->CurrentElementarySpine(iedge);
     gp_Pnt pnt = Ced.Value(woned);
   
-    if (Projection(PExt, pnt, els, w, tolesp) &&
+    if (Projection(PExt, pnt, els, w, tolapp3d) &&
 	PerformFirstSection(Spine,HGuide,Choix,HS1,HS2,
 			    I1,I2,w,SolDep,Pos1,Pos2)) {
       P1.SetCoord(SolDep(1),SolDep(2));
@@ -894,7 +894,7 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
 //    Extrema_LocateExtPC ext(pnt,els,w,1.e-8);
 //    if(ext.IsDone()){
 //      w = ext.Point().Parameter(); 
-    if (Projection(PExt, pnt, els, w, tolesp)) {
+    if (Projection(PExt, pnt, els, w, tolapp3d)) {
       PerformFirstSection(Spine,HGuide,Choix,HS1,HS2,
 			  I1,I2,w,SolDep,Pos1,Pos2);
       gp_Pnt P;
@@ -909,11 +909,11 @@ void ChFi3d_Builder::StartSol(const Handle(ChFiDS_Stripe)&      Stripe,
 	   NbChangement++) {
 	if(Pos1 != TopAbs_IN){
 	  bonvoisin = BonVoisin(P, HS1, f1, plane, cured, 
-				SolDep(1),SolDep(2), myEFMap, tolesp); 
+				SolDep(1),SolDep(2), myEFMap, tolapp3d);
 	}
 	if(Pos2 != TopAbs_IN && bonvoisin){
 	  bonvoisin = BonVoisin(P, HS2, f2, plane, cured, 
-				SolDep(3),SolDep(4), myEFMap, tolesp);
+				SolDep(3),SolDep(4), myEFMap, tolapp3d);
 	} 
 	if(bonvoisin){
 	  f1 = HS1->Face();
@@ -2712,7 +2712,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	    pcprev1->D1(prevpar1,pdeb1,vdeb1);
 	    pcnext1->D1(nextpar1,pfin1,vfin1);
 	    Bon1 = ChFi3d_mkbound(S1,PC1,-1,pdeb1,vdeb1,1,
-				  pfin1,vfin1,tolesp,2.e-4);
+				  pfin1,vfin1,tolapp3d,2.e-4);
 	  }
 	}
 	else{
@@ -2731,11 +2731,11 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  pdeb1 = PC1->Value(pardeb1);
 	  pfin1 = PC1->Value(parfin1);
 	  Bon1 = ChFi3d_mkbound(S1,PC1,-1,pdeb1,Vdeb1,1,
-				pfin1,Vfin1,tolesp,2.e-4);
+				pfin1,Vfin1,tolapp3d,2.e-4);
 	}
       }
       else{
-	Bon1 = ChFi3d_mkbound(S1,PC1,tolesp,2.e-4);
+	Bon1 = ChFi3d_mkbound(S1,PC1,tolapp3d,2.e-4);
       }
       if(tw2){
 	if(!yaprevon2 || !yanexton2){
@@ -2770,7 +2770,7 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	    pcprev2->D1(prevpar2,pdeb2,vdeb2);
 	    pcnext2->D1(nextpar2,pfin2,vfin2);
 	    Bon2 = ChFi3d_mkbound(S2,PC2,-1,pdeb2,vdeb2,1,
-				  pfin2,vfin2,tolesp,2.e-4);
+				  pfin2,vfin2,tolapp3d,2.e-4);
 	  }
 	}
 	else{
@@ -2789,11 +2789,11 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
 	  pdeb2 = PC2->Value(pardeb2);
 	  pfin2 = PC2->Value(parfin2);
 	  Bon2 = ChFi3d_mkbound(S2,PC2,-1,pdeb2,Vdeb2,1,
-				pfin2,Vfin2,tolesp,2.e-4);
+				pfin2,Vfin2,tolapp3d,2.e-4);
 	}
       }
       else{
-	Bon2 = ChFi3d_mkbound(S2,PC2,tolesp,2.e-4);
+	Bon2 = ChFi3d_mkbound(S2,PC2,tolapp3d,2.e-4);
       }
       // The parameters of neighbor traces are updated, so 
       // straight lines uv are pulled.
@@ -2817,8 +2817,8 @@ void ChFi3d_Builder::PerformSetOfKGen(Handle(ChFiDS_Stripe)& Stripe,
       gp_Pnt2d pdebs2 = pcsprev2->Value(prevpar2);
       gp_Pnt2d pfins1 = pcsnext1->Value(nextpar1);
       gp_Pnt2d pfins2 = pcsnext2->Value(nextpar2);
-      Bdeb = ChFi3d_mkbound(sprev,pdebs1,pdebs2,tolesp,2.e-4);
-      Bfin = ChFi3d_mkbound(snext,pfins1,pfins2,tolesp,2.e-4);
+      Bdeb = ChFi3d_mkbound(sprev,pdebs1,pdebs2,tolapp3d,2.e-4);
+      Bfin = ChFi3d_mkbound(snext,pfins1,pfins2,tolapp3d,2.e-4);
 
       GeomFill_ConstrainedFilling fil(11,20);
       if(pointuon1) fil.Init(Bon2,Bfin,Bdeb,1);
@@ -3046,7 +3046,7 @@ void ChFi3d_Builder::PerformSetOfSurf(Handle(ChFiDS_Stripe)& Stripe,
   ChFi3d_InitChron(ch); // init perf for ChFi3d_MakeExtremities
 #endif
   
-  if(!Simul) ChFi3d_MakeExtremities(Stripe,DStr,myEFMap,tolesp,tol2d);
+  if(!Simul) ChFi3d_MakeExtremities(Stripe,DStr,myEFMap,tolapp3d,tol2d);
   
 #ifdef OCCT_DEBUG
   ChFi3d_ResultChron(ch, t_makextremities); // result perf t_makextremities

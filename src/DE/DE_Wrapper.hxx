@@ -61,9 +61,14 @@ public:
   //! @param[in] theWrapper object to copy
   Standard_EXPORT DE_Wrapper(const Handle(DE_Wrapper)& theWrapper);
 
-  //! Gets global configuration singleton
+  //! Gets global configuration singleton.
+  //! If wrapper is not set, create it by default as base class object.
   //! @return point to global configuration
   Standard_EXPORT static Handle(DE_Wrapper) GlobalWrapper();
+
+  //! Sets global configuration singleton
+  //! @param[in] theWrapper object to set as global configuration
+  Standard_EXPORT static void SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper);
 
 public:
 
@@ -74,7 +79,7 @@ public:
   //! @param theProgress[in] progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean Read(const TCollection_AsciiString& thePath,
-                                        Handle(TDocStd_Document)& theDocument,
+                                        const Handle(TDocStd_Document)& theDocument,
                                         Handle(XSControl_WorkSession)& theWS,
                                         const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -95,7 +100,7 @@ public:
   //! @param theProgress[in] progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT Standard_Boolean Read(const TCollection_AsciiString& thePath,
-                                        Handle(TDocStd_Document)& theDocument,
+                                        const Handle(TDocStd_Document)& theDocument,
                                         const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes a CAD file, according internal configuration
@@ -211,13 +216,33 @@ public:
   Standard_EXPORT void ChangePriority(const TColStd_ListOfAsciiString& theVendorPriority,
                                       const Standard_Boolean theToDisable = Standard_False);
 
+  //! Find available provider from the configuration.
+  //! If there are several providers, choose the one with the highest priority.
+  //! @param[in] thePath path to the CAD file
+  //! @param[in] theToImport flag to finds for import. Standard_True-import, Standard_False-export
+  //! @param[out] theProvider created new provider
+  //! @return Standard_True if provider found and created
+  Standard_EXPORT virtual Standard_Boolean FindProvider(const TCollection_AsciiString& thePath,
+                                                        const Standard_Boolean theToImport,
+                                                        Handle(DE_Provider)& theProvider) const;
+
+  //! Updates all registered nodes, all changes will be saved in nodes
+  //! @param[in] theToForceUpdate flag that turns on/of nodes, according to updated ability to import/export
+  Standard_EXPORT void UpdateLoad(const Standard_Boolean theToForceUpdate = Standard_False) const;
+
+  //! Gets flag that keeps changes on configuration nodes which are being updated, false by default
+  Standard_Boolean KeepUpdates() const { return myKeepUpdates; }
+
+  //! Sets flag that keeps changes on configuration nodes which are being updated, false by default
+  void SetKeepUpdates(const Standard_Boolean theToKeepUpdates) { myKeepUpdates = theToKeepUpdates; }
+
   //! Gets format map, contains vendor map with nodes
   //! @return internal map of formats
   Standard_EXPORT const DE_ConfigurationFormatMap& Nodes() const;
 
   //! Copies values of all fields
   //! @return new object with the same field values
-  Standard_EXPORT Handle(DE_Wrapper) Copy() const;
+  Standard_EXPORT virtual Handle(DE_Wrapper) Copy() const;
 
 protected:
 
@@ -227,22 +252,13 @@ protected:
   //! @param[in] theResource resource to get priority
   void sort(const Handle(DE_ConfigurationContext)& theResource);
 
-  //! Find available provider from the configuration.
-  //! If there are several providers, choose the one with the highest priority.
-  //! @param[in] thePath path to the CAD file
-  //! @param[in] theToImport flag to finds for import. Standard_True-import, Standard_False-export
-  //! @param[out] theProvider created new provider
-  //! @return Standard_True if provider found and created
-  Standard_Boolean findProvider(const TCollection_AsciiString& thePath,
-                                const Standard_Boolean theToImport,
-                                Handle(DE_Provider)& theProvider) const;
-
 public:
 
   DE_ConfigurationNode::DE_SectionGlobal GlobalParameters; //!< Internal parameters for the all translators
 
 private:
 
+  Standard_Boolean myKeepUpdates; //!< Flag that keeps changes on configuration nodes which are being updated
   DE_ConfigurationFormatMap myConfiguration; //!< Internal map of formats
 };
 

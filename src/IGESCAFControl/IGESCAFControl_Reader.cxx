@@ -322,7 +322,8 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (const Handle(TDocStd_Document)
 
     //Checks that current entity is a subfigure
     Handle(IGESBasic_SubfigureDef) aSubfigure = Handle(IGESBasic_SubfigureDef)::DownCast (ent);
-    if (GetNameMode() && !aSubfigure.IsNull() && STool->Search (S, L, Standard_True, Standard_True))
+    if (GetNameMode() && !aSubfigure.IsNull() && !aSubfigure->Name().IsNull() &&
+        STool->Search(S, L, Standard_True, Standard_True))
     {
       //In this case we attach subfigure name to the label, instead of default "COMPOUND"
       Handle(TCollection_HAsciiString) aName = aSubfigure->Name();

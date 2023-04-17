@@ -155,9 +155,9 @@ public:
   
   //! Gets all shape labels referred by theL label of the GD&T table.
   //! Returns False if there are no shape labels added to the sequences.
-  Standard_EXPORT Standard_Boolean GetRefShapeLabel (const TDF_Label& theL, 
-                                                     TDF_LabelSequence& theShapeLFirst, 
-                                                     TDF_LabelSequence& theShapeLSecond) const;
+  Standard_EXPORT static Standard_Boolean GetRefShapeLabel (const TDF_Label& theL, 
+                                                           TDF_LabelSequence& theShapeLFirst,
+                                                           TDF_LabelSequence& theShapeLSecond);
   
   //! Returns dimension tolerance assigned to theDimTolL label.
   //! Returns False if no such dimension tolerance is assigned.
@@ -215,12 +215,12 @@ public:
                                              Handle(TCollection_HAsciiString)& theIdentification) const;
   
   //! Returns all Datum labels defined for theDimTolL label.
-  Standard_EXPORT Standard_Boolean GetDatumOfTolerLabels (const TDF_Label& theDimTolL, 
-                                                          TDF_LabelSequence& theDatums) const;
+  Standard_EXPORT static Standard_Boolean GetDatumOfTolerLabels (const TDF_Label& theDimTolL,
+                                                                 TDF_LabelSequence& theDatums);
 
   //! Returns all Datum labels with XCAFDimTolObjects_DatumObject defined for label theDimTolL.
-  Standard_EXPORT Standard_Boolean GetDatumWithObjectOfTolerLabels (const TDF_Label& theDimTolL, 
-                                                                    TDF_LabelSequence& theDatums) const;
+  Standard_EXPORT static Standard_Boolean GetDatumWithObjectOfTolerLabels (const TDF_Label& theDimTolL,
+                                                                           TDF_LabelSequence& theDatums);
 
   //! Returns all GeomToleranses labels defined for theDatumL label.
   Standard_EXPORT Standard_Boolean GetTolerOfDatumLabels (const TDF_Label& theDatumL, 

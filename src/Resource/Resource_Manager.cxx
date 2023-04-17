@@ -225,6 +225,14 @@ static Resource_KindOfLine WhatKindOfLine(OSD_File& aFile,
     aToken2.Clear();
   else {
     Line.Remove(1,Pos-1);
+    const Standard_Integer aLineLength = Line.Length();
+    if (aLineLength >= 2)
+    {
+      if (Line.Value(aLineLength - 1) == '\r')
+      {
+        Line.Remove(aLineLength - 1);
+      }
+    }
     Line.Remove(Line.Length());
     aToken2 = Line;
   }

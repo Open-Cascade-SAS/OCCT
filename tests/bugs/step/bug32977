@@ -1,0 +1,58 @@
+puts "===================================="
+puts "0032977: OCC V7.5, V7.6 cannot read STEP color correctly for the root label, but v6.8 can"
+puts "===================================="
+puts ""
+
+pload ALL
+
+# Read files
+# Check colors number
+
+ReadStep D1 [locate_data_file bug32977_1.stp]
+set info1 [XStat D1]
+regexp {Number +of +colors += +([-0-9.+eE]+)} $info1 full nbcolor
+regexp {Number +of +colors += +[-0-9.+eE]+\n([^\n]*)} $info1 full colors
+if {[string compare ${colors} "RED BLACK GRAY74 GRAY26 "] != 0} {
+    puts "Error: not expected colors ${colors}"
+  }
+if {$nbcolor != 4} {
+    puts "Error: not expected number of colors"
+  } 
+  
+ReadStep D2 [locate_data_file bug32977_2.step]
+set info2 [XStat D2]
+regexp {Number +of +colors += +([-0-9.+eE]+)} $info2 full nbcolor
+regexp {Number +of +colors += +[-0-9.+eE]+\n([^\n]*)} $info2 full colors
+if {[string compare ${colors} "LIGHTSTEELBLUE2 WHITE VIOLETRED3 GRAY25 "] != 0} {
+    puts "Error: not expected colors ${colors}"
+  }
+if {$nbcolor != 4} {
+    puts "Error: not expected number of colors"
+  } 
+  
+ReadStep D3 [locate_data_file trj10_pm8-id-214.stp]
+set info3 [XStat D3]
+regexp {Number +of +colors += +([-0-9.+eE]+)} $info3 full nbcolor
+regexp {Number +of +colors += +[-0-9.+eE]+\n([^\n]*)} $info3 full colors
+if {[string compare ${colors} "MAGENTA RED ORANGERED ORANGE DEEPSKYBLUE2 GREEN "] != 0} {
+    puts "Error: not expected colors ${colors}"
+  }
+if {$nbcolor != 6} {
+    puts "Error: not expected number of colors"
+  } 
+
+vinit View1
+XDisplay D1 -dispmode 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}1.png
+
+vclear
+XDisplay D2 -dispmode 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}2.png
+
+vclear
+XDisplay D3 -dispmode 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}3.png
+

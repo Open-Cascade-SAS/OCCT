@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <BRepFill_ThruSectionErrorStatus.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopTools_DataMapOfShapeListOfShape.hxx>
@@ -68,6 +69,12 @@ public:
   //! Returns the current mutable input state
   Standard_EXPORT Standard_Boolean IsMutableInput() const;
 
+  //! Returns status of the operation
+  BRepFill_ThruSectionErrorStatus GetStatus() const
+  {
+    return myStatus;
+  }
+
 protected:
 
 private:
@@ -78,6 +85,7 @@ private:
   TopTools_DataMapOfShapeShape myOldNewShapes;
   BRepTools_ReShape myReshaper;
   Standard_Boolean myMutableInput;
+  BRepFill_ThruSectionErrorStatus myStatus;
 
 };
 

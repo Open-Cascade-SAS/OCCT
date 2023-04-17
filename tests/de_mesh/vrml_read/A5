@@ -1,0 +1,16 @@
+puts "============"
+puts "0033320: Data Exchange - Reading of a VRML file with a long line fails"
+puts "============"
+puts ""
+
+set aFile [locate_data_file bug33320_wM_BugBlender_2.wrl]
+
+catch { Close D }
+
+ReadVrml D $aFile
+vinit Driver1/View_${casename}/${casename}
+XDisplay D -dispMode 1
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+Close D

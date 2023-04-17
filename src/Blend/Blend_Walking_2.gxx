@@ -41,7 +41,7 @@ Blend_Status Blend_Walking::TestArret(Blend_Function& Function,
   IntSurf_TypeTrans tras1,tras2;
   Blend_Point curpoint;
   Standard_Boolean loctwist1 = Standard_False, loctwist2 = Standard_False;
-  Standard_Real tolsolu = tolesp;
+  Standard_Real tolsolu = tolpoint3d;
 
   if ( !TestSolu) tolsolu *= 1000; //Ca doit toujours etre bon
   if (Function.IsSolution(sol,tolsolu)) {
@@ -211,8 +211,8 @@ Blend_Status Blend_Walking::CheckDeflection
     if(!prevpointistangent){
       prevTg = previousP.TangentOnS1();
     }
-    tolu = TheSurfaceTool::UResolution(surf1,tolesp);
-    tolv = TheSurfaceTool::VResolution(surf1,tolesp);
+    tolu = TheSurfaceTool::UResolution(surf1,tolpoint3d);
+    tolv = TheSurfaceTool::VResolution(surf1,tolpoint3d);
   }
   else {
     Psurf = CurPoint.PointOnS2();
@@ -223,8 +223,8 @@ Blend_Status Blend_Walking::CheckDeflection
     if(!prevpointistangent){
       prevTg = previousP.TangentOnS2();
     }
-    tolu = TheSurfaceTool::UResolution(surf2,tolesp);
-    tolv = TheSurfaceTool::VResolution(surf2,tolesp);
+    tolu = TheSurfaceTool::UResolution(surf2,tolpoint3d);
+    tolv = TheSurfaceTool::VResolution(surf2,tolpoint3d);
   }
 
   gp_Vec Corde(prevP,Psurf);
@@ -233,12 +233,13 @@ Blend_Status Blend_Walking::CheckDeflection
   if(!prevpointistangent) prevNorme = prevTg.SquareMagnitude();
 
 
-  if (Norme <= tolesp*tolesp){
+  const Standard_Real toler3d = 0.01 * tolpoint3d;
+  if (Norme <= toler3d * toler3d){
     // il faudra peut etre  forcer meme point
     return Blend_SamePoints;
   }
   if(!prevpointistangent){
-    if(prevNorme <= tolesp*tolesp) {
+    if(prevNorme <= toler3d * toler3d) {
       return Blend_SamePoints;
     }
     Cosi = sens*Corde*prevTg;

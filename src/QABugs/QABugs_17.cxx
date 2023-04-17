@@ -577,6 +577,7 @@ static Standard_Integer OCC570 (Draw_Interpretor& di, Standard_Integer argc,cons
 
 #include <Law_Interpol.hxx>
 
+static Standard_Real tesp = 1.e-4;
 static Standard_Real t3d = 1.e-4;
 static Standard_Real t2d = 1.e-5;
 static Standard_Real ta  = 1.e-2;
@@ -606,7 +607,7 @@ static Standard_Integer MKEVOL(Draw_Interpretor& di,
   if (narg < 3) return 1;
   TopoDS_Shape V = DBRep::Get(a[2]);
   Rake = new BRepFilletAPI_MakeFillet(V);
-  Rake->SetParams(ta,t3d,t2d,t3d,t2d,fl);
+  Rake->SetParams(ta, tesp, t2d, t3d, t2d, fl);
   Rake->SetContinuity(blend_cont, tapp_angle);
   if (narg == 4) {
     ChFi3d_FilletShape FSh = ChFi3d_Rational;

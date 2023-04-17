@@ -674,7 +674,10 @@ void Extrema_ExtCC::PrepareParallelResult(const Standard_Real theUt11,
         Extrema_ExtPElC ExtPCir(aPCirc2,
                                 Extrema_CurveTool::Circle (*myC[0]),
                                 Precision::Confusion(), theUt11, theUt12);
-
+        if (ExtPCir.NbExt() < 1)
+        {
+          continue;
+        }
         Standard_Real aMinSqD = ExtPCir.SquareDistance(1);
         for (Standard_Integer anExtID = 2; anExtID <= ExtPCir.NbExt(); anExtID++)
         {

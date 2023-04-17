@@ -1,4 +1,4 @@
-puts "TODO OCC30286 ALL: Error : The length of result shape is 7.44464, expected 7.39488"
+puts "TODO OCC30286 ALL: Error : The length of result shape is 7.4452, expected 7.39488"
 
 puts "====================================="
 puts "OCC27341: Incorrect exact HLR results"

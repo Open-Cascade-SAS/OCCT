@@ -56,7 +56,7 @@ public:
   Standard_Boolean IsMaterial (const TDF_Label& theLabel) const { return !GetMaterial (theLabel).IsNull(); }
 
   //! Returns Material defined by specified Label, or NULL if the label is not in Material Table.
-  Standard_EXPORT Handle(XCAFDoc_VisMaterial) GetMaterial (const TDF_Label& theMatLabel) const;
+  Standard_EXPORT static Handle(XCAFDoc_VisMaterial) GetMaterial (const TDF_Label& theMatLabel);
 
   //! Adds Material definition to a Material Table and returns its Label.
   Standard_EXPORT TDF_Label AddMaterial (const Handle(XCAFDoc_VisMaterial)& theMat,
@@ -88,7 +88,7 @@ public:
   Standard_EXPORT static Standard_Boolean GetShapeMaterial (const TDF_Label& theShapeLabel, TDF_Label& theMaterialLabel);
 
   //! Returns material assigned to the shape label.
-  Standard_EXPORT Handle(XCAFDoc_VisMaterial) GetShapeMaterial (const TDF_Label& theShapeLabel);
+  Standard_EXPORT static Handle(XCAFDoc_VisMaterial) GetShapeMaterial (const TDF_Label& theShapeLabel);
 
   //! Sets a link with GUID XCAFDoc::VisMaterialRefGUID() from shape label to material label.
   //! @param theShape [in] shape

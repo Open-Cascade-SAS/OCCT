@@ -89,7 +89,7 @@ Standard_Boolean XCAFDoc_ColorTool::IsColor (const TDF_Label& lab) const
 //=======================================================================
 
 Standard_Boolean XCAFDoc_ColorTool::GetColor (const TDF_Label& lab,
-					       Quantity_Color& col) const
+					       Quantity_Color& col)
 {
   Quantity_ColorRGBA aCol;
   Standard_Boolean isDone = GetColor(lab, aCol);
@@ -104,10 +104,8 @@ Standard_Boolean XCAFDoc_ColorTool::GetColor (const TDF_Label& lab,
 //=======================================================================
 
 Standard_Boolean XCAFDoc_ColorTool::GetColor(const TDF_Label& lab,
-  Quantity_ColorRGBA& col) const
+  Quantity_ColorRGBA& col)
 {
-  if (lab.Father() != Label()) return Standard_False;
-
   Handle(XCAFDoc_Color) ColorAttribute;
   if (!lab.FindAttribute(XCAFDoc_Color::GetID(), ColorAttribute))
     return Standard_False;
@@ -514,7 +512,7 @@ XCAFDoc_ColorTool::XCAFDoc_ColorTool()
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean XCAFDoc_ColorTool::IsVisible (const TDF_Label& L) const
+Standard_Boolean XCAFDoc_ColorTool::IsVisible (const TDF_Label& L)
 {
   Handle(TDataStd_UAttribute) aUAttr;
   return (!L.FindAttribute(XCAFDoc::InvisibleGUID(), aUAttr));

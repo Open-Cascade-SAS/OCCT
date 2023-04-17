@@ -509,40 +509,37 @@ static Standard_Integer getFreeShapes (Draw_Interpretor& di, Standard_Integer ar
   return 0;
 }
 
-static Standard_Integer getOneShape (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+//=======================================================================
+//function : getOneShape
+//purpose  :
+//=======================================================================
+static Standard_Integer getOneShape (Draw_Interpretor& theDI, 
+                                     Standard_Integer theNbArgs, 
+                                     const char** theArgVec)
 {
-  if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" shape DocName \n";
+  if ( theNbArgs !=3 )
+  {
+    theDI <<"Use: "<< theArgVec[0]<<" shape DocName \n";
     return 1;
   }
   
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[2], Doc);
-  if ( Doc.IsNull() ) { di << argv[2] << " is not a document\n"; return 1; }
+  Handle(TDocStd_Document) aDoc;   
+  DDocStd::GetDocument(theArgVec[2], aDoc);
+  if ( aDoc.IsNull() )
+  { 
+    theDI << "Error: " << theArgVec[2] << " is not a document\n";
+    return 1;
+  }
 
-  TDF_LabelSequence Labels;
-  Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
-  STool->GetFreeShapes(Labels);
-  if ( Labels.Length() <=0 ) {
-    di << "Document " << argv[2] << " contain no shapes\n";
-    return 0;
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  TopoDS_Shape aShape = aSTool->GetOneShape();
+  if (aShape.IsNull())
+  {
+    theDI << "Error: Document " << theArgVec[2] << " contain no shapes\n";
+    return 1;
   }
-  
-  if ( Labels.Length() ==1 ) {
-    TopoDS_Shape S = STool->GetShape ( Labels.Value(1) );
-    DBRep::Set ( argv[1], S );
-  }
-  else {
-    TopoDS_Compound C;
-    BRep_Builder B;
-    B.MakeCompound ( C );
-    for ( Standard_Integer i = 1; i<= Labels.Length(); i++) {
-      TopoDS_Shape S = STool->GetShape ( Labels.Value(i) );
-      B.Add ( C, S );
-    }
-    DBRep::Set ( argv[1], C );
-  }
-  di << argv[1];
+  DBRep::Set (theArgVec[1], aShape);
+  theDI << theArgVec[1];
   return 0;
 }
 

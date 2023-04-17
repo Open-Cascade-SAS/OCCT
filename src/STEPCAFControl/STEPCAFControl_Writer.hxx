@@ -31,6 +31,7 @@
 #include <StepVisual_DraughtingModel.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <TDF_LabelSequence.hxx>
+#include <TDF_LabelMap.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 
 class XSControl_WorkSession;
@@ -44,219 +45,236 @@ class TopoDS_Shape;
 //! colors and part names
 //!
 //! Also supports multifile writing
-class STEPCAFControl_Writer 
+class STEPCAFControl_Writer
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
-  
+
+public:
+
   //! Creates a writer with an empty
   //! STEP model and sets ColorMode, LayerMode, NameMode and
   //! PropsMode to Standard_True.
   Standard_EXPORT STEPCAFControl_Writer();
-  
+
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for STEP
   //! Clears the internal data structures
-  Standard_EXPORT STEPCAFControl_Writer(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+  Standard_EXPORT STEPCAFControl_Writer(const Handle(XSControl_WorkSession)& theWS,
+                                        const Standard_Boolean theScratch = Standard_True);
+
   //! Clears the internal data structures and attaches to a new session
   //! Clears the session if it was not yet set for STEP
-  Standard_EXPORT void Init (const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+  Standard_EXPORT void Init(const Handle(XSControl_WorkSession)& theWS,
+                            const Standard_Boolean theScratch = Standard_True);
+
   //! Writes all the produced models into file
   //! In case of multimodel with extern references,
   //! filename will be a name of root file, all other files
   //! have names of corresponding parts
   //! Provided for use like single-file writer
-  Standard_EXPORT IFSelect_ReturnStatus Write (const Standard_CString theFileName);
+  Standard_EXPORT IFSelect_ReturnStatus Write(const Standard_CString theFileName);
 
   //! Writes all the produced models into the stream.
   //! Provided for use like single-file writer
-  Standard_EXPORT IFSelect_ReturnStatus WriteStream (std::ostream& theStream);
-  
+  Standard_EXPORT IFSelect_ReturnStatus WriteStream(std::ostream& theStream);
+
   //! Transfers a document (or single label) to a STEP model
   //! The mode of translation of shape is AsIs
   //! If multi is not null pointer, it switches to multifile
   //! mode (with external refs), and string pointed by <multi>
   //! gives prefix for names of extern files (can be empty string)
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc,
-                                             const STEPControl_StepModelType mode = STEPControl_AsIs,
-                                             const Standard_CString multi = 0,
-                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT Standard_Boolean Transfer(const Handle(TDocStd_Document)& theDoc,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const Standard_CString theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Method to transfer part of the document specified by label
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& L,
-                                             const STEPControl_StepModelType mode = STEPControl_AsIs,
-                                             const Standard_CString multi = 0,
-                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
+  Standard_EXPORT Standard_Boolean Transfer(const TDF_Label& theLabel,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const Standard_CString theIsMulti = 0,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Mehod to writing sequence of root assemblies or part of the file specified by use by one label 
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& L,
-                                             const STEPControl_StepModelType mode = STEPControl_AsIs,
-                                             const Standard_CString multi = 0,
-                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-
-  Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc,
-                                            const TCollection_AsciiString& filename,
+  Standard_EXPORT Standard_Boolean Transfer(const TDF_LabelSequence& theLabelSeq,
+                                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                                            const Standard_CString theIsMulti = 0,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+
+  Standard_EXPORT Standard_Boolean Perform(const Handle(TDocStd_Document)& theDoc,
+                                           const TCollection_AsciiString& theFileName,
+                                           const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Transfers a document and writes it to a STEP file
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc,
-                                            const Standard_CString filename,
-                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  Standard_EXPORT Standard_Boolean Perform(const Handle(TDocStd_Document)& theDoc,
+                                           const Standard_CString theFileName,
+                                           const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Returns data on external files
   //! Returns Null handle if no external files are read
-  Standard_EXPORT const NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>& ExternFiles() const;
-  
+  const NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>& ExternFiles() const { return myFiles; };
+
   //! Returns data on external file by its original label
   //! Returns False if no external file with given name is read
-  Standard_EXPORT Standard_Boolean ExternFile (const TDF_Label& L, Handle(STEPCAFControl_ExternFile)& ef) const;
-  
+  Standard_EXPORT Standard_Boolean ExternFile(const TDF_Label& theLabel,
+                                              Handle(STEPCAFControl_ExternFile)& theExtFile) const;
+
   //! Returns data on external file by its name
   //! Returns False if no external file with given name is read
-  Standard_EXPORT Standard_Boolean ExternFile (const Standard_CString name, Handle(STEPCAFControl_ExternFile)& ef) const;
-  
+  Standard_EXPORT Standard_Boolean ExternFile(const Standard_CString theName,
+                                              Handle(STEPCAFControl_ExternFile)& theExtFile) const;
+
   //! Returns basic reader for root file
-  Standard_EXPORT STEPControl_Writer& ChangeWriter();
-  
+  STEPControl_Writer& ChangeWriter() { return myWriter; }
+
   //! Returns basic reader as const
-  Standard_EXPORT const STEPControl_Writer& Writer() const;
-  
+  const STEPControl_Writer& Writer() const { return myWriter; }
+
   //! Set ColorMode for indicate write Colors or not.
-  Standard_EXPORT void SetColorMode (const Standard_Boolean colormode);
-  
-  Standard_EXPORT Standard_Boolean GetColorMode() const;
-  
+  void SetColorMode(const Standard_Boolean theColorMode) { myColorMode = theColorMode; }
+
+  Standard_Boolean GetColorMode() const { return myColorMode; }
+
   //! Set NameMode for indicate write Name or not.
-  Standard_EXPORT void SetNameMode (const Standard_Boolean namemode);
-  
-  Standard_EXPORT Standard_Boolean GetNameMode() const;
-  
+  void SetNameMode(const Standard_Boolean theNameMode) { myNameMode = theNameMode; }
+
+  Standard_Boolean GetNameMode() const { return myNameMode; }
+
   //! Set LayerMode for indicate write Layers or not.
-  Standard_EXPORT void SetLayerMode (const Standard_Boolean layermode);
-  
-  Standard_EXPORT Standard_Boolean GetLayerMode() const;
-  
+  void SetLayerMode(const Standard_Boolean theLayerMode) { myLayerMode = theLayerMode; }
+
+  Standard_Boolean GetLayerMode() const { return myLayerMode; }
+
   //! PropsMode for indicate write Validation properties or not.
-  Standard_EXPORT void SetPropsMode (const Standard_Boolean propsmode);
-  
-  Standard_EXPORT Standard_Boolean GetPropsMode() const;
-  
+  void SetPropsMode(const Standard_Boolean thePropsMode) { myPropsMode = thePropsMode; }
+
+  Standard_Boolean GetPropsMode() const { return myPropsMode; }
+
   //! Set SHUO mode for indicate write SHUO or not.
-  Standard_EXPORT void SetSHUOMode (const Standard_Boolean shuomode);
-  
-  Standard_EXPORT Standard_Boolean GetSHUOMode() const;
-  
+  void SetSHUOMode(const Standard_Boolean theSHUOMode) { mySHUOMode = theSHUOMode; }
+
+  Standard_Boolean GetSHUOMode() const { return mySHUOMode; }
+
   //! Set dimtolmode for indicate write D&GTs or not.
-  Standard_EXPORT void SetDimTolMode (const Standard_Boolean dimtolmode);
-  
-  Standard_EXPORT Standard_Boolean GetDimTolMode() const;
-  
+  void SetDimTolMode(const Standard_Boolean theDimTolMode) { myGDTMode = theDimTolMode; };
+
+  Standard_Boolean GetDimTolMode() const { return myGDTMode; }
+
   //! Set dimtolmode for indicate write D&GTs or not.
-  Standard_EXPORT void SetMaterialMode (const Standard_Boolean matmode);
-  
-  Standard_EXPORT Standard_Boolean GetMaterialMode() const;
+  void SetMaterialMode(const Standard_Boolean theMaterialMode) { myMatMode = theMaterialMode; }
+
+  Standard_Boolean GetMaterialMode() const { return myMatMode; }
 
 protected:
-  
+
   //! Transfers labels to a STEP model
   //! Returns True if translation is OK
-  //! isExternFile setting from TransferExternFiles method
-  Standard_EXPORT Standard_Boolean Transfer (STEPControl_Writer& wr,
-                                             const TDF_LabelSequence& labels,
-                                             const STEPControl_StepModelType mode = STEPControl_AsIs,
-                                             const Standard_CString multi = 0,
-                                             const Standard_Boolean isExternFile = Standard_False,
-                                             const Message_ProgressRange& theProgress = Message_ProgressRange()) ;
-  
+  //! isExternFile setting from transferExternFiles method
+  Standard_Boolean transfer(STEPControl_Writer& theWriter,
+                            const TDF_LabelSequence& theLabels,
+                            const STEPControl_StepModelType theMode = STEPControl_AsIs,
+                            const Standard_CString theIsMulti = 0,
+                            const Standard_Boolean isExternFile = Standard_False,
+                            const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Parses assembly structure of label L, writes all the simple
   //! shapes each to its own file named by name of its label plus
   //! prefix
   //! Returns shape representing that assembly structure
   //! in the form of nested empty compounds (and a sequence of
   //! labels which are newly written nodes of this assembly)
-  Standard_EXPORT TopoDS_Shape TransferExternFiles (const TDF_Label& L,
-                                                    const STEPControl_StepModelType mode,
-                                                    TDF_LabelSequence& Lseq,
-                                                    const Standard_CString prefix = "",
-                                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+  TopoDS_Shape transferExternFiles(const TDF_Label& theLabel,
+                                   const STEPControl_StepModelType theMode,
+                                   TDF_LabelSequence& theLabelSeq,
+                                   const Standard_CString thePrefix = "",
+                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
+
   //! Write external references to STEP
-  Standard_EXPORT Standard_Boolean WriteExternRefs (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
-  
+  Standard_Boolean writeExternRefs(const Handle(XSControl_WorkSession)& theWS,
+                                   const TDF_LabelSequence& theLabels) const;
+
   //! Write colors assigned to specified labels, to STEP model
-  Standard_EXPORT Standard_Boolean WriteColors (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels);
-  
+  Standard_Boolean writeColors(const Handle(XSControl_WorkSession)& theWS,
+                               const TDF_LabelSequence& theLabels);
+
   //! Write names assigned to specified labels, to STEP model
-  Standard_EXPORT Standard_Boolean WriteNames (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
-  
+  Standard_Boolean writeNames(const Handle(XSControl_WorkSession)& theWS,
+                              const TDF_LabelSequence& theLabels) const;
+
   //! Write D&GTs assigned to specified labels, to STEP model
-  Standard_EXPORT Standard_Boolean WriteDGTs (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
-  
-   //! Write D&GTs assigned to specified labels, to STEP model, according AP242
-  Standard_EXPORT Standard_Boolean WriteDGTsAP242 (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels);
+  Standard_Boolean writeDGTs(const Handle(XSControl_WorkSession)& theWS,
+                             const TDF_LabelSequence& theLabels) const;
+
+  //! Write D&GTs assigned to specified labels, to STEP model, according AP242
+  Standard_Boolean writeDGTsAP242(const Handle(XSControl_WorkSession)& theWS,
+                                  const TDF_LabelSequence& theLabels);
 
   //! Write materials assigned to specified labels, to STEP model
-  Standard_EXPORT Standard_Boolean WriteMaterials (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
-  
+  Standard_Boolean writeMaterials(const Handle(XSControl_WorkSession)& theWS,
+                                  const TDF_LabelSequence& theLabels) const;
+
   //! Write validation properties assigned to specified labels,
   //! to STEP model
-  Standard_EXPORT Standard_Boolean WriteValProps (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels, const Standard_CString multi) const;
-  
+  Standard_Boolean writeValProps(const Handle(XSControl_WorkSession)& theWS,
+                                 const TDF_LabelSequence& theLabels,
+                                 const Standard_CString theIsMulti) const;
+
   //! Write layers assigned to specified labels, to STEP model
-  Standard_EXPORT Standard_Boolean WriteLayers (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels) const;
-  
+  Standard_Boolean writeLayers(const Handle(XSControl_WorkSession)& theWS,
+                               const TDF_LabelSequence& theLabels) const;
+
   //! Write SHUO assigned to specified component, to STEP model
-  Standard_EXPORT Standard_Boolean WriteSHUOs (const Handle(XSControl_WorkSession)& WS, const TDF_LabelSequence& labels);
+  Standard_Boolean writeSHUOs(const Handle(XSControl_WorkSession)& theWS,
+                              const TDF_LabelSequence& theLabels);
 
   //! Finds length units located in root of label
   //! If it exists, initializes local length unit from it
   //! Else initializes according to Cascade length unit
-  Standard_EXPORT void prepareUnit(const TDF_Label& theLabel,
-                                   const Handle(StepData_StepModel)& theModel);
+  void prepareUnit(const TDF_Label& theLabel,
+                   const Handle(StepData_StepModel)& theModel);
+
+  Handle(StepRepr_ShapeAspect) writeShapeAspect(const Handle(XSControl_WorkSession)& theWS,
+                                                const TDF_Label theLabel,
+                                                const TopoDS_Shape theShape,
+                                                Handle(StepRepr_RepresentationContext)& theRC,
+                                                Handle(StepAP242_GeometricItemSpecificUsage)& theGISU);
+
+  void writePresentation(const Handle(XSControl_WorkSession)& theWS,
+                         const TopoDS_Shape& thePresentation,
+                         const Handle(TCollection_HAsciiString)& thePrsName,
+                         const Standard_Boolean theHasSemantic,
+                         const Standard_Boolean theHasPlane,
+                         const gp_Ax2& theAnnotationPlane,
+                         const gp_Pnt& theTextPosition,
+                         const Handle(Standard_Transient) theDimension);
+
+  Handle(StepDimTol_Datum) writeDatumAP242(const Handle(XSControl_WorkSession)& theWS,
+                                           const TDF_LabelSequence& theShapeL,
+                                           const TDF_Label& theDatumL,
+                                           const Standard_Boolean isFirstDTarget,
+                                           const Handle(StepDimTol_Datum) theWrittenDatum);
+
+  void writeToleranceZone(const Handle(XSControl_WorkSession)& theWS,
+                          const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,
+                          const Handle(StepDimTol_GeometricTolerance)& theEntity,
+                          const Handle(StepRepr_RepresentationContext)& theRC);
+
+  void writeGeomTolerance(const Handle(XSControl_WorkSession)& theWS,
+                          const TDF_LabelSequence& theShapeSeqL,
+                          const TDF_Label& theGeomTolL,
+                          const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
+                          const Handle(StepRepr_RepresentationContext)& theRC);
 
 private:
-
-  Standard_EXPORT Handle(StepRepr_ShapeAspect) WriteShapeAspect(const Handle(XSControl_WorkSession) &WS,
-    const TDF_Label theLabel, const TopoDS_Shape theShape, Handle(StepRepr_RepresentationContext)& theRC,
-    Handle(StepAP242_GeometricItemSpecificUsage)& theGISU);
-
-  Standard_EXPORT void WritePresentation(const Handle(XSControl_WorkSession)&    WS,
-                                         const TopoDS_Shape&                     thePresentation,
-                                         const Handle(TCollection_HAsciiString)& thePrsName,
-                                         const Standard_Boolean                  hasSemantic,
-                                         const Standard_Boolean                  hasPlane,
-                                         const gp_Ax2&                           theAnnotationPlane,
-                                         const gp_Pnt&                           theTextPosition,
-                                         const Handle(Standard_Transient)        theDimension);
-
-  Standard_EXPORT Handle(StepDimTol_Datum) WriteDatumAP242(const Handle(XSControl_WorkSession)& WS,
-                                                           const TDF_LabelSequence&             theShapeL,
-                                                           const TDF_Label&                     theDatumL,
-                                                           const Standard_Boolean               isFirstDTarget,
-                                                           const Handle(StepDimTol_Datum)       theWrittenDatum);
-
-  Standard_EXPORT void WriteToleranceZone(const Handle(XSControl_WorkSession) &WS, const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,
-    const Handle(StepDimTol_GeometricTolerance)& theEntity, const Handle(StepRepr_RepresentationContext)& theRC);
-
-  Standard_EXPORT void WriteGeomTolerance(const Handle(XSControl_WorkSession)&                      WS,
-                                          const TDF_LabelSequence&                                  theShapeSeqL,
-                                          const TDF_Label&                                          theGeomTolL,
-                                          const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
-                                          const Handle(StepRepr_RepresentationContext)&             theRC);
-
-private:
-
 
   STEPControl_Writer myWriter;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
+  TDF_LabelMap myRootLabels;
   STEPCAFControl_DataMapOfLabelShape myLabels;
   STEPCAFControl_DataMapOfLabelExternFile myLabEF;
+  STEPCAFControl_DataMapOfLabelShape myPureRefLabels;
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;
@@ -271,8 +289,5 @@ private:
   Handle(StepRepr_ProductDefinitionShape) myGDTCommonPDS;
 
 };
-
-
-
 
 #endif // _STEPCAFControl_Writer_HeaderFile

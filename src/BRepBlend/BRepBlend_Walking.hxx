@@ -58,11 +58,11 @@ public:
   //! To define singular points computed before walking.
   Standard_EXPORT void AddSingularPoint (const Blend_Point& P);
   
-  Standard_EXPORT void Perform (Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
+  Standard_EXPORT void Perform (Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real Tol3d, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
   
-  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_Function& F, const Standard_Real Pdep, math_Vector& ParDep, const Standard_Real Tolesp, const Standard_Real TolGuide, TopAbs_State& Pos1, TopAbs_State& Pos2);
+  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_Function& F, const Standard_Real Pdep, math_Vector& ParDep, const Standard_Real Tol3d, const Standard_Real TolGuide, TopAbs_State& Pos1, TopAbs_State& Pos2);
   
-  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Pdep, const Standard_Real Pmax, const math_Vector& ParDep, const Standard_Real Tolesp, const Standard_Real TolGuide, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, Standard_Real& Psol, math_Vector& ParSol);
+  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real Pdep, const Standard_Real Pmax, const math_Vector& ParDep, const Standard_Real Tol3d, const Standard_Real TolGuide, const Standard_Boolean RecOnS1, const Standard_Boolean RecOnS2, Standard_Real& Psol, math_Vector& ParSol);
   
   Standard_EXPORT Standard_Boolean Continu (Blend_Function& F, Blend_FuncInv& FInv, const Standard_Real P);
   
@@ -131,7 +131,7 @@ private:
   Standard_Boolean ToCorrectOnRst1;
   Standard_Boolean ToCorrectOnRst2;
   Standard_Real CorrectedParam;
-  Standard_Real tolesp;
+  Standard_Real tolpoint3d;
   Standard_Real tolgui;
   Standard_Real pasmax;
   Standard_Real fleche;

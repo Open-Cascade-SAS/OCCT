@@ -85,9 +85,12 @@ public:
   //! @return new object with the same field values
   Standard_EXPORT virtual Handle(DE_ConfigurationNode) Copy() const = 0;
 
-  //! Update loading status. Checking for the license.
+  //! Update loading status. Checking for the ability to read and write.
+  //! @param[in] theToImport flag to updates for import. Standard_True-import, Standard_False-export
+  //! @param[in] theToKeep flag to save update result
   //! @return Standard_True, if node can be used
-  Standard_EXPORT virtual bool UpdateLoad();
+  Standard_EXPORT virtual bool UpdateLoad(const Standard_Boolean theToImport,
+                                          const Standard_Boolean theToKeep);
 
 public:
 

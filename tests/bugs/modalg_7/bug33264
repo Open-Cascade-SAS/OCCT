@@ -1,0 +1,15 @@
+puts "============"
+puts "0033264: Modeling Algorithms - Result of section operation is incomplete"
+puts "============"
+puts ""
+
+restore [locate_data_file bug33264_1.brep] srf1
+restore [locate_data_file bug33264_2.brep] srf2
+
+bsection res srf1 srf2 
+
+checknbshapes res -vertex 44 -edge 43
+checkprops res -l 51.3377
+checksection res 
+
+checkview -display res -2d -path ${imagedir}/${test_image}.png

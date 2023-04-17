@@ -1,0 +1,28 @@
+puts "============"
+puts "0032570: Visualization, AIS_AnimationObject - define rotation around axis"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1 2 100 100 -preview
+box b2 2 100 100 -preview
+
+vinit View1
+vdisplay b1 -dispMode 0
+vdisplay b2 -dispMode 1
+
+vanimation anim -object b2 -axis 2 100 0 0 0 1 -angle1 0 -angle2 90 -duration 2
+#stop at the middle of the animation (45 degrees)
+vanimation anim -play 1 0
+vanimation anim -stop
+vfit
+vdump ${imagedir}/${casename}.png
+set loc1 [vlocation b2]
+
+vlocation b2 -reset -rotate 2 100 0 0 0 1 45
+set loc2 [vlocation b2]
+
+if {$loc1 != $loc2} { puts "Error: the location at the middle of animation is different from the location after rotating by 45 degrees" }
+
+puts "Put the following command to start interactive animation:"
+puts "    vanimation anim -play"

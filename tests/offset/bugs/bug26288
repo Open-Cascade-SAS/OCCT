@@ -1,4 +1,5 @@
 puts "TODO OCC26030 ALL: Error : The offset cannot be built"
+puts "TODO OCC26030 ALL: ERROR. Mixed connectivity of faces."
 
 puts "========"
 puts "OCC26288"

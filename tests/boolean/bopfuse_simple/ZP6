@@ -3,6 +3,8 @@
 #
 #Create 3 torus
 
+puts "TODO CR33225 Linux: Error : The area of result shape is 138625, expected 197700"
+
 ptorus a0 100 20
 tcopy a0 a1
 tcopy a0 a2

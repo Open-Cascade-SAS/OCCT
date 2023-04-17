@@ -205,7 +205,7 @@ void Blend_CSWalking::MakeExtremity(TheExtremity& Extrem,
 
 //  Extrem.SetValue(previousP.PointOnS(),sol(1),sol(2),tolesp);
   previousP.ParametersOnS(U,V);
-  Extrem.SetValue(previousP.PointOnS(),U,V,previousP.Parameter(),tolesp);
+  Extrem.SetValue(previousP.PointOnS(),U,V,previousP.Parameter(),tolpoint3d);
   Iter = domain;
 
 

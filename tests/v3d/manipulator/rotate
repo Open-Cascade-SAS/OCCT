@@ -47,7 +47,7 @@ vmanipulator m -attach c1 -adjustPosition 1 -adjustSize 0 -enableModes 1 -size 4
 
 vmanipulator m -followRotation 1
 
-set mouse_pick {200 092}
+set mouse_pick {199 092}
 set mouse_drag {176 142}
 
 vmoveto {*}$mouse_pick
@@ -65,8 +65,8 @@ vdump $anImage1
 
 vmanipulator m -followRotation 1
 
-set mouse_pick {173 137}
-set mouse_drag {233 144}
+set mouse_pick {175 135}
+set mouse_drag {232 144}
 
 vmoveto {*}$mouse_pick
 vselect {*}$mouse_pick
@@ -113,7 +113,7 @@ vmanipulator m -followRotation 0
 # test rotation around y axis (world reference frame)
 # ---------------------------------------------------
 
-set mouse_pick {205 087}
+set mouse_pick {205 088}
 set mouse_drag {232 127}
 
 vmoveto {*}$mouse_pick
@@ -129,7 +129,7 @@ vdump $anImage4
 # test rotation around z axis (world reference frame)
 # ---------------------------------------------------
 
-set mouse_pick {228 141}
+set mouse_pick {228 142}
 set mouse_drag {184 143}
 
 vmoveto {*}$mouse_pick

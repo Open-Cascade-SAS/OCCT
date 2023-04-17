@@ -325,7 +325,7 @@ ChFi3d_Builder::ChFi3d_Builder(const TopoDS_Shape& S,
   myEShMap.Fill(S,TopAbs_EDGE,TopAbs_SHELL);
   myVFMap.Fill(S,TopAbs_VERTEX,TopAbs_FACE);
   myVEMap.Fill(S,TopAbs_VERTEX,TopAbs_EDGE);
-  SetParams(Ta,1.e-4,1.e-5,1.e-4,1.e-5,1.e-3);
+  SetParams(Ta, 1.0e-4, 1.e-5, 1.e-4, 1.e-5, 1.e-3);
   SetContinuity(GeomAbs_C1, Ta);
 }
 
@@ -336,7 +336,7 @@ ChFi3d_Builder::ChFi3d_Builder(const TopoDS_Shape& S,
 
 void ChFi3d_Builder::SetParams(const Standard_Real Tang, 
 			       const Standard_Real Tesp, 
-			       const Standard_Real T2d, 
+             const Standard_Real T2d, 
 			       const Standard_Real TApp3d, 
 			       const Standard_Real TolApp2d, 
 			       const Standard_Real Fleche)
@@ -692,7 +692,6 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     else{
       sst = Spine->LastStatus(); 
       iedge = Spine->NbEdges();
-      E[0] = Spine->Edges(iedge);
       V = Spine->LastVertex();
     }
     //Before all it is checked if the tangency is not dead.
@@ -703,6 +702,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     }
 
     if(sst == ChFiDS_BreakPoint){
+      Standard_Integer aLocNbG1Connections = 0;
       TopTools_ListIteratorOfListOfShape It;//,Jt;
       Standard_Boolean sommetpourri = Standard_False;
       TopTools_IndexedMapOfOrientedShape EdgesOfV;
@@ -720,7 +720,10 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
         if (!F2.IsNull() && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2)) //smooth edge
         {
           if (!F1.IsSame(F2))
+          {
             NbG1Connections++;
+            aLocNbG1Connections++;
+          }
           continue;
         }
         
@@ -759,7 +762,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
       if (EdgesOfV.Extent() != 3)
         sommetpourri = Standard_True;
       
-      if(!sommetpourri){
+      if(!sommetpourri && aLocNbG1Connections < 4){
 	sst = ChFi3d_EdgeState(E,myEFMap);
       }
       if(ii==1)Spine->SetFirstStatus(sst);

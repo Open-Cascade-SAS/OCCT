@@ -34,9 +34,7 @@ namespace
 //=======================================================================
 IGESCAFControl_ConfigurationNode::IGESCAFControl_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : IGESCAFControl_ConfigurationNode
@@ -46,7 +44,6 @@ IGESCAFControl_ConfigurationNode::IGESCAFControl_ConfigurationNode(const Handle(
   :DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
-  UpdateLoad();
 }
 
 //=======================================================================

@@ -20,6 +20,7 @@ user_guides/vis/vis.md
 user_guides/iges/iges.md
 user_guides/step/step.md
 user_guides/xde/xde.md
+user_guides/de_wrapper/de_wrapper.md
 user_guides/inspector/inspector.md
 user_guides/draw_test_harness/draw_test_harness.md
 

@@ -443,7 +443,7 @@ Standard_Integer gener(Draw_Interpretor&, Standard_Integer n, const char** a)
 //purpose  : 
 //=======================================================================
 
-Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char** a)
+Standard_Integer thrusections(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
   if (n < 6) return 1;
 
@@ -525,7 +525,30 @@ Standard_Integer thrusections(Draw_Interpretor&, Standard_Integer n, const char*
       BRepTest_Objects::SetHistory(Generator->Wires(), *Generator);
   }
   else {
-    std::cout << "Algorithm is not done" << std::endl;
+    BRepFill_ThruSectionErrorStatus aStatus = Generator->GetStatus();
+    switch (aStatus)
+    {
+    case BRepFill_ThruSectionErrorStatus_NotDone:
+      di << "Algorithm is not done\n";
+      break;
+    case BRepFill_ThruSectionErrorStatus_NotSameTopology:
+      di << "The input profiles should be all closed or all opened\n";
+      break;
+    case BRepFill_ThruSectionErrorStatus_ProfilesInconsistent:
+      di << "Profiles inconsistent\n";
+      break;
+    case BRepFill_ThruSectionErrorStatus_WrongUsage:
+      di << "Wrong usage of punctual sections\n";
+      break;
+    case BRepFill_ThruSectionErrorStatus_Null3DCurve:
+      di << "Some edges have null 3d curve";
+      break;
+    case BRepFill_ThruSectionErrorStatus_Failed:
+      di << "Algorithm has failed\n";
+      break;
+    default:
+      break;
+    }
   }
 
   return 0;

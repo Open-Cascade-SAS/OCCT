@@ -1,0 +1,16 @@
+puts "============"
+puts "0033327: Data Exchange, IGES Import - SubfigureDef can't read string"
+puts "============"
+
+pload DCAF
+
+Close D -silent
+
+ReadIges D [locate_data_file "bug33327.igs"]
+vclear
+vinit View1
+XDisplay -dispMode 1 D
+vfit
+vdump "$imagedir/${casename}_src.png"
+
+Close D

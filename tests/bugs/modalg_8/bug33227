@@ -1,0 +1,13 @@
+puts "============"
+puts "0033227: Modeling Algorithm - BOPAlgo_BuilderSolid generates incomplete result"
+puts "============"
+puts ""
+
+restore [locate_data_file bug33227.brep] s
+bopbsolid r s 
+compound r_2 r_3 res
+
+checknbshapes res -shell 6 -solid 2
+checkprops res -v 3.33117e+07
+
+checkview -display res -2d -path ${imagedir}/${test_image}.png

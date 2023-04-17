@@ -27,9 +27,7 @@ static const TCollection_AsciiString THE_CONFIGURATION_SCOPE = "provider";
 //=======================================================================
 RWPly_ConfigurationNode::RWPly_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : RWPly_ConfigurationNode
@@ -39,7 +37,6 @@ RWPly_ConfigurationNode::RWPly_ConfigurationNode(const Handle(RWPly_Configuratio
   :DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
-  UpdateLoad();
 }
 
 //=======================================================================

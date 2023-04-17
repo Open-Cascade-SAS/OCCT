@@ -307,7 +307,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 	pivot = ii; deb = jj; fin = kk;
       }
     }
-    if(!c1toric)c1spheric=(Abs(qr[0]-qr[1])<tolesp && Abs(qr[0]-qr[2])<tolesp);
+    if(!c1toric)c1spheric=(Abs(qr[0]-qr[1])<tolapp3d && Abs(qr[0]-qr[2])<tolapp3d);
   }
   
   //  Previously to avoid loops the points were always located 
@@ -543,14 +543,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       Handle(BRepBlend_Line) lin;
       Standard_Real ffi = WFirst, lla = WLast + pasmax;
       
-      if (Abs(Rdeb-Rfin)<=tolesp){
+      if (Abs(Rdeb-Rfin)<=tolapp3d){
 	
 	BRepBlend_ConstRad func(Fac,Surf,cornerspine);
 	BRepBlend_ConstRadInv finv(Fac,Surf,cornerspine);
 	func.Set(Rdeb,choix);
 	func.Set(myShape);
 	finv.Set(Rdeb,choix);
-	Standard_Real TolGuide = cornerspine->Resolution(tolesp); 
+	Standard_Real TolGuide = cornerspine->Resolution(tolapp3d);
 	
 	Standard_Integer intf = 3, intl = 3;
 	done = ComputeData(coin,cornerspine,NullSpine,lin,Fac,IFac,Surf,ISurf,
@@ -573,7 +573,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 	func.Set(choix);
 	func.Set(myShape);
 	finv.Set(choix);
-	Standard_Real TolGuide = cornerspine->Resolution(tolesp);
+	Standard_Real TolGuide = cornerspine->Resolution(tolapp3d);
 	Standard_Integer intf = 3, intl = 3;
 	done = ComputeData(coin,cornerspine,NullSpine,lin,Fac,IFac,Surf,ISurf,
 			   func,finv,ffi,pasmax,locfleche,TolGuide,ffi,lla,
@@ -607,7 +607,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       Handle(Geom2d_Curve) PCurveOnFace;
       if(!c1pointu) 
 	Bfac = ChFi3d_mkbound(Fac,PCurveOnFace,sens[deb],pfac1,vfac1,
-			      sens[fin],pfac2,vfac2,tolesp,2.e-4);
+			      sens[fin],pfac2,vfac2,tolapp3d,2.e-4);
       Standard_Integer kkk;
       gp_Pnt ppbid;
       gp_Vec vp1,vp2;
@@ -620,7 +620,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
       Handle(Geom2d_Curve) PCurveOnPiv;
 //      Bpiv = ChFi3d_mkbound(Surf,PCurveOnPiv,sens[deb],psurf1,vp1,
 //			    sens[fin],psurf2,vp2,tolesp,2.e-4);
-      Bpiv = ChFi3d_mkbound(Surf,PCurveOnPiv,psurf1,psurf2,tolesp,2.e-4,0);
+      Bpiv = ChFi3d_mkbound(Surf,PCurveOnPiv,psurf1,psurf2,tolapp3d,2.e-4,0);
       Standard_Real pardeb2 = p[deb][pivot];
       Standard_Real parfin2 = p[fin][pivot];
       if(c1pointu){
@@ -642,8 +642,8 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 	DStr.Surface(CD[fin]->SetOfSurfData()->
 		     Value(i[fin][pivot])->Surf()).Surface();
       
-      Bdeb = ChFi3d_mkbound(sdeb,pdeb1,pdeb2,tolesp,2.e-4);
-      Bfin = ChFi3d_mkbound(sfin,pfin1,pfin2,tolesp,2.e-4);
+      Bdeb = ChFi3d_mkbound(sdeb,pdeb1,pdeb2,tolapp3d,2.e-4);
+      Bfin = ChFi3d_mkbound(sfin,pfin1,pfin2,tolapp3d,2.e-4);
       
       GeomFill_ConstrainedFilling fil(11,20);
       if(c1pointu) fil.Init(Bpiv,Bfin,Bdeb,1);
@@ -712,7 +712,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     ChFi3d_ComputeArete(Pf1,pp1,Pf2,pp2,
 			DStr.Surface(coin->Surf()).Surface(),C3d,
 			corner->ChangeFirstPCurve(),P1deb,P2deb,
-			tolesp,tol2d,tolreached,0);
+			tolapp3d,tol2d,tolreached,0);
     TopOpeBRepDS_Curve Tcurv1(C3d,tolreached);
     Icf = DStr.AddCurve(Tcurv1);
     regdeb.SetCurve(Icf);
@@ -732,7 +732,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     ChFi3d_ComputeArete(Pl1,pp1,Pl2,pp2,
 			DStr.Surface(coin->Surf()).Surface(),C3d,
 			corner->ChangeLastPCurve(),P1fin,P2fin,
-			tolesp,tol2d,tolreached,0);
+			tolapp3d,tol2d,tolreached,0);
     TopOpeBRepDS_Curve Tcurv2(C3d,tolreached);
     Icl = DStr.AddCurve(Tcurv2);
     regfin.SetCurve(Icl);
@@ -770,7 +770,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     Standard_Real tolrdeb;
     ChFi3d_ComputePCurv(crefdeb,pp1,pp2,CD[deb]->ChangePCurve(isfirst),
 			DStr.Surface(fddeb->Surf()).Surface(),
-			P1deb,P2deb,tolesp,tolrdeb,rev);
+			P1deb,P2deb,tolapp3d,tolrdeb,rev);
     tcdeb.Tolerance(Max(tolrdeb,tcdeb.Tolerance()));
     if(rev) ChFi3d_EnlargeBox(DStr,CD[deb],fddeb,*pbf2,*pbf1,isfirst);
     else ChFi3d_EnlargeBox(DStr,CD[deb],fddeb,*pbf1,*pbf2,isfirst);
@@ -800,7 +800,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     Standard_Real tolrfin;
     ChFi3d_ComputePCurv(creffin,pp1,pp2,CD[fin]->ChangePCurve(isfirst),
 			DStr.Surface(fdfin->Surf()).Surface(),
-			P1fin,P2fin,tolesp,tolrfin,rev);
+			P1fin,P2fin,tolapp3d,tolrfin,rev);
     tcfin.Tolerance(Max(tolrfin,tcfin.Tolerance()));
     if(rev) ChFi3d_EnlargeBox(DStr,CD[fin],fdfin,*pbl2,*pbl1,isfirst);
     else ChFi3d_EnlargeBox(DStr,CD[fin],fdfin,*pbl1,*pbl2,isfirst);
@@ -823,7 +823,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     Standard_Real tolr;
     ChFi3d_SameParameter(Ccoinpiv,C2dOnPiv,Spiv,
 			 fi.FirstParameter(),fi.LastParameter(),
-			 tolesp,tolr);
+			 tolapp3d,tolr);
     TCcoinpiv.Tolerance(Max(TCcoinpiv.Tolerance(),tolr));
     CD[pivot]->ChangePCurve(isfirst) = C2dOnPiv;
     CD[pivot]->SetIndexPoint(If2,isfirst,isurf1);

@@ -51,7 +51,7 @@ public:
   
   Standard_EXPORT BRepBlend_CSWalking(const Handle(Adaptor3d_Curve)& Curv, const Handle(Adaptor3d_Surface)& Surf, const Handle(Adaptor3d_TopolTool)& Domain);
   
-  Standard_EXPORT void Perform (Blend_CSFunction& F, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
+  Standard_EXPORT void Perform (Blend_CSFunction& F, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real Tol3d, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
   
   Standard_EXPORT Standard_Boolean Complete (Blend_CSFunction& F, const Standard_Real Pmin);
   
@@ -80,7 +80,7 @@ private:
   Handle(Adaptor3d_Surface) surf;
   Handle(Adaptor3d_Curve) curv;
   Handle(Adaptor3d_TopolTool) domain;
-  Standard_Real tolesp;
+  Standard_Real tolpoint3d;
   Standard_Real tolgui;
   Standard_Real pasmax;
   Standard_Real fleche;

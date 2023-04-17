@@ -86,8 +86,17 @@ public:
   
   Standard_EXPORT void VerticesForSubstitute (TopTools_DataMapOfShapeShape& VerVerMap);
 
+  //! Set maximal tolerance used for comparing distaces between vertices. 
+  void SetTolConf(const Standard_Real theTolConf)
+  {
+    myTolConf = theTolConf;
+  }
 
-
+  //! Get maximal tolerance used for comparing distaces between vertices. 
+  Standard_Real GetTolConf() const
+  {
+    return myTolConf;
+  }
 
 protected:
 
@@ -108,6 +117,7 @@ private:
   TopTools_DataMapOfShapeListOfShape myCutEdges;
   TopTools_DataMapOfShapeShape myVerticesForSubstitute;
   BRepAlgo_Image myImageVV;
+  Standard_Real myTolConf;
 
 
 };

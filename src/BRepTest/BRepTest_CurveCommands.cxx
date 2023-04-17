@@ -281,9 +281,11 @@ static Standard_Integer mkedge(Draw_Interpretor& di, Standard_Integer n, const c
 
   Handle(Geom_Curve)   C   = DrawTrSurf::GetCurve(a[2]);
   Handle(Geom2d_Curve) C2d = DrawTrSurf::GetCurve2d(a[2]);
-  if (C.IsNull() && C2d.IsNull()) {
+  Handle(Poly_Polygon3D) P3d = DrawTrSurf::GetPolygon3D(a[2]);
+
+  if (C.IsNull() && C2d.IsNull() && P3d.IsNull()) {
     //std::cout << a[2] << " is not a curve" << std::endl;
-    di << a[2] << " is not a curve\n";
+    di << a[2] << " is not a curve or polygon 3d\n";
     return 1;
   }
 
@@ -291,7 +293,12 @@ static Standard_Integer mkedge(Draw_Interpretor& di, Standard_Integer n, const c
 
   if (n == 3) {
     if (!C.IsNull())   edge = BRepBuilderAPI_MakeEdge(C);
-    else               edge = BRepBuilderAPI_MakeEdge2d(C2d);
+    else  if (!C2d.IsNull())  edge = BRepBuilderAPI_MakeEdge2d(C2d);
+    else
+    {
+      BRep_Builder aBB;
+      aBB.MakeEdge(edge, P3d);
+    }
   }
   else {
     Handle(Geom_Surface) S;

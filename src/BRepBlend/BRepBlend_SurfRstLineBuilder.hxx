@@ -71,9 +71,9 @@ public:
   
   Standard_EXPORT BRepBlend_SurfRstLineBuilder(const Handle(Adaptor3d_Surface)& Surf1, const Handle(Adaptor3d_TopolTool)& Domain1, const Handle(Adaptor3d_Surface)& Surf2, const Handle(Adaptor2d_Curve2d)& Rst, const Handle(Adaptor3d_TopolTool)& Domain2);
   
-  Standard_EXPORT void Perform (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
+  Standard_EXPORT void Perform (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Pdep, const Standard_Real Pmax, const Standard_Real MaxStep, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Real TolGuide, const math_Vector& Soldep, const Standard_Real Fleche, const Standard_Boolean Appro = Standard_False);
   
-  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Pdep, const Standard_Real Pmax, const math_Vector& Soldep, const Standard_Real Tolesp, const Standard_Real TolGuide, const Standard_Boolean RecRst, const Standard_Boolean RecP, const Standard_Boolean RecS, Standard_Real& Psol, math_Vector& ParSol);
+  Standard_EXPORT Standard_Boolean PerformFirstSection (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Pdep, const Standard_Real Pmax, const math_Vector& Soldep, const Standard_Real Tol3d, const Standard_Real Tol2d, const Standard_Real TolGuide, const Standard_Boolean RecRst, const Standard_Boolean RecP, const Standard_Boolean RecS, Standard_Real& Psol, math_Vector& ParSol);
   
   Standard_EXPORT Standard_Boolean Complete (Blend_SurfRstFunction& Func, Blend_FuncInv& Finv, Blend_SurfPointFuncInv& FinvP, Blend_SurfCurvFuncInv& FinvC, const Standard_Real Pmin);
   
@@ -128,7 +128,8 @@ private:
   Handle(Adaptor3d_Surface) surf2;
   Handle(Adaptor2d_Curve2d) rst;
   Handle(Adaptor3d_TopolTool) domain2;
-  Standard_Real tolesp;
+  Standard_Real tolpoint3d;
+  Standard_Real tolpoint2d;
   Standard_Real tolgui;
   Standard_Real pasmax;
   Standard_Real fleche;

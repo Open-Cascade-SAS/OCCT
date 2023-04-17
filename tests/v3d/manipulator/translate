@@ -144,7 +144,7 @@ vdump $anImage4
 # ----------------------------------------------------
 
 set mouse_pick {199 164}
-set mouse_drag {246 177}
+set mouse_drag {246 176}
 
 vmoveto {*}$mouse_pick
 vselect {*}$mouse_pick

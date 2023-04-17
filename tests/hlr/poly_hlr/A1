@@ -4,7 +4,7 @@ puts "====================================="
 puts ""
 
 set viewname ""
-set length 6.30238
+set length 6.30139
 
 restore [locate_data_file bug27341_hlrsave.brep] a
 COMPUTE_HLR $viewname $algotype

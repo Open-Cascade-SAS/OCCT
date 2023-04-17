@@ -184,7 +184,7 @@ Standard_Boolean XCAFDoc_MaterialTool::GetMaterial(const TDF_Label& MatL,
                                                    Handle(TCollection_HAsciiString)& aDescription,
                                                    Standard_Real& aDensity,
                                                    Handle(TCollection_HAsciiString)& aDensName,
-                                                   Handle(TCollection_HAsciiString)& aDensValType) const
+                                                   Handle(TCollection_HAsciiString)& aDensValType)
 {
   Handle(XCAFDoc_Material) MatAttr;
   if(!MatL.FindAttribute(XCAFDoc_Material::GetID(),MatAttr)) {

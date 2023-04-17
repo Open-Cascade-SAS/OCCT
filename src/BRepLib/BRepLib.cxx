@@ -802,7 +802,7 @@ static void GetEdgeTol(const TopoDS_Edge& theEdge,
     }
     if(temp > d2) d2 = temp;
   }
-  d2 = 1.5*sqrt(d2);
+  d2 = 1.05*sqrt(d2);
   theEdTol = d2;
 }
 
@@ -884,10 +884,6 @@ static void UpdShTol(const TopTools_DataMapOfShapeReal& theShToTol,
     case TopAbs_VERTEX: 
       {
         const Handle(BRep_TVertex)& aTV = *((Handle(BRep_TVertex)*)&aNsh.TShape());
-        //
-        if(aTV->Locked())
-          throw TopoDS_LockedShape("BRep_Builder::UpdateVertex");
-        //
         if (theVForceUpdate)
           aTV->Tolerance(aTol);
         else
@@ -965,6 +961,9 @@ static void InternalSameParameter(const TopoDS_Shape& theSh, BRepTools_ReShape& 
     TopExp_Explorer ex2;
     for(ex2.Init(curface,TopAbs_EDGE); ex2.More(); ex2.Next()){
       const TopoDS_Edge& E = TopoDS::Edge(ex2.Current());
+      if (BRep_Tool::Degenerated(E))
+        continue;
+
       TopoDS_Shape aNe = theReshaper.Value(E);
       Standard_Real aNewEtol = -1;
       GetEdgeTol(TopoDS::Edge(aNe), curface, aNewEtol);
@@ -1709,8 +1708,8 @@ static void InternalUpdateTolerances(const TopoDS_Shape& theOldShape,
   for (iCur=1; iCur<=nbV; iCur++) {
     tol=0;
     const TopoDS_Vertex& V = TopoDS::Vertex(parents.FindKey(iCur));
-    Bnd_Box box;
-    box.Add(BRep_Tool::Pnt(V));
+    gp_Pnt aPV = BRep_Tool::Pnt(V);
+    Standard_Real aMaxDist = 0.;
     gp_Pnt p3d;
     for (lConx.Initialize(parents(iCur)); lConx.More(); lConx.Next()) {
       const TopoDS_Edge& E = TopoDS::Edge(lConx.Value());
@@ -1732,8 +1731,10 @@ static void InternalUpdateTolerances(const TopoDS_Shape& theOldShape,
           if (!C.IsNull()) { // edge non degenerated
             p3d = C->Value(par);
             p3d.Transform(L.Transformation());
-            box.Add(p3d);
-          }
+            Standard_Real aDist = p3d.SquareDistance(aPV);
+            if (aDist > aMaxDist)
+              aMaxDist = aDist;
+           }
         }
         else if (cr->IsCurveOnSurface()) {
           const Handle(Geom_Surface)& Su = cr->Surface();
@@ -1745,21 +1746,22 @@ static void InternalUpdateTolerances(const TopoDS_Shape& theOldShape,
           gp_Pnt2d p2d = PC->Value(par);
           p3d = Su->Value(p2d.X(),p2d.Y());
           p3d.Transform(L.Transformation());
-          box.Add(p3d);
+          Standard_Real aDist = p3d.SquareDistance(aPV);
+          if (aDist > aMaxDist)
+            aMaxDist = aDist;
           if (!PC2.IsNull()) {
             p2d = PC2->Value(par);
             p3d = Su->Value(p2d.X(),p2d.Y());
             p3d.Transform(L.Transformation());
-            box.Add(p3d);
+            aDist = p3d.SquareDistance(aPV);
+            if (aDist > aMaxDist)
+              aMaxDist = aDist;
           }
         }
         itcr.Next();
       }
     }
-    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-    box.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-    aXmax -= aXmin; aYmax -= aYmin; aZmax -= aZmin;
-    tol = Max(tol,sqrt(aXmax*aXmax+aYmax*aYmax+aZmax*aZmax));
+    tol = Max(tol, sqrt(aMaxDist));
     tol += 2.*Epsilon(tol);
     //
     Standard_Real aVTol = BRep_Tool::Tolerance(V);

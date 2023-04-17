@@ -34,9 +34,7 @@ namespace
 //=======================================================================
 DEBRepCascade_ConfigurationNode::DEBRepCascade_ConfigurationNode() :
   DE_ConfigurationNode()
-{
-  UpdateLoad();
-}
+{}
 
 //=======================================================================
 // function : DEBRepCascade_ConfigurationNode
@@ -46,7 +44,6 @@ DEBRepCascade_ConfigurationNode::DEBRepCascade_ConfigurationNode(const Handle(DE
   :DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
-  UpdateLoad();
 }
 
 //=======================================================================

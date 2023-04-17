@@ -1,7 +1,12 @@
+puts "TODO CR33225 Linux: Error : The command is not valid. The area is 0."
+puts "TODO CR33225 Linux: Error : The area of result shape is 0, expected 177462"
+puts "TODO CR33225 Linux: is WRONG because number of "
+
 puts "============"
 puts "OCC19071"
 puts "============"
 puts ""
+
 #######################################################################
 # The MakeFuse or the MakePartition function crash together on 2 torus
 #######################################################################

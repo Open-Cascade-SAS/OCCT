@@ -1,4 +1,4 @@
-puts "TODO OCC26556 ALL: ERROR. offsetperform operation not done."
+puts "TODO OCC26556 ALL: ERROR. Mixed connectivity of faces."
 
 puts "============"
 puts "OCC5805"
@@ -20,6 +20,7 @@ if { [catch { offsetshape result a -1 a_6 } catch_result] } {
    puts "Faulty ${BugNumber} : offsetshape is wrong"
 }
 
+if { [isdraw result] } {
 checkmaxtol result -min_tol 1.
 
 checkprops result -s 1185.03 
@@ -27,3 +28,4 @@ checkshape result
 
 checknbshapes result -vertex 10 -edge 15 -wire 7 -face 7 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 41
 checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

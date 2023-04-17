@@ -48,6 +48,7 @@
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_Location.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
+#include <TopLoc_Datum3D.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ShapeTool,TDataStd_GenericEmpty,"xcaf","ShapeTool")
 
@@ -350,6 +351,47 @@ TopoDS_Shape XCAFDoc_ShapeTool::GetShape(const TDF_Label& L)
   TopoDS_Shape aShape;
   GetShape(L,aShape);
   return aShape;
+}
+
+//=======================================================================
+//function : GetShapes
+//purpose  : 
+//=======================================================================
+TopoDS_Shape XCAFDoc_ShapeTool::GetOneShape(const TDF_LabelSequence& theLabels)
+{
+  TopoDS_Shape aShape;
+  if (theLabels.Length() == 1)
+  {
+    return GetShape(theLabels.Value(1));
+  }
+  TopoDS_Compound aCompound;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound(aCompound);
+  for (TDF_LabelSequence::Iterator anIt(theLabels); anIt.More(); anIt.Next())
+  {
+    TopoDS_Shape aFreeShape;
+    if (!GetShape(anIt.Value(), aFreeShape))
+    {
+      continue;
+    }
+    aBuilder.Add(aCompound, aFreeShape);
+  }
+  if (aCompound.NbChildren() > 0)
+  {
+    aShape = aCompound;
+  }
+  return aShape;
+}
+
+//=======================================================================
+//function : GetOneShape
+//purpose  :
+//=======================================================================
+TopoDS_Shape XCAFDoc_ShapeTool::GetOneShape() const
+{
+  TDF_LabelSequence aLabels;
+  GetFreeShapes(aLabels);
+  return GetOneShape(aLabels);
 }
 
 //=======================================================================
@@ -1602,6 +1644,33 @@ Standard_Boolean XCAFDoc_ShapeTool::RemoveSHUO (const TDF_Label& L) const
 //purpose  : auxiliary
 //=======================================================================
 
+static Standard_Boolean IsEqual (const TopLoc_Location& theLoc1, const TopLoc_Location& theLoc2)
+{
+  if (theLoc1.IsEqual (theLoc2)) {return Standard_True; }
+  if (theLoc1.IsIdentity() || theLoc2.IsIdentity()) {return Standard_False; }
+  const Handle(TopLoc_Datum3D)& aDatum1 = theLoc1.FirstDatum();
+  const Handle(TopLoc_Datum3D)& aDatum2 = theLoc2.FirstDatum();
+  if (aDatum1 && aDatum2)
+  {
+    NCollection_Mat4<double> aMat41;
+    NCollection_Mat4<double> aMat42;
+    theLoc1.FirstDatum()->Transformation().GetMat4(aMat41);
+    theLoc2.FirstDatum()->Transformation().GetMat4(aMat42);
+    if ( !aMat41.IsEqual (aMat42)) {return Standard_False; }
+  }
+  else if (aDatum1 || aDatum2) {return Standard_False; }
+  if (theLoc1.FirstPower()  != theLoc2.FirstPower()  ) {return Standard_False; }
+  else { return IsEqual (theLoc1.NextLocation(), theLoc2.NextLocation());}
+}
+
+static Standard_Boolean IsSame (const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2)
+{
+  
+  return theShape1.TShape() == theShape2.TShape()
+        && theShape1.Orientation() == theShape2.Orientation()
+        && IsEqual (theShape1.Location(), theShape2.Location());
+}
+
 static Standard_Boolean checkForShape (const TopoDS_Shape& theShape,
                                        const TopoDS_Shape& theCurSh,
                                        const TDF_Label& theUserL,
@@ -1616,7 +1685,7 @@ static Standard_Boolean checkForShape (const TopoDS_Shape& theShape,
   aCompLoc = aCompLoc.Multiplied( theCurSh.Location() );
   aSupLoc = aSupLoc.Multiplied( aCompLoc );
   aCopySh.Location( aSupLoc, Standard_False );
-  if ( aCopySh.IsSame( theShape ) ) {
+  if ( IsSame ( theShape, aCopySh ) ) {
     theLabels.Prepend( theUserL );
     return Standard_True;
   }

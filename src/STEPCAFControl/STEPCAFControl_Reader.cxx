@@ -221,6 +221,10 @@
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <NCollection_Vector.hxx>
+#include <StepVisual_OverRidingStyledItem.hxx>
+#include <StepVisual_ContextDependentOverRidingStyledItem.hxx>
+#include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
+#include <StepRepr_ItemDefinedTransformation.hxx>
 
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -937,6 +941,306 @@ static void propagateColorToParts(const Handle(XCAFDoc_ShapeTool)& theSTool,
       propagateColorToParts(theSTool, theCTool, anOriginalL);
   }
 }
+
+//=======================================================================
+//function : SetAssemblyComponentStyle
+//purpose  : auxiliary: set override style for assembly components
+//=======================================================================
+
+static void SetAssemblyComponentStyle(const Handle(Transfer_TransientProcess) &theTP,
+                                      const Handle(XCAFDoc_ColorTool)& theCTool, 
+                                      const STEPConstruct_Styles& theStyles,
+                                      const Handle(StepVisual_ContextDependentOverRidingStyledItem)& theStyle)
+{
+  if (theStyle.IsNull()) return;
+
+  Handle(StepVisual_Colour) aSurfCol, aBoundCol, aCurveCol, aRenderCol;
+  Standard_Real aRenderTransp;
+  // check if it is component style
+  Standard_Boolean anIsComponent = Standard_False;
+  if (!theStyles.GetColors(theStyle, aSurfCol, aBoundCol, aCurveCol, aRenderCol, aRenderTransp, anIsComponent))
+    return;
+
+  const Interface_Graph& aGraph = theTP->Graph();
+  TopLoc_Location aLoc; // init;
+  // find shape
+  TopoDS_Shape aShape;
+  Handle(Transfer_Binder) aBinder;
+  Handle(StepShape_ShapeRepresentation) aRepr = Handle(StepShape_ShapeRepresentation)::DownCast(theStyle->ItemAP242 ().Value ());
+  if (aRepr.IsNull())
+    return;
+  Handle(StepRepr_ShapeRepresentationRelationship) aSRR;
+  Interface_EntityIterator aSubs = theTP->Graph().Sharings(aRepr);
+  for (aSubs.Start(); aSubs.More(); aSubs.Next()) {
+    const Handle(Standard_Transient)& aSubsVal = aSubs.Value();
+    if (aSubsVal->IsKind (STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship)))
+    {
+      // NB: C cast is used instead of DownCast() to improve performance on some cases.
+      // This saves ~10% of elapsed time on "testgrid perf de bug29* -parallel 0".
+      aSRR = (StepRepr_ShapeRepresentationRelationship*)(aSubsVal.get());
+    }
+  }
+
+  aBinder = theTP->Find(aSRR);
+  if (!aBinder.IsNull() ) {
+    aShape = TransferBRep::ShapeResult (aBinder);
+  }
+  if (aShape.IsNull())
+    return;     
+
+  //get transformation
+  aSubs = aGraph.Shareds (theStyle);
+  aSubs.Start();
+  for(; aSubs.More(); aSubs.Next())
+  {
+    Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation) aRelation = Handle(StepRepr_ShapeRepresentationRelationshipWithTransformation)::DownCast (aSubs.Value ());
+    if(aRelation.IsNull()) continue;
+
+    auto aTransf = aRelation->TransformationOperator ();
+    if(auto anItemTransf = aTransf.ItemDefinedTransformation ())
+    {
+      Handle(StepGeom_Axis2Placement3d) anAxp1 = Handle(StepGeom_Axis2Placement3d)::DownCast(anItemTransf->TransformItem1 ());
+      Handle(StepGeom_Axis2Placement3d) anAxp2 = Handle(StepGeom_Axis2Placement3d)::DownCast(anItemTransf->TransformItem2 ());
+
+      if(!anAxp1.IsNull() && !anAxp2.IsNull())
+      {
+        Handle(Geom_Axis2Placement) anOrig = StepToGeom::MakeAxis2Placement (anAxp1);
+        Handle(Geom_Axis2Placement) aTarg = StepToGeom::MakeAxis2Placement (anAxp2);
+        gp_Ax3 anAx3Orig(anOrig->Ax2());
+        gp_Ax3 anAx3Targ(aTarg->Ax2());
+
+        gp_Trsf aTr1;
+        aTr1.SetTransformation(anAx3Targ, anAx3Orig);
+        TopLoc_Location aLoc1 (aTr1);
+        aLoc = aLoc.Multiplied(aLoc1);
+      }
+    }
+  }
+
+  aShape.Location( aLoc, Standard_False );
+
+  if(!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || !aRenderCol.IsNull())
+  {
+    Quantity_Color aSCol,aBCol,aCCol,aRCol;
+    Quantity_ColorRGBA aFullSCol;
+    if(!aSurfCol.IsNull()) {
+      theStyles.DecodeColor(aSurfCol,aSCol);
+      aFullSCol = Quantity_ColorRGBA(aSCol);
+    }
+    if(!aBoundCol.IsNull())
+      theStyles.DecodeColor(aBoundCol,aBCol);
+    if(!aCurveCol.IsNull())
+      theStyles.DecodeColor(aCurveCol,aCCol);
+    if(!aRenderCol.IsNull()) {
+      theStyles.DecodeColor(aRenderCol,aRCol);
+      aFullSCol = Quantity_ColorRGBA(aRCol,static_cast<float>(1.0f - aRenderTransp));
+    }
+
+    if(!aSurfCol.IsNull() || !aRenderCol.IsNull())
+      theCTool->SetInstanceColor(aShape,XCAFDoc_ColorSurf,aFullSCol);
+    if(!aBoundCol.IsNull())
+      theCTool->SetInstanceColor(aShape,XCAFDoc_ColorCurv,aBCol);
+    if(!aCurveCol.IsNull())
+      theCTool->SetInstanceColor(aShape,XCAFDoc_ColorCurv,aCCol);
+  }
+}
+
+//=======================================================================
+//function : SetStyle
+//purpose  : auxiliary: set style for parts and instances
+//=======================================================================
+
+static void SetStyle(const Handle(XSControl_WorkSession) &theWS, 
+                     const XCAFDoc_DataMapOfShapeLabel& theMap, 
+                     const Handle(XCAFDoc_ColorTool)& theCTool, 
+                     const Handle(XCAFDoc_ShapeTool)& theSTool, 
+                     const STEPConstruct_Styles& theStyles, 
+                     const Handle(TColStd_HSequenceOfTransient)& theHSeqOfInvisStyle, 
+                     const Handle(StepVisual_StyledItem)& theStyle)
+{
+  if (theStyle.IsNull()) return;
+
+  const Handle(Transfer_TransientProcess) &aTP = theWS->TransferReader()->TransientProcess();
+  if (Handle(StepVisual_OverRidingStyledItem) anOverridingStyle = Handle(StepVisual_OverRidingStyledItem)::DownCast (theStyle))
+  {
+    SetStyle (theWS, theMap, theCTool, theSTool, theStyles, theHSeqOfInvisStyle, anOverridingStyle->OverRiddenStyle ());
+    if (Handle(StepVisual_ContextDependentOverRidingStyledItem) anAssemblyComponentStyle = Handle(StepVisual_ContextDependentOverRidingStyledItem)::DownCast (theStyle))
+    {
+      SetAssemblyComponentStyle (aTP, theCTool, theStyles,anAssemblyComponentStyle);
+      return;
+    }
+  }
+
+  Standard_Boolean anIsVisible = Standard_True;
+  // check the visibility of styled item.
+  for (Standard_Integer si = 1; si <= theHSeqOfInvisStyle->Length(); si++) {
+    if (theStyle != theHSeqOfInvisStyle->Value(si))
+      continue;
+    // found that current style is invisible.
+    anIsVisible = Standard_False;
+    break;
+  }
+  Handle(StepVisual_Colour) aSurfCol, aBoundCol, aCurveCol, aRenderCol;
+  Standard_Real aRenderTransp;
+  // check if it is component style
+  Standard_Boolean anIsComponent = Standard_False;
+  if (!theStyles.GetColors(theStyle, aSurfCol, aBoundCol, aCurveCol, aRenderCol, aRenderTransp, anIsComponent) && anIsVisible)
+    return;
+
+  // collect styled items
+  NCollection_Vector<StepVisual_StyledItemTarget> anItems;
+  if (!theStyle->ItemAP242().IsNull()) {
+    anItems.Append(theStyle->ItemAP242());
+  }
+
+  for (Standard_Integer itemIt = 0; itemIt < anItems.Length(); itemIt++) {
+    Standard_Integer anIndex = aTP->MapIndex(anItems.Value(itemIt).Value());
+    TopoDS_Shape aS;
+    if (anIndex > 0) {
+      Handle(Transfer_Binder) aBinder = aTP->MapItem(anIndex);
+      aS = TransferBRep::ShapeResult(aBinder);
+    }
+    Standard_Boolean isSkipSHUOstyle = Standard_False;
+    // take shape with real location.
+    while (anIsComponent) {
+    // take SR of NAUO
+    Handle(StepShape_ShapeRepresentation) aSR;
+    findStyledSR(theStyle, aSR);
+    // search for SR along model
+    if (aSR.IsNull())
+      break;
+    Interface_EntityIterator aSubs = theWS->HGraph()->Graph().Sharings(aSR);
+    Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
+    for (aSubs.Start(); aSubs.More(); aSubs.Next()) {
+      aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSubs.Value());
+      if (aSDR.IsNull())
+        continue;
+      StepRepr_RepresentedDefinition aPDSselect = aSDR->Definition();
+      Handle(StepRepr_ProductDefinitionShape) PDS =
+      Handle(StepRepr_ProductDefinitionShape)::DownCast(aPDSselect.PropertyDefinition());
+      if (PDS.IsNull())
+        continue;
+      StepRepr_CharacterizedDefinition aCharDef = PDS->Definition();
+
+      Handle(StepRepr_AssemblyComponentUsage) ACU =
+      Handle(StepRepr_AssemblyComponentUsage)::DownCast(aCharDef.ProductDefinitionRelationship());
+      if (ACU.IsNull())
+        continue;
+      // PTV 10.02.2003 skip styled item that refer to SHUO
+      if (ACU->IsKind(STANDARD_TYPE(StepRepr_SpecifiedHigherUsageOccurrence))) {
+        isSkipSHUOstyle = Standard_True;
+        break;
+      }
+      Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO =
+      Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(ACU);
+      if (NAUO.IsNull())
+        continue;
+
+      TopoDS_Shape aSh;
+      // PTV 10.02.2003 to find component of assembly CORRECTLY
+      STEPConstruct_Tool aTool(theWS);
+      TDF_Label aShLab = STEPCAFControl_Reader::FindInstance(NAUO, theCTool->ShapeTool(), aTool, theMap);
+      aSh = theCTool->ShapeTool()->GetShape(aShLab);
+      if (!aSh.IsNull()) {
+        aS = aSh;
+        break;
+      }
+    }
+    break;
+  }
+  if (isSkipSHUOstyle)
+    continue; // skip styled item which refer to SHUO
+
+  if (aS.IsNull())
+    continue;
+
+  if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || !aRenderCol.IsNull() || !anIsVisible)
+  {
+    TDF_Label aL;
+    Standard_Boolean isFound = theSTool->SearchUsingMap(aS, aL, Standard_False, Standard_True);
+    if (!aSurfCol.IsNull() || !aBoundCol.IsNull() || !aCurveCol.IsNull() || !aRenderCol.IsNull())
+    {
+      Quantity_Color aSCol, aBCol, aCCol, aRCol;
+      Quantity_ColorRGBA aFullSCol;
+      if (!aSurfCol.IsNull()) {
+        theStyles.DecodeColor(aSurfCol, aSCol);
+        aFullSCol = Quantity_ColorRGBA(aSCol);
+      }
+      if (!aBoundCol.IsNull())
+        theStyles.DecodeColor(aBoundCol, aBCol);
+      if (!aCurveCol.IsNull())
+        theStyles.DecodeColor(aCurveCol, aCCol);
+      if (!aRenderCol.IsNull()) {
+        theStyles.DecodeColor(aRenderCol, aRCol);
+        aFullSCol = Quantity_ColorRGBA(aRCol, static_cast<float>(1.0f - aRenderTransp));
+      }
+      if (isFound)
+      {
+        if (!aSurfCol.IsNull() || !aRenderCol.IsNull())
+          theCTool->SetColor(aL, aFullSCol, XCAFDoc_ColorSurf);
+        if (!aBoundCol.IsNull())
+          theCTool->SetColor(aL, aBCol, XCAFDoc_ColorCurv);
+        if (!aCurveCol.IsNull())
+          theCTool->SetColor(aL, aCCol, XCAFDoc_ColorCurv);
+      }
+      else
+      {
+        for (TopoDS_Iterator it(aS); it.More(); it.Next())
+        {
+          TDF_Label aL1;
+          if (theSTool->SearchUsingMap(it.Value(), aL1, Standard_False, Standard_True))
+          {
+            if (!aSurfCol.IsNull() || !aRenderCol.IsNull())
+              theCTool->SetColor(aL1, aFullSCol, XCAFDoc_ColorSurf);
+            if (!aBoundCol.IsNull())
+              theCTool->SetColor(aL1, aBCol, XCAFDoc_ColorCurv);
+            if (!aCurveCol.IsNull())
+              theCTool->SetColor(aL1, aCCol, XCAFDoc_ColorCurv);
+          }
+        }
+      }
+    }
+    if (!anIsVisible)
+    {
+      // sets the invisibility for shape.
+      if (isFound)
+        theCTool->SetVisibility(aL, Standard_False);
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : IsOverriden
+//purpose  : auxiliary: check that style is overridden
+//=======================================================================
+
+static Standard_Boolean IsOverriden(const Interface_Graph& theGraph, 
+                                    const Handle(StepVisual_StyledItem)& theStyle, 
+                                    Standard_Boolean theIsRoot)
+{
+  Interface_EntityIterator aSubs = theGraph.Sharings (theStyle);
+  aSubs.Start();
+  for(; aSubs.More(); aSubs.Next())
+  {
+    Handle(StepVisual_OverRidingStyledItem) anOverRidingStyle = Handle(StepVisual_OverRidingStyledItem)::DownCast (aSubs.Value ());
+    if(!anOverRidingStyle.IsNull())
+    {
+      if(!theIsRoot)
+      {
+        return Standard_True;
+      }
+      // for root style returns true only if it is overridden by other root style
+      auto anItem = anOverRidingStyle->ItemAP242 ().Value ();
+      if(!anItem.IsNull() && anItem->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+      {
+        return Standard_True;
+      }
+    }
+  }
+  return Standard_False;
+}
+
 //=======================================================================
 //function : ReadColors
 //purpose  : 
@@ -961,152 +1265,36 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors(const Handle(XSControl_WorkSe
   Handle(XCAFDoc_ShapeTool) STool = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());
   if (STool.IsNull()) return Standard_False;
 
+  const Interface_Graph& aGraph = Styles.Graph ();
+  
   // parse and search for color attributes
-  Standard_Integer nb = Styles.NbStyles();
-  for (Standard_Integer i = 1; i <= nb; i++) {
-    Handle(StepVisual_StyledItem) style = Styles.Style(i);
-    if (style.IsNull()) continue;
-
-    Standard_Boolean IsVisible = Standard_True;
-    // check the visibility of styled item.
-    for (Standard_Integer si = 1; si <= aHSeqOfInvisStyle->Length(); si++) {
-      if (style != aHSeqOfInvisStyle->Value(si))
-        continue;
-      // found that current style is invisible.
-      IsVisible = Standard_False;
-      break;
-    }
-
-    Handle(StepVisual_Colour) SurfCol, BoundCol, CurveCol, RenderCol;
-    Standard_Real RenderTransp;
-    // check if it is component style
-    Standard_Boolean IsComponent = Standard_False;
-    if (!Styles.GetColors(style, SurfCol, BoundCol, CurveCol, RenderCol, RenderTransp, IsComponent) && IsVisible)
-      continue;
-
-    // collect styled items
-    NCollection_Vector<StepVisual_StyledItemTarget> anItems;
-    if (!style->ItemAP242().IsNull()) {
-      anItems.Append(style->ItemAP242());
-    }
-
-    const Handle(Transfer_TransientProcess) &TP = WS->TransferReader()->TransientProcess();
-    for (Standard_Integer itemIt = 0; itemIt < anItems.Length(); itemIt++) {
-      Standard_Integer index = TP->MapIndex(anItems.Value(itemIt).Value());
-      TopoDS_Shape S;
-      if (index > 0) {
-        Handle(Transfer_Binder) binder = TP->MapItem(index);
-        S = TransferBRep::ShapeResult(binder);
-      }
-      Standard_Boolean isSkipSHUOstyle = Standard_False;
-      // take shape with real location.
-      while (IsComponent) {
-        // take SR of NAUO
-        Handle(StepShape_ShapeRepresentation) aSR;
-        findStyledSR(style, aSR);
-        // search for SR along model
-        if (aSR.IsNull())
-          break;
-        Interface_EntityIterator subs = WS->HGraph()->Graph().Sharings(aSR);
-        Handle(StepShape_ShapeDefinitionRepresentation) aSDR;
-        for (subs.Start(); subs.More(); subs.Next()) {
-          aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(subs.Value());
-          if (aSDR.IsNull())
-            continue;
-          StepRepr_RepresentedDefinition aPDSselect = aSDR->Definition();
-          Handle(StepRepr_ProductDefinitionShape) PDS =
-            Handle(StepRepr_ProductDefinitionShape)::DownCast(aPDSselect.PropertyDefinition());
-          if (PDS.IsNull())
-            continue;
-          StepRepr_CharacterizedDefinition aCharDef = PDS->Definition();
-
-          Handle(StepRepr_AssemblyComponentUsage) ACU =
-            Handle(StepRepr_AssemblyComponentUsage)::DownCast(aCharDef.ProductDefinitionRelationship());
-          if (ACU.IsNull())
-            continue;
-          // PTV 10.02.2003 skip styled item that refer to SHUO
-          if (ACU->IsKind(STANDARD_TYPE(StepRepr_SpecifiedHigherUsageOccurrence))) {
-            isSkipSHUOstyle = Standard_True;
-            break;
-          }
-          Handle(StepRepr_NextAssemblyUsageOccurrence) NAUO =
-            Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(ACU);
-          if (NAUO.IsNull())
-            continue;
-
-          TopoDS_Shape aSh;
-          // PTV 10.02.2003 to find component of assembly CORRECTLY
-          STEPConstruct_Tool Tool(WS);
-          TDF_Label aShLab = FindInstance(NAUO, CTool->ShapeTool(), Tool, myMap);
-          aSh = CTool->ShapeTool()->GetShape(aShLab);
-          if (!aSh.IsNull()) {
-            S = aSh;
-            break;
-          }
-        }
-        break;
-      }
-      if (isSkipSHUOstyle)
-        continue; // skip styled item which refer to SHUO
-
-      if (S.IsNull())
-        continue;
-
-      if (!SurfCol.IsNull() || !BoundCol.IsNull() || !CurveCol.IsNull() || !RenderCol.IsNull() || !IsVisible)
-      {
-        TDF_Label aL;
-        Standard_Boolean isFound = STool->SearchUsingMap(S, aL, Standard_False, Standard_True);
-        if (!SurfCol.IsNull() || !BoundCol.IsNull() || !CurveCol.IsNull() || !RenderCol.IsNull())
-        {
-          Quantity_Color aSCol, aBCol, aCCol, aRCol;
-          Quantity_ColorRGBA aFullSCol;
-          if (!SurfCol.IsNull()) {
-            Styles.DecodeColor(SurfCol, aSCol);
-            aFullSCol = Quantity_ColorRGBA(aSCol);
-          }
-          if (!BoundCol.IsNull())
-            Styles.DecodeColor(BoundCol, aBCol);
-          if (!CurveCol.IsNull())
-            Styles.DecodeColor(CurveCol, aCCol);
-          if (!RenderCol.IsNull()) {
-            Styles.DecodeColor(RenderCol, aRCol);
-            aFullSCol = Quantity_ColorRGBA(aRCol, static_cast<float>(1.0f - RenderTransp));
-          }
-          if (isFound)
-          {
-            if (!SurfCol.IsNull() || !RenderCol.IsNull())
-              CTool->SetColor(aL, aFullSCol, XCAFDoc_ColorSurf);
-            if (!BoundCol.IsNull())
-              CTool->SetColor(aL, aBCol, XCAFDoc_ColorCurv);
-            if (!CurveCol.IsNull())
-              CTool->SetColor(aL, aCCol, XCAFDoc_ColorCurv);
-          }
-          else
-          {
-            for (TopoDS_Iterator it(S); it.More(); it.Next())
-            {
-              TDF_Label aL1;
-              if (STool->SearchUsingMap(it.Value(), aL1, Standard_False, Standard_True))
-              {
-                if (!SurfCol.IsNull() || !RenderCol.IsNull())
-                  CTool->SetColor(aL1, aFullSCol, XCAFDoc_ColorSurf);
-                if (!BoundCol.IsNull())
-                  CTool->SetColor(aL1, aBCol, XCAFDoc_ColorCurv);
-                if (!CurveCol.IsNull())
-                  CTool->SetColor(aL1, aCCol, XCAFDoc_ColorCurv);
-              }
-            }
-          }
-        }
-        if (!IsVisible)
-        {
-          // sets the invisibility for shape.
-          if (isFound)
-            CTool->SetVisibility(aL, Standard_False);
-        }
-      }
+  Standard_Integer nb = Styles.NbRootStyles();
+  // apply root styles earlier, as they can be overridden
+  // function IsOverriden for root style returns true only if it is overridden by other root style
+  Standard_Boolean anIsRootStyle = Standard_True;
+  for(Standard_Integer i = 1; i <= nb; i++)
+  {
+    Handle(StepVisual_StyledItem) Style = Styles.RootStyle(i);
+    // check that style is overridden by other root style
+    if (!IsOverriden (aGraph, Style, anIsRootStyle))
+    {
+      SetStyle (WS, myMap, CTool, STool, Styles, aHSeqOfInvisStyle, Style);
     }
   }
+
+  nb = Styles.NbStyles();
+  // apply leaf styles, they can override root styles
+  anIsRootStyle = Standard_False;
+  for(Standard_Integer i = 1; i <= nb; i++)
+  {
+    Handle(StepVisual_StyledItem) Style = Styles.Style(i);
+    // check that style is overridden
+    if (!IsOverriden (aGraph, Style, anIsRootStyle))
+    {
+      SetStyle (WS, myMap, CTool, STool, Styles, aHSeqOfInvisStyle, Style);
+    }
+  }
+  
   CTool->ReverseChainsOfTreeNodes();
 
   // some colors can be attached to assemblies, propagate them to components
@@ -4504,9 +4692,16 @@ void collectRepresentationItems(const Interface_Graph& theGraph,
   const Handle(StepShape_ShapeRepresentation)& theRepresentation,
   NCollection_Sequence<Handle(StepRepr_RepresentationItem)>& theItems)
 {
-  Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = theRepresentation->Items();
-  for (Standard_Integer itemIt = aReprItems->Lower(); itemIt <= aReprItems->Upper(); itemIt++)
-    theItems.Append(aReprItems->Value(itemIt));
+  for (StepRepr_HArray1OfRepresentationItem::Iterator anIter(theRepresentation->Items()->Array1());
+       anIter.More(); anIter.Next())
+  {
+    const Handle(StepRepr_RepresentationItem)& anReprItem = anIter.Value();
+    if (anReprItem.IsNull())
+    {
+      continue;
+    }
+    theItems.Append(anReprItem);
+  }
 
   Interface_EntityIterator entIt = theGraph.TypedSharings(theRepresentation, STANDARD_TYPE(StepRepr_RepresentationRelationship));
   for (entIt.Start(); entIt.More(); entIt.Next())

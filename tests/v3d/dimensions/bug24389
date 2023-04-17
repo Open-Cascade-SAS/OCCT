@@ -176,7 +176,7 @@ check_picking $pick_coord $check_coord "diameter dimension (diam1)"
 check_cross_picking $pick_coord diam1 "diameter dimension (diam1)"
 
 # check sensitives "diam2"
-set pick_coord { { 221 99 } { 285 99 } }
+set pick_coord { { 222 99 } { 285 99 } }
 set check_coord { 239 99 }
 check_picking $pick_coord $check_coord "diameter dimension (diam2)"
 check_cross_picking $pick_coord diam2 "diameter dimension (diam2)"
