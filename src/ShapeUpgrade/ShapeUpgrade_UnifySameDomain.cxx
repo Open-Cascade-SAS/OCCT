@@ -1216,6 +1216,13 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface,
     Handle(Geom_SurfaceOfRevolution) aRS =
       Handle(Geom_SurfaceOfRevolution)::DownCast(theInSurface);
     Handle(Geom_Curve) aBasis = aRS->BasisCurve();
+
+    while (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
+      Handle(Geom_TrimmedCurve) aTc =
+        Handle(Geom_TrimmedCurve)::DownCast(aBasis);
+      aBasis = aTc->BasisCurve();
+    }
+
     if (aBasis->IsKind(STANDARD_TYPE(Geom_Line))) {
       Handle(Geom_Line) aBasisLine = Handle(Geom_Line)::DownCast(aBasis);
       gp_Dir aDir = aRS->Direction();
@@ -1235,6 +1242,13 @@ static Standard_Boolean getCylinder(Handle(Geom_Surface)& theInSurface,
     Handle(Geom_SurfaceOfLinearExtrusion) aLES =
       Handle(Geom_SurfaceOfLinearExtrusion)::DownCast(theInSurface);
     Handle(Geom_Curve) aBasis = aLES->BasisCurve();
+
+    while (aBasis->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
+      Handle(Geom_TrimmedCurve) aTc =
+        Handle(Geom_TrimmedCurve)::DownCast(aBasis);
+      aBasis = aTc->BasisCurve();
+    }
+
     if (aBasis->IsKind(STANDARD_TYPE(Geom_Circle))) {
       Handle(Geom_Circle) aBasisCircle = Handle(Geom_Circle)::DownCast(aBasis);
       gp_Dir aDir = aLES->Direction();
