@@ -1,0 +1,11 @@
+puts "======================================================="
+puts "0033369: OCCT:Modeling Algorithms - BRepBuilderAPI_Transform makes invalid shape after transformation"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug33369.brep] f
+
+ttranslate f 1 1 1 -copy
+
+checkshape f
+
