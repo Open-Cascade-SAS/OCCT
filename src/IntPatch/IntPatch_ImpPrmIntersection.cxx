@@ -1414,7 +1414,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_Surface)& Surf
         gp_Pnt ptpoly;
         IntSurf_PntOn2S p2s;
         Handle(IntSurf_LineOn2S) Thelin = new IntSurf_LineOn2S ();
-        Handle(Adaptor2d_Curve2d) arcsegm = thesegm.Curve();
+        const Handle(Adaptor2d_Curve2d)& arcsegm = thesegm.Curve();
         Standard_Integer nbsample = 100;
 
         if (!reversed) {

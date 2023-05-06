@@ -96,7 +96,7 @@ static Standard_Integer OCC230 (Draw_Interpretor& di, Standard_Integer argc, con
   }
 
   GCE2d_MakeSegment MakeSegment(P1,P2);
-  Handle(Geom2d_TrimmedCurve) TrimmedCurve = MakeSegment.Value();
+  const Handle(Geom2d_TrimmedCurve)& TrimmedCurve = MakeSegment.Value();
   DrawTrSurf::Set(argv[1], TrimmedCurve);
   return 0;
 }
@@ -1014,7 +1014,7 @@ static Standard_Integer OCC11758 (Draw_Interpretor& di, Standard_Integer n, cons
     QCOMPARE ( Abs( ea.RealValue() - 0.1 * i ) < 1e-10 , Standard_True );
 
     // TCollection_ExtendedString (const TCollection_ExtendedString& astring)
-    const TCollection_ExtendedString f(e);
+    const TCollection_ExtendedString& f(e);
     //assert( f.Length() == e.Length());
     //assert( f == e );
     QCOMPARE ( f.Length() , e.Length() );

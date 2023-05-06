@@ -1134,17 +1134,17 @@ static Standard_Integer setFlags(Draw_Interpretor& ,
 
   setProp(Sh, a, n);
   for (ex.Init (Sh,TopAbs_VERTEX); ex.More(); ex.Next()) {
-    TopoDS_Shape S = ex.Current();
+    const TopoDS_Shape& S = ex.Current();
     setProp(S, a, n);
   }
 
   for (ex.Init (Sh,TopAbs_EDGE); ex.More(); ex.Next()) {
-    TopoDS_Shape S = ex.Current();
+    const TopoDS_Shape& S = ex.Current();
     setProp(S, a, n);
   }
 
   for (ex.Init (Sh,TopAbs_FACE); ex.More(); ex.Next()) {
-    TopoDS_Shape S = ex.Current();
+    const TopoDS_Shape& S = ex.Current();
     setProp(S, a, n);
   }
 

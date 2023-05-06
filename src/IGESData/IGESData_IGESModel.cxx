@@ -492,7 +492,7 @@ void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
   if (str.IsNull())
     {  ach->SendFail(Msg57);  return;  }
 
-  Handle(TCollection_HAsciiString) stdvar = str;
+  const Handle(TCollection_HAsciiString)& stdvar = str;
   if (strcmp(mess,"Last Change Date")==0)
     Msg57.Arg(25);
   else

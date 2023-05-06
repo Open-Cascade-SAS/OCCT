@@ -47,7 +47,7 @@
 //
 static Standard_Boolean CanUseEdges(const Adaptor3d_Surface& BS);
 //
-static void FindExactUVBounds(const TopoDS_Face F, 
+static void FindExactUVBounds(const TopoDS_Face& F, 
                               Standard_Real& umin, Standard_Real& umax, 
                               Standard_Real& vmin, Standard_Real& vmax,
                               const Standard_Real Tol, 
@@ -460,7 +460,7 @@ Standard_Boolean CanUseEdges(const Adaptor3d_Surface& BS)
 //function : FindExactUVBounds
 //purpose  : 
 //=======================================================================
-void FindExactUVBounds(const TopoDS_Face FF, 
+void FindExactUVBounds(const TopoDS_Face& FF, 
                        Standard_Real& umin, Standard_Real& umax, 
                        Standard_Real& vmin, Standard_Real& vmax,
                        const Standard_Real Tol, 

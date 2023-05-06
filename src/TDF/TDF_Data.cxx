@@ -243,7 +243,7 @@ Standard_Integer TDF_Data::CommitTransaction
           if (aPtrCurrentAtt->mySavedTransaction >=
               aPtrCurrentAtt->myTransaction)
           {
-            const Handle(TDF_Attribute) currentAtt = aPtrCurrentAtt;
+            const Handle(TDF_Attribute)& currentAtt = aPtrCurrentAtt;
             // Collision with a not forgotten version.
             if (backupAtt.IsNull()) {
               TDF_Data_DeltaCreation

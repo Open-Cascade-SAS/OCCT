@@ -55,7 +55,7 @@ IFSelect_SelectRootComps::IFSelect_SelectRootComps ()    {  }
 //  A present, on retient, parmi les inputs, celles comptees une seule fois
 //  (N.B.: on prend inp1, qui donne UNE entite par composant, simple ou cycle)
   for (inp1.Start(); inp1.More(); inp1.Next()) {
-    Handle(Standard_Transient) ent = inp1.Value();
+    const Handle(Standard_Transient)& ent = inp1.Value();
     if ((GC.NbTimes(ent) <= 1) == IsDirect()) iter.GetOneItem(ent);
   }
   return iter;

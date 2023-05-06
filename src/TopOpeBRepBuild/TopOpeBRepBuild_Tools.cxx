@@ -400,8 +400,8 @@ const Standard_Real PAR_T = 0.43213918;
 						     const TopoDS_Edge& anEdgeObj,
 						     gp_Vec& aNormal)
 {
-  TopoDS_Edge aEd=anEdgeObj;
-  TopoDS_Face aFS=aFObj;
+  const TopoDS_Edge& aEd=anEdgeObj;
+  const TopoDS_Face& aFS=aFObj;
   Standard_Real f2 = 0., l2 = 0., tolpc = 0., f = 0., l = 0., par = 0.;
   Handle(Geom2d_Curve) C2D=FC2D_CurveOnSurface(aEd,aFS,f2,l2,tolpc, Standard_True);
 
@@ -551,7 +551,7 @@ Standard_Boolean TopOpeBRepBuild_Tools::GetTangentToEdgeEdge (const TopoDS_Face&
 Standard_Boolean TopOpeBRepBuild_Tools::GetTangentToEdge (const TopoDS_Edge& anEdgeObj,
 							  gp_Vec& aTangent)
 {
-  TopoDS_Edge aEd=anEdgeObj;
+  const TopoDS_Edge& aEd=anEdgeObj;
 
   Standard_Real f = 0., l = 0., par = 0.;
 
@@ -662,8 +662,8 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
   Standard_Boolean DiffOriented = Standard_False;
   BRep_Builder BB; 
   TopoDS_Edge newE = aEdgeToUpdate; //newE.Orientation(TopAbs_FORWARD);
-  TopoDS_Face fFace = fromFace;   //fFace.Orientation(TopAbs_FORWARD);
-  TopoDS_Face tFace = toFace; //tFace.Orientation(TopAbs_FORWARD);
+  const TopoDS_Face& fFace = fromFace;   //fFace.Orientation(TopAbs_FORWARD);
+  const TopoDS_Face& tFace = toFace; //tFace.Orientation(TopAbs_FORWARD);
   Standard_Real fc = 0., lc = 0.;
 
   Handle(Geom2d_Curve) cc = BRep_Tool::CurveOnSurface(newE, tFace, fc, lc);

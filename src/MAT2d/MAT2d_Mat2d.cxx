@@ -1727,7 +1727,7 @@ MAT2d_Mat2d::~MAT2d_Mat2d()
   MAT_DataMapIteratorOfDataMapOfIntegerBisector itmap(bisectormap);
   for (; itmap.More(); itmap.Next())
   {
-    Handle(MAT_Bisector) aBisector = itmap.Value();
+    const Handle(MAT_Bisector)& aBisector = itmap.Value();
     aBisector->FirstEdge(NULL);
     aBisector->SecondEdge(NULL);
   }

@@ -733,7 +733,7 @@ void MakeInternalShells(const TopTools_IndexedMapOfShape& theMF,
   //
   aNbF = theMF.Extent();
   for (i = 1; i <= aNbF; ++i) {
-    TopoDS_Shape aF = theMF(i);
+    const TopoDS_Shape& aF = theMF(i);
     TopExp::MapShapesAndAncestors(aF, 
         TopAbs_EDGE, TopAbs_FACE, 
         aMEF);

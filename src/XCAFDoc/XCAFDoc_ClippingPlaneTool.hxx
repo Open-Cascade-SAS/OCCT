@@ -60,7 +60,7 @@ public:
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
   //! is already defined)
-  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln& thePlane, const TCollection_ExtendedString theName, const Standard_Boolean theCapping) const;
+  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln& thePlane, const TCollection_ExtendedString& theName, const Standard_Boolean theCapping) const;
 
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
@@ -70,7 +70,7 @@ public:
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
   //! is already defined)
-  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln& thePlane, const TCollection_ExtendedString theName) const;
+  Standard_EXPORT TDF_Label AddClippingPlane(const gp_Pln& thePlane, const TCollection_ExtendedString& theName) const;
 
   //! Adds a clipping plane definition to a ClippingPlane table and returns
   //! its label (returns existing label if the same clipping plane
@@ -87,7 +87,7 @@ public:
   
   //! Sets new value of plane and name to the given clipping plane label
   //! or do nothing, if the given label is not a clipping plane label
-  Standard_EXPORT void UpdateClippingPlane(const TDF_Label& theLabelL, const gp_Pln& thePlane, const TCollection_ExtendedString theName) const;
+  Standard_EXPORT void UpdateClippingPlane(const TDF_Label& theLabelL, const gp_Pln& thePlane, const TCollection_ExtendedString& theName) const;
 
   //! Set new value of capping for given clipping plane label
   Standard_EXPORT void SetCapping(const TDF_Label& theClippingPlaneL, const Standard_Boolean theCapping);

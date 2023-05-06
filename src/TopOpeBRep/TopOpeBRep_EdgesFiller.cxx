@@ -249,7 +249,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
       SetShapeTransition(P2D,T1,T2);
       
       if (isvertex1) {
-	const TopoDS_Shape V = V1;
+	const TopoDS_Shape& V = V1;
 	Standard_Integer Vindex = myPDS->AddShape(V,1);
 	TopOpeBRepDS_Config SSC = P2D.EdgesConfig();
 	EVI = StoreVI(P2D,T1,E2index,Vindex,Standard_True,SSC,par1,1);
@@ -257,7 +257,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
       }
       
       if (isvertex2) {
-	const TopoDS_Shape V = V2;
+	const TopoDS_Shape& V = V2;
 	Standard_Integer Vindex = myPDS->AddShape(V,2);
 	TopOpeBRepDS_Config SSC = P2D.EdgesConfig();
 	EVI = StoreVI(P2D,T1,E2index,Vindex,Standard_False,SSC,par1,1);

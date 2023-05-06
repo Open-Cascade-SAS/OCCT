@@ -136,7 +136,7 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
 // ============================================================================
 
 static Handle(Geom_Curve) MakeCurve
-  (const Handle(StepGeom_Curve)& C1, const Handle(Transfer_TransientProcess) TP)
+  (const Handle(StepGeom_Curve)& C1, const Handle(Transfer_TransientProcess)& TP)
 {
   Handle(Geom_Curve) C2 = Handle(Geom_Curve)::DownCast (TP->FindTransient(C1));
   if (!C2.IsNull()) return C2;

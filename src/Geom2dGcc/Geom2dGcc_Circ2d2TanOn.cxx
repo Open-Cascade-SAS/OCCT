@@ -60,9 +60,9 @@ Geom2dGcc_Circ2d2TanOn::
   GeomAbs_CurveType Type1 = C1.GetType();
   GeomAbs_CurveType Type2 = C2.GetType();
   GeomAbs_CurveType Type3 = OnCurve.GetType();
-  Handle(Geom2d_Curve) CC1 = C1.Curve();
-  Handle(Geom2d_Curve) CC2 = C2.Curve();
-  Handle(Geom2d_Curve) Con = OnCurve.Curve();
+  const Handle(Geom2d_Curve)& CC1 = C1.Curve();
+  const Handle(Geom2d_Curve)& CC2 = C2.Curve();
+  const Handle(Geom2d_Curve)& Con = OnCurve.Curve();
 
 //=============================================================================
 //                            Appel a GccAna.                                 +
@@ -392,8 +392,8 @@ Geom2dGcc_Circ2d2TanOn::
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   GeomAbs_CurveType Type1 = C1.GetType();
   GeomAbs_CurveType Type3 = OnCurve.GetType();
-  Handle(Geom2d_Curve) CC1 = C1.Curve();
-  Handle(Geom2d_Curve) Con = OnCurve.Curve();
+  const Handle(Geom2d_Curve)& CC1 = C1.Curve();
+  const Handle(Geom2d_Curve)& Con = OnCurve.Curve();
 
 //=============================================================================
 //                            Appel a GccAna.                                 +
@@ -581,7 +581,7 @@ Geom2dGcc_Circ2d2TanOn::
   parcen3(1,8)
 {
   GeomAbs_CurveType Type3 = OnCurve.GetType();
-  Handle(Geom2d_Curve) Con = OnCurve.Curve();
+  const Handle(Geom2d_Curve)& Con = OnCurve.Curve();
 
 //=============================================================================
 //                            Appel a GccAna.                                 +

@@ -288,8 +288,8 @@ static Standard_Integer evaluateMaxSegment(const Standard_Integer aMaxSegment,
 {
   if (aMaxSegment != 0) return aMaxSegment;
 
-  Handle(Adaptor3d_Surface) aSurf   = aCurveOnSurface.GetSurface();
-  Handle(Adaptor2d_Curve2d) aCurv2d = aCurveOnSurface.GetCurve();
+  const Handle(Adaptor3d_Surface)& aSurf   = aCurveOnSurface.GetSurface();
+  const Handle(Adaptor2d_Curve2d)& aCurv2d = aCurveOnSurface.GetCurve();
 
   Standard_Real aNbSKnots = 0, aNbC2dKnots = 0;
 
@@ -1188,7 +1188,7 @@ static void GetCurve3d(const TopoDS_Edge& theEdge, Handle(Geom_Curve)& theC3d, S
 //function : UpdateVTol
 //purpose  : 
 //=======================================================================
-void UpdateVTol(const TopoDS_Vertex theV1, const TopoDS_Vertex& theV2, Standard_Real theTol)
+void UpdateVTol(const TopoDS_Vertex& theV1, const TopoDS_Vertex& theV2, Standard_Real theTol)
 {
   BRep_Builder aB;
   if (!theV1.IsNull())

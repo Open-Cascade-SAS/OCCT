@@ -1672,7 +1672,7 @@ static Standard_Boolean MakeSelection (const Handle(TDataStd_UAttribute)& Obj,
     if(aNode.IsNull())
       aNode = TDataStd_TreeNode::Set(Obj->Label());
     aNode->Remove();
-    Handle(TDataStd_UAttribute) aContainer = ContextObj;
+    const Handle(TDataStd_UAttribute)& aContainer = ContextObj;
     if(aContainer->Label().FindAttribute(TDataStd_TreeNode::GetDefaultTreeID(), RNode))
       RNode->Append(aNode);
     TDataStd_Name::Set(Obj->Label(), "Auxiliary_Object");

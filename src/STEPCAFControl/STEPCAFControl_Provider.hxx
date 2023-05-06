@@ -139,7 +139,7 @@ public:
    void initStatic(const Handle(DE_ConfigurationNode)& theNode);
 
    //! Initialize static variables
-   void setStatic(const STEPCAFControl_ConfigurationNode::STEPCAFControl_InternalSection theParameter);
+   void setStatic(const STEPCAFControl_ConfigurationNode::STEPCAFControl_InternalSection& theParameter);
 
    //! Reset used interface static variables
    void resetStatic();

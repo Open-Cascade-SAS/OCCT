@@ -156,7 +156,7 @@ IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
   if (type.IsEqual("IGESSelect_SelectIGESTypeForm")) {
     if (file.NbParams() < 2) return Standard_False;
     //Standard_Boolean exact; //szv#4:S4163:12Mar99 not needed
-    const TCollection_AsciiString exname = file.ParamValue(1);
+    const TCollection_AsciiString& exname = file.ParamValue(1);
     if (exname.Length() < 1) return Standard_False;
     if      (exname.Value(1) == 'e') {} //szv#4:S4163:12Mar99 `exact = Standard_True` not needed
     else if (exname.Value(1) == 'c') {} //szv#4:S4163:12Mar99 `exact = Standard_False` not needed
@@ -201,7 +201,7 @@ IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
     if (file.NbParams() < 2) return Standard_False;
     Handle(IGESSelect_FloatFormat) ff = new IGESSelect_FloatFormat;
     Standard_Boolean zerosup;
-    const TCollection_AsciiString zsup = file.ParamValue(1);
+    const TCollection_AsciiString& zsup = file.ParamValue(1);
     if (zsup.Length() < 1) return Standard_False;
     if      (zsup.Value(1) == 'z') zerosup = Standard_True;
     else if (zsup.Value(1) == 'n') zerosup = Standard_False;
@@ -269,7 +269,7 @@ IGESSelect_Dumper::IGESSelect_Dumper ()    {  }
   if (type.IsEqual("IGESSelect_SplineToBSpline")) {
     if (file.NbParams() < 1) return Standard_False;
     Standard_Boolean tryc2;
-    const TCollection_AsciiString tc2 = file.ParamValue(1);
+    const TCollection_AsciiString& tc2 = file.ParamValue(1);
     if (tc2.Length() < 1) return Standard_False;
     if      (tc2.Value(1) == 'T') tryc2 = Standard_True;
     else if (tc2.Value(1) == 'N') tryc2 = Standard_False;

@@ -201,12 +201,12 @@ static
   Standard_Integer IntTools_Tools::SplitCurve(const IntTools_Curve& IC,
            IntTools_SequenceOfCurves& aCvs)
 {
-  Handle (Geom_Curve) aC3D =IC.Curve();
+  const Handle (Geom_Curve)& aC3D =IC.Curve();
   if(aC3D.IsNull())
     return 0;
   //
-  Handle (Geom2d_Curve) aC2D1=IC.FirstCurve2d();
-  Handle (Geom2d_Curve) aC2D2=IC.SecondCurve2d();
+  const Handle (Geom2d_Curve)& aC2D1=IC.FirstCurve2d();
+  const Handle (Geom2d_Curve)& aC2D2=IC.SecondCurve2d();
   Standard_Boolean bIsClosed;
 
   bIsClosed=IntTools_Tools::IsClosed(aC3D);

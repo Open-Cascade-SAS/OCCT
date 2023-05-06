@@ -248,7 +248,6 @@ void CheckSkip(Geom2dInt_GInter& theInter,
   {
     return;
   }
-  const TopoDS_Edge anEl = theE.NextEdge(); // the next edge
   if (!(BRep_Tool::Tolerance(aVl) > theMaxTol) || theE.NextEdge().IsNull())
   {
     return;

@@ -597,7 +597,7 @@ Handle(StepFEA_HSequenceOfElementRepresentation) StepAP209_Construct::GetFeaElem
     aSequence = new StepFEA_HSequenceOfElementRepresentation;
   
   for (; anIter.More(); anIter.Next()) {
-    Handle(Standard_Transient) anEntity = anIter.Value();
+    const Handle(Standard_Transient)& anEntity = anIter.Value();
     if(anEntity->IsKind(theType)) {
       Handle(StepFEA_ElementRepresentation) anElement =
         Handle(StepFEA_ElementRepresentation)::DownCast(anEntity);

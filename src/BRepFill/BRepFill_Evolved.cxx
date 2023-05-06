@@ -711,7 +711,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
     for (WireExp.Init(TopoDS::Wire(FaceExp.Current())); WireExp.More(); 
       WireExp.Next()) {
 
-        TopoDS_Edge   CurrentEdge = WireExp.Current();
+        const TopoDS_Edge&   CurrentEdge = WireExp.Current();
         TopoDS_Vertex VFirst,VLast;
         EdgeVertices(CurrentEdge,VFirst,VLast);
 
@@ -2139,7 +2139,7 @@ void BRepFill_Evolved::MakeSolid()
   B.MakeCompound(Res);
 
   for (; exp.More(); exp.Next()) {
-    TopoDS_Shape Sh = exp.Current();
+    const TopoDS_Shape& Sh = exp.Current();
     B.MakeSolid(Sol);
     B.Add(Sol,Sh);
     BRepClass3d_SolidClassifier SC(Sol);

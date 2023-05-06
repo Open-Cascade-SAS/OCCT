@@ -318,7 +318,7 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write(const Standard_CString theFil
   for (NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>::Iterator anExtFileIter(myFiles);
        anExtFileIter.More(); anExtFileIter.Next())
   {
-    Handle(STEPCAFControl_ExternFile) anExtFile = anExtFileIter.Value();
+    const Handle(STEPCAFControl_ExternFile)& anExtFile = anExtFileIter.Value();
     if (anExtFile->GetWriteStatus() != IFSelect_RetVoid)
     {
       continue;
@@ -1040,7 +1040,7 @@ static Standard_Boolean setDefaultInstanceColor(const Handle(StepVisual_StyledIt
            aFatherStyleIter.More(); aFatherStyleIter.Next())
       {
         StepVisual_PresentationStyleSelect aPSS;
-        StepVisual_PresentationStyleSelect anOlDPSS = aFatherStyleIter.Value();
+        const StepVisual_PresentationStyleSelect& anOlDPSS = aFatherStyleIter.Value();
         if (!anOlDPSS.PointStyle().IsNull())
           aPSS.SetValue(anOlDPSS.PointStyle());
         else if (!anOlDPSS.CurveStyle().IsNull())
@@ -1090,7 +1090,7 @@ static void MakeSTEPStyles(STEPConstruct_Styles& theStyles,
   if (theInherit) aStyle = *theInherit;
   if (theSettings.Contains(theShape))
   {
-    XCAFPrs_Style anOwnStyle = theSettings.FindFromKey(theShape);
+    const XCAFPrs_Style& anOwnStyle = theSettings.FindFromKey(theShape);
     if (!anOwnStyle.IsVisible())
       aStyle.SetVisibility(Standard_False);
     if (anOwnStyle.IsSetColorCurv())
@@ -2315,7 +2315,7 @@ static StepBasic_Unit GetUnit(const Handle(StepRepr_RepresentationContext)& theR
 //purpose  : auxiliary
 //======================================================================
 static Handle(StepRepr_ReprItemAndMeasureWithUnit) CreateDimValue(const Standard_Real theValue,
-                                                                  const StepBasic_Unit theUnit,
+                                                                  const StepBasic_Unit& theUnit,
                                                                   const Handle(TCollection_HAsciiString)& theName,
                                                                   const Standard_CString theMeasureName,
                                                                   const Standard_Boolean theIsAngle,
@@ -2375,7 +2375,7 @@ static Handle(StepRepr_ReprItemAndMeasureWithUnit) CreateDimValue(const Standard
 //=======================================================================
 Handle(StepRepr_ShapeAspect) STEPCAFControl_Writer::writeShapeAspect(const Handle(XSControl_WorkSession)& theWS,
                                                                      const TDF_Label theLabel,
-                                                                     const TopoDS_Shape theShape,
+                                                                     const TopoDS_Shape& theShape,
                                                                      Handle(StepRepr_RepresentationContext)& theRC,
                                                                      Handle(StepAP242_GeometricItemSpecificUsage)& theGISU)
 {
@@ -2432,7 +2432,7 @@ Handle(StepRepr_ShapeAspect) STEPCAFControl_Writer::writeShapeAspect(const Handl
   for (Interface_EntityIterator aSharingIter = aGraph.Sharings(aPDS);
        aSharingIter.More() && aSDR.IsNull(); aSharingIter.Next())
   {
-    Handle(Standard_Transient) anEntity = aSharingIter.Value();
+    const Handle(Standard_Transient)& anEntity = aSharingIter.Value();
     aSDR = Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(anEntity);
   }
   if (aSDR.IsNull())
@@ -2457,7 +2457,7 @@ void STEPCAFControl_Writer::writePresentation(const Handle(XSControl_WorkSession
                                               const Standard_Boolean theHasPlane,
                                               const gp_Ax2& theAnnotationPlane,
                                               const gp_Pnt& theTextPosition,
-                                              const Handle(Standard_Transient) theDimension)
+                                              const Handle(Standard_Transient)& theDimension)
 {
   if (thePresentation.IsNull())
     return;
@@ -2509,7 +2509,7 @@ void STEPCAFControl_Writer::writePresentation(const Handle(XSControl_WorkSession
   // Plane
   Handle(StepGeom_Plane) aPlane = new StepGeom_Plane();
   GeomToStep_MakeAxis2Placement3d anAxisMaker(theAnnotationPlane);
-  Handle(StepGeom_Axis2Placement3d) anAxis = anAxisMaker.Value();
+  const Handle(StepGeom_Axis2Placement3d)& anAxis = anAxisMaker.Value();
   // Set text position to plane origin
   Handle(StepGeom_CartesianPoint) aTextPos = new StepGeom_CartesianPoint();
   Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
@@ -2540,7 +2540,7 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::writeDatumAP242(const Handle(XSC
                                                                 const TDF_LabelSequence& theShapeL,
                                                                 const TDF_Label& theDatumL,
                                                                 const Standard_Boolean theIsFirstDTarget,
-                                                                const Handle(StepDimTol_Datum) theWrittenDatum)
+                                                                const Handle(StepDimTol_Datum)& theWrittenDatum)
 {
   // Get working data
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
@@ -2799,14 +2799,14 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::writeDatumAP242(const Handle(XSC
 //           qualifiers, modifiers, orientation and tolerance class)
 //======================================================================
 static void WriteDimValues(const Handle(XSControl_WorkSession)& theWS,
-                           const Handle(XCAFDimTolObjects_DimensionObject) theObject,
-                           const Handle(StepRepr_RepresentationContext) theRC,
-                           const StepShape_DimensionalCharacteristic theDimension)
+                           const Handle(XCAFDimTolObjects_DimensionObject)& theObject,
+                           const Handle(StepRepr_RepresentationContext)& theRC,
+                           const StepShape_DimensionalCharacteristic& theDimension)
 {
   // Get working data
   const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
   XCAFDimTolObjects_DimensionModifiersSequence aModifiers = theObject->GetModifiers();
-  Handle(Standard_Transient) aDim = theDimension.Value();
+  const Handle(Standard_Transient)& aDim = theDimension.Value();
   Standard_Boolean isAngle = aDim->IsKind(STANDARD_TYPE(StepShape_AngularLocation)) ||
     aDim->IsKind(STANDARD_TYPE(StepShape_AngularSize));
 
@@ -2929,7 +2929,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession)& theWS,
     gp_Dir aDir;
     theObject->GetDirection(aDir);
     GeomToStep_MakeCartesianPoint MkPoint(gp_Pnt(0, 0, 0));
-    Handle(StepGeom_CartesianPoint) aLoc = MkPoint.Value();
+    const Handle(StepGeom_CartesianPoint)& aLoc = MkPoint.Value();
     Handle(StepGeom_Direction) anAxis = new StepGeom_Direction();
     Handle(TColStd_HArray1OfReal) aCoords = new TColStd_HArray1OfReal(1, 3);
     aCoords->SetValue(1, aDir.X());
@@ -3022,7 +3022,7 @@ static void WriteDimValues(const Handle(XSControl_WorkSession)& theWS,
 //======================================================================
 static void WriteDerivedGeometry(const Handle(XSControl_WorkSession)& theWS,
                                  const Handle(XCAFDimTolObjects_DimensionObject)& theObject,
-                                 const Handle(StepRepr_ConstructiveGeometryRepresentation) theRepr,
+                                 const Handle(StepRepr_ConstructiveGeometryRepresentation)& theRepr,
                                  Handle(StepRepr_ShapeAspect)& theFirstSA,
                                  Handle(StepRepr_ShapeAspect)& theSecondSA,
                                  NCollection_Vector<Handle(StepGeom_CartesianPoint)>& thePnts)
@@ -3078,8 +3078,8 @@ static void WriteDerivedGeometry(const Handle(XSControl_WorkSession)& theWS,
 //======================================================================
 static Handle(StepDimTol_HArray1OfDatumSystemOrReference) WriteDatumSystem(const Handle(XSControl_WorkSession)& theWS,
                                                                            const TDF_Label theGeomTolL,
-                                                                           const TDF_LabelSequence theDatumSeq,
-                                                                           const STEPConstruct_DataMapOfAsciiStringTransient theDatumMap,
+                                                                           const TDF_LabelSequence& theDatumSeq,
+                                                                           const STEPConstruct_DataMapOfAsciiStringTransient& theDatumMap,
                                                                            const Handle(StepRepr_RepresentationContext)& theRC)
 {
   // Get working data

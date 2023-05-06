@@ -54,7 +54,7 @@ Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder (unsigned char thePosXLocation,
 // function : Graphic3d_CubeMapOrder
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder (const Graphic3d_ValidatedCubeMapOrder theOrder)
+Graphic3d_CubeMapOrder::Graphic3d_CubeMapOrder (const Graphic3d_ValidatedCubeMapOrder& theOrder)
   :
   myConvolution  (theOrder.Order.myConvolution),
   myHasOverflows (theOrder.Order.myHasOverflows)
@@ -135,7 +135,7 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::SetDefault()
 // function : Permute
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Permute (Graphic3d_ValidatedCubeMapOrder thePermutation)
+Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Permute (const Graphic3d_ValidatedCubeMapOrder& thePermutation)
 {
   for (unsigned char i = 0; i < 6; ++i)
   {
@@ -149,7 +149,7 @@ Graphic3d_CubeMapOrder& Graphic3d_CubeMapOrder::Permute (Graphic3d_ValidatedCube
 // function : Permuted
 // purpose  :
 // =======================================================================
-Graphic3d_CubeMapOrder Graphic3d_CubeMapOrder::Permuted (Graphic3d_ValidatedCubeMapOrder thePermutation) const
+Graphic3d_CubeMapOrder Graphic3d_CubeMapOrder::Permuted (const Graphic3d_ValidatedCubeMapOrder& thePermutation) const
 {
   Graphic3d_CubeMapOrder anOrder = *this;
   anOrder.Permute (thePermutation);

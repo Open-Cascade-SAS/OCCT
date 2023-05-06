@@ -556,7 +556,7 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
 //function : isIsoLine
 //purpose  :
 //=============================================================================
-Standard_Boolean Approx_CurveOnSurface::isIsoLine(const Handle(Adaptor2d_Curve2d) theC2D,
+Standard_Boolean Approx_CurveOnSurface::isIsoLine(const Handle(Adaptor2d_Curve2d)& theC2D,
                                                   Standard_Boolean&                theIsU,
                                                   Standard_Real&                   theParam,
                                                   Standard_Boolean&                theIsForward) const
@@ -638,7 +638,7 @@ Standard_Boolean Approx_CurveOnSurface::isIsoLine(const Handle(Adaptor2d_Curve2d
 //function : buildC3dOnIsoLine
 //purpose  :
 //=============================================================================
-Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d) theC2D,
+Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d_Curve2d)& theC2D,
                                                           const Standard_Boolean           theIsU,
                                                           const Standard_Real              theParam,
                                                           const Standard_Boolean           theIsForward)

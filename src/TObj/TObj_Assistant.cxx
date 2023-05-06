@@ -96,7 +96,7 @@ Handle(TObj_Model) TObj_Assistant::FindModel
 //purpose  : 
 //=======================================================================
 
-void TObj_Assistant::BindModel (const Handle(TObj_Model) theModel)
+void TObj_Assistant::BindModel (const Handle(TObj_Model)& theModel)
 {
   getModels().Append(theModel);
 }

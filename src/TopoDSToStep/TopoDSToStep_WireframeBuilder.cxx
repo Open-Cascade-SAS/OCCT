@@ -109,8 +109,8 @@ const Handle(TColStd_HSequenceOfTransient)& TopoDSToStep_WireframeBuilder::Value
 #define Nbpt 23
 
 static Handle(StepGeom_TrimmedCurve) MakeTrimmedCurve (const Handle(StepGeom_Curve) &C,
-						       const Handle(StepGeom_CartesianPoint) P1, 
-						       const Handle(StepGeom_CartesianPoint) P2, 
+						       const Handle(StepGeom_CartesianPoint)& P1,
+						       const Handle(StepGeom_CartesianPoint)& P2,
 						       Standard_Real trim1,
 						       Standard_Real trim2,
 						       Standard_Boolean sense)
@@ -209,7 +209,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
     {
       return Standard_False;
     }
-    Handle(StepGeom_Curve) aPMSC = aGTSMC.Value();
+    const Handle(StepGeom_Curve)& aPMSC = aGTSMC.Value();
 
     // trim the curve
     Standard_Real aTrim1 = aCA.FirstParameter();

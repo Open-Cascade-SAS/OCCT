@@ -589,7 +589,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
         TopoDS_Iterator it(Result1);
         for ( ; it.More(); it.Next() ) 
         {
-          TopoDS_Shape aSubShape = it.Value();
+          const TopoDS_Shape& aSubShape = it.Value();
           B.Add(Cund, aSubShape);
         }
       }
@@ -639,7 +639,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
           TopoDS_Iterator it(Result1);
           for ( ; it.More(); it.Next() ) 
           {
-            TopoDS_Shape aSubShape = it.Value();
+            const TopoDS_Shape& aSubShape = it.Value();
             B.Add(Cund, aSubShape);
           }
         }
@@ -657,7 +657,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
       Interface_EntityIterator subs1 = graph.Sharings(rep);
       Handle(Standard_Type) tSRR = STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship);
       for (subs1.Start(); subs1.More(); subs1.Next()) {
-        Handle(Standard_Transient) anitem = subs1.Value();
+        const Handle(Standard_Transient)& anitem = subs1.Value();
         if( !anitem->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
           continue;
         if (anitem->DynamicType() == tSRR)
@@ -991,7 +991,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
       // Put not suspected open Shells as they are (updated 23.11.2010)
       TopExp_Explorer allShellsExp(comp, TopAbs_SHELL);
       for ( ; allShellsExp.More(); allShellsExp.Next() ) {
-        TopoDS_Shape aCurrentShell = allShellsExp.Current();
+        const TopoDS_Shape& aCurrentShell = allShellsExp.Current();
         if ( !myNMTool.IsPureNMShell(aCurrentShell) && !shellClosingsMap.Contains(aCurrentShell) )
           brepBuilder.Add(compWithClosings, aCurrentShell);
       }
@@ -1005,7 +1005,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     TopExp_Explorer exp(comp, TopAbs_SHELL);
     for (; exp.More(); exp.Next())
     {
-        TopoDS_Shape aSubShape = exp.Current();
+        const TopoDS_Shape& aSubShape = exp.Current();
         if (aSubShape.ShapeType() == TopAbs_SHELL && aSubShape.Closed()) {
             TopoDS_Solid nextSolid;
             brepBuilder.MakeSolid(nextSolid);
@@ -1348,7 +1348,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::OldWay
   for (subs.Start(); subs.More() && PS.More(); subs.Next())
   {
     Message_ProgressRange aRange = PS.Next();
-    Handle(Standard_Transient) anitem = subs.Value();
+    const Handle(Standard_Transient)& anitem = subs.Value();
     if ( anitem->DynamicType() != tCDSR && anitem->DynamicType() != tSRR ) continue;
 //      DeclareAndCast(StepShape_ContextDependentShapeRepresentation,anitem,subs.Value());
 //      if (anitem.IsNull()) continue;
@@ -2026,12 +2026,12 @@ void STEPControl_ActorRead::computeIDEASClosings(const TopoDS_Compound& comp,
   TopExp_Explorer shellExpA(comp, TopAbs_SHELL);
 
   for ( ; shellExpA.More(); shellExpA.Next() ) {
-    TopoDS_Shape shellA = shellExpA.Current();
+    const TopoDS_Shape& shellA = shellExpA.Current();
     TopExp_Explorer shellExpB(comp, TopAbs_SHELL);
     TopTools_ListOfShape closingShells;
 
     for ( ; shellExpB.More(); shellExpB.Next() ) {
-      TopoDS_Shape shellB = shellExpB.Current();
+      const TopoDS_Shape& shellB = shellExpB.Current();
       if ( shellA.IsSame(shellB) )
         continue;
       // Check whether ShellB is non-manifold and adjacent to ShellA.

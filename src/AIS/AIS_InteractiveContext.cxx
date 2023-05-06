@@ -945,7 +945,7 @@ void AIS_InteractiveContext::Redisplay (const AIS_KindOfInteractive theKOI,
   Standard_Boolean isRedisplayed = Standard_False;
   for (AIS_DataMapIteratorOfDataMapOfIOStatus anObjIter (myObjects); anObjIter.More(); anObjIter.Next())
   {
-    Handle(AIS_InteractiveObject) anObj = anObjIter.Key();
+    const Handle(AIS_InteractiveObject)& anObj = anObjIter.Key();
     if (anObj->Type() != theKOI)
     {
       continue;
@@ -1155,7 +1155,7 @@ void AIS_InteractiveContext::SetDisplayMode(const Standard_Integer theMode,
       continue;
     }
 
-    Handle(AIS_GlobalStatus) aStatus = anObjIter.Value();
+    const Handle(AIS_GlobalStatus)& aStatus = anObjIter.Value();
     aStatus->SetDisplayMode (theMode);
 
     if (anObj->DisplayStatus() == PrsMgr_DisplayStatus_Displayed)
@@ -2251,7 +2251,7 @@ Bnd_Box AIS_InteractiveContext::BoundingBoxOfSelection (const Handle(V3d_View)& 
 
   for (AIS_MapIteratorOfMapOfObjectOwners anIter (anObjectOwnerMap); anIter.More(); anIter.Next())
   {
-    const Handle(SelectMgr_SelectableObject) anObject = anIter.Key();
+    const Handle(SelectMgr_SelectableObject)& anObject = anIter.Key();
     Bnd_Box aTmpBox = anObject->BndBoxOfSelected (anIter.ChangeValue());
     aBndSelected.Add (aTmpBox);
   }

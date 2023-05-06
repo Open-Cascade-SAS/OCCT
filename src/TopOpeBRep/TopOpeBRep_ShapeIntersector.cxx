@@ -1265,7 +1265,7 @@ static TopoDS_Solid GetNewSolid(const TopoDS_Shape& S, TopoDS_Face& F)
   TopoDS_Wire w = mkw.Wire();
 
   BRepLib_MakeFace mkf( w );
-  TopoDS_Face infFace = mkf.Face();
+  const TopoDS_Face& infFace = mkf.Face();
   
   TopoDS_Shell newShell;
   TopoDS_Solid newSolid;

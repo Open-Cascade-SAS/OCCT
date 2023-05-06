@@ -348,7 +348,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   Handle(Geom_OffsetSurface) offsurf; 
   offsurf = new Geom_OffsetSurface(BZ1, -100); 
   BRepBuilderAPI_MakeFace bzf2( offsurf, Precision::Confusion() ); 
-  TopoDS_Face F2= bzf2.Face(); 
+  const TopoDS_Face& F2= bzf2.Face(); 
   Handle(AIS_Shape) ais22 = new AIS_Shape(F2); 
   aContext->Display (ais22, Standard_False);
   DBRep::Set("F2",F2);
@@ -1223,7 +1223,7 @@ static Standard_Integer BUC60951_(Draw_Interpretor& di, Standard_Integer argc, c
   shell.Closed (BRep_Tool::IsClosed (shell));
 
   BRepPrimAPI_MakeHalfSpace half(shell, gp_Pnt(0, 0, 20));
-  TopoDS_Solid sol = half.Solid();
+  const TopoDS_Solid& sol = half.Solid();
   gp_Ax2 anAx2(gp_Pnt(-800.0, 0.0, 0), gp_Dir(0, 0, -1));
   BRepPrimAPI_MakeCylinder cyl(anAx2, 50, 300);
   TopoDS_Shape sh = cyl.Shape();

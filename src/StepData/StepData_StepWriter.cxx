@@ -172,7 +172,7 @@ void StepData_StepWriter::SendModel(const Handle(StepData_Protocol)& protocol,
   Interface_EntityIterator header = themodel->Header();
   thenum = 0;
   for (header.Start(); header.More(); header.Next()) {
-    Handle(Standard_Transient) anent = header.Value();
+    const Handle(Standard_Transient)& anent = header.Value();
 
 //   Write Entity via Lib  (similaire a SendEntity)
     Handle(StepData_ReadWriteModule) module;  Standard_Integer CN;
@@ -681,7 +681,7 @@ void  StepData_StepWriter::SendList(const StepData_FieldList& list,
   for (i = 1; i <= nb; i ++) {
     Handle(StepData_PDescr) pde;
     if (!descr.IsNull()) pde  = descr->Field(i);
-    const StepData_Field fild = list.Field(i);
+    const StepData_Field& fild = list.Field(i);
     SendField (fild,pde);
   }
 // end entity  ?

@@ -85,7 +85,7 @@ void StdPersistent_Naming::Name::Import
     StdLPersistent_HArray1OfPersistent::Iterator anIter (*myArgs->Array());
     for (; anIter.More(); anIter.Next())
     {
-      Handle(StdObjMgt_Persistent) aPersistent = anIter.Value();
+      const Handle(StdObjMgt_Persistent)& aPersistent = anIter.Value();
       if (aPersistent)
       {
         Handle(TDF_Attribute) anArg = aPersistent->GetAttribute();

@@ -144,7 +144,7 @@ static void CorrectUnclosedWire(TopoDS_Shape& aWire)
   for(i = 1; i <= nbVer; i++) {
     const TopTools_ListOfShape& Elist = VElists.FindFromIndex(i);
     if(Elist.Extent() == 1) {
-      TopoDS_Shape anEdge = Elist.First();
+      const TopoDS_Shape& anEdge = Elist.First();
 //      std::cout << "Remove redundant edge" << std::endl;
       BB.Remove(aWire, anEdge);
     }
@@ -345,7 +345,7 @@ void TopOpeBRepBuild_Builder::MakeSolids(TopOpeBRepBuild_SolidBuilder& SOBU,TopT
       else {
 	myBuildTool.MakeShell(newShell);
 	for (SOBU.InitFace(); SOBU.MoreFace(); SOBU.NextFace()) {
-	  TopoDS_Shape F = SOBU.Face();
+	  const TopoDS_Shape& F = SOBU.Face();
 	  myBuildTool.AddShellFace(newShell,F);
 	}
       }
@@ -369,7 +369,7 @@ void TopOpeBRepBuild_Builder::MakeShells(TopOpeBRepBuild_SolidBuilder& SOBU,TopT
     else {
       myBuildTool.MakeShell(newShell);
       for (SOBU.InitFace(); SOBU.MoreFace(); SOBU.NextFace()) {
-	TopoDS_Shape F = SOBU.Face();
+	const TopoDS_Shape& F = SOBU.Face();
 	myBuildTool.AddShellFace(newShell,F);
       }
     }
@@ -413,7 +413,7 @@ void TopOpeBRepBuild_Builder::MakeFaces(const TopoDS_Shape& aFace,TopOpeBRepBuil
       else {
 	myBuildTool.MakeWire(newWire);
 	for(FABU.InitEdge(); FABU.MoreEdge(); FABU.NextEdge()) {
-	  TopoDS_Shape E = FABU.Edge();
+	  const TopoDS_Shape& E = FABU.Edge();
 	  if (hns) myBuildTool.UpdateSurface(E,aFace,newFace);
 	  myBuildTool.AddWireEdge(newWire,E);
 	}

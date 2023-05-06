@@ -3306,8 +3306,8 @@ static void CopyReversePcurves(const TopoDS_Edge& toedge,
 			       const TopoDS_Edge& fromedge,
 			       const Standard_Boolean reverse)
 {
-  TopLoc_Location fromLoc = fromedge.Location();
-  TopLoc_Location toLoc = toedge.Location();
+  const TopLoc_Location& fromLoc = fromedge.Location();
+  const TopLoc_Location& toLoc = toedge.Location();
   for (BRep_ListIteratorOfListOfCurveRepresentation fromitcr
        ((*((Handle(BRep_TEdge)*)&fromedge.TShape()))->ChangeCurves()); fromitcr.More(); fromitcr.Next()) {
     Handle(BRep_GCurve) fromGC = Handle(BRep_GCurve)::DownCast(fromitcr.Value());

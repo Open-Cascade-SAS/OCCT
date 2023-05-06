@@ -474,7 +474,7 @@ static Standard_Integer MemLeakTest(Draw_Interpretor&, Standard_Integer /*nbarg*
     w.Close();     
     TopoDS_Wire wireShape( w.Wire());
     BRepBuilderAPI_MakeFace faceBuilder(wireShape);          
-    TopoDS_Face f( faceBuilder.Face());
+    const TopoDS_Face& f = faceBuilder.Face();
     BRepMesh_IncrementalMesh im(f,1);
     BRepTools::Clean(f);      
   }

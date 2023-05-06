@@ -78,7 +78,7 @@ XSControl_ConnectedShapes::XSControl_ConnectedShapes ()
     if (sh.IsNull()) continue;
     if (sh.ShapeType() != type) continue;
     for (TopExp_Explorer vsh(sh,TopAbs_VERTEX); vsh.More(); vsh.Next()) {
-      TopoDS_Shape avtx = vsh.Current();
+      const TopoDS_Shape& avtx = vsh.Current();
       if (vtx.Contains(avtx)) {
 	li->Append (TP->Mapped(i));
 	break;  // break de ce for interieur, entite suivante

@@ -46,8 +46,8 @@ Geom2dGcc_Lin2d2Tan::
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve C2 = Qualified2.Qualified();
-  Handle(Geom2d_Curve) CC1 = C1.Curve();
-  Handle(Geom2d_Curve) CC2 = C2.Curve();
+  const Handle(Geom2d_Curve)& CC1 = C1.Curve();
+  const Handle(Geom2d_Curve)& CC2 = C2.Curve();
   GeomAbs_CurveType Type1 = C1.GetType();
   GeomAbs_CurveType Type2 = C2.GetType();
 
@@ -127,7 +127,7 @@ Geom2dGcc_Lin2d2Tan::
   pararg2(1,2)   
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
-  Handle(Geom2d_Curve) CC1 = C1.Curve();
+  const Handle(Geom2d_Curve)& CC1 = C1.Curve();
   GeomAbs_CurveType Type1 = C1.GetType();
 
 //=============================================================================
@@ -196,8 +196,8 @@ Geom2dGcc_Lin2d2Tan::
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve C2 = Qualified2.Qualified();
-  Handle(Geom2d_Curve) CC1 = C1.Curve();
-  Handle(Geom2d_Curve) CC2 = C2.Curve();
+  const Handle(Geom2d_Curve)& CC1 = C1.Curve();
+  const Handle(Geom2d_Curve)& CC2 = C2.Curve();
   GeomAbs_CurveType Type1 = C1.GetType();
   GeomAbs_CurveType Type2 = C2.GetType();
 
@@ -260,7 +260,7 @@ Geom2dGcc_Lin2d2Tan::
   pararg2(1,2)   
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
-  Handle(Geom2d_Curve) CC1 = C1.Curve();
+  const Handle(Geom2d_Curve)& CC1 = C1.Curve();
   GeomAbs_CurveType Type1 = C1.GetType();
 
 //=============================================================================

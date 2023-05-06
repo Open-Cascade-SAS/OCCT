@@ -637,7 +637,7 @@ static Standard_Boolean FUN_validF1edge(const TopoDS_Shape& F)
   if(tSPS) debfille(iE);
 #endif
   
-  TopOpeBRepBuild_GTopo GME = G1;
+  const TopOpeBRepBuild_GTopo& GME = G1;
   GMergeEdgeWES(EOR,GME,WES);
   
   TopOpeBRepBuild_GTopo GSE = G1;

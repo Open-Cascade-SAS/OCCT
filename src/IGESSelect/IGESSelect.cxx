@@ -41,7 +41,7 @@ Standard_Integer  IGESSelect::WhatIges
   (const Handle(IGESData_IGESEntity)& ent, const Interface_Graph& G,
    Handle(IGESData_IGESEntity)& /* sup */, Standard_Integer& /* index */)
 {
-  Handle(IGESData_IGESEntity) igesent = ent;
+  const Handle(IGESData_IGESEntity)& igesent = ent;
   if (igesent.IsNull()) return Standard_False;
 //  Standard_Integer igt = igesent->TypeNumber();
   DeclareAndCast(IGESData_IGESModel,model,G.Model());

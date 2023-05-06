@@ -242,7 +242,7 @@ static Standard_Boolean IsObst(const ChFiDS_CommonPoint& CP,
 //           
 //=======================================================================
 
-static void CompParam(Geom2dAdaptor_Curve  Carc,
+static void CompParam(const Geom2dAdaptor_Curve&  Carc,
 		      Handle(Geom2d_Curve) Ctg,
 		      Standard_Real&       parc,
 		      Standard_Real&       ptg,
@@ -330,8 +330,8 @@ static void CompParam(Geom2dAdaptor_Curve  Carc,
 static Standard_Boolean CompBlendPoint(const TopoDS_Vertex& V,
 				       const TopoDS_Edge& E,
 				       const Standard_Real W,
-				       const TopoDS_Face F1,
-				       const TopoDS_Face F2,
+				       const TopoDS_Face& F1,
+				       const TopoDS_Face& F2,
 				       Blend_Point& BP)
 {    
   gp_Pnt2d P1, P2;

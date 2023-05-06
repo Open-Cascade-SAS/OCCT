@@ -98,7 +98,7 @@ const Handle(Graphic3d_Camera)& SelectMgr_SelectingVolumeManager::Camera() const
 // function : SetCamera
 // purpose  :
 //=======================================================================
-void SelectMgr_SelectingVolumeManager::SetCamera (const Handle(Graphic3d_Camera) theCamera)
+void SelectMgr_SelectingVolumeManager::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
 {
   Standard_ASSERT_RAISE(!myActiveSelectingVolume.IsNull(),
     "SelectMgr_SelectingVolumeManager::SetCamera() should be called after initialization of selection volume ");

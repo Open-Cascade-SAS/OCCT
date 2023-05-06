@@ -113,7 +113,7 @@ ShapeUpgrade_RemoveInternalWires::ShapeUpgrade_RemoveInternalWires(const TopoDS_
   TopTools_IndexedDataMapOfShapeListOfShape aWireFaces;
   Standard_Integer i =1, nb = theSeqShapes.Length();
   for( ; i <= nb; i++) {
-    TopoDS_Shape aS = theSeqShapes.Value(i);
+    const TopoDS_Shape& aS = theSeqShapes.Value(i);
     if(aS.ShapeType() == TopAbs_FACE)
       removeSmallWire(aS,TopoDS_Wire());
     else if(aS.ShapeType() == TopAbs_WIRE) {
@@ -163,7 +163,7 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallWire (const TopoDS_Shape& theF
       
       TopoDS_Iterator aIte(aW,Standard_False);
       for( ; aIte.More(); aIte.Next()) {
-        TopoDS_Shape aE = aIte.Value();
+        const TopoDS_Shape& aE = aIte.Value();
         if(myRemoveEdges.IsBound(aE))
           myRemoveEdges.ChangeFind(aE).Append(aF);
         else {
@@ -193,7 +193,7 @@ void ShapeUpgrade_RemoveInternalWires::removeSmallFaces ()
     //collecting all faces containing edges from removed wire
     for( ; aIte.More(); aIte.Next()) {
       
-      TopoDS_Shape aEdge =  aIte.Value();
+      const TopoDS_Shape& aEdge =  aIte.Value();
       if(!myEdgeFaces.Contains(aEdge)) {
         myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
         continue;

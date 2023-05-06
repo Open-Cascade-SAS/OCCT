@@ -65,8 +65,8 @@ namespace
     }
   }
 
-  inline Standard_Real DistanceInitiale(const TopoDS_Vertex V1,
-                                        const TopoDS_Vertex V2)
+  inline Standard_Real DistanceInitiale(const TopoDS_Vertex& V1,
+                                        const TopoDS_Vertex& V2)
   {
     return (BRep_Tool::Pnt(V1).Distance(BRep_Tool::Pnt(V2)));
   }

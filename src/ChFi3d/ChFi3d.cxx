@@ -274,8 +274,8 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
   Standard_Real par = 0.691254*first + 0.308746*last;
 
   gp_Pnt pt, pt1, pt2; gp_Vec tgE, tgE1, tgE2, ns1, ns2, dint1, dint2;
-  TopoDS_Face F1 = S1.Face();
-  TopoDS_Face F2 = S2.Face();
+  const TopoDS_Face& F1 = S1.Face();
+  const TopoDS_Face& F2 = S2.Face();
   //F1.Orientation(TopAbs_FORWARD);
   //F2.Orientation(TopAbs_FORWARD);
   

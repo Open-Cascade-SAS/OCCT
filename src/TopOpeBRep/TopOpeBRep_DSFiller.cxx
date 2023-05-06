@@ -739,8 +739,8 @@ void TopOpeBRep_DSFiller::InsertIntersection2d
   
   if ( ! ClearShapeSameDomain(aS1, aS2, HDS) ) return;
   
-  TopoDS_Shape S1 = aS1; 
-  TopoDS_Shape S2 = aS2; 
+  const TopoDS_Shape& S1 = aS1; 
+  const TopoDS_Shape& S2 = aS2; 
   TopOpeBRepDS_DataStructure& BDS1 = HDS->ChangeDS();
   BDS1.AddShape(S1,1);
   BDS1.AddShape(S2,2);

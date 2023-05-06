@@ -353,7 +353,7 @@ static const Standard_ExtString   voidext = { 0 };
   if (!compound || res != TopAbs_COMPOUND) return res;
   res = TopAbs_SHAPE;
   for (TopoDS_Iterator iter(shape); iter.More(); iter.Next()) {
-    TopoDS_Shape sh = iter.Value();
+    const TopoDS_Shape& sh = iter.Value();
     if (sh.IsNull()) continue;
     TopAbs_ShapeEnum typ = sh.ShapeType();
     if (typ == TopAbs_COMPOUND) typ = ShapeType (sh,compound);

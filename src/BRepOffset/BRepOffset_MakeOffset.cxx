@@ -544,7 +544,7 @@ static void FillContours(const TopoDS_Shape& aShape,
       TopoDS_Wire aWire = TopoDS::Wire(itf.Value());
       for (Wexp.Init(aWire, aFace); Wexp.More(); Wexp.Next())
       {
-        TopoDS_Edge anEdge = Wexp.Current();
+        const TopoDS_Edge& anEdge = Wexp.Current();
         if (BRep_Tool::Degenerated(anEdge))
           continue;
         const BRepOffset_ListOfInterval& Lint = Analyser.Type(anEdge);

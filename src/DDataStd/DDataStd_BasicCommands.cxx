@@ -3382,7 +3382,7 @@ static Standard_Integer DDataStd_GetNDIntegers (Draw_Interpretor& di,
     const TColStd_DataMapOfStringInteger& aMap = anAtt->GetIntegersContainer();
     TColStd_DataMapIteratorOfDataMapOfStringInteger itr(aMap);
     for (; itr.More(); itr.Next()){
-      TCollection_ExtendedString aKey(itr.Key());
+      const TCollection_ExtendedString& aKey(itr.Key());
       Standard_Integer aValue = itr.Value();
       di << "Key = " << aKey << " Value = " << aValue << "\n";
       }
@@ -3500,7 +3500,7 @@ static Standard_Integer DDataStd_GetNDReals (Draw_Interpretor& di,
     const TDataStd_DataMapOfStringReal& aMap = anAtt->GetRealsContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringReal itr(aMap);
     for (; itr.More(); itr.Next()){
-      TCollection_ExtendedString aKey(itr.Key());
+      const TCollection_ExtendedString& aKey(itr.Key());
       Standard_Real aValue = itr.Value();
       di << "Key = " << aKey << " Value = " << aValue << "\n";
       }
@@ -3757,7 +3757,7 @@ static Standard_Integer DDataStd_GetNDBytes (Draw_Interpretor& di,
     TDataStd_DataMapIteratorOfDataMapOfStringByte itr(aMap);
     for (; itr.More(); itr.Next())
     {
-      TCollection_ExtendedString aKey(itr.Key());
+      const TCollection_ExtendedString& aKey(itr.Key());
       Standard_Byte aValue = itr.Value();
       std::cout << "Key = "  << aKey << " Value = " <<aValue<<std::endl;
     }
@@ -3882,9 +3882,9 @@ static Standard_Integer DDataStd_GetNDIntArrays (Draw_Interpretor& di,
     const TDataStd_DataMapOfStringHArray1OfInteger& aMap = anAtt->GetArraysOfIntegersContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger itr(aMap);
     for (; itr.More(); itr.Next()){
-      TCollection_ExtendedString aKey(itr.Key());
+      const TCollection_ExtendedString& aKey(itr.Key());
       std::cout << "Key = "  << aKey<< std::endl;
-      Handle(TColStd_HArray1OfInteger) anArrValue = itr.Value();      
+      const Handle(TColStd_HArray1OfInteger)& anArrValue = itr.Value();      
       if(!anArrValue.IsNull()) {
         Standard_Integer lower = anArrValue->Lower();
         Standard_Integer upper = anArrValue->Upper();
@@ -4025,9 +4025,9 @@ static Standard_Integer DDataStd_GetNDRealArrays (Draw_Interpretor& di,
     const TDataStd_DataMapOfStringHArray1OfReal& aMap = anAtt->GetArraysOfRealsContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal itr(aMap);
     for (; itr.More(); itr.Next()){
-      TCollection_ExtendedString aKey(itr.Key());
+      const TCollection_ExtendedString& aKey(itr.Key());
       std::cout << "Key = "  << aKey << std::endl;
-      Handle(TColStd_HArray1OfReal) anArrValue = itr.Value();      
+      const Handle(TColStd_HArray1OfReal)& anArrValue = itr.Value();      
       if(!anArrValue.IsNull()) {
         Standard_Integer lower = anArrValue->Lower();
         Standard_Integer upper = anArrValue->Upper();

@@ -161,7 +161,7 @@ Standard_Boolean FUNBREP_topowalki_new
   Standard_Boolean keep = Standard_True;
   if  (LITdefinie) {
 
-    Handle(TopOpeBRepDS_Interference) I = DSCIL.Last();
+    const Handle(TopOpeBRepDS_Interference)& I = DSCIL.Last();
     TopOpeBRepDS_Transition LIT = I->Transition();
     Standard_Boolean LITonsort = M_FORWARD( LIT.Orientation(TopAbs_OUT) );
     Standard_Boolean LprecIsEntrant = !LITonsort;
@@ -470,7 +470,7 @@ Standard_Boolean FUNBREP_topogline_new
 
       // we have to parametrize the found interference (parameter PIfound)
       // and next interference (parline)
-      Handle(TopOpeBRepDS_Interference) Ifound = DSCIL.First();
+      const Handle(TopOpeBRepDS_Interference)& Ifound = DSCIL.First();
       Standard_Real PIfound = TopOpeBRepDS_InterferenceTool::Parameter(Ifound);
       FUNBREP_Periodize(L,Ifound,PIfound,parline);
       TopOpeBRepDS_InterferenceTool::Parameter(Ifound,PIfound);      

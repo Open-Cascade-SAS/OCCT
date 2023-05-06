@@ -39,7 +39,7 @@ void StdLPersistent_Dependency::instance<AttribClass>::Import
     StdLPersistent_HArray1OfPersistent::Iterator anIter (*myVariables->Array());
     for (; anIter.More(); anIter.Next())
     {
-      const Handle(StdObjMgt_Persistent) aPersistent = anIter.Value();
+      const Handle(StdObjMgt_Persistent)& aPersistent = anIter.Value();
       if (aPersistent)
         theAttribute->GetVariables().Append (aPersistent->GetAttribute());
     }

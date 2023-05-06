@@ -691,7 +691,7 @@ Standard_Boolean ShapeFix_Face::Perform()
           TopoDS_Shape aCurW = aItW.Value();
           while(aMapReorderedWires.IsBound(aCurW))
           {
-            TopoDS_Shape aFixW = aMapReorderedWires.Find(aCurW);
+            const TopoDS_Shape& aFixW = aMapReorderedWires.Find(aCurW);
             Context()->Replace(aCurW, aFixW);
             aCurW = aFixW;
           }
@@ -715,7 +715,7 @@ Standard_Boolean ShapeFix_Face::Perform()
 
 // Shift all pcurves of edges in the given wire on the given face 
 // to vector <vec>
-static void Shift2dWire(const TopoDS_Wire w, const TopoDS_Face f,
+static void Shift2dWire(const TopoDS_Wire& w, const TopoDS_Face& f,
 			const gp_Vec2d vec, 
                         const Handle(ShapeAnalysis_Surface)& mySurf,
                         Standard_Boolean recompute3d = Standard_False)
@@ -1418,7 +1418,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     
     if(nb < nbAll) {
       for( i =1; i <= nbAll;i++) {
-        TopoDS_Shape aS2 = allSubShapes.Value(i);
+        const TopoDS_Shape& aS2 = allSubShapes.Value(i);
         if(aS2.ShapeType() != TopAbs_WIRE || 
            (aS2.Orientation() != TopAbs_FORWARD && aS2.Orientation() != TopAbs_REVERSED))
           B.Add ( S,aS2);

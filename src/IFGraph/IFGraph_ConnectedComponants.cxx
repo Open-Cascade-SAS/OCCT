@@ -35,7 +35,7 @@ IFGraph_ConnectedComponants::IFGraph_ConnectedComponants
   Interface_EntityIterator loaded = Loaded();
   Reset();
   for (loaded.Start(); loaded.More(); loaded.Next()) {
-    Handle(Standard_Transient) ent = loaded.Value();
+    const Handle(Standard_Transient)& ent = loaded.Value();
     if (IsInPart(ent)) continue;
     IFGraph_AllConnected connect(Model(),ent);
     AddPart();

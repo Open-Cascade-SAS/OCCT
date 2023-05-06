@@ -333,7 +333,7 @@ Standard_Integer TopOpeBRepTool_TOOL::OnBoundary(const Standard_Real par, const 
 
 
 
-static void FUN_tool_sortVonE(TopTools_ListOfShape& lov, const TopoDS_Edge E)
+static void FUN_tool_sortVonE(TopTools_ListOfShape& lov, const TopoDS_Edge& E)
 {
   TopTools_DataMapOfIntegerShape mapiv;// mapiv.Find(iV) = V
   TColStd_IndexedMapOfReal mappar;     // mappar.FindIndex(parV) = iV

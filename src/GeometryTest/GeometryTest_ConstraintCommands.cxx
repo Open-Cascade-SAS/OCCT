@@ -543,7 +543,7 @@ static Standard_Integer interpol (Draw_Interpretor& di,Standard_Integer n, const
         1.0e-5) ;
       anInterpolator.Perform() ;
       if (anInterpolator.IsDone()) { 
-        Handle(Geom_BSplineCurve) C = 
+        const Handle(Geom_BSplineCurve)& C = 
           anInterpolator.Curve();
         DrawTrSurf::Set(a[1], C);
       }
@@ -560,7 +560,7 @@ static Standard_Integer interpol (Draw_Interpretor& di,Standard_Integer n, const
         1.0e-5);
       a2dInterpolator.Perform() ;
       if (a2dInterpolator.IsDone()) {
-        Handle(Geom2d_BSplineCurve) C = a2dInterpolator.Curve() ;
+        const Handle(Geom2d_BSplineCurve)& C = a2dInterpolator.Curve() ;
         DrawTrSurf::Set(a[1], C);
       }
     }

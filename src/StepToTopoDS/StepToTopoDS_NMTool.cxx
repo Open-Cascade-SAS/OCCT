@@ -184,7 +184,7 @@ Standard_Boolean StepToTopoDS_NMTool::IsPureNMShell(const TopoDS_Shape& Shell) {
   Standard_Boolean result = Standard_True;
   TopExp_Explorer edgeExp(Shell, TopAbs_EDGE);
   for ( ; edgeExp.More(); edgeExp.Next() ) {
-    TopoDS_Shape currentEdge = edgeExp.Current();
+    const TopoDS_Shape& currentEdge = edgeExp.Current();
     if ( !this->isEdgeRegisteredAsNM(currentEdge) ) {
       result = Standard_False;
       break;
@@ -223,10 +223,10 @@ Standard_Boolean StepToTopoDS_NMTool::isAdjacentShell(const TopoDS_Shape& ShellA
 
   TopExp_Explorer edgeExpA(ShellA, TopAbs_EDGE);
   for ( ; edgeExpA.More(); edgeExpA.Next() ) {
-    TopoDS_Shape currentEdgeA = edgeExpA.Current();
+    const TopoDS_Shape& currentEdgeA = edgeExpA.Current();
     TopExp_Explorer edgeExpB(ShellB, TopAbs_EDGE);
     for ( ; edgeExpB.More(); edgeExpB.Next() ) {
-      TopoDS_Shape currentEdgeB = edgeExpB.Current();
+      const TopoDS_Shape& currentEdgeB = edgeExpB.Current();
       if ( currentEdgeA.IsSame(currentEdgeB) )
         return Standard_True;
     }  

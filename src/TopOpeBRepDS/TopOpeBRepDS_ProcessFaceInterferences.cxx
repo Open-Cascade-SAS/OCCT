@@ -291,7 +291,7 @@ Standard_EXPORT void FUN_resolveFUNKNOWN
         //      to determine transition relatively solid rather then face
         //      if possible (see pb. in CFE002 C2, when SIX==13)
         Standard_Integer rankFS = BDS.AncestorRank(S1);
-        TopoDS_Shape aSRef = BDS.Shape(rankFS);
+        const TopoDS_Shape& aSRef = BDS.Shape(rankFS);
         TopExp_Explorer ex(aSRef,TopAbs_SOLID);
         if (ex.More()) {
           pClass = pClassif;

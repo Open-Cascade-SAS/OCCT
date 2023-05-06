@@ -259,7 +259,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   Interface_CheckIterator checks;
   checks.SetName ("X-STEP WorkSession : Send All");
   Message::SendInfo() << "** WorkSession : Sending all data"<<std::endl;
-  Handle(Interface_InterfaceModel)  model = G.Model();
+  const Handle(Interface_InterfaceModel)&  model = G.Model();
   if (model.IsNull() || protocol.IsNull() || WL.IsNull()) return checks;
 
   Interface_CopyTool TC (model, protocol);
@@ -298,7 +298,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   Interface_CheckIterator checks;
   checks.SetName ("X-STEP WorkSession : Send Selected");
   Message::SendInfo() << "** WorkSession : Sending selected data"<<std::endl;
-  Handle(Interface_InterfaceModel)  original = G.Model();
+  const Handle(Interface_InterfaceModel)&  original = G.Model();
   if (original.IsNull() || protocol.IsNull() || WL.IsNull()) return checks;
   Handle(Interface_InterfaceModel) newmod  = original->NewEmptyModel();
   Interface_CopyTool TC (original, protocol);
@@ -361,7 +361,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
 //                             et aussi : pas de Dispatch (envoi en bloc)
 
   applied.Nullify();
-  Handle(Interface_InterfaceModel) original = G.Model();
+  const Handle(Interface_InterfaceModel)& original = G.Model();
   if (dispnum > 0) {
     newmod  = original->NewEmptyModel();
     TC.Clear();
@@ -441,7 +441,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   (const Interface_Graph& G, const Handle(IFSelect_WorkLibrary)& WL,
    Interface_CopyTool& TC,   Handle(Interface_InterfaceModel)& newmod)
 {
-  Handle(Interface_InterfaceModel) original = G.Model();
+  const Handle(Interface_InterfaceModel)& original = G.Model();
 //  Interface_CopyTool TC(original,protocol);
   newmod  = original->NewEmptyModel();
   TC.Clear();

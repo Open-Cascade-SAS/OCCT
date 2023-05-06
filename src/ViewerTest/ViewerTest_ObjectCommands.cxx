@@ -1310,7 +1310,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
 
       // Construction of AIS_Plane
       GC_MakePlane MkPlane (A,B,C);
-      Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+      const Handle(Geom_Plane)& aGeomPlane = MkPlane.Value();
       Handle(AIS_Plane)  anAISPlane = new AIS_Plane (aGeomPlane);
       GetMapOfAIS().Bind (anAISPlane, aName);
       if (argc == 6)
@@ -1494,7 +1494,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
             gp_Pnt aBa = BRep_Tool::Pnt(aVBa);
             gp_Pnt aBb = BRep_Tool::Pnt(aVBb);
             GC_MakePlane MkPlane (A, aBa, aBb);
-            Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+            const Handle(Geom_Plane)& aGeomPlane = MkPlane.Value();
             Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
             GetMapOfAIS().Bind (anAISPlane, aName);
             TheAISContext()->Display (anAISPlane, Standard_True);
@@ -1521,7 +1521,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
           gp_Pnt B = BRep_Tool::Pnt(TopoDS::Vertex(aShapeB));
           gp_Pnt C = BRep_Tool::Pnt(TopoDS::Vertex(aShapeC));
           GC_MakePlane MkPlane(A, B, C);
-          Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+          const Handle(Geom_Plane)& aGeomPlane = MkPlane.Value();
           Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
           GetMapOfAIS().Bind (anAISPlane, aName);
           TheAISContext()->Display (anAISPlane, Standard_True);
@@ -1565,7 +1565,7 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         gp_Pnt Aa = BRep_Tool::Pnt(aVAa);
         gp_Pnt Ab = BRep_Tool::Pnt(aVAb);
         GC_MakePlane MkPlane (B,Aa,Ab);
-        Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
+        const Handle(Geom_Plane)& aGeomPlane = MkPlane.Value();
         Handle(AIS_Plane) anAISPlane = new AIS_Plane (aGeomPlane);
         GetMapOfAIS().Bind (anAISPlane ,aName);
         TheAISContext()->Display (anAISPlane, Standard_True);
@@ -3345,7 +3345,7 @@ private:
   virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSel,
                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
-  bool CheckInputCommand (const TCollection_AsciiString theCommand,
+  bool CheckInputCommand (const TCollection_AsciiString& theCommand,
                           const Handle(TColStd_HArray1OfAsciiString)& theArgsArray,
                           Standard_Integer &theArgIndex,
                           Standard_Integer theArgCount,
@@ -3655,7 +3655,7 @@ void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSel
   }
 }
 
-bool MyPArrayObject::CheckInputCommand (const TCollection_AsciiString theCommand,
+bool MyPArrayObject::CheckInputCommand (const TCollection_AsciiString& theCommand,
                                        const Handle(TColStd_HArray1OfAsciiString)& theArgsArray,
                                        Standard_Integer &theArgIndex,
                                        Standard_Integer theArgCount,

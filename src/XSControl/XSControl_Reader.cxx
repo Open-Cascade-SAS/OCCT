@@ -468,8 +468,7 @@ void XSControl_Reader::GetStatsTransfer (const Handle(TColStd_HSequenceOfTransie
   nbMapped = nbWithFail = nbWithResult = 0;
   
   for (itrp.Start(); itrp.More(); itrp.Next()) {
-    Handle(Transfer_Binder) binder = itrp.Value();
-    Handle(Standard_Transient) ent = itrp.Starting();
+    const Handle(Transfer_Binder)& binder = itrp.Value();
     nbMapped++;
     if (binder.IsNull())  nbWithFail++;
     else

@@ -49,7 +49,7 @@ GeomToStep_MakeRectangularTrimmedSurface::
     done = Standard_False;
     return;
   }
-  Handle(StepGeom_Surface) StepSurf = mkSurf.Value();
+  const Handle(StepGeom_Surface)& StepSurf = mkSurf.Value();
 
   Standard_Real U1,U2,V1,V2;
   RTSurf->Bounds(U1, U2, V1, V2);

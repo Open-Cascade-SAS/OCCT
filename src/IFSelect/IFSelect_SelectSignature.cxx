@@ -98,7 +98,7 @@ static Standard_Integer multsign
 {
   Standard_Boolean res;
   Standard_CString txt;
-  Handle(Interface_InterfaceModel) model = G.Model();
+  const Handle(Interface_InterfaceModel)& model = G.Model();
   if (theexact <= 0) {
     if (!thematcher.IsNull()) return thematcher->Matches (ent,model,thesigntext, (theexact < 0));
     txt = thecounter->ComputedSign(ent,G);

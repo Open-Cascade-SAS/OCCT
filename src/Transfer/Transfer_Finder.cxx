@@ -179,9 +179,9 @@ NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Transf
 
   NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(list);
   for (; iter.More(); iter.Next()) {
-    TCollection_AsciiString name = iter.Key();
+    const TCollection_AsciiString& name = iter.Key();
     if (!name.StartsWith(fromname)) continue;
-    Handle(Standard_Transient) atr = iter.Value();
+    const Handle(Standard_Transient)& atr = iter.Value();
     Handle(Standard_Transient) newatr = atr;
 
 //    Copy ? according type

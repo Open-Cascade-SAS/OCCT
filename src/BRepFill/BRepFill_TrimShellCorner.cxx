@@ -571,7 +571,7 @@ BRepFill_TrimShellCorner::MakeFacesNonSec(const Standard_Integer                
       aIt.Initialize(aLP);
       for ( ; aIt.More(); aIt.Next()) {
         const BOPDS_Pave& aPave = aIt.Value();
-        TopoDS_Shape aV = theDS->Shape(aPave.Index());
+        const TopoDS_Shape& aV = theDS->Shape(aPave.Index());
         
         if(aV.IsSame(alonevertices.First())) {
           if(!bfound1) {

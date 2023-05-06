@@ -781,7 +781,7 @@ TDF_Label STEPCAFControl_Reader::AddShape(const TopoDS_Shape &S,
     // check whether it has associated external ref
   TColStd_SequenceOfHAsciiString SHAS;
   if (ShapePDMap.IsBound(S) && PDFileMap.IsBound(ShapePDMap.Find(S))) {
-    Handle(STEPCAFControl_ExternFile) EF = PDFileMap.Find(ShapePDMap.Find(S));
+    const Handle(STEPCAFControl_ExternFile)& EF = PDFileMap.Find(ShapePDMap.Find(S));
     if (!EF.IsNull()) {
       // (store information on extern refs in the document)
       SHAS.Append(EF->GetName());
@@ -1231,7 +1231,7 @@ static Standard_Boolean IsOverriden(const Interface_Graph& theGraph,
         return Standard_True;
       }
       // for root style returns true only if it is overridden by other root style
-      auto anItem = anOverRidingStyle->ItemAP242 ().Value ();
+      const Handle(Standard_Transient)& anItem = anOverRidingStyle->ItemAP242().Value();
       if(!anItem.IsNull() && anItem->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
       {
         return Standard_True;
@@ -1315,7 +1315,7 @@ static TDF_Label GetLabelFromPD(const Handle(StepBasic_ProductDefinition) &PD,
 {
   TDF_Label L;
   if (PDFileMap.IsBound(PD)) {
-    Handle(STEPCAFControl_ExternFile) EF = PDFileMap.Find(PD);
+    const Handle(STEPCAFControl_ExternFile)& EF = PDFileMap.Find(PD);
     if (!EF.IsNull()) {
       L = EF->GetLabel();
       if (!L.IsNull()) return L;
@@ -1348,7 +1348,7 @@ TDF_Label STEPCAFControl_Reader::FindInstance(const Handle(StepRepr_NextAssembly
   TDF_Label L;
 
   // get shape resulting from CDSR (in fact, only location is interesting)
-  Handle(Transfer_TransientProcess) TP = Tool.TransientProcess();
+  const Handle(Transfer_TransientProcess)& TP = Tool.TransientProcess();
   Handle(Transfer_Binder) binder = TP->Find(NAUO);
   if (binder.IsNull() || !binder->HasResult()) {
 #ifdef OCCT_DEBUG
@@ -1468,7 +1468,7 @@ static TDF_Label GetLabelFromPD(const Handle(StepBasic_ProductDefinition) &PD,
 {
   TDF_Label L;
   if (PDFileMap.IsBound(PD)) {
-    Handle(STEPCAFControl_ExternFile) EF = PDFileMap.Find(PD);
+    const Handle(STEPCAFControl_ExternFile)& EF = PDFileMap.Find(PD);
     if (!EF.IsNull()) {
       L = EF->GetLabel();
       if (!L.IsNull()) return L;
@@ -2093,7 +2093,7 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
 //function : readAnnotationPlane
 //purpose  : read annotation plane
 //=======================================================================
-Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane) theAnnotationPlane,
+Standard_Boolean readAnnotationPlane(const Handle(StepVisual_AnnotationPlane)& theAnnotationPlane,
   gp_Ax2& thePlane)
 {
   if (theAnnotationPlane.IsNull())
@@ -2239,7 +2239,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
 //purpose  : read connection points for given dimension
 //=======================================================================
 void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
-  const Handle(Standard_Transient) theGDT,
+  const Handle(Standard_Transient)& theGDT,
   const Handle(XCAFDimTolObjects_DimensionObject)& theDimObject)
 {
   if (theGDT.IsNull() || theDimObject.IsNull())
@@ -2252,7 +2252,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
 
   Handle(StepShape_ShapeDimensionRepresentation) aSDR = NULL;
   for (Interface_EntityIterator anIt = aGraph.Sharings(theGDT); aSDR.IsNull() && anIt.More(); anIt.Next()) {
-    Handle(Standard_Transient) anEnt = anIt.Value();
+    const Handle(Standard_Transient)& anEnt = anIt.Value();
     Handle(StepShape_DimensionalCharacteristicRepresentation) aDCR =
       Handle(StepShape_DimensionalCharacteristicRepresentation)::DownCast(anEnt);
     if (!aDCR.IsNull())
@@ -2355,7 +2355,7 @@ static Standard_Boolean ReadDatums(const Handle(XCAFDoc_ShapeTool) &STool,
   const Interface_Graph &graph,
   const Handle(Transfer_TransientProcess) &TP,
   const TDF_Label TolerL,
-  const Handle(StepDimTol_GeometricToleranceWithDatumReference) GTWDR)
+  const Handle(StepDimTol_GeometricToleranceWithDatumReference)& GTWDR)
 {
   if (GTWDR.IsNull()) return Standard_False;
   Handle(StepDimTol_HArray1OfDatumReference) HADR = GTWDR->DatumSystem();
@@ -2772,14 +2772,14 @@ Standard_Boolean STEPCAFControl_Reader::readDatumsAP242(const Handle(Standard_Tr
 
   Interface_EntityIterator anIter = aGraph.Shareds(theEnt);
   for (anIter.Start(); anIter.More(); anIter.Next()) {
-    Handle(Standard_Transient) anAtr = anIter.Value();
+    const Handle(Standard_Transient)& anAtr = anIter.Value();
     if (anAtr->IsKind(STANDARD_TYPE(StepDimTol_DatumSystem)))
     {
       Standard_Integer aPositionCounter = 0;//position on frame 
       Handle(StepDimTol_DatumSystem) aDS = Handle(StepDimTol_DatumSystem)::DownCast(anAtr);
       Interface_EntityIterator anIterDS = aGraph.Sharings(aDS);
       for (anIterDS.Start(); anIterDS.More(); anIterDS.Next()) {
-        Handle(Standard_Transient) anAtrDS = anIterDS.Value();
+        const Handle(Standard_Transient)& anAtrDS = anIterDS.Value();
         if (anAtrDS->IsKind(STANDARD_TYPE(StepAP242_GeometricItemSpecificUsage)))
         {
           //get axis
@@ -2957,7 +2957,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
   // Collect all Shape_Aspect entities
   Interface_EntityIterator anIter = aGraph.Shareds(theEnt);
   for (anIter.Start(); anIter.More(); anIter.Next()) {
-    Handle(Standard_Transient) anAtr = anIter.Value();
+    const Handle(Standard_Transient)& anAtr = anIter.Value();
     NCollection_Sequence<Handle(StepRepr_ShapeAspect)> aSAs;
     if (anAtr->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape)))
     {
@@ -2965,14 +2965,14 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
       Interface_EntityIterator anIterSDR = aGraph.Sharings(anAtr);
       for (anIterSDR.Start(); anIterSDR.More(); anIterSDR.Next())
       {
-        Handle(Standard_Transient) anAtrSDR = anIterSDR.Value();
+        const Handle(Standard_Transient)& anAtrSDR = anIterSDR.Value();
         if (anAtrSDR->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation)))
         {
           isAllOver = Standard_True;
           Interface_EntityIterator anIterABSR = aGraph.Shareds(anAtrSDR);
           for (anIterABSR.Start(); anIterABSR.More(); anIterABSR.Next())
           {
-            Handle(Standard_Transient) anAtrABSR = anIterABSR.Value();
+            const Handle(Standard_Transient)& anAtrABSR = anIterABSR.Value();
             if (anAtrABSR->IsKind(STANDARD_TYPE(StepShape_AdvancedBrepShapeRepresentation)))
             {
               aSeqRI1.Append(anAtrABSR);
@@ -4416,7 +4416,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
 
 void collectViewShapes(const Handle(XSControl_WorkSession)& theWS,
   const Handle(TDocStd_Document)& theDoc,
-  const Handle(StepRepr_Representation) theRepr,
+  const Handle(StepRepr_Representation)& theRepr,
   TDF_LabelSequence& theShapes)
 {
   Handle(XSControl_TransferReader) aTR = theWS->TransferReader();
@@ -4451,7 +4451,7 @@ void collectViewShapes(const Handle(XSControl_WorkSession)& theWS,
 //=======================================================================
 Handle(TCollection_HAsciiString) buildClippingPlanes(const Handle(StepGeom_GeometricRepresentationItem)& theClippingCameraModel,
   TDF_LabelSequence& theClippingPlanes,
-  const Handle(XCAFDoc_ClippingPlaneTool) theTool)
+  const Handle(XCAFDoc_ClippingPlaneTool)& theTool)
 {
   Handle(TCollection_HAsciiString) anExpression = new TCollection_HAsciiString();
   NCollection_Sequence<Handle(StepGeom_GeometricRepresentationItem)> aPlanes;
@@ -4790,7 +4790,7 @@ void STEPCAFControl_Reader::ExpandSubShapes(const Handle(XCAFDoc_ShapeTool)& Sha
     // topological containers to expand
     for (Standard_Integer i = 1; i <= aReprItems.Length(); ++i)
     {
-      Handle(StepRepr_RepresentationItem) aTRepr = aReprItems.Value(i);
+      const Handle(StepRepr_RepresentationItem)& aTRepr = aReprItems.Value(i);
       if (aTRepr->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep)))
         aMSBSeq.Append(aTRepr);
       else if (aTRepr->IsKind(STANDARD_TYPE(StepShape_ShellBasedSurfaceModel)))

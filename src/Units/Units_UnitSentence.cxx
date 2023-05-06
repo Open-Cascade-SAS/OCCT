@@ -186,10 +186,9 @@ void Units_UnitSentence::SetUnits
   Handle(Units_Unit) unit;
   TCollection_AsciiString symbol;
 
-  Handle(Units_QuantitiesSequence) quantitiessequence = aquantitiessequence;
-
-  for(index=1; index<=quantitiessequence->Length(); index++) {
-    quantity = quantitiessequence->Value(index);
+  for(index=1; index<=aquantitiessequence->Length(); index++)
+  {
+    quantity = aquantitiessequence->Value(index);
     unitssequence=quantity->Sequence();
     for(jindex=1; jindex<=unitssequence->Length(); jindex++) {
       unit = unitssequence->Value(jindex);

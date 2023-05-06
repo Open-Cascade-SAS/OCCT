@@ -116,7 +116,7 @@ Standard_EXPORT void FUN_VPIndex(TopOpeBRep_FacesFiller& FF,
 				 Standard_Boolean& EPIfound, Handle(TopOpeBRepDS_Interference)& IEPI, // out 
 				 Standard_Boolean& CPIfound, Handle(TopOpeBRepDS_Interference)& ICPI, // out
 				 const Standard_Integer mkVP);
-Standard_EXPORT Standard_Boolean FUN_newtransEdge(const Handle(TopOpeBRepDS_HDataStructure) HDS,
+Standard_EXPORT Standard_Boolean FUN_newtransEdge(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
 				     const TopOpeBRep_FacesFiller& FF,
 				     const TopOpeBRep_LineInter& L,
 				     const Standard_Boolean& Lonrest,

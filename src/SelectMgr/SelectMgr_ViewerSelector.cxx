@@ -1044,7 +1044,6 @@ void SelectMgr_ViewerSelector::MoveSelectableObject (const Handle(SelectMgr_Sele
 //=======================================================================
 void SelectMgr_ViewerSelector::RemoveSelectableObject (const Handle(SelectMgr_SelectableObject)& theObject)
 {
-  Handle(SelectMgr_SelectableObject) anObj = theObject;
   if (myMapOfObjectSensitives.UnBind (theObject))
   {
     RemovePicked (theObject);

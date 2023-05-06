@@ -137,7 +137,7 @@ void STEPSelections_Counter::Count(const Interface_Graph& graph,
     Standard_Integer nbElem = gs->NbElements();
     for (Standard_Integer i = 1; i <= nbElem ; i++) {
       StepShape_GeometricSetSelect aGSS = gs->ElementsValue(i);
-      Handle(Standard_Transient) ent = aGSS.Value();
+      const Handle(Standard_Transient)& ent = aGSS.Value();
       Handle(StepGeom_CompositeCurve) ccurve = Handle(StepGeom_CompositeCurve)::DownCast(ent);
       if(!ccurve.IsNull()) {
 	myNbWires++;

@@ -681,7 +681,7 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V,const TopoDS_Edge& E,
       p = BRep_Tool::Pnt(v2);
     }     
 
-    GeomAdaptor_Curve cc = c.Curve();
+    const GeomAdaptor_Curve& cc = c.Curve();
     if (p.Distance(c.Value(first)) <= Precision::Confusion()) {
       GCPnts_AbscissaPoint computePoint(cc, D, first);
       Param = computePoint.Parameter();

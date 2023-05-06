@@ -157,7 +157,7 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
   Interface_CheckTool cht (model,protocol);
   Interface_CheckIterator anIter = cht.CompleteCheckList();
   for(anIter.Start(); anIter.More(); anIter.Next()) {
-    const Handle(Interface_Check) ach = anIter.Value();
+    const Handle(Interface_Check)& ach = anIter.Value();
     nbWarn += ach->NbWarnings();
     nbFail += ach->NbFails();
   }

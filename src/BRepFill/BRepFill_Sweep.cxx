@@ -798,7 +798,7 @@ static TopoDS_Edge BuildEdge(Handle(Geom_Curve)& C3d,
   const Handle(IntTools_Context) aNullCtx;
   if (BOPTools_AlgoTools::IsMicroEdge(E, aNullCtx))
   {
-    TopoDS_Vertex aV = VF;
+    const TopoDS_Vertex& aV = VF;
     B.UpdateVertex(aV, P1.Distance(P2));
     B.MakeEdge(E);
     B.UpdateEdge(E, C2d, S, TopLoc_Location(), Tol);

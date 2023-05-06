@@ -1066,7 +1066,7 @@ void Draft_Modification::Perform ()
               {
                 for (i = 1; i <= i2s.NbLines(); i++)
                 {
-                  Handle( Geom_Curve ) aCurve = i2s.Line(i);
+                  const Handle( Geom_Curve )& aCurve = i2s.Line(i);
                   gp_Pnt Pnt = aCurve->Value( aCurve->FirstParameter() );
                   GeomAPI_ProjectPointOnSurf projector( Pnt, S1, Precision::Confusion() );
                   Standard_Real U, V;

@@ -1837,7 +1837,7 @@ static Standard_Integer arclinconvert (Draw_Interpretor& /*dout*/, Standard_Inte
       std::cout<<"Error: failed to find a face for the wire "<<a[2]<<std::endl;
       return 1; //TCL_ERROR
     }
-    TopoDS_Face aFace = aFaceMaker.Face();
+    const TopoDS_Face& aFace = aFaceMaker.Face();
     TopoDS_Iterator anIter (aFace);
     TopoDS_Wire aWire = TopoDS::Wire (anIter.Value());
     aResult = BRepAlgo::ConvertWire (aWire, aTol, aFace);

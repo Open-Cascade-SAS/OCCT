@@ -895,7 +895,7 @@ Standard_Boolean PrsDim::InitAngleBetweenPlanarFaces (const TopoDS_Face& theFirs
   }
 
   // Get intersect line.
-  Handle(Geom_Curve) anIntersectCurve = aPlaneIntersector.Line (1);
+  const Handle(Geom_Curve)& anIntersectCurve = aPlaneIntersector.Line (1);
 
   Handle(Geom_Line) anIntersectLine = Handle(Geom_Line)::DownCast (anIntersectCurve);
 
@@ -982,8 +982,6 @@ Standard_Boolean PrsDim::InitAngleBetweenCurvilinearFaces (const TopoDS_Face& th
   }
 
   // Get intersect line.
-  Handle(Geom_Curve) anIntersectCurve = aSurfaceIntersector.Line (1);
-
   Handle(Geom_Line) aFirstLine, aSecondLine;
   Standard_Real aFirstU = 0.0;
   Standard_Real aFirstV = 0.0;

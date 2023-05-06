@@ -142,7 +142,7 @@ IFSelect_BasicDumper::IFSelect_BasicDumper ()  {  }
     return Standard_True;
   }
   if (type.IsEqual("IFSelect_SelectTextType")) {
-    const TCollection_AsciiString exname = file.ParamValue(1);
+    const TCollection_AsciiString& exname = file.ParamValue(1);
     if (exname.Length() < FIRSTCHAR) return Standard_False;
     if      (exname.Value(FIRSTCHAR) == 'e') {}
     else if (exname.Value(FIRSTCHAR) == 'c') {}
@@ -168,7 +168,7 @@ IFSelect_BasicDumper::IFSelect_BasicDumper ()  {  }
 
   if (type.IsEqual("IFSelect_TransformStandard")) {
     Standard_Boolean copyoption;
-    const TCollection_AsciiString copyname = file.ParamValue(1);
+    const TCollection_AsciiString& copyname = file.ParamValue(1);
     if (copyname.Length() < FIRSTCHAR) return Standard_False;
     if      (copyname.Value(FIRSTCHAR) == 'c') copyoption = Standard_True;
     else if (copyname.Value(FIRSTCHAR) == 'o') copyoption = Standard_False;

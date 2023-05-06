@@ -88,7 +88,7 @@ namespace
     }
 
   private:
-    BVHBuilderAdaptorRegular& operator=(BVHBuilderAdaptorRegular) { return *this; }
+    BVHBuilderAdaptorRegular& operator=(const BVHBuilderAdaptorRegular&) { return *this; }
 
   private:
     ObjectsMap& myObjects;
@@ -223,7 +223,7 @@ namespace
     }
 
   private:
-    BVHBuilderAdaptorPersistent& operator=(BVHBuilderAdaptorPersistent) { return *this; }
+    BVHBuilderAdaptorPersistent& operator=(const BVHBuilderAdaptorPersistent&) { return *this; }
 
   private:
     ObjectsMap& myObjects;

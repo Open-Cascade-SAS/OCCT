@@ -2816,7 +2816,7 @@ static Standard_Boolean CompareWeightPoles(const TColgp_Array1OfPnt& thePoles1,
 //function : isIsoLine
 //purpose  :
 //=============================================================================
-Standard_Boolean GeomLib::isIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
+Standard_Boolean GeomLib::isIsoLine (const Handle(Adaptor2d_Curve2d)& theC2D,
                                      Standard_Boolean&                theIsU,
                                      Standard_Real&                   theParam,
                                      Standard_Boolean&                theIsForward)
@@ -2896,8 +2896,8 @@ Standard_Boolean GeomLib::isIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
 //function : buildC3dOnIsoLine
 //purpose  :
 //=============================================================================
-Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
-                                               const Handle(Adaptor3d_Surface) theSurf,
+Handle(Geom_Curve) GeomLib::buildC3dOnIsoLine (const Handle(Adaptor2d_Curve2d)& theC2D,
+                                               const Handle(Adaptor3d_Surface)& theSurf,
                                                const Standard_Real              theFirst,
                                                const Standard_Real              theLast,
                                                const Standard_Real              theTolerance,

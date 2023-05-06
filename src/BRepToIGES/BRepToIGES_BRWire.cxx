@@ -528,7 +528,7 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRWire ::TransferWire
   if ( TE.More()) {
     BRepTools_WireExplorer WE;
     for ( WE.Init(mywire); WE.More(); WE.Next()) {
-      TopoDS_Edge E = WE.Current();
+      const TopoDS_Edge& E = WE.Current();
       if (E.IsNull()) {
 	AddWarning(mywire, "an Edge is a null entity");
       }
