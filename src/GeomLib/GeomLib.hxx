@@ -239,7 +239,7 @@ public:
   //! @param theParam     Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return Standard_True when 2d curve is a line and Standard_False otherwise.
-  Standard_EXPORT static Standard_Boolean isIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
+  Standard_EXPORT static Standard_Boolean isIsoLine (const Handle(Adaptor2d_Curve2d)& theC2D,
                                                      Standard_Boolean&                theIsU,
                                                      Standard_Real&                   theParam,
                                                      Standard_Boolean&                theIsForward);
@@ -251,8 +251,8 @@ public:
   //! @param theParam Line parameter.
   //! @param theIsForward Flag indicating forward parameterization on a isoline.
   //! @return Standard_True when 3d curve is built and Standard_False otherwise.
-  Standard_EXPORT static Handle(Geom_Curve) buildC3dOnIsoLine (const Handle(Adaptor2d_Curve2d) theC2D,
-                                                               const Handle(Adaptor3d_Surface) theSurf,
+  Standard_EXPORT static Handle(Geom_Curve) buildC3dOnIsoLine (const Handle(Adaptor2d_Curve2d)& theC2D,
+                                                               const Handle(Adaptor3d_Surface)& theSurf,
                                                                const Standard_Real              theFirst,
                                                                const Standard_Real              theLast,
                                                                const Standard_Real              theTolerance,

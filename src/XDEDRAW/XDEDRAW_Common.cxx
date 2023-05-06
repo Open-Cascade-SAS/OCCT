@@ -92,7 +92,7 @@ static Standard_Boolean ClearDicWS()
   return Standard_True;
 }
 
-static void AddWS(TCollection_AsciiString filename,
+static void AddWS(const TCollection_AsciiString& filename,
                   const Handle(XSControl_WorkSession)& WS)
 {
   WS->SetVars(new XSDRAW_Vars); // support of DRAW variables
@@ -111,14 +111,14 @@ static Standard_Boolean FillDicWS(NCollection_DataMap<TCollection_AsciiString, H
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)>::Iterator DicEFIt(dicFile);
   for (; DicEFIt.More(); DicEFIt.Next())
   {
-    TCollection_AsciiString filename = DicEFIt.Key();
+    const TCollection_AsciiString& filename = DicEFIt.Key();
     EF = DicEFIt.Value();
     AddWS(filename, EF->GetWS());
   }
   return Standard_True;
 }
 
-static Standard_Boolean SetCurrentWS(TCollection_AsciiString filename)
+static Standard_Boolean SetCurrentWS(const TCollection_AsciiString& filename)
 {
   if (!thedictws.IsBound(filename)) return Standard_False;
   Handle(XSControl_WorkSession) CurrentWS =
@@ -161,7 +161,7 @@ static Standard_Integer GetDicWSList(Draw_Interpretor& di, Standard_Integer /*ar
   Standard_Integer num = 0;
   for (; DicIt.More(); DicIt.Next(), num++)
   {
-    TCollection_AsciiString strng(DicIt.Key());
+    const TCollection_AsciiString& strng(DicIt.Key());
     if (num) di << "\n";
     di << "\"" << strng.ToCString() << "\"";
   }

@@ -1974,7 +1974,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
       B.Add(newface,wire);
     }
     for(i=1 ; i<=SeqNMShapes.Length(); i++) { 
-      TopoDS_Shape aNMS = SeqNMShapes.Value(i);
+      const TopoDS_Shape& aNMS = SeqNMShapes.Value(i);
       B.Add(newface,aNMS);
     }
     newface.Orientation(ori);

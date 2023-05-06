@@ -150,7 +150,7 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
 #endif
 	  TDF_Tool::OutReferences(aLabel,anExtMap);
 	  for (TDF_MapIteratorOfAttributeMap attMItr(anExtMap);attMItr.More(); attMItr.Next()) {
-        Handle(TDF_Attribute) att = attMItr.Key();
+        const Handle(TDF_Attribute)& att = attMItr.Key();
 #ifdef OCCT_DEBUG_SELN
         TDF_Tool::Entry(att->Label(), entr1);
 	    std::cout<<"## References attribute dynamic type = "<<att->DynamicType()<<" at Label = "<<entr1 <<std::endl;

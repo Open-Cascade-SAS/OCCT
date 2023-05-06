@@ -808,7 +808,7 @@ Standard_Integer XSControl_TransferReader::TransferOne
 
   //  seule difference entre TransferRoots et TransferOne
   Standard_Integer res = 0;
-  Handle(Standard_Transient) obj = ent;
+  const Handle(Standard_Transient)& obj = ent;
   TP.Transfer (obj, theProgress);
   if (theProgress.UserBreak())
     return res;
@@ -1197,8 +1197,8 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
 
     for (itrp.Start(); itrp.More(); itrp.Next()) {
       nbi ++;
-      Handle(Transfer_Binder) binder = itrp.Value();
-      Handle(Standard_Transient) ent = itrp.Starting();
+      const Handle(Transfer_Binder)& binder = itrp.Value();
+      const Handle(Standard_Transient)& ent = itrp.Starting();
       if (binder.IsNull())  {
 	nbnr ++;
 	if (notrec) counter->Add(ent,"(not recorded)");

@@ -457,7 +457,7 @@ void DE_Wrapper::ChangePriority(const TCollection_AsciiString& theFormat,
     const TCollection_AsciiString& aVendorName = aVendorIter.Key();
     if (!theVendorPriority.Contains(aVendorName))
     {
-      Handle(DE_ConfigurationNode) aNode = aVendorIter.Value();
+      const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
       if (theToDisable)
       {
         aNode->SetEnabled(Standard_False);

@@ -228,7 +228,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
 
   TopoDS_Iterator anIt(theShape);
   for ( ; anIt.More(); anIt.Next() ) {
-    TopoDS_Shape aDirectChild = anIt.Value();
+    const TopoDS_Shape& aDirectChild = anIt.Value();
     if (aDirectChild.ShapeType() != TopAbs_COMPOUND)
       aBrepBuilder.Add(aDirectShapes, aDirectChild);
   }  
@@ -791,7 +791,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
 
     // Transfer Solids to closed Shells. Prepare RepItemSeq & NonManifoldGroup
     for ( TopoDS_Iterator iter(aNMCompound); iter.More(); iter.Next() ) {
-      TopoDS_Shape aSubShape = iter.Value();
+      const TopoDS_Shape& aSubShape = iter.Value();
       if (aSubShape.ShapeType() == TopAbs_SOLID) {
         for ( TopoDS_Iterator aSubIter(aSubShape); aSubIter.More(); aSubIter.Next() ) {
           TopoDS_Shell aSubShell = TopoDS::Shell( aSubIter.Value() );
@@ -1191,7 +1191,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
               aGCSet->SetName(empty);
               // iterates on compound with vertices and traces each vertex
               for ( anExp.ReInit() ; anExp.More(); anExp.Next() ) {
-                TopoDS_Shape aVertex = anExp.Current();
+                const TopoDS_Shape& aVertex = anExp.Current();
                 if ( aVertex.ShapeType() != TopAbs_VERTEX )
                   continue;
                 curNb++;
@@ -1483,7 +1483,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound
   #endif
 
   for (TopoDS_Iterator iter(theShape); iter.More(); iter.Next()) {
-    TopoDS_Shape aSubShape = iter.Value();
+    const TopoDS_Shape& aSubShape = iter.Value();
     if (aSubShape.ShapeType() != TopAbs_VERTEX || !isSeparateVertices) {
 
       // Store non-manifold topology as shells (ssv; 10.11.2010)
@@ -1597,7 +1597,7 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   gp_Trsf aLoc;
   Standard_Boolean isShapeLocated = Standard_False;
   if ( GroupMode() >0) {
-    TopLoc_Location shloc = shape.Location();
+    const TopLoc_Location& shloc = shape.Location();
     isShapeLocated = !shloc.IsIdentity();
     aLoc = shloc.Transformation();
     TopLoc_Location shident;
@@ -1643,7 +1643,7 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
 
   // make location for assembly placement
   GeomToStep_MakeAxis2Placement3d mkax (aLoc);
-  Handle(StepGeom_Axis2Placement3d) AxLoc = mkax.Value();
+  const Handle(StepGeom_Axis2Placement3d)& AxLoc = mkax.Value();
   AX1 = AxLoc;
 
   // create assembly structures (CDSR, NAUO etc.)

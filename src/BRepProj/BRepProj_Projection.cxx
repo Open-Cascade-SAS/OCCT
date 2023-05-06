@@ -184,7 +184,7 @@ BRepProj_Projection::BRepProj_Projection(const TopoDS_Shape& Wire,
   // Note: it is necessary to create copy of wire to avoid adding new pcurves into it
   Handle(BRepTools_TrsfModification) Trsf = new BRepTools_TrsfModification(T);
   BRepTools_Modifier Modif (Wire, Trsf);
-  TopoDS_Shape WireBase = Modif.ModifiedShape(Wire);
+  const TopoDS_Shape& WireBase = Modif.ModifiedShape(Wire);
 
   // Creation of a cylindrical surface
   BRepSweep_Prism CylSurf (WireBase, Vsup, Standard_False);

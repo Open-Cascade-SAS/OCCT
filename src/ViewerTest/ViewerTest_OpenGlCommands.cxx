@@ -747,7 +747,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
   for (NCollection_Sequence<Graphic3d_NameOfMaterial>::Iterator aMatIter (aMatList); aMatIter.More(); aMatIter.Next(), ++aMatIndex)
   {
     Graphic3d_MaterialAspect aMat (aMatIter.Value());
-    const TCollection_AsciiString aMatName = aMat.StringName();
+    const TCollection_AsciiString& aMatName = aMat.StringName();
     const Graphic3d_Vec3 anAmbient  = (Graphic3d_Vec3 )aMat.AmbientColor();
     const Graphic3d_Vec3 aDiffuse   = (Graphic3d_Vec3 )aMat.DiffuseColor();
     const Graphic3d_Vec3 aSpecular  = (Graphic3d_Vec3 )aMat.SpecularColor();

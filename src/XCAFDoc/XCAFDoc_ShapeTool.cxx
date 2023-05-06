@@ -598,7 +598,7 @@ static Standard_Boolean prepareAssembly (const TopoDS_Shape& theShape,
     for (; Iterator.More(); Iterator.Next())
       aSubShapeSeq.Append(Iterator.Value());
     for (Standard_Integer i = 1; i <= aSubShapeSeq.Length(); i++) {
-      TopoDS_Shape Scomp = aSubShapeSeq.Value(i);
+      const TopoDS_Shape& Scomp = aSubShapeSeq.Value(i);
       TopoDS_Shape aNewScomp;
       B.Remove(theOUTShape, Scomp);
       prepareAssembly( Scomp, aNewScomp );
@@ -1199,7 +1199,7 @@ Standard_Boolean XCAFDoc_ShapeTool::AddSubShape(const TDF_Label &shapeL,
       TDF_LabelSequence aShapeLSeq;
       for (TopoDS_Iterator it(GetShape(shapeL)); it.More() && !isDefined; it.Next())
       {
-        TopoDS_Shape aShape = it.Value();
+        const TopoDS_Shape& aShape = it.Value();
         if (sub.IsSame(aShape.Located(TopLoc_Location())))
         {
           isDefined = Standard_True;
@@ -1463,7 +1463,7 @@ void XCAFDoc_ShapeTool::SetExternRefs(const TDF_Label& L,
   TDataStd_UAttribute::Set(ShapeLabel,XCAFDoc::ExternRefGUID());
   for(Standard_Integer i=1; i<=SHAS.Length(); i++) {
     TDF_Label tmplbl = ShapeLabel.FindChild(i,Standard_True);
-    Handle(TCollection_HAsciiString) str = SHAS(i);
+    const Handle(TCollection_HAsciiString)& str = SHAS(i);
     TCollection_ExtendedString extstr(str->String());
     TDataStd_Name::Set(tmplbl,extstr);
   }
@@ -1483,7 +1483,7 @@ TDF_Label XCAFDoc_ShapeTool::SetExternRefs(const TColStd_SequenceOfHAsciiString&
   TDataStd_UAttribute::Set(ShapeLabel,XCAFDoc::ExternRefGUID());
   for(Standard_Integer i=1; i<=SHAS.Length(); i++) {
     TDF_Label tmplbl = ShapeLabel.FindChild(i,Standard_True);
-    Handle(TCollection_HAsciiString) str = SHAS(i);
+    const Handle(TCollection_HAsciiString)& str = SHAS(i);
     TCollection_ExtendedString extstr(str->String());
     TDataStd_Name::Set(tmplbl,extstr);
   }
@@ -2253,7 +2253,7 @@ void XCAFDoc_ShapeTool::DumpJson (Standard_OStream& theOStream, Standard_Integer
 
   for (XCAFDoc_DataMapOfShapeLabel::Iterator aShapeLabelIt (myShapeLabels); aShapeLabelIt.More(); aShapeLabelIt.Next())
   {
-    const TopoDS_Shape aShape = aShapeLabelIt.Key();
+    const TopoDS_Shape& aShape = aShapeLabelIt.Key();
     OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &aShape)
 
     TCollection_AsciiString aShapeLabel;
@@ -2263,7 +2263,7 @@ void XCAFDoc_ShapeTool::DumpJson (Standard_OStream& theOStream, Standard_Integer
 
   for (XCAFDoc_DataMapOfShapeLabel::Iterator aSubShapeIt (mySubShapes); aSubShapeIt.More(); aSubShapeIt.Next())
   {
-    const TopoDS_Shape aSubShape = aSubShapeIt.Key();
+    const TopoDS_Shape& aSubShape = aSubShapeIt.Key();
     OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &aSubShape)
 
     TCollection_AsciiString aSubShapeLabel;
@@ -2273,7 +2273,7 @@ void XCAFDoc_ShapeTool::DumpJson (Standard_OStream& theOStream, Standard_Integer
 
   for (XCAFDoc_DataMapOfShapeLabel::Iterator aSimpleShapeIt (mySimpleShapes); aSimpleShapeIt.More(); aSimpleShapeIt.Next())
   {
-    const TopoDS_Shape aSimpleShape = aSimpleShapeIt.Key();
+    const TopoDS_Shape& aSimpleShape = aSimpleShapeIt.Key();
     OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &aSimpleShape)
 
     TCollection_AsciiString aSimpleShapeLabel;

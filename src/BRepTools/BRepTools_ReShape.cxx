@@ -388,7 +388,7 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
   // apply recorded modifications to subshapes
   Standard_Boolean isEmpty = Standard_True;
   for ( TopoDS_Iterator it(shape,Standard_False); it.More(); it.Next() ) {
-    TopoDS_Shape sh = it.Value();
+    const TopoDS_Shape& sh = it.Value();
     newsh = Apply ( sh, until );
     if ( newsh != sh ) {
       if ( myStatus & EncodeStatus(4)) //ShapeExtend::DecodeStatus ( myStatus, ShapeExtend_DONE4 ) )
@@ -408,7 +408,7 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     }
     Standard_Integer nitems = 0;
     for ( TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++ ) {
-      TopoDS_Shape subsh = subit.Value();
+      const TopoDS_Shape& subsh = subit.Value();
       if ( subsh.ShapeType() == sh.ShapeType() ) B.Add ( result, subsh );//fix for SAMTECH bug OCC322 about abcense internal vertices after sewing.
       else locStatus |= EncodeStatus(10);//ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
     }

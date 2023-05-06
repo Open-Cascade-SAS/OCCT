@@ -552,7 +552,7 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
       return 0;
     }
     for (itrp.Start(); itrp.More(); itrp.Next()) {
-      Handle(Standard_Transient) ent = itrp.Starting();
+      const Handle(Standard_Transient)& ent = itrp.Starting();
       Handle(TColStd_HSequenceOfTransient) super = WS->Sharings (ent);
       if (!super.IsNull()) {
 	Standard_Integer nb = super->Length();

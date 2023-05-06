@@ -201,7 +201,7 @@ static TCollection_ExtendedString TryXmlDriverType
   // of the DocumentElement, the XML format cannot be defined
   if (aParser.parse (theFileName.ToCString()))
   {
-    LDOM_Element anElement = aParser.GetElement();
+    const LDOM_Element& anElement = aParser.GetElement();
     if (anElement.getTagName().equals (LDOMString(aDocumentElementName)))
       theFormat = anElement.getAttribute ("format");
   }
@@ -226,7 +226,7 @@ static TCollection_ExtendedString TryXmlDriverType (Standard_IStream& theIStream
     // of the DocumentElement, the XML format cannot be defined
     if (aParser.parse (theIStream, Standard_True))
     {
-      LDOM_Element anElement = aParser.GetElement();
+      const LDOM_Element& anElement = aParser.GetElement();
       if (anElement.getTagName().equals (LDOMString(aDocumentElementName)))
         theFormat = anElement.getAttribute ("format");
     }

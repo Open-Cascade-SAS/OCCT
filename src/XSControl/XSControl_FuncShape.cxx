@@ -423,7 +423,7 @@ static IFSelect_ReturnStatus XSControl_fromshape
         sout<<std::endl<<"Subshapes imported from entities:";
         TopoDS_Iterator Iter(Shape);
         for (; Iter.More(); Iter.Next()) {
-          TopoDS_Shape subsh = Iter.Value();
+          const TopoDS_Shape& subsh = Iter.Value();
           Standard_Integer submodrec = 1;
           Handle(Standard_Transient) subent = TR->EntityFromShapeResult(subsh,submodrec);
           if (subent.IsNull()) {

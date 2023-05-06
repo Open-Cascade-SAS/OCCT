@@ -836,7 +836,7 @@ static Standard_Integer getAllStyledComponents (Draw_Interpretor& di, Standard_I
       BRep_Builder B;
       B.MakeCompound(aShape);
       for (Standard_Integer jj = 1; jj <= aShapes.Length(); jj++) {
-        TopoDS_Shape aCurShape = aShapes.Value(jj);
+        const TopoDS_Shape& aCurShape = aShapes.Value(jj);
         B.Add( aShape, aCurShape );
       }
       DBRep::Set ( argv[2], aShape );

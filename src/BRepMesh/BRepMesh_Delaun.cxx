@@ -1103,7 +1103,7 @@ Standard_Integer BRepMesh_Delaun::findNextPolygonLink(
   const gp_Vec2d&                       theRefLinkDir,
   const IMeshData::SequenceOfBndB2d&    theBoxes,
   const IMeshData::SequenceOfInteger&   thePolygon,
-  const Handle(IMeshData::MapOfInteger) theSkipped,
+  const Handle(IMeshData::MapOfInteger)& theSkipped,
   const Standard_Boolean&               isSkipLeprous,
   IMeshData::MapOfInteger&              theLeprousLinks,
   IMeshData::MapOfInteger&              theDeadLinks,

@@ -119,7 +119,7 @@ void TDocStd_Application::ReadingFormats(TColStd_SequenceOfAsciiString &theForma
   NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)>::Iterator
     anIter(myReaders);
   for (; anIter.More(); anIter.Next()) {
-    Handle(PCDM_RetrievalDriver) aDriver = anIter.Value();
+    const Handle(PCDM_RetrievalDriver)& aDriver = anIter.Value();
     if (aDriver.IsNull() == Standard_False) {
       theFormats.Append(anIter.Key());
     }
@@ -138,7 +138,7 @@ void TDocStd_Application::WritingFormats(TColStd_SequenceOfAsciiString &theForma
   NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)>::Iterator
     anIter(myWriters);
   for (; anIter.More(); anIter.Next()) {
-    Handle(PCDM_StorageDriver) aDriver = anIter.Value();
+    const Handle(PCDM_StorageDriver)& aDriver = anIter.Value();
     if (aDriver.IsNull() == Standard_False) {
       theFormats.Append(anIter.Key());
     }

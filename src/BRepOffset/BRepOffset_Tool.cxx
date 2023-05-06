@@ -3963,7 +3963,7 @@ TopoDS_Shape BRepOffset_Tool::Deboucle3D(const TopoDS_Shape& S,
 //=======================================================================
 
 static Standard_Boolean IsInOut (BRepTopAdaptor_FClass2d& FC,
-				 Geom2dAdaptor_Curve      AC,
+				 const Geom2dAdaptor_Curve&      AC,
 				 const TopAbs_State&      S )
 {
  Standard_Real Def = 100*Precision::Confusion();

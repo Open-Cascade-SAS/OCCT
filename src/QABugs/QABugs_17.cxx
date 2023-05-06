@@ -725,7 +725,7 @@ static Standard_Integer OCC606 ( Draw_Interpretor& di, Standard_Integer n, const
       if (!result_surf1.IsNull())
       {
         BRepBuilderAPI_MakeFace b_face1(result_surf1, Precision::Confusion());
-        TopoDS_Face bsp_face1 = b_face1.Face();
+        const TopoDS_Face& bsp_face1 = b_face1.Face();
         DBRep::Set(a[1],bsp_face1);
       }
     }
@@ -1053,7 +1053,7 @@ static Standard_Integer OCCN1 (Draw_Interpretor& di, Standard_Integer argc, cons
   TopoDS_Wire twire = wire.Wire();
 
   BRepBuilderAPI_MakeFace face(twire);
-  TopoDS_Face tface = face.Face();
+  const TopoDS_Face& tface = face.Face();
   ////////Handle(AIS_Shape) face_ais = new AIS_Shape( tface );
   ////////aContext->Display(face_ais);
 

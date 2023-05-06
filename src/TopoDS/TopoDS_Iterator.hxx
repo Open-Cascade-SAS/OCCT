@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates an empty Iterator.
-  TopoDS_Iterator() {}
+  TopoDS_Iterator() : myOrientation(TopAbs_FORWARD) {}
 
   //! Creates an Iterator on <S> sub-shapes.
   //! Note:

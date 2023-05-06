@@ -284,7 +284,7 @@ static void RemovePendingEdges(TopTools_IndexedDataMapOfShapeListOfShape& MVE)
 //purpose  : 
 //=======================================================================
 
-static Standard_Boolean  SamePnt2d(TopoDS_Vertex  V,
+static Standard_Boolean  SamePnt2d(const TopoDS_Vertex&  V,
 				   TopoDS_Edge&   E1,
 				   TopoDS_Edge&   E2,
 				   TopoDS_Face&   F)

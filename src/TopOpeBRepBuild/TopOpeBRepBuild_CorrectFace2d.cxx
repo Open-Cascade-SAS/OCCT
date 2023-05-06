@@ -260,7 +260,7 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
     anEdgeExists=0;  
     aWExp.Init(aWire, TopAbs_EDGE);
     for (; aWExp.More(); aWExp.Next()) {
-      TopoDS_Shape anEdge=aWExp.Current();
+      const TopoDS_Shape& anEdge=aWExp.Current();
       if (myCopyAvoidMap.Contains(anEdge)) {
 	anEdgeExists=1;
 	break;
@@ -346,7 +346,7 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
   
   aWExp.Init(myCurrentWire, TopAbs_EDGE);
   for (; aWExp.More(); aWExp.Next(), aNbEdges++) {
-    TopoDS_Shape anEdge=aWExp.Current(); 
+    const TopoDS_Shape& anEdge=aWExp.Current(); 
     if (aCopyAvoidMap.Contains(anEdge))
       anAvoidMap.Add(anEdge);
   }

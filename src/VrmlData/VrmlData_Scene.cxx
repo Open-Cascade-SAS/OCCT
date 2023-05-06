@@ -228,7 +228,7 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine(VrmlData_InBuffer& theBuffer)
     {
       return VrmlData_UnrecoverableError;
     }
-    theBuffer.Input.seekg(-(aNbChars - anInd - 1), std::ios::cur);
+    theBuffer.Input.seekg(-static_cast<std::streamoff>((aNbChars - anInd - 1)), std::ios::cur);
   }
 
   // Check the reading status.

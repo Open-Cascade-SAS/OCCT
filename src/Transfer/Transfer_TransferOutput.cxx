@@ -93,7 +93,7 @@ void Transfer_TransferOutput::TransferRoots (const Handle(Interface_Protocol)& p
   Interface_EntityIterator list = tool.RootEntities();
   Message_ProgressScope aPS(theProgress, NULL, list.NbEntities());
   for (list.Start(); list.More() && aPS.More(); list.Next()) {
-    Handle(Standard_Transient) ent = list.Value();
+    const Handle(Standard_Transient)& ent = list.Value();
 //    Standard_Integer scope = 0;
 //    if (thescope) scope = theproc->NewScope (ent);
     if (theproc->Transfer (ent, aPS.Next())) theproc->SetRoot(ent);
@@ -110,7 +110,7 @@ void Transfer_TransferOutput::TransferRoots (const Interface_Graph& G,
   Interface_EntityIterator list = tool.RootEntities();
   Message_ProgressScope aPS(theProgress, NULL, list.NbEntities());
   for (list.Start(); list.More() && aPS.More(); list.Next()) {
-    Handle(Standard_Transient) ent = list.Value();
+    const Handle(Standard_Transient)& ent = list.Value();
 //    Standard_Integer scope = 0;
 //    if (thescope) scope = theproc->NewScope (ent);
     if (theproc->Transfer (ent, aPS.Next())) theproc->SetRoot(ent);

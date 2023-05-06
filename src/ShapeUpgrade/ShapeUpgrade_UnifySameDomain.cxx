@@ -1154,7 +1154,7 @@ static void AddPCurves(const TopTools_SequenceOfShape& theFaces,
 // seams and equal edges are dropped
 // Returns true if one of original edges dropped
 static Standard_Boolean AddOrdinaryEdges(TopTools_SequenceOfShape& edges,
-                                         const TopoDS_Shape aShape,
+                                         const TopoDS_Shape& aShape,
                                          Standard_Integer& anIndex,
                                          TopTools_SequenceOfShape& theRemovedEdges)
 {
@@ -1162,7 +1162,7 @@ static Standard_Boolean AddOrdinaryEdges(TopTools_SequenceOfShape& edges,
   TopTools_IndexedMapOfShape aNewEdges;
   //add edges without seams
   for(TopExp_Explorer exp(aShape,TopAbs_EDGE); exp.More(); exp.Next()) {
-    TopoDS_Shape edge = exp.Current();
+    const TopoDS_Shape& edge = exp.Current();
     if(aNewEdges.Contains(edge))
     {
       aNewEdges.RemoveKey(edge);
@@ -2496,7 +2496,7 @@ Standard_Boolean ShapeUpgrade_UnifySameDomain::MergeEdges(TopTools_SequenceOfSha
     // fill in the map V-E
     for (TopoDS_Iterator it(anEdge.Oriented(TopAbs_FORWARD)); it.More(); it.Next())
     {
-      TopoDS_Shape aV = it.Value();
+      const TopoDS_Shape& aV = it.Value();
       if (aV.Orientation() == TopAbs_FORWARD || aV.Orientation() == TopAbs_REVERSED)
       {
         if (!aMapVE.Contains(aV))
@@ -3072,7 +3072,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
               Standard_Boolean hasConnectAnotherFaces = Standard_False;
               TopExp_Explorer ex(faces(i), TopAbs_EDGE);
               for (; ex.More() && !hasConnectAnotherFaces; ex.Next()) {
-                TopoDS_Shape aE = ex.Current();
+                const TopoDS_Shape& aE = ex.Current();
                 const TopTools_ListOfShape& aLF = aMapEF.FindFromKey(aE);
                 if (aLF.Extent() > 1) {
                   for (it.Init(aLF); it.More() && !hasConnectAnotherFaces; it.Next()) {

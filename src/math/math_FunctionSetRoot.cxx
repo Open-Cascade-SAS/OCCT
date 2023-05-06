@@ -211,8 +211,8 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P0,
   tol1d /= 3; 
 
   //JR/Hp :
-  math_Vector PP0 = P0 ;
-  math_Vector PP1 = P1 ;
+  const math_Vector& PP0 = P0 ;
+  const math_Vector& PP1 = P1 ;
   Delta = PP1 - PP0;
   //  Delta = P1 - P0;
   invnorme = Delta.Norm();

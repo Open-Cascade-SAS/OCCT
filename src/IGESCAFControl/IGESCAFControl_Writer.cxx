@@ -278,7 +278,7 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
   // check if shape has its own style (or inherits from ancestor)
   XCAFPrs_Style style = inherit;
   if ( settings.Contains(S) ) {
-    XCAFPrs_Style own = settings.FindFromKey(S);
+    const XCAFPrs_Style& own = settings.FindFromKey(S);
     if ( own.IsSetColorCurv() ) style.SetColorCurv ( own.GetColorCurv() );
     if ( own.IsSetColorSurf() ) style.SetColorSurf ( own.GetColorSurf() );
     style.SetMaterial (own.Material());
@@ -397,7 +397,7 @@ static void AttachLayer (const Handle(Transfer_FinderProcess) &FP,
   if ( aSh.ShapeType() == TopAbs_COMPOUND ) {
     TopoDS_Iterator aShIt(aSh);
     for ( ; aShIt.More(); aShIt.Next() ) {
-      TopoDS_Shape newSh = aShIt.Value();
+      const TopoDS_Shape& newSh = aShIt.Value();
       Handle(TColStd_HSequenceOfExtendedString) shLayers = new TColStd_HSequenceOfExtendedString;
       if (! LTool->GetLayers( newSh, shLayers) || newSh.ShapeType() == TopAbs_COMPOUND )
 	AttachLayer(FP, LTool, newSh, localIntName);
@@ -413,7 +413,7 @@ static void AttachLayer (const Handle(Transfer_FinderProcess) &FP,
   }
   
   for (Standard_Integer i = 1; i <= shseq.Length(); i++ ) {
-    TopoDS_Shape localShape = shseq.Value(i);
+    const TopoDS_Shape& localShape = shseq.Value(i);
     Handle(IGESData_IGESEntity) Igesent;
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, localShape );
     if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), Igesent ) ) {

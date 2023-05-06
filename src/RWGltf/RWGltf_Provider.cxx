@@ -26,7 +26,7 @@ namespace
   // function : SetReaderParameters
   // purpose  :
   //=======================================================================
-  static void SetReaderParameters(RWGltf_CafReader& theReader, const Handle(RWGltf_ConfigurationNode) theNode)
+  static void SetReaderParameters(RWGltf_CafReader& theReader, const Handle(RWGltf_ConfigurationNode)& theNode)
   {
     theReader.SetDoublePrecision(!theNode->InternalParameters.ReadSinglePrecision);
     theReader.SetSystemLengthUnit(theNode->GlobalParameters.LengthUnit / 1000);

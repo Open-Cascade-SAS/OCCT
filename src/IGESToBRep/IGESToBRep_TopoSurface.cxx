@@ -1590,7 +1590,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const Handle(IGESGeom_Pl
 	    return res;
 	  }
 	  
-	  TopoDS_Face F = MF.Face();
+	  const TopoDS_Face& F = MF.Face();
 	  GProp_GProps G;
 	  BRepGProp::SurfaceProperties(F,G);
 	  if (G.Mass() < 0) {

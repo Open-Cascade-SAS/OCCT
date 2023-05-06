@@ -134,7 +134,7 @@ void BRepToIGESBRep_Entity::TransferVertexList()
 //=============================================================================
 Standard_Integer BRepToIGESBRep_Entity::IndexVertex(const TopoDS_Vertex& myvertex) const
 {
-  TopoDS_Shape V = myvertex;
+  const TopoDS_Shape& V = myvertex;
   return myVertices.FindIndex(V);
 }
 
@@ -148,7 +148,7 @@ Standard_Integer BRepToIGESBRep_Entity::AddVertex(const TopoDS_Vertex& myvertex)
 {
   if ( myvertex.IsNull()) return 0;
   
-  TopoDS_Shape V = myvertex;
+  const TopoDS_Shape& V = myvertex;
   Standard_Integer index = myVertices.FindIndex(V);
   if (index == 0) {
     index = myVertices.Add(V);
@@ -214,7 +214,7 @@ void BRepToIGESBRep_Entity::TransferEdgeList()
 //=============================================================================
 Standard_Integer BRepToIGESBRep_Entity::IndexEdge(const TopoDS_Edge& myedge) const
 {
-  TopoDS_Shape E = myedge;
+  const TopoDS_Shape& E = myedge;
   return myEdges.FindIndex(E);
 }
 
@@ -229,7 +229,7 @@ Standard_Integer BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge& myedge,
 {
   if ( myedge.IsNull()) return 0;
   
-  TopoDS_Shape E = myedge;
+  const TopoDS_Shape& E = myedge;
   Handle(IGESData_IGESEntity) C = mycurve3d;
   Standard_Integer index = myEdges.FindIndex(E);
   if (index == 0) {
@@ -384,7 +384,7 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire (const TopoDS_Wire& m
   TopExp_Explorer TE(mywire, TopAbs_VERTEX);
   if ( TE.More()) {
     for ( WE.Init(mywire,myface); WE.More(); WE.Next()) { 
-      TopoDS_Edge E = WE.Current();
+      const TopoDS_Edge& E = WE.Current();
       if (E.IsNull()) {
 	AddWarning(mywire, "an Edge is a null entity");
       }

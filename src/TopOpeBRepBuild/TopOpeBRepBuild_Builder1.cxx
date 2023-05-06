@@ -265,7 +265,7 @@ void TopOpeBRepBuild_Builder1::GFillShellSFS (const TopoDS_Shape& SH,
   
   TopOpeBRepTool_ShapeExplorer exFace;
 
-  TopoDS_Shape SH1 = SH;// SH1.Orientation(TopAbs_FORWARD);
+  const TopoDS_Shape& SH1 = SH;// SH1.Orientation(TopAbs_FORWARD);
   
   //1) process firstly same domain faces and non-interference faces
   for (exFace.Init(SH1,TopAbs_FACE); exFace.More(); exFace.Next()) {
@@ -289,7 +289,7 @@ void TopOpeBRepBuild_Builder1::GFillShellSFS (const TopoDS_Shape& SH,
 
   //2 Process all other faces
   for (exFace.Init(SH1,TopAbs_FACE); exFace.More(); exFace.Next()) {
-    TopoDS_Shape FOR = exFace.Current();
+    const TopoDS_Shape& FOR = exFace.Current();
     if(!myDataStructure -> HasShape(FOR)
        ||
        myDataStructure->HasSameDomain(FOR))
@@ -421,7 +421,7 @@ void TopOpeBRepBuild_Builder1::GFillWireNotSameDomWES(const TopoDS_Shape& W,
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   Standard_Boolean RevOri1 = G1.IsToReverse1();
 
-  TopoDS_Shape WW = W; //WW.Orientation(TopAbs_FORWARD);
+  const TopoDS_Shape& WW = W; //WW.Orientation(TopAbs_FORWARD);
 
   TopOpeBRepTool_ShapeExplorer exEdge(WW,TopAbs_EDGE);
   for (; exEdge.More(); exEdge.Next()) {
@@ -518,7 +518,7 @@ void TopOpeBRepBuild_Builder1::GFillFaceSameDomSFS(const TopoDS_Shape& FOR,
   if(myDataStructure -> DS().AncestorRank(FOR) != 1)
     return;
 
-  TopOpeBRepBuild_GTopo G1 = Gin;
+  const TopOpeBRepBuild_GTopo& G1 = Gin;
 
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
 
@@ -696,7 +696,7 @@ void TopOpeBRepBuild_Builder1::GFillWireSameDomWES(const TopoDS_Shape& W,
 {
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
 
-  TopoDS_Shape WW = W; //WW.Orientation(TopAbs_FORWARD);
+  const TopoDS_Shape& WW = W; //WW.Orientation(TopAbs_FORWARD);
 
   Standard_Integer iref = myDataStructure -> DS().AncestorRank(W);
 

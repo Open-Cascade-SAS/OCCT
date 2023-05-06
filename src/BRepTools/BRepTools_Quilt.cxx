@@ -462,7 +462,7 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
 //		 itm.More(); ) {
               if(!M.IsBound(aexp.Current()))
                  continue;
-              TopoDS_Shape ae = aexp.Current();
+              const TopoDS_Shape& ae = aexp.Current();
               TopoDS_Shape as = M.Find(ae);
 	      if (as.IsSame(oldShell)) {
 		// update the orientation of free edges in SH.

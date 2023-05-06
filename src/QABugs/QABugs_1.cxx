@@ -243,7 +243,7 @@ static Standard_Integer OCC10bug (Draw_Interpretor& di, Standard_Integer argc, c
     }
     // Construction du Geom_Plane
     GC_MakePlane MkPlane(A,B,C);
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
+    const Handle(Geom_Plane)& theGeomPlane=MkPlane.Value();
     
     // on le display & bind
     theAISPlaneTri= new AIS_PlaneTrihedron(theGeomPlane );

@@ -539,7 +539,7 @@ static void FillSD (TopOpeBRepDS_DataStructure& DStr,
 		    const Standard_Boolean      isFirst,
 		    const Standard_Integer      ons,
 		    const Standard_Real         pitol,
-		    const TopoDS_Vertex         bout)
+		    const TopoDS_Vertex&         bout)
      
 {  
   Standard_Integer opp = 3 - ons;

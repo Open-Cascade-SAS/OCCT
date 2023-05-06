@@ -27,7 +27,7 @@ IMPLEMENT_STANDARD_RTTIEXT(StepRepr_ReprItemAndMeasureWithUnitAndQRI,StepRepr_Re
 
 void StepRepr_ReprItemAndMeasureWithUnitAndQRI::Init (const Handle(StepBasic_MeasureWithUnit)& aMWU, 
                                                       const Handle(StepRepr_RepresentationItem)& aRI, 
-                                                      const Handle(StepShape_QualifiedRepresentationItem) aQRI)
+                                                      const Handle(StepShape_QualifiedRepresentationItem)& aQRI)
 {
   StepRepr_ReprItemAndMeasureWithUnit::Init(aMWU, aRI);
   myQualifiedRepresentationItem = aQRI;

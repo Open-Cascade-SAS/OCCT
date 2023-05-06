@@ -112,7 +112,7 @@ void Message_PrinterToReport::send (const TCollection_AsciiString& theString,
 //function : sendMetricAlert
 //purpose  :
 //=======================================================================
-void Message_PrinterToReport::sendMetricAlert (const TCollection_AsciiString theValue,
+void Message_PrinterToReport::sendMetricAlert (const TCollection_AsciiString& theValue,
                                                const Message_Gravity theGravity) const
 {
   Message_AlertExtended::AddAlert (Report(), new Message_AttributeMeter (theValue), theGravity);

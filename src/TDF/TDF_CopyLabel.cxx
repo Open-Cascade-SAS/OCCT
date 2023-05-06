@@ -80,7 +80,7 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
 //     TDF_Tool::Entry(itr.Value()->Label(), entr1);  //d
 //     std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<" Label = "<<entr1 <<std::endl;
     for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
-      Handle(TDF_Attribute) att = attMItr.Key();
+      const Handle(TDF_Attribute)& att = attMItr.Key();
 
 //       TDF_Tool::Entry(att->Label(), entr1);  
 //       std::cout<<"\t\tReferences attribute dynamic type = "<<att->DynamicType()<<" Label = "<<entr1 <<std::endl;
@@ -169,7 +169,7 @@ void TDF_CopyLabel::Perform()
   TDF_ClosureTool::Closure(ds, myFilter, mode);
   if(extReferers) {
     for (TDF_MapIteratorOfAttributeMap attMItr(myMapOfExt);attMItr.More(); attMItr.Next()) {
-      Handle(TDF_Attribute) att = attMItr.Key();
+      const Handle(TDF_Attribute)& att = attMItr.Key();
       myRT->SetRelocation(att, att);
 #ifdef OCCT_DEBUG
       PrintEntry(att->Label(), Standard_True);

@@ -383,7 +383,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   BRepTools_WireExplorer wexp(theWire);
 
   for (; wexp.More(); wexp.Next()) {
-    TopoDS_Edge anEdge = wexp.Current();
+    const TopoDS_Edge& anEdge = wexp.Current();
     Standard_Real fpar, lpar;
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
 
@@ -392,7 +392,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 
     GeomAdaptor_Curve  aGACurve(aCurve);
     GeomAbs_CurveType  aType       = aGACurve.GetType();
-    Handle(Geom_Curve) aBasisCurve = aGACurve.Curve();
+    const Handle(Geom_Curve)& aBasisCurve = aGACurve.Curve();
     Standard_Boolean   isFwd       = (wexp.Orientation() != TopAbs_REVERSED);
 
     if (aBasisCurve->IsPeriodic()) {

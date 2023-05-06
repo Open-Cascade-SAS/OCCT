@@ -115,7 +115,7 @@ static void resolveKeys (Draw_MapOfAsciiString& theMap,
   for (Standard_Integer j = 1; j <= aMapExtent; ++j)
   {
     TCollection_AsciiString aValue;
-    const TCollection_AsciiString aResource = theMap.FindKey (j);
+    const TCollection_AsciiString& aResource = theMap.FindKey (j);
     if (theResMgr->Find (aResource, aValue))
     {
     #ifdef OCCT_DEBUG
@@ -204,7 +204,7 @@ static Standard_Integer Pload (Draw_Interpretor& theDI,
   const Standard_Integer aMapExtent = aMap.Extent();
   for (Standard_Integer aResIter = 1; aResIter <= aMapExtent; ++aResIter)
   {
-    const TCollection_AsciiString aResource = aMap.FindKey (aResIter);
+    const TCollection_AsciiString& aResource = aMap.FindKey (aResIter);
   #ifdef OCCT_DEBUG
     std::cout << "aResource = " << aResource << std::endl;
   #endif

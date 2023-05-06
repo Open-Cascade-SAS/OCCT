@@ -376,7 +376,7 @@ static TopoDS_Shape MakeShape (const TopTools_IndexedMapOfShape& MS)
 //purpose  : Tries to make shape with given type from the given shape
 //=======================================================================
 
-static TopoDS_Shape ShapeWithType(const TopoDS_Shape     theShape,
+static TopoDS_Shape ShapeWithType(const TopoDS_Shape&     theShape,
 				  const TopAbs_ShapeEnum theType ) {
   if (theShape.IsNull() || theType == TopAbs_SHAPE) return theShape;
   Standard_Integer aType = theShape.ShapeType();
@@ -1351,7 +1351,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   //----------------------------------------
   // First argument: collection has to be filtered.
   //----------------------------------------
-  Handle(TNaming_NamedShape) Cand  = Args.First(); //collection of candidates
+  const Handle(TNaming_NamedShape)& Cand  = Args.First(); //collection of candidates
    
 #ifdef OCCT_DEBUG_FNB
   Standard_Integer i = 1;

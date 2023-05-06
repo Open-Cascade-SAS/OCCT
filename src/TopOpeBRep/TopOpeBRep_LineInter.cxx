@@ -55,8 +55,8 @@ extern Standard_Boolean TopOpeBRep_GettraceCONIC();
 
 //-----------------------------------------------------------------------
 static void FUN_ALINETOWLINE (const Handle(IntPatch_ALine)& AL,
-                              const Handle(BRepAdaptor_Surface) surf1,
-                              const Handle(BRepAdaptor_Surface) surf2,
+                              const Handle(BRepAdaptor_Surface)& surf1,
+                              const Handle(BRepAdaptor_Surface)& surf2,
                               IntPatch_SequenceOfLine& theLines)
 {
   Standard_Integer nbpointsmax = 200;

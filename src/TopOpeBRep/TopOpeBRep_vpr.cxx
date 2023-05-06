@@ -351,7 +351,7 @@ static Standard_Boolean FUN_LineRestF
 
 //-----------------------------------------------------------------------
 Standard_EXPORT Standard_Boolean FUN_newtransEdge
-(const Handle(TopOpeBRepDS_HDataStructure) HDS,
+(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
  const TopOpeBRep_FacesFiller& FF,
  const TopOpeBRep_LineInter& L,
  const Standard_Boolean& Lonrest,
@@ -363,7 +363,7 @@ Standard_EXPORT Standard_Boolean FUN_newtransEdge
 {
   T.Before(TopAbs_UNKNOWN); T.After(TopAbs_UNKNOWN);
   const TopoDS_Face& OOface = FF.Face(OOShapeIndex);
-  TopoDS_Face FIE = OOface;
+  const TopoDS_Face& FIE = OOface;
   {
     TopAbs_Orientation oFIE = FIE.Orientation();
     if (oFIE == TopAbs_INTERNAL || oFIE == TopAbs_EXTERNAL) {
@@ -454,7 +454,7 @@ Standard_EXPORT Standard_Boolean FUN_newtransEdge
 } // FUN_newtransEdge
 
 //-----------------------------------------------------------------------
-static void FUN_ScanInterfList(const TopOpeBRepDS_Point& PDS, const Handle(TopOpeBRepDS_HDataStructure) HDS,
+static void FUN_ScanInterfList(const TopOpeBRepDS_Point& PDS, const Handle(TopOpeBRepDS_HDataStructure)& HDS,
 			       const TopOpeBRepDS_ListOfInterference& loI, TopOpeBRepDS_ListOfInterference& loIfound)
 //-----------------------------------------------------------------------
 {
@@ -512,7 +512,7 @@ static Standard_Boolean FUN_sameGsameS(const TopOpeBRepDS_ListOfInterference& lo
   //  geometry <G>, and support <S>
   TopOpeBRepDS_PointIterator PI(loI);   
   for (; PI.More(); PI.Next()) {
-    Handle(TopOpeBRepDS_Interference) EPI = PI.Value();    
+    const Handle(TopOpeBRepDS_Interference)& EPI = PI.Value();
     Standard_Integer GEPI = EPI->Geometry(); Standard_Integer SEPI = EPI->Support();      
     if (GEPI == G && SEPI == S) loIfound.Append(EPI);
   }

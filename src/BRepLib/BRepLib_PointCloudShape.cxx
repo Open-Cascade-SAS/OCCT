@@ -205,7 +205,7 @@ Standard_Boolean BRepLib_PointCloudShape::addDensityPoints (const TopoDS_Shape& 
   BRepTools::UVBounds (aFace, anUMin, anUMax, aVMin, aVMax);
   BRepTopAdaptor_FClass2d aClassifier (aFace, Precision::Confusion());
 
-  TopLoc_Location aLoc = theFace.Location();
+  const TopLoc_Location& aLoc = theFace.Location();
   const gp_Trsf& aTrsf = aLoc.Transformation();
   TopLoc_Location aLoc1;
   Handle(Geom_Surface) aSurf = BRep_Tool::Surface (aFace, aLoc1);

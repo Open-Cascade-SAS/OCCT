@@ -151,8 +151,8 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
 {
   TopoDS_Edge OffsetEdge;
   
-  TopoDS_Face F1 = S1.Face();
-  TopoDS_Face F2 = S2.Face();
+  const TopoDS_Face& F1 = S1.Face();
+  const TopoDS_Face& F2 = S2.Face();
   Handle(Geom_Surface) GS1 = BRep_Tool::Surface(F1);
   Handle(Geom_Surface) TrGS1 =
     new Geom_RectangularTrimmedSurface(GS1,

@@ -94,7 +94,7 @@ void IGESCAFControl_Provider::initStatic(const Handle(DE_ConfigurationNode)& the
 // function : setStatic
 // purpose  :
 //=======================================================================
-void IGESCAFControl_Provider::setStatic(const IGESCAFControl_ConfigurationNode::IGESCAFControl_InternalSection theParameter)
+void IGESCAFControl_Provider::setStatic(const IGESCAFControl_ConfigurationNode::IGESCAFControl_InternalSection& theParameter)
 {
   Interface_Static::SetIVal("read.iges.bspline.continuity", theParameter.ReadBSplineContinuity);
   Interface_Static::SetIVal("read.precision.mode", theParameter.ReadPrecisionMode);

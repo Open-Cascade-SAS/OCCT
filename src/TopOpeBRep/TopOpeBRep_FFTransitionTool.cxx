@@ -123,9 +123,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessLineTransition
   // P.IsOnDomS1() and P.IsOnDomS2() are both false
 
   Standard_Integer nbv = LI.NbVPoint();
-  TopOpeBRep_VPointInter P1 = LI.VPoint(1);
+  const TopOpeBRep_VPointInter& P1 = LI.VPoint(1);
   Standard_Real par1 = P1.ParameterOnLine();
-  TopOpeBRep_VPointInter Pn = LI.VPoint(nbv);
+  const TopOpeBRep_VPointInter& Pn = LI.VPoint(nbv);
   Standard_Real parn = Pn.ParameterOnLine();
 
   Standard_Real par = P.ParameterOnLine();

@@ -139,7 +139,7 @@ private:
   void initStatic(const Handle(DE_ConfigurationNode)& theNode);
 
   //! Initialize static variables
-  void setStatic(const IGESCAFControl_ConfigurationNode::IGESCAFControl_InternalSection theParameter);
+  void setStatic(const IGESCAFControl_ConfigurationNode::IGESCAFControl_InternalSection& theParameter);
 
   //! Reset used interface static variables
   void resetStatic();

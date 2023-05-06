@@ -94,7 +94,7 @@ static Standard_Integer LocDump (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  TopLoc_Location L = a.Location();
+  const TopLoc_Location& L = a.Location();
   di << "Location of shape " << argv[1] << ":\n";
   di << "Results in:\n";
   gp_Trsf T = L.Transformation();

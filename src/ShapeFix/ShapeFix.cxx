@@ -356,7 +356,7 @@ static Standard_Real getNearPoint(const TColgp_SequenceOfPnt& aSeq1,
 //purpose  : auxiliary for FixVertexPosition
 //=======================================================================
 static Standard_Boolean getNearestEdges(TopTools_ListOfShape& theLEdges,
-                                        const TopoDS_Vertex theVert,
+                                        const TopoDS_Vertex& theVert,
                                         TopTools_SequenceOfShape& theSuitEdges,
                                         TopTools_SequenceOfShape& theRejectEdges,
                                         const Standard_Real theTolerance,
@@ -505,7 +505,7 @@ Standard_Boolean ShapeFix::FixVertexPosition(TopoDS_Shape& theshape,
     Standard_Integer nV =1;
     TopoDS_Iterator aExp3(aExp1.Current());
     for( ; aExp3.More(); aExp3.Next(),nV++) {
-      TopoDS_Shape aVert =  aExp3.Value();
+      const TopoDS_Shape& aVert =  aExp3.Value();
       if(nV ==1)
         aVert1 = aVert;
       else if(aVert1.IsSame(aVert))

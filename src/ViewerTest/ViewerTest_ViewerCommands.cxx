@@ -1470,7 +1470,7 @@ static TCollection_AsciiString FindViewIdByWindowHandle (Aspect_Drawable theWind
 void ActivateView (const TCollection_AsciiString& theViewName,
                    Standard_Boolean theToUpdate = Standard_True)
 {
-  if (const Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName))
+  if (const Handle(V3d_View)& aView = ViewerTest_myViews.Find1(theViewName))
   {
     ViewerTest::ActivateView (aView, theToUpdate);
   }
@@ -1483,7 +1483,7 @@ void ActivateView (const TCollection_AsciiString& theViewName,
 void ViewerTest::ActivateView (const Handle(V3d_View)& theView,
                                Standard_Boolean theToUpdate)
 {
-  Handle(V3d_View) aView = theView;
+  const Handle(V3d_View)& aView = theView;
   const TCollection_AsciiString* aViewName = ViewerTest_myViews.Seek2 (aView);
   if (aViewName == nullptr)
   {
@@ -1538,7 +1538,7 @@ void ViewerTest::RemoveView (const Handle(V3d_View)& theView,
     return;
   }
 
-  const TCollection_AsciiString aViewName = ViewerTest_myViews.Find2 (theView);
+  const TCollection_AsciiString& aViewName = ViewerTest_myViews.Find2 (theView);
   RemoveView (aViewName, theToRemoveContext);
 }
 
@@ -7147,7 +7147,7 @@ static Standard_Integer V2DMode (Draw_Interpretor&, Standard_Integer theArgsNb, 
      && anArgCase == "-name")
     {
       ViewerTest_Names aViewNames (theArgVec[++anArgIt]);
-      TCollection_AsciiString aViewName = aViewNames.GetViewName();
+      const TCollection_AsciiString& aViewName = aViewNames.GetViewName();
       if (!ViewerTest_myViews.IsBound1 (aViewName))
       {
         Message::SendFail() << "Syntax error: unknown view '" << theArgVec[anArgIt - 1] << "'";
@@ -8842,7 +8842,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         else if (!toOverrideGlobal
                && ViewerTest_myViews.IsBound1 (anEntityName))
         {
-          Handle(V3d_View) aView = ViewerTest_myViews.Find1 (anEntityName);
+          const Handle(V3d_View)& aView = ViewerTest_myViews.Find1 (anEntityName);
           if (toSet)
           {
             aView->AddClipPlane (aClipPlane);

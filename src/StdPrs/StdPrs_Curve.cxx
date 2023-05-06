@@ -84,7 +84,7 @@ static void FindLimits(const Adaptor3d_Curve& aCurve,
 // purpose:
 //==================================================================
 static void DrawCurve (const Adaptor3d_Curve&        aCurve,
-                       const Handle(Graphic3d_Group) aGroup,
+                       const Handle(Graphic3d_Group)& aGroup,
                        const Standard_Integer        NbP,
                        const Standard_Real           U1,
                        const Standard_Real           U2,

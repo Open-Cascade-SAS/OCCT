@@ -128,7 +128,7 @@ static void AddNewEdge(const TopoDS_Shape& theEdge,
     const TopTools_SequenceOfShape& NewEdges = theEdgeNewEdges(theEdge);
     for (Standard_Integer i = 1; i <= NewEdges.Length(); i++)
     {
-      TopoDS_Shape anEdge = NewEdges(i);
+      const TopoDS_Shape& anEdge = NewEdges(i);
       AddNewEdge(anEdge, theEdgeNewEdges, ListNewEdges);
     }
   }
@@ -1309,7 +1309,7 @@ void BRepFill_CompatibleWires::
   TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itmap(myMap);
   for (; itmap.More(); itmap.Next())
   {
-    TopoDS_Shape anEdge = itmap.Key();
+    const TopoDS_Shape& anEdge = itmap.Key();
     TopTools_ListOfShape ListOfNewEdges;
 
     //for each edge of <myMap> find all newest edges

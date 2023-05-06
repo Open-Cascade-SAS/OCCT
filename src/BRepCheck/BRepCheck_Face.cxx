@@ -625,7 +625,7 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
     MapW1.Add( exp1.Current() );
   for (exp2.Init( wir2, TopAbs_VERTEX ); exp2.More(); exp2.Next())
     {
-      TopoDS_Shape V = exp2.Current();
+      const TopoDS_Shape& V = exp2.Current();
       if (MapW1.Contains( V ))
 	CommonVertices.Append( V );
     }

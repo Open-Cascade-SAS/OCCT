@@ -484,8 +484,8 @@ static void CalculDroite(const gp_Pnt2d & p2d1,
 //purpose  : calcule a batten between curves 2d  curv2d1 and curv2d2 at points p2d1 and p2d2  
 //=======================================================================
 
-static void CalculBatten (const Handle (GeomAdaptor_Surface) ASurf, 
-                          const TopoDS_Face Face ,
+static void CalculBatten (const Handle (GeomAdaptor_Surface)& ASurf, 
+                          const TopoDS_Face& Face ,
                           const Standard_Real xdir,
                           const Standard_Real  ydir,
                           const gp_Pnt2d & p2d1,

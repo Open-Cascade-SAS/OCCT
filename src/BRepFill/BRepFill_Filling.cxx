@@ -59,7 +59,7 @@
 #include <TopoDS_Wire.hxx>
 #include <Geom_Surface.hxx>
 
-static gp_Vec MakeFinVec( const TopoDS_Wire aWire, const TopoDS_Vertex aVertex )
+static gp_Vec MakeFinVec( const TopoDS_Wire& aWire, const TopoDS_Vertex& aVertex )
 {
   TopoDS_Vertex Vfirst, Vlast, Origin;
   BRepTools_WireExplorer Explo( aWire );

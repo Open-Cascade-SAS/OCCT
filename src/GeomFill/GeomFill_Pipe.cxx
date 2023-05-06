@@ -87,7 +87,7 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
   Standard_Boolean no_sing = Standard_True;
   Seq2.Clear();
 
-  Handle(Geom_Curve) C1 = Seq1.Value(1);
+  const Handle(Geom_Curve)& C1 = Seq1.Value(1);
   Standard_Real f = C1->FirstParameter(), l = C1->LastParameter();
   Standard_Integer iP, NP = 21;
   TColgp_Array1OfPnt Tab(1,NP);
@@ -125,7 +125,7 @@ static Standard_Boolean CheckSense(const TColGeom_SequenceOfCurve& Seq1,
 
   for (Standard_Integer iseq=2; iseq<=Seq1.Length(); iseq++) {
     // discretisation de C2
-    Handle(Geom_Curve) C2 = Seq1.Value(iseq);
+    const Handle(Geom_Curve)& C2 = Seq1.Value(iseq);
     f = C2->FirstParameter();
     l = C2->LastParameter();
     u = f;

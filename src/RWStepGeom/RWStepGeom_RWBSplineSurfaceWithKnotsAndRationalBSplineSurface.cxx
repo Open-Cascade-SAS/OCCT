@@ -432,7 +432,7 @@ void RWStepGeom_RWBSplineSurfaceWithKnotsAndRationalBSplineSurface::Check
    const Interface_ShareTool& aShto,
    Handle(Interface_Check)& ach) const
 {
-  Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface) aRationalBSS = ent;
+  const Handle(StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface)& aRationalBSS = ent;
   Handle(StepGeom_BSplineSurfaceWithKnots) aBSSWK =
     aRationalBSS->BSplineSurfaceWithKnots();
   RWStepGeom_RWBSplineSurfaceWithKnots t1;

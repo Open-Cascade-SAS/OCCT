@@ -95,7 +95,7 @@ static void AddCompositeShape (const Handle(XCAFDoc_ShapeTool)& theSTool,
                                TopTools_MapOfShape& theMap)
 {
   TopoDS_Shape aShape = theShape;
-  TopLoc_Location aLoc = theShape.Location();
+  const TopLoc_Location& aLoc = theShape.Location();
   if (!theConsiderLoc && !aLoc.IsIdentity())
     aShape.Location( TopLoc_Location() );
   if (!theMap.Add (aShape)) 

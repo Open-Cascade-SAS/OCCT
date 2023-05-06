@@ -79,7 +79,7 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids
 	myBuildTool.MakeShell(newShell);
 	nfa = SOBU.InitFace();
 	for (; SOBU.MoreFace(); SOBU.NextFace()) {
-	  TopoDS_Shape F = SOBU.Face();
+	  const TopoDS_Shape& F = SOBU.Face();
 	  myBuildTool.AddShellFace(newShell,F);
 	}
       }

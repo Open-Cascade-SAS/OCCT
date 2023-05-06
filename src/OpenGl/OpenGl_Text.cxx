@@ -312,7 +312,7 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
   }
   theWidth = Max (theWidth, aWidth);
 
-  Handle(OpenGl_Context) aCtx = theCtx;
+  const Handle(OpenGl_Context)& aCtx = theCtx;
   aFont.Nullify();
   aCtx->ReleaseResource (aFontKey, Standard_True);
 }

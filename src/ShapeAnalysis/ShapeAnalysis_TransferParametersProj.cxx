@@ -231,7 +231,7 @@ Standard_Real ShapeAnalysis_TransferParametersProj::Perform(const Standard_Real 
 //function : CorrectParameter
 //purpose  : auxiliary
 //=======================================================================
-static Standard_Real CorrectParameter(const Handle(Geom2d_Curve) crv,
+static Standard_Real CorrectParameter(const Handle(Geom2d_Curve)& crv,
 				      const Standard_Real param)
 {
   if(crv->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
@@ -580,7 +580,7 @@ TopoDS_Vertex ShapeAnalysis_TransferParametersProj::CopyNMVertex (const TopoDS_V
   //update tolerance
   Standard_Boolean needUpdate = Standard_False;
   gp_Pnt aPV = (*((Handle(BRep_TVertex)*)&anewV.TShape()))->Pnt();
-  TopLoc_Location toLoc = toedge.Location();
+  const TopLoc_Location& toLoc = toedge.Location();
   BRep_ListIteratorOfListOfCurveRepresentation toitcr
 	((*((Handle(BRep_TEdge)*)&toedge.TShape()))->ChangeCurves());
       

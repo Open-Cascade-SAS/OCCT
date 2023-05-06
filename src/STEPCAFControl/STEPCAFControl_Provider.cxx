@@ -99,7 +99,7 @@ void STEPCAFControl_Provider::initStatic(const Handle(DE_ConfigurationNode)& the
 // function : setStatic
 // purpose  :
 //=======================================================================
-void STEPCAFControl_Provider::setStatic(const STEPCAFControl_ConfigurationNode::STEPCAFControl_InternalSection theParameter)
+void STEPCAFControl_Provider::setStatic(const STEPCAFControl_ConfigurationNode::STEPCAFControl_InternalSection& theParameter)
 {
   Interface_Static::SetIVal("read.iges.bspline.continuity", theParameter.ReadBSplineContinuity);
   Interface_Static::SetIVal("read.precision.mode", theParameter.ReadPrecisionMode);

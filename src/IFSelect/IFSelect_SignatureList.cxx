@@ -212,7 +212,7 @@ IFSelect_SignatureList::IFSelect_SignatureList
     nbtot += nbent;
     nbsign ++;
     if (nbent > maxent) maxent = nbent;
-    TCollection_AsciiString name = iter.Key();
+    const TCollection_AsciiString& name = iter.Key();
 //    if (!name.IsIntegerValue()) continue;  pas bien fiable
     Standard_Integer ic, nc = name.Length();
     Standard_Boolean iaint = Standard_True;

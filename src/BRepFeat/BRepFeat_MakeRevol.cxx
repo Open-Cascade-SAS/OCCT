@@ -353,7 +353,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
     myGShape = VraiRevol;
     GeneratedShapeValid();
 
-    TopoDS_Shape Base = theRevol.FirstShape();
+    const TopoDS_Shape& Base = theRevol.FirstShape();
     exp.Init(Base, TopAbs_FACE);
     TopoDS_Face theBase = TopoDS::Face(exp.Current());
     exp.Next();
@@ -633,7 +633,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
     myGShape = VraiRevol;
     GeneratedShapeValid();
 
-    TopoDS_Shape Base = theRevol.FirstShape();
+    const TopoDS_Shape& Base = theRevol.FirstShape();
     exp.Init(Base, TopAbs_FACE);
     TopoDS_Face theBase = TopoDS::Face(exp.Current());
     exp.Next();
@@ -732,7 +732,7 @@ static void VerifGluedFaces(const TopoDS_Face& theSkface,
   TopTools_DataMapOfShapeShape& theMap)
 {
   Standard_Boolean GluedFaces = Standard_True;
-  TopoDS_Shape VraiRevol = theRevol.Shape();
+  const TopoDS_Shape& VraiRevol = theRevol.Shape();
 
   TColGeom_SequenceOfCurve scur;
   theRevol.Curves(theCurves);

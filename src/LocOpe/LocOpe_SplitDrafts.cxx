@@ -1644,7 +1644,7 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
     Standard_Boolean rev = Standard_False;
     TopoDS_Vertex Vf = V1;
     TopoDS_Vertex Vl = V2;
-    Handle(Geom_Curve) Cimg = i2s.Line(i);
+    const Handle(Geom_Curve)& Cimg = i2s.Line(i);
     Handle(Geom2d_Curve) Cimg2d;
     if (AppS1) {
       Cimg2d = i2s.LineOnS1(i);

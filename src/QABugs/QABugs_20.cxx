@@ -1992,7 +1992,7 @@ static Standard_Integer OCC26270(Draw_Interpretor& theDI,
       if (!aRes.IsNull())
       {
         BRepBuilderAPI_MakeFace b_face1(aRes, Precision::Confusion());
-        TopoDS_Face bsp_face1 = b_face1.Face();
+        const TopoDS_Face& bsp_face1 = b_face1.Face();
         DBRep::Set(theArgVal[2], bsp_face1);
       }
     }

@@ -417,7 +417,7 @@ void BRepOffsetAPI_ThruSections::Build(const Message_ProgressRange& /*theRange*/
           Standard_Integer aSign = 1;
           TopoDS_Vertex Vfirst, Vlast;
           TopExp::Vertices(anEdge, Vfirst, Vlast);
-          TopTools_ListOfShape aNewEdges = Georges.GeneratedShapes(anEdge);
+          const TopTools_ListOfShape& aNewEdges = Georges.GeneratedShapes(anEdge);
           TColStd_ListOfInteger IList;
           aWorkingSection = TopoDS::Wire(WorkingSections(ii));
           Standard_Integer NbNewEdges = aNewEdges.Extent();

@@ -56,7 +56,7 @@ AIS_C0RegularityFilter::AIS_C0RegularityFilter(const TopoDS_Shape& aShape)
       }
     }
     if (Ok) {
-      TopoDS_Shape curEdge = SubShapes.FindKey( i );
+      const TopoDS_Shape& curEdge = SubShapes.FindKey( i );
       myMapOfEdges.Add(curEdge);
     }
   }

@@ -263,13 +263,13 @@ static void LoadC0Edges(const TopoDS_Shape& S,
   TopExp_Explorer anEx(S,TopAbs_EDGE); // mpv: new explorer iterator because we need keep edges order
   for(;anEx.More();anEx.Next()) {
     Standard_Boolean aC0 = Standard_False;
-    TopoDS_Shape anEdge1 = anEx.Current();
+    const TopoDS_Shape& anEdge1 = anEx.Current();
     if (edgeNaborFaces.IsBound(anEdge1)) {
       const TopTools_ListOfShape& aList1 = edgeNaborFaces.Find(anEdge1);
       if (aList1.Extent()<2) continue; // mpv (06.09.2002): these edges already was loaded
       TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itr(edgeNaborFaces);
       for (; itr.More(); itr.Next()) {
-	TopoDS_Shape anEdge2 = itr.Key();
+	const TopoDS_Shape& anEdge2 = itr.Key();
 	if(anEdgesToDelete.Contains(anEdge2)) continue;
 	if (anEdge1.IsSame(anEdge2)) continue;
 	const TopTools_ListOfShape& aList2 = itr.Value();
@@ -875,7 +875,6 @@ Standard_Boolean DNaming::ComputeSweepDir (const TopoDS_Shape& theShape,
 						   gp_Ax1& theAxis)
 {
   // Find surface
-  TopLoc_Location aLocation = theShape.Location();    
   Handle(Geom_Plane) aPlane;
 
   if (theShape.ShapeType() == TopAbs_FACE) {

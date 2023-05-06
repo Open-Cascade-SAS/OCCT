@@ -35,7 +35,7 @@ public:
   
   Standard_EXPORT StepRepr_ReprItemAndMeasureWithUnitAndQRI();
 
-  Standard_EXPORT void Init (const Handle(StepBasic_MeasureWithUnit)& aMWU, const Handle(StepRepr_RepresentationItem)& aRI, const Handle(StepShape_QualifiedRepresentationItem) aQRI);
+  Standard_EXPORT void Init (const Handle(StepBasic_MeasureWithUnit)& aMWU, const Handle(StepRepr_RepresentationItem)& aRI, const Handle(StepShape_QualifiedRepresentationItem)& aQRI);
   
   Standard_EXPORT void SetQualifiedRepresentationItem (const Handle(StepShape_QualifiedRepresentationItem)& aQRI);
   

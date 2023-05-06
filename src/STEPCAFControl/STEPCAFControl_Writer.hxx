@@ -237,7 +237,7 @@ protected:
 
   Handle(StepRepr_ShapeAspect) writeShapeAspect(const Handle(XSControl_WorkSession)& theWS,
                                                 const TDF_Label theLabel,
-                                                const TopoDS_Shape theShape,
+                                                const TopoDS_Shape& theShape,
                                                 Handle(StepRepr_RepresentationContext)& theRC,
                                                 Handle(StepAP242_GeometricItemSpecificUsage)& theGISU);
 
@@ -248,13 +248,13 @@ protected:
                          const Standard_Boolean theHasPlane,
                          const gp_Ax2& theAnnotationPlane,
                          const gp_Pnt& theTextPosition,
-                         const Handle(Standard_Transient) theDimension);
+                         const Handle(Standard_Transient)& theDimension);
 
   Handle(StepDimTol_Datum) writeDatumAP242(const Handle(XSControl_WorkSession)& theWS,
                                            const TDF_LabelSequence& theShapeL,
                                            const TDF_Label& theDatumL,
                                            const Standard_Boolean isFirstDTarget,
-                                           const Handle(StepDimTol_Datum) theWrittenDatum);
+                                           const Handle(StepDimTol_Datum)& theWrittenDatum);
 
   void writeToleranceZone(const Handle(XSControl_WorkSession)& theWS,
                           const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,

@@ -79,7 +79,7 @@ Standard_EXPORT void TopOpeBRepDS_SetThePCurve
 //(const TopoDS_Face& fF,const TopoDS_Edge& E,Standard_Real& splitpar);
 
 //---------------------------------------------
-static Standard_Integer FUN_getG(const gp_Pnt& P,const TopOpeBRepDS_ListOfInterference& LI,const Handle(TopOpeBRepDS_HDataStructure) HDS,Standard_Integer& iEinterf)
+static Standard_Integer FUN_getG(const gp_Pnt& P,const TopOpeBRepDS_ListOfInterference& LI,const Handle(TopOpeBRepDS_HDataStructure)& HDS,Standard_Integer& iEinterf)
 //---------------------------------------------
 {
   TopOpeBRepDS_ListIteratorOfListOfInterference ILI(LI);
@@ -119,7 +119,7 @@ static Standard_Integer FUN_getG(const gp_Pnt& P,const TopOpeBRepDS_ListOfInterf
 #define DECREASEPERIOD (-1)
 	
 static Standard_Boolean FUN_EPIforEvisoONperiodicF
-(const TopoDS_Edge& E,const TopoDS_Face& F,const TopOpeBRepDS_ListOfInterference& EPIlist,const Handle(TopOpeBRepDS_HDataStructure) HDS,TopOpeBRepDS_ListOfInterference& loCPI)
+(const TopoDS_Edge& E,const TopoDS_Face& F,const TopOpeBRepDS_ListOfInterference& EPIlist,const Handle(TopOpeBRepDS_HDataStructure)& HDS,TopOpeBRepDS_ListOfInterference& loCPI)
 {
   Standard_Real parone=-1.e7;   
   TopOpeBRepTool_CORRISO CORRISO(F); CORRISO.Init(F);

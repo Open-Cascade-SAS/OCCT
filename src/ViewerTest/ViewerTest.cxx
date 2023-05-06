@@ -696,7 +696,7 @@ void ViewerTest::Clear()
   NCollection_Sequence<Handle(AIS_InteractiveObject)> aListRemoved;
   for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS()); anObjIter.More(); anObjIter.Next())
   {
-    const Handle(AIS_InteractiveObject) anObj = anObjIter.Key1();
+    const Handle(AIS_InteractiveObject)& anObj = anObjIter.Key1();
     if (anObj->GetContext() != TheAISContext())
     {
       continue;
@@ -3363,7 +3363,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     // redisplay all objects in context
     for (ViewTest_PrsIter aPrsIter (aNames); aPrsIter.More(); aPrsIter.Next())
     {
-      Handle(AIS_InteractiveObject)  aPrs = aPrsIter.Current();
+      const Handle(AIS_InteractiveObject)&  aPrs = aPrsIter.Current();
       if (!aPrs.IsNull())
       {
         aCtx->Redisplay (aPrs, Standard_False);
@@ -3612,7 +3612,7 @@ static int VDonly2 (Draw_Interpretor& ,
       continue;
     }
 
-    if (Handle(AIS_InteractiveObject) aShape = anIter.Key1())
+    if (const Handle(AIS_InteractiveObject)& aShape = anIter.Key1())
     {
       aCtx->Erase (aShape, Standard_False);
     }
@@ -3884,7 +3884,7 @@ int VErase (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      const Handle(AIS_InteractiveObject) anIO = anIter.Key1();
+      const Handle(AIS_InteractiveObject)& anIO = anIter.Key1();
       if (!anIO.IsNull()
        && aCtx->IsSelected (anIO))
       {
@@ -3907,7 +3907,7 @@ int VErase (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      Handle(AIS_InteractiveObject) anIO = anIter.Key1();
+      const Handle(AIS_InteractiveObject)& anIO = anIter.Key1();
       if (!anIO.IsNull())
       {
         if (toEraseInView)
@@ -4156,7 +4156,7 @@ int VBounding (Draw_Interpretor& theDI,
     for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
          anIter.More(); anIter.Next())
     {
-      Handle(AIS_InteractiveObject) anIO = anIter.Key1();
+      const Handle(AIS_InteractiveObject)& anIO = anIter.Key1();
       aHighlightedMode = checkMode (aCtx, anIO, aMode);
       if (aHighlightedMode != -1)
       {

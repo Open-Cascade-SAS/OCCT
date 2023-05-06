@@ -34,7 +34,7 @@ Interface_GraphContent::Interface_GraphContent ()    {  }
   Standard_Integer nb = list.NbEntities();
   if (nb == 0) return;                             // Liste redefinie a VIDE
   for( ; list.More(); list.Next()) {
-    Handle(Standard_Transient) curent = list.Value();
+    const Handle(Standard_Transient)& curent = list.Value();
     if (agraph.IsPresent(agraph.EntityNumber(curent))) 
       GetOneItem (curent);
   }

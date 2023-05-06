@@ -37,7 +37,7 @@ Transfer_TransferInput::Transfer_TransferInput ()    {  }
 {
   Interface_EntityIterator iter;
   for (list.Start(); list.More(); list.Next()) {
-    Handle(Transfer_Binder) binder = list.Value();
+    const Handle(Transfer_Binder)& binder = list.Value();
     if (binder.IsNull()) continue;
     if (binder->IsKind(STANDARD_TYPE(Transfer_VoidBinder))) continue;
 

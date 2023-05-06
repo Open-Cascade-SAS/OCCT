@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMapPacked, Graphic3d_CubeMap)
 // purpose  :
 // =======================================================================
 Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const TCollection_AsciiString&        theFilePath,
-                                                  const Graphic3d_ValidatedCubeMapOrder theOrder)
+                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
   :
   Graphic3d_CubeMap (theFilePath),
   myOrder           (theOrder),
@@ -36,7 +36,7 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const TCollection_AsciiString&
 // purpose  :
 // =======================================================================
 Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const Handle(Image_PixMap)&           theImage,
-                                                  const Graphic3d_ValidatedCubeMapOrder theOrder)
+                                                  const Graphic3d_ValidatedCubeMapOrder& theOrder)
   :
   Graphic3d_CubeMap (Handle(Image_PixMap)()),
   myOrder           (theOrder),

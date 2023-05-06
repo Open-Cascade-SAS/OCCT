@@ -122,7 +122,7 @@ static Standard_Integer DNaming_TCopyShape (Draw_Interpretor& di,
 
     DNaming_DataMapIteratorOfDataMapOfShapeOfName itrn(aDMapOfShapeOfName);
     for(;itrn.More();itrn.Next()) {
-      TCollection_AsciiString name = itrn.Value();
+      const TCollection_AsciiString& name = itrn.Value();
       const TopoDS_Shape Result = TR.Copied(itrn.Key());
       DBRep::Set(name.ToCString(), Result);
       di.AppendElement(name.ToCString());

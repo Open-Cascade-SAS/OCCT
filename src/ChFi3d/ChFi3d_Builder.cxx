@@ -426,7 +426,6 @@ void  ChFi3d_Builder::Compute()
 	    if (letype == TopAbs_SHELL){
 	      TopExp_Explorer expsh2(its.Value(),TopAbs_SHELL);
 	      const TopoDS_Shape& cursh = expsh2.Current();
-	      TopoDS_Shape tt = cursh;
 	      B1.Add(myShapeResult,cursh);
 	      its.Next();
 	    }

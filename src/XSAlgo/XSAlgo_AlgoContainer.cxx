@@ -284,7 +284,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::PerformFixShape(const TopoDS_Shape& S,
 // Purpose : for CheckPCurve
 // ============================================================================
 
-static TopoDS_Edge MakeEdgeOnCurve(const TopoDS_Edge edge)
+static TopoDS_Edge MakeEdgeOnCurve(const TopoDS_Edge& edge)
 {
   TopoDS_Edge result;
   //BRep_Builder B; // B not used - see below (skl)

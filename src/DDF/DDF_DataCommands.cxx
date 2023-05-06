@@ -291,14 +291,14 @@ static Standard_Integer  DDF_CheckAttrs (Draw_Interpretor& di,Standard_Integer n
 //      std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<std::endl;
       const TDF_AttributeMap& attMap = ds1->Attributes(); //attMap
       for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
-	Handle(TDF_Attribute) sAtt = attMItr.Key();
+	const Handle(TDF_Attribute)& sAtt = attMItr.Key();
 //	std::cout<<"\t\tSource references attribute dynamic type = "<<sAtt->DynamicType()<<std::endl;
 	for (TDF_AttributeIterator itr2(TARGET); itr2.More(); itr2.Next()) {
 	  itr2.Value()->References(ds2);
 //	  std::cout<<"\t\t\tTARGET attribute dynamic type = "<<itr2.Value()->DynamicType()<<std::endl;
 	  const TDF_AttributeMap& attMap2 = ds2->Attributes(); //attMap
 	  for (TDF_MapIteratorOfAttributeMap attMItr2(attMap2);attMItr2.More(); attMItr2.Next()) {
-	    Handle(TDF_Attribute) tAtt = attMItr2.Key();
+	    const Handle(TDF_Attribute)& tAtt = attMItr2.Key();
 //	    std::cout<<"\t\t\t\tTarget reference attribute dynamic type = "<<tAtt->DynamicType()<<std::endl;
 	    if (tAtt->IsInstance(sAtt->DynamicType()))
 	      if(tAtt == sAtt) {
@@ -350,7 +350,7 @@ static Standard_Integer  DDF_CheckLabel (Draw_Interpretor& di,Standard_Integer n
       di<<"\tSource Attribute dynamic type = " << itr.Value()->DynamicType()->Name() << "\n";
       const TDF_AttributeMap& attMap = ds1->Attributes(); //attMap
       for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
-	Handle(TDF_Attribute) sAtt = attMItr.Key();
+	const Handle(TDF_Attribute)& sAtt = attMItr.Key();
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(sAtt->Label(), entry);
 	//std::cout<<"\t\tReferences attribute dynamic type = "<<sAtt->DynamicType()<<",\tLabel = "<<entry<<std::endl;
