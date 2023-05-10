@@ -4657,6 +4657,8 @@ TDF_Label STEPCAFControl_Reader::SettleShapeData(const Handle(StepRepr_Represent
   const Handle(Transfer_TransientProcess)& TP) const
 {
   TDF_Label aResult = theLab;
+  if (theItem.IsNull())
+    return aResult;
 
   Handle(TCollection_HAsciiString) hName = theItem->Name();
   if (hName.IsNull() || hName->IsEmpty())
