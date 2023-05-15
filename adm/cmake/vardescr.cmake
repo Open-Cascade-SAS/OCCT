@@ -116,6 +116,7 @@ endmacro()
 
 BUILD_MODULE_MESSAGE (BUILD_MODULE_ApplicationFramework "ApplicationFramework")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_DataExchange         "DataExchange")
+BUILD_MODULE_MESSAGE (BUILD_MODULE_DETools              "DETools")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_Draw                 "Draw")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_FoundationClasses    "FoundationClasses")
 BUILD_MODULE_MESSAGE (BUILD_MODULE_ModelingAlgorithms   "ModelingAlgorithms")

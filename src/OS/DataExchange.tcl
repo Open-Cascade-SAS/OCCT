@@ -18,7 +18,7 @@ proc DataExchange:toolkits { } {
   return [list TKXSBase TKSTEPBase TKSTEPAttr TKSTEP209 TKSTEP TKIGES \
                TKXCAF TKXDEIGES TKXDESTEP \
                TKXDE TKXDECascade \
-               TKSTL TKVRML TKXmlXCAF TKBinXCAF TKRWMesh TKExpress]
+               TKSTL TKVRML TKXmlXCAF TKBinXCAF TKRWMesh]
 }
 
 ;#
@@ -29,7 +29,6 @@ proc DataExchange:ressources { } {
 	    [list both r XSMessage {} ] \
 	    [list both r SHMessage {} ] \
 	    [list both r XSTEPResource {} ] \
-	    [list both x ExpToCasExe {} ] \
 	    ]
 }
 ;#

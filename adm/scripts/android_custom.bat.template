@@ -27,6 +27,7 @@ rem set "BUILD_ModelingAlgorithms=ON"
 rem set "BUILD_Visualization=ON"
 rem set "BUILD_ApplicationFramework=ON"
 rem set "BUILD_DataExchange=ON"
+rem set "BUILD_MODULE_DETools=OFF"
 
 rem Optional 3rd-party libraries to enable
 rem set "USE_RAPIDJSON=ON"

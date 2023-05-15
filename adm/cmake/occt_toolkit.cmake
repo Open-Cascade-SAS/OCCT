@@ -70,6 +70,16 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
     OCCT_ORIGIN_AND_PATCHED_FILES ("${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}" "*[.]lex" SOURCE_FILES_FLEX)
     list (LENGTH SOURCE_FILES_FLEX SOURCE_FILES_FLEX_LEN)
 
+    # remove old general version of FlexLexer
+    if (EXISTS ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h)
+      message (STATUS "Info: remove old FLEX header file: ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h")
+      file(REMOVE ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h)
+    endif()
+    # install copy of FlexLexer.h locally to allow further building without flex
+    if (FLEX_INCLUDE_DIR AND EXISTS "${FLEX_INCLUDE_DIR}/FlexLexer.h")
+      configure_file("${FLEX_INCLUDE_DIR}/FlexLexer.h" "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h" @ONLY NEWLINE_STYLE LF)
+    endif()
+
     # bison files
     OCCT_ORIGIN_AND_PATCHED_FILES ("${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}" "*[.]yacc" SOURCE_FILES_BISON)
     list (LENGTH SOURCE_FILES_BISON SOURCE_FILES_BISON_LEN)
@@ -107,21 +117,11 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
             endif()
           endforeach()
 
-          if (EXISTS ${FLEX_BISON_TARGET_DIR}/FlexLexer.h)
-            message (STATUS "Info: remove old FLEX header file: ${FLEX_BISON_TARGET_DIR}/FlexLexer.h")
-            file(REMOVE ${FLEX_BISON_TARGET_DIR}/FlexLexer.h)
-          endif()
-
           file (STRINGS "${CURRENT_FLEX_FILE}" FILE_FLEX_CONTENT)
           foreach (FILE_FLEX_CONTENT_LINE ${FILE_FLEX_CONTENT})
             string (REGEX MATCH "%option c\\+\\+" CXX_FLEX_LANGUAGE_FOUND ${FILE_FLEX_CONTENT_LINE})
             if (CXX_FLEX_LANGUAGE_FOUND)
               set (FLEX_OUTPUT_FILE_EXT "cxx")
-
-              # install copy of FlexLexer.h locally to allow further building without flex
-              if (FLEX_INCLUDE_DIR AND EXISTS "${FLEX_INCLUDE_DIR}/FlexLexer.h")
-                configure_file("${FLEX_INCLUDE_DIR}/FlexLexer.h" "${FLEX_BISON_TARGET_DIR}/FlexLexer.h" @ONLY NEWLINE_STYLE LF)
-              endif()
             endif()
           endforeach()
           set (BISON_OUTPUT_FILE ${CURRENT_BISON_FILE_NAME}.tab.${BISON_OUTPUT_FILE_EXT})

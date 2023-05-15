@@ -14,3 +14,4 @@ export EMSDK_ROOT="$aSrcRoot/../emsdk"
 #export BUILD_Visualization=ON
 #export BUILD_ApplicationFramework=ON
 #export BUILD_DataExchange=ON
+#export BUILD_DETools=OFF
