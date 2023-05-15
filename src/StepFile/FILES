@@ -7,4 +7,3 @@ StepFile_Read.cxx
 StepFile_Read.hxx
 step.lex
 step.yacc
-FlexLexer.h

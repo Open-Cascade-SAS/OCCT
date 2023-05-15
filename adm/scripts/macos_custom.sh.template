@@ -19,6 +19,7 @@ export aDraco="$aSrcRoot/../3rdparty/draco-1.4.1-macos"
 #export BUILD_Visualization=ON
 #export BUILD_ApplicationFramework=ON
 #export BUILD_DataExchange=ON
+#export BUILD_DETools=OFF
 #export BUILD_Draw=ON
 
 #export USE_RAPIDJSON=ON

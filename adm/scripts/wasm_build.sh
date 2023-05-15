@@ -20,6 +20,7 @@ export BUILD_ModelingAlgorithms=ON
 export BUILD_Visualization=ON
 export BUILD_ApplicationFramework=ON
 export BUILD_DataExchange=ON
+export BUILD_DETools=OFF
 
 if [ -f "${aScriptDir}/wasm_custom.sh" ] ; then
   . "${aScriptDir}/wasm_custom.sh"
@@ -74,6 +75,7 @@ echo cmake -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${aToolchain}" \
 -DBUILD_MODULE_Visualization:BOOL="${BUILD_Visualization}" \
 -DBUILD_MODULE_ApplicationFramework:BOOL="${BUILD_ApplicationFramework}" \
 -DBUILD_MODULE_DataExchange:BOOL="${BUILD_DataExchange}" \
+-DBUILD_MODULE_DETools:BOOL="${BUILD_DETools}" \
 -DBUILD_MODULE_Draw:BOOL="OFF" \
 -DBUILD_DOC_Overview:BOOL="OFF" "${aSrcRoot}"
 
@@ -92,6 +94,7 @@ cmake -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${aToolchain}" \
 -DBUILD_MODULE_Visualization:BOOL="${BUILD_Visualization}" \
 -DBUILD_MODULE_ApplicationFramework:BOOL="${BUILD_ApplicationFramework}" \
 -DBUILD_MODULE_DataExchange:BOOL="${BUILD_DataExchange}" \
+-DBUILD_MODULE_DETools:BOOL="${BUILD_DETools}" \
 -DBUILD_MODULE_Draw:BOOL="OFF" \
 -DBUILD_DOC_Overview:BOOL="OFF" "${aSrcRoot}"
 
