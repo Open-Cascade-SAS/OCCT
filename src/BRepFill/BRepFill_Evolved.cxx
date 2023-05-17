@@ -770,9 +770,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
     TopTools_DataMapOfShapeSequenceOfShape MapSeqVer;
     BRepFill_DataMapOfShapeSequenceOfPnt   MapSeqPar;
 
-    Standard_Integer vv = 0;
     for(ProfExp.Init(myProfile); ProfExp.More(); ProfExp.Next()) {
-      vv++;
       //-----------------------------------------------
       // Return two faces separated by the bissectrice.
       //-----------------------------------------------

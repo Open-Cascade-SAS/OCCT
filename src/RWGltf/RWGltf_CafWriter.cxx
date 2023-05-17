@@ -735,7 +735,9 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
     aBuffView->ByteOffset = aBinFile->tellp();
     aWrittenFaces.Clear (false);
     aWrittenPrimData.Clear (false);
+#ifdef HAVE_DRACO
     size_t aMeshIndex = 0;
+#endif
     for (ShapeToGltfFaceMap::Iterator aBinDataIter (myBinDataMap); aBinDataIter.More() && aPSentryBin.More(); aBinDataIter.Next())
     {
       const Handle(RWGltf_GltfFaceList)& aGltfFaceList = aBinDataIter.Value();
@@ -745,8 +747,8 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
       }
       
       std::shared_ptr<RWGltf_CafWriter::Mesh> aMeshPtr;
+#ifdef HAVE_DRACO
       ++aMeshIndex;
-    #ifdef HAVE_DRACO
       if (myDracoParameters.DracoCompression)
       {
         if (aMeshIndex <= aMeshes.size())
@@ -759,7 +761,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
           aMeshPtr = aMeshes.back();
         }
       }
-    #endif
+#endif
 
       for (RWGltf_GltfFaceList::Iterator aGltfFaceIter (*aGltfFaceList); aGltfFaceIter.More() && aPSentryBin.More(); aGltfFaceIter.Next())
       {

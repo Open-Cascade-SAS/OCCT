@@ -635,9 +635,6 @@ struct CDelaBella : IDelaBella
 			// 2. DELETE VISIBLE FACES & ADD NEW ONES
 			//    (we also build silhouette (vertex loop) between visible & invisible faces)
 
-			int del = 0;
-			int add = 0;
-
 			// push first visible face onto stack (of visible faces)
 			Face* stack = _f;
 			_f->next = _f; // old trick to use list pointers as 'on-stack' markers
@@ -656,7 +653,6 @@ struct CDelaBella : IDelaBella
 
 				// delete visible face
 				_f->Free(&cache);
-				del++;
 
 				// check all 3 neighbors
 				for (int e = 0; e < 3; e++)
@@ -667,7 +663,6 @@ struct CDelaBella : IDelaBella
 						if (n->dot(*_q) <= 0) // if neighbor is not visible we have slihouette edge
 						{
 							// build face
-							add++;
 
 							// ab: given face adjacency [index][], 
 							// it provides [][2] vertex indices on shared edge (CCW order)
@@ -723,11 +718,6 @@ struct CDelaBella : IDelaBella
 					}
 				}
 			}
-
-			// if add<del+2 hungry hull has consumed some point
-			// that means we can't do delaunay for some under precision reasons
-			// although convex hull would be fine with it
-			assert(add == del + 2);
 
 			// 3. SEW SIDES OF CONE BUILT ON SLIHOUTTE SEGMENTS
 

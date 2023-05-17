@@ -124,12 +124,9 @@ static void CorrectUnclosedWire(TopoDS_Shape& aWire)
 //  std::cout << "-------CorrectUnclosedWire" << std::endl;
   BRep_Builder BB;
   TopoDS_Iterator tdi(aWire, Standard_False, Standard_False);
-  Standard_Integer nbe = 0;
   for(; tdi.More(); tdi.Next()) {
-    nbe++;
     const TopoDS_Shape& ed = tdi.Value();
     Standard_Integer nbv = ed.NbChildren();
-//    std::cout << "Edge " << nbe << " : " << nbv << std::endl;
     if(nbv <= 1) {
 //      std::cout << "Remove bad edge" << std::endl;
       BB.Remove(aWire, ed);
@@ -455,10 +452,7 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape& anEdge,TopOpeBRepBui
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(anEdge,iE);
   Standard_Integer ne = 0;
 #endif
-  
-  Standard_Integer nvertex = 0;
-  for (TopOpeBRepTool_ShapeExplorer ex(anEdge,TopAbs_VERTEX); ex.More(); ex.Next()) nvertex++;
-  
+
   TopoDS_Shape newEdge;
   for (EDBU.InitEdge(); EDBU.MoreEdge(); EDBU.NextEdge()) {
     

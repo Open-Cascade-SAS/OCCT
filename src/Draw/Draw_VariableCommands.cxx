@@ -958,7 +958,6 @@ static Standard_Real ParseValue (char*& theName)
             // replace , and first and last () by space
             if (argc > 1)
             {
-              Standard_Integer i = 2;
               while (*p != '(') { ++p; }
               *p = ' ';
               ++p;
@@ -971,7 +970,6 @@ static Standard_Real ParseValue (char*& theName)
                 {
                   *p = ' ';
                   ++p;
-                  ++i;
                 }
                 else
                 {

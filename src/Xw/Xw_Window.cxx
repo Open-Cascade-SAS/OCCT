@@ -67,11 +67,10 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   int      aScreen = DefaultScreen(aDisp);
   Window   aParent = RootWindow   (aDisp, aScreen);
 
-  unsigned long aMask = 0;
   XSetWindowAttributes aWinAttr;
   memset (&aWinAttr, 0, sizeof(aWinAttr));
   aWinAttr.event_mask = ExposureMask | StructureNotifyMask;
-  aMask |= CWEventMask;
+
   if (aVisInfo != NULL)
   {
     aWinAttr.colormap = XCreateColormap(aDisp, aParent, aVisInfo->visual, AllocNone);

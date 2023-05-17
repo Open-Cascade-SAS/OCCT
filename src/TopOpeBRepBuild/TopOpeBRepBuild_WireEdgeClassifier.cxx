@@ -225,7 +225,7 @@ TopAbs_State  TopOpeBRepBuild_WireEdgeClassifier::CompareShapes
     TopTools_IndexedMapOfShape mapv1; mapv1.Add(vf1); mapv1.Add(vl1);
     
     ResetShape(e1);
-    Standard_Integer iE = 0; Standard_Boolean indy = Standard_False;
+    Standard_Boolean indy = Standard_False;
     TopExp_Explorer Ex;
     for(Ex.Init(B2,TopAbs_EDGE); Ex.More(); Ex.Next()) {
 //    for(TopExp_Explorer Ex(B2,TopAbs_EDGE); Ex.More(); Ex.Next()) {
@@ -248,7 +248,6 @@ TopAbs_State  TopOpeBRepBuild_WireEdgeClassifier::CompareShapes
       if (indy) {state = TopAbs_UNKNOWN; break;}
       CompareElement(E);
       state = State();
-      iE++;
     } // ex(B2,EDGE)    
     if (state != TopAbs_UNKNOWN) {   
       break;

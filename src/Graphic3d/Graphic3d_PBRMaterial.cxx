@@ -216,7 +216,6 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT (const Handle(Image_PixMap)& theLUT,
     {
       Standard_ShortReal aCosV = x / Standard_ShortReal(theLUT->SizeX() - 1);
       Graphic3d_Vec3 aView = lutGenView (aCosV);
-      unsigned int aCount = 0;
       Graphic3d_Vec2 aResult = Graphic3d_Vec2 (0.f);
       for (unsigned int i = 0; i < theNbIntegralSamples; ++i)
       {
@@ -225,7 +224,6 @@ void Graphic3d_PBRMaterial::GenerateEnvLUT (const Handle(Image_PixMap)& theLUT,
         Graphic3d_Vec3 aLight = lutGenReflect (aView, aHalf);
         if (aLight.z() >= 0.f)
         {
-          ++aCount;
           Standard_ShortReal aCosVH = aView.Dot (aHalf);
           Standard_ShortReal aGeometryFactor = lutGenGeometryFactor (aLight.z(),
                                                                      aCosV,

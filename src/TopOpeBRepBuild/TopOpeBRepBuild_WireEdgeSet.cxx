@@ -221,10 +221,13 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
     // edge list made of connected shapes to Earg through Varg
 
     myCurrentShapeNeighbours.Clear();
-    
+#ifdef DRAW
     Standard_Integer iapp = 0;
+#endif
     for (TopTools_ListIteratorOfListOfShape it(l); it.More(); it.Next()) {
+#ifdef DRAW
       iapp++;
+#endif
       const TopoDS_Shape& curn = it.Value(); // current neighbour
       Standard_Boolean k = VertexConnectsEdgesClosing(V,E,curn);
       if (k) {
@@ -272,10 +275,13 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
       if (Eori == TopAbs_REVERSED) d1E.Reverse();
 
       TopTools_ListIteratorOfListOfShape lclo(myCurrentShapeNeighbours);
+#ifdef DRAW
       Standard_Integer rang = 0;
+#endif
       while (lclo.More()) {
+#ifdef DRAW
 	rang++;
-
+#endif
 	if ( ! IsClosed(lclo.Value()) ) {
 	  lclo.Next();
 	  continue;

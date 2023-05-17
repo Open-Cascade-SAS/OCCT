@@ -240,17 +240,17 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(TopTools_IndexedDataMapOfSh
   TopTools_IndexedDataMapOfShapeShape mapVon1EdgeDRAW,mapVVsameGDRAW;
   Standard_Boolean trc = TopOpeBRepBuild_GettracePURGE();
   if (trc) std::cout<<std::endl<<"* DetectUnclosedWire :"<<std::endl<<std::endl;
+  Standard_Integer iiwi = 0; // DEB
 #endif
 
-  Standard_Integer iiwi = 0; // DEB
 
   InitFace();
   for (;MoreFace();NextFace()) {
    InitWire();
     for (;MoreWire();NextWire()) { 
-      iiwi++;
       Standard_Boolean isold = IsOldWire();
 #ifdef DRAW
+      iiwi++;
       if ( trc && isold ) std::cout<<"wire "<<iiwi<<" is old wire => closed"<<std::endl;
 #endif
       if (isold) continue;

@@ -87,9 +87,6 @@ void IntStart_SearchInside::Perform (TheFunction& Func,
 
   math_FunctionSetRoot Rsnld(Func,toler);
 
-  Standard_Integer REJET_OK=0;
-  Standard_Integer REJET_KO=0;
-
   //-- lbr le 15 mai 97 
   umin+=du*0.01;
   vmin+=dv*0.01;
@@ -142,7 +139,6 @@ void IntStart_SearchInside::Perform (TheFunction& Func,
       Standard_Real rvalf = Valf(1);
       Standard_Real DistPP = Pextrm1.SquareDistance(Pextrm2);
       if(rvalf*rvalf > 3.0*DistPP) { 
-	REJET_OK++;
 	nepastester=Standard_True;
       }      
     }
@@ -172,7 +168,6 @@ void IntStart_SearchInside::Perform (TheFunction& Func,
     
 
     if(nepastester==Standard_False) { 
-      REJET_KO++;
       Rsnld.Perform(Func,UVap,Binf,Bsup);
       if (Rsnld.IsDone()) {
 	if (Abs(Func.Root()) <= Tol) {

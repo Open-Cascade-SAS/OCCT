@@ -85,7 +85,6 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste
       myMessageDriver->Send (aMsgString, Message_Fail);
       return Standard_False;
     }
-    Standard_Integer i = 1;
     while (aNb > 0)
     {
       Handle(TDF_Attribute) aV;
@@ -100,7 +99,6 @@ Standard_Boolean XmlMDataStd_ExpressionDriver::Paste
 
       // next variable
       if (!XmlObjMgt::GetInteger(aVs, aNb)) aNb = 0;
-      i++;
     }
   }
 
@@ -132,10 +130,8 @@ void XmlMDataStd_ExpressionDriver::Paste
   {
     TCollection_AsciiString aGsStr;
     TDF_ListIteratorOfAttributeList it;
-    Standard_Integer index = 0;
     for (it.Initialize(aC->GetVariables()); it.More(); it.Next())
     {
-      index++;
       TV = it.Value(); 
       if (!TV.IsNull())
       {

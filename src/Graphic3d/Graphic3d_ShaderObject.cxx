@@ -121,12 +121,10 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
   {
     const ShaderVariable& aVar = aVarListIter.Value();
     Standard_Integer aStageLower = IntegerLast(), aStageUpper = IntegerFirst();
-    Standard_Integer aNbStages = 0;
     for (Standard_Integer aStageIter = Graphic3d_TOS_VERTEX; aStageIter <= (Standard_Integer )Graphic3d_TOS_COMPUTE; aStageIter = aStageIter << 1)
     {
       if ((aVar.Stages & aStageIter) != 0)
       {
-        ++aNbStages;
         aStageLower = Min (aStageLower, aStageIter);
         aStageUpper = Max (aStageUpper, aStageIter);
       }

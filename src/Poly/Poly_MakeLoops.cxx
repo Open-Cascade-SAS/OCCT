@@ -162,8 +162,7 @@ Standard_Integer Poly_MakeLoops::Perform()
   Handle(NCollection_IncAllocator) aTempAlloc1 = new NCollection_IncAllocator(4000);
 
   // two pass loop
-  Standard_Integer aPassNum, nbLoopsOnPass2 = 0;
-  for (aPassNum=0; aPassNum < 2; aPassNum++)
+  for (Standard_Integer aPassNum=0; aPassNum < 2; aPassNum++)
   {
     myHangIndices.Clear();
     // main loop
@@ -192,8 +191,6 @@ Standard_Integer Poly_MakeLoops::Perform()
       if (aStartNumber <= aContour.Extent())
       {
         // there is a closed loop in the contour
-        if (aPassNum == 1)
-          nbLoopsOnPass2++;
         acceptContour (aContour, aStartNumber);
       }
       if (aStartNumber > 1)
