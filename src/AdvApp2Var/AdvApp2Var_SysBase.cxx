@@ -911,10 +911,9 @@ int macrmsg_(const char *,//crout,
     /* Parameter adjustments */
   ct -= ct_len;
   (void )ct; // unused
+  (void )xt; // unused
+  (void )it; // unused
 
-  --xt;
-  --it;
-  
   /* Function Body */
   mamdlng_(cln, 3L);
   

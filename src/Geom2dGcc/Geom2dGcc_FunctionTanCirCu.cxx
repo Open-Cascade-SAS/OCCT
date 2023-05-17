@@ -60,13 +60,11 @@ Geom2dGcc_FunctionTanCirCu(const gp_Circ2d& Circ   ,
                              Standard_Real    aLast   = Geom2dGcc_CurveTool::LastParameter(Curve);
                              Standard_Real    aStep   = (aLast - aFirst)/aNbSamp;
                              Standard_Real    anX     = aFirst + aStep/2.;
-                             Standard_Integer aNbP    = 0;
                              gp_XY            aLoc(0., 0.);
 
                              while (anX <= aLast) {
                                aLoc += (Geom2dGcc_CurveTool::Value(Curve, anX)).XY();
                                anX  += aStep;
-                               aNbP++;
                              }
                              myWeight = Max((aLoc - TheCirc.Location().XY()).SquareModulus(), TheCirc.Radius());
                              //  Modified by Sergey KHROMOV - Thu Apr  5 09:51:25 2001 End

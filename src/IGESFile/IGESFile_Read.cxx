@@ -227,12 +227,9 @@ Standard_Integer IGESFile_Read
   char *res1, *res2, *nom, *num; char* parval;
   int *v; int typarg;
   int nbparam;
-    
 
-  Standard_Integer nn=0;
   int ns; //szv#4:S4163:12Mar99 i unused
   while ( (ns = iges_lirpart(&v,&res1,&res2,&nom,&num,&nbparam)) != 0) {
-    nn++;
     recupnp = 0;
     recupne = (ns+1)/2;  // numero entite
 //    if(recupne > IR->NbEntities()) {

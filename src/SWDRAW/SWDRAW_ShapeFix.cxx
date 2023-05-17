@@ -362,10 +362,9 @@ static Standard_Integer reface (Draw_Interpretor& di, Standard_Integer argc, con
   TopoDS_Face  face;
   ShapeBuild_ReShape resh;
 
-  Standard_Integer nbf = 0, nbfc = 0;
+  Standard_Integer nbfc = 0;
   for (TopExp_Explorer EF (Shape,TopAbs_FACE); EF.More(); EF.Next()) {
     TopoDS_Face F = TopoDS::Face (EF.Current());    face = F;
-    nbf ++;
     Standard_Boolean newface = Standard_False;
 //    on va voir si ShapeTool_Face trouve qqchose a redire
 //:sw    ShapeTool_Wire STW;
@@ -803,7 +802,7 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
         Standard_Integer ind = aMapEdges.FindIndex(aExp1.Current());
         di<<ind<<" ";
       }
-       else
+      else
       {
         TopoDS_Vertex aV1, aV2;
         TopExp::Vertices(TopoDS::Edge(aExp1.Current()), aV1,aV2);

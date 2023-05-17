@@ -1088,13 +1088,12 @@ Standard_Boolean IGESData_ParamReader::ReadEnts
   Standard_Integer indmax = index+thenbitem*thetermsz-1;
   val = new IGESData_HArray1OfIGESEntity (index , indmax);
   Standard_Integer ind = index;
-  Standard_Integer nbneg = 0, nbnul = 0;
+  Standard_Integer nbnul = 0;
 
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
   for (i = FirstRead(); i > 0; i = NextRead()) {
     Standard_Integer nval;
     if (!ReadingEntityNumber(i,nval)) nval = 0;  //return Standard_False;
-    if (nval < 0) nbneg ++;
     if (nval > 0) {
       DeclareAndCast(IGESData_IGESEntity,anent,IR->BoundEntity(nval));
       if (anent.IsNull()) nbnul ++;

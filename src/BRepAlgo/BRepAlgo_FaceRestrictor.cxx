@@ -401,12 +401,9 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
   //---------------------------------------------------------
   // Classification of wires ones compared to the others.
   //---------------------------------------------------------
-  Standard_Integer j,i = 1;
-
   for (it.Initialize(wires) ; it.More(); it.Next()) {
     TopoDS_Wire& W1  = TopoDS::Wire(it.Value());
-    TopTools_ListIteratorOfListOfShape it2(wires);  
-    j = 1;    
+    TopTools_ListIteratorOfListOfShape it2(wires);
 
     if (IsClosed(W1)) {
       TopoDS_Shape aLocalShape = myFace.EmptyCopied();
@@ -422,10 +419,8 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
           Store (W2,W1,keyIsIn,keyContains);
         } 
         it2.Next();
-        j++;
       }
     }
-    i++;
   }
   TopTools_ListOfShape WireExt;
   

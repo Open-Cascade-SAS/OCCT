@@ -212,14 +212,12 @@ static int BUC60610(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   IR.TransferRoots();
   TopoDS_Shape aTopShape = IR.OneShape();
   TopExp_Explorer ex(aTopShape, TopAbs_EDGE);
-  Standard_Integer i=0;
   for( ; ex.More(); ex.Next()){
     const TopoDS_Edge &E = TopoDS::Edge(ex.Current());
     BRepAdaptor_Curve aCurve(E);
     GCPnts_UniformDeflection plin(aCurve, 0.1);
     di << "Num points = " << plin.NbPoints() << "\n";
     if(argc > 2) {
-      i++;
       Sprintf(Ch,"%s_%i",argv[2],1);
       DBRep::Set(Ch,E);
     }

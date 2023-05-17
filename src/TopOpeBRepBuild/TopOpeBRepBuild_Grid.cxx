@@ -356,12 +356,10 @@ Standard_Boolean TopOpeBRepBuild_Builder::GContains(const TopoDS_Shape& S,const 
 void TopOpeBRepBuild_Builder::GCopyList(const TopTools_ListOfShape& Lin,const Standard_Integer I1,const Standard_Integer I2,TopTools_ListOfShape& Lou)
 {
   TopTools_ListIteratorOfListOfShape it(Lin);
-  Standard_Integer nadd = 0;
   for ( Standard_Integer i = 1; it.More(); it.Next(),i++ ) {
     const TopoDS_Shape& EL = it.Value();
     if ( i >= I1 && i <= I2 ) {
       Lou.Append(EL);
-      nadd++;
     }
   }
 }

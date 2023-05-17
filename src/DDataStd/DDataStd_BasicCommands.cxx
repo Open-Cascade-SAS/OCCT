@@ -702,15 +702,13 @@ static Standard_Integer DDataStd_SetIntArrayTest (Draw_Interpretor& di,
   TDF_Label label;
   DDF::AddLabel(DF, arg[2], label);
   Standard_Boolean isDelta = Draw::Atoi(arg[3]) != 0;
-  Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
+  Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] );
   di << "Array of Standard_Integer with bounds from = " << From  << " to = " << To  << "\n";
   Handle(TDataStd_IntegerArray) A = TDataStd_IntegerArray::Set(label, From, To, isDelta);
   
-  j = 6;
   Standard_Integer k = 100;
   for(Standard_Integer i = From; i<=To; i++) {
     A->SetValue(i, ++k); 
-    j++;
   }
 
   return 0; 

@@ -3287,7 +3287,6 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
   M2.ResetAnd();
   //
   int newind=0;
-  long unsigned Compt=0;
   int ok=0;
   int indicepointtraite = 0;
   Standard_Integer k,nu,nv;
@@ -3330,22 +3329,18 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
       //
       Standard_Integer nu1=-1,nu2=-1;
       Standard_Integer nv1=0, nv2=0;
-      int nbsur1 = 0;
       for(nu=0;nu1<0 && nu<SU1;nu++) { 
         for(nv=0;nu1<0 && nv<SV1;nv++) { 
           if( aIPD.xIP1(nu, nv) ==(Standard_Integer) newind )  { 
-            nbsur1++;
             aIPD.xIP1(nu, nv)=indicepointtraite;
             nu1=nu; nv1=nv;
           }
         }
       }
       if(nu1>=0) { 
-        int nbsur2 = 0;
         for(nu=0;nu2<0 && nu<SU2;nu++) { 
           for(nv=0;nu2<0 && nv<SV2;nv++) { 
             if( aIPD.xIP2(nu, nv)==(Standard_Integer) newind )  { 
-              nbsur2++;
               aIPD.xIP2(nu, nv)=indicepointtraite;
               nu2=nu; nv2=nv;
             }
@@ -3360,7 +3355,6 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
           S2->FirstUParameter()+nu2*du2,
           S2->FirstVParameter()+nv2*dv2);
         LineOn2S->Add(POn2S);
-        Compt++;
       }
       else { 
         //-- aucun point du triangle n a ete trouve assez proche
@@ -3438,7 +3432,6 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
         IntSurf_PntOn2S POn2S;
         POn2S.SetValue(P,U1_3,V1_3,U2_3,V2_3);
         LineOn2S->Add(POn2S);
-        Compt++;	
       }
     }
   }

@@ -214,12 +214,10 @@ Standard_EXPORT void FDSSDM_copylist(const TopTools_ListOfShape& Lin,const Stand
 // copie des elements [i1..i2] de Lin dans Lou. 1er element de Lin = index 1 
 {
   TopTools_ListIteratorOfListOfShape it(Lin);
-  Standard_Integer nadd = 0;
   for ( Standard_Integer i = 1; it.More(); it.Next(),i++ ) {
     const TopoDS_Shape& EL = it.Value();
     if ( i >= I1 && i <= I2 ) {
       Lou.Append(EL);
-      nadd++;
     }
   }
 } // copylist

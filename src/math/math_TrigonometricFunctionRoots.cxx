@@ -334,7 +334,6 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
     ko(4) = 4.0*B+2.0*D;
     ko(5) = A+C+E;
     Standard_Boolean bko;
-    Standard_Integer nbko=0;
     do { 
       bko=Standard_False;
       math_DirectPolynomialRoots Resol4(ko(1), ko(2), ko(3), ko(4), ko(5));
@@ -374,7 +373,6 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 	  //-- std::cout<<"   Val Double ("<<qw<<")=("<<va<<")"<<std::endl;
 	  if(Abs(va)>Eps) { 
 	    bko=Standard_True;
-	    nbko++;
 #ifdef OCCT_DEBUG
 	    //if(nbko==1) { 
 	    //  std::cout<<"Pb ds math_TrigonometricFunctionRoots CC="

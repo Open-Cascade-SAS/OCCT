@@ -503,9 +503,8 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     if (kp3) l2dFEcur.First()->Transition().Orientation(TopAbs_IN);
 
 
-    TopOpeBRepDS_PointIterator itCur(LICur); Standard_Integer iICur=0;
+    TopOpeBRepDS_PointIterator itCur(LICur);
     while ( itCur.More() ) {
-      iICur++;
       const Handle(TopOpeBRepDS_Interference)& I1=itCur.Value();
       const TopOpeBRepDS_Transition& T1=I1->Transition();
       T1.Orientation(TopAbs_IN);
@@ -548,7 +547,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
 	  }
 	} // split 2d
 	else { // split 3d
-	  keepinterf1 = (ST1 == TopOpeBRepDS_FACE); // (iICur == 1);
+	  keepinterf1 = (ST1 == TopOpeBRepDS_FACE);
 	}
       }
       if ( keepinterf1 ) {

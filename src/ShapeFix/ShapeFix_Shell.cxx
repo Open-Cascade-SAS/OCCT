@@ -571,7 +571,6 @@ static void GlueClosedCandidate(TopTools_SequenceOfShape& OpenShells,
     for(Standard_Integer j = i+1 ; j <= OpenShells.Length();j++ )  {
       Standard_Boolean isAddShell = Standard_True;
       Standard_Boolean isReversed = Standard_False;
-      Standard_Integer nbedge =0;
       TopTools_MapOfShape mapEdges2;
       const TopoDS_Shape& aShell2 = OpenShells.Value(j);
       if(!GetFreeEdges(aShell2,mapEdges2)) continue;
@@ -586,7 +585,6 @@ static void GlueClosedCandidate(TopTools_SequenceOfShape& OpenShells,
         if((edge2.Orientation() == TopAbs_FORWARD && dire.Contains(edge2))
            || (edge2.Orientation() == TopAbs_REVERSED && reve.Contains(edge2)))
           isReversed = Standard_True;
-        nbedge++;
       }
 
       if(!isAddShell) continue;
