@@ -27,6 +27,15 @@
 #undef AllValues
 #endif
 
+// Resolve name collisions with X11 headers
+#ifdef Status
+#undef Status
+#endif
+
+#ifdef Success
+#undef Success
+#endif
+
 #include <vtkXRenderWindowInteractor.h>
 #include <vtkXOpenGLRenderWindow.h>
 #endif
