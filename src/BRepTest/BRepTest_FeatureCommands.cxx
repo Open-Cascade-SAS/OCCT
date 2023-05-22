@@ -57,7 +57,6 @@
 #include <Precision.hxx>
 
 #ifdef _WIN32
-//#define strcasecmp _stricmp Already defined
 Standard_IMPORT Draw_Viewer dout;
 #endif
 

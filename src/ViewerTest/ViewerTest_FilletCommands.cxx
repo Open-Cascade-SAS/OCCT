@@ -34,7 +34,6 @@
 #include <AIS_Shape.hxx>
 
 #ifdef _WIN32
-//#define strcasecmp strcmp Already defined in Standard
 # include <stdio.h>
 #endif
 
