@@ -154,6 +154,7 @@ Standard_Integer Poly_MakeLoops::Perform()
 #ifdef OCCT_DEBUG
   if (doDebug)
     showBoundaryBreaks();
+  Standard_Integer aNbLoopsOnPass2 = 0;
 #endif
 
   Standard_Integer aResult = 0;
@@ -191,6 +192,10 @@ Standard_Integer Poly_MakeLoops::Perform()
       if (aStartNumber <= aContour.Extent())
       {
         // there is a closed loop in the contour
+#ifdef OCCT_DEBUG
+        if (aPassNum == 1)
+          aNbLoopsOnPass2++;
+#endif
         acceptContour (aContour, aStartNumber);
       }
       if (aStartNumber > 1)
@@ -219,8 +224,8 @@ Standard_Integer Poly_MakeLoops::Perform()
     }
   }
 #ifdef OCCT_DEBUG
-  if (doDebug && nbLoopsOnPass2)
-    std::cout << "MakeLoops: " << nbLoopsOnPass2
+  if (doDebug && aNbLoopsOnPass2)
+    std::cout << "MakeLoops: " << aNbLoopsOnPass2
       << " contours accepted on the second pass" << std::endl;
 #endif
 
