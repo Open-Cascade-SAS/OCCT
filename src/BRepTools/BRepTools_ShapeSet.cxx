@@ -14,8 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified:     Portage NT 7-5-97 DPF (strcasecmp)
-
 #include <BRep_Builder.hxx>
 #include <BRep_CurveOnClosedSurface.hxx>
 #include <BRep_CurveOnSurface.hxx>
@@ -44,14 +42,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-
-#ifdef MacOS
-#define strcasecmp(p,q) strcmp(p,q)
-#elif _WIN32
-#define strcasecmp strcmp
-#elif AIX
-#include <string.h>
-#endif
 
 // Modified:    02 Nov 2000: BUC60769. JMB, PTV.  In order to be able to read BRep 
 //              files that came from a platform different from where CasCade 

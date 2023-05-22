@@ -48,7 +48,6 @@
 
 #ifdef _MSC_VER
 #include <stdio.h>
-//#define strcasecmp strcmp Already defined
 #endif
 
 #ifdef _WIN32
