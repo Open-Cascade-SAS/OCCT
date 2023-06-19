@@ -780,7 +780,7 @@ restore theBox
 
 @subsubsection occt_draw_3_3_1 set
 
-#### In *DrawTrSurf* package:
+#### In DrawTrSurf package:
 
 ~~~~{.php}
 void Set(Standard_CString& Name,const gp_Pnt& G) ; 
@@ -797,7 +797,7 @@ void Set(Standard_CString& Name,
 const Handle(Poly_Polygon2D)& P) ; 
 ~~~~
 
-#### In *DBRep* package:
+#### In DBRep package:
 
 ~~~~{.php}
 void Set(const Standard_CString Name, 
@@ -822,13 +822,13 @@ DBRep::Set(char*,B);
 
 @subsubsection occt_draw_3_3_2 get
 
-#### In *DrawTrSurf* package:
+#### In DrawTrSurf package:
  
 ~~~~{.php}
 Handle_Geom_Geometry Get(Standard_CString& Name) ; 
 ~~~~
 
-#### In *DBRep* package:
+#### In DBRep package:
 
 ~~~~{.php}
 TopoDS_Shape Get(Standard_CString& Name, 
