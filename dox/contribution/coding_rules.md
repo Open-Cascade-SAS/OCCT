@@ -725,7 +725,7 @@ Another possible problem is the order of initialization of global variables defi
 
 Avoid explicit usage of basic types (*int*, *float*, *double*, etc.), use Open CASCADE Technology types from package *Standard: Standard_Integer, Standard_Real, Standard_ShortReal, Standard_Boolean, Standard_CString* and others or a specific *typedef* instead.
 
-### Use *sizeof()* to calculate sizes [MANDATORY]
+### Use sizeof() to calculate sizes [MANDATORY]
 
 Do not assume sizes of types. Use *sizeof()* instead to calculate sizes.
 
@@ -738,7 +738,7 @@ It is recommended to follow this rule for any plain text files for consistency a
 
 The rules listed in this chapter are important for stability of the programs that use Open CASCADE Technology libraries.
 
-### Use *OSD::SetSignal()* to catch exceptions
+### Use OSD::SetSignal() to catch exceptions
 
 When using Open CASCADE Technology in an application, call *OSD::SetSignal()* function when the application is initialized.
 
@@ -787,7 +787,7 @@ See the following example:
 
 In C++ use *new* and *delete* operators instead of *malloc()* and *free()*. Try not to mix different memory allocation techniques.
 
-### Match *new* and *delete* [MANDATORY]
+### Match new and delete [MANDATORY]
 
 Use the same form of new and delete.
 
@@ -812,7 +812,7 @@ Standard_Integer aTmpVar2 = 0; // OK
 
 Uninitialized variables might be kept only within performance-sensitive code blocks and only when their initialization is guaranteed by subsequent code.
 
-### Do not hide global *new*
+### Do not hide global new
 
 Avoid hiding the global *new* operator.
 
