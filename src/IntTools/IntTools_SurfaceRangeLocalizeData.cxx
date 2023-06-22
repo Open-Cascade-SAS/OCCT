@@ -224,7 +224,7 @@ const gp_Pnt &IntTools_SurfaceRangeLocalizeData::GetPointInFrame
   Standard_Integer aFrmUInd = theUIndex + myUIndMin - 1;
   Standard_Integer aFrmVInd = theVIndex + myVIndMin - 1;
 
-  if (aFrmUInd > myUIndMax || aFrmVInd > myVIndMax)
+  if (myGridPoints.IsNull() || aFrmUInd > myUIndMax || aFrmVInd > myVIndMax)
     return gp::Origin();
 
   return myGridPoints->Value(aFrmUInd, aFrmVInd);
@@ -235,7 +235,7 @@ Standard_Real IntTools_SurfaceRangeLocalizeData::GetUParamInFrame
 {
   Standard_Integer aFrmInd = theIndex + myUIndMin - 1;
 
-  if (aFrmInd > myUIndMax)
+  if (myUParams.IsNull() || aFrmInd > myUIndMax)
     return Precision::Infinite();
 
   return myUParams->Value(aFrmInd);
@@ -246,7 +246,7 @@ Standard_Real IntTools_SurfaceRangeLocalizeData::GetVParamInFrame
 {
   Standard_Integer aFrmInd = theIndex + myVIndMin - 1;
 
-  if (aFrmInd > myVIndMax)
+  if (myVParams.IsNull() || aFrmInd > myVIndMax)
     return Precision::Infinite();
 
   return myVParams->Value(aFrmInd);
