@@ -1177,6 +1177,45 @@ void BRepOffset_BuildOffsetFaces::IntersectTrimmedEdges (const Message_ProgressR
   UpdateIntersectedEdges (aLA, aGFE);
 }
 
+namespace
+{
+  //=======================================================================
+  //function : CheckConnectionsOfFace
+  //purpose  : Checks number of connections for theFace with theLF
+  //           Returns true if number of connections more than 1
+  //=======================================================================
+  static Standard_Boolean checkConnectionsOfFace(const TopoDS_Shape& theFace,
+    const TopTools_ListOfShape& theLF)
+  {
+    TopTools_IndexedMapOfShape aShapeVert;
+    for (TopTools_ListOfShape::Iterator aFImIterator(theLF); aFImIterator.More(); aFImIterator.Next())
+    {
+      const TopoDS_Shape& aShape = aFImIterator.Value();
+      if (aShape.IsSame(theFace))
+      {
+        continue;
+      }
+      TopExp::MapShapes(aShape, TopAbs_VERTEX, aShapeVert);
+    }
+    Standard_Integer aNbConnections = 0;
+    TopTools_IndexedMapOfShape aFaceVertices;
+    TopExp::MapShapes(theFace, TopAbs_VERTEX, aFaceVertices);
+    for (TopTools_IndexedMapOfShape::Iterator aVertIter(aFaceVertices); aVertIter.More(); aVertIter.Next())
+    {
+      const TopoDS_Shape& aVert = aVertIter.Value();
+      if (aShapeVert.Contains(aVert))
+      {
+        ++aNbConnections;
+      }
+      if (aNbConnections > 1)
+      {
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
+}
+
 //=======================================================================
 //function : BuildSplitsOfFaces
 //purpose  : Building the splits of offset faces and
@@ -1268,6 +1307,10 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfFaces (const Message_ProgressRang
       for (TopTools_ListIteratorOfListOfShape aItLFIm (aLFImages1); aItLFIm.More();)
       {
         Standard_Boolean bAllInv = Standard_True;
+        // Additional check for artificial case 
+        // if current image face consist only of edges from aMapEInv and aMENInv
+        // then recheck current face for the futher processing
+        Standard_Boolean aToReCheckFace = bArtificialCase;
         const TopoDS_Shape& aFIm = aItLFIm.Value();
         TopExp_Explorer aExpE (aFIm, TopAbs_EDGE);
         for (; aExpE.More(); aExpE.Next())
@@ -1278,12 +1321,19 @@ void BRepOffset_BuildOffsetFaces::BuildSplitsOfFaces (const Message_ProgressRang
             bAllInv = Standard_False;
             if (!aMENInv.Contains (aE))
             {
+              aToReCheckFace = Standard_False;
               break;
             }
           }
         }
-        //
-        if (!aExpE.More())
+        // if current image face is to recheck then check number of connections for this face
+        // with other image faces for current face
+        if (!aExpE.More() && aToReCheckFace)
+        {
+          aToReCheckFace = checkConnectionsOfFace(aFIm, aLFImages1);
+        }
+        // do not delete image face from futher processing if aToReCheckFace is true
+        if (!aExpE.More() && !aToReCheckFace)
         {
           if (bAllInv)
           {

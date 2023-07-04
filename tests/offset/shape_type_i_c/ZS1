@@ -7,4 +7,4 @@ offsetperform result
 checkprops result -s 6.21471e+06 -v 8.95633e+08
 
 unifysamedom result_unif result
-checknbshapes result_unif -wire 140 -face 138 -shell 1 -solid 1
+checknbshapes result_unif -wire 142 -face 140 -shell 1 -solid 1
