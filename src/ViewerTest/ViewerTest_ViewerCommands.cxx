@@ -13911,6 +13911,73 @@ static int VSelBvhBuild (Draw_Interpretor& /*theDI*/, Standard_Integer theNbArgs
 }
 
 //=======================================================================
+//function : VChangeMouseGesture
+//purpose  :
+//=======================================================================
+static int VChangeMouseGesture (Draw_Interpretor&,
+                                Standard_Integer  theArgsNb,
+                                const char**      theArgVec)
+{
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
+
+  NCollection_DoubleMap<TCollection_AsciiString, AIS_MouseGesture> aGestureMap;
+  {
+    aGestureMap.Bind ("none",            AIS_MouseGesture_NONE);
+    aGestureMap.Bind ("selectrectangle", AIS_MouseGesture_SelectRectangle);
+    aGestureMap.Bind ("selectlasso",     AIS_MouseGesture_SelectLasso);
+    aGestureMap.Bind ("zoom",            AIS_MouseGesture_Zoom);
+    aGestureMap.Bind ("zoomwindow",      AIS_MouseGesture_ZoomWindow);
+    aGestureMap.Bind ("pan",             AIS_MouseGesture_Pan);
+    aGestureMap.Bind ("rotateorbit",     AIS_MouseGesture_RotateOrbit);
+    aGestureMap.Bind ("rotateview",      AIS_MouseGesture_RotateView);
+    aGestureMap.Bind ("drag",            AIS_MouseGesture_Drag);
+  }
+  NCollection_DoubleMap<TCollection_AsciiString, Standard_UInteger> aMouseButtonMap;
+  {
+    aMouseButtonMap.Bind ("none",   (Standard_UInteger )Aspect_VKeyMouse_NONE);
+    aMouseButtonMap.Bind ("left",   (Standard_UInteger )Aspect_VKeyMouse_LeftButton);
+    aMouseButtonMap.Bind ("middle", (Standard_UInteger )Aspect_VKeyMouse_MiddleButton);
+    aMouseButtonMap.Bind ("right",  (Standard_UInteger )Aspect_VKeyMouse_RightButton);
+  }
+
+  Standard_UInteger aButton = (Standard_UInteger )Aspect_VKeyMouse_LeftButton;
+  AIS_MouseGesture aGesture = AIS_MouseGesture_RotateOrbit;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    Standard_CString        anArg = theArgVec[anArgIter];
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.LowerCase();
+    if (anArgCase == "-button")
+    {
+      TCollection_AsciiString aButtonStr = theArgVec[++anArgIter];
+      aButtonStr.LowerCase();
+      aButton = aMouseButtonMap.Find1 (aButtonStr);
+    }
+    else if (anArgCase == "-gesture")
+    {
+      TCollection_AsciiString aGestureStr = theArgVec[++anArgIter];
+      aGestureStr.LowerCase();
+      aGesture = aGestureMap.Find1 (aGestureStr);
+    }
+    else
+    {
+      Message::SendFail() << "Error: unknown argument '" << anArg << "'";
+      return 1;
+    }
+  }
+
+  Handle(ViewerTest_EventManager) aViewMgr = ViewerTest::CurrentEventManager();
+  aViewMgr->ChangeMouseGestureMap().Bind (aButton, aGesture);
+
+  return 0;
+}
+
+//=======================================================================
 //function : ViewerTest_ExitProc
 //purpose  :
 //=======================================================================
@@ -14927,4 +14994,12 @@ Turns on/off prebuilding of BVH within background thread(s).
  -nbThreads   number of threads, 1 by default; if < 1 then used (NbLogicalProcessors - 1);
  -wait        waits for building all of BVH.
 )" /* [vselbvhbuild] */);
+
+  addCmd ("vchangemousegesture", VChangeMouseGesture, /* [vchangemousegesture] */ R"(
+vchangemousegesture -button  {none|left|middle|right}=left
+                    -gesture {none|selectRectangle|selectLasso|zoom|zoomWindow|pan|rotateOrbit|rotateView|drag}=rotateOrbit
+Changes the gesture for the mouse button.
+ -button  the mouse button;
+ -gesture the new gesture for the button.
+)" /* [vchangemousegesture] */);
 }
