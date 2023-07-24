@@ -13,11 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <VrmlData_Coordinate.hxx>
+#include <VrmlData_Geometry.hxx>
 #include <VrmlData_Group.hxx>
+#include <VrmlData_IndexedFaceSet.hxx>
+#include <VrmlData_IndexedLineSet.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_WorldInfo.hxx>
 #include <VrmlData_InBuffer.hxx>
 #include <VrmlData_ListOfNode.hxx>
+#include <VrmlData_ShapeNode.hxx>
 #include <VrmlData_UnknownNode.hxx>
 #include <Precision.hxx>
 #include <gp_Ax1.hxx>
@@ -206,8 +211,8 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
       TCollection_AsciiString aDummy;
       aStatus = Scene().ReadWord (theBuffer, aDummy);
     }
-    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Separator") ||
-             VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Switch")) {
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "Switch"))
+    {
       Standard_Boolean isBracketed (Standard_False);
       // Read the opening bracket for the list of children
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
@@ -238,7 +243,99 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
           break;
       }
     }
-    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "ShapeHints")) {
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "TransformSeparator") ||
+             VRMLDATA_LCOMPARE(theBuffer.LinePtr, "Separator"))
+    {
+      Handle(VrmlData_Group) aGroupNode = new VrmlData_Group(Scene(), "");
+      Standard_Boolean isBracketed(Standard_False);
+      // Read the opening bracket for the list of children
+      if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+        break;
+
+      if (theBuffer.LinePtr[0] == '{') {
+        theBuffer.LinePtr++;
+        if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+          break;
+        isBracketed = Standard_True;
+      }
+
+      // Read the child nodes
+      Handle(VrmlData_Node) aChildNode;
+      while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
+        // read the end-of-list bracket
+        if (isBracketed && theBuffer.LinePtr[0] == '}') {
+          theBuffer.LinePtr++;
+          break;
+        }
+        // otherwise read a node
+        if (!OK(aStatus, ReadNode(theBuffer, aChildNode)))
+          break;
+
+        aGroupNode->AddNode(aChildNode);
+        if (isBracketed == Standard_False)
+          break;
+      }
+
+      Handle(VrmlData_Coordinate) aCoord;
+      Handle(VrmlData_IndexedFaceSet) anIndFaceSet;
+      Handle(VrmlData_IndexedLineSet) anIndLineSet;
+      Handle(VrmlData_Appearance) anAppearance;
+      for (VrmlData_ListOfNode::Iterator anIt = aGroupNode->NodeIterator(); anIt.More(); anIt.Next())
+      {
+        Handle(VrmlData_Node) aNode = anIt.Value();
+        if (aNode.IsNull())
+          continue;
+
+        if (anIt.Value()->IsKind(STANDARD_TYPE(VrmlData_Coordinate)))
+        {
+          aCoord = Handle(VrmlData_Coordinate)::DownCast(anIt.Value());
+        }
+        else if (anIt.Value()->IsKind(STANDARD_TYPE(VrmlData_IndexedFaceSet)))
+        {
+          anIndFaceSet = Handle(VrmlData_IndexedFaceSet)::DownCast(anIt.Value());
+          if (!aCoord.IsNull())
+          {
+            anIndFaceSet->SetCoordinates(aCoord);
+          }
+        }
+        else if (anIt.Value()->IsKind(STANDARD_TYPE(VrmlData_IndexedLineSet)))
+        {
+          anIndLineSet = Handle(VrmlData_IndexedLineSet)::DownCast(anIt.Value());
+          if (!aCoord.IsNull())
+          {
+            anIndLineSet->SetCoordinates(aCoord);
+          }
+        }
+        else if (anIt.Value()->IsKind(STANDARD_TYPE(VrmlData_Material)))
+        {
+          Handle(VrmlData_Material) aMaterial = Handle(VrmlData_Material)::DownCast(anIt.Value());
+          anAppearance = new VrmlData_Appearance();
+          anAppearance->SetMaterial(aMaterial);
+        }
+      }
+
+      if (!aCoord.IsNull())
+      {
+        Handle(VrmlData_ShapeNode) aShapeNode = new VrmlData_ShapeNode(Scene(), "");
+        if (!anIndFaceSet.IsNull())
+        {
+          aShapeNode->SetGeometry(anIndFaceSet);
+        }
+        else if (!anIndLineSet.IsNull())
+        {
+          aShapeNode->SetGeometry(anIndLineSet);
+        }
+        if (!anAppearance.IsNull())
+        {
+          aShapeNode->SetAppearance(anAppearance);
+        }
+        aGroupNode->AddNode(aShapeNode);
+      }
+
+      AddNode(aGroupNode);
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "ShapeHints") ||
+             VRMLDATA_LCOMPARE (theBuffer.LinePtr, "DirectionalLight")) {
       // Skip this tag
       if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
         break;
@@ -305,6 +402,14 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
         aStatus = VrmlData_VrmlFormatError;
         break;
       }
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "DEF"))
+    {
+      TCollection_AsciiString aWord;
+      if (OK(aStatus, VrmlData_Scene::ReadWord(theBuffer, aWord)))
+      {
+        setName(aWord.ToCString());
+      }
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "url")) {
       NCollection_List<TCollection_AsciiString> lstURL;
       if (OK(aStatus, ReadMultiString (theBuffer, lstURL))) {

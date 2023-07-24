@@ -61,6 +61,12 @@ class VrmlData_Material : public VrmlData_Node
                 Transparency    () const        { return myTransparency; }
 
   /**
+  * Query the Ambient color
+  */
+  inline const Quantity_Color&
+                AmbientColor    () const        { return myAmbientColor; }
+
+  /**
    * Query the Diffuse color
    */
   inline const Quantity_Color&
@@ -96,6 +102,14 @@ class VrmlData_Material : public VrmlData_Node
    */
   inline void   SetTransparency (const Standard_Real theTransparency)
   { myTransparency = theTransparency; }
+
+  /**
+  * Query the Ambient color
+  */
+  inline void   SetAmbientColor (const Quantity_Color& theColor)
+  {
+    myAmbientColor = theColor;
+  }
 
   /**
    * Query the Diffuse color
@@ -150,6 +164,7 @@ class VrmlData_Material : public VrmlData_Node
   Standard_Real         myAmbientIntensity;
   Standard_Real         myShininess;
   Standard_Real         myTransparency;
+  Quantity_Color        myAmbientColor;
   Quantity_Color        myDiffuseColor;
   Quantity_Color        myEmissiveColor;
   Quantity_Color        mySpecularColor;

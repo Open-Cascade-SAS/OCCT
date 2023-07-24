@@ -26,6 +26,109 @@ IMPLEMENT_STANDARD_RTTIEXT(VrmlData_Material,VrmlData_Node)
 #pragma warning (disable:4996)
 #endif
 
+namespace
+{
+  static const Standard_Real THE_MAT_PREC = 0.001 * Precision::Confusion();
+
+  //=======================================================================
+  //function : isValidValue
+  //purpose  : 
+  //=======================================================================
+  static bool isValidValue(Standard_Real theVal)
+  {
+    return theVal >= -THE_MAT_PREC && theVal <= 1.0 + THE_MAT_PREC;
+  }
+
+  //=======================================================================
+  //function : isValidColor
+  //purpose  : 
+  //=======================================================================
+  static bool isValidColor(const gp_XYZ & theVec3)
+  {
+    return isValidValue(theVec3.X()) && isValidValue(theVec3.Y()) && isValidValue(theVec3.Z());
+  }
+
+  //=======================================================================
+  //function : parseColor
+  //purpose  : 
+  //=======================================================================
+  static bool parseColor(VrmlData_ErrorStatus & theStatus,
+                         VrmlData_InBuffer & theBuffer,
+                         gp_XYZ & theColor,
+                         const VrmlData_Scene & theScene)
+  {
+    if (!VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer)))
+    {
+      return false;
+    }
+    
+    bool isArray = *theBuffer.LinePtr == '[';
+    if (isArray)
+    {
+      ++theBuffer.LinePtr;
+    }
+    theStatus = theScene.ReadXYZ(theBuffer, theColor, Standard_False, Standard_False);
+    if (isArray)
+    {
+      if (VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer))
+          && *theBuffer.LinePtr == ']')
+      {
+        ++theBuffer.LinePtr;
+      }
+      else
+      {
+        theStatus = VrmlData_VrmlFormatError;
+      }
+    }
+    if (!isValidColor(theColor))
+    {
+      theStatus = VrmlData_IrrelevantNumber;
+      return false;
+    }
+    return true;
+  }
+
+  //=======================================================================
+  //function : parseScalar
+  //purpose  : 
+  //=======================================================================
+  static bool parseScalar(VrmlData_ErrorStatus & theStatus,
+                          VrmlData_InBuffer & theBuffer,
+                          Standard_Real & theValue,
+                          const VrmlData_Scene & theScene)
+  {
+    if (!VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer)))
+    {
+      return false;
+    }
+    
+    bool isArray = *theBuffer.LinePtr == '[';
+    if (isArray)
+    {
+      ++theBuffer.LinePtr;
+    }
+
+    theStatus = theScene.ReadReal(theBuffer, theValue, Standard_False, Standard_False);
+    if (isArray)
+    {
+      if (VrmlData_Node::OK(theStatus, VrmlData_Scene::ReadLine(theBuffer))
+          && *theBuffer.LinePtr == ']')
+      {
+        ++theBuffer.LinePtr;
+      }
+      else
+      {
+        theStatus = VrmlData_VrmlFormatError;
+      }
+    }
+    if (!isValidValue(theValue))
+    {
+      theStatus = VrmlData_IrrelevantNumber;
+      return false;
+    }
+    return true;
+  }
+}
 
 //=======================================================================
 //function : VrmlData_Material()
@@ -36,6 +139,7 @@ VrmlData_Material::VrmlData_Material ()
   : myAmbientIntensity        (0.2),
     myShininess               (0.2),
     myTransparency            (0.),
+    myAmbientColor(0., 0., 0., Quantity_TOC_RGB),
     myDiffuseColor            (0.8, 0.8, 0.8, Quantity_TOC_sRGB),
     myEmissiveColor           (Quantity_NOC_BLACK),
     mySpecularColor           (Quantity_NOC_BLACK)
@@ -55,6 +159,7 @@ VrmlData_Material::VrmlData_Material (const VrmlData_Scene&  theScene,
     myAmbientIntensity        (theAmbientIntens < 0. ? 0.2 : theAmbientIntens),
     myShininess               (theShininess     < 0. ? 0.2 : theShininess),
     myTransparency            (theTransparency  < 0  ? 0.  : theTransparency),
+    myAmbientColor            (0., 0., 0., Quantity_TOC_RGB),
     myDiffuseColor            (0.8, 0.8, 0.8, Quantity_TOC_sRGB),
     myEmissiveColor           (Quantity_NOC_BLACK),
     mySpecularColor           (Quantity_NOC_BLACK)
@@ -79,6 +184,7 @@ Handle(VrmlData_Node) VrmlData_Material::Clone
   aResult->SetAmbientIntensity (myAmbientIntensity);
   aResult->SetShininess        (myShininess);
   aResult->SetTransparency     (myTransparency);
+  aResult->SetAmbientColor     (myAmbientColor);
   aResult->SetDiffuseColor     (myDiffuseColor);
   aResult->SetEmissiveColor    (myEmissiveColor);
   aResult->SetSpecularColor    (mySpecularColor);
@@ -93,66 +199,37 @@ Handle(VrmlData_Node) VrmlData_Material::Clone
 VrmlData_ErrorStatus VrmlData_Material::Read (VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  const Standard_Real aConf = 0.001 * Precision::Confusion();
   Standard_Real anIntensity[3] = { 0.2, 0.2, 0. };
-  gp_XYZ        aColor[3] = {
+  gp_XYZ        aColor[4] = {
+    gp_XYZ (0.0, 0.0, 0.0),
     gp_XYZ (0.8, 0.8, 0.8),
     gp_XYZ (0.0, 0.0, 0.0),
     gp_XYZ (0.0, 0.0, 0.0)
   };
   while (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
-    if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "ambientIntensity")) {
-      if (OK(aStatus, Scene().ReadReal (theBuffer, anIntensity[0],
-                                        Standard_False, Standard_False)))
-        if (anIntensity[0] < -aConf || anIntensity[0] > 1.+aConf) {
-          aStatus = VrmlData_IrrelevantNumber;
-          break;
-        }
-    } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "shininess")) {
-      if (OK(aStatus, Scene().ReadReal (theBuffer, anIntensity[1],
-                                        Standard_False, Standard_False)))
-        if (anIntensity[1] < -aConf || anIntensity[1] > 1.+aConf) {
-          aStatus = VrmlData_IrrelevantNumber;
-          break;
-        }
-    } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "transparency")) {
-      if (OK(aStatus, Scene().ReadReal (theBuffer, anIntensity[2],
-                                        Standard_False, Standard_False)))
-        if (anIntensity[2] < -aConf || anIntensity[2] > 1.+aConf) {
-          aStatus = VrmlData_IrrelevantNumber;
-          break;
-        }
-    } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "diffuseColor")) {
-      if (OK(aStatus, Scene().ReadXYZ (theBuffer, aColor[0],
-                                       Standard_False, Standard_False)))
-        if (aColor[0].X() < -aConf || aColor[0].X() > 1.+aConf ||
-            aColor[0].Y() < -aConf || aColor[0].Y() > 1.+aConf ||
-            aColor[0].Z() < -aConf || aColor[0].Z() > 1.+aConf)
-        {
-          aStatus = VrmlData_IrrelevantNumber;
-          break;
-        }
-    } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "emissiveColor")) {
-      if (OK(aStatus, Scene().ReadXYZ (theBuffer, aColor[1],
-                                       Standard_False, Standard_False)))
-        if (aColor[1].X() < -aConf || aColor[1].X() > 1.+aConf ||
-            aColor[1].Y() < -aConf || aColor[1].Y() > 1.+aConf ||
-            aColor[1].Z() < -aConf || aColor[1].Z() > 1.+aConf)
-        {
-          aStatus = VrmlData_IrrelevantNumber;
-          break;
-        }
-    } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "specularColor")) {
-      if (OK(aStatus, Scene().ReadXYZ (theBuffer, aColor[2],
-                                       Standard_False, Standard_False)))
-        if (aColor[2].X() < -aConf || aColor[2].X() > 1.+aConf ||
-            aColor[2].Y() < -aConf || aColor[2].Y() > 1.+aConf ||
-            aColor[2].Z() < -aConf || aColor[2].Z() > 1.+aConf)
-        {
-          aStatus = VrmlData_IrrelevantNumber;
-          break;
-        }
-    } else
+    if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "ambientIntensity"))
+    {
+      parseScalar(aStatus, theBuffer, anIntensity[0], Scene());
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "shininess")) {
+      parseScalar(aStatus, theBuffer, anIntensity[1], Scene());
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "transparency")) {
+      parseScalar(aStatus, theBuffer, anIntensity[2], Scene());
+    }
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "ambientColor")) {
+      parseColor(aStatus, theBuffer, aColor[0], Scene());
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "diffuseColor")) {
+      parseColor(aStatus, theBuffer, aColor[1], Scene());
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "emissiveColor")) {
+      parseColor(aStatus, theBuffer, aColor[2], Scene());
+    }
+    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "specularColor")) {
+      parseColor(aStatus, theBuffer, aColor[3], Scene());
+    }
+    else
       break;
 
     if (!OK(aStatus))
@@ -168,11 +245,13 @@ VrmlData_ErrorStatus VrmlData_Material::Read (VrmlData_InBuffer& theBuffer)
     myAmbientIntensity  = anIntensity[0];
     myShininess         = anIntensity[1];
     myTransparency      = anIntensity[2];
-    myDiffuseColor.SetValues  (aColor[0].X(), aColor[0].Y(), aColor[0].Z(),
+    myAmbientColor.SetValues  (aColor[0].X(), aColor[0].Y(), aColor[0].Z(),
                                Quantity_TOC_sRGB);
-    myEmissiveColor.SetValues (aColor[1].X(), aColor[1].Y(), aColor[1].Z(),
+    myDiffuseColor.SetValues  (aColor[1].X(), aColor[1].Y(), aColor[1].Z(),
                                Quantity_TOC_sRGB);
-    mySpecularColor.SetValues (aColor[2].X(), aColor[2].Y(), aColor[2].Z(),
+    myEmissiveColor.SetValues (aColor[2].X(), aColor[2].Y(), aColor[2].Z(),
+                               Quantity_TOC_sRGB);
+    mySpecularColor.SetValues (aColor[3].X(), aColor[3].Y(), aColor[3].Z(),
                                Quantity_TOC_sRGB);
   }
   return aStatus;
