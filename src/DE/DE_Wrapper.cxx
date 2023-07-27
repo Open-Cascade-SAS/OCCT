@@ -538,7 +538,6 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
       {
         theProvider = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
-        theProvider->SetNode(aNode);
         return Standard_True;
       }
     }

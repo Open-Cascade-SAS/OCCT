@@ -125,7 +125,7 @@ Handle(DE_ConfigurationNode) DEXCAFCascade_ConfigurationNode::Copy() const
 //=======================================================================
 Handle(DE_Provider) DEXCAFCascade_ConfigurationNode::BuildProvider()
 {
-  return new DEXCAFCascade_Provider();
+  return new DEXCAFCascade_Provider (this);
 }
 
 //=======================================================================
