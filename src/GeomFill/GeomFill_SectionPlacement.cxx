@@ -609,7 +609,7 @@ void GeomFill_SectionPlacement::Perform(const Handle(Adaptor3d_Curve)& Path,
 			    myAdpSection.LastParameter(),
 			    Path->Resolution(Tol/100), 
 			    myAdpSection.Resolution(Tol/100));
-	  if (Ext.IsDone()) {
+	  if (Ext.IsDone() && !Ext.IsParallel()) {
 	    Extrema_POnCurv P1, P2;
 	    for (ii=1; ii<=Ext.NbExt(); ii++) {
 	      distaux = sqrt (Ext.SquareDistance(ii));
