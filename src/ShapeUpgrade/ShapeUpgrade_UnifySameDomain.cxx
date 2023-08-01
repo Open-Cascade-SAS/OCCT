@@ -340,16 +340,22 @@ static Standard_Real ComputeMinEdgeSize(const TopTools_SequenceOfShape& theEdges
   return MinSize;
 }
 
-static void FindCoordBounds(const TopTools_SequenceOfShape& theFaces,
-                            const TopoDS_Face&              theRefFace,
-                            const TopTools_IndexedDataMapOfShapeListOfShape& theMapEF,
-                            const TopTools_MapOfShape&      theEdgesMap,
-                            const Standard_Integer          theIndCoord,
-                            const Standard_Real             thePeriod,
-                            Standard_Real&                  theMinCoord,
-                            Standard_Real&                  theMaxCoord,
-                            Standard_Integer&               theNumberOfIntervals,
-                            Standard_Integer&               theIndFaceMax)
+//=======================================================================
+//function : FindCoordBounds
+//purpose  : Searching for origin of U in 2d space
+//           Returns Standard_False if could not find curve on surface
+//           Returns Standard_True if succeed
+//=======================================================================
+static Standard_Boolean FindCoordBounds(const TopTools_SequenceOfShape& theFaces,
+                                        const TopoDS_Face&              theRefFace,
+                                        const TopTools_IndexedDataMapOfShapeListOfShape& theMapEF,
+                                        const TopTools_MapOfShape&      theEdgesMap,
+                                        const Standard_Integer          theIndCoord,
+                                        const Standard_Real             thePeriod,
+                                        Standard_Real&                  theMinCoord,
+                                        Standard_Real&                  theMaxCoord,
+                                        Standard_Integer&               theNumberOfIntervals,
+                                        Standard_Integer&               theIndFaceMax)
 {
   NCollection_Sequence<std::pair<Standard_Real, Standard_Real>> aPairSeq;
   
@@ -372,6 +378,10 @@ static void FindCoordBounds(const TopTools_SequenceOfShape& theFaces,
         continue;
       Standard_Real fpar, lpar;
       Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, theRefFace, fpar, lpar);
+      if (aPCurve.IsNull())
+      {
+        return Standard_False;
+      }
       UpdateBoundaries (aPCurve, fpar, lpar, theIndCoord, aMinCoord, aMaxCoord);
     }
 
@@ -436,6 +446,7 @@ static void FindCoordBounds(const TopTools_SequenceOfShape& theFaces,
     theMinCoord = aPairSeq(1).first;
 
   theMaxCoord = aPairSeq(1).second;
+  return Standard_True;
 }
 
 static void RelocatePCurvesToNewUorigin(const TopTools_SequenceOfShape& theEdges,
@@ -3297,8 +3308,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
             //so that all the faces are in [origin, origin + Uperiod]
             Standard_Real aMinCoord, aMaxCoord; //Umin, Umax;
             Standard_Integer aNumberOfIntervals, i_face_max;
-            FindCoordBounds (faces, F_RefFace, aMapEF, edgesMap, ii+1, aPeriods[ii],
-                             aMinCoord, aMaxCoord, aNumberOfIntervals, i_face_max);
+            if (!FindCoordBounds(faces, F_RefFace, aMapEF, edgesMap, ii + 1, aPeriods[ii],
+              aMinCoord, aMaxCoord, aNumberOfIntervals, i_face_max))
+            {
+              break;
+            }
             
             if (aMaxCoord - aMinCoord > aPeriods[ii] - 1.e-5)
               anIsSeamFound[ii] = Standard_True;
