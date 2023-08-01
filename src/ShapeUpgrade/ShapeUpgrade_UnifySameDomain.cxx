@@ -3617,6 +3617,10 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
               
               ReconstructMissedSeam (RemovedEdges, F_RefFace, CurEdge, CurVertex, CurPoint,
                                      Uperiod, Vperiod, NextEdge, NextPoint);
+              if (NextEdge.IsNull())
+              {
+                return;
+              }
             }
             else
               return;
