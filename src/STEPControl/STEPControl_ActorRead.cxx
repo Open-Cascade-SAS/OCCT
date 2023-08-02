@@ -580,7 +580,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
 
   // common progress indicator for translation of own shapes and sub-assemblies
   Message_ProgressScope PS(theProgress, "Part", nbEnt);
-  Standard_Integer nbComponents=0, nbShapes=0;
+  Standard_Integer nbComponents=0;
 
   // translate sub-assemblies
   for ( Standard_Integer nbNauo =1; nbNauo <= listNAUO->Length() && PS.More(); nbNauo++) {
@@ -662,7 +662,6 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
         else
           B.Add(Cund, theResult);
         // [END] ssv: OCCT#22436: extra compound in NMSSR case
-        nbShapes++;
       }
     }
     
@@ -670,50 +669,20 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
     // way of writing hybrid models in AP203 since 1998, and AP209
     // Note that both AP203 and AP209 allow main representation to be non-empty
     if ( readSRR && /*theResult.IsNull() &&*/ i <= nbNotAspect) {
-      Interface_EntityIterator subs1 = graph.Sharings(rep);
-      Handle(Standard_Type) tSRR = STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship);
-      for (subs1.Start(); subs1.More(); subs1.Next()) {
-        const Handle(Standard_Transient)& anitem = subs1.Value();
-        if( !anitem->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
-          continue;
-        if (anitem->DynamicType() == tSRR)
-        {
-          Handle(StepRepr_ShapeRepresentationRelationship) SRR =
-            Handle(StepRepr_ShapeRepresentationRelationship)::DownCast(anitem);
-          Standard_Integer nbrep = (rep == SRR->Rep1() ? 2 : 1);
-          // SKL for bug 29068: parameter useTrsf is used because if root entity has connection with other
-          // by ShapeRepresentationRelationship then result after such transferring need to transform also.
-          // This case is from test "bugs modalg_7 bug30196"
-          binder = TransferEntity(SRR, TP, theLocalFactors, nbrep, useTrsf, aPS1.Next());
-          if (! binder.IsNull()) {
-            theResult = TransferBRep::ShapeResult (binder);
-            Result1 = theResult;
-            B.Add(Cund, theResult);
-            nbShapes++;
-          }
-        }
-        else if(readConstructiveGeomRR && anitem->IsKind(STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship)))
-        {
-          Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCSRR =
-            Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)::DownCast(anitem);
-           binder = TransferEntity(aCSRR, TP, theLocalFactors);
-           if (! binder.IsNull())
-           {
-             Result1 = TransferBRep::ShapeResult (binder);
-             B.Add(Cund, Result1);
-             nbShapes++;
-           }
-        }
+      TopoDS_Shape aNewResult = TransferRelatedSRR(TP, rep, useTrsf, readConstructiveGeomRR, theLocalFactors, Cund, aPS1);
+      if (!aNewResult.IsNull())
+      {
+        Result1 = aNewResult;
       }
     }
   }
 
   // make a warning if both own shape and sub-assemblies are present
-  if ( nbShapes >0 && nbComponents > 0 )
+  if ( (Cund.NbChildren() - nbComponents) > 0 && nbComponents > 0 )
     TP->AddWarning ( PD, "Product has both sub-assemblies and directly assigned shape" );
 
   // if only single shape is read, add it as it is; otherwise add compound
-  if( nbShapes == 1 && nbComponents == 0 )
+  if( (Cund.NbChildren() - nbComponents) == 1 && nbComponents == 0 )
     shbinder = new TransferBRep_ShapeBinder (Result1);
   else
     shbinder = new TransferBRep_ShapeBinder (Cund);
@@ -1555,8 +1524,8 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
                     const Message_ProgressRange& theProgress)
 {
   Handle(TransferBRep_ShapeBinder) shbinder;
-  
-    // --------------------------------------------------------------
+
+  // --------------------------------------------------------------
   // On se trouve ici dans un contexte " d'assemblage geometrique "
   //    - MappedItem
   // --------------------------------------------------------------
@@ -1567,7 +1536,8 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
   //  La Shape, et la mise en position
   Handle(StepShape_ShapeRepresentation) maprep =  Handle(StepShape_ShapeRepresentation)::
     DownCast(mapit->MappingSource()->MappedRepresentation());
-  Standard_Boolean isBound = Standard_False; 
+  Standard_Boolean isBound = Standard_False;
+  Message_ProgressScope aPSRoot(theProgress, NULL, 2);
   Handle(Transfer_Binder) binder = TP->Find(maprep);
   if (binder.IsNull())    binder = TransferEntity(maprep, TP, theLocalFactors, isBound, Standard_False, theProgress);
   shbinder = Handle(TransferBRep_ShapeBinder)::DownCast(binder);
@@ -1575,7 +1545,6 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
   else {
     TopoDS_Shape mappedShape = shbinder->Result();
     if ( ! mappedShape.IsNull() ) {
-      
       //  Positionnement : 2 formules
       //  1/ Ax2 dans Source et comme Target  : passage de Source a Target
       //  2/ CartesianOperator3d comme Target : on applique
@@ -1605,6 +1574,39 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
       else TP->AddWarning (mapit,"Mapped Item, case not recognized, location ignored");
       
       shbinder = new TransferBRep_ShapeBinder (mappedShape);
+    }
+  }
+  TopoDS_Compound aCund;
+  TopoDS_Shape aResult;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound(aCund);
+  if (!shbinder.IsNull())
+  {
+    aResult = TransferBRep::ShapeResult(shbinder);
+    aBuilder.Add(aCund, aResult);
+  }
+  // translate possible shapes related by SRRs, which corresponds to
+  // way of writing hybrid models in AP203 since 1998, and AP209
+  Standard_Integer aReadSRR = Interface_Static::IVal("read.step.shape.relationship");
+  Standard_Integer aReadConstructiveGeomRR = Interface_Static::IVal("read.step.constructivegeom.relationship");
+  if (aReadSRR)
+  {
+    const Interface_Graph& aGraph = TP->Graph();
+    Standard_Integer aSRRnum = 0;
+    for (Interface_EntityIterator aSubsIt(aGraph.Sharings(maprep)); aSubsIt.More(); aSubsIt.Next())
+      ++aSRRnum;
+    Message_ProgressScope aPS(aPSRoot.Next(), "Part", aSRRnum);
+    TopoDS_Shape aNewResult = TransferRelatedSRR(TP, maprep, Standard_False, aReadConstructiveGeomRR, theLocalFactors, aCund, aPS);
+    if (!aNewResult.IsNull())
+    {
+      aResult = aNewResult;
+    }
+    // if only single shape is read, add it as it is; otherwise add compound
+    if (aCund.NbChildren() == 1)
+      shbinder = new TransferBRep_ShapeBinder(aResult);
+    else if (aCund.NbChildren() > 1)
+    {
+      shbinder = new TransferBRep_ShapeBinder(aCund);
     }
   }
   TP->Bind(mapit, shbinder);
@@ -2090,4 +2092,48 @@ void STEPControl_ActorRead::computeIDEASClosings(const TopoDS_Compound& comp,
 void STEPControl_ActorRead::SetModel(const Handle(Interface_InterfaceModel)& theModel)
 {
   myModel = theModel;
+}
+
+//=======================================================================
+// Method  : TransferRelatedSRR
+// Purpose : Helper method to transfer SRR related to the representation
+//=======================================================================
+TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(const Handle(Transfer_TransientProcess)& theTP,
+                                                       const Handle(StepShape_ShapeRepresentation)& theRep,
+                                                       const Standard_Boolean theUseTrsf,
+                                                       const Standard_Integer theReadConstructiveGeomRR,
+                                                       const StepData_Factors& theLocalFactors,
+                                                       TopoDS_Compound& theCund,
+                                                       Message_ProgressScope& thePS)
+{
+  BRep_Builder aBuilder;
+  TopoDS_Shape aResult;
+  const Interface_Graph& aGraph = theTP->Graph();
+  for (Interface_EntityIterator aSubsIt(aGraph.Sharings(theRep)); aSubsIt.More() && thePS.More(); aSubsIt.Next())
+  {
+    Handle(Standard_Transient) anItem = aSubsIt.Value();
+    if (!anItem->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
+      continue;
+    Handle(Transfer_Binder) aBinder;
+    if (anItem->DynamicType() == STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship))
+    {
+      Handle(StepRepr_ShapeRepresentationRelationship) aSRR =
+        Handle(StepRepr_ShapeRepresentationRelationship)::DownCast(anItem);
+      Standard_Integer aNbRep = (theRep == aSRR->Rep1() ? 2 : 1);
+      aBinder = TransferEntity(aSRR, theTP, theLocalFactors, aNbRep, theUseTrsf, thePS.Next());
+    }
+    else if (theReadConstructiveGeomRR &&
+             anItem->DynamicType() == STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship))
+    {
+      Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCGRR =
+        Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)::DownCast(anItem);
+      aBinder = TransferEntity(aCGRR, theTP, theLocalFactors);
+    }
+    if (!aBinder.IsNull())
+    {
+      aResult = TransferBRep::ShapeResult(aBinder);
+      aBuilder.Add(theCund, aResult);
+    }
+  }
+  return aResult;
 }
