@@ -206,6 +206,14 @@ private:
 
   Standard_EXPORT void computeIDEASClosings (const TopoDS_Compound& comp, TopTools_IndexedDataMapOfShapeListOfShape& shellClosingMap);
 
+  Standard_EXPORT TopoDS_Shape TransferRelatedSRR(const Handle(Transfer_TransientProcess)& theTP,
+                                                  const Handle(StepShape_ShapeRepresentation)& theRep,
+                                                  const Standard_Boolean theUseTrsf,
+                                                  const Standard_Integer theReadConstructiveGeomRR,
+                                                  const StepData_Factors& theLocalFactors,
+                                                  TopoDS_Compound& theCund,
+                                                  Message_ProgressScope& thePS);
+
   StepToTopoDS_NMTool myNMTool;
   Standard_Real myPrecision;
   Standard_Real myMaxTol;
