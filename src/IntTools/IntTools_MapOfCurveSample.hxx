@@ -17,11 +17,10 @@
 #define IntTools_MapOfCurveSample_HeaderFile
 
 #include <IntTools_CurveRangeSample.hxx>
-#include <IntTools_CurveRangeSampleMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<IntTools_CurveRangeSample,IntTools_CurveRangeSampleMapHasher> IntTools_MapOfCurveSample;
-typedef NCollection_Map<IntTools_CurveRangeSample,IntTools_CurveRangeSampleMapHasher>::Iterator IntTools_MapIteratorOfMapOfCurveSample;
+typedef NCollection_Map<IntTools_CurveRangeSample> IntTools_MapOfCurveSample;
+typedef NCollection_Map<IntTools_CurveRangeSample>::Iterator IntTools_MapIteratorOfMapOfCurveSample;
 
 
 #endif

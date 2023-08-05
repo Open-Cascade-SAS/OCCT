@@ -243,7 +243,7 @@ void LocOpe_BuildShape::Perform(const TopTools_ListOfShape& L)
       imbSh.UnBind(itdm.Key());
     }
     else {
-      for (itdm.Reset(); itdm.More(); itdm.Next()) {
+      for (itdm.Initialize(imbSh); itdm.More(); itdm.Next()) {
 	TopoDS_Solid newSo;
 	B.MakeSolid(newSo);
 	B.Add(newSo,itdm.Key());

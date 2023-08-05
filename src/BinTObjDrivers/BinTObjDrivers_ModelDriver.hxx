@@ -18,7 +18,6 @@
 #ifndef BinTObjDrivers_ModelDriver_HeaderFile
 #define BinTObjDrivers_ModelDriver_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <BinMDF_ADriver.hxx>
 
 class BinTObjDrivers_ModelDriver : public BinMDF_ADriver 

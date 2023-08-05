@@ -72,7 +72,7 @@ private:
     typedef unsigned char Cell; //!< type of items used to hold bits
 
     //! Number of bits in each cell
-    static Standard_Size BitsPerCell() { return sizeof(Cell) * 8/*BITSPERBYTE*/; } 
+    static Standard_Size BitsPerCell() { return sizeof(Cell) * 8; } 
 
   public:
 

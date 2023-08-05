@@ -21,8 +21,8 @@
 #include <TopTools_MapOfShape.hxx>
 
 static 
-  Standard_Integer NormalizedIds(const Standard_Integer aId,
-                                 const Standard_Integer aDiv);
+  size_t NormalizedIds(const size_t aId,
+                       const Standard_Integer aDiv);
 
 //=======================================================================
 //function : 
@@ -128,15 +128,6 @@ const TopoDS_Shape& BOPTools_Set::Shape()const
 }
 
 //=======================================================================
-// function : HashCode
-// purpose  :
-//=======================================================================
-Standard_Integer BOPTools_Set::HashCode (const Standard_Integer theUpperBound) const
-{
-  return ::HashCode (mySum, theUpperBound);
-}
-
-//=======================================================================
 //function : IsEqual
 //purpose  : 
 //=======================================================================
@@ -177,7 +168,7 @@ Standard_Boolean BOPTools_Set::IsEqual
 void BOPTools_Set::Add(const TopoDS_Shape& theS,
                        const TopAbs_ShapeEnum theType)
 {
-  Standard_Integer aId, aIdN;
+  size_t aId, aIdN;
   TopAbs_Orientation aOr;
   TopExp_Explorer aExp;
   //
@@ -223,7 +214,7 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS,
   aIt.Initialize(myShapes);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aSx=aIt.Value();
-    aId=aSx.HashCode(myUpper);
+    aId = TopTools_ShapeMapHasher{}(aSx) % myUpper + 1;
     aIdN=NormalizedIds(aId, myNbShapes);
     mySum+=aIdN;
   }
@@ -232,13 +223,13 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS,
 // function: NormalizedIds
 // purpose : 
 //=======================================================================
-Standard_Integer NormalizedIds(const Standard_Integer aId,
-                               const Standard_Integer aDiv)
+size_t NormalizedIds(const size_t aId,
+                     const Standard_Integer aDiv)
 {
-  Standard_Integer aMax, aTresh, aIdRet;
+  size_t aMax, aTresh, aIdRet;
   //
   aIdRet=aId;
-  aMax=::IntegerLast();
+  aMax=SIZE_MAX;
   aTresh=aMax/aDiv;
   if (aId>aTresh) {
     aIdRet=aId%aTresh;

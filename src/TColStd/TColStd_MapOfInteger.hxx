@@ -16,11 +16,10 @@
 #define TColStd_MapOfInteger_HeaderFile
 
 #include <Standard_Integer.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Standard_Integer,TColStd_MapIntegerHasher> TColStd_MapOfInteger;
-typedef NCollection_Map<Standard_Integer,TColStd_MapIntegerHasher>::Iterator TColStd_MapIteratorOfMapOfInteger;
+typedef NCollection_Map<Standard_Integer> TColStd_MapOfInteger;
+typedef NCollection_Map<Standard_Integer>::Iterator TColStd_MapIteratorOfMapOfInteger;
 
 
 #endif

@@ -18,11 +18,10 @@
 #define TopTools_DataMapOfOrientedShapeShape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_OrientedShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TopoDS_Shape,TopoDS_Shape,TopTools_OrientedShapeMapHasher> TopTools_DataMapOfOrientedShapeShape;
-typedef NCollection_DataMap<TopoDS_Shape,TopoDS_Shape,TopTools_OrientedShapeMapHasher>::Iterator TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape;
+typedef NCollection_DataMap<TopoDS_Shape,TopoDS_Shape> TopTools_DataMapOfOrientedShapeShape;
+typedef NCollection_DataMap<TopoDS_Shape,TopoDS_Shape>::Iterator TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape;
 
 
 #endif

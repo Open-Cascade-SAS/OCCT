@@ -14,12 +14,9 @@
 #ifndef MeshVS_TwoNodes_HeaderFile
 #define MeshVS_TwoNodes_HeaderFile
 
-#ifndef _Standard_HeaderFile
 #include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
+#include <Standard_HashUtils.hxx>
 
 //! Structure containing two IDs (of nodes) for using as a key in a map
 //! (as representation of a mesh link)
@@ -30,29 +27,30 @@ struct MeshVS_TwoNodes
 
   MeshVS_TwoNodes (Standard_Integer aFirst=0, Standard_Integer aSecond=0) 
   : First(aFirst), Second(aSecond) {}
+
+  bool operator==(const MeshVS_TwoNodes& theTwoNode) const
+  {
+    return ((First == theTwoNode.First) && (Second == theTwoNode.Second)) ||
+      ((First == theTwoNode.Second) && (Second == theTwoNode.First));
+  }
 };
 
-//! Computes a hash code for two nodes, in the range [1, theUpperBound]
-//! @param theTwoNodes the object of structure containing two IDs which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const MeshVS_TwoNodes& theTwoNodes, const Standard_Integer theUpperBound)
+namespace std
 {
-  // symmetrical with respect to theTwoNodes.First and theTwoNodes.Second
-  const Standard_Integer aKey = theTwoNodes.First + theTwoNodes.Second;
-  return HashCode (aKey, theUpperBound);
-}
-
-//================================================================
-// Function : operator ==
-// Purpose  :
-//================================================================
-
-inline Standard_Boolean operator==( const MeshVS_TwoNodes& obj1,
-                                    const MeshVS_TwoNodes& obj2 )
-{
-  return ( ( obj1.First == obj2.First  ) && ( obj1.Second == obj2.Second ) ) ||
-         ( ( obj1.First == obj2.Second ) && ( obj1.Second == obj2.First  ) );
+  template<>
+  struct hash<MeshVS_TwoNodes>
+  {
+    size_t operator()(const MeshVS_TwoNodes& theTwoNodes) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      int aCombination[2]{ theTwoNodes.First, theTwoNodes.Second };
+      if (aCombination[0] > aCombination[1])
+      {
+        std::swap(aCombination[0], aCombination[1]);
+      }
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
 }
 
 #endif

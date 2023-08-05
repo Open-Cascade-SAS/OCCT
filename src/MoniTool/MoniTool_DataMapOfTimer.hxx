@@ -18,12 +18,12 @@
 #define MoniTool_DataMapOfTimer_HeaderFile
 
 #include <Standard_CString.hxx>
-#include <MoniTool_MTHasher.hxx>
+#include <Standard_CStringHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
 class MoniTool_Timer;
-typedef NCollection_DataMap<Standard_CString,Handle(MoniTool_Timer),MoniTool_MTHasher> MoniTool_DataMapOfTimer;
-typedef NCollection_DataMap<Standard_CString,Handle(MoniTool_Timer),MoniTool_MTHasher>::Iterator MoniTool_DataMapIteratorOfDataMapOfTimer;
+typedef NCollection_DataMap<Standard_CString,Handle(MoniTool_Timer), Standard_CStringHasher> MoniTool_DataMapOfTimer;
+typedef NCollection_DataMap<Standard_CString,Handle(MoniTool_Timer), Standard_CStringHasher>::Iterator MoniTool_DataMapIteratorOfDataMapOfTimer;
 
 
 #endif

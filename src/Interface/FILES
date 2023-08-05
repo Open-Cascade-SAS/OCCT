@@ -66,8 +66,6 @@ Interface_JaggedArray.gxx
 Interface_LineBuffer.cxx
 Interface_LineBuffer.hxx
 Interface_Macros.hxx
-Interface_MapAsciiStringHasher.cxx
-Interface_MapAsciiStringHasher.hxx
 Interface_MSG.cxx
 Interface_MSG.hxx
 Interface_NodeOfGeneralLib.hxx

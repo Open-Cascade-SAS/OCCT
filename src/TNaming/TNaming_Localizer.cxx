@@ -156,7 +156,7 @@ const TopTools_MapOfShape& TNaming_Localizer::SubShapes (const TopoDS_Shape&    
 //  Standard_Boolean Found = Standard_False;
   for (; itS.More(); itS.Next(),itSS.Next()) {
     if (In.IsSame(itS.Value())) {
-      TopTools_MapOfShape& SubShapes = itSS.Value();
+      TopTools_MapOfShape& SubShapes = itSS.ChangeValue();
       for (TopExp_Explorer exp(In,TS); exp.More(); exp.Next()) {
 	const TopoDS_Shape& SS = exp.Current();
 	if (SubShapes.Contains(SS)) {
@@ -201,7 +201,7 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
       //-----------------------
       // Ancetres existent.
       //-----------------------
-      TopTools_IndexedDataMapOfShapeListOfShape& Anc = itA.Value();
+      TopTools_IndexedDataMapOfShapeListOfShape& Anc = itA.ChangeValue();
 
       TopExp_Explorer exp(In,TS);
 #ifdef OCCT_DEBUG

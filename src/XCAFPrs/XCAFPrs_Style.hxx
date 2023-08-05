@@ -19,8 +19,8 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Quantity_ColorRGBAHasher.hxx>
 #include <XCAFDoc_VisMaterial.hxx>
+#include <Standard_HashUtils.hxx>
 
 //! Represents a set of styling settings applicable to a (sub)shape
 class XCAFPrs_Style 
@@ -130,38 +130,8 @@ public:
     return IsEqual (theOther);
   }
 
-  //! Computes a hash code for the given set of styling settings, in the range [1, theUpperBound]
-  //! @param theStyle the set of styling settings which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  static Standard_Integer HashCode (const XCAFPrs_Style& theStyle, const Standard_Integer theUpperBound)
-  {
-    if (!theStyle.myIsVisible)
-    {
-      return 1;
-    }
-
-    Standard_Integer aHashCode = 0;
-    if (theStyle.myHasColorSurf)
-    {
-      aHashCode = aHashCode ^ Quantity_ColorRGBAHasher::HashCode (theStyle.myColorSurf, theUpperBound);
-    }
-    if (theStyle.myHasColorCurv)
-    {
-      aHashCode = aHashCode ^ Quantity_ColorHasher::HashCode (theStyle.myColorCurv, theUpperBound);
-    }
-    if (!theStyle.myMaterial.IsNull())
-    {
-      aHashCode = aHashCode ^ ::HashCode (theStyle.myMaterial, theUpperBound);
-    }
-    return ::HashCode (aHashCode, theUpperBound);
-  }
-
-  //! Returns True when the two keys are the same.
-  static Standard_Boolean IsEqual (const XCAFPrs_Style& theS1, const XCAFPrs_Style& theS2)
-  {
-    return theS1.IsEqual (theS2);
-  }
+  template<class T>
+  friend struct std::hash;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
@@ -176,5 +146,35 @@ protected:
   Standard_Boolean   myIsVisible;
 
 };
+
+namespace std
+{
+  template <>
+  struct hash<XCAFPrs_Style>
+  {
+    size_t operator()(const XCAFPrs_Style& theStyle) const
+    {
+      if (!theStyle.myIsVisible)
+      {
+        return 1;
+      }
+      size_t aCombination[3];
+      int aCount = 0;
+      if (theStyle.myHasColorSurf)
+      {
+        aCombination[aCount++] = std::hash<Quantity_ColorRGBA>{}(theStyle.myColorSurf);
+      }
+      if (theStyle.myHasColorCurv)
+      {
+        aCombination[aCount++] = std::hash<Quantity_Color>{}(theStyle.myColorCurv);
+      }
+      if (!theStyle.myMaterial.IsNull())
+      {
+        aCombination[aCount++] = std::hash<Handle(XCAFDoc_VisMaterial)>{}(theStyle.myMaterial);
+      }
+      return aCount > 0 ? opencascade::hashBytes(aCombination, sizeof(size_t) * aCount) : 0;
+    }
+  };
+}
 
 #endif // _XCAFPrs_Style_HeaderFile

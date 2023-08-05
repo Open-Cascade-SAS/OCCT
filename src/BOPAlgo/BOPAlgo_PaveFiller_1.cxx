@@ -75,7 +75,7 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
     //
     if (myDS->HasInterf(n1, n2))
     {
-      BOPAlgo_Tools::FillMap<Standard_Integer, TColStd_MapIntegerHasher>(n1, n2, aMILI, aAllocator);
+      BOPAlgo_Tools::FillMap(n1, n2, aMILI, aAllocator);
       continue;
     }
 
@@ -91,12 +91,12 @@ void BOPAlgo_PaveFiller::PerformVV(const Message_ProgressRange& theRange)
 
     iFlag = BOPTools_AlgoTools::ComputeVV(aV1, aV2, myFuzzyValue);
     if (!iFlag) {
-      BOPAlgo_Tools::FillMap<Standard_Integer, TColStd_MapIntegerHasher>(n1, n2, aMILI, aAllocator);
+      BOPAlgo_Tools::FillMap(n1, n2, aMILI, aAllocator);
     }
   }
   //
   // 2. Make blocks
-  BOPAlgo_Tools::MakeBlocks<Standard_Integer, TColStd_MapIntegerHasher>(aMILI, aMBlocks, aAllocator);
+  BOPAlgo_Tools::MakeBlocks(aMILI, aMBlocks, aAllocator);
   //
   // 3. Make vertices
   NCollection_List<TColStd_ListOfInteger>::Iterator aItB(aMBlocks);

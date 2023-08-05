@@ -10,16 +10,11 @@ MoniTool_DataMapOfShapeTransient.hxx
 MoniTool_DataMapOfTimer.hxx
 MoniTool_Element.cxx
 MoniTool_Element.hxx
-MoniTool_ElemHasher.cxx
-MoniTool_ElemHasher.hxx
 MoniTool_HSequenceOfElement.hxx
 MoniTool_IndexedDataMapOfShapeTransient.hxx
 MoniTool_IntVal.cxx
 MoniTool_IntVal.hxx
 MoniTool_Macros.hxx
-MoniTool_MTHasher.cxx
-MoniTool_MTHasher.hxx
-MoniTool_MTHasher.lxx
 MoniTool_RealVal.cxx
 MoniTool_RealVal.hxx
 MoniTool_SequenceOfElement.hxx

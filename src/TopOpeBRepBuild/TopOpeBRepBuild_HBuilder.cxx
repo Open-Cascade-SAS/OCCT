@@ -353,13 +353,13 @@ void TopOpeBRepBuild_HBuilder::MakeEdgeAncestorMap()
     its.Initialize(los);
     if(re == 1)
       for(; its.More(); its.Next()) {
-	TopoDS_Shape& SecEdg = its.Value();
+	const TopoDS_Shape& SecEdg = its.Value();
 	if(!mySectEdgeDSEdges1.IsBound(SecEdg))
 	  mySectEdgeDSEdges1.Bind(SecEdg, ei);
       }
     else if(re == 2)
       for(; its.More(); its.Next()) {
-	TopoDS_Shape& SecEdg = its.Value();
+	const TopoDS_Shape& SecEdg = its.Value();
 	if(!mySectEdgeDSEdges2.IsBound(SecEdg))
 	  mySectEdgeDSEdges2.Bind(SecEdg,ei);
       }

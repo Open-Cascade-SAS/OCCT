@@ -18,11 +18,10 @@
 
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TCollection_AsciiString,TColStd_MapIntegerHasher> MeshVS_DataMapOfIntegerAsciiString;
-typedef NCollection_DataMap<Standard_Integer,TCollection_AsciiString,TColStd_MapIntegerHasher>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString;
+typedef NCollection_DataMap<Standard_Integer,TCollection_AsciiString> MeshVS_DataMapOfIntegerAsciiString;
+typedef NCollection_DataMap<Standard_Integer,TCollection_AsciiString>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString;
 
 
 #endif

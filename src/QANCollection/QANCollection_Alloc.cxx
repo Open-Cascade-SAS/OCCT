@@ -16,7 +16,7 @@
 #include <QANCollection.hxx>
 #include <Draw_Interpretor.hxx>
 
-#include <NCollection_StdAllocator.hxx>
+#include <NCollection_OccAllocator.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <Standard_Assert.hxx>
 
@@ -36,7 +36,7 @@ static Standard_Integer QANColStdAllocator1(Draw_Interpretor& di, Standard_Integ
 
   //type definitions
   typedef Handle(Standard_Transient) elem_type;
-  typedef NCollection_StdAllocator<elem_type> allocator_type;
+  typedef NCollection_OccAllocator<elem_type> allocator_type;
   Standard_STATIC_ASSERT (sizeof (allocator_type::value_type) == sizeof (elem_type));
   Standard_STATIC_ASSERT (sizeof (allocator_type::pointer) == sizeof (void*));
   Standard_STATIC_ASSERT (sizeof (allocator_type::const_pointer) == sizeof (void*));
@@ -71,8 +71,8 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
 
   {
     //typed allocator
-    NCollection_StdAllocator<int> aSAlloc (anIncAlloc);
-    std::list<int, NCollection_StdAllocator<int> > aL (aSAlloc);
+    NCollection_OccAllocator<int> aSAlloc (anIncAlloc);
+    std::list<int, NCollection_OccAllocator<int> > aL (aSAlloc);
     aL.push_back (2);
     if ( aL.size() == size_t (1) ) {
       di << "Test1 : OK\n";
@@ -81,8 +81,8 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
     }
 
     //type cast
-    NCollection_StdAllocator<char> aCAlloc;
-    std::vector<int, NCollection_StdAllocator<int> > aV (aCAlloc);
+    NCollection_OccAllocator<char> aCAlloc;
+    std::vector<int, NCollection_OccAllocator<int> > aV (aCAlloc);
     aV.push_back (1);
     if ( aV.size() == size_t (1) ) {
       di << "Test2 : OK\n";
@@ -91,8 +91,8 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
     }
 
     //using void-specialization allocator
-    NCollection_StdAllocator<void> aVAlloc;
-    std::vector<int, NCollection_StdAllocator<int> > aV2 (aVAlloc);
+    NCollection_OccAllocator<void*> aVAlloc;
+    std::vector<int, NCollection_OccAllocator<int> > aV2 (aVAlloc);
 
     aV2.resize (10);
     aV2.push_back (-1);
@@ -108,7 +108,7 @@ static Standard_Integer QANColStdAllocator2(Draw_Interpretor& di, Standard_Integ
     } else {
       di << "Test4 : Error\n";
     }
-    NCollection_StdAllocator<int> anIAlloc (anIncAlloc);
+    NCollection_OccAllocator<int> anIAlloc (anIncAlloc);
     if ( aSAlloc == anIAlloc ) {
       di << "Test5 : OK\n";
     } else {

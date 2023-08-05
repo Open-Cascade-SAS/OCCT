@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
 #include <Plate_SequenceOfPinpointConstraint.hxx>
 #include <Plate_SequenceOfLinearXYZConstraint.hxx>
 #include <Plate_SequenceOfLinearScalarConstraint.hxx>

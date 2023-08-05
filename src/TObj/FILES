@@ -5,7 +5,6 @@ TObj_Assistant.cxx
 TObj_Assistant.hxx
 TObj_CheckModel.cxx
 TObj_CheckModel.hxx
-TObj_Common.hxx
 TObj_Container.hxx
 TObj_DeletingMode.hxx
 TObj_HiddenPartition.cxx

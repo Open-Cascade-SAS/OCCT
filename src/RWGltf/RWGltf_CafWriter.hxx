@@ -357,25 +357,35 @@ protected:
     TopoDS_Shape  Shape;
     XCAFPrs_Style Style;
 
-    RWGltf_StyledShape() {}
-    explicit RWGltf_StyledShape (const TopoDS_Shape& theShape) : Shape (theShape) {}
-    explicit RWGltf_StyledShape (const TopoDS_Shape&  theShape,
-                                 const XCAFPrs_Style& theStyle) : Shape (theShape), Style (theStyle) {}
-  public:
-    //! Computes a hash code.
-    static Standard_Integer HashCode (const RWGltf_StyledShape& theShape, Standard_Integer theUpperBound)
+    RWGltf_StyledShape()
+    {}
+    explicit RWGltf_StyledShape(const TopoDS_Shape& theShape) : Shape(theShape)
+    {}
+    explicit RWGltf_StyledShape(const TopoDS_Shape& theShape,
+                                const XCAFPrs_Style& theStyle) : Shape(theShape), Style(theStyle)
+    {}
+    bool operator==(const RWGltf_StyledShape& theStyledShape) const
     {
-      return theShape.Shape.HashCode (theUpperBound);
-    }
-    //! Equality comparison.
-    static Standard_Boolean IsEqual (const RWGltf_StyledShape& theS1, const RWGltf_StyledShape& theS2)
-    {
-      return theS1.Shape.IsSame (theS2.Shape)
-          && theS1.Style.IsEqual(theS2.Style);
+      return Shape.IsSame(theStyledShape.Shape)
+        && Style.IsEqual(theStyledShape.Style);
     }
   };
 
-  typedef NCollection_IndexedDataMap<RWGltf_StyledShape, Handle(RWGltf_GltfFaceList), RWGltf_StyledShape> ShapeToGltfFaceMap;
+  struct Hasher
+  {
+    size_t operator()(const RWGltf_StyledShape& theShape) const noexcept
+    {
+      return std::hash<TopoDS_Shape>{}(theShape.Shape);
+    }
+
+    bool operator()(const RWGltf_StyledShape& theShape1,
+                    const RWGltf_StyledShape& theShape2) const noexcept
+    {
+      return theShape1 == theShape2;
+    }
+  };
+
+  typedef NCollection_IndexedDataMap<RWGltf_StyledShape, Handle(RWGltf_GltfFaceList), Hasher> ShapeToGltfFaceMap;
 
 protected:
 

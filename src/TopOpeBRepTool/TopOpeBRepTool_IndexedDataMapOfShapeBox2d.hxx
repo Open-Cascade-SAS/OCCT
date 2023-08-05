@@ -19,10 +19,9 @@
 
 #include <TopoDS_Shape.hxx>
 #include <Bnd_Box2d.hxx>
-#include <TopTools_OrientedShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,Bnd_Box2d,TopTools_OrientedShapeMapHasher> TopOpeBRepTool_IndexedDataMapOfShapeBox2d;
+typedef NCollection_IndexedDataMap<TopoDS_Shape,Bnd_Box2d> TopOpeBRepTool_IndexedDataMapOfShapeBox2d;
 
 
 #endif

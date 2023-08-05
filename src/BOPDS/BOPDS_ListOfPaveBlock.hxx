@@ -15,9 +15,11 @@
 #ifndef BOPDS_ListOfPaveBlock_HeaderFile
 #define BOPDS_ListOfPaveBlock_HeaderFile
 
-#include <NCollection_List.hxx>   
+#include <NCollection_List.hxx>
+#include <Standard_Handle.hxx>
 
 class BOPDS_PaveBlock;
+
 typedef NCollection_List<Handle(BOPDS_PaveBlock)> BOPDS_ListOfPaveBlock; 
 typedef BOPDS_ListOfPaveBlock::Iterator BOPDS_ListIteratorOfListOfPaveBlock;
 

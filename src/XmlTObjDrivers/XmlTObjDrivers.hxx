@@ -18,7 +18,6 @@
 #ifndef XmlTObjDrivers_HeaderFile
 #define XmlTObjDrivers_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <Standard_GUID.hxx>
 
 class XmlMDF_ADriverTable;

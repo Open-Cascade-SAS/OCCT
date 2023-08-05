@@ -474,7 +474,7 @@ static Standard_Boolean FUN_validF1edge(const TopoDS_Shape& F)
 
   // les faces construites (LOFS) prennent l'orientation originale de FF  
   TopAbs_Orientation odsFF = myDataStructure->Shape(iFF).Orientation();
-  for(TopTools_ListIteratorOfListOfShape itt(LOFS);itt.More();itt.Next()) itt.Value().Orientation(odsFF);
+  for(TopTools_ListIteratorOfListOfShape itt(LOFS);itt.More();itt.Next()) itt.ChangeValue().Orientation(odsFF);
 
   TopTools_ListIteratorOfListOfShape it1;
   for (it1.Initialize(LF1); it1.More(); it1.Next()) {

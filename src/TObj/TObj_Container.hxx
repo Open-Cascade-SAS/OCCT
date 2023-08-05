@@ -23,7 +23,6 @@
 #include <TCollection_HExtendedString.hxx>
 #include <TDF_Label.hxx>
 
-#include <TObj_Common.hxx>
 #include <TObj_SequenceOfObject.hxx>
 
 typedef NCollection_DataMap<Handle(TCollection_HExtendedString), TDF_Label> TObj_DataMapOfNameLabel;

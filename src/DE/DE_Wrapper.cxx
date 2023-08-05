@@ -574,7 +574,6 @@ Standard_EXPORT void DE_Wrapper::UpdateLoad(const Standard_Boolean theToForceUpd
 void DE_Wrapper::sort(const Handle(DE_ConfigurationContext)& theResource)
 {
   const TCollection_AsciiString aScope(THE_CONFIGURATION_SCOPE() + '.' + "priority");
-  NCollection_List<Handle(DE_ConfigurationNode)> aVendors;
   for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);
        aFormatIter.More(); aFormatIter.Next())
   {

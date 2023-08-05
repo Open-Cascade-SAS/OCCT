@@ -19,7 +19,6 @@
 #define NCollection_DefineHSequence_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <NCollection_DefineSequence.hxx>
 #include <Standard_Transient.hxx>
 
 //      Declaration of Sequence class managed by Handle

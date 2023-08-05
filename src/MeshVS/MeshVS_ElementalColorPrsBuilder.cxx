@@ -151,7 +151,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     Standard_Boolean IsExist = Standard_False;
     for ( MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger anIterC2 ( aTwoColorsOfElements );
           anIterC2.More() && !IsExist; anIterC2.Next () )
-      if ( IsEqual ( anIterC2.Key(), anIterM2.Value() ) )
+      if (  anIterC2.Key() == anIterM2.Value() )
       {
         TColStd_MapOfInteger& aChangeValue = (TColStd_MapOfInteger&) anIterC2.Value();
         aChangeValue.Add ( aMKey );

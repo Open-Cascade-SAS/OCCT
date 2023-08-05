@@ -33,7 +33,6 @@ TNaming_Name.hxx
 TNaming_NamedShape.cxx
 TNaming_NamedShape.hxx
 TNaming_NamedShape.lxx
-TNaming_NamedShapeHasher.hxx
 TNaming_NameType.hxx
 TNaming_Naming.cxx
 TNaming_Naming.hxx

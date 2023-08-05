@@ -626,7 +626,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   };
 
   // dispatch faces
-  NCollection_DataMap<XCAFPrs_Style, Handle(RWGltf_GltfFace), XCAFPrs_Style> aMergedFaces;
+  NCollection_DataMap<XCAFPrs_Style, Handle(RWGltf_GltfFace)> aMergedFaces;
   for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
        aDocExplorer.More() && aPSentryBin.More(); aDocExplorer.Next())
   {

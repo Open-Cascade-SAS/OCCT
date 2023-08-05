@@ -17,11 +17,11 @@
 #define STEPCAFControl_DataMapOfLabelShape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <TDF_LabelMapHasher.hxx>
+#include <TDF_Label.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TDF_Label,TopoDS_Shape,TDF_LabelMapHasher> STEPCAFControl_DataMapOfLabelShape;
-typedef NCollection_DataMap<TDF_Label,TopoDS_Shape,TDF_LabelMapHasher>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape;
+typedef NCollection_DataMap<TDF_Label,TopoDS_Shape> STEPCAFControl_DataMapOfLabelShape;
+typedef NCollection_DataMap<TDF_Label,TopoDS_Shape>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape;
 
 
 #endif

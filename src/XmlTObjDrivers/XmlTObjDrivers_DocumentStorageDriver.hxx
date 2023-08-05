@@ -18,7 +18,6 @@
 #ifndef XmlTObjDrivers_DocumentStorageDriver_HeaderFile
 #define XmlTObjDrivers_DocumentStorageDriver_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <XmlLDrivers_DocumentStorageDriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
 

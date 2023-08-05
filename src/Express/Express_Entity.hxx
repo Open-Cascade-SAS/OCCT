@@ -65,7 +65,7 @@ protected:
 
 private:
 
-  typedef NCollection_DataMap<TCollection_AsciiString, Standard_Integer, TCollection_AsciiString> DataMapOfStringInteger;
+  typedef NCollection_DataMap<TCollection_AsciiString, Standard_Integer> DataMapOfStringInteger;
 
   //! Create HXX/CXX files from item
   Standard_EXPORT virtual Standard_Boolean GenerateClass() const Standard_OVERRIDE;

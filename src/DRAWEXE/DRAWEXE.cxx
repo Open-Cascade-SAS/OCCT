@@ -167,7 +167,7 @@ static Standard_Integer Pload (Draw_Interpretor& theDI,
                                Standard_Integer  theNbArgs,
                                const char**      theArgVec)
 {
-  NCollection_IndexedMap<TCollection_AsciiString, TCollection_AsciiString> aPlugins;
+  NCollection_IndexedMap<TCollection_AsciiString> aPlugins;
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
@@ -222,7 +222,7 @@ static Standard_Integer Pload (Draw_Interpretor& theDI,
     }
   }
 
-  for (NCollection_IndexedMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator aPluginIter (aPlugins);
+  for (NCollection_IndexedMap<TCollection_AsciiString>::Iterator aPluginIter (aPlugins);
        aPluginIter.More(); aPluginIter.Next())
   {
     const TCollection_AsciiString& aPlugin = aPluginIter.Value();

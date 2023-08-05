@@ -17,11 +17,10 @@
 #define TDF_LabelMap_HeaderFile
 
 #include <TDF_Label.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<TDF_Label,TDF_LabelMapHasher> TDF_LabelMap;
-typedef NCollection_Map<TDF_Label,TDF_LabelMapHasher>::Iterator TDF_MapIteratorOfLabelMap;
+typedef NCollection_Map<TDF_Label> TDF_LabelMap;
+typedef NCollection_Map<TDF_Label>::Iterator TDF_MapIteratorOfLabelMap;
 
 
 #endif

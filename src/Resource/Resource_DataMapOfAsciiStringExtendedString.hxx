@@ -21,8 +21,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString,TCollection_ExtendedString,TCollection_AsciiString> Resource_DataMapOfAsciiStringExtendedString;
-typedef NCollection_DataMap<TCollection_AsciiString,TCollection_ExtendedString,TCollection_AsciiString>::Iterator Resource_DataMapIteratorOfDataMapOfAsciiStringExtendedString;
+typedef NCollection_DataMap<TCollection_AsciiString,TCollection_ExtendedString> Resource_DataMapOfAsciiStringExtendedString;
+typedef NCollection_DataMap<TCollection_AsciiString,TCollection_ExtendedString>::Iterator Resource_DataMapIteratorOfDataMapOfAsciiStringExtendedString;
 
 
 #endif

@@ -412,7 +412,7 @@ Handle(TColStd_HSequenceOfHAsciiString)  Interface_Static::Items
 // function : FillMap
 // purpose  : Fills given string-to-string map with all static data
 //=======================================================================
-void Interface_Static::FillMap (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString, TCollection_AsciiString>& theMap)
+void Interface_Static::FillMap (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theMap)
 {
   theMap.Clear();
 

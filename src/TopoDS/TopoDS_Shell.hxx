@@ -17,11 +17,7 @@
 #ifndef _TopoDS_Shell_HeaderFile
 #define _TopoDS_Shell_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
 #include <TopoDS_Shape.hxx>
-
 
 //! Describes a shell which
 //! - references an underlying shell with the potential to
@@ -36,32 +32,20 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an Undefined Shell.
-    TopoDS_Shell();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  TopoDS_Shell() {}
 };
 
-
-#include <TopoDS_Shell.lxx>
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<TopoDS_Shell>
+  {
+    size_t operator()(const TopoDS_Shell& theShape) const
+    {
+      return std::hash<TopoDS_Shape>{}(theShape);
+    }
+  };
+}
 
 #endif // _TopoDS_Shell_HeaderFile

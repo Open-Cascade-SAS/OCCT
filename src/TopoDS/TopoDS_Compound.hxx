@@ -17,11 +17,7 @@
 #ifndef _TopoDS_Compound_HeaderFile
 #define _TopoDS_Compound_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
 #include <TopoDS_Shape.hxx>
-
 
 //! Describes a compound which
 //! - references an underlying compound with the
@@ -38,32 +34,20 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an Undefined Compound.
-    TopoDS_Compound();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  TopoDS_Compound() {}
 };
 
-
-#include <TopoDS_Compound.lxx>
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<TopoDS_Compound>
+  {
+    size_t operator()(const TopoDS_Compound& theShape) const
+    {
+      return std::hash<TopoDS_Shape>{}(theShape);
+    }
+  };
+}
 
 #endif // _TopoDS_Compound_HeaderFile

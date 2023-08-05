@@ -16,10 +16,9 @@
 #define TColStd_IndexedMapOfInteger_HeaderFile
 
 #include <Standard_Integer.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<Standard_Integer,TColStd_MapIntegerHasher> TColStd_IndexedMapOfInteger;
+typedef NCollection_IndexedMap<Standard_Integer> TColStd_IndexedMapOfInteger;
 
 
 #endif

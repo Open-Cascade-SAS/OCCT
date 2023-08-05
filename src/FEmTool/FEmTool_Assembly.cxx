@@ -541,7 +541,7 @@ void FEmTool_Assembly::AddConstraint(const Standard_Integer IndexofConstraint,
 	for(i = Aux1->Upper() + 1; i <= Imax; i++) Coeff->SetValue(i, 0.);
 	Iter.Initialize(L);
 	for(i = 1; i < s1; Iter.Next(), i++);
-	Iter.Value() = Coeff;
+	Iter.ChangeValue() = Coeff;
       }
       else if(Imin > Aux1->Upper() && Imax >= Aux2->Lower()) { 
 	// merge new and first segment
@@ -550,7 +550,7 @@ void FEmTool_Assembly::AddConstraint(const Standard_Integer IndexofConstraint,
 	for(i = Aux2->Lower(); i <= Aux2->Upper(); i++) Coeff->SetValue(i, Aux2->Value(i));
 	Iter.Initialize(L);
 	for(i = 1; i < s2; Iter.Next(), i++);
-	Iter.Value() = Coeff;
+	Iter.ChangeValue() = Coeff;
      }
       else if(Imin > Aux1->Upper() && Imax < Aux2->Lower()) {
 	// inserting new between s1 and s2
@@ -568,7 +568,7 @@ void FEmTool_Assembly::AddConstraint(const Standard_Integer IndexofConstraint,
 	for(i = Aux2->Lower(); i <= Aux2->Upper(); i++) Coeff->SetValue(i, Aux2->Value(i));
 	Iter.Initialize(L);
 	for(i = 1; i < s1; Iter.Next(), i++);
-	Iter.Value() = Coeff;
+	Iter.ChangeValue() = Coeff;
 	Iter.Next();
 	L.Remove(Iter);
       }

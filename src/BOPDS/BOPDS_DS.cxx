@@ -965,8 +965,8 @@ void BOPDS_DS::UpdateCommonBlock(const Handle(BOPDS_CommonBlock)& theCB,
   Standard_Integer nE, iRef, n1, n2;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB, aItPBCB, aItPBN;
   BOPDS_ListOfPaveBlock aLPBN;
-  NCollection_DataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock, BOPDS_PairMapHasher> aMPKLPB;
-  NCollection_DataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock, BOPDS_PairMapHasher>::Iterator aItMPKLPB;
+  NCollection_DataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock> aMPKLPB;
+  NCollection_DataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock>::Iterator aItMPKLPB;
   Handle(BOPDS_PaveBlock) aPB;
   Handle(BOPDS_CommonBlock) aCBx;
   BOPDS_Pair aPK;

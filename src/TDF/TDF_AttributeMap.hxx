@@ -17,11 +17,10 @@
 #define TDF_AttributeMap_HeaderFile
 
 #include <TDF_Attribute.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Handle(TDF_Attribute),TColStd_MapTransientHasher> TDF_AttributeMap;
-typedef NCollection_Map<Handle(TDF_Attribute),TColStd_MapTransientHasher>::Iterator TDF_MapIteratorOfAttributeMap;
+typedef NCollection_Map<Handle(TDF_Attribute)> TDF_AttributeMap;
+typedef NCollection_Map<Handle(TDF_Attribute)>::Iterator TDF_MapIteratorOfAttributeMap;
 
 
 #endif

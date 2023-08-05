@@ -1238,7 +1238,7 @@ void VBernstein(const Standard_Integer classe,
   if (nbpoints > 24) throw Standard_DimensionError("VBernstein: nbpoints > 24");
   //  math_Matrix VB(classe, nbpoints);
   
-  Standard_Integer i, j, k = 0, Som;
+  Standard_Integer i, j, Som;
   // 300 = 1+2+  ... +24 points.
   Som = (Standard_Integer )( 300*((classe-1)*classe/2.-1) + classe * (nbpoints-1)*nbpoints/2.);
   
@@ -1248,7 +1248,6 @@ void VBernstein(const Standard_Integer classe,
     for (j = 1; j <= nbpoints; j++) {
       M(i, j) = *tmpVB;
       tmpVB++;
-      k++;
     }
   }
 }

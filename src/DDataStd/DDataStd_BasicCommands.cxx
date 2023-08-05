@@ -208,7 +208,7 @@ static Standard_Integer DDataStd_GetInteger (Draw_Interpretor& di,
         if (Standard_GUID::CheckGUIDFormat(arg[3])) 
           aGuid = Standard_GUID(arg[3]);
       }
-      if(Standard_GUID::IsEqual(aGuid, aNullGuid)) {
+      if(aGuid == aNullGuid) {
         isdrawname = Standard_True;
         aGuid = TDataStd_Integer::GetID();
       }
@@ -253,7 +253,7 @@ static Standard_Integer DDataStd_GetReal (Draw_Interpretor& di,
         if (Standard_GUID::CheckGUIDFormat(arg[3])) 
           aGuid = Standard_GUID(arg[3]);
       }
-      if(Standard_GUID::IsEqual(aGuid, aNullGuid)) {
+      if(aGuid == aNullGuid) {
         isdrawname = Standard_True;
         aGuid = TDataStd_Real::GetID();
       }
@@ -1478,6 +1478,7 @@ static Standard_Integer DDataStd_GetUTFtoFile (Draw_Interpretor& di,
     n = aES.ToUTF8CString(aCstr);
     anOS.write( (char*)&aCstr[0], n); 
     anOS.close();
+    Standard::Free(aCstr);
     return 0;
   }
   di << "GetUTF : Data is not extracted to the specified file \n";

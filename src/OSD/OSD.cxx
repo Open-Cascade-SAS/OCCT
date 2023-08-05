@@ -14,6 +14,8 @@
 
 #include <OSD.hxx>
 
+#include <Standard_CString.hxx>
+
 //=======================================================================
 //function : RealToCString
 //purpose  :

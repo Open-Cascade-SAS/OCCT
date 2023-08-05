@@ -17,6 +17,7 @@
 #define NCollection_TListNode_HeaderFile
 
 #include <NCollection_ListNode.hxx>
+#include <utility>
 
 /**
  * Purpose:     Abstract list node class. Used by BaseList
@@ -30,6 +31,9 @@ template <class TheItemType> class NCollection_TListNode
   NCollection_TListNode (const TheItemType& theItem,
                          NCollection_ListNode* theNext=NULL) :
     NCollection_ListNode  (theNext), myValue(theItem) { }
+  NCollection_TListNode (TheItemType&& theItem,
+                         NCollection_ListNode* theNext=NULL) :
+    NCollection_ListNode  (theNext), myValue(std::forward<TheItemType>(theItem)) { }
   //! Constant value access
   const TheItemType& Value () const { return myValue; }
   //! Variable value access

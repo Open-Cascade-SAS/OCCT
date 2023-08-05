@@ -17,28 +17,57 @@
 #include <Transfer_TransientMapper.hxx>
 
 #include <Standard_Type.hxx>
-
 #include <Standard_Transient.hxx>
 #include <Transfer_DataInfo.hxx>
 #include <Transfer_Finder.hxx>
 
- 
+//=======================================================================
+//function : Transfer_TransientMapper
+//purpose  : 
+//=======================================================================
+Transfer_TransientMapper::Transfer_TransientMapper(const Handle(Standard_Transient)& akey)
+  : theval(akey)
+{
+  SetHashCode(std::hash<Handle(Standard_Transient)>{}(akey));
+}
 
+//=======================================================================
+//function : Value
+//purpose  : 
+//=======================================================================
+const Handle(Standard_Transient)& Transfer_TransientMapper::Value() const
+{
+  return theval;
+}
 
+//=======================================================================
+//function : Equates
+//purpose  : 
+//=======================================================================
+Standard_Boolean  Transfer_TransientMapper::Equates
+(const Handle(Transfer_Finder)& other) const
+{
+  if (other.IsNull()) return Standard_False;
+  if (GetHashCode() != other->GetHashCode()) return Standard_False;
+  if (other->DynamicType() != DynamicType()) return Standard_False;
+  Handle(Transfer_TransientMapper) another = Handle(Transfer_TransientMapper)::DownCast(other);
+  return theval == another->Value();
+}
 
+//=======================================================================
+//function : ValueType
+//purpose  : 
+//=======================================================================
+Handle(Standard_Type)  Transfer_TransientMapper::ValueType() const
+{
+  return Transfer_DataInfo::Type(theval);
+}
 
-
-
-
-
-#define TheKey Handle(Standard_Transient)
-#define TheKey_hxx <Standard_Transient.hxx>
-#define TheHasher TColStd_MapTransientHasher
-#define TheHasher_hxx <TColStd_MapTransientHasher.hxx>
-#define TheInfo Transfer_DataInfo
-#define TheInfo_hxx <Transfer_DataInfo.hxx>
-#define Transfer_Mapper Transfer_TransientMapper
-#define Transfer_Mapper_hxx <Transfer_TransientMapper.hxx>
-#define Handle_Transfer_Mapper Handle(Transfer_TransientMapper)
-#include <Transfer_Mapper.gxx>
-
+//=======================================================================
+//function : ValueTypeName
+//purpose  : 
+//=======================================================================
+Standard_CString  Transfer_TransientMapper::ValueTypeName() const
+{
+  return Transfer_DataInfo::TypeName(theval);
+}

@@ -19,11 +19,10 @@
 
 #include <Standard_Integer.hxx>
 #include <MAT_Node.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Node),TColStd_MapIntegerHasher> MAT_DataMapOfIntegerNode;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Node),TColStd_MapIntegerHasher>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerNode;
+typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Node)> MAT_DataMapOfIntegerNode;
+typedef NCollection_DataMap<Standard_Integer,Handle(MAT_Node)>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerNode;
 
 
 #endif

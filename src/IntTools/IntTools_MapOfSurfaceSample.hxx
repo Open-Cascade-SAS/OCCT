@@ -17,11 +17,10 @@
 #define IntTools_MapOfSurfaceSample_HeaderFile
 
 #include <IntTools_SurfaceRangeSample.hxx>
-#include <IntTools_SurfaceRangeSampleMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<IntTools_SurfaceRangeSample,IntTools_SurfaceRangeSampleMapHasher> IntTools_MapOfSurfaceSample;
-typedef NCollection_Map<IntTools_SurfaceRangeSample,IntTools_SurfaceRangeSampleMapHasher>::Iterator IntTools_MapIteratorOfMapOfSurfaceSample;
+typedef NCollection_Map<IntTools_SurfaceRangeSample> IntTools_MapOfSurfaceSample;
+typedef NCollection_Map<IntTools_SurfaceRangeSample>::Iterator IntTools_MapIteratorOfMapOfSurfaceSample;
 
 
 #endif

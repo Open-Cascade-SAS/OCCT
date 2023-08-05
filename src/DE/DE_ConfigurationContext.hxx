@@ -17,7 +17,7 @@
 #include <NCollection_DataMap.hxx>
 #include <TColStd_ListOfAsciiString.hxx>
 
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString, TCollection_AsciiString> DE_ResourceMap;
+typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> DE_ResourceMap;
 
 //! Provides convenient interface to resource file
 //! Allows loading of the resource file and getting attributes' 

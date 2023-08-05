@@ -141,12 +141,12 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	Modif = Standard_False; 
 	HLRAlgo_ListIteratorOfInterferenceList ItSegHidden1(ILHidden);
 	while(ItSegHidden1.More() && Modif==Standard_False) { 
-	  HLRAlgo_Interference& Int1 = ItSegHidden1.Value();
+	  HLRAlgo_Interference& Int1 = ItSegHidden1.ChangeValue();
 	  Standard_Integer numseg1=Int1.Intersection().SegIndex();
 	  if(numseg1!=0) { 
 	    HLRAlgo_ListIteratorOfInterferenceList ItSegHidden2(ILHidden);
 	    while(ItSegHidden2.More()  && Modif==Standard_False) {
-	      HLRAlgo_Interference& Int2 = ItSegHidden2.Value();
+	      HLRAlgo_Interference& Int2 = ItSegHidden2.ChangeValue();
 	      Standard_Integer numseg2=Int2.Intersection().SegIndex();
 	      if(numseg1+numseg2 == 0) { 
 		//--printf("\nHidden Traitement du segment %d  %d\n",numseg1,numseg2); fflush(stdout);
@@ -216,7 +216,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	while(It.More()) {           // process Intersections on the Face
                                      // *********************************
 	  
-	  HLRAlgo_Interference& Int = It.Value();
+	  HLRAlgo_Interference& Int = It.ChangeValue();
 	  TopAbs_State stbef, staft;                // read the 3d states
 	  Int.Boundary().State3D(stbef,staft);      // ******************
 
@@ -401,7 +401,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  while(It.More()) {           // suppress multi-inside Intersections
 	                               // ***********************************
 	  
-	    HLRAlgo_Interference& Int = It.Value();
+	    const HLRAlgo_Interference& Int = It.Value();
 	    switch (Int.Transition()) {
 	      
 	    case TopAbs_FORWARD  :
@@ -585,7 +585,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	    while(It.More()) {         // suppress multi-inside Intersections
 	                               // ***********************************
 	      
-	      HLRAlgo_Interference& Int = It.Value();
+	      const HLRAlgo_Interference& Int = It.Value();
 	      switch (Int.Transition()) {
 		
 	      case TopAbs_FORWARD  :

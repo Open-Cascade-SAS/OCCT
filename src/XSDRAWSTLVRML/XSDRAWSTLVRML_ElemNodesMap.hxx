@@ -17,11 +17,10 @@
 #define XSDRAWSTLVRML_ElemNodesMap_HeaderFile
 
 #include <TColStd_DataMapOfIntegerInteger.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerInteger,TColStd_MapIntegerHasher> XSDRAWSTLVRML_ElemNodesMap;
-typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerInteger,TColStd_MapIntegerHasher>::Iterator XSDRAWSTLVRML_DataMapIteratorOfElemNodesMap;
+typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerInteger> XSDRAWSTLVRML_ElemNodesMap;
+typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerInteger>::Iterator XSDRAWSTLVRML_DataMapIteratorOfElemNodesMap;
 
 
 #endif

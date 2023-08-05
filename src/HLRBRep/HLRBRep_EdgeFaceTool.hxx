@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <Standard_Address.hxx>
 class gp_Dir;
 
 

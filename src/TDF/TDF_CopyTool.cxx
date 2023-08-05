@@ -28,6 +28,7 @@
 #include <TDF_LabelMap.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <Standard_TypeMismatch.hxx>
 
 //=======================================================================
 //function : Copy

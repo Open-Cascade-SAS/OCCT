@@ -18,11 +18,10 @@
 
 #include <Standard_Type.hxx>
 #include <XmlMDF_ADriver.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(Standard_Type),Handle(XmlMDF_ADriver),TColStd_MapTransientHasher> XmlMDF_TypeADriverMap;
-typedef NCollection_DataMap<Handle(Standard_Type),Handle(XmlMDF_ADriver),TColStd_MapTransientHasher>::Iterator XmlMDF_DataMapIteratorOfTypeADriverMap;
+typedef NCollection_DataMap<Handle(Standard_Type),Handle(XmlMDF_ADriver)> XmlMDF_TypeADriverMap;
+typedef NCollection_DataMap<Handle(Standard_Type),Handle(XmlMDF_ADriver)>::Iterator XmlMDF_DataMapIteratorOfTypeADriverMap;
 
 
 #endif

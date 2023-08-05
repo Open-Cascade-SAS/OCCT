@@ -15,7 +15,6 @@
 #ifndef TColStd_SequenceOfAddress_HeaderFile
 #define TColStd_SequenceOfAddress_HeaderFile
 
-#include <Standard_Address.hxx>
 #include <NCollection_Sequence.hxx>
 
 typedef NCollection_Sequence<Standard_Address> TColStd_SequenceOfAddress;

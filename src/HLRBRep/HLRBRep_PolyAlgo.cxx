@@ -2412,7 +2412,7 @@ void HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& theList,
     {
       for (HLRAlgo_ListIteratorOfListOfBPoint aBPointIter (theList); aBPointIter.More(); aBPointIter.Next())
       {
-        HLRAlgo_BiPoint& BP = aBPointIter.Value();
+        HLRAlgo_BiPoint& BP = aBPointIter.ChangeValue();
         HLRAlgo_BiPoint::IndicesT& theIndices = BP.Indices();
         if (theIndices.FaceConex1 != 0)
         {
@@ -3440,7 +3440,7 @@ TopoDS_Shape HLRBRep_PolyAlgo::OutLinedShape (const TopoDS_Shape& theShape) cons
     const HLRAlgo_ListOfBPoint& aList = aShell.Value (aShellIter)->Edges();
     for (aBPntIter.Initialize (aList); aBPntIter.More(); aBPntIter.Next())
     {
-      HLRAlgo_BiPoint& aBP = aBPntIter.Value();
+      HLRAlgo_BiPoint& aBP = aBPntIter.ChangeValue();
       if (aBP.IntLine())
       {
         const HLRAlgo_BiPoint::IndicesT& aIndices = aBP.Indices();

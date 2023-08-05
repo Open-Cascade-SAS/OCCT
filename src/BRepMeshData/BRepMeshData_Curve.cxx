@@ -24,8 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Curve, IMeshData_Curve)
 // Purpose : 
 //=======================================================================
 BRepMeshData_Curve::BRepMeshData_Curve (const Handle (NCollection_IncAllocator)& theAllocator)
-: myPoints     (NCollection_StdAllocator<gp_Pnt>(theAllocator)),
-  myParameters (NCollection_StdAllocator<Standard_Real>(theAllocator))
+: myPoints     (NCollection_OccAllocator<gp_Pnt>(theAllocator)),
+  myParameters (NCollection_OccAllocator<Standard_Real>(theAllocator))
 {
 }
 

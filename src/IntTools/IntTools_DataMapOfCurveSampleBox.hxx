@@ -18,11 +18,10 @@
 
 #include <IntTools_CurveRangeSample.hxx>
 #include <Bnd_Box.hxx>
-#include <IntTools_CurveRangeSampleMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<IntTools_CurveRangeSample,Bnd_Box,IntTools_CurveRangeSampleMapHasher> IntTools_DataMapOfCurveSampleBox;
-typedef NCollection_DataMap<IntTools_CurveRangeSample,Bnd_Box,IntTools_CurveRangeSampleMapHasher>::Iterator IntTools_DataMapIteratorOfDataMapOfCurveSampleBox;
+typedef NCollection_DataMap<IntTools_CurveRangeSample,Bnd_Box> IntTools_DataMapOfCurveSampleBox;
+typedef NCollection_DataMap<IntTools_CurveRangeSample,Bnd_Box>::Iterator IntTools_DataMapIteratorOfDataMapOfCurveSampleBox;
 
 
 #endif

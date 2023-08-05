@@ -573,30 +573,11 @@ Standard_Boolean BOPAlgo_PaveFiller::CheckFacePaves
    const TColStd_MapOfInteger& aMIFOn,
    const TColStd_MapOfInteger& aMIFIn)
 {
-  Standard_Boolean bRet;
-  Standard_Integer nV;
-  TColStd_MapIteratorOfMapOfInteger aIt;
-  //
-  bRet=Standard_False;
-  //
-  aIt.Initialize(aMIFOn);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    if (nV==nVx) {
-      bRet=!bRet;
-      return bRet;
-    }
+  if (aMIFOn.Contains(nVx) || aMIFIn.Contains(nVx))
+  {
+    return true;
   }
-  aIt.Initialize(aMIFIn);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    if (nV==nVx) {
-      bRet=!bRet;
-      return bRet;
-    }
-  }
-  //
-  return bRet;
+  return false;
 }
 //=======================================================================
 // function: CheckFacePaves
@@ -1073,7 +1054,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
   aPSOuter.Next(0.7);
 
   aPBMap.Clear();
-  anAlloc->Reset();
+  anAlloc->Reset(false);
 
   Message_ProgressScope aPS(aPSOuter.Next(9), "Checking for edges coinciding with faces", aNbEFs);
   for (Standard_Integer i = 0; i < aNbEFs; i++)

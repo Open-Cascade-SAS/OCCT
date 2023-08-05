@@ -18,11 +18,10 @@
 
 #include <TDF_Attribute.hxx>
 #include <TDF_Attribute.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Handle(TDF_Attribute),Handle(TDF_Attribute),TColStd_MapTransientHasher,TColStd_MapTransientHasher> TDF_AttributeDoubleMap;
-typedef NCollection_DoubleMap<Handle(TDF_Attribute),Handle(TDF_Attribute),TColStd_MapTransientHasher,TColStd_MapTransientHasher>::Iterator TDF_DoubleMapIteratorOfAttributeDoubleMap;
+typedef NCollection_DoubleMap<Handle(TDF_Attribute),Handle(TDF_Attribute)> TDF_AttributeDoubleMap;
+typedef NCollection_DoubleMap<Handle(TDF_Attribute),Handle(TDF_Attribute)>::Iterator TDF_DoubleMapIteratorOfAttributeDoubleMap;
 
 
 #endif

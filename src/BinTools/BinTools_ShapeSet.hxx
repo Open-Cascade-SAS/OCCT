@@ -183,12 +183,12 @@ private:
   BinTools_SurfaceSet mySurfaces;
   BinTools_CurveSet myCurves;
   BinTools_Curve2dSet myCurves2d;
-  NCollection_IndexedMap<Handle(Poly_Polygon2D), TColStd_MapTransientHasher> myPolygons2D;
-  NCollection_IndexedMap<Handle(Poly_Polygon3D), TColStd_MapTransientHasher> myPolygons3D;
+  NCollection_IndexedMap<Handle(Poly_Polygon2D)> myPolygons2D;
+  NCollection_IndexedMap<Handle(Poly_Polygon3D)> myPolygons3D;
   NCollection_IndexedDataMap<Handle(Poly_Triangulation),
                              Standard_Boolean> myTriangulations; //!< Contains a boolean flag with information
                                                                  //!  to save normals for triangulation
-  NCollection_IndexedMap<Handle(Poly_PolygonOnTriangulation), TColStd_MapTransientHasher> myNodes;
+  NCollection_IndexedMap<Handle(Poly_PolygonOnTriangulation)> myNodes;
 };
 
 #endif // _BinTools_ShapeSet_HeaderFile

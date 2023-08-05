@@ -1068,8 +1068,8 @@ void BRepFill_OffsetWire::PerformWithBiLo
         {
           const TopTools_ListOfShape& listSh = aSubst.Copy(itl.Value());
           TopAbs_Orientation SaveOr = itl.Value().Orientation();
-          itl.Value() = listSh.First();
-          itl.Value().Orientation(SaveOr);
+          itl.ChangeValue() = listSh.First();
+          itl.ChangeValue().Orientation(SaveOr);
         }
       }
     }

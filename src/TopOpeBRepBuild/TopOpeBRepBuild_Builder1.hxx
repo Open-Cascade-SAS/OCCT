@@ -132,7 +132,7 @@ private:
   TopoDS_Shape mySDFaceToFill;
   TopoDS_Shape myBaseFaceToFill;
   TopTools_IndexedDataMapOfShapeListOfShape myMapOfEdgeFaces;
-  NCollection_DataMap<TopoDS_Shape, Standard_Boolean, TopTools_OrientedShapeMapHasher> myMapOfEdgeWithFaceState;
+  NCollection_DataMap<TopoDS_Shape, Standard_Boolean> myMapOfEdgeWithFaceState;
   TopTools_IndexedMapOfShape myProcessedPartsOut2d;
   TopTools_IndexedMapOfShape myProcessedPartsON2d;
   TopTools_IndexedMapOfShape mySplitsONtoKeep;

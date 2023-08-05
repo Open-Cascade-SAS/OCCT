@@ -32,7 +32,7 @@ BRepMeshData_Model::BRepMeshData_Model (const TopoDS_Shape& theShape)
     myDFaces (256, myAllocator),
     myDEdges (256, myAllocator)
 {
-  myAllocator->SetThreadSafe();
+  myAllocator->SetThreadSafe(true);
 }
 
 //=======================================================================
@@ -59,8 +59,7 @@ Standard_Integer BRepMeshData_Model::FacesNb () const
 const IMeshData::IFaceHandle& BRepMeshData_Model::AddFace (const TopoDS_Face& theFace)
 {
   IMeshData::IFaceHandle aFace (new (myAllocator) BRepMeshData_Face (theFace, myAllocator));
-  myDFaces.Append (aFace);
-  return myDFaces (FacesNb () - 1);
+  return myDFaces.Append (aFace);
 }
 
 //=======================================================================
@@ -88,8 +87,7 @@ Standard_Integer BRepMeshData_Model::EdgesNb () const
 const IMeshData::IEdgeHandle& BRepMeshData_Model::AddEdge (const TopoDS_Edge& theEdge)
 {
   IMeshData::IEdgeHandle aEdge (new (myAllocator) BRepMeshData_Edge (theEdge, myAllocator));
-  myDEdges.Append (aEdge);
-  return myDEdges (EdgesNb () - 1);
+  return myDEdges.Append (aEdge);
 }
 
 //=======================================================================

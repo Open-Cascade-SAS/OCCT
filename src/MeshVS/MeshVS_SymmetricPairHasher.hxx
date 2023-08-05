@@ -15,25 +15,31 @@
 #define _MeshVS_SymmetricPairHasher_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_HashUtils.hxx>
 
 typedef std::pair<Standard_Integer, Standard_Integer> MeshVS_NodePair;
 
 //! Provides symmetric hash methods pair of integers.
 struct MeshVS_SymmetricPairHasher
 {
-  //! Computes a hash code for the node pair, in the range [1, theUpperBound]
+  //! Computes a hash code for the node pair
   //! @param theNodePair the node pair which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  static Standard_Integer HashCode (const MeshVS_NodePair& theNodePair, const Standard_Integer theUpperBound)
+  //! @return a computed hash code
+  size_t operator()(const MeshVS_NodePair& theNodePair) const noexcept
   {
-    return ::HashCode(theNodePair.first + theNodePair.second, theUpperBound);
+    // Combine two int values into a single hash value.
+    int aCombination[2]{ theNodePair.first, theNodePair.second };
+    if (aCombination[0] > aCombination[1])
+    {
+      std::swap(aCombination[0], aCombination[1]);
+    }
+    return opencascade::hashBytes(aCombination, sizeof(aCombination));
   }
 
-  static Standard_Boolean IsEqual (const MeshVS_NodePair& thePair1, const MeshVS_NodePair& thePair2)
+  bool operator()(const MeshVS_NodePair& thePair1, const MeshVS_NodePair& thePair2) const noexcept
   {
     return (thePair1.first == thePair2.first && thePair1.second == thePair2.second)
-        || (thePair1.first == thePair2.second && thePair1.second == thePair2.first);
+      || (thePair1.first == thePair2.second && thePair1.second == thePair2.first);
   }
 };
 

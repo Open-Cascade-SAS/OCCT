@@ -66,6 +66,11 @@ public:
   
   //! Initializes a HAsciiString with a AsciiString.
   Standard_EXPORT TCollection_HAsciiString(const TCollection_AsciiString& aString);
+
+  //! Initializes a HAsciiString with a AsciiString.
+  TCollection_HAsciiString(TCollection_AsciiString&& theString) noexcept :
+    myString(std::move(theString))
+  {}
   
   //! Initializes a HAsciiString with a HAsciiString.
   Standard_EXPORT TCollection_HAsciiString(const Handle(TCollection_HAsciiString)& aString);

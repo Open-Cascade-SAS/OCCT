@@ -18,7 +18,6 @@
 #include <math_BullardGenerator.hxx>
 #include <NCollection_Map.hxx>
 #include <StdSelect_TypeOfSelectionImage.hxx>
-#include <Quantity_ColorHasher.hxx>
 
 class SelectMgr_ViewerSelector;
 
@@ -76,7 +75,7 @@ protected:
   Image_PixMap*             myImage;
   SelectMgr_ViewerSelector* myMainSel;
   math_BullardGenerator     myBullardGenerator;
-  NCollection_Map<Quantity_Color, Quantity_ColorHasher> myUniqueColors;
+  NCollection_Map<Quantity_Color> myUniqueColors;
 };
 
 #endif

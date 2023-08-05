@@ -384,7 +384,7 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
   // Reorientation of all closed wires to the left.
   //---------------------------------------------------------
   for (; it.More(); it.Next()) {
-    TopoDS_Wire& W  = TopoDS::Wire(it.Value());
+    TopoDS_Wire& W  = TopoDS::Wire(it.ChangeValue());
     TopoDS_Shape aLocalShape = myFace.EmptyCopied();
     TopoDS_Face  NF = TopoDS::Face(aLocalShape);
 //    TopoDS_Face  NF = TopoDS::Face(myFace.EmptyCopied());
@@ -402,7 +402,7 @@ void BRepAlgo_FaceRestrictor::PerformWithCorrection()
   // Classification of wires ones compared to the others.
   //---------------------------------------------------------
   for (it.Initialize(wires) ; it.More(); it.Next()) {
-    TopoDS_Wire& W1  = TopoDS::Wire(it.Value());
+    const TopoDS_Wire& W1  = TopoDS::Wire(it.Value());
     TopTools_ListIteratorOfListOfShape it2(wires);
 
     if (IsClosed(W1)) {

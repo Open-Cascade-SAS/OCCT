@@ -22,7 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Boolean.hxx>
-
+#include <Standard_HashUtils.hxx>
 
 //! BiInt is a set of two integers.
 class MAT2d_BiInt 
@@ -67,6 +67,19 @@ private:
 
 };
 
+namespace std
+{
+  template <>
+  struct hash<MAT2d_BiInt>
+  {
+    size_t operator()(const MAT2d_BiInt& theBiInt) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      int aCombination[2]{ theBiInt.FirstIndex(), theBiInt.SecondIndex() };
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
+}
 
 
 

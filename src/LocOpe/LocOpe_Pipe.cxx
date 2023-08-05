@@ -109,7 +109,7 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine,
       }
       
       while (MapFac.Extent() >= 2) {
-	itm.Reset();
+	itm = TopTools_MapIteratorOfMapOfShape(MapFac);
 	TopTools_ListOfShape FacFuse;
 	TopoDS_Face FaceRef = TopoDS::Face(itm.Key());
 	FacFuse.Append(FaceRef);

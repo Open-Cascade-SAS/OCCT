@@ -18,10 +18,9 @@
 #define Expr_MapOfNamedUnknown_HeaderFile
 
 #include <Expr_NamedUnknown.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<Handle(Expr_NamedUnknown),TColStd_MapTransientHasher> Expr_MapOfNamedUnknown;
+typedef NCollection_IndexedMap<Handle(Expr_NamedUnknown)> Expr_MapOfNamedUnknown;
 
 
 #endif

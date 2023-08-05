@@ -207,7 +207,7 @@ void RWGltf_GltfMaterialMap::FlushGlbBufferViews (RWGltf_GltfOStreamWriter* theW
                                                   Standard_Integer& theBuffViewId)
 {
 #ifdef HAVE_RAPIDJSON
-  for (NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView, Image_Texture>::Iterator aBufViewIter (myImageMap);
+  for (NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView>::Iterator aBufViewIter (myImageMap);
        aBufViewIter.More(); aBufViewIter.Next())
   {
     RWGltf_GltfBufferView& aBuffView = aBufViewIter.ChangeValue();
@@ -241,7 +241,7 @@ void RWGltf_GltfMaterialMap::FlushGlbImages (RWGltf_GltfOStreamWriter* theWriter
 {
 #ifdef HAVE_RAPIDJSON
   bool isStarted = false;
-  for (NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView, Image_Texture>::Iterator aBufViewIter (myImageMap);
+  for (NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView>::Iterator aBufViewIter (myImageMap);
        aBufViewIter.More(); aBufViewIter.Next())
   {
     const Handle(Image_Texture)& aTexture  = aBufViewIter.Key();

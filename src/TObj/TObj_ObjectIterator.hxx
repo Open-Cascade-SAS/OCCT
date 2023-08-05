@@ -18,7 +18,8 @@
 #ifndef TObj_ObjectIterator_HeaderFile
 #define TObj_ObjectIterator_HeaderFile
 
-#include <TObj_Common.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_DefineHandle.hxx>
 
 class TObj_Object;
 

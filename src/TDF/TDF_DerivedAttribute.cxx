@@ -15,6 +15,7 @@
 
 #include <NCollection_DataMap.hxx>
 #include <Standard_Mutex.hxx>
+#include <Standard_CStringHasher.hxx>
 #include <TCollection_AsciiString.hxx>
 
 namespace TDF_DerivedAttributeGlobals
@@ -35,16 +36,16 @@ namespace TDF_DerivedAttributeGlobals
     return THE_CREATORS_LIST;
   }
   //! Global map of the string-type of derived attribute -> instance of such attribute
-  static NCollection_DataMap<Standard_CString, Handle(TDF_Attribute)>& Attributes()
+  static NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher>& Attributes()
   {
-    static NCollection_DataMap<Standard_CString, Handle(TDF_Attribute)> THE_DERIVED;
+    static NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher> THE_DERIVED;
     return THE_DERIVED;
   }
 
   //! Global map of the string-type of derived attribute -> type name to identify this attribute
-  static NCollection_DataMap<Standard_CString, TCollection_AsciiString*>& Types()
+  static NCollection_DataMap<Standard_CString, TCollection_AsciiString*, Standard_CStringHasher>& Types()
   {
-    static NCollection_DataMap<Standard_CString, TCollection_AsciiString*> THE_DERIVED_TYPES;
+    static NCollection_DataMap<Standard_CString, TCollection_AsciiString*, Standard_CStringHasher> THE_DERIVED_TYPES;
     return THE_DERIVED_TYPES;
   }
 
@@ -154,7 +155,7 @@ void TDF_DerivedAttribute::Attributes (NCollection_List<Handle(TDF_Attribute)>& 
 {
   Standard_Mutex::Sentry aSentry (TDF_DerivedAttributeGlobals::Mutex());
   Initialize();
-  NCollection_DataMap<Standard_CString, Handle(TDF_Attribute)>::Iterator anAttrIter;
+  NCollection_DataMap<Standard_CString, Handle(TDF_Attribute), Standard_CStringHasher>::Iterator anAttrIter;
   for (anAttrIter.Initialize (TDF_DerivedAttributeGlobals::Attributes()); anAttrIter.More(); anAttrIter.Next())
   {
     theList.Append (anAttrIter.Value());

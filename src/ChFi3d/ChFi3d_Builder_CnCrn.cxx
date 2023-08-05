@@ -843,7 +843,7 @@ static void RemoveSurfData (const ChFiDS_StripeMap & myVDataMap,
 	  CpOnEdge (It.Value(),i,isfirst,Eadj1,Eadj2,compoint);
 	  if (compoint) ind=i;
 	}
-	if (ind>=2) RemoveSD(It.Value(),1,ind-1);
+	if (ind>=2) RemoveSD(It.ChangeValue(),1,ind-1);
       }
       else {
         ind=num;
@@ -854,7 +854,7 @@ static void RemoveSurfData (const ChFiDS_StripeMap & myVDataMap,
 	  CpOnEdge (It.Value(),i,isfirst,Eadj1,Eadj2,compoint);
 	  if (compoint) ind=i;
 	}
-	if (ind<num) RemoveSD(It.Value(),ind+1,num);
+	if (ind<num) RemoveSD(It.ChangeValue(),ind+1,num);
       }
     }
   }

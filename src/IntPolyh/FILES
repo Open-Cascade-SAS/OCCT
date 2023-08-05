@@ -7,7 +7,6 @@ IntPolyh_ArrayOfTangentZones.hxx
 IntPolyh_ArrayOfTriangles.hxx
 IntPolyh_Couple.cxx
 IntPolyh_Couple.hxx
-IntPolyh_CoupleMapHasher.hxx
 IntPolyh_Edge.cxx
 IntPolyh_Edge.hxx
 IntPolyh_Intersection.cxx

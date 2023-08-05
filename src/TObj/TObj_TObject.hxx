@@ -18,7 +18,6 @@
 #ifndef TObj_TObject_HeaderFile
 #define TObj_TObject_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <TObj_Object.hxx>
 
 #include <TDF_Attribute.hxx>

@@ -17,11 +17,10 @@
 #define QANCollection_DataMapOfRealPnt_HeaderFile
 
 #include <gp_Pnt.hxx>
-#include <TColStd_MapRealHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Real,gp_Pnt,TColStd_MapRealHasher> QANCollection_DataMapOfRealPnt;
-typedef NCollection_DataMap<Standard_Real,gp_Pnt,TColStd_MapRealHasher>::Iterator QANCollection_DataMapIteratorOfDataMapOfRealPnt;
+typedef NCollection_DataMap<Standard_Real,gp_Pnt> QANCollection_DataMapOfRealPnt;
+typedef NCollection_DataMap<Standard_Real,gp_Pnt>::Iterator QANCollection_DataMapIteratorOfDataMapOfRealPnt;
 
 
 #endif

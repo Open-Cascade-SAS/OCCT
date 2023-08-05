@@ -904,7 +904,7 @@ Standard_Boolean TopOpeBRepTool_FuseEdges::UpdatePCurve(const TopoDS_Edge& theOl
 	    iter.Next();
 	    for (; iter.More(); iter.Next())
 	      {
-		TopoDS_Edge& E = TopoDS::Edge(iter.Value());
+		const TopoDS_Edge& E = TopoDS::Edge(iter.Value());
 		Standard_Real first, last;
 		Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface( E, Surf, loc, first, last );
 		Handle(Geom2d_BoundedCurve) BC = Handle(Geom2d_BoundedCurve)::DownCast(C);

@@ -19,11 +19,10 @@
 
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TopTools_ListOfShape,TColStd_MapIntegerHasher> TopTools_DataMapOfIntegerListOfShape;
-typedef NCollection_DataMap<Standard_Integer,TopTools_ListOfShape,TColStd_MapIntegerHasher>::Iterator TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape;
+typedef NCollection_DataMap<Standard_Integer,TopTools_ListOfShape> TopTools_DataMapOfIntegerListOfShape;
+typedef NCollection_DataMap<Standard_Integer,TopTools_ListOfShape>::Iterator TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape;
 
 
 #endif

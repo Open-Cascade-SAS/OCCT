@@ -16,7 +16,7 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 
-#include <NCollection_StdAllocator.hxx>
+#include <NCollection_OccAllocator.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_HeapAllocator.hxx>
 #include <OSD_Timer.hxx>

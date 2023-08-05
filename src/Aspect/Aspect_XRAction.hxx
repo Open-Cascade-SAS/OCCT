@@ -53,6 +53,6 @@ protected:
 };
 
 //! Map of actions with action Id as a key.
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRAction), TCollection_AsciiString> Aspect_XRActionMap;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRAction)> Aspect_XRActionMap;
 
 #endif // _Aspect_XRAction_HeaderFile

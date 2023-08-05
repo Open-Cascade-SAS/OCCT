@@ -77,8 +77,6 @@ MeshVS_Tool.cxx
 MeshVS_Tool.hxx
 MeshVS_TwoColors.cxx
 MeshVS_TwoColors.hxx
-MeshVS_TwoColorsHasher.hxx
 MeshVS_TwoNodes.hxx
-MeshVS_TwoNodesHasher.hxx
 MeshVS_VectorPrsBuilder.cxx
 MeshVS_VectorPrsBuilder.hxx

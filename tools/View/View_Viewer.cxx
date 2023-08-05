@@ -16,7 +16,6 @@
 #include <inspector/View_Viewer.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
-#include <Standard_ExtString.hxx>
 
 // =======================================================================
 // function : CreateView

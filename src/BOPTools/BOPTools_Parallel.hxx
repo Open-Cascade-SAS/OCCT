@@ -50,25 +50,6 @@ class BOPTools_Parallel
   template<class TypeSolverVector, class TypeContext>
   class ContextFunctor
   {
-    //! Auxiliary thread ID  hasher.
-    struct Hasher
-    {
-      //! Computes a hash code for the given thread identifier, in the range [1, theUpperBound]
-      //! @param theThreadId the thread identifier which hash code is to be computed
-      //! @param theUpperBound the upper bound of the range a computing hash code must be within
-      //! @return a computed hash code, in the range [1, theUpperBound]
-      static Standard_Integer HashCode (const Standard_ThreadId theThreadId, const Standard_Integer theUpperBound)
-      {
-        return ::HashCode (theThreadId, theUpperBound);
-      }
-
-      static Standard_Boolean IsEqual(const Standard_ThreadId theKey1,
-                                      const Standard_ThreadId theKey2)
-      {
-        return theKey1 == theKey2;
-      }
-    };
-
   public:
 
     //! Constructor
@@ -116,7 +97,7 @@ class BOPTools_Parallel
 
   private:
     TypeSolverVector& mySolverVector;
-    mutable NCollection_DataMap<Standard_ThreadId, opencascade::handle<TypeContext>, Hasher> myContextMap;
+    mutable NCollection_DataMap<Standard_ThreadId, opencascade::handle<TypeContext>> myContextMap;
     mutable Standard_Mutex myMutex;
   };
 

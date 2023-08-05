@@ -399,7 +399,7 @@ protected:
 
   private:
 
-    NCollection_DataMap<TCollection_AsciiString, const RWGltf_JsonValue*, TCollection_AsciiString> myChildren;
+    NCollection_DataMap<TCollection_AsciiString, const RWGltf_JsonValue*> myChildren;
     const RWGltf_JsonValue* myRoot;
 
   };

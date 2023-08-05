@@ -18,7 +18,6 @@
 
 #include <gp_XY.hxx>
 #include <NCollection_List.hxx>
-#include <NCollection_TListIterator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Boolean.hxx>

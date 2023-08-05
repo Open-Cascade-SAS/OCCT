@@ -17,11 +17,7 @@
 #ifndef _TopoDS_Face_HeaderFile
 #define _TopoDS_Face_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
 #include <TopoDS_Shape.hxx>
-
 
 //! Describes a face which
 //! - references an underlying face with the potential to
@@ -36,32 +32,20 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Undefined Face.
-    TopoDS_Face();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  TopoDS_Face() {}
 };
 
-
-#include <TopoDS_Face.lxx>
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<TopoDS_Face>
+  {
+    size_t operator()(const TopoDS_Face& theShape) const
+    {
+      return std::hash<TopoDS_Shape>{}(theShape);
+    }
+  };
+}
 
 #endif // _TopoDS_Face_HeaderFile

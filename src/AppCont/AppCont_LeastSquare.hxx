@@ -22,7 +22,7 @@
 #include <math_Matrix.hxx>
 #include <NCollection_Array1.hxx>
 #include <AppParCurves_Constraint.hxx>
-
+#include <math_Vector.hxx>
 
 struct PeriodicityInfo
 {

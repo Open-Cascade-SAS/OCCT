@@ -17,7 +17,6 @@
 
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepToTopoDS_PointPair.hxx>
-#include <StepToTopoDS_PointPairHasher.hxx>
 
 //=======================================================================
 //function : StepToTopoDS_PointPair

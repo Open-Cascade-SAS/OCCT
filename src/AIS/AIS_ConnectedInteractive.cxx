@@ -30,7 +30,6 @@
 #include <StdSelect.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopTools_OrientedShapeMapHasher.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_ConnectedInteractive,AIS_InteractiveObject)
 
@@ -241,7 +240,7 @@ void AIS_ConnectedInteractive::computeSubShapeSelection (const Handle(SelectMgr_
                                                          const Standard_Integer theMode)
 {
   typedef NCollection_List<Handle(Select3D_SensitiveEntity)> SensitiveList;
-  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList, TopTools_OrientedShapeMapHasher>
+  typedef NCollection_DataMap<TopoDS_Shape, SensitiveList>
     Shapes2EntitiesMap;
 
   if (!myReference->HasSelection (theMode))

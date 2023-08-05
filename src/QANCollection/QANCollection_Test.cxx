@@ -27,64 +27,67 @@
 
 #include <NCollection_Vector.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_Array2.hxx>
 
 #define ItemType gp_Pnt
 #define Key1Type Standard_Real
 #define Key2Type Standard_Integer
 
 #include <NCollection_DefineHArray1.hxx>
+#define DEFINE_ARRAY1(_ClassName_, _BaseCollection_, TheItemType)              \
+typedef NCollection_Array1<TheItemType > _ClassName_;
 ////////////////////////////////DEFINE_ARRAY1(QANCollection_Array1,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_HARRAY1(QANCollection_HArray1,QANCollection_Array1)
 DEFINE_ARRAY1(QANCollection_Array1Func,QANCollection_BaseColFunc,ItemType)
 DEFINE_HARRAY1(QANCollection_HArray1Func,QANCollection_Array1Func)
 
 #include <NCollection_DefineHArray2.hxx>
+#define DEFINE_ARRAY2(_ClassName_, _BaseCollection_, TheItemType)              \
+typedef NCollection_Array2<TheItemType > _ClassName_;
 ////////////////////////////////DEFINE_ARRAY2(QANCollection_Array2,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_HARRAY2(QANCollection_HArray2,QANCollection_Array2)
 DEFINE_ARRAY2(QANCollection_Array2Func,QANCollection_BaseColFunc,ItemType)
 DEFINE_HARRAY2(QANCollection_HArray2Func,QANCollection_Array2Func)
 
-#include <NCollection_DefineMap.hxx>
-#include <NCollection_DefineDataMap.hxx>
-#include <NCollection_DefineDoubleMap.hxx>
-#include <NCollection_DefineIndexedMap.hxx>
-#include <NCollection_DefineIndexedDataMap.hxx>
+
 ////////////////////////////////DEFINE_MAP(QANCollection_Map,QANCollection_Key1BaseCol,Key1Type)
 ////////////////////////////////DEFINE_DATAMAP(QANCollection_DataMap,QANCollection_BaseCol,Key1Type,ItemType)
 ////////////////////////////////DEFINE_DOUBLEMAP(QANCollection_DoubleMap,QANCollection_Key2BaseCol,Key1Type,Key2Type)
 ////////////////////////////////DEFINE_INDEXEDMAP(QANCollection_IndexedMap,QANCollection_Key1BaseCol,Key1Type)
 ////////////////////////////////DEFINE_INDEXEDDATAMAP(QANCollection_IDMap,QANCollection_BaseCol,Key1Type,ItemType)
+#include <NCollection_DoubleMap.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#define DEFINE_DATAMAP(_ClassName_, _BaseCollection_, TheKeyType, TheItemType) \
+typedef NCollection_DataMap<TheKeyType, TheItemType > _ClassName_;
+#define DEFINE_DOUBLEMAP(_ClassName_, _BaseCollection_, TheKey1Type, TheKey2Type) \
+typedef NCollection_DoubleMap <TheKey1Type, TheKey2Type > _ClassName_;
+#define DEFINE_INDEXEDDATAMAP(_ClassName_, _BaseCollection_, TheKeyType, TheItemType) \
+typedef NCollection_IndexedDataMap <TheKeyType, TheItemType > _ClassName_;
+#define DEFINE_INDEXEDMAP(_ClassName_, _BaseCollection_, TheKeyType)           \
+typedef NCollection_IndexedMap <TheKeyType > _ClassName_;
+#define DEFINE_MAP(_ClassName_, _BaseCollection_, TheKeyType)                  \
+typedef NCollection_Map <TheKeyType > _ClassName_;
 DEFINE_MAP(QANCollection_MapFunc,QANCollection_Key1BaseColFunc,Key1Type)
 DEFINE_DATAMAP(QANCollection_DataMapFunc,QANCollection_BaseColFunc,Key1Type,ItemType)
 DEFINE_DOUBLEMAP(QANCollection_DoubleMapFunc,QANCollection_Key2BaseColFunc,Key1Type,Key2Type)
 DEFINE_INDEXEDMAP(QANCollection_IndexedMapFunc,QANCollection_Key1BaseColFunc,Key1Type)
 DEFINE_INDEXEDDATAMAP(QANCollection_IDMapFunc,QANCollection_BaseColFunc,Key1Type,ItemType)
 
-#include <NCollection_DefineList.hxx>
 ////////////////////////////////DEFINE_LIST(QANCollection_List,QANCollection_BaseCol,ItemType)
+#define DEFINE_LIST(_ClassName_, _BaseCollection_, TheItemType)                \
+typedef NCollection_List <TheItemType > _ClassName_;
+DEFINE_LIST(QANCollection_ListPerf,QANCollection_BaseColPerf,ItemType)
 DEFINE_LIST(QANCollection_ListFunc,QANCollection_BaseColFunc,ItemType)
 
 #include <NCollection_DefineHSequence.hxx>
+#include <NCollection_Sequence.hxx>
+#define DEFINE_SEQUENCE(_ClassName_, _BaseCollection_, TheItemType)            \
+typedef NCollection_Sequence<TheItemType > _ClassName_;
 ////////////////////////////////DEFINE_SEQUENCE(QANCollection_Sequence,QANCollection_BaseCol,ItemType)
 ////////////////////////////////DEFINE_HSEQUENCE(QANCollection_HSequence,QANCollection_Sequence)
 DEFINE_SEQUENCE(QANCollection_SequenceFunc,QANCollection_BaseColFunc,ItemType)
 DEFINE_HSEQUENCE(QANCollection_HSequenceFunc,QANCollection_SequenceFunc)
-
-// HashCode and IsEquel must be defined for key types of maps
-
-//! Computes a hash code for the point, in the range [1, theUpperBound]
-//! @param thePoint the point which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-Standard_Integer HashCode (const gp_Pnt& thePoint, int theUpperBound)
-{
-  return HashCode (thePoint.X(), theUpperBound);
-}
-
-Standard_Boolean IsEqual(const gp_Pnt& theP1, const gp_Pnt& theP2)
-{
-  return theP1.IsEqual(theP2,gp::Resolution());
-}
 
 ////////////////////////////////void printCollection (QANCollection_Key1BaseCol& aColl, 
 template <class Coll>

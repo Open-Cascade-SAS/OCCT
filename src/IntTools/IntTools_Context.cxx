@@ -125,7 +125,7 @@ IntTools_Context::~IntTools_Context()
   }
   mySClassMap.Clear();
 
-  for (NCollection_DataMap<Handle(Geom_Curve), GeomAPI_ProjectPointOnCurve*, TColStd_MapTransientHasher>::Iterator anIt (myProjPTMap);
+  for (NCollection_DataMap<Handle(Geom_Curve), GeomAPI_ProjectPointOnCurve*>::Iterator anIt (myProjPTMap);
        anIt.More(); anIt.Next())
   {
     GeomAPI_ProjectPointOnCurve* pProjPT = anIt.Value();

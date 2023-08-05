@@ -17,6 +17,7 @@
 #define _Graphic3d_ShaderAttribute_HeaderFile
 
 #include <Standard_Transient.hxx>
+#include <NCollection_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! Describes custom vertex shader attribute.

@@ -15,7 +15,6 @@
 #define _Message_PrinterToReport_HeaderFile
 
 #include <Message_Printer.hxx>
-#include <Standard_Address.hxx>
 #include <TCollection_AsciiString.hxx>
 
 class Message_Report;

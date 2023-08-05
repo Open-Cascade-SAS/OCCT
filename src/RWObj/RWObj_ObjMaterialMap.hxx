@@ -14,6 +14,7 @@
 #ifndef _RWObj_ObjMaterialMap_HeaderFiler
 #define _RWObj_ObjMaterialMap_HeaderFiler
 
+#include <NCollection_DataMap.hxx>
 #include <RWMesh_MaterialMap.hxx>
 
 //! Material MTL file writer for OBJ export.
@@ -39,7 +40,7 @@ public:
 private:
 
   FILE* myFile;
-  NCollection_DataMap<Handle(Image_Texture), TCollection_AsciiString, Image_Texture> myImageMap;
+  NCollection_DataMap<Handle(Image_Texture), TCollection_AsciiString> myImageMap;
 
 };
 

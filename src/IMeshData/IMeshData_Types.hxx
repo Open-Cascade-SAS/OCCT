@@ -22,7 +22,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DefineAlloc.hxx>
-#include <NCollection_StdAllocator.hxx>
+#include <NCollection_OccAllocator.hxx>
 #include <IMeshData_ParametersListArrayAdaptor.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <NCollection_EBTree.hxx>
@@ -108,10 +108,10 @@ namespace IMeshData
 
   namespace Model
   {
-    typedef std::deque<gp_Pnt, NCollection_StdAllocator<gp_Pnt> >                     SequenceOfPnt;
-    typedef std::deque<gp_Pnt2d, NCollection_StdAllocator<gp_Pnt2d> >                 SequenceOfPnt2d;
-    typedef std::deque<Standard_Real, NCollection_StdAllocator<Standard_Real> >       SequenceOfReal;
-    typedef std::deque<Standard_Integer, NCollection_StdAllocator<Standard_Integer> > SequenceOfInteger;
+    typedef std::deque<gp_Pnt, NCollection_OccAllocator<gp_Pnt> >                     SequenceOfPnt;
+    typedef std::deque<gp_Pnt2d, NCollection_OccAllocator<gp_Pnt2d> >                 SequenceOfPnt2d;
+    typedef std::deque<Standard_Real, NCollection_OccAllocator<Standard_Real> >       SequenceOfReal;
+    typedef std::deque<Standard_Integer, NCollection_OccAllocator<Standard_Integer> > SequenceOfInteger;
   }
 
   // Lists
@@ -125,40 +125,20 @@ namespace IMeshData
   typedef NCollection_CellFilter<BRepMesh_CircleInspector> CircleCellFilter;
   typedef NCollection_CellFilter<BRepMesh_VertexInspector> VertexCellFilter;
 
-  // Data Maps
-  template<typename Type>
-  struct WeakEqual
-  {
-    static Standard_Boolean IsEqual(const Type* theFirst,
-                                    const Type* theSecond)
-    {
-      return (theFirst == theSecond);
-    }
+  typedef NCollection_Shared<NCollection_DataMap<TopoDS_Shape, Standard_Integer,TopTools_ShapeMapHasher> > DMapOfShapeInteger;
+  typedef NCollection_Shared<NCollection_DataMap<IFacePtr, ListOfInteger> >                                DMapOfIFacePtrsListOfInteger;
+  typedef NCollection_Shared<NCollection_Map<IEdgePtr> >                                                   MapOfIEdgePtr;
+  typedef NCollection_Shared<NCollection_Map<IFacePtr> >                                                   MapOfIFacePtr;
+  typedef NCollection_Shared<NCollection_Map<BRepMesh_OrientedEdge> >                                      MapOfOrientedEdges;
+  typedef NCollection_Shared<NCollection_Map<Standard_Real> >                                              MapOfReal;
+  typedef NCollection_Shared<NCollection_IndexedDataMap<IFacePtr, ListOfIPCurves> >                        IDMapOfIFacePtrsListOfIPCurves;
+  typedef NCollection_Shared<NCollection_DataMap<IFacePtr, Handle(MapOfIEdgePtr)> >                        DMapOfIFacePtrsMapOfIEdgePtrs;
+  typedef NCollection_Shared<NCollection_IndexedDataMap<BRepMesh_Edge, BRepMesh_PairOfIndex> >             IDMapOfLink;
+  typedef NCollection_Shared<NCollection_DataMap<Standard_Integer, ListOfInteger> >                        DMapOfIntegerListOfInteger;
+  typedef NCollection_Shared<NCollection_DataMap<Standard_Integer, Standard_Boolean> >                     MapOfIntegerInteger;
+  typedef NCollection_Shared<NCollection_IndexedMap<Standard_Real> >                                       IMapOfReal;
 
-    //! Computes a hash code for the given pointer, in the range [1, theUpperBound]
-    //! @param thePointer the pointer which hash code is to be computed
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in the range [1, theUpperBound]
-    static Standard_Integer HashCode (const Type* const thePointer, Standard_Integer theUpperBound)
-    {
-      return ::HashCode (thePointer, theUpperBound);
-    }
-  };
-
-  typedef NCollection_Shared<NCollection_DataMap<TopoDS_Shape, Standard_Integer, TopTools_ShapeMapHasher> >     DMapOfShapeInteger;
-  typedef NCollection_Shared<NCollection_DataMap<IFacePtr, ListOfInteger, WeakEqual<IMeshData_Face> > >         DMapOfIFacePtrsListOfInteger;
-  typedef NCollection_Shared<NCollection_Map<IEdgePtr, WeakEqual<IMeshData_Edge> > >                            MapOfIEdgePtr;
-  typedef NCollection_Shared<NCollection_Map<IFacePtr, WeakEqual<IMeshData_Face> > >                            MapOfIFacePtr;
-  typedef NCollection_Shared<NCollection_Map<BRepMesh_OrientedEdge> >                                           MapOfOrientedEdges;
-  typedef NCollection_Shared<NCollection_Map<Standard_Real> >                                                   MapOfReal;
-  typedef NCollection_Shared<NCollection_IndexedDataMap<IFacePtr, ListOfIPCurves, WeakEqual<IMeshData_Face> > > IDMapOfIFacePtrsListOfIPCurves;
-  typedef NCollection_Shared<NCollection_DataMap<IFacePtr, Handle(MapOfIEdgePtr), WeakEqual<IMeshData_Face> > > DMapOfIFacePtrsMapOfIEdgePtrs;
-  typedef NCollection_Shared<NCollection_IndexedDataMap<BRepMesh_Edge, BRepMesh_PairOfIndex> >                  IDMapOfLink;
-  typedef NCollection_Shared<NCollection_DataMap<Standard_Integer, ListOfInteger> >                             DMapOfIntegerListOfInteger;
-  typedef NCollection_Shared<NCollection_DataMap<Standard_Integer, Standard_Integer> >                          MapOfIntegerInteger;
-  typedef NCollection_Shared<NCollection_IndexedMap<Standard_Real> >                                            IMapOfReal;
-
-  typedef NCollection_Shared<NCollection_Array1<Standard_Integer> >                                             Array1OfInteger;
+  typedef NCollection_Shared<NCollection_Array1<Standard_Integer> >                                        Array1OfInteger;
 }
 
 #endif

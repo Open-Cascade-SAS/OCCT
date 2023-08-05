@@ -39,7 +39,7 @@ Standard_Boolean FUN_isPonF(const TopOpeBRepDS_ListOfInterference& LIF,const gp_
 
   TopOpeBRepDS_ListIteratorOfListOfInterference itF(LIF);
   for (;itF.More();itF.Next()) {
-    Handle(TopOpeBRepDS_Interference)& IF = itF.Value(); FDS_data(IF,GT1,G1,ST1,S1);
+    Handle(TopOpeBRepDS_Interference) IF = itF.Value(); FDS_data(IF,GT1,G1,ST1,S1);
     const TopoDS_Face& F = TopoDS::Face(BDS.Shape(S1));
     TopAbs_Orientation oEinF; Standard_Boolean edonfa = FUN_tool_orientEinFFORWARD(E,F,oEinF );
     if ( edonfa ) Pok = Standard_True;
@@ -70,7 +70,7 @@ Standard_Boolean FUN_findPonF(const TopoDS_Edge& E,const TopOpeBRepDS_DataStruct
   for (;itI.More();itI.Next()) {
     Standard_Boolean pardef = Standard_False;
     
-    Handle(TopOpeBRepDS_Interference)& I = itI.Value(); FDS_data(I,GT1,G1,ST1,S1);        
+    Handle(TopOpeBRepDS_Interference)& I = itI.ChangeValue(); FDS_data(I,GT1,G1,ST1,S1);
     Handle(TopOpeBRepDS_CurvePointInterference) CPI (Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I));
     Handle(TopOpeBRepDS_ShapeShapeInterference) SSI (Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(I));
     if      (!CPI.IsNull()) {
@@ -216,7 +216,7 @@ void FUN_GmapS(TopOpeBRepDS_ListOfInterference& LI, const TopOpeBRepDS_DataStruc
   mosd.Clear();
   TopOpeBRepDS_Kind GT1,ST1;Standard_Integer G1,S1;
   for (TopOpeBRepDS_ListIteratorOfListOfInterference it1(LI);it1.More();it1.Next()) {
-    Handle(TopOpeBRepDS_Interference)& I1=it1.Value(); FDS_data(I1,GT1,G1,ST1,S1); 
+    Handle(TopOpeBRepDS_Interference)& I1=it1.ChangeValue(); FDS_data(I1,GT1,G1,ST1,S1);
     if ( GT1 != MDSke || ST1 != MDSkf ) continue;
     const TopoDS_Shape& SG1 = BDS.Shape(G1);
     TopOpeBRepDS_ShapeData thedata;

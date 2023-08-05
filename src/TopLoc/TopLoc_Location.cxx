@@ -23,8 +23,6 @@
 #include <TopLoc_Location.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
 
-static const gp_Trsf TheIdentity;
-
 //=======================================================================
 //function : TopLoc_Location
 //purpose  : constructor Identity
@@ -51,7 +49,7 @@ TopLoc_Location::TopLoc_Location (const Handle(TopLoc_Datum3D)& D)
 TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
 {
   Handle(TopLoc_Datum3D) D = new TopLoc_Datum3D(T);
-  myItems.Construct(TopLoc_ItemLocation(D,1));
+  myItems.Construct(TopLoc_ItemLocation(D, 1));
 }
 
 //=======================================================================
@@ -61,8 +59,9 @@ TopLoc_Location::TopLoc_Location(const gp_Trsf& T)
 
 const gp_Trsf& TopLoc_Location::Transformation() const
 {
+  static const gp_Trsf THE_IDENTITY_TRSF;
   if (IsIdentity())
-    return TheIdentity;
+    return THE_IDENTITY_TRSF;
   else
     return myItems.Value().myTrsf;
 }
@@ -164,39 +163,6 @@ TopLoc_Location TopLoc_Location::Powered (const Standard_Integer pwr) const
 
   if (pwr > 0) return Multiplied(Powered(pwr - 1));
   else         return Inverted().Powered(-pwr);
-}
-
-//=======================================================================
-// function : HashCode
-// purpose  :
-//=======================================================================
-Standard_Integer TopLoc_Location::HashCode (const Standard_Integer theUpperBound) const
-{
-  // the HashCode computed for a Location is the bitwise exclusive or
-  // of values computed for each element of the list
-  // to compute this value, the depth of the element is computed 
-  // the depth is the position of the element in the list
-  // this depth is multiplied by 3
-  // each element is an elementary Datum raised to a Power
-  // the Power is bitwise left shifted by depth
-  // this is added to the HashCode of the Datum
-  // this value is biwise rotated by depth
-  // the use of depth avoids getting the same result for two permutated lists.
-
-  Standard_Integer           depth = 0;
-  unsigned int               h     = 0;
-  TopLoc_SListOfItemLocation items = myItems;
-  while (items.More())
-  {
-    depth += 3;
-    unsigned int           i             = ::HashCode (items.Value().myDatum, theUpperBound);
-    const Standard_Integer aClampedDepth = depth % 32;
-    unsigned int           j             = ((i + items.Value().myPower) << aClampedDepth);
-    j                                    = j >> (32 - aClampedDepth) | j << aClampedDepth;
-    h ^= j;
-    items.Next ();
-  }
-  return ::HashCode (h, theUpperBound);
 }
 
 //=======================================================================

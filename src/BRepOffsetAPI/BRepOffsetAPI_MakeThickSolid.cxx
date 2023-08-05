@@ -109,7 +109,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeThickSolid::Modified (const TopoDS
       // Useful only for faces without influence on others.
       TopTools_ListIteratorOfListOfShape it(myGenerated);
       for (; it.More(); it.Next())
-        it.Value().Reverse();
+        it.ChangeValue().Reverse();
     }
   }
   else if (myLastUsedAlgo == OffsetAlgo_SIMPLE)

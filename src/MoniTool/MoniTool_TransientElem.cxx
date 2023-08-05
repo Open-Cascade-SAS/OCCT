@@ -17,13 +17,12 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_TransientElem,MoniTool_Element)
 
 MoniTool_TransientElem::MoniTool_TransientElem (const Handle(Standard_Transient)& akey)
     : theval (akey)
-{  SetHashCode ( TColStd_MapTransientHasher::HashCode (akey, IntegerLast() ) );  }
+{  SetHashCode ( std::hash<Handle(Standard_Transient)>{}(akey));  }
 
 
     const Handle(Standard_Transient)&  MoniTool_TransientElem::Value () const
@@ -37,7 +36,7 @@ MoniTool_TransientElem::MoniTool_TransientElem (const Handle(Standard_Transient)
   if (other->DynamicType() != DynamicType()) return Standard_False;
   Handle(MoniTool_TransientElem) another = Handle(MoniTool_TransientElem)::DownCast(other);
 //  return (theval == another->Value());
-  return  TColStd_MapTransientHasher::IsEqual (theval,another->Value());
+  return theval == another->Value();
 }
 
     Handle(Standard_Type)  MoniTool_TransientElem::ValueType () const

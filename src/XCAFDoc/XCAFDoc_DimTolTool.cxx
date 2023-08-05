@@ -965,7 +965,7 @@ const Standard_GUID& XCAFDoc_DimTolTool::ID() const
 //purpose  : 
 //=======================================================================
 void XCAFDoc_DimTolTool::GetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, 
-  TopoDS_Shape, TDF_LabelMapHasher>& theGDTLabelToShape) const
+  TopoDS_Shape>& theGDTLabelToShape) const
 {
   TDF_LabelSequence aGDTs;
   GetDimensionLabels(aGDTs);
@@ -1017,7 +1017,7 @@ void XCAFDoc_DimTolTool::GetGDTPresentations(NCollection_IndexedDataMap<TDF_Labe
 //function : SetGDTPresentations
 //purpose  : 
 //=======================================================================
-void XCAFDoc_DimTolTool::SetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape, TDF_LabelMapHasher>& theGDTLabelToPrs)
+void XCAFDoc_DimTolTool::SetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape>& theGDTLabelToPrs)
 { 
   for (Standard_Integer i = 1; i <= theGDTLabelToPrs.Extent(); i++)
   {    

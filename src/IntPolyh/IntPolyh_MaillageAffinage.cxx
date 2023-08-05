@@ -47,8 +47,7 @@
 typedef NCollection_Array1<Standard_Integer> IntPolyh_ArrayOfInteger;
 typedef NCollection_IndexedDataMap
   <Standard_Integer,
-   TColStd_ListOfInteger,
-   TColStd_MapIntegerHasher> IntPolyh_IndexedDataMapOfIntegerListOfInteger;
+   TColStd_ListOfInteger> IntPolyh_IndexedDataMapOfIntegerListOfInteger;
 
 
 static Standard_Real MyTolerance=10.0e-7;

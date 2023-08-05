@@ -39,13 +39,11 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
       return Standard_False;
   }
   data1 = (NCollection_ListNode **)
-    myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
-  memset(data1, 0, (N+1)*sizeof(NCollection_ListNode *));
+    Standard::Allocate((N+1)*sizeof(NCollection_ListNode *));
   if (isDouble) 
   {
     data2 = (NCollection_ListNode **)
-      myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
-    memset(data2, 0, (N+1)*sizeof(NCollection_ListNode *));
+      Standard::Allocate((N+1)*sizeof(NCollection_ListNode *));
   }
   else
     data2 = NULL;
@@ -65,9 +63,9 @@ void  NCollection_BaseMap::EndResize
 {
   (void )theNbBuckets; // obsolete parameter
   if (myData1) 
-    myAllocator->Free(myData1);
-  if (myData2) 
-    myAllocator->Free(myData2);
+    Standard::Free(myData1);
+  if (myData2 && isDouble)
+    Standard::Free(myData2);
   myNbBuckets = N;
   myData1 = data1;
   myData2 = data2;
@@ -84,32 +82,34 @@ void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
 {
   if (!IsEmpty()) 
   {
-    Standard_Integer i;
-    NCollection_ListNode** data = (NCollection_ListNode**) myData1;
-    NCollection_ListNode *p,*q;
-    for (i = 0; i <= NbBuckets(); i++) 
+    const int aNbBuckets = NbBuckets();
+    for (int anInd = 0; anInd <= aNbBuckets; anInd++)
     {
-      if (data[i]) 
+      if (myData1[anInd])
       {
-        p = data[i];
-        while (p) 
+        NCollection_ListNode* aCur = myData1[anInd];
+        while (aCur)
         {
-          q = (NCollection_ListNode*)p->Next();
-          fDel (p, myAllocator);
-          p = q;
+          NCollection_ListNode* aNext = aCur->Next();
+          fDel (aCur, myAllocator);
+          aCur = aNext;
         }
-        data[i] = NULL;
+        myData1[anInd] = nullptr;
       }
+    }
+    if (myData2)
+    {
+      memset(myData2, 0, (aNbBuckets + 1) * sizeof(NCollection_ListNode*));
     }
   }
 
   mySize = 0;
   if (doReleaseMemory)
   {
-    if (myData1) 
-      myAllocator->Free(myData1);
-    if (isDouble && myData2) 
-      myAllocator->Free(myData2);
+    if (myData1)
+      Standard::Free(myData1);
+    if (myData2)
+      Standard::Free(myData2);
     myData1 = myData2 = NULL;
   }
 }

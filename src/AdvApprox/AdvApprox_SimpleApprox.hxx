@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
-#include <Standard_Address.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
 #include <TColStd_Array1OfInteger.hxx>

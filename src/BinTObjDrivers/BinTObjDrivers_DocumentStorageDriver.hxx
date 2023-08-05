@@ -18,7 +18,6 @@
 #ifndef BinTObjDrivers_DocumentStorageDriver_HeaderFile
 #define BinTObjDrivers_DocumentStorageDriver_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <BinLDrivers_DocumentStorageDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 

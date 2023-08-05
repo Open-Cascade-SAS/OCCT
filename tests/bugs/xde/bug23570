@@ -8,7 +8,7 @@ puts ""
 
 set info [param write.surfacecurve.mode]
 
-set result1 [regexp {\-\-\- Type : Enum \[in 0-1\] 0:Off 1:On , alpha: +(.*):0 +(.*):1 +\n\-\-\-} $info full alpha_0 alpha_1]
+set result1 [regexp {\-\-\- Type : Enum \[in 0-1\] 0:Off 1:On , alpha: +(.*):[0-9] +(.*):[0-9] +\n\-\-\-} $info full alpha_0 alpha_1]
 
 if { ${result1} == 0 } {
    puts "Error: bad message or regexp"

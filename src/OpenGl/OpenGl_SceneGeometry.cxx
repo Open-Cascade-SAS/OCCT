@@ -156,12 +156,12 @@ void OpenGl_RaytraceGeometry::Clear()
   BVH_Geometry<Standard_ShortReal, 3>::BVH_Geometry::Clear();
 
   std::vector<OpenGl_RaytraceLight,
-    NCollection_StdAllocator<OpenGl_RaytraceLight> > anEmptySources;
+    NCollection_OccAllocator<OpenGl_RaytraceLight> > anEmptySources;
 
   Sources.swap (anEmptySources);
 
   std::vector<OpenGl_RaytraceMaterial,
-    NCollection_StdAllocator<OpenGl_RaytraceMaterial> > anEmptyMaterials;
+    NCollection_OccAllocator<OpenGl_RaytraceMaterial> > anEmptyMaterials;
 
   Materials.swap (anEmptyMaterials);
 }

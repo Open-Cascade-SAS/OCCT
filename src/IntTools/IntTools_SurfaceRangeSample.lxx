@@ -13,6 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Standard_HashUtils.hxx>
+
 inline void IntTools_SurfaceRangeSample::SetRanges(const IntTools_CurveRangeSample& theRangeU,
 						   const IntTools_CurveRangeSample& theRangeV) 
 {
@@ -137,4 +139,19 @@ inline Standard_Integer IntTools_SurfaceRangeSample::GetRangeIndexUDeeper(const 
 inline Standard_Integer IntTools_SurfaceRangeSample::GetRangeIndexVDeeper(const Standard_Integer theNbSampleV) const
 {
   return myRangeV.GetRangeIndexDeeper(theNbSampleV);
+}
+
+namespace std
+{
+  template <>
+  struct hash<IntTools_SurfaceRangeSample>
+  {
+    size_t operator()(const IntTools_SurfaceRangeSample& theSurfaceRangeSample) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      size_t aCombination[2]{ std::hash<IntTools_CurveRangeSample>{}(theSurfaceRangeSample.GetSampleRangeU()),
+                              std::hash<IntTools_CurveRangeSample>{}(theSurfaceRangeSample.GetSampleRangeV()) };
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
 }

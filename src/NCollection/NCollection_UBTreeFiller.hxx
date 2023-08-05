@@ -48,7 +48,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
 
   //! UBTree algorithm
   typedef NCollection_UBTree<TheObjType, TheBndType>    UBTree;
-  typedef TYPENAME UBTree::TreeNode                     UBTreeNode;
+  typedef typename UBTree::TreeNode                     UBTreeNode;
 
 
   // ---------- PUBLIC METHODS ----------
@@ -198,7 +198,7 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType,TheBndType>::CheckTree
 
 template <class TheObjType, class TheBndType>
 Standard_Real NCollection_UBTreeFiller<TheObjType,TheBndType>::checkNode
-  (const TYPENAME NCollection_UBTree<TheObjType, TheBndType>::TreeNode& theNode,
+  (const typename NCollection_UBTree<TheObjType, TheBndType>::TreeNode& theNode,
    const Standard_Integer theLength,
    Standard_Integer&      theNumber)
 {

@@ -26,7 +26,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedDataMap.hxx>
-#include <TDF_LabelMapHasher.hxx>
 
 class XCAFDoc_ShapeTool;
 class TDF_Label;
@@ -237,12 +236,12 @@ public:
   Standard_EXPORT void Lock(const TDF_Label& theViewL) const;
 
   //! fill the map GDT label -> shape presentation 
-  Standard_EXPORT void GetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape, TDF_LabelMapHasher>& theGDTLabelToShape) const;
+  Standard_EXPORT void GetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape>& theGDTLabelToShape) const;
 
   //! Set shape presentation for GDT labels according to given map (theGDTLabelToPrs)
   //! theGDTLabelToPrsName map is an additional argument, can be used to set presentation names.
   //! If label is not in the theGDTLabelToPrsName map, the presentation name will be empty
-  Standard_EXPORT void SetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape, TDF_LabelMapHasher>& theGDTLabelToPrs);
+  Standard_EXPORT void SetGDTPresentations(NCollection_IndexedDataMap<TDF_Label, TopoDS_Shape>& theGDTLabelToPrs);
 
   //! Unlock the given GDT.
   Standard_EXPORT void Unlock(const TDF_Label& theViewL) const;

@@ -111,12 +111,7 @@ Standard_Real ShapeAnalysis::AdjustToPeriod(const Standard_Real Val,
 template<class HSequence> 
 static inline void ReverseSeq (HSequence& Seq)
 {
-  Standard_Integer j=Seq.Length();
-  for(Standard_Integer i=1; i<Seq.Length(); i++) {
-    if(i>=j) break;
-    Seq.Exchange(i,j);
-    j--;
-  }
+  Seq.Reverse();
 }
 //=======================================================================
 //function : TotCross2D

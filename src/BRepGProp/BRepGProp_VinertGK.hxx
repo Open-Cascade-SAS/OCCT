@@ -20,7 +20,6 @@
 #include <Standard_DefineAlloc.hxx>
 
 #include <GProp_GProps.hxx>
-#include <Standard_Address.hxx>
 class BRepGProp_Face;
 class BRepGProp_Domain;
 class gp_Pln;

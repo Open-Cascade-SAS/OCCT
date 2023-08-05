@@ -281,7 +281,7 @@ void BOPAlgo_PaveFiller::PerformFF(const Message_ProgressRange& theRange)
   //
   // Collect all pairs of Edge/Edge interferences to check if
   // some faces have to be moved to obtain more precise intersection
-  NCollection_DataMap<BOPDS_Pair, TColStd_ListOfInteger, BOPDS_PairMapHasher> aEEMap;
+  NCollection_DataMap<BOPDS_Pair, TColStd_ListOfInteger> aEEMap;
   const BOPDS_VectorOfInterfEE& aVEEs = myDS->InterfEE();
   for (Standard_Integer iEE = 0; iEE < aVEEs.Size(); ++iEE)
   {
@@ -1198,8 +1198,7 @@ void BOPAlgo_PaveFiller::PostTreatFF
   // Map to store the real tolerance of the common block
   // and avoid repeated computation of it
   NCollection_DataMap<Handle(BOPDS_CommonBlock),
-                      Standard_Real,
-                      TColStd_MapTransientHasher> aMCBTol;
+                      Standard_Real> aMCBTol;
   // Map to avoid creation of different pave blocks for
   // the same intersection edge
   NCollection_DataMap<Standard_Integer, Handle(BOPDS_PaveBlock)> aMEPB;

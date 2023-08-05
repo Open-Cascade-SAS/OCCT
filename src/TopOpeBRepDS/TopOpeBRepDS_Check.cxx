@@ -119,7 +119,7 @@ Standard_Boolean TopOpeBRepDS_Check::ChkIntgInterf
   it1.Initialize(LI);
   Standard_Boolean IsOK = Standard_True;
   while (it1.More() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference) I1 = it1.Value();
     IsOK = IsOK && CheckDS(I1->Support(), I1->SupportType());
     IsOK = IsOK && CheckDS(I1->Geometry(), I1->GeometryType());
     it1.Next();
@@ -375,7 +375,7 @@ Standard_Boolean CheckEdgeParameter(const Handle(TopOpeBRepDS_HDataStructure)& m
     const TopOpeBRepDS_ListOfInterference& LI = DS.ShapeInterferences(i);
     it1.Initialize(LI);
     while (it1.More() ) {
-      Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+      Handle(TopOpeBRepDS_Interference) I1 = it1.Value();
       Handle(TopOpeBRepDS_EdgeVertexInterference) EVI =
 	Handle(TopOpeBRepDS_EdgeVertexInterference)::DownCast(I1);
       if(!EVI.IsNull()) {
@@ -425,11 +425,11 @@ Standard_OStream& TopOpeBRepDS_Check::PrintIntg(Standard_OStream& OS)
   PrintMap(myMapPointStatus,   "Point",   OS);
   
   //display of the topology
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus DMI(myMapShapeStatus);
   TopOpeBRepDS_DataMapOfCheckStatus MapVertex, MapEdge, MapWire, MapFace, MapSolid;
   Standard_Integer i;
   // different Map keep their index of myMapShapeStatus
-  for(DMI.Reset();DMI.More();DMI.Next()) {
+  for(TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus DMI(myMapShapeStatus); DMI.More();DMI.Next())
+  {
     i = DMI.Key();
     const TopoDS_Shape& S =myHDS->Shape(i);
     switch(S.ShapeType()) {
@@ -485,12 +485,13 @@ Standard_OStream& TopOpeBRepDS_Check::PrintElts(TopOpeBRepDS_DataMapOfCheckStatu
 						Standard_Boolean& b,
 						Standard_OStream& OS)
 {
-  TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus DMI(MapStat);
   Standard_Boolean bb = !b;
   b = Standard_True;
   Standard_Integer i;
   TopOpeBRepDS_CheckStatus s;
-  for(DMI.Reset();DMI.More();DMI.Next()) {
+  for(TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus DMI(MapStat);
+      DMI.More();DMI.Next())
+  {
     s = DMI.Value();
     i = DMI.Key();
     if(s == Stat) {

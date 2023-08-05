@@ -17,11 +17,12 @@
 #include <BinTools_ShapeSetBase.hxx>
 #include <BinTools_IStream.hxx>
 #include <NCollection_DataMap.hxx>
+#include <TopLoc_Location.hxx>
+#include <TopoDS_Shape.hxx>
 
-class TopLoc_Location;
 class Geom_Curve;
-class Geom2d_Curve;
 class Geom_Surface;
+class Geom2d_Curve;
 class Poly_Polygon3D;
 class Poly_PolygonOnTriangulation;
 class Poly_Triangulation;

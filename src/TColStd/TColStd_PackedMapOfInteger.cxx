@@ -18,6 +18,15 @@
 #include <NCollection_Array1.hxx>
 #include <TCollection.hxx>
 
+namespace
+{
+  size_t HashCode(const int theKey,
+                  const size_t theBound)
+  {
+    return static_cast<size_t>(theKey) % theBound + 1;
+  }
+}
+
 //=======================================================================
 //function : TColStd_intMapNode_findNext
 //purpose  :
@@ -122,7 +131,7 @@ TColStd_PackedMapOfInteger& TColStd_PackedMapOfInteger::Assign
       {
         for (const TColStd_intMapNode* p = theOther.myData1[i]; p != NULL; )
         {
-          const Standard_Integer aHashCode = p->HashCode(nBuckets);
+          const size_t aHashCode = p->HashCode(nBuckets);
           myData1[aHashCode] = new TColStd_intMapNode (p->Mask(), p->Data(), myData1[aHashCode]);
           ++myNbPackedMapNodes;
           p = p->Next();
@@ -154,7 +163,7 @@ void TColStd_PackedMapOfInteger::ReSize (const Standard_Integer theNbBuckets)
     aNewBuck = myNbBuckets;
   }
 
-  TColStd_intMapNode** aNewData = (TColStd_intMapNode** )Standard::Allocate ((aNewBuck + 1) * sizeof(TColStd_intMapNode*));
+  TColStd_intMapNode** aNewData = (TColStd_intMapNode** )Standard::AllocateOptimal ((aNewBuck + 1) * sizeof(TColStd_intMapNode*));
   memset (aNewData, 0, (aNewBuck + 1) * sizeof(TColStd_intMapNode*));
   if (myData1 != NULL)
   {
@@ -163,7 +172,7 @@ void TColStd_PackedMapOfInteger::ReSize (const Standard_Integer theNbBuckets)
     {
       for (TColStd_intMapNode* p = anOldData[i]; p != NULL; )
       {
-        Standard_Integer k = p->HashCode (aNewBuck);
+        size_t k = p->HashCode(aNewBuck);
         TColStd_intMapNode* q = p->Next();
         p->SetNext (aNewData[k]);
         aNewData[k] = p;
@@ -219,7 +228,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Add (const Standard_Integer aKey)
   }
 
   const Standard_Integer aKeyInt = packedKeyIndex (aKey);
-  const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+  const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
   TColStd_intMapNode* aBucketHead = myData1[aHashCode];
   for (TColStd_intMapNode* p = aBucketHead; p != NULL; p = p->Next())
   {
@@ -426,7 +435,7 @@ void TColStd_PackedMapOfInteger::Union (const TColStd_PackedMapOfInteger& theMap
         if (Resizable()) {
           ReSize (myNbPackedMapNodes);
         }
-        const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+        const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
         myData1[aHashCode] = new TColStd_intMapNode (aNewMask, aNewData,
                                                      myData1[aHashCode]);
         ++myNbPackedMapNodes;
@@ -459,7 +468,7 @@ void TColStd_PackedMapOfInteger::Union (const TColStd_PackedMapOfInteger& theMap
           {
             ReSize (myNbPackedMapNodes);
           }
-          const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+          const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
           myData1[aHashCode]= new TColStd_intMapNode (p2->Mask(), p2->Data(),
                                                       myData1[aHashCode]);
           ++myNbPackedMapNodes;
@@ -498,7 +507,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Unite(const TColStd_PackedMapOfInte
       const Standard_Integer aKey = p2->Key();
       const Standard_Integer aKeyInt = packedKeyIndex (aKey);
       // Find the corresponding block in the 1st (this) map
-      Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+      size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
       TColStd_intMapNode* p1 = myData1[aHashCode];
       while (p1)
       {
@@ -594,7 +603,7 @@ void TColStd_PackedMapOfInteger::Intersection
               {
                 ReSize (myNbPackedMapNodes);
               }
-              const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+              const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
               unsigned int aNewMask = p1->Mask();
               myExtent += TColStd_Population (aNewMask, aNewData);
               myData1[aHashCode]= new TColStd_intMapNode(aNewMask, aNewData,
@@ -739,7 +748,7 @@ void TColStd_PackedMapOfInteger::Subtraction
           {
             ReSize (myNbPackedMapNodes);
           }
-          const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+          const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
           myData1[aHashCode]= new TColStd_intMapNode (aNewMask, aNewData,
                                                       myData1[aHashCode]);
           ++myNbPackedMapNodes;
@@ -877,7 +886,7 @@ void TColStd_PackedMapOfInteger::Difference  (const TColStd_PackedMapOfInteger& 
           {
             ReSize (myNbPackedMapNodes);
           }
-          const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+          const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
           myData1[aHashCode]= new TColStd_intMapNode (aNewMask, aNewData,
                                                       myData1[aHashCode]);
           ++myNbPackedMapNodes;
@@ -912,7 +921,7 @@ void TColStd_PackedMapOfInteger::Difference  (const TColStd_PackedMapOfInteger& 
           {
             ReSize (myNbPackedMapNodes);
           }
-          const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+          const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
           myData1[aHashCode]= new TColStd_intMapNode (p2->Mask(), p2->Data(),
                                                       myData1[aHashCode]);
           ++myNbPackedMapNodes;
@@ -992,7 +1001,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Differ(const TColStd_PackedMapOfInt
         {
           ReSize (myNbPackedMapNodes);
         }
-        const Standard_Integer aHashCode = HashCode (aKeyInt, myNbBuckets);
+        const size_t aHashCode = HashCode(aKeyInt,myNbBuckets);
         myData1[aHashCode] = new TColStd_intMapNode (p2->Mask(), p2->Data(),
                                                      myData1[aHashCode]);
         ++myNbPackedMapNodes;

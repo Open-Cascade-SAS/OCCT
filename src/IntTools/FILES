@@ -17,8 +17,6 @@ IntTools_CurveRangeLocalizeData.cxx
 IntTools_CurveRangeLocalizeData.hxx
 IntTools_CurveRangeSample.cxx
 IntTools_CurveRangeSample.hxx
-IntTools_CurveRangeSampleMapHasher.hxx
-IntTools_DataMapIteratorOfDataMapOfCurveSampleBox.hxx
 IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox.hxx
 IntTools_DataMapOfCurveSampleBox.hxx
 IntTools_DataMapOfSurfaceSampleBox.hxx
@@ -64,7 +62,6 @@ IntTools_SurfaceRangeLocalizeData.lxx
 IntTools_SurfaceRangeSample.cxx
 IntTools_SurfaceRangeSample.hxx
 IntTools_SurfaceRangeSample.lxx
-IntTools_SurfaceRangeSampleMapHasher.hxx
 IntTools_Tools.cxx
 IntTools_Tools.hxx
 IntTools_TopolTool.cxx

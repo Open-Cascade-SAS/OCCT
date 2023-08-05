@@ -23,18 +23,6 @@
 #include <TopoDS_TShape.hxx>
 
 //=======================================================================
-// function : HashCode
-// purpose  :
-//=======================================================================
-Standard_Integer TopoDS_Shape::HashCode (const Standard_Integer theUpperBound) const
-{
-  // PKV
-  const Standard_Integer aHS = ::HashCode (myTShape.get(), theUpperBound);
-  const Standard_Integer aHL = myLocation.HashCode (theUpperBound);
-  return ::HashCode (aHS ^ aHL, theUpperBound);
-}
-
-//=======================================================================
 //function : DumpJson
 //purpose  : 
 //=======================================================================

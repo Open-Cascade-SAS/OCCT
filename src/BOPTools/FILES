@@ -19,5 +19,3 @@ BOPTools_PairSelector.hxx
 BOPTools_Parallel.hxx
 BOPTools_Set.cxx
 BOPTools_Set.hxx
-BOPTools_SetMapHasher.hxx
-BOPTools_SetMapHasher.lxx

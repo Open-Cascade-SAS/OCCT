@@ -21,8 +21,8 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_ExtendedString,Handle(TColStd_HArray1OfInteger),TCollection_ExtendedString> TDataStd_DataMapOfStringHArray1OfInteger;
-typedef NCollection_DataMap<TCollection_ExtendedString,Handle(TColStd_HArray1OfInteger),TCollection_ExtendedString>::Iterator TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger;
+typedef NCollection_DataMap<TCollection_ExtendedString,Handle(TColStd_HArray1OfInteger)> TDataStd_DataMapOfStringHArray1OfInteger;
+typedef NCollection_DataMap<TCollection_ExtendedString,Handle(TColStd_HArray1OfInteger)>::Iterator TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger;
 
 
 #endif

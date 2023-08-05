@@ -2,10 +2,8 @@ Quantity_Array1OfColor.hxx
 Quantity_Color.cxx
 Quantity_Color.hxx
 Quantity_ColorTable.pxx
-Quantity_ColorHasher.hxx
 Quantity_ColorRGBA.cxx
 Quantity_ColorRGBA.hxx
-Quantity_ColorRGBAHasher.hxx
 Quantity_Date.cxx
 Quantity_Date.hxx
 Quantity_DateDefinitionError.hxx

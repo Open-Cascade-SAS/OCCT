@@ -18,12 +18,10 @@
 
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_MapTransientHasher.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Handle(Standard_Type),Standard_Integer,TColStd_MapTransientHasher,TColStd_MapIntegerHasher> BinMDF_TypeIdMap;
-typedef NCollection_DoubleMap<Handle(Standard_Type),Standard_Integer,TColStd_MapTransientHasher,TColStd_MapIntegerHasher>::Iterator BinMDF_DoubleMapIteratorOfTypeIdMap;
+typedef NCollection_DoubleMap<Handle(Standard_Type),Standard_Integer> BinMDF_TypeIdMap;
+typedef NCollection_DoubleMap<Handle(Standard_Type),Standard_Integer>::Iterator BinMDF_DoubleMapIteratorOfTypeIdMap;
 
 
 #endif

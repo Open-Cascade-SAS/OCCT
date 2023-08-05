@@ -41,3 +41,27 @@ inline const TCollection_AsciiString& TCollection_HAsciiString::String() const
 // ----------------------------------------------------------------------------
 inline Standard_CString TCollection_HAsciiString::ToCString() const
 { return myString.ToCString(); }
+
+namespace std
+{
+  template <>
+  struct hash<Handle(TCollection_HAsciiString)>
+  {
+    size_t operator()(const Handle(TCollection_HAsciiString)& theString) const
+    {
+      if (theString.IsNull()) return 0;
+      return std::hash<TCollection_AsciiString>{}(theString->String());
+    }
+  };
+
+  template<>
+  struct equal_to<Handle(TCollection_HAsciiString)>
+  {
+    bool operator()(const Handle(TCollection_HAsciiString)& theString1,
+      const Handle(TCollection_HAsciiString)& theString2) const
+    {
+      return theString1 == theString2 ||
+        (!theString1.IsNull() && !theString2.IsNull() && theString1->String() == theString2->String());
+    }
+  };
+}

@@ -45,7 +45,7 @@ public:
   //! Returns the HashCode which has been stored by SetHashCode
   //! (remark that HashCode could be deferred then be defined by
   //! sub-classes, the result is the same)
-  Standard_EXPORT Standard_Integer GetHashCode() const;
+  Standard_EXPORT size_t GetHashCode() const;
   
   //! Specific testof equality : to be defined by each sub-class,
   //! must be False if Elements have not the same true Type, else
@@ -76,14 +76,14 @@ protected:
   
   //! Stores the HashCode which corresponds to the Value given to
   //! create the Mapper
-  Standard_EXPORT void SetHashCode (const Standard_Integer code);
+  Standard_EXPORT void SetHashCode (const size_t code);
 
 
 
 private:
 
 
-  Standard_Integer thecode;
+  size_t thecode;
   MoniTool_AttrList theattrib;
 
 

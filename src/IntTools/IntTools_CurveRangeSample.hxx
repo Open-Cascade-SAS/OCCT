@@ -21,6 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <IntTools_BaseRangeSample.hxx>
+#include <Standard_HashUtils.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
@@ -47,6 +48,11 @@ public:
     return ((myIndex == Other.myIndex) && (GetDepth() == Other.GetDepth()));
   }
 
+  bool operator==(const IntTools_CurveRangeSample& Other) const
+  {
+    return IsEqual(Other);
+  }
+
   Standard_EXPORT IntTools_Range GetRange (const Standard_Real theFirst, const Standard_Real theLast, const Standard_Integer theNbSample) const;
   
   Standard_Integer GetRangeIndexDeeper (const Standard_Integer theNbSample) const
@@ -59,5 +65,19 @@ private:
   Standard_Integer myIndex;
 
 };
+
+namespace std
+{
+  template <>
+  struct hash<IntTools_CurveRangeSample>
+  {
+    size_t operator()(const IntTools_CurveRangeSample& theCurveRangeSample) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      int aCombination[2]{ theCurveRangeSample.GetDepth(), theCurveRangeSample.GetRangeIndex() };
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
+}
 
 #endif // _IntTools_CurveRangeSample_HeaderFile

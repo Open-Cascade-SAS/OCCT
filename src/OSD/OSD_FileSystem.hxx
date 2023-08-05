@@ -16,6 +16,7 @@
 
 #include <OSD_StreamBuffer.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 //! Base interface for a file stream provider.
 //! It is intended to be implemented for specific file protocol.

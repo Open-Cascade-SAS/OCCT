@@ -24,7 +24,6 @@
 #include <TDF_DeltaList.hxx>
 #include <CDM_Document.hxx>
 #include <TDF_LabelMap.hxx>
-#include <Standard_Address.hxx>
 #include <TDocStd_FormatVersion.hxx>
 class TDF_Data;
 class TDF_Delta;

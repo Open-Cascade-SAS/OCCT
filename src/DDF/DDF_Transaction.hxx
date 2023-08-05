@@ -21,6 +21,7 @@
 #include <TDF_Transaction.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
+#include <NCollection_DefineAlloc.hxx>
 class TDF_Data;
 class TDF_Delta;
 

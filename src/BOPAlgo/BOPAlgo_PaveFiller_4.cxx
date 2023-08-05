@@ -172,7 +172,7 @@ void BOPAlgo_PaveFiller::PerformVF(const Message_ProgressRange& theRange)
   //
   // Avoid repeated intersection of the same vertex with face in case
   // the group of vertices formed a single SD vertex
-  NCollection_DataMap<BOPDS_Pair, TColStd_MapOfInteger, BOPDS_PairMapHasher> aMVFPairs;
+  NCollection_DataMap<BOPDS_Pair, TColStd_MapOfInteger> aMVFPairs;
   for (; myIterator->More(); myIterator->Next()) {
     if (UserBreak(aPSOuter))
     {

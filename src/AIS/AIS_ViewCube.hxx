@@ -640,18 +640,9 @@ protected:
 
 protected:
 
-  //! Trivial hasher to avoid ambiguity with enumeration type.
-  struct IntegerHasher
-  {
-    static Standard_Integer HashCode (Standard_Integer theValue, Standard_Integer theUpper) { return ::HashCode (theValue, theUpper); }
-    static Standard_Boolean IsEqual (Standard_Integer theA, Standard_Integer theB) { return theA == theB; }
-  };
-
-protected:
-
-  NCollection_DataMap<V3d_TypeOfOrientation, TCollection_AsciiString, IntegerHasher>
+  NCollection_DataMap<V3d_TypeOfOrientation, TCollection_AsciiString>
                                 myBoxSideLabels;     //!< map with box side labels
-  NCollection_DataMap<Prs3d_DatumParts, TCollection_AsciiString, IntegerHasher>
+  NCollection_DataMap<Prs3d_DatumParts, TCollection_AsciiString>
                                 myAxesLabels;        //!< map with axes labels
   Handle(Prs3d_ShadingAspect)   myBoxEdgeAspect;     //!< style for box edges
   Handle(Prs3d_ShadingAspect)   myBoxCornerAspect;   //!< style for box corner

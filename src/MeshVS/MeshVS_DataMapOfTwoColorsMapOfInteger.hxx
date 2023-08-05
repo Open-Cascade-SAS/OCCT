@@ -16,12 +16,12 @@
 #ifndef MeshVS_DataMapOfTwoColorsMapOfInteger_HeaderFile
 #define MeshVS_DataMapOfTwoColorsMapOfInteger_HeaderFile
 
+#include <MeshVS_TwoColors.hxx>
 #include <TColStd_MapOfInteger.hxx>
-#include <MeshVS_TwoColorsHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<MeshVS_TwoColors,TColStd_MapOfInteger,MeshVS_TwoColorsHasher> MeshVS_DataMapOfTwoColorsMapOfInteger;
-typedef NCollection_DataMap<MeshVS_TwoColors,TColStd_MapOfInteger,MeshVS_TwoColorsHasher>::Iterator MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger;
+typedef NCollection_DataMap<MeshVS_TwoColors,TColStd_MapOfInteger> MeshVS_DataMapOfTwoColorsMapOfInteger;
+typedef NCollection_DataMap<MeshVS_TwoColors,TColStd_MapOfInteger>::Iterator MeshVS_DataMapIteratorOfDataMapOfTwoColorsMapOfInteger;
 
 
 #endif

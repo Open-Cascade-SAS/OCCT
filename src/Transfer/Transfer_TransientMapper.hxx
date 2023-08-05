@@ -21,7 +21,6 @@
 #include <Standard_Type.hxx>
 
 #include <Transfer_Finder.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 class Standard_Transient;
 class Transfer_DataInfo;
 class Transfer_Finder;

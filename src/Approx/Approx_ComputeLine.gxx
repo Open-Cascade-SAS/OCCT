@@ -13,7 +13,6 @@
 // commercial license or contractual agreement.
 
 #include <Approx_ParametrizationType.hxx>
-#include Approx_ParLeastSquareOfMyGradient_hxx
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -1392,7 +1391,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
   Standard_Boolean Parallel;
 #endif
   Standard_Integer myfirstpt = firstpt, mylastpt = lastpt;
-  Standard_Integer nbp = lastpt-firstpt+1, Kopt = 0;
+  Standard_Integer nbp = lastpt-firstpt+1;
   math_Vector Para(firstpt, lastpt);
 
   Parameters(Line, firstpt, lastpt, Para);
@@ -1427,11 +1426,6 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
     Tangent1 = LineTool::Tangency(Line, myfirstpt, tabV1);
     Tangent2 = LineTool::Tangency(Line, mylastpt, tabV2);
   }
-
-  if (Tangent1) Kopt++;  
-  if (Tangent2) Kopt++;
-
-
   if (nbp == 2) {
     // S il n y a que 2 points, on verifie quand meme que les tangentes sont 
     // alignees.

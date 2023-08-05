@@ -19,11 +19,10 @@
 
 #include <Standard_Integer.hxx>
 #include <MAT2d_Connexion.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT2d_Connexion),TColStd_MapIntegerHasher> MAT2d_DataMapOfIntegerConnexion;
-typedef NCollection_DataMap<Standard_Integer,Handle(MAT2d_Connexion),TColStd_MapIntegerHasher>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion;
+typedef NCollection_DataMap<Standard_Integer,Handle(MAT2d_Connexion)> MAT2d_DataMapOfIntegerConnexion;
+typedef NCollection_DataMap<Standard_Integer,Handle(MAT2d_Connexion)>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion;
 
 
 #endif

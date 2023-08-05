@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-#include <Standard_Address.hxx>
 #include <Standard_PCharacter.hxx>
 #include <OSD_LoadMode.hxx>
 #include <OSD_Function.hxx>

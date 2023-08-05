@@ -1,6 +1,6 @@
 // Created on: 2002-04-12
 // Created by: Alexander KARTOMIN (akm)
-// Copyright (c) 2002-2014 OPEN CASCADE SAS
+// Copyright (c) 2002-2023 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -27,10 +27,8 @@
 #ifndef NCollection_BaseAllocator_HeaderFile
 #define NCollection_BaseAllocator_HeaderFile
 
+#include <Standard_DefineHandle.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
-#include <NCollection_TypeDef.hxx>
-
 
 /**
 * Purpose:     Basic class for memory allocation wizards.
@@ -43,14 +41,15 @@
 *              inaccessible.  To  create the  BaseAllocator use  the method
 *              CommonBaseAllocator.
 *              Note that this object is managed by Handle.
-*/              
+*/
 class NCollection_BaseAllocator : public Standard_Transient
 {
  public:
   // ---------- PUBLIC METHODS ------------
-  Standard_EXPORT virtual void* Allocate (const size_t size);
-  Standard_EXPORT virtual void  Free     (void * anAddress);
-  
+  Standard_EXPORT virtual void* Allocate       (const size_t theSize);
+  Standard_EXPORT virtual void* AllocateOptimal(const size_t theSize);
+  Standard_EXPORT virtual void  Free           (void* theAddress);
+
   //! CommonBaseAllocator
   //! This method is designed to have the only one BaseAllocator (to avoid
   //! useless copying of collections). However one can use operator new to
@@ -58,29 +57,18 @@ class NCollection_BaseAllocator : public Standard_Transient
   Standard_EXPORT static const Handle(NCollection_BaseAllocator)&
     CommonBaseAllocator(void);
 
-  //! Callback function to register alloc/free calls
-  Standard_EXPORT static void StandardCallBack
-                    (const Standard_Boolean theIsAlloc,
-                     const Standard_Address theStorage,
-                     const Standard_Size theRoundSize,
-                     const Standard_Size theSize);
-
-  //! Prints memory usage statistics cumulated by StandardCallBack
-  Standard_EXPORT static void PrintMemUsageStatistics();
-
- protected:
+protected:
   //! Constructor - prohibited
-  NCollection_BaseAllocator(void) {}
+  NCollection_BaseAllocator() {}
 
- private:
+private:
   //! Copy constructor - prohibited
-  NCollection_BaseAllocator(const NCollection_BaseAllocator&);
+  NCollection_BaseAllocator(const NCollection_BaseAllocator&) = delete;
 
- public:
+public:
   // ---------- CasCade RunTime Type Information
   DEFINE_STANDARD_RTTIEXT(NCollection_BaseAllocator,Standard_Transient)
 };
-
 DEFINE_STANDARD_HANDLE(NCollection_BaseAllocator,Standard_Transient)
 
 #endif

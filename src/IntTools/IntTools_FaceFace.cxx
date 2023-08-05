@@ -391,7 +391,7 @@ void IntTools_FaceFace::Perform (const TopoDS_Face& aF1,
       aItP2S.Initialize(myListOfPnts);
       for (; aItP2S.More(); aItP2S.Next())
       {
-        IntSurf_PntOn2S& aP2S=aItP2S.Value();
+        IntSurf_PntOn2S& aP2S=aItP2S.ChangeValue();
         aP2S.Parameters(aU1,aV1,aU2,aV2);
         aP2S.SetValue(aU2,aV2,aU1,aV1);
       }

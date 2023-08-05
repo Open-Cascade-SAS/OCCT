@@ -506,7 +506,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       }
       
       TopTools_ListIteratorOfListOfShape itlon(lon); for(;itlon.More();itlon.Next()) {
-	TopoDS_Edge& eon = TopoDS::Edge(itlon.Value());
+	TopoDS_Edge& eon = TopoDS::Edge(itlon.ChangeValue());
 	Standard_Real f,l; Standard_Boolean hasPC = FC2D_HasCurveOnSurface(eon,F);
 	if (hasPC) continue;
 #ifdef OCCT_DEBUG

@@ -18,7 +18,6 @@
 #ifndef TObj_Object_HeaderFile
 #define TObj_Object_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <TObj_DeletingMode.hxx>
 #include <TObj_SequenceOfObject.hxx>
 
@@ -30,6 +29,8 @@ class TObj_Persistence;
 class TObj_ObjectIterator;
 class TObj_TNameContainer;
 class TCollection_HExtendedString;
+class TCollection_HAsciiString;
+
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfExtendedString.hxx>

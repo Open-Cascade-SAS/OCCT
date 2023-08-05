@@ -25,7 +25,8 @@
 
 #include <Standard_Boolean.hxx>
 
-class math_Vector;
+template<typename T> class math_VectorBase;
+using math_Vector = math_VectorBase<double>;
 
 //! Functional for search of extremum of the square Euclidean distance between point P and
 //! surface S, starting from approximate solution (u0, v0).

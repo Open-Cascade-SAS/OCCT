@@ -29,6 +29,7 @@
 #include <RWObj_SubMesh.hxx>
 #include <RWObj_SubMeshReason.hxx>
 #include <RWObj_Tools.hxx>
+#include <Standard_HashUtils.hxx>
 
 #include <vector>
 
@@ -241,14 +242,13 @@ protected:
   //! Hasher for 3 ordered integers.
   struct ObjVec3iHasher
   {
-    static Standard_Integer HashCode (const Graphic3d_Vec3i& theKey,
-                                      const Standard_Integer theUpper)
+    std::size_t operator()(const Graphic3d_Vec3i& theKey) const noexcept
     {
-      return ::HashCode (::HashCodes ((Standard_CString )&theKey, sizeof(Graphic3d_Vec3i)), theUpper);
+      return opencascade::hashBytes(&theKey[0], 3 * sizeof(int));
     }
 
-    static Standard_Boolean IsEqual (const Graphic3d_Vec3i& theKey1,
-                                     const Graphic3d_Vec3i& theKey2)
+    bool operator()(const Graphic3d_Vec3i& theKey1,
+                    const Graphic3d_Vec3i& theKey2) const noexcept
     {
       return theKey1[0] == theKey2[0]
           && theKey1[1] == theKey2[1]

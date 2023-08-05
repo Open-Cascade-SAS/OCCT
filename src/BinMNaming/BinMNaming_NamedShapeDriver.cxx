@@ -276,7 +276,6 @@ void BinMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
   if (myIsQuickPart) // enables direct writing of shapes to the stream
     aDirectStream = theTarget.GetOStream();
 
-  Standard_Integer i = 1;  
   for (TNaming_Iterator SIterator(aSAtt); SIterator.More(); SIterator.Next()) {
     const TopoDS_Shape& anOldShape = SIterator.OldShape();
     const TopoDS_Shape& aNewShape = SIterator.NewShape();
@@ -296,8 +295,6 @@ void BinMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
       else
         TranslateTo (aNewShape, theTarget, static_cast<BinTools_ShapeSet*>(aShapeSet));
     }
-    
-    i++;
   }
 
 }

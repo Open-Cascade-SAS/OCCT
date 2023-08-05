@@ -18,10 +18,9 @@
 #define TopTools_IndexedMapOfOrientedShape_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <TopTools_OrientedShapeMapHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<TopoDS_Shape,TopTools_OrientedShapeMapHasher> TopTools_IndexedMapOfOrientedShape;
+typedef NCollection_IndexedMap<TopoDS_Shape> TopTools_IndexedMapOfOrientedShape;
 
 
 #endif

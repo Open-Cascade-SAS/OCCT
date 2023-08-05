@@ -18,11 +18,10 @@
 #define TopOpeBRepDS_MapOfIntegerShapeData_HeaderFile
 
 #include <TopOpeBRepDS_ShapeData.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_ShapeData,TColStd_MapIntegerHasher> TopOpeBRepDS_MapOfIntegerShapeData;
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_ShapeData,TColStd_MapIntegerHasher>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData;
+typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_ShapeData> TopOpeBRepDS_MapOfIntegerShapeData;
+typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_ShapeData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData;
 
 
 #endif

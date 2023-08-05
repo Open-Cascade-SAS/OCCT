@@ -23,6 +23,9 @@
 
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <utility>
+
+#include <Message.hxx>
 
 /**
 * Purpose:     The DataMap is a Map to store keys with associated
@@ -64,6 +67,27 @@ public:
                  NCollection_ListNode* theNext) :
       NCollection_TListNode<TheItemType> (theItem, theNext),
       myKey(theKey)
+    {}
+    //! Constructor with 'Next'
+    DataMapNode (const TheKeyType&     theKey, 
+                 TheItemType&&         theItem, 
+                 NCollection_ListNode* theNext) :
+      NCollection_TListNode<TheItemType> (std::forward<TheItemType>(theItem), theNext),
+      myKey(theKey)
+    {}
+    //! Constructor with 'Next'
+    DataMapNode (TheKeyType&&          theKey, 
+                 const TheItemType&    theItem, 
+                 NCollection_ListNode* theNext) :
+      NCollection_TListNode<TheItemType> (theItem, theNext),
+      myKey(std::forward<TheKeyType>(theKey))
+    {}
+    //! Constructor with 'Next'
+    DataMapNode (TheKeyType&&          theKey, 
+                 TheItemType&&         theItem, 
+                 NCollection_ListNode* theNext) :
+      NCollection_TListNode<TheItemType> (std::forward<TheItemType>(theItem), theNext),
+      myKey(std::forward<TheKeyType>(theKey))
     {}
 
     //! Key
@@ -151,7 +175,19 @@ public:
   //! Copy constructor
   NCollection_DataMap (const NCollection_DataMap& theOther)
     : NCollection_BaseMap (theOther.NbBuckets(), Standard_True, theOther.myAllocator) 
-  { *this = theOther; }
+  { 
+    const int anExt = theOther.Extent();
+    if (anExt <= 0)
+      return;
+    ReSize(anExt - 1);
+    for (Iterator anIter(theOther); anIter.More(); anIter.Next())
+      Bind(anIter.Key(), anIter.Value());
+  }
+
+  //! Move constructor
+  NCollection_DataMap(NCollection_DataMap&& theOther) noexcept :
+    NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther))
+  {}
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
@@ -185,6 +221,15 @@ public:
     return Assign (theOther);
   }
 
+  //! Move operator
+  NCollection_DataMap& operator= (NCollection_DataMap&& theOther) noexcept
+  {
+    if (this == &theOther)
+      return *this;
+    exchangeMapsData(theOther);
+    return *this;
+  }
+
   //! ReSize
   void ReSize (const Standard_Integer N)
   {
@@ -197,15 +242,14 @@ public:
       {
         DataMapNode** olddata = (DataMapNode**) myData1;
         DataMapNode *p, *q;
-        Standard_Integer i,k;
-        for (i = 0; i <= NbBuckets(); i++) 
+        for (int i = 0; i <= NbBuckets(); i++) 
         {
           if (olddata[i]) 
           {
             p = olddata[i];
             while (p) 
             {
-              k = Hasher::HashCode(p->Key(),newBuck);
+              const size_t k = HashCode(p->Key(),newBuck);
               q = (DataMapNode*) p->Next();
               p->Next() = newdata[k];
               newdata[k] = p;
@@ -220,49 +264,172 @@ public:
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key, if any
+  //! @param theItem new item; overrides value previously bound to the key
   //! @return Standard_True if Key was not bound already
   Standard_Boolean Bind (const TheKeyType& theKey, const TheItemType& theItem)
   {
     if (Resizable()) 
       ReSize(Extent());
-    DataMapNode** data = (DataMapNode**)myData1;
-    Standard_Integer k = Hasher::HashCode (theKey, NbBuckets());
-    DataMapNode* p = data[k];
-    while (p) 
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
     {
-      if (Hasher::IsEqual(p->Key(), theKey))
-      {
-        p->ChangeValue() = theItem;
-        return Standard_False;
-      }
-      p = (DataMapNode *) p->Next();
+      aNode->ChangeValue() = theItem;
+      return Standard_False;
     }
-    data[k] = new (this->myAllocator) DataMapNode (theKey, theItem, data[k]);
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (theKey, theItem, data[aHash]);
     Increment();
     return Standard_True;
   }
 
-  //! Bound binds Item to Key in map. Returns modifiable Item 
+  //! Bind binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return Standard_True if Key was not bound already
+  Standard_Boolean Bind (TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = theItem;
+      return Standard_False;
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (std::forward<TheKeyType>(theKey), theItem, data[aHash]);
+    Increment();
+    return Standard_True;
+  }
+
+  //! Bind binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return Standard_True if Key was not bound already
+  Standard_Boolean Bind (const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = std::forward<TheItemType>(theItem);
+      return Standard_False;
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (theKey, std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return Standard_True;
+  }
+
+  //! Bind binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return Standard_True if Key was not bound already
+  Standard_Boolean Bind (TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = theItem;
+      return Standard_False;
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (std::forward<TheKeyType>(theKey),
+                                                       std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return Standard_True;
+  }
+
+  //! Bound binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return pointer to modifiable Item
   TheItemType* Bound (const TheKeyType& theKey, const TheItemType& theItem)
   {
     if (Resizable()) 
       ReSize(Extent());
-    DataMapNode** data = (DataMapNode**)myData1;
-    Standard_Integer k = Hasher::HashCode (theKey, NbBuckets());
-    DataMapNode* p = data[k];
-    while (p)
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
     {
-      if (Hasher::IsEqual(p->Key(), theKey))
-      {
-        p->ChangeValue() = theItem;
-        return &p->ChangeValue();
-      }
-      p = (DataMapNode*)p->Next();
+      aNode->ChangeValue() = theItem;
+      return &aNode->ChangeValue();
     }
-    data[k] = new (this->myAllocator) DataMapNode (theKey, theItem, data[k]);
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (theKey, theItem, data[aHash]);
     Increment();
-    return &data[k]->ChangeValue();
+    return &data[aHash]->ChangeValue();
+  }
+
+  //! Bound binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return pointer to modifiable Item
+  TheItemType* Bound (TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = theItem;
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (std::forward<TheKeyType>(theKey), theItem, data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
+
+  //! Bound binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return pointer to modifiable Item
+  TheItemType* Bound (const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = std::forward<TheItemType>(theItem);
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (theKey, std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
+  }
+
+  //! Bound binds Item to Key in map.
+  //! @param theKey  key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return pointer to modifiable Item
+  TheItemType* Bound (TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    size_t aHash;
+    DataMapNode* aNode;
+    if (lookup(theKey, aNode, aHash))
+    {
+      aNode->ChangeValue() = std::forward<TheItemType>(theItem);
+      return &aNode->ChangeValue();
+    }
+    DataMapNode** data = (DataMapNode**)myData1;
+    data[aHash] = new (this->myAllocator) DataMapNode (std::forward<TheKeyType>(theKey), 
+                                                       std::forward<TheItemType>(theItem), data[aHash]);
+    Increment();
+    return &data[aHash]->ChangeValue();
   }
 
   //! IsBound
@@ -278,12 +445,12 @@ public:
     if (IsEmpty()) 
       return Standard_False;
     DataMapNode** data = (DataMapNode**) myData1;
-    Standard_Integer k = Hasher::HashCode(theKey,NbBuckets());
+    const size_t k = HashCode(theKey,NbBuckets());
     DataMapNode* p = data[k];
     DataMapNode* q = NULL;
     while (p) 
     {
-      if (Hasher::IsEqual(p->Key(), theKey))
+      if (IsEqual(p->Key(), theKey))
       {
         Decrement();
         if (q) 
@@ -361,20 +528,20 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const Standard_Boolean doReleaseMemory = Standard_True)
+  void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
   { Destroy (DataMapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
   { 
-    Clear();
+    Clear(theAllocator != this->myAllocator);
     this->myAllocator = ( ! theAllocator.IsNull() ? theAllocator :
                     NCollection_BaseAllocator::CommonBaseAllocator() );
   }
 
   //! Destructor
   virtual ~NCollection_DataMap (void)
-  { Clear(); }
+  { Clear(true); }
 
   //! Size
   Standard_Integer Size(void) const
@@ -382,23 +549,60 @@ public:
 
   
  protected:
-  // ---------- PROTECTED METHODS ----------
-  //! Lookup for particular key in map. Returns true if key is found and
-  //! thepNode points to binded node. Returns false if key is not found,
-  //! thehNode value is this case is not usable.
-  Standard_Boolean lookup(const TheKeyType& theKey,DataMapNode*& thepNode) const
+
+  //! Lookup for particular key in map.
+  //! @param[in] theKey key to compute hash
+  //! @param[out] theNode the detected node with equal key. Can be null.
+  //! @return true if key is found
+  Standard_Boolean lookup(const TheKeyType& theKey,DataMapNode*& theNode) const
   {
     if (IsEmpty())
       return Standard_False; // Not found
-    for (thepNode = (DataMapNode*)myData1[Hasher::HashCode(theKey, NbBuckets())];
-         thepNode; thepNode = (DataMapNode*)thepNode->Next())
+    for (theNode = (DataMapNode*)myData1[HashCode(theKey, NbBuckets())];
+         theNode; theNode = (DataMapNode*)theNode->Next())
     {
-      if (Hasher::IsEqual(thepNode->Key(), theKey)) 
+      if (IsEqual(theNode->Key(), theKey))
         return Standard_True;
     }
     return Standard_False; // Not found
   }
 
+  //! Lookup for particular key in map.
+  //! @param[in] theKey key to compute hash
+  //! @param[out] theNode the detected node with equal key. Can be null.
+  //! @param[out] theHash computed bounded hash code for current key.
+  //! @return true if key is found
+  Standard_Boolean lookup(const TheKeyType& theKey, DataMapNode*& theNode, size_t& theHash) const
+  {
+    theHash = HashCode(theKey, NbBuckets());
+    if (IsEmpty())
+      return Standard_False; // Not found
+    for (theNode = (DataMapNode*)myData1[theHash];
+         theNode; theNode = (DataMapNode*)theNode->Next())
+    {
+      if (IsEqual(theNode->Key(), theKey))
+      {
+        return Standard_True;
+      }
+    }
+    return Standard_False; // Not found
+  }
+
+  bool IsEqual(const TheKeyType& theKey1,
+               const TheKeyType& theKey2) const
+  {
+    return myHasher(theKey1, theKey2);
+  }
+
+  size_t HashCode(const TheKeyType& theKey,
+                  const int theUpperBound) const
+  {
+    return myHasher(theKey) % theUpperBound + 1;
+  }
+
+private:
+
+  Hasher myHasher;
 };
 
 #endif

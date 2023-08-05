@@ -127,8 +127,9 @@ void NCollection_AccAllocator::Free(void* theAddress)
     // If there are no more blocks, reallocate the block to the default size
     else
     {
+      const Standard_Size aRoundSize = (myBlockSize + 3) & ~0x3;
       Standard_Address aNewAddress = Standard::Reallocate(anAddress,
-                                                          myBlockSize);
+                                                          aRoundSize);
       if (aNewAddress == anAddress)
       {
         // Normally, the reallocation keeps the block at the same address
@@ -196,7 +197,8 @@ NCollection_AccAllocator::findBlock(const Standard_Address theAddress, Key& theK
 NCollection_AccAllocator::Block*
 NCollection_AccAllocator::allocateNewBlock(const Standard_Size theSize)
 {
-  Standard_Address anAddress = Standard::Allocate(theSize);
+  const Standard_Size aRoundSize = (theSize + 3) & ~0x3;
+  Standard_Address anAddress = Standard::Allocate(aRoundSize);
   // we depend on the fact that Standard::Allocate always returns
   // a pointer aligned to a 4 byte boundary
   mypLastBlock = myBlocks.Bound(getKey(anAddress),

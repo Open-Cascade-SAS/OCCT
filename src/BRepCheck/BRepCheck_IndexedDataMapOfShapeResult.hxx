@@ -19,10 +19,9 @@
 
 #include <TopoDS_Shape.hxx>
 #include <BRepCheck_Result.hxx>
-#include <TopTools_OrientedShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TopoDS_Shape,Handle(BRepCheck_Result),TopTools_OrientedShapeMapHasher> BRepCheck_IndexedDataMapOfShapeResult;
+typedef NCollection_IndexedDataMap<TopoDS_Shape,Handle(BRepCheck_Result)> BRepCheck_IndexedDataMapOfShapeResult;
 
 
 #endif

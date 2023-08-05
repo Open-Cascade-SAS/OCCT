@@ -42,31 +42,31 @@ class BOPAlgo_Tools
 {
 public:
 
-  //! Makes the chains of the connected elements from the given connexity map
-  template <class theType, class theTypeHasher>
-  static void MakeBlocks(const NCollection_IndexedDataMap<theType, NCollection_List<theType>, theTypeHasher>& theMILI,
-                         NCollection_List<NCollection_List<theType>>& theMBlocks,
+  //! Makes the chains of the connected elements from the given convexity map
+  template <class TheMap, class TheList>
+  static void MakeBlocks(const TheMap& theMILI,
+                         TheList& theMBlocks,
                          const Handle(NCollection_BaseAllocator)& theAllocator)
   {
-    NCollection_Map<theType, theTypeHasher> aMFence;
+    NCollection_Map<typename TheMap::key_type, typename TheMap::hasher> aMFence;
     Standard_Integer i, aNb = theMILI.Extent();
     for (i = 1; i <= aNb; ++i) {
-      const theType& n = theMILI.FindKey(i);
+      const typename TheMap::key_type& n = theMILI.FindKey(i);
       if (!aMFence.Add(n))
         continue;
       //
       // Start the chain
-      NCollection_List<theType>& aChain = theMBlocks.Append(NCollection_List<theType>(theAllocator));
+      typename TheList::value_type& aChain = theMBlocks.Append(typename TheList::value_type(theAllocator));
       aChain.Append(n);
       // Look for connected elements
-      typename NCollection_List<theType>::Iterator aItLChain(aChain);
+      typename TheList::value_type::Iterator aItLChain(aChain);
       for (; aItLChain.More(); aItLChain.Next()) {
-        const theType& n1 = aItLChain.Value();
-        const NCollection_List<theType>& aLI = theMILI.FindFromKey(n1);
+        const typename TheMap::key_type& n1 = aItLChain.Value();
+        const typename TheList::value_type& aLI = theMILI.FindFromKey(n1);
         // Add connected elements into the chain
-        typename NCollection_List<theType>::Iterator aItLI(aLI);
+        typename TheList::value_type::Iterator aItLI(aLI);
         for (; aItLI.More(); aItLI.Next()) {
-          const theType& n2 = aItLI.Value();
+          const typename TheMap::key_type& n2 = aItLI.Value();
           if (aMFence.Add(n2)) {
             aChain.Append(n2);
           }
@@ -76,21 +76,21 @@ public:
   }
 
   //! Fills the map with the connected entities
-  template <class theType, class theTypeHasher>
-  static void FillMap(const theType& n1,
-                      const theType& n2,
-                      NCollection_IndexedDataMap<theType, NCollection_List<theType>, theTypeHasher>& theMILI,
+  template <class TheType, class TheMap>
+  static void FillMap(const TheType& n1,
+                      const TheType& n2,
+                      TheMap& theMILI,
                       const Handle(NCollection_BaseAllocator)& theAllocator)
   {
-    NCollection_List<theType> *pList1 = theMILI.ChangeSeek(n1);
+    typename TheMap::value_type *pList1 = theMILI.ChangeSeek(n1);
     if (!pList1) {
-      pList1 = &theMILI(theMILI.Add(n1, NCollection_List<theType>(theAllocator)));
+      pList1 = &theMILI(theMILI.Add(n1, NCollection_List<TheType>(theAllocator)));
     }
     pList1->Append(n2);
     //
-    NCollection_List<theType> *pList2 = theMILI.ChangeSeek(n2);
+    typename TheMap::value_type*pList2 = theMILI.ChangeSeek(n2);
     if (!pList2) {
-      pList2 = &theMILI(theMILI.Add(n2, NCollection_List<theType>(theAllocator)));
+      pList2 = &theMILI(theMILI.Add(n2, typename TheMap::value_type(theAllocator)));
     }
     pList2->Append(n1);
   }

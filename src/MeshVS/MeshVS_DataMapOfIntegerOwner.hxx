@@ -18,11 +18,10 @@
 
 #include <Standard_Integer.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Handle(SelectMgr_EntityOwner),TColStd_MapIntegerHasher> MeshVS_DataMapOfIntegerOwner;
-typedef NCollection_DataMap<Standard_Integer,Handle(SelectMgr_EntityOwner),TColStd_MapIntegerHasher>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerOwner;
+typedef NCollection_DataMap<Standard_Integer,Handle(SelectMgr_EntityOwner)> MeshVS_DataMapOfIntegerOwner;
+typedef NCollection_DataMap<Standard_Integer,Handle(SelectMgr_EntityOwner)>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerOwner;
 
 
 #endif

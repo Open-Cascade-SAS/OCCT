@@ -15,11 +15,10 @@
 #ifndef TColStd_MapOfReal_HeaderFile
 #define TColStd_MapOfReal_HeaderFile
 
-#include <TColStd_MapRealHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Standard_Real,TColStd_MapRealHasher> TColStd_MapOfReal;
-typedef NCollection_Map<Standard_Real,TColStd_MapRealHasher>::Iterator TColStd_MapIteratorOfMapOfReal;
+typedef NCollection_Map<Standard_Real> TColStd_MapOfReal;
+typedef NCollection_Map<Standard_Real>::Iterator TColStd_MapIteratorOfMapOfReal;
 
 
 #endif

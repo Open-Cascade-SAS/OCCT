@@ -22,7 +22,6 @@
 
 #include <TopoDS_Solid.hxx>
 #include <TopOpeBRepBuild_ShapeSet.hxx>
-#include <Standard_Address.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopTools_ListOfShape.hxx>
 class TopoDS_Shape;

@@ -19,15 +19,17 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <NCollection_Allocator.hxx>
 
 #include <math_DoubleTab.hxx>
-#include <math_Vector.hxx>
 #include <Standard_OStream.hxx>
 
 // resolve name collisions with X11 headers
 #ifdef Opposite
   #undef Opposite
 #endif
+
+template<typename T = double> class math_VectorBase;
 
 //! This class implements the real matrix abstract data type.
 //! Matrixes can have an arbitrary range which must be defined
@@ -74,6 +76,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  friend class math_VectorBase<>;
 
   //! Constructs a non-initialized  matrix of range [LowerRow..UpperRow,
   //! LowerCol..UpperCol]
@@ -278,24 +281,24 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
   //! An exception is raised if the dimensions are different.
   //! An exception is raises if <Row> is inferior to the lower
   //! row of the matrix or <Row> is superior to the upper row.
-  Standard_EXPORT void SetRow (const Standard_Integer Row, const math_Vector& V);
+  Standard_EXPORT void SetRow (const Standard_Integer Row, const math_VectorBase<>& V);
 
   //! Sets the column of index Col of a matrix to the vector <V>.
   //! An exception is raised if the dimensions are different.
   //! An exception is raises if <Col> is inferior to the lower
   //! column of the matrix or <Col> is superior to the upper
   //! column.
-  Standard_EXPORT void SetCol (const Standard_Integer Col, const math_Vector& V);
+  Standard_EXPORT void SetCol (const Standard_Integer Col, const math_VectorBase<>& V);
 
   //! Sets the diagonal of a matrix to the value <Value>.
   //! An exception is raised if the matrix is not square.
   Standard_EXPORT void SetDiag (const Standard_Real Value);
 
   //! Returns the row of index Row of a matrix.
-  Standard_EXPORT math_Vector Row (const Standard_Integer Row) const;
+  Standard_EXPORT math_VectorBase<> Row (const Standard_Integer Row) const;
 
   //! Returns the column of index <Col> of a matrix.
-  Standard_EXPORT math_Vector Col (const Standard_Integer Col) const;
+  Standard_EXPORT math_VectorBase<> Col (const Standard_Integer Col) const;
 
   //! Swaps the rows of index Row1 and Row2.
   //! An exception is raised if <Row1> or <Row2> is out of range.
@@ -322,7 +325,7 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
   //! Computes a matrix as the product of 2 vectors.
   //! An exception is raised if the dimensions are different.
   //! <me> = <Left> * <Right>.
-  Standard_EXPORT void Multiply (const math_Vector& Left, const math_Vector& Right);
+  Standard_EXPORT void Multiply (const math_VectorBase<>& Left, const math_VectorBase<>& Right);
 
   //! Computes a matrix as the product of 2 matrixes.
   //! An exception is raised if the dimensions are different.
@@ -374,11 +377,8 @@ Standard_NODISCARD math_Matrix operator* (const math_Matrix& Right) const
 
   //! Returns the product of a matrix by a vector.
   //! An exception is raised if the dimensions are different.
-  Standard_NODISCARD Standard_EXPORT math_Vector Multiplied (const math_Vector& Right) const;
-Standard_NODISCARD math_Vector operator* (const math_Vector& Right) const
-{
-  return Multiplied(Right);
-}
+  Standard_NODISCARD Standard_EXPORT math_VectorBase<> Multiplied (const math_VectorBase<>& Right) const;
+  Standard_NODISCARD Standard_EXPORT math_VectorBase<> operator* (const math_VectorBase<>& Right) const;
 
   //! Returns the opposite of a matrix.
   //! An exception is raised if the dimensions are different.
@@ -391,10 +391,6 @@ math_Matrix operator-()
   //! Prints information on the current state of the object.
   //! Is used to redefine the operator <<.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
-
-
-friend class math_Vector;
-
 
 protected:
 
@@ -409,7 +405,7 @@ protected:
   //! The new lower row of the matrix is set to <LowerRow>
   //! and the new lower column of the matrix is set to the column
   //! of range <LowerCol>.
-    void SetLower (const Standard_Integer LowerRow, const Standard_Integer LowerCol);
+  void SetLower (const Standard_Integer LowerRow, const Standard_Integer LowerCol);
 
 
 

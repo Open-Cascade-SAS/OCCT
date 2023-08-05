@@ -19,8 +19,8 @@
 #include <Standard_GUID.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Standard_GUID,Standard_GUID> TDF_IDMap;
-typedef NCollection_Map<Standard_GUID,Standard_GUID>::Iterator TDF_MapIteratorOfIDMap;
+typedef NCollection_Map<Standard_GUID> TDF_IDMap;
+typedef NCollection_Map<Standard_GUID>::Iterator TDF_MapIteratorOfIDMap;
 
 
 #endif

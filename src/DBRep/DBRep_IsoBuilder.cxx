@@ -37,9 +37,6 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
-#include <NCollection_IndexedDataMap.hxx>
-#include <TopTools_OrientedShapeMapHasher.hxx>
-
 // Providing consistency with intersection tolerance for the linear curves
 static Standard_Real IntersectorConfusion = Precision::PConfusion();
 static Standard_Real IntersectorTangency  = Precision::PConfusion();

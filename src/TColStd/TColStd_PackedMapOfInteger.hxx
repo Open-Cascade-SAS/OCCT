@@ -17,7 +17,6 @@
 #define TColStd_PackedMapOfInteger_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Integer.hxx>
@@ -125,7 +124,7 @@ private:
     //! Support of Map interface.
     Standard_Integer HashCode (Standard_Integer theUpper) const
     {
-      return ::HashCode (Standard_Integer(myMask >> 5), theUpper);
+      return (myMask >> 5) % theUpper + 1;
     }
 
     //! Support of Map interface.

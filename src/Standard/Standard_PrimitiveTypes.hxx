@@ -26,7 +26,5 @@
 #include <Standard_Character.hxx>
 #include <Standard_ExtCharacter.hxx>
 #include <Standard_CString.hxx>
-#include <Standard_ExtString.hxx>
-#include <Standard_Address.hxx>
 
 #endif

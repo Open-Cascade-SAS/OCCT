@@ -16,11 +16,11 @@
 #ifndef MeshVS_MapOfTwoNodes_HeaderFile
 #define MeshVS_MapOfTwoNodes_HeaderFile
 
-#include <MeshVS_TwoNodesHasher.hxx>
+#include <MeshVS_TwoNodes.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<MeshVS_TwoNodes,MeshVS_TwoNodesHasher> MeshVS_MapOfTwoNodes;
-typedef NCollection_Map<MeshVS_TwoNodes,MeshVS_TwoNodesHasher>::Iterator MeshVS_MapIteratorOfMapOfTwoNodes;
+typedef NCollection_Map<MeshVS_TwoNodes> MeshVS_MapOfTwoNodes;
+typedef NCollection_Map<MeshVS_TwoNodes>::Iterator MeshVS_MapIteratorOfMapOfTwoNodes;
 
 
 #endif

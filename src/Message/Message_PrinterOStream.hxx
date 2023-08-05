@@ -18,7 +18,6 @@
 
 #include <Message_ConsoleColor.hxx>
 #include <Message_Printer.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_OStream.hxx>
 
 class Message_PrinterOStream;

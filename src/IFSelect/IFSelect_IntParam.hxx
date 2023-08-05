@@ -21,6 +21,7 @@
 
 #include <Standard_Integer.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DefineAlloc.hxx>
 #include <Standard_Transient.hxx>
 
 class IFSelect_IntParam;

@@ -31,11 +31,45 @@ Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
 }
 
 // =======================================================================
+// function : Graphic3d_FrameStatsData
+// purpose  :
+// =======================================================================
+Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(const Graphic3d_FrameStatsData& theOther) :
+  myCounters(theOther.myCounters),
+  myTimers(theOther.myTimers),
+  myTimersMin(theOther.myTimersMin),
+  myTimersMax(theOther.myTimersMax),
+  myFps(theOther.myFps),
+  myFpsCpu(theOther.myFpsCpu),
+  myFpsImmediate(theOther.myFpsImmediate),
+  myFpsCpuImmediate(theOther.myFpsCpuImmediate)
+{}
+
+// =======================================================================
+// function : Graphic3d_FrameStatsData
+// purpose  :
+// =======================================================================
+Graphic3d_FrameStatsData::Graphic3d_FrameStatsData(Graphic3d_FrameStatsData&& theOther) noexcept :
+  myCounters(std::move(theOther.myCounters)),
+  myTimers(std::move(theOther.myTimers)),
+  myTimersMin(std::move(theOther.myTimersMin)),
+  myTimersMax(std::move(theOther.myTimersMax)),
+  myFps(std::move(theOther.myFps)),
+  myFpsCpu(std::move(theOther.myFpsCpu)),
+  myFpsImmediate(std::move(theOther.myFpsImmediate)),
+  myFpsCpuImmediate(std::move(theOther.myFpsCpuImmediate))
+{}
+
+// =======================================================================
 // function : operator=
 // purpose  :
 // =======================================================================
 Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator= (const Graphic3d_FrameStatsData& theOther)
 {
+  if (&theOther == this)
+  {
+    return *this;
+  }
   myFps         = theOther.myFps;
   myFpsCpu      = theOther.myFpsCpu;
   myFpsImmediate    = theOther.myFpsImmediate;
@@ -44,6 +78,27 @@ Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator= (const Graphic3d_F
   myTimers      = theOther.myTimers;
   myTimersMin   = theOther.myTimersMin;
   myTimersMax   = theOther.myTimersMax;
+  return *this;
+}
+
+// =======================================================================
+// function : operator=
+// purpose  :
+// =======================================================================
+Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator=(Graphic3d_FrameStatsData&& theOther) noexcept
+{
+  if (&theOther == this)
+  {
+    return *this;
+  }
+  myFps = std::move(theOther.myFps);
+  myFpsCpu = std::move(theOther.myFpsCpu);
+  myFpsImmediate = std::move(theOther.myFpsImmediate);
+  myFpsCpuImmediate = std::move(theOther.myFpsCpuImmediate);
+  myCounters = std::move(theOther.myCounters);
+  myTimers = std::move(theOther.myTimers);
+  myTimersMin = std::move(theOther.myTimersMin);
+  myTimersMax = std::move(theOther.myTimersMax);
   return *this;
 }
 

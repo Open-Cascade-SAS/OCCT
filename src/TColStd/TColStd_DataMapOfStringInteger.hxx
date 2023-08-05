@@ -18,8 +18,8 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Integer,TCollection_ExtendedString> TColStd_DataMapOfStringInteger;
-typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Integer,TCollection_ExtendedString>::Iterator TColStd_DataMapIteratorOfDataMapOfStringInteger;
+typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Integer> TColStd_DataMapOfStringInteger;
+typedef NCollection_DataMap<TCollection_ExtendedString,Standard_Integer>::Iterator TColStd_DataMapIteratorOfDataMapOfStringInteger;
 
 
 #endif

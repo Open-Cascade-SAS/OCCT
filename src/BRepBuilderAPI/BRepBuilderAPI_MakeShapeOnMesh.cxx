@@ -22,6 +22,7 @@
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <NCollection_IndexedDataMap.hxx>
+#include <Standard_HashUtils.hxx>
 
 namespace
 {
@@ -47,32 +48,30 @@ namespace
       return Standard_False;
     }
 
+    bool operator==(const Edge& theOther) const
+    {
+      return theOther.Idx1 == Idx1 && theOther.Idx2 == Idx2;
+    }
+
     //! First index. It is lower or equal than the second.
     Standard_Integer Idx1;
 
     //! Second index.
     Standard_Integer Idx2;
   };
+}
 
-  //! Hasher of Edge structure.
-  struct EdgeHasher
+namespace std
+{
+  template <>
+  struct hash<Edge>
   {
-
-    //! Returns hash code for the given edge.
-    static Standard_Integer HashCode(const Edge&            theEdge,
-                                     const Standard_Integer theUpperBound)
+    size_t operator()(const Edge& theEdge) const noexcept
     {
-      // Circle-based collisions.
-      return ::HashCode(theEdge.Idx1 * theEdge.Idx1 + theEdge.Idx2 * theEdge.Idx2, theUpperBound);
+      // Combine two int values into a single hash value.
+      int aCombination[2]{ theEdge.Idx1, theEdge.Idx2 };
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
     }
-
-    //! Returns true if two edges are equal.
-    static Standard_Boolean IsEqual(const Edge& theEdge1,
-                                    const Edge& theEdge2)
-    {
-      return theEdge1.Idx1 == theEdge2.Idx1 && theEdge1.Idx2 == theEdge2.Idx2;
-    }
-
   };
 }
 
@@ -115,7 +114,7 @@ void BRepBuilderAPI_MakeShapeOnMesh::Build(const Message_ProgressRange& theRange
   }
 
   // Build shared edges.
-  NCollection_IndexedDataMap<Edge, TopoDS_Edge, EdgeHasher> anEdgeToTEgeMap;
+  NCollection_IndexedDataMap<Edge, TopoDS_Edge> anEdgeToTEgeMap;
   for (Standard_Integer i = 1; i <= aNbTriangles; ++i)
   {
     aPS.Next();

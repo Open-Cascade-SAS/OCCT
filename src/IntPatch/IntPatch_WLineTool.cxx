@@ -1544,7 +1544,7 @@ void IntPatch_WLineTool::JoinWLines(IntPatch_SequenceOfLine& theSlin,
       }
     }
 
-    anAlloc->Reset();
+    anAlloc->Reset(false);
     NCollection_List<Standard_Integer> aListFC(anAlloc),
                                        aListLC(anAlloc);
     

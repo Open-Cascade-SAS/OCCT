@@ -98,7 +98,7 @@ Standard_Real& Draft_VertexInfo::ChangeParameter (const TopoDS_Edge& E)
   myItEd.Initialize(myEdges);
   for (; myItEd.More(); myItEd.Next(),itp.Next()) {
     if (myItEd.Value().IsSame(E)) {
-      return itp.Value();
+      return itp.ChangeValue();
     }
   }
   throw Standard_DomainError();

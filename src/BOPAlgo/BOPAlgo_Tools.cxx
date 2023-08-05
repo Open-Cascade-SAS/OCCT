@@ -119,7 +119,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
   }
   // Make Blocks of the pave blocks
   NCollection_List<BOPDS_ListOfPaveBlock> aMBlocks(aAllocator);
-  BOPAlgo_Tools::MakeBlocks<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher>(aMPBLPB, aMBlocks, aAllocator);
+  BOPAlgo_Tools::MakeBlocks(aMPBLPB, aMBlocks, aAllocator);
 
   // Use temporary allocator for the local fence map
   Handle(NCollection_IncAllocator) anAllocTmp = new NCollection_IncAllocator;
@@ -132,7 +132,7 @@ void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPav
       continue;
 
     // Reset the allocator
-    anAllocTmp->Reset();
+    anAllocTmp->Reset(false);
     // New common block
     Handle(BOPDS_CommonBlock) aCB;
     // Faces of the common block
@@ -1068,11 +1068,11 @@ void BOPAlgo_Tools::IntersectVertices(const TopTools_IndexedDataMapOfShapeReal& 
   for (Standard_Integer iPair = 0; iPair < aNbPairs; ++iPair)
   {
     const BOPTools_BoxPairSelector::PairIDs& aPair = aPairs[iPair];
-    BOPAlgo_Tools::FillMap<Standard_Integer, TColStd_MapIntegerHasher> (aPair.ID1, aPair.ID2, aMILI, anAlloc);
+    BOPAlgo_Tools::FillMap (aPair.ID1, aPair.ID2, aMILI, anAlloc);
   }
 
-  NCollection_List<TColStd_ListOfInteger> aBlocks (anAlloc);
-  BOPAlgo_Tools::MakeBlocks<Standard_Integer, TColStd_MapIntegerHasher> (aMILI, aBlocks, anAlloc);
+  NCollection_List<TColStd_ListOfInteger> aBlocks(anAlloc);
+  BOPAlgo_Tools::MakeBlocks (aMILI, aBlocks, anAlloc);
 
   NCollection_List<TColStd_ListOfInteger>::Iterator itLI (aBlocks);
   for (; itLI.More(); itLI.Next())

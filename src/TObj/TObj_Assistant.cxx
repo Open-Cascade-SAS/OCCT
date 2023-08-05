@@ -17,7 +17,6 @@
 
 #include <TObj_Assistant.hxx>
 
-#include <TObj_Common.hxx>
 #include <TObj_Model.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>

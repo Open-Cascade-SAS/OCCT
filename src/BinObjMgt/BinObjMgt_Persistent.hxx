@@ -32,7 +32,6 @@
 #include <BinObjMgt_Position.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-#include <Standard_Address.hxx>
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 class TDF_Label;

@@ -27,7 +27,6 @@
 
 #include <NCollection_DataMap.hxx>
 
-#include <TopTools_OrientedShapeMapHasher.hxx>
 
 //! BOPAlgo_MakeConnected is the algorithm for making the touching
 //! shapes connected or glued, i.e. for making the coinciding geometries
@@ -321,8 +320,7 @@ protected: //! @name Fields
   // Results
   NCollection_DataMap
     <TopoDS_Shape,
-     TopTools_ListOfShape,
-     TopTools_OrientedShapeMapHasher> myMaterials; //!< Map of the materials associations
+     TopTools_ListOfShape> myMaterials;            //!< Map of the materials associations
                                                    //! for the border elements
   TopTools_DataMapOfShapeListOfShape myOrigins;    //!< Map of origins
                                                    //! (allows tracking the shape's ancestors)

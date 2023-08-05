@@ -572,7 +572,7 @@ void BRepAlgo_Loop::Perform()
     if (pLCE)
     {
       for (itl1.Initialize(*pLCE); itl1.More(); itl1.Next()) {
-        TopoDS_Edge& E = TopoDS::Edge(itl1.Value());
+        TopoDS_Edge& E = TopoDS::Edge(itl1.ChangeValue());
         if (!Emap.Add(E))
           continue;
         StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute, myTolConf);
@@ -585,7 +585,7 @@ void BRepAlgo_Loop::Perform()
   // => call only once StoreInMVE which should double them
   TopTools_MapOfShape DejaVu;
   for (itl.Initialize(myConstEdges); itl.More(); itl.Next()) {
-    TopoDS_Edge& E = TopoDS::Edge(itl.Value());
+    TopoDS_Edge& E = TopoDS::Edge(itl.ChangeValue());
     if (DejaVu.Add(E))
       StoreInMVE(myFace,E,MVE,YaCouture,myVerticesForSubstitute, myTolConf);
   }
@@ -900,7 +900,7 @@ void  BRepAlgo_Loop::WiresToFaces()
 //	     Standard_False);
     TopTools_ListIteratorOfListOfShape it(myNewWires);
     for (; it.More(); it.Next()) {
-      FR.Add(TopoDS::Wire(it.Value()));
+      FR.Add(TopoDS::Wire(it.ChangeValue()));
     }
 
     FR.Perform();

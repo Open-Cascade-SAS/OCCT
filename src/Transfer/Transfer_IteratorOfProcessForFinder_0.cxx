@@ -23,24 +23,80 @@
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
 #include <Transfer_ActorOfProcessForFinder.hxx>
 #include <Transfer_Binder.hxx>
- 
 
-#define TheStart Handle(Transfer_Finder)
-#define TheStart_hxx <Transfer_Finder.hxx>
-#define TheMapHasher Transfer_FindHasher
-#define TheMapHasher_hxx <Transfer_FindHasher.hxx>
-#define Handle_TheList Handle(Transfer_HSequenceOfFinder)
-#define TheList Transfer_HSequenceOfFinder
-#define TheList_hxx <Transfer_HSequenceOfFinder.hxx>
-#define Transfer_TransferMap Transfer_TransferMapOfProcessForFinder
-#define Transfer_TransferMap_hxx <Transfer_TransferMapOfProcessForFinder.hxx>
-#define Transfer_Iterator Transfer_IteratorOfProcessForFinder
-#define Transfer_Iterator_hxx <Transfer_IteratorOfProcessForFinder.hxx>
-#define Transfer_Actor Transfer_ActorOfProcessForFinder
-#define Transfer_Actor_hxx <Transfer_ActorOfProcessForFinder.hxx>
-#define Handle_Transfer_Actor Handle(Transfer_ActorOfProcessForFinder)
-#define Transfer_TransferProcess Transfer_ProcessForFinder
-#define Transfer_TransferProcess_hxx <Transfer_ProcessForFinder.hxx>
-#define Handle_Transfer_TransferProcess Handle(Transfer_ProcessForFinder)
-#include <Transfer_Iterator.gxx>
+//=======================================================================
+// Function: Transfer_IteratorOfProcessForFinder
+// Purpose : 
+//=======================================================================
+Transfer_IteratorOfProcessForFinder::Transfer_IteratorOfProcessForFinder(const Standard_Boolean withstarts)
+  : Transfer_TransferIterator()
+{
+  if (withstarts) thestarts = new Transfer_HSequenceOfFinder();
+}
+
+//=======================================================================
+// Function: Add
+// Purpose : 
+//=======================================================================
+void  Transfer_IteratorOfProcessForFinder::Add
+(const Handle(Transfer_Binder)& binder)
+{
+  if (!thestarts.IsNull()) throw Standard_NoSuchObject("Transfer_IteratorOfProcessForFinder : Add, Starting Object required not provided");
+  AddItem(binder);
+}
+
+//=======================================================================
+// Function: Add
+// Purpose : 
+//=======================================================================
+void  Transfer_IteratorOfProcessForFinder::Add
+(const Handle(Transfer_Binder)& binder, const Handle(Transfer_Finder)& start)
+{
+  AddItem(binder);
+  if (!thestarts.IsNull()) thestarts->Append(start);
+}
+
+//=======================================================================
+// Function: Filter
+// Purpose : 
+//=======================================================================
+void  Transfer_IteratorOfProcessForFinder::Filter
+(const Handle(Transfer_HSequenceOfFinder)& list, const Standard_Boolean keep)
+{
+  if (list.IsNull() || thestarts.IsNull()) return;
+  Standard_Integer i, j, nb = thestarts->Length();
+  if (nb == 0) return;
+  Handle(Transfer_Binder) factice;
+  Transfer_TransferMapOfProcessForFinder amap(nb);
+  for (i = 1; i <= nb; i++) {
+    j = amap.Add(thestarts->Value(i), factice);
+    SelectItem(j, !keep);
+  }
+
+  //  Comparison
+  nb = list->Length();
+  for (i = 1; i <= nb; i++) {
+    j = amap.FindIndex(list->Value(i));
+    if (j > 0) SelectItem(j, keep);
+  }
+}
+
+//=======================================================================
+// Function: HasStarting
+// Purpose : 
+//=======================================================================
+Standard_Boolean  Transfer_IteratorOfProcessForFinder::HasStarting() const
+{
+  return (!thestarts.IsNull());
+}
+
+//=======================================================================
+// Function: Starting
+// Purpose : 
+//=======================================================================
+const Handle(Transfer_Finder)& Transfer_IteratorOfProcessForFinder::Starting() const
+{
+  if (thestarts.IsNull()) throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");
+  return thestarts->Value(thecurr);
+}
 

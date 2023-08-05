@@ -75,13 +75,7 @@ public:
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& astring);
 
   //! Move constructor
-  TCollection_AsciiString (TCollection_AsciiString&& theOther) Standard_Noexcept
-  : mystring (theOther.mystring),
-    mylength (theOther.mylength)
-  {
-    theOther.mystring = NULL;
-    theOther.mylength = 0;
-  }
+  Standard_EXPORT TCollection_AsciiString (TCollection_AsciiString&& theOther) Standard_Noexcept;
   
   //! Initializes a AsciiString with copy of another AsciiString
   //! concatenated with the message character.
@@ -268,16 +262,26 @@ void operator = (const Standard_CString fromwhere)
   //! Used as operator =
   //! Example: aString = anotherString;
   Standard_EXPORT void Copy (const TCollection_AsciiString& fromwhere);
-void operator = (const TCollection_AsciiString& fromwhere)
-{
-  Copy(fromwhere);
-}
+
+  //! Copy assignment operator
+  TCollection_AsciiString& operator= (const TCollection_AsciiString& theOther)
+  {
+    Copy(theOther);
+    return *this;
+  }
+
+  //! Moves string without reallocations
+  Standard_EXPORT void Move (TCollection_AsciiString&& theOther);
+
+  //! Move assignment operator
+  TCollection_AsciiString& operator= (TCollection_AsciiString&& theOther) noexcept
+  {
+    Move(std::forward<TCollection_AsciiString>(theOther));
+    return *this;
+  }
 
   //! Exchange the data of two strings (without reallocating memory).
   Standard_EXPORT void Swap (TCollection_AsciiString& theOther);
-
-  //! Move assignment operator
-  TCollection_AsciiString& operator= (TCollection_AsciiString&& theOther) Standard_Noexcept { Swap (theOther); return *this; }
 
   //! Frees memory allocated by AsciiString.
   Standard_EXPORT ~TCollection_AsciiString();
@@ -670,12 +674,10 @@ friend Standard_EXPORT Standard_IStream& operator >> (Standard_IStream& astream,
   //! aString.Value(2) returns 'e'
   Standard_EXPORT Standard_Character Value (const Standard_Integer where) const;
   
-  //! Computes a hash code for the given ASCII string, in the range [1, theUpperBound].
+  //! Computes a hash code for the given ASCII string
   //! Returns the same integer value as the hash function for TCollection_ExtendedString
-  //! @param theAsciiString the ASCII string which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  static Standard_Integer HashCode (const TCollection_AsciiString& theAsciiString, Standard_Integer theUpperBound);
+  //! @return a computed hash code
+  size_t HashCode() const;
 
   //! Returns True  when the two  strings are the same.
   //! (Just for HashCode for AsciiString)
@@ -694,17 +696,19 @@ friend class TCollection_HAsciiString;
 
 private:
 
-  Standard_EXPORT void Split (const Standard_Integer where, TCollection_AsciiString& result);
-  
-  Standard_EXPORT void SubString (const Standard_Integer FromIndex, const Standard_Integer ToIndex, TCollection_AsciiString& result) const;
-  
-  Standard_EXPORT void Token (const Standard_CString separators, const Standard_Integer whichone, TCollection_AsciiString& result) const;
+  //! Internal wrapper to allocate on stack or heap
+  void allocate(const int theLength);
+
+  //! Internal wrapper to reallocate on stack or heap
+  void reallocate(const int theLength);
+
+  //! Internal wrapper to deallocate on stack
+  void deallocate();
 
 private:
 
-  Standard_PCharacter mystring; //!< NULL-terminated string
-  Standard_Integer    mylength; //!< length in bytes (excluding terminating NULL symbol)
-
+  Standard_PCharacter mystring{}; //!< NULL-terminated string
+  Standard_Integer    mylength{}; //!< length in bytes (excluding terminating NULL symbol)
 };
 
 #include <TCollection_AsciiString.lxx>

@@ -4,7 +4,6 @@ CDM_CanCloseStatus.hxx
 CDM_DataMapIteratorOfMetaDataLookUpTable.hxx
 CDM_Document.cxx
 CDM_Document.hxx
-CDM_DocumentHasher.hxx
 CDM_DocumentPointer.hxx
 CDM_ListIteratorOfListOfDocument.hxx
 CDM_ListIteratorOfListOfReferences.hxx

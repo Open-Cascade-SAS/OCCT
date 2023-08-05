@@ -18,7 +18,6 @@
 #ifndef TObj_TReference_HeaderFile
 #define TObj_TReference_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 

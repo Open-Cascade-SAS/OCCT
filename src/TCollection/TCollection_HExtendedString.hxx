@@ -64,8 +64,13 @@ public:
   //! and filled with <filler>. This is useful for buffers.
   Standard_EXPORT TCollection_HExtendedString(const Standard_Integer length, const Standard_ExtCharacter filler);
   
-  //! Initializes a HExtendedString with a HExtendedString.
+  //! Initializes a HExtendedString with a ExtendedString.
   Standard_EXPORT TCollection_HExtendedString(const TCollection_ExtendedString& aString);
+
+  //! Initializes a HExtendedString with a ExtendedString.
+  TCollection_HExtendedString(TCollection_ExtendedString&& theString) noexcept :
+    myString(std::move(theString))
+  {}
   
   //! Initializes a HExtendedString with an HAsciiString.
   Standard_EXPORT TCollection_HExtendedString(const Handle(TCollection_HAsciiString)& aString);
@@ -218,10 +223,29 @@ private:
 
 };
 
+namespace std
+{
+  template <>
+  struct hash<Handle(TCollection_HExtendedString)>
+  {
+    size_t operator()(const Handle(TCollection_HExtendedString)& theString) const
+    {
+      if (theString.IsNull()) return 0;
+      return std::hash<TCollection_ExtendedString>{}(theString->String());
+    }
+  };
 
+  template<>
+  struct equal_to<Handle(TCollection_HExtendedString)>
+  {
+    bool operator()(const Handle(TCollection_HExtendedString)& theString1,
+                    const Handle(TCollection_HExtendedString)& theString2) const
+    {
+      return theString1 == theString2 ||
+        (!theString1.IsNull() && !theString2.IsNull() && theString1->String() == theString2->String());
 
-
-
-
+    }
+  };
+}
 
 #endif // _TCollection_HExtendedString_HeaderFile

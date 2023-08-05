@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Address.hxx>
 #include <math_Vector.hxx>
 #include <Blend_Point.hxx>
 #include <gp_Pnt.hxx>

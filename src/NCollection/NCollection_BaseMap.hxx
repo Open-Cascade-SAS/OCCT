@@ -159,14 +159,28 @@ public:
   //! Constructor
   NCollection_BaseMap (const Standard_Integer NbBuckets,
                        const Standard_Boolean single,
-                       const Handle(NCollection_BaseAllocator)& theAllocator)
-  : myData1(NULL),
+                       const Handle(NCollection_BaseAllocator)& theAllocator) :
+    myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator),
+    myData1(NULL),
     myData2(NULL),
     myNbBuckets(NbBuckets),
     mySize(0),
     isDouble(!single)
+  {}
+
+  //! Move Constructor
+  NCollection_BaseMap(NCollection_BaseMap&& theOther) noexcept :
+    myAllocator(theOther.myAllocator),
+    myData1(theOther.myData1),
+    myData2(theOther.myData2),
+    myNbBuckets(theOther.myNbBuckets),
+    mySize(theOther.mySize),
+    isDouble(theOther.isDouble)
   {
-    myAllocator = (theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator);
+    theOther.myData1 = nullptr;
+    theOther.myData1 = nullptr;
+    theOther.mySize = 0;
+    theOther.myNbBuckets = 0;
   }
 
   //! Destructor
@@ -212,8 +226,16 @@ public:
     std::swap (myData2,     theOther.myData2);
     std::swap (myNbBuckets, theOther.myNbBuckets);
     std::swap (mySize,      theOther.mySize);
-    //std::swap (isDouble,    theOther.isDouble);
   }
+
+  //! Move operator
+  NCollection_BaseMap& operator=(NCollection_BaseMap&&) noexcept = delete;
+
+  //! Copy Constructor
+  NCollection_BaseMap(const NCollection_BaseMap&) = delete;
+
+  //! Assign operator
+  NCollection_BaseMap& operator=(const NCollection_BaseMap&) = delete;
 
  protected:
   // --------- PROTECTED FIELDS -----------
@@ -225,7 +247,7 @@ public:
   // ---------- PRIVATE FIELDS ------------
   Standard_Integer myNbBuckets;
   Standard_Integer mySize;
-  Standard_Boolean isDouble;
+  const Standard_Boolean isDouble;
 
   // ---------- FRIEND CLASSES ------------
   friend class Iterator;

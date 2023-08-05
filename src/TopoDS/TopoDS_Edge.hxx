@@ -17,11 +17,7 @@
 #ifndef _TopoDS_Edge_HeaderFile
 #define _TopoDS_Edge_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
 #include <TopoDS_Shape.hxx>
-
 
 //! Describes an edge which
 //! - references an underlying edge with the potential to
@@ -37,32 +33,20 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Undefined Edge.
-    TopoDS_Edge();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  TopoDS_Edge() {}
 };
 
-
-#include <TopoDS_Edge.lxx>
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<TopoDS_Edge>
+  {
+    size_t operator()(const TopoDS_Edge& theShape) const
+    {
+      return std::hash<TopoDS_Shape>{}(theShape);
+    }
+  };
+}
 
 #endif // _TopoDS_Edge_HeaderFile

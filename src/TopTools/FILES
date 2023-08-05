@@ -47,10 +47,7 @@ TopTools_MapOfOrientedShape.hxx
 TopTools_MapOfShape.hxx
 TopTools_MutexForShapeProvider.cxx
 TopTools_MutexForShapeProvider.hxx
-TopTools_OrientedShapeMapHasher.hxx
-TopTools_OrientedShapeMapHasher.lxx
 TopTools_SequenceOfShape.hxx
 TopTools_ShapeMapHasher.hxx
-TopTools_ShapeMapHasher.lxx
 TopTools_ShapeSet.cxx
 TopTools_ShapeSet.hxx

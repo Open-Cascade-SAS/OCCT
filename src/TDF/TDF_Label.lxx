@@ -23,6 +23,18 @@
 #include <TDF_TagSource.hxx>
 #include <TDF_Data.hxx>
 
+namespace std
+{
+  template<>
+  struct hash<TDF_Label>
+  {
+    size_t operator()(const TDF_Label& theNode) const
+    {
+      return std::hash<TDF_LabelNodePtr>{}(theNode.myLabelNode);
+    }
+  };
+}
+
 inline TDF_Label::TDF_Label()
 :myLabelNode(NULL)
 {}

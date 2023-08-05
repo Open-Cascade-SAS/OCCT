@@ -23,6 +23,7 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
+#include <Standard_HashUtils.hxx>
 
 //! The class represents the couple of indices with additional
 //! characteristics such as analyzed flag and an angle.<br>
@@ -93,12 +94,10 @@ public:
            (myIndex1 == theOther.myIndex2 && myIndex2 == theOther.myIndex1);
   }
 
-  //! Computes a hash code for this couple, in the range [1, theUpperBound]
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
+  //! Returns true if the Couple is equal to <theOther>
+  bool operator==(const IntPolyh_Couple& theOther) const
   {
-    return ::HashCode (myIndex1 + myIndex2, theUpperBound);
+    return IsEqual(theOther);
   }
 
   // Dump
@@ -114,5 +113,23 @@ private:
   Standard_Real myAngle;
 
 };
+
+namespace std
+{
+  template <>
+  struct hash<IntPolyh_Couple>
+  {
+    size_t operator()(const IntPolyh_Couple& theCouple) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      int aCombination[2]{ theCouple.FirstValue(), theCouple.SecondValue() };
+      if (aCombination[0] > aCombination[1])
+      {
+        std::swap(aCombination[0], aCombination[1]);
+      }
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
+}
 
 #endif // _IntPolyh_Couple_HeaderFile

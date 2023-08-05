@@ -125,7 +125,7 @@ Standard_EXPORT Standard_Integer FUN_unkeepEinterferences
   
   TopOpeBRepDS_ListIteratorOfListOfInterference it1(LI);
   while (it1.More() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     Standard_Boolean k1 = ::FUN_keepEinterference(BDS,I1,E);
     if ( !k1 ) {
       LI.Remove(it1);
@@ -234,7 +234,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
   it1.Initialize(LI);
   while (it1.More() ) {
     Standard_Boolean it1toremove = Standard_False;
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; FDS_data(I1,GT1,G1,ST1,S1);
     TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1; ::FDS_Tdata(I1,tsb1,isb1,tsa1,isa1);
     const TopOpeBRepDS_Transition T1 = I1->Transition();
@@ -304,7 +304,7 @@ Standard_EXPORT void FUN_orderFFsamedomain
   
   it1.Initialize(LI);
   while (it1.More() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; FDS_data(I1,GT1,G1,ST1,S1);
     TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1; FDS_Tdata(I1,tsb1,isb1,tsa1,isa1);
 //    I1->Transition();
@@ -346,7 +346,7 @@ Standard_EXPORT void FUN_orderSTATETRANSonG
   
   it1.Initialize(LI);
   while (it1.More() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1; 
     FDS_Idata(I1,tsb1,isb1,tsa1,isa1,GT1,G1,ST1,S1);
     const TopOpeBRepDS_Transition& T1 = I1->Transition();
@@ -404,7 +404,7 @@ Standard_EXPORT void FUN_resolveEUNKNOWN
   // process interferences of LI with UNKNOWN transition
   
   for (it1.Initialize(LI); it1.More(); it1.Next() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     const TopOpeBRepDS_Transition& T1 = I1->Transition();
     Standard_Boolean isunk = T1.IsUnknown();
     if (!isunk) continue;

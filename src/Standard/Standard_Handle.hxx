@@ -14,7 +14,6 @@
 #ifndef _Standard_Handle_HeaderFile
 #define _Standard_Handle_HeaderFile
 
-#include <Standard_Address.hxx>
 #include <Standard_Std.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Transient.hxx>
@@ -399,14 +398,18 @@ namespace opencascade {
 //! Define Handle() macro
 #define Handle(Class) opencascade::handle<Class>
 
-//! Computes a hash code for the standard handle, in the range [1, theUpperBound]
-//! @param theHandle the handle which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-template <class TheTransientType>
-Standard_Integer HashCode (const Handle (TheTransientType) & theHandle, const Standard_Integer theUpperBound)
+#include <Standard_HashUtils.hxx>
+
+namespace std
 {
-  return ::HashCode (theHandle.get(), theUpperBound);
+  template <class TheTransientType>
+  struct hash<Handle(TheTransientType)>
+  {
+    size_t operator()(const Handle(TheTransientType)& theHandle) const noexcept
+    {
+      return static_cast<size_t>(reinterpret_cast<std::uintptr_t>(theHandle.get()));
+    }
+  };
 }
 
 //! For compatibility with previous versions of OCCT, define Handle_Class alias for opencascade::handle<Class>.

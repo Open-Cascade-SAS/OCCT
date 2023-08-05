@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 
 #include <DrawFairCurve_Batten.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 

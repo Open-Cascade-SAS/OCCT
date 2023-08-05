@@ -94,9 +94,25 @@
 //================================================================
 // TYPE DEFINITIONS
 //================================================================
+namespace
+{
+  struct VtkPointerHasher
+  {
+    std::size_t operator()(const vtkSmartPointer<vtkActor>& thePointer) const
+    {
+      return std::hash<vtkActor*>{}(thePointer.Get());
+    }
+
+    bool operator()(const vtkSmartPointer<vtkActor>& thePointer1,
+                    const vtkSmartPointer<vtkActor>& thePointer2) const
+    {
+      return thePointer1 == thePointer2;
+    }
+  };
+}
 
 typedef NCollection_DoubleMap<TopoDS_Shape, TCollection_AsciiString> DoubleMapOfShapesAndNames;
-typedef NCollection_DoubleMap<vtkSmartPointer<vtkActor>, TCollection_AsciiString> DoubleMapOfActorsAndNames;
+typedef NCollection_DoubleMap<vtkSmartPointer<vtkActor>, TCollection_AsciiString, VtkPointerHasher> DoubleMapOfActorsAndNames;
 
 typedef IVtkDraw_HighlightAndSelectionPipeline PipelinePtr;
 

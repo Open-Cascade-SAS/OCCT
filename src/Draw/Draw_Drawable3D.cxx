@@ -18,14 +18,15 @@
 
 #include <NCollection_DataMap.hxx>
 #include <Draw_Display.hxx>
+#include <Standard_CStringHasher.hxx>
 #include <Standard_NotImplemented.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D, Standard_Transient)
 
 //! Return the map of factory functions.
-static NCollection_DataMap<Standard_CString, Draw_Drawable3D::FactoryFunction_t>& getFactoryMap()
+static NCollection_DataMap<Standard_CString, Draw_Drawable3D::FactoryFunction_t, Standard_CStringHasher>& getFactoryMap()
 {
-  static NCollection_DataMap<Standard_CString, Draw_Drawable3D::FactoryFunction_t> myToolMap;
+  static NCollection_DataMap<Standard_CString, Draw_Drawable3D::FactoryFunction_t, Standard_CStringHasher> myToolMap;
   return myToolMap;
 }
 

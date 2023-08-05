@@ -18,7 +18,7 @@
 #include <XCAFPrs_DocumentExplorer.hxx>
 
 //! Indexed map of scene nodes with custom search algorithm.
-class RWGltf_GltfSceneNodeMap : public NCollection_IndexedMap<XCAFPrs_DocumentNode, XCAFPrs_DocumentNode>
+class RWGltf_GltfSceneNodeMap : public NCollection_IndexedMap<XCAFPrs_DocumentNode>
 {
 public:
 
@@ -32,15 +32,9 @@ public:
     {
       return 0;
     }
-
-    for (IndexedMapNode* aNode1Iter = (IndexedMapNode* )myData1[::HashCode (theNodeId, NbBuckets())]; aNode1Iter != NULL; aNode1Iter = (IndexedMapNode* )aNode1Iter->Next())
-    {
-      if (::IsEqual (aNode1Iter->Key1().Id, theNodeId))
-      {
-        return aNode1Iter->Index();
-      }
-    }
-    return 0;
+    XCAFPrs_DocumentNode aDocNode;
+    aDocNode.Id = theNodeId;
+    return NCollection_IndexedMap<XCAFPrs_DocumentNode>::FindIndex(aDocNode);
   }
 
 };

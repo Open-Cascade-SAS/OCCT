@@ -22,24 +22,81 @@
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
 #include <Transfer_ActorOfProcessForTransient.hxx>
 #include <Transfer_Binder.hxx>
- 
 
-#define TheStart Handle(Standard_Transient)
-#define TheStart_hxx <Standard_Transient.hxx>
-#define TheMapHasher TColStd_MapTransientHasher
-#define TheMapHasher_hxx <TColStd_MapTransientHasher.hxx>
-#define Handle_TheList Handle(TColStd_HSequenceOfTransient)
-#define TheList TColStd_HSequenceOfTransient
-#define TheList_hxx <TColStd_HSequenceOfTransient.hxx>
-#define Transfer_TransferMap Transfer_TransferMapOfProcessForTransient
-#define Transfer_TransferMap_hxx <Transfer_TransferMapOfProcessForTransient.hxx>
-#define Transfer_Iterator Transfer_IteratorOfProcessForTransient
-#define Transfer_Iterator_hxx <Transfer_IteratorOfProcessForTransient.hxx>
-#define Transfer_Actor Transfer_ActorOfProcessForTransient
-#define Transfer_Actor_hxx <Transfer_ActorOfProcessForTransient.hxx>
-#define Handle_Transfer_Actor Handle(Transfer_ActorOfProcessForTransient)
-#define Transfer_TransferProcess Transfer_ProcessForTransient
-#define Transfer_TransferProcess_hxx <Transfer_ProcessForTransient.hxx>
-#define Handle_Transfer_TransferProcess Handle(Transfer_ProcessForTransient)
-#include <Transfer_Iterator.gxx>
+//=======================================================================
+//function : Transfer_IteratorOfProcessForTransient
+//purpose  : 
+//=======================================================================
+Transfer_IteratorOfProcessForTransient::Transfer_IteratorOfProcessForTransient(const Standard_Boolean withstarts)
+  : Transfer_TransferIterator()
+{
+  if (withstarts) thestarts = new TColStd_HSequenceOfTransient();
+}
 
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+void  Transfer_IteratorOfProcessForTransient::Add
+(const Handle(Transfer_Binder)& binder)
+{
+  if (!thestarts.IsNull()) throw Standard_NoSuchObject("Transfer_IteratorOfProcessForTransient : Add, Starting Object required not provided");
+  AddItem(binder);
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+void  Transfer_IteratorOfProcessForTransient::Add
+(const Handle(Transfer_Binder)& binder, const Handle(Standard_Transient)& start)
+{
+  AddItem(binder);
+  if (!thestarts.IsNull()) thestarts->Append(start);
+}
+
+//=======================================================================
+//function : Filter
+//purpose  : 
+//=======================================================================
+void  Transfer_IteratorOfProcessForTransient::Filter
+(const Handle(TColStd_HSequenceOfTransient)& list, const Standard_Boolean keep)
+{
+  if (list.IsNull() || thestarts.IsNull()) return;
+  Standard_Integer i, j, nb = thestarts->Length();
+  if (nb == 0) return;
+  Handle(Transfer_Binder) factice;
+  Transfer_TransferMapOfProcessForTransient amap(nb);
+  for (i = 1; i <= nb; i++)
+  {
+    j = amap.Add(thestarts->Value(i), factice);
+    SelectItem(j, !keep);
+  }
+
+  //  Comparison
+  nb = list->Length();
+  for (i = 1; i <= nb; i++)
+  {
+    j = amap.FindIndex(list->Value(i));
+    if (j > 0) SelectItem(j, keep);
+  }
+}
+
+//=======================================================================
+//function : HasStarting
+//purpose  : 
+//=======================================================================
+Standard_Boolean  Transfer_IteratorOfProcessForTransient::HasStarting() const
+{
+  return (!thestarts.IsNull());
+}
+
+//=======================================================================
+//function : Starting
+//purpose  : 
+//=======================================================================
+const Handle(Standard_Transient)& Transfer_IteratorOfProcessForTransient::Starting() const
+{
+  if (thestarts.IsNull()) throw Standard_NoSuchObject("TransferIterator : No Starting defined at all");
+  return thestarts->Value(thecurr);
+}

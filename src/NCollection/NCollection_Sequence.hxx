@@ -21,6 +21,7 @@
 
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <utility>
 
 /**
  * Purpose:     Definition of a sequence of elements indexed by
@@ -42,6 +43,10 @@ public:
     Node (const TheItemType& theItem) :
       NCollection_SeqNode ()
       { myValue = theItem; }
+    //! Constructor
+    Node (TheItemType&& theItem) :
+      NCollection_SeqNode ()
+      { myValue = std::forward<TheItemType>(theItem); }
     //! Constant value access
     const TheItemType& Value () const { return myValue; }
     //! Variable value access
@@ -118,7 +123,14 @@ public:
   NCollection_Sequence (const NCollection_Sequence& theOther) :
     NCollection_BaseSequence(theOther.myAllocator)
   {
-    Assign (theOther);
+    appendSeq((const Node*)theOther.myFirstItem);
+  }
+
+  //! Move constructor
+  NCollection_Sequence(NCollection_Sequence&& theOther) noexcept :
+    NCollection_BaseSequence(theOther.myAllocator)
+  {
+    this->operator=(std::forward<NCollection_Sequence>(theOther));
   }
 
   //! Number of items
@@ -190,6 +202,28 @@ public:
     return Assign (theOther);
   }
 
+  //! Move operator
+  NCollection_Sequence& operator= (NCollection_Sequence&& theOther) noexcept
+  {
+    if (this == &theOther)
+    {
+      return *this;
+    }
+    Clear(theOther.myAllocator);
+    myFirstItem = theOther.myFirstItem;
+    myLastItem = theOther.myLastItem;
+    myCurrentItem = theOther.myCurrentItem;
+    myCurrentIndex = theOther.myCurrentIndex;
+    mySize = theOther.mySize;
+
+    theOther.myFirstItem = nullptr;
+    theOther.myLastItem = nullptr;
+    theOther.myCurrentItem = nullptr;
+    theOther.myCurrentIndex = 0;
+    theOther.mySize = 0;
+    return *this;
+  }
+
   //! Remove one item
   void Remove (Iterator& thePosition)
   { RemoveSeq (thePosition, delNode); }
@@ -206,6 +240,10 @@ public:
   //! Append one item
   void Append (const TheItemType& theItem)
   { PAppend (new (this->myAllocator) Node (theItem)); }
+
+  //! Append one item
+  void Append (TheItemType&& theItem)
+  { PAppend (new (this->myAllocator) Node (std::forward<TheItemType>(theItem))); }
 
   //! Append another sequence (making it empty)
   void Append (NCollection_Sequence& theSeq)
@@ -229,6 +267,10 @@ public:
   //! Prepend one item
   void Prepend (const TheItemType& theItem)
   { PPrepend (new (this->myAllocator) Node (theItem)); }
+
+  //! Prepend one item
+  void Prepend (TheItemType&& theItem)
+  { PPrepend (new (this->myAllocator) Node (std::forward<TheItemType>(theItem))); }
 
   //! Prepend another sequence (making it empty)
   void Prepend (NCollection_Sequence& theSeq)
@@ -254,6 +296,11 @@ public:
                      const TheItemType&     theItem)
   { InsertAfter (theIndex-1, theItem); }
 
+  //! InsertBefore theIndex theItem
+  void InsertBefore (const Standard_Integer theIndex, 
+                     TheItemType&&          theItem)
+  { InsertAfter (theIndex-1, theItem); }
+
   //! InsertBefore theIndex another sequence (making it empty)
   void InsertBefore (const Standard_Integer theIndex,
                      NCollection_Sequence&  theSeq)
@@ -262,6 +309,11 @@ public:
   //! InsertAfter the position of iterator
   void InsertAfter  (Iterator&              thePosition,
                      const TheItemType&     theItem)
+  { PInsertAfter (thePosition, new (this->myAllocator) Node (theItem)); }
+
+  //! InsertAfter the position of iterator
+  void InsertAfter  (Iterator&              thePosition,
+                     TheItemType&&          theItem)
   { PInsertAfter (thePosition, new (this->myAllocator) Node (theItem)); }
 
   //! InsertAfter theIndex another sequence (making it empty)
@@ -287,6 +339,14 @@ public:
   //! InsertAfter theIndex theItem
   void InsertAfter (const Standard_Integer  theIndex, 
                     const TheItemType&      theItem)
+  {
+    Standard_OutOfRange_Raise_if (theIndex < 0 || theIndex > mySize, "NCollection_Sequence::InsertAfter");
+    PInsertAfter (theIndex, new (this->myAllocator) Node (theItem));
+  }
+
+  //! InsertAfter theIndex theItem
+  void InsertAfter (const Standard_Integer  theIndex,
+                    TheItemType&&           theItem)
   {
     Standard_OutOfRange_Raise_if (theIndex < 0 || theIndex > mySize, "NCollection_Sequence::InsertAfter");
     PInsertAfter (theIndex, new (this->myAllocator) Node (theItem));

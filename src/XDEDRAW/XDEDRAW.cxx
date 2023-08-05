@@ -944,7 +944,7 @@ private:
   }
 
 private:
-  NCollection_Map<TCollection_AsciiString, TCollection_AsciiString>
+  NCollection_Map<TCollection_AsciiString>
                            myNameMap;         //!< names map to handle collisions
   Handle(TDocStd_Document) myDoc;             //!< document
   TCollection_AsciiString  myDocName;         //!< document name

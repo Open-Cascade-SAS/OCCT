@@ -720,7 +720,8 @@ public:
   myVMin(VMin),
   myVMax(VMax),
   myCoordIndx(CoordIndx),
-  mySign(Sign)
+  mySign(Sign),
+  myPenalty(0.)
   {
     math_Vector X(1,2);
     X(1) = UMin;

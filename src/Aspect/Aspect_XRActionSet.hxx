@@ -50,6 +50,6 @@ protected:
   Aspect_XRActionMap      myActions;   //!< map of actions
 };
 
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRActionSet), TCollection_AsciiString> Aspect_XRActionSetMap;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Aspect_XRActionSet)> Aspect_XRActionSetMap;
 
 #endif // _Aspect_XRActionSet_HeaderFile

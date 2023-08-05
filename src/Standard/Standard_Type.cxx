@@ -15,29 +15,20 @@
 
 #include <Standard_Type.hxx>
 #include <Standard_Mutex.hxx>
+#include <Standard_Assert.hxx>
 
-#include <NCollection_DataMap.hxx>
+#include <unordered_map>
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Type,Standard_Transient)
 
 //============================================================================
 
-namespace {
-static Standard_CString copy_string (const char* theString)
-{
-  size_t aLength = strlen (theString);
-  char* aResult = static_cast<char*> (Standard::Allocate (aLength + 1));
-  strncpy (aResult, theString, aLength + 1); //including null-character
-  return aResult;
-}
-}
-
-Standard_Type::Standard_Type (const char* theSystemName,
+Standard_Type::Standard_Type (const std::type_info& theInfo,
                               const char* theName,
                               Standard_Size theSize,
                               const Handle(Standard_Type)& theParent) :
-  mySystemName(copy_string (theSystemName)),
-  myName(copy_string (theName)), 
+  myInfo(theInfo),
+  myName(theName),
   mySize(theSize), 
   myParent(theParent)
 {
@@ -70,25 +61,8 @@ void Standard_Type::Print (Standard_OStream& AStream) const
 //============================================================================
 
 namespace {
-  // Value-based hasher for plain C string (char*)
-  struct CStringHasher 
-  {
-    //! Computes a hash code of the given Standard_CString, in the range [1, theUpperBound]
-    //! @param theKey the key which hash code is to be computed
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in the range [1, theUpperBound]
-    static Standard_Integer HashCode (const Standard_CString& theKey, const Standard_Integer theUpperBound)
-    {
-      return ::HashCode (theKey, theUpperBound);
-    }
-    static bool IsEqual (const Standard_CString& theKey1, const Standard_CString& theKey2)
-    {
-      return ! strcmp (theKey1, theKey2);
-    }
-  };
-
   // Map of string to type
-  typedef NCollection_DataMap<Standard_CString, Standard_Type*, CStringHasher> registry_type;
+  typedef std::unordered_map<std::type_index, Standard_Type*> registry_type;
 
   // Registry is made static in the function to ensure that it gets
   // initialized by the time of first access
@@ -102,7 +76,7 @@ namespace {
   Handle(Standard_Type) theType = STANDARD_TYPE(Standard_Transient);
 }
 
-Standard_Type* Standard_Type::Register (const char* theSystemName, const char* theName,
+Standard_Type* Standard_Type::Register (const std::type_info& theInfo, const char* theName,
                                         Standard_Size theSize, const Handle(Standard_Type)& theParent)
 {
   // Access to registry is protected by mutex; it should not happen often because
@@ -113,17 +87,15 @@ Standard_Type* Standard_Type::Register (const char* theSystemName, const char* t
   // return existing descriptor if already in the registry
   registry_type& aRegistry = GetRegistry();
   Standard_Type* aType = 0;
-  if (aRegistry.Find (theSystemName, aType))
-    return aType;
+  auto anIter = aRegistry.find(theInfo);
+  if (anIter != aRegistry.end())
+    return anIter->second;
 
   // else create a new descriptor
-  aType = new Standard_Type (theSystemName, theName, theSize, theParent);
+  aType = new Standard_Type (theInfo, theName, theSize, theParent);
 
   // then add it to registry and return (the reference to the handle stored in the registry)
-  aRegistry.Bind (aType->mySystemName, aType);
-
-//  std::cout << "Registering " << theSystemName << ": " << aRegistry.Extent() << std::endl;
-
+  aRegistry.emplace(theInfo, aType);
   return aType;
 }
 
@@ -131,9 +103,5 @@ Standard_Type::~Standard_Type ()
 {
   // remove descriptor from the registry
   registry_type& aRegistry = GetRegistry();
-  Standard_ASSERT(aRegistry.UnBind (mySystemName), "Standard_Type::~Standard_Type() cannot find itself in registry",);
-
-//  std::cout << "Unregistering " << mySystemName << ": " << aRegistry.Extent() << std::endl;
-  Standard::Free (mySystemName);
-  Standard::Free (myName);
+  Standard_ASSERT(aRegistry.erase(myInfo) > 0, "Standard_Type::~Standard_Type() cannot find itself in registry",);
 }

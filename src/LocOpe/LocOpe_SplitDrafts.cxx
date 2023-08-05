@@ -1401,7 +1401,7 @@ static void MakeFace(TopoDS_Face& F,
 //  for (TopTools_ListIteratorOfListOfShape itl(ledg); 
   TopTools_ListIteratorOfListOfShape itl(ledg) ;
   for ( ; itl.More(); itl.Next()) {
-    TopoDS_Edge& edg = TopoDS::Edge(itl.Value());
+    const TopoDS_Edge& edg = TopoDS::Edge(itl.Value());
     Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg,F,f,l);
     if (C2d.IsNull()) {
       BRep_Tool::Range(edg,f,l);
@@ -1528,7 +1528,7 @@ static void MakeFace(TopoDS_Face& F,
     GProp_GProps GP;
     BRepGProp::SurfaceProperties(NewFace,GP);
     if (GP.Mass() < 0) {
-      itl.Value().Reverse();
+      itl.ChangeValue().Reverse();
     }
   }
   if (lwires.Extent() == 1) {

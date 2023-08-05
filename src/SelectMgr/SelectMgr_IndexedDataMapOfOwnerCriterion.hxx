@@ -19,9 +19,8 @@
 
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SortCriterion.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<Handle(SelectMgr_EntityOwner), SelectMgr_SortCriterion, TColStd_MapTransientHasher> SelectMgr_IndexedDataMapOfOwnerCriterion;
+typedef NCollection_IndexedDataMap<Handle(SelectMgr_EntityOwner), SelectMgr_SortCriterion> SelectMgr_IndexedDataMapOfOwnerCriterion;
 
 #endif

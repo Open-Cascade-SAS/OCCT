@@ -21,6 +21,8 @@
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_OccAllocator.hxx>
+#include <Standard_HashUtils.hxx>
 
 
 /**
@@ -69,6 +71,31 @@ public:
     Standard_Boolean IsNull() const
     {
       return node1 == 0 || node2 == 0;
+    }
+
+    bool operator==(const Link& theOther) const
+    {
+      return (theOther.node1 == node1 && theOther.node2 == node2) ||
+        (theOther.node1 == node2 && theOther.node2 == node1);
+    }
+  };
+
+  struct Hasher
+  {
+    size_t operator()(const Poly_MakeLoops::Link& theLink) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      int aCombination[2]{ theLink.node1, theLink.node2 };
+      if (aCombination[0] > aCombination[1])
+      {
+        std::swap(aCombination[0], aCombination[1]);
+      }
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+
+    bool operator()(const Poly_MakeLoops::Link& theLink1, const Poly_MakeLoops::Link& theLink2) const noexcept
+    {
+      return theLink1 == theLink2;
     }
   };
 
@@ -242,31 +269,12 @@ private:
 
   // FIELDS
   const Helper*                           myHelper;
-  Handle(NCollection_BaseAllocator)        myAlloc;
-  NCollection_IndexedMap<Link>            myMapLink;
+  Handle(NCollection_BaseAllocator)       myAlloc;
+  NCollection_IndexedMap<Link, Hasher>    myMapLink;
   NCollection_Sequence<Loop>              myLoops;
   HeapOfInteger                           myStartIndices;
   TColStd_PackedMapOfInteger              myHangIndices;
 };
-
-//! Computes a hash code for the given link, in the range [1, theUpperBound]
-//! @param theLink the link which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const Poly_MakeLoops::Link& theLink, const Standard_Integer theUpperBound)
-{
-  return HashCode (theLink.node1 + theLink.node2, theUpperBound);
-}
-
-/**
- * IsEqual method is needed for maps
- */
-inline Standard_Boolean IsEqual(const Poly_MakeLoops::Link& theKey1,
-                                const Poly_MakeLoops::Link& theKey2)
-{
-  return ((theKey1.node1 == theKey2.node1 && theKey1.node2 == theKey2.node2) ||
-          (theKey1.node1 == theKey2.node2 && theKey1.node2 == theKey2.node1));
-}
 
 /**
  * Implementation for 3D space
@@ -356,5 +364,28 @@ private:
   //! this flag says that chooseLeftWay must choose the right way instead
   Standard_Boolean myRightWay;
 };
+
+
+namespace std
+{
+  template <>
+  struct hash<Poly_MakeLoops::Link>
+  {
+    size_t operator()(const Poly_MakeLoops::Link& theLink) const noexcept
+    {
+      return Poly_MakeLoops::Hasher{}(theLink);
+    }
+  };
+
+  template<>
+  struct equal_to<Poly_MakeLoops::Link>
+  {
+    bool operator()(const Poly_MakeLoops::Link& theLink1,
+                    const Poly_MakeLoops::Link& theLink2) const noexcept
+    {
+      return theLink1 == theLink2;
+    }
+  };
+}
 
 #endif

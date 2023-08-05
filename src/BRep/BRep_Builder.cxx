@@ -356,7 +356,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   }
   
   if (itcr.More()) {
-    Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+    Handle(BRep_CurveRepresentation) cr = itcr.Value();
     cr->Continuity(C);
   }
   else {
@@ -380,7 +380,7 @@ static void UpdatePoints(BRep_ListOfPointRepresentation& lpr,
   }
 
   if (itpr.More()) {
-    Handle(BRep_PointRepresentation)& pr = itpr.Value();
+    Handle(BRep_PointRepresentation) pr = itpr.Value();
     pr->Parameter(p);
   }
   else {
@@ -404,7 +404,7 @@ static void UpdatePoints(BRep_ListOfPointRepresentation& lpr,
   }
 
   if (itpr.More()) {
-    Handle(BRep_PointRepresentation)& pr = itpr.Value();
+    Handle(BRep_PointRepresentation) pr = itpr.Value();
     pr->Parameter(p);
   }
   else {
@@ -430,7 +430,7 @@ static void UpdatePoints(BRep_ListOfPointRepresentation& lpr,
   }
 
   if (itpr.More()) {
-    Handle(BRep_PointRepresentation)& pr = itpr.Value();
+    Handle(BRep_PointRepresentation) pr = itpr.Value();
     pr->Parameter(p1);
 //    pr->Parameter(p2); // skv
     pr->Parameter2(p2); // skv

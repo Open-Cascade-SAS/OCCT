@@ -31,7 +31,6 @@
 #include <HLRBRep_SLProps.hxx>
 #include <Standard_Real.hxx>
 #include <HLRBRep_FaceIterator.hxx>
-#include <Standard_Address.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_CurveType.hxx>

@@ -19,6 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <Standard_HashUtils.hxx>
 
 #include <BRepMesh_DegreeOfFreedom.hxx>
 
@@ -91,14 +92,6 @@ public:
     myMovability = theMovability;
   }
 
-  //! Computes a hash code for this triangle, in the range [1, theUpperBound]
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
-  {
-    return ::HashCode (myEdges[0] + myEdges[1] + myEdges[2], theUpperBound);
-  }
-
   //! Checks for equality with another triangle.
   //! @param theOther triangle to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
@@ -142,13 +135,18 @@ public:
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 
-//! Computes a hash code for the given triangle, in the range [1, theUpperBound]
-//! @param theTriangle the triangle which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const BRepMesh_Triangle& theTriangle, const Standard_Integer theUpperBound)
+namespace std
 {
-  return theTriangle.HashCode (theUpperBound);
+  template <>
+  struct hash<BRepMesh_Triangle>
+  {
+    size_t operator()(const BRepMesh_Triangle& theTriangle) const noexcept
+    {
+      int aCombination[3] = { theTriangle.myEdges[0], theTriangle.myEdges[1], theTriangle.myEdges[2] };
+      std::sort(aCombination, aCombination + 3); // Sort the numbers in ascending order
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
 }
 
 #endif

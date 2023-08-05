@@ -16,7 +16,6 @@
 #ifndef OSD_ThreadFunction_HeaderFile
 #define OSD_ThreadFunction_HeaderFile
 
-#include <Standard_Address.hxx>
 
 //! Typedef for prototype of function to be used as main function of a thread.
 //!

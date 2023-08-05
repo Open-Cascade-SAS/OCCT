@@ -180,13 +180,11 @@ protected:
 
   typedef NCollection_DataMap
             <Handle(BOPDS_PaveBlock),
-             Bnd_Box,
-             TColStd_MapTransientHasher> BOPAlgo_DataMapOfPaveBlockBndBox;
+             Bnd_Box> BOPAlgo_DataMapOfPaveBlockBndBox;
 
   typedef NCollection_DataMap
             <Handle(BOPDS_PaveBlock),
-             TColStd_ListOfInteger,
-             TColStd_MapTransientHasher> BOPAlgo_DataMapOfPaveBlockListOfInteger;
+             TColStd_ListOfInteger> BOPAlgo_DataMapOfPaveBlockListOfInteger;
 
   typedef NCollection_DataMap
             <Standard_Integer,
@@ -658,8 +656,8 @@ protected: //! Fields
                                                 //! on a section curve.
   
   NCollection_DataMap <BOPDS_Pair,
-                       NCollection_List<EdgeRangeDistance>,
-                       BOPDS_PairMapHasher> myDistances; //!< Map to store minimal distances between shapes
+                       NCollection_List<EdgeRangeDistance>>
+                                            myDistances; //!< Map to store minimal distances between shapes
                                                          //!  which have no real intersections
 
 };

@@ -2624,7 +2624,7 @@ static Standard_Integer OCC29289(Draw_Interpretor&, Standard_Integer , const cha
 Standard_Boolean IsSameGuid (const Standard_GUID& aGuidNull, const Standard_GUID& aGuid2)
 {
   Standard_Boolean isSame (Standard_False);
-  if(Standard_GUID::IsEqual(aGuidNull, aGuid2)) {
+  if(aGuidNull == aGuid2) {
     aGuid2.ShallowDump(std::cout);
     isSame = Standard_True;
   } else {

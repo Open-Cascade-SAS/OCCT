@@ -28,7 +28,6 @@
 #include <NCollection_IndexedDataMap.hxx>
 class TopoDS_Face;
 class DBRep_Face;
-class TopTools_OrientedShapeMapHasher;
 
 //! Creation of isoparametric curves.
 class DBRep_IsoBuilder  : public Geom2dHatch_Hatcher
@@ -54,7 +53,7 @@ public:
 protected:
 
   typedef NCollection_IndexedDataMap
-    <TopoDS_Shape, Handle(Geom2d_Curve), TopTools_OrientedShapeMapHasher>
+    <TopoDS_Shape, Handle(Geom2d_Curve)>
       DataMapOfEdgePCurve;
 
   //! Adds to the hatcher the 2D segments connecting the p-curves

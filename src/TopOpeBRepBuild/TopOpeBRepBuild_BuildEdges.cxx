@@ -71,7 +71,7 @@ void TopOpeBRepBuild_Builder::BuildEdges(const Standard_Integer iC,const Handle(
   TopTools_ListIteratorOfListOfShape It(EL);
   Standard_Integer inewC = -1;
   for (; It.More(); It.Next()) {
-    TopoDS_Edge& newEdge = TopoDS::Edge(It.Value());
+    TopoDS_Edge& newEdge = TopoDS::Edge(It.ChangeValue());
     myBuildTool.RecomputeCurves(curC,TopoDS::Edge(anEdge),newEdge,inewC,HDS);
     if (inewC != -1) ChangeNewEdges(inewC).Append(newEdge);
   }
@@ -80,7 +80,7 @@ void TopOpeBRepBuild_Builder::BuildEdges(const Standard_Integer iC,const Handle(
   }
   else {
     for (It.Initialize(EL);It.More();It.Next()) {
-      TopoDS_Edge& newEdge = TopoDS::Edge(It.Value());
+      TopoDS_Edge& newEdge = TopoDS::Edge(It.ChangeValue());
       myBuildTool.UpdateEdge(anEdge,newEdge);
     }
   }

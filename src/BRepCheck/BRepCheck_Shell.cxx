@@ -82,9 +82,9 @@ Standard_EXPORT Standard_Integer BRepCheck_Trace(const Standard_Integer phase) {
   return BRC_Trace;
 }
 
-void PrintShape(const TopoDS_Shape& theShape, const Standard_Integer upper) {
+void PrintShape(const TopoDS_Shape& theShape) {
   if (!theShape.IsNull()) {
-    Standard_Integer code = theShape.HashCode(upper);
+    size_t code = TopTools_ShapeMapHasher{}(theShape);
     std::cout << TopAbs::ShapeTypeToString (theShape.ShapeType()) << " : " << code
        << " " << TopAbs::ShapeOrientationToString(theShape.Orientation()) << std::endl;
   }

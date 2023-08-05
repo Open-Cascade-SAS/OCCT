@@ -258,7 +258,7 @@ void TopOpeBRepBuild_Builder::End()
 //    TopAbs_State state = myState1;
     TopTools_ListOfShape& ls = ChangeMerged(myShape1,myState1);
     for (TopTools_ListIteratorOfListOfShape itls(ls);itls.More();itls.Next()) {
-      TopoDS_Shape& SFE = itls.Value();
+      TopoDS_Shape& SFE = itls.ChangeValue();
       TopOpeBRepTool_FuseEdges FE(SFE);
 
       // avoid fusing old edges

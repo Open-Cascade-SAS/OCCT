@@ -46,7 +46,6 @@
 #include <TopTools_DataMapOfIntegerShape.hxx>
 #include <TopOpeBRepDS_Config.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
-#include <Standard_Address.hxx>
 class TopOpeBRepDS_HDataStructure;
 class TopOpeBRepTool_ShapeExplorer;
 class TopOpeBRepBuild_ShapeSet;

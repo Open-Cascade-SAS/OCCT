@@ -17,6 +17,7 @@
 #include <Standard.hxx>
 #include <BRepMesh_DegreeOfFreedom.hxx>
 #include <BRepMesh_OrientedEdge.hxx>
+#include <Standard_HashUtils.hxx>
 
 //! Light weighted structure representing link of the mesh.
 class BRepMesh_Edge : public BRepMesh_OrientedEdge
@@ -84,13 +85,28 @@ private:
   BRepMesh_DegreeOfFreedom  myMovability;
 };
 
-//! Computes a hash code for the given edge, in the range [1, theUpperBound]
-//! @param theEdge the edge which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const BRepMesh_Edge& theEdge, const Standard_Integer theUpperBound)
+namespace std
 {
-  return theEdge.HashCode (theUpperBound);
+  template <>
+  struct hash<BRepMesh_Edge>
+  {
+    size_t operator()(const BRepMesh_Edge& theEdge) const noexcept
+    {
+      union Combination
+      {
+        unsigned short Arr[2]; // Node can be represented as a short
+        uint32_t Hash;
+
+      } aCombination;
+      aCombination.Arr[0] = static_cast<unsigned short>(theEdge.FirstNode());
+      aCombination.Arr[1] = static_cast<unsigned short>(theEdge.LastNode());
+      if (aCombination.Arr[0] > aCombination.Arr[1])
+      {
+        std::swap(aCombination.Arr[0], aCombination.Arr[1]);
+      }
+      return static_cast<size_t>(aCombination.Hash);
+    }
+  };
 }
 
 #endif

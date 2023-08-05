@@ -16,10 +16,9 @@
 #define TColStd_IndexedMapOfTransient_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<Handle(Standard_Transient),TColStd_MapTransientHasher> TColStd_IndexedMapOfTransient;
+typedef NCollection_IndexedMap<Handle(Standard_Transient)> TColStd_IndexedMapOfTransient;
 
 
 #endif

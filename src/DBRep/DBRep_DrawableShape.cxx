@@ -853,7 +853,7 @@ void DBRep_DrawableShape::DisplayHiddenLines(Draw_Display& dis)
       if (recompute) 
 	myHidData.Remove(it);
       else {
-	it.Value().DrawOn(dis,myRg1,myRgN,myHid,
+	it.ChangeValue().DrawOn(dis,myRg1,myRgN,myHid,
 			  myConnCol,myIsosCol);
 	if (dis.HasPicked()) {
 	  pickshape = it.Value().LastPick();

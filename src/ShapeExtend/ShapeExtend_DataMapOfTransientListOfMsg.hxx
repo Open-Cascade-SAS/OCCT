@@ -19,11 +19,10 @@
 
 #include <Standard_Transient.hxx>
 #include <Message_ListOfMsg.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(Standard_Transient),Message_ListOfMsg,TColStd_MapTransientHasher> ShapeExtend_DataMapOfTransientListOfMsg;
-typedef NCollection_DataMap<Handle(Standard_Transient),Message_ListOfMsg,TColStd_MapTransientHasher>::Iterator ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg;
+typedef NCollection_DataMap<Handle(Standard_Transient),Message_ListOfMsg> ShapeExtend_DataMapOfTransientListOfMsg;
+typedef NCollection_DataMap<Handle(Standard_Transient),Message_ListOfMsg>::Iterator ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg;
 
 
 #endif

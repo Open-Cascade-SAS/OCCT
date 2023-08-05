@@ -16,10 +16,9 @@
 #define BOPTools_IndexedDataMapOfSetShape_HeaderFile
 
 #include <BOPTools_Set.hxx>
-#include <BOPTools_SetMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopoDS_Shape.hxx>
 
-typedef NCollection_IndexedDataMap<BOPTools_Set, TopoDS_Shape, BOPTools_SetMapHasher> BOPTools_IndexedDataMapOfSetShape;
+typedef NCollection_IndexedDataMap<BOPTools_Set, TopoDS_Shape> BOPTools_IndexedDataMapOfSetShape;
 
 #endif

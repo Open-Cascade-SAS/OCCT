@@ -15,6 +15,7 @@
 #define _BRepMesh_OrientedEdge_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_HashUtils.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 //! Light weighted structure representing simple link.
@@ -52,14 +53,6 @@ public:
     return myLastNode;
   }
 
-  //! Computes a hash code for this oriented edge, in the range [1, theUpperBound]
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
-  {
-    return ::HashCode (myFirstNode + myLastNode, theUpperBound);
-  }
-
   //! Checks this and other edge for equality.
   //! @param theOther edge to be checked against this one.
   //! @return TRUE if edges have the same orientation, FALSE if not.
@@ -80,13 +73,24 @@ private:
   Standard_Integer myLastNode;
 };
 
-//! Computes a hash code for the given oriented edge, in the range [1, theUpperBound]
-//! @param theOrientedEdge the oriented edge which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const BRepMesh_OrientedEdge& theOrientedEdge, const Standard_Integer theUpperBound)
+namespace std
 {
-  return theOrientedEdge.HashCode (theUpperBound);
+  template <>
+  struct hash<BRepMesh_OrientedEdge>
+  {
+    size_t operator()(const BRepMesh_OrientedEdge& theOrientedEdge) const noexcept
+    {
+      union Combination
+      {
+        unsigned short Arr[2]; // Node can be represented as a short
+        uint32_t Hash;
+
+      } aCombination;
+      aCombination.Arr[0] = static_cast<unsigned short>(theOrientedEdge.FirstNode());
+      aCombination.Arr[1] = static_cast<unsigned short>(theOrientedEdge.LastNode());
+      return static_cast<size_t>(aCombination.Hash);
+    }
+  };
 }
 
 #endif

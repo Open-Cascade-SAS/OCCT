@@ -28,7 +28,6 @@
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_ExtString.hxx>
 
 
 class Resource_Manager;

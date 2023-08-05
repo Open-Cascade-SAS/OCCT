@@ -17,11 +17,11 @@
 #ifndef TNaming_MapOfNamedShape_HeaderFile
 #define TNaming_MapOfNamedShape_HeaderFile
 
-#include <TNaming_NamedShapeHasher.hxx>
+#include <TNaming_NamedShape.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Handle(TNaming_NamedShape),TNaming_NamedShapeHasher> TNaming_MapOfNamedShape;
-typedef NCollection_Map<Handle(TNaming_NamedShape),TNaming_NamedShapeHasher>::Iterator TNaming_MapIteratorOfMapOfNamedShape;
+typedef NCollection_Map<Handle(TNaming_NamedShape)> TNaming_MapOfNamedShape;
+typedef NCollection_Map<Handle(TNaming_NamedShape)>::Iterator TNaming_MapIteratorOfMapOfNamedShape;
 
 
 #endif

@@ -4016,7 +4016,7 @@ void BRepOffset_Tool::CorrectOrientation(const TopoDS_Shape&        SI,
 //	BRepTopAdaptor_FClass2d FC (TopoDS::Face(FI.Oriented(TopAbs_FORWARD)),
 //				    Precision::Confusion());
 	for (itE.Initialize(LOE); itE.More(); itE.Next()) {
-	  TopoDS_Shape&   OE   = itE.Value();
+	  TopoDS_Shape&   OE   = itE.ChangeValue();
 	  if (NewEdges.Contains(OE)) {
 	    Handle(Geom2d_Curve) CO2d = 
 	      BRep_Tool::CurveOnSurface(TopoDS::Edge(OE),OF,f,l);

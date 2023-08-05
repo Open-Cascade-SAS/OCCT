@@ -18,7 +18,6 @@
 #define BRepClass3d_MapOfInter_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Address.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 

@@ -16,7 +16,6 @@
 #ifndef OSD_MemInfo_HeaderFile
 #define OSD_MemInfo_HeaderFile
 
-#include <NCollection_Map.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! This class provide information about memory utilized by current process.

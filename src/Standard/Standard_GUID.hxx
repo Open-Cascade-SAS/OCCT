@@ -104,31 +104,11 @@ void operator = (const Standard_UUID& uid)
   //! Check the format of a GUID string.
   //! It checks the size, the position of the '-' and the correct size of fields.
   Standard_EXPORT static Standard_Boolean CheckGUIDFormat (const Standard_CString aGuid);
-  
-  //! Hash function for GUID.
-  Standard_EXPORT Standard_Integer Hash (const Standard_Integer Upper) const;
 
-  //! Computes a hash code for the given GUID of the Standard_Integer type, in the range [1, theUpperBound]
-  //! @param theGUID the GUID which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  Standard_EXPORT static Standard_Integer HashCode (const Standard_GUID& theGUID, Standard_Integer theUpperBound);
-  
-  //! Returns True  when the two GUID are the same.
-  Standard_EXPORT static Standard_Boolean IsEqual (const Standard_GUID& string1, const Standard_GUID& string2);
-
-
-
-
-protected:
-
-
-
-
+  template<class T>
+  friend struct std::hash;
 
 private:
-
-
 
   Standard_Integer my32b;
   Standard_ExtCharacter my16b1;
@@ -140,12 +120,38 @@ private:
   Standard_Byte my8b4;
   Standard_Byte my8b5;
   Standard_Byte my8b6;
-
-
 };
 
 
-
+namespace std
+{
+  template <>
+  struct hash<Standard_GUID>
+  {
+    size_t operator()(const Standard_GUID& theGUID) const noexcept
+    {
+      struct GUID
+      {
+        Standard_Integer my32b;
+        Standard_ExtCharacter my16b1;
+        Standard_ExtCharacter my16b2;
+        Standard_ExtCharacter my16b3;
+        Standard_Byte my8b1;
+        Standard_Byte my8b2;
+        Standard_Byte my8b3;
+        Standard_Byte my8b4;
+        Standard_Byte my8b5;
+        Standard_Byte my8b6;
+      };
+      GUID aGUID{ theGUID.my32b, theGUID.my16b1,
+                  theGUID.my16b2, theGUID.my16b3,
+                  theGUID.my8b1, theGUID.my8b2,
+                  theGUID.my8b3, theGUID.my8b4,
+                  theGUID.my8b5, theGUID.my8b6 };
+      return opencascade::hashBytes(&aGUID, sizeof(GUID));
+    }
+  };
+}
 
 
 

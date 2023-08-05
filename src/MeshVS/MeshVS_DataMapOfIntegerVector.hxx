@@ -18,11 +18,10 @@
 
 #include <Standard_Integer.hxx>
 #include <gp_Vec.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,gp_Vec,TColStd_MapIntegerHasher> MeshVS_DataMapOfIntegerVector;
-typedef NCollection_DataMap<Standard_Integer,gp_Vec,TColStd_MapIntegerHasher>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerVector;
+typedef NCollection_DataMap<Standard_Integer,gp_Vec> MeshVS_DataMapOfIntegerVector;
+typedef NCollection_DataMap<Standard_Integer,gp_Vec>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerVector;
 
 
 #endif

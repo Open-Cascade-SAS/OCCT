@@ -24,6 +24,7 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_OutOfRange.hxx>
+#include <utility>
 
 /**
  * Purpose:     An indexed map is used  to store keys and to  bind
@@ -54,6 +55,7 @@ public:
   typedef TheKeyType key_type;
   //! STL-compliant typedef for value type
   typedef TheItemType value_type;
+  typedef Hasher hasher;
 
 private:
   //!    Adaptation of the TListNode to the INDEXEDDatamap
@@ -68,8 +70,34 @@ private:
     : NCollection_TListNode<TheItemType>(theItem,theNext1),
       myKey1  (theKey1),
       myIndex (theIndex)
-    { 
-    }
+    {}
+    //! Constructor with 'Next'
+    IndexedDataMapNode (TheKeyType&&           theKey1,
+                        const Standard_Integer theIndex,
+                        const TheItemType&     theItem,
+                        NCollection_ListNode*  theNext1)
+    : NCollection_TListNode<TheItemType>(theItem,theNext1),
+      myKey1  (std::forward<TheKeyType>(theKey1)),
+      myIndex (theIndex)
+    {}
+    //! Constructor with 'Next'
+    IndexedDataMapNode (const TheKeyType&      theKey1,
+                        const Standard_Integer theIndex,
+                        TheItemType&&          theItem,
+                        NCollection_ListNode*  theNext1)
+    : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem),theNext1),
+      myKey1  (theKey1),
+      myIndex (theIndex)
+    {}
+    //! Constructor with 'Next'
+    IndexedDataMapNode (TheKeyType&&           theKey1,
+                        const Standard_Integer theIndex,
+                        TheItemType&&          theItem,
+                        NCollection_ListNode*  theNext1)
+    : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem),theNext1),
+      myKey1  (std::forward<TheKeyType>(theKey1)),
+      myIndex (theIndex)
+    {}
     //! Key1
     TheKeyType& Key1() { return myKey1; }
     //! Index
@@ -165,17 +193,22 @@ private:
   // ---------- PUBLIC METHODS ------------
 
   //! Empty constructor.
-  NCollection_IndexedDataMap() : NCollection_BaseMap (1, Standard_False, Handle(NCollection_BaseAllocator)()) {}
+  NCollection_IndexedDataMap() : NCollection_BaseMap (1, true, Handle(NCollection_BaseAllocator)()) {}
 
   //! Constructor
   explicit NCollection_IndexedDataMap (const Standard_Integer theNbBuckets,
                                        const Handle(NCollection_BaseAllocator)& theAllocator = 0L)
-  : NCollection_BaseMap (theNbBuckets, Standard_False, theAllocator) {}
+  : NCollection_BaseMap (theNbBuckets, true, theAllocator) {}
 
   //! Copy constructor
   NCollection_IndexedDataMap (const NCollection_IndexedDataMap& theOther) 
-    : NCollection_BaseMap (theOther.NbBuckets(), Standard_False, theOther.myAllocator) 
+    : NCollection_BaseMap (theOther.NbBuckets(), true, theOther.myAllocator) 
   { *this = theOther; }
+
+  //! Move constructor
+  NCollection_IndexedDataMap(NCollection_IndexedDataMap&& theOther) noexcept :
+    NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther))
+  {}
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
@@ -200,7 +233,7 @@ private:
       {
         const TheKeyType&  aKey1  = theOther.FindKey      (anIndexIter);
         const TheItemType& anItem = theOther.FindFromIndex(anIndexIter);
-        const Standard_Integer iK1 = Hasher::HashCode (aKey1, NbBuckets());
+        const size_t iK1 = HashCode (aKey1, NbBuckets());
         IndexedDataMapNode* pNode = new (this->myAllocator) IndexedDataMapNode (aKey1, anIndexIter, anItem, myData1[iK1]);
         myData1[iK1]             = pNode;
         myData2[anIndexIter - 1] = pNode;
@@ -216,6 +249,15 @@ private:
     return Assign (theOther);
   }
 
+  //! Move operator
+  NCollection_IndexedDataMap& operator= (NCollection_IndexedDataMap&& theOther) noexcept
+  {
+    if (this == &theOther)
+      return *this;
+    exchangeMapsData(theOther);
+    return *this;
+  }
+
   //! ReSize
   void ReSize (const Standard_Integer N)
   {
@@ -226,7 +268,6 @@ private:
     {
       if (myData1) 
       {
-        memcpy (ppNewData2, myData2, sizeof(IndexedDataMapNode*) * Extent());
         for (Standard_Integer aBucketIter = 0; aBucketIter <= NbBuckets(); ++aBucketIter)
         {
           if (myData1[aBucketIter])
@@ -234,7 +275,7 @@ private:
             IndexedDataMapNode* p = (IndexedDataMapNode *) myData1[aBucketIter];
             while (p) 
             {
-              const Standard_Integer iK1 = Hasher::HashCode (p->Key1(), newBuck);
+              const size_t iK1 = HashCode (p->Key1(), newBuck);
               IndexedDataMapNode* q = (IndexedDataMapNode* )p->Next();
               p->Next() = ppNewData1[iK1];
               ppNewData1[iK1] = p;
@@ -243,7 +284,8 @@ private:
           }
         }
       }
-      EndResize (N, newBuck, ppNewData1, ppNewData2);
+      EndResize (N, newBuck, ppNewData1, (NCollection_ListNode**)
+        Standard::Reallocate(myData2, (newBuck + 1) * sizeof(NCollection_ListNode*)));
     }
   }
 
@@ -257,40 +299,98 @@ private:
     {
       ReSize(Extent());
     }
-
-    const Standard_Integer iK1 = Hasher::HashCode (theKey1, NbBuckets());
-    IndexedDataMapNode* pNode = (IndexedDataMapNode* )myData1[iK1];
-    while (pNode)
+    IndexedDataMapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey1, aNode, aHash))
     {
-      if (Hasher::IsEqual (pNode->Key1(), theKey1))
-      {
-        return pNode->Index();
-      }
-      pNode = (IndexedDataMapNode *) pNode->Next();
+      return aNode->Index();
     }
-
     const Standard_Integer aNewIndex = Increment();
-    pNode = new (this->myAllocator) IndexedDataMapNode (theKey1, aNewIndex, theItem, myData1[iK1]);
-    myData1[iK1]           = pNode;
-    myData2[aNewIndex - 1] = pNode;
+    aNode = new (this->myAllocator) IndexedDataMapNode (theKey1, aNewIndex, theItem, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return aNewIndex;
+  }
+
+  //! Returns the Index of already bound Key or appends new Key with specified Item value.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return index of Key
+  Standard_Integer Add (TheKeyType&& theKey1, const TheItemType& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return aNode->Index();
+    }
+    const Standard_Integer aNewIndex = Increment();
+    aNode = new (this->myAllocator) IndexedDataMapNode (std::forward<TheKeyType>(theKey1), aNewIndex, theItem, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return aNewIndex;
+  }
+
+  //! Returns the Index of already bound Key or appends new Key with specified Item value.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return index of Key
+  Standard_Integer Add (const TheKeyType& theKey1, TheItemType&& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return aNode->Index();
+    }
+    const Standard_Integer aNewIndex = Increment();
+    aNode = new (this->myAllocator) IndexedDataMapNode (theKey1, aNewIndex, std::forward<TheItemType>(theItem), myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return aNewIndex;
+  }
+
+  //! Returns the Index of already bound Key or appends new Key with specified Item value.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return index of Key
+  Standard_Integer Add (TheKeyType&& theKey1, TheItemType&& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return aNode->Index();
+    }
+    const Standard_Integer aNewIndex = Increment();
+    aNode = new (this->myAllocator) IndexedDataMapNode (std::forward<TheKeyType>(theKey1), aNewIndex,
+                                                        std::forward<TheItemType>(theItem), myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
     return aNewIndex;
   }
 
   //! Contains
   Standard_Boolean Contains (const TheKeyType& theKey1) const
   {
-    if (IsEmpty()) 
-      return Standard_False;
-    Standard_Integer iK1 = Hasher::HashCode (theKey1, NbBuckets());
-    IndexedDataMapNode * pNode1;
-    pNode1 = (IndexedDataMapNode *) myData1[iK1];
-    while (pNode1) 
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode))
     {
-      if (Hasher::IsEqual(pNode1->Key1(), theKey1)) 
-        return Standard_True;
-      pNode1 = (IndexedDataMapNode *) pNode1->Next();
+      return true;
     }
-    return Standard_False;
+    return false;
   }
 
   //! Substitute
@@ -303,44 +403,40 @@ private:
                                   "Index is out of range");
 
     // check if theKey1 is not already in the map
-    const Standard_Integer iK1 = Hasher::HashCode (theKey1, NbBuckets());
-    IndexedDataMapNode* p = (IndexedDataMapNode *) myData1[iK1];
-    while (p)
+    size_t aHash;
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode, aHash))
     {
-      if (Hasher::IsEqual (p->Key1(), theKey1))
+      if (aNode->Index() != theIndex)
       {
-        if (p->Index() != theIndex)
-        {
-          throw Standard_DomainError ("NCollection_IndexedDataMap::Substitute : "
-                                      "Attempt to substitute existing key");
-        }
-        p->Key1() = theKey1;
-        p->ChangeValue() = theItem;
-        return;
+        throw Standard_DomainError("NCollection_IndexedDataMap::Substitute : "
+                                   "Attempt to substitute existing key");
       }
-      p = (IndexedDataMapNode *) p->Next();
+      aNode->Key1() = theKey1;
+      aNode->ChangeValue() = theItem;
+      return;
     }
 
     // Find the node for the index I
-    p = (IndexedDataMapNode* )myData2[theIndex - 1];
+    aNode = (IndexedDataMapNode* )myData2[theIndex - 1];
     
     // remove the old key
-    const Standard_Integer iK = Hasher::HashCode (p->Key1(), NbBuckets());
+    const size_t iK = HashCode (aNode->Key1(), NbBuckets());
     IndexedDataMapNode * q = (IndexedDataMapNode *) myData1[iK];
-    if (q == p)
-      myData1[iK] = (IndexedDataMapNode *) p->Next();
+    if (q == aNode)
+      myData1[iK] = (IndexedDataMapNode *)aNode->Next();
     else 
     {
-      while (q->Next() != p) 
+      while (q->Next() != aNode)
         q = (IndexedDataMapNode *) q->Next();
-      q->Next() = p->Next();
+      q->Next() = aNode->Next();
     }
 
     // update the node
-    p->Key1()  = theKey1;
-    p->ChangeValue() = theItem;
-    p->Next()  = myData1[iK1];
-    myData1[iK1] = p;
+    aNode->Key1()  = theKey1;
+    aNode->ChangeValue() = theItem;
+    aNode->Next()  = myData1[aHash];
+    myData1[aHash] = aNode;
   }
 
   //! Swaps two elements with the given indices.
@@ -373,7 +469,7 @@ private:
     myData2[aLastIndex - 1] = NULL;
     
     // remove the key
-    const Standard_Integer iK1 = Hasher::HashCode (p->Key1(), NbBuckets());
+    const size_t iK1 = HashCode (p->Key1(), NbBuckets());
     IndexedDataMapNode* q = (IndexedDataMapNode *) myData1[iK1];
     if (q == p)
       myData1[iK1] = (IndexedDataMapNode *) p->Next();
@@ -444,15 +540,10 @@ private:
   //! FindIndex
   Standard_Integer FindIndex(const TheKeyType& theKey1) const
   {
-    if (IsEmpty()) return 0;
-    IndexedDataMapNode* pNode1 = (IndexedDataMapNode* )myData1[Hasher::HashCode(theKey1,NbBuckets())];
-    while (pNode1)
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode))
     {
-      if (Hasher::IsEqual (pNode1->Key1(), theKey1))
-      {
-        return pNode1->Index();
-      }
-      pNode1 = (IndexedDataMapNode*) pNode1->Next();
+      return aNode->Index();
     }
     return 0;
   }
@@ -461,15 +552,10 @@ private:
   const TheItemType& FindFromKey(const TheKeyType& theKey1) const
   {
     Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_IndexedDataMap::FindFromKey");
-
-    IndexedDataMapNode* pNode1 = (IndexedDataMapNode* )myData1[Hasher::HashCode(theKey1,NbBuckets())];
-    while (pNode1)
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode))
     {
-      if (Hasher::IsEqual (pNode1->Key1(), theKey1))
-      {
-        return pNode1->Value();
-      }
-      pNode1 = (IndexedDataMapNode*) pNode1->Next();
+      return aNode->Value();
     }
     throw Standard_NoSuchObject("NCollection_IndexedDataMap::FindFromKey");
   }
@@ -478,15 +564,10 @@ private:
   TheItemType& ChangeFromKey (const TheKeyType& theKey1)
   {
     Standard_NoSuchObject_Raise_if (IsEmpty(), "NCollection_IndexedDataMap::ChangeFromKey");
-
-    IndexedDataMapNode* pNode1 = (IndexedDataMapNode* )myData1[Hasher::HashCode(theKey1,NbBuckets())];
-    while (pNode1)
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode))
     {
-      if (Hasher::IsEqual (pNode1->Key1(), theKey1))
-      {
-        return pNode1->ChangeValue();
-      }
-      pNode1 = (IndexedDataMapNode*) pNode1->Next();
+      return aNode->ChangeValue();
     }
     throw Standard_NoSuchObject("NCollection_IndexedDataMap::ChangeFromKey");
   }
@@ -496,27 +577,18 @@ private:
   const TheItemType* Seek(const TheKeyType& theKey1) const
   {
     return const_cast< NCollection_IndexedDataMap * >( this )->ChangeSeek(theKey1);
-    //NCollection_IndexedDataMap *pMap=(NCollection_IndexedDataMap *)this;
-    //return pMap->ChangeSeek(theKey1);
   }
 
   //! ChangeSeek returns modifiable pointer to Item by Key. Returns
   //! NULL if Key was not found.
   TheItemType* ChangeSeek (const TheKeyType& theKey1)
   {
-    if (!IsEmpty()) 
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode))
     {
-      IndexedDataMapNode* pNode1 = (IndexedDataMapNode* )myData1[Hasher::HashCode(theKey1,NbBuckets())];
-      while (pNode1)
-      {
-        if (Hasher::IsEqual (pNode1->Key1(), theKey1))
-        {
-          return &pNode1->ChangeValue();
-        }
-        pNode1 = (IndexedDataMapNode*) pNode1->Next();
-      }
+      return &aNode->ChangeValue();
     }
-    return 0L;
+    return nullptr;
   }
 
   //! Find value for key with copying.
@@ -524,46 +596,91 @@ private:
   Standard_Boolean FindFromKey (const TheKeyType& theKey1,
                                 TheItemType&      theValue) const
   {
-    if (IsEmpty())
+    IndexedDataMapNode* aNode;
+    if (lookup(theKey1, aNode))
     {
-      return Standard_False;
-    }
-    for (IndexedDataMapNode* aNode = (IndexedDataMapNode* )myData1[Hasher::HashCode (theKey1, NbBuckets())];
-         aNode != NULL; aNode = (IndexedDataMapNode* )aNode->Next())
-    {
-      if (Hasher::IsEqual (aNode->Key1(), theKey1))
-      {
         theValue = aNode->Value();
         return Standard_True;
-      }
     }
     return Standard_False;
   }
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const Standard_Boolean doReleaseMemory = Standard_True)
+  void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
   { Destroy (IndexedDataMapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
   { 
-    Clear();
+    Clear(theAllocator != this->myAllocator);
     this->myAllocator = ( ! theAllocator.IsNull() ? theAllocator :
                     NCollection_BaseAllocator::CommonBaseAllocator() );
   }
 
   //! Destructor
   virtual ~NCollection_IndexedDataMap (void)
-  { Clear(); }
+  { Clear(true); }
 
   //! Size
   Standard_Integer Size(void) const
   { return Extent(); }
 
- private:
-  // ----------- PRIVATE METHODS -----------
+protected:
 
+  //! Lookup for particular key in map.
+  //! @param[in] theKey key to compute hash
+  //! @param[out] theNode the detected node with equal key. Can be null.
+  //! @param[out] theHash computed bounded hash code for current key.
+  //! @return true if key is found
+  Standard_Boolean lookup(const TheKeyType& theKey, IndexedDataMapNode*& theNode, size_t& theHash) const
+  {
+    theHash = HashCode(theKey, NbBuckets());
+    if (IsEmpty())
+      return Standard_False; // Not found
+    for (theNode = (IndexedDataMapNode*)myData1[theHash];
+         theNode; theNode = (IndexedDataMapNode*)theNode->Next())
+    {
+      if (IsEqual(theNode->Key1(), theKey))
+        return Standard_True;
+    }
+    return Standard_False; // Not found
+  }
+
+  //! Lookup for particular key in map.
+  //! @param[in] theKey key to compute hash
+  //! @param[out] theNode the detected node with equal key. Can be null.
+  //! @return true if key is found
+  Standard_Boolean lookup(const TheKeyType& theKey, IndexedDataMapNode*& theNode) const
+  {
+    if (IsEmpty())
+      return Standard_False; // Not found
+    for (theNode = (IndexedDataMapNode*)myData1[HashCode(theKey, NbBuckets())];
+      theNode; theNode = (IndexedDataMapNode*)theNode->Next())
+    {
+      if (IsEqual(theNode->Key1(), theKey))
+      {
+        return Standard_True;
+      }
+    }
+    return Standard_False; // Not found
+  }
+
+  bool IsEqual(const TheKeyType& theKey1,
+               const TheKeyType& theKey2) const
+  {
+    return myHasher(theKey1, theKey2);
+  }
+
+  size_t HashCode(const TheKeyType& theKey,
+                  const int theUpperBound) const
+  {
+    return myHasher(theKey) % theUpperBound + 1;
+  }
+
+protected:
+
+  Hasher myHasher;
 };
 
 #endif

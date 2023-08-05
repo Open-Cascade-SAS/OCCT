@@ -18,7 +18,6 @@
 #define TopTools_IndexedDataMapOfShapeAddress_HeaderFile
 
 #include <TopoDS_Shape.hxx>
-#include <Standard_Address.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 

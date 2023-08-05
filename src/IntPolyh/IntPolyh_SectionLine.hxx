@@ -36,6 +36,11 @@ public:
   Standard_EXPORT IntPolyh_SectionLine();
   
   Standard_EXPORT IntPolyh_SectionLine(const Standard_Integer nn);
+
+  IntPolyh_SectionLine(const IntPolyh_SectionLine& theOther)
+  {
+    Copy(theOther);
+  }
   
   Standard_EXPORT void Init (const Standard_Integer nn);
   

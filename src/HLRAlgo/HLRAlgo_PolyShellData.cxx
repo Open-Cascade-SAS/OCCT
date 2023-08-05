@@ -38,7 +38,7 @@ void HLRAlgo_PolyShellData::UpdateGlobalMinMax(HLRAlgo_PolyData::Box& theBox)
   HLRAlgo_ListIteratorOfListOfBPoint it;
   
   for (it.Initialize(mySegList); it.More(); it.Next()) {      
-    HLRAlgo_BiPoint& BP = it.Value();
+    HLRAlgo_BiPoint& BP = it.ChangeValue();
     HLRAlgo_BiPoint::PointsT& aPoints = BP.Points();
     if (aPoints.PntP1.X() < aPoints.PntP2.X()) {
       if      (theBox.XMin > aPoints.PntP1.X()) theBox.XMin = aPoints.PntP1.X();

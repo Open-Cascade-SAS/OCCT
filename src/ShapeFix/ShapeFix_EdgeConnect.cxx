@@ -165,9 +165,9 @@ void ShapeFix_EdgeConnect::Build ()
     for ( theLIterator.Initialize( theList );
 	  theLIterator.More();
 	  theLIterator.Next() ) {
-      TopoDS_Vertex& theVertex = TopoDS::Vertex( theLIterator.Value() );
+      const TopoDS_Vertex& theVertex = TopoDS::Vertex( theLIterator.Value() );
       theLIterator.Next();
-      TopoDS_Edge& theEdge = TopoDS::Edge( theLIterator.Value() );
+      TopoDS_Edge& theEdge = TopoDS::Edge( theLIterator.ChangeValue() );
 
       // Determine usage of curve bound points
       TopoDS_Vertex theStart, theEnd;
@@ -240,9 +240,9 @@ void ShapeFix_EdgeConnect::Build ()
     for ( theLIterator.Initialize( theList );
 	  theLIterator.More();
 	  theLIterator.Next() ) {
-      TopoDS_Vertex& theVertex = TopoDS::Vertex( theLIterator.Value() );
+      const TopoDS_Vertex& theVertex = TopoDS::Vertex( theLIterator.Value() );
       theLIterator.Next();
-      TopoDS_Edge& theEdge = TopoDS::Edge( theLIterator.Value() );
+      TopoDS_Edge& theEdge = TopoDS::Edge( theLIterator.ChangeValue() );
 
       // Determine usage of old vertices
       TopoDS_Vertex theStart, theEnd;

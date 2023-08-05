@@ -19,7 +19,6 @@
 #ifndef BinTObjDrivers_XYZDriver_HeaderFile
 #define BinTObjDrivers_XYZDriver_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <BinMDF_ADriver.hxx>
 
 class BinTObjDrivers_XYZDriver : public BinMDF_ADriver 

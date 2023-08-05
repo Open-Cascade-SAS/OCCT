@@ -87,10 +87,9 @@ protected:
   TCollection_AsciiString myFileName;          //!< output glTF file path
   TCollection_AsciiString myShortFileNameBase; //!< output glTF file name without extension
   TCollection_AsciiString myKeyPrefix;         //!< prefix for generated keys
-  NCollection_DoubleMap<XCAFPrs_Style, TCollection_AsciiString,
-                        XCAFPrs_Style, TCollection_AsciiString>
+  NCollection_DoubleMap<XCAFPrs_Style, TCollection_AsciiString>
                           myStyles;            //!< map of processed styles
-  NCollection_Map<Handle(Image_Texture), Image_Texture>
+  NCollection_Map<Handle(Image_Texture)>
                           myImageFailMap;      //!< map of images failed to be copied
   XCAFPrs_Style           myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
   Standard_Integer        myNbMaterials;       //!< number of registered materials

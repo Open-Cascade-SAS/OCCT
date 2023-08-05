@@ -17,11 +17,10 @@
 #define XSDRAWSTLVRML_CoordsMap_HeaderFile
 
 #include <TColStd_DataMapOfIntegerReal.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerReal,TColStd_MapIntegerHasher> XSDRAWSTLVRML_CoordsMap;
-typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerReal,TColStd_MapIntegerHasher>::Iterator XSDRAWSTLVRML_DataMapIteratorOfCoordsMap;
+typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerReal> XSDRAWSTLVRML_CoordsMap;
+typedef NCollection_DataMap<Standard_Integer,TColStd_DataMapOfIntegerReal>::Iterator XSDRAWSTLVRML_DataMapIteratorOfCoordsMap;
 
 
 #endif

@@ -387,30 +387,3 @@ void Standard_GUID::ShallowDump(Standard_OStream& aStream) const
   ToCString(sguid);
   aStream << sguid;
 }
-
-//============================================================================
-// function : HashCode
-// purpose  :
-//============================================================================
-Standard_Integer Standard_GUID::HashCode (const Standard_GUID& theGuid, const Standard_Integer theUpperBound)
-{
-  return theGuid.Hash (theUpperBound);
-}
-
-Standard_Integer Standard_GUID::Hash(const Standard_Integer Upper) const
-{
-  if (Upper < 1){
-    throw Standard_RangeError("Standard_GUID::Hash: Try to apply HashCode method with negative or null argument.");
-  }
-
-  char sguid[Standard_GUID_SIZE_ALLOC];
-  ToCString(sguid);
-
-  return ::HashCode(sguid,Upper);
-}
-
-Standard_Boolean Standard_GUID::IsEqual(const Standard_GUID& aGuid1,const Standard_GUID& aGuid2)
-{
-  return (aGuid1 == aGuid2);
-}
-

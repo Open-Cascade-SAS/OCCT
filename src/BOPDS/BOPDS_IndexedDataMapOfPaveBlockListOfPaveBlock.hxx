@@ -16,10 +16,9 @@
 #define BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock_HeaderFile
 
 #include <NCollection_IndexedDataMap.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <BOPDS_PaveBlock.hxx>   
 #include <BOPDS_ListOfPaveBlock.hxx>
 
-typedef NCollection_IndexedDataMap<Handle(BOPDS_PaveBlock), BOPDS_ListOfPaveBlock, TColStd_MapTransientHasher> BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock; 
+typedef NCollection_IndexedDataMap<Handle(BOPDS_PaveBlock), BOPDS_ListOfPaveBlock> BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock; 
 
 #endif

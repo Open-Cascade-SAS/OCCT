@@ -12,9 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <math_Matrix.hxx>
 
 #include <math_Gauss.hxx>
-#include <math_Matrix.hxx>
+#include <math_IntegerVector.hxx>
 #include <math_NotSquare.hxx>
 #include <math_SingularMatrix.hxx>
 #include <math_Vector.hxx>
@@ -642,6 +643,15 @@ math_Vector math_Matrix::Multiplied(const math_Vector& Right)const
     }
   }
   return Result;
+}
+
+//================================================================
+// Function : operator*
+// Purpose  :
+//================================================================
+math_VectorBase<> math_Matrix::operator* (const math_VectorBase<>& Right) const
+{
+  return Multiplied(Right);
 }
 
 math_Matrix& math_Matrix::Initialized(const math_Matrix& Other) 

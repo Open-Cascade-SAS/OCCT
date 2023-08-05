@@ -19,12 +19,10 @@
 
 #include <Standard_Integer.hxx>
 #include <TDF_Label.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Standard_Integer,TDF_Label,TColStd_MapIntegerHasher,TDF_LabelMapHasher> TFunction_DoubleMapOfIntegerLabel;
-typedef NCollection_DoubleMap<Standard_Integer,TDF_Label,TColStd_MapIntegerHasher,TDF_LabelMapHasher>::Iterator TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel;
+typedef NCollection_DoubleMap<Standard_Integer,TDF_Label> TFunction_DoubleMapOfIntegerLabel;
+typedef NCollection_DoubleMap<Standard_Integer,TDF_Label>::Iterator TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel;
 
 
 #endif

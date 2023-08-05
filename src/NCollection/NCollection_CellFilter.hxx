@@ -18,9 +18,9 @@
 
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_Array1.hxx>
+#include <Standard_HashUtils.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_IncAllocator.hxx>
-#include <NCollection_TypeDef.hxx>
 
 //! Auxiliary enumeration serving as responce from method Inspect
 enum NCollection_CellFilter_Action 
@@ -112,8 +112,8 @@ enum NCollection_CellFilter_Action
 template <class Inspector> class NCollection_CellFilter
 {
 public:
-  typedef TYPENAME Inspector::Target Target;
-  typedef TYPENAME Inspector::Point  Point;
+  typedef typename Inspector::Target Target;
+  typedef typename Inspector::Point  Point;
 
 public:
 
@@ -317,40 +317,33 @@ protected:
       return Standard_True;
     }
 
-    //! Returns hash code for this cell, in the range [1, theUpperBound]
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in the range [1, theUpperBound]
-    Standard_Integer HashCode (const Standard_Integer theUpperBound) const
+    bool operator==(const Cell& theOther) const
     {
-      // number of bits per each dimension in the hash code
-      const std::size_t aDim       = index.Size();
-      const std::size_t aShiftBits = (BITS (Cell_IndexType) - 1) / aDim;
-      std::size_t       aCode      = 0;
-
-      for (std::size_t i = 0; i < aDim; ++i)
-      {
-        aCode = (aCode << aShiftBits) ^ std::size_t(index[i]);
-      }
-
-      return ::HashCode(aCode, theUpperBound);
+      return IsEqual(theOther);
     }
 
   public:
     NCollection_LocalArray<Cell_IndexType, 10> index;
     ListNode *Objects;
   };
-  
-  //! Returns hash code for the given cell, in the range [1, theUpperBound]
-  //! @param theCell the cell object which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  friend Standard_Integer HashCode (const Cell& theCell, const Standard_Integer theUpperBound)
-  {
-    return theCell.HashCode (theUpperBound);
-  }
 
-  friend Standard_Boolean IsEqual (const Cell &aCell1, const Cell &aCell2)
-  { return aCell1.IsEqual(aCell2); }
+  struct CellHasher
+  {
+    size_t operator()(const Cell& theCell) const noexcept
+    {
+      // number of bits per each dimension in the hash code
+      const std::size_t aDim = theCell.index.Size();
+      return opencascade::hashBytes(&theCell.index[0], static_cast<int>(aDim * sizeof(Cell_IndexType)));
+    }
+
+    bool operator()(const Cell& theCell1,
+                    const Cell& theCell2) const noexcept
+    {
+      return theCell1 == theCell2;
+    }
+  };
+  
+  typedef NCollection_Map<Cell, CellHasher> CellMap;
 
 protected:
 
@@ -498,7 +491,7 @@ protected:
 protected:
   Standard_Integer myDim;
   Handle(NCollection_BaseAllocator) myAllocator;
-  NCollection_Map<Cell>             myCells;
+  CellMap                           myCells;
   NCollection_Array1<Standard_Real> myCellSize;
 };
 

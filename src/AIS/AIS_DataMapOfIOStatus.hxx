@@ -19,11 +19,10 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_GlobalStatus.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(AIS_InteractiveObject),Handle(AIS_GlobalStatus),TColStd_MapTransientHasher> AIS_DataMapOfIOStatus;
-typedef NCollection_DataMap<Handle(AIS_InteractiveObject),Handle(AIS_GlobalStatus),TColStd_MapTransientHasher>::Iterator AIS_DataMapIteratorOfDataMapOfIOStatus;
+typedef NCollection_DataMap<Handle(AIS_InteractiveObject),Handle(AIS_GlobalStatus)> AIS_DataMapOfIOStatus;
+typedef NCollection_DataMap<Handle(AIS_InteractiveObject),Handle(AIS_GlobalStatus)>::Iterator AIS_DataMapIteratorOfDataMapOfIOStatus;
 
 
 #endif

@@ -18,7 +18,6 @@
 #ifndef TObj_Assistant_HeaderFile
 #define TObj_Assistant_HeaderFile
 
-#include <TObj_Common.hxx>
 #include <TColStd_SequenceOfTransient.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
 

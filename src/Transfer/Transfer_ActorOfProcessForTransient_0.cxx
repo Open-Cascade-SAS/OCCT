@@ -16,33 +16,117 @@
 
 #include <Transfer_ActorOfProcessForTransient.hxx>
 
-#include <Standard_Type.hxx>
-
-#include <Transfer_ActorOfProcessForTransient.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_Transient.hxx>
-#include <Transfer_ProcessForTransient.hxx>
-#include <Transfer_TransferMapOfProcessForTransient.hxx>
-#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Standard_Type.hxx>
+#include <Transfer_ActorOfProcessForTransient.hxx>
 #include <Transfer_Binder.hxx>
+#include <Transfer_IteratorOfProcessForTransient.hxx>
+#include <Transfer_ProcessForTransient.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
+#include <Transfer_TransferMapOfProcessForTransient.hxx>
 
-#define TheStart Handle(Standard_Transient)
-#define TheStart_hxx <Standard_Transient.hxx>
-#define TheMapHasher TColStd_MapTransientHasher
-#define TheMapHasher_hxx <TColStd_MapTransientHasher.hxx>
-#define Handle_TheList Handle(TColStd_HSequenceOfTransient)
-#define TheList TColStd_HSequenceOfTransient
-#define TheList_hxx <TColStd_HSequenceOfTransient.hxx>
-#define Transfer_TransferMap Transfer_TransferMapOfProcessForTransient
-#define Transfer_TransferMap_hxx <Transfer_TransferMapOfProcessForTransient.hxx>
-#define Transfer_Iterator Transfer_IteratorOfProcessForTransient
-#define Transfer_Iterator_hxx <Transfer_IteratorOfProcessForTransient.hxx>
-#define Transfer_Actor Transfer_ActorOfProcessForTransient
-#define Transfer_Actor_hxx <Transfer_ActorOfProcessForTransient.hxx>
-#define Handle_Transfer_Actor Handle(Transfer_ActorOfProcessForTransient)
-#define Transfer_TransferProcess Transfer_ProcessForTransient
-#define Transfer_TransferProcess_hxx <Transfer_ProcessForTransient.hxx>
-#define Handle_Transfer_TransferProcess Handle(Transfer_ProcessForTransient)
-#include <Transfer_Actor.gxx>
+//=======================================================================
+// Function: Transfer_ActorOfProcessForTransient
+// Purpose : 
+//=======================================================================
+Transfer_ActorOfProcessForTransient::Transfer_ActorOfProcessForTransient()
+{}
+
+
+//=======================================================================
+// Function: Recognize
+// Purpose : 
+//=======================================================================
+Standard_Boolean  Transfer_ActorOfProcessForTransient::Recognize(const Handle(Standard_Transient)& /*start*/)
+{
+  return Standard_True;
+}
+
+//=======================================================================
+// Function: Transferring
+// Purpose : 
+//=======================================================================
+Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::Transferring
+(const Handle(Standard_Transient)& /*start*/,
+ const Handle(Transfer_ProcessForTransient)& /*TP*/,
+ const Message_ProgressRange& /*theProgress*/)
+{
+  return NullResult();
+}
+
+//=======================================================================
+// Function: TransientResult
+// Purpose : 
+//=======================================================================
+Handle(Transfer_SimpleBinderOfTransient)
+Transfer_ActorOfProcessForTransient::TransientResult
+(const Handle(Standard_Transient)& res) const
+{
+  Handle(Transfer_SimpleBinderOfTransient) binder;
+  if (res.IsNull()) return binder;
+  binder = new Transfer_SimpleBinderOfTransient;
+  binder->SetResult(res);
+  return binder;
+}
+
+//=======================================================================
+// Function: NullResult
+// Purpose : 
+//=======================================================================
+Handle(Transfer_Binder) Transfer_ActorOfProcessForTransient::NullResult() const
+{
+  Handle(Transfer_Binder) binder;
+  return binder;
+}
+
+//=======================================================================
+// Function: SetNext
+// Purpose : 
+//=======================================================================
+void Transfer_ActorOfProcessForTransient::SetNext
+(const Handle(Transfer_ActorOfProcessForTransient)& next)
+{
+  if (thenext == next)
+    return;
+  if (thenext.IsNull())
+    thenext = next;
+  else if (thenext->IsLast())
+  {
+    next->SetNext(thenext);
+    thenext = next;
+  }
+  else
+    thenext->SetNext(next);
+}
+
+
+//=======================================================================
+// Function: Next
+// Purpose : 
+//=======================================================================
+Handle(Transfer_ActorOfProcessForTransient) Transfer_ActorOfProcessForTransient::Next() const
+{
+  return thenext;
+}
+
+
+//=======================================================================
+// Function: SetLast
+// Purpose : 
+//=======================================================================
+void Transfer_ActorOfProcessForTransient::SetLast(const Standard_Boolean mode)
+{
+  thelast = mode;
+}
+
+
+//=======================================================================
+// Function: IsLast
+// Purpose : 
+//=======================================================================
+Standard_Boolean  Transfer_ActorOfProcessForTransient::IsLast() const
+{
+  return thelast;
+}
 

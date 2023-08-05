@@ -17,12 +17,11 @@
 #ifndef TopOpeBRepDS_DoubleMapOfIntegerShape_HeaderFile
 #define TopOpeBRepDS_DoubleMapOfIntegerShape_HeaderFile
 
-#include <TColStd_MapIntegerHasher.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Standard_Integer,TopoDS_Shape,TColStd_MapIntegerHasher,TopTools_ShapeMapHasher> TopOpeBRepDS_DoubleMapOfIntegerShape;
-typedef NCollection_DoubleMap<Standard_Integer,TopoDS_Shape,TColStd_MapIntegerHasher,TopTools_ShapeMapHasher>::Iterator TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape;
+typedef NCollection_DoubleMap<Standard_Integer,TopoDS_Shape,NCollection_DefaultHasher<int>,TopTools_ShapeMapHasher> TopOpeBRepDS_DoubleMapOfIntegerShape;
+typedef TopOpeBRepDS_DoubleMapOfIntegerShape::Iterator TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape;
 
 
 #endif

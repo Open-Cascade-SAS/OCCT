@@ -18,11 +18,10 @@
 
 #include <TDF_Label.hxx>
 #include <Standard_Integer.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TDF_Label,Standard_Integer,TDF_LabelMapHasher> TDF_LabelIntegerMap;
-typedef NCollection_DataMap<TDF_Label,Standard_Integer,TDF_LabelMapHasher>::Iterator TDF_DataMapIteratorOfLabelIntegerMap;
+typedef NCollection_DataMap<TDF_Label,Standard_Integer> TDF_LabelIntegerMap;
+typedef NCollection_DataMap<TDF_Label,Standard_Integer>::Iterator TDF_DataMapIteratorOfLabelIntegerMap;
 
 
 #endif

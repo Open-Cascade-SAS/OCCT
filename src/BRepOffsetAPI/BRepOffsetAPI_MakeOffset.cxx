@@ -235,7 +235,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
   //====================================================
   TopTools_ListIteratorOfListOfShape itl(WorkWires);
   for (; itl.More(); itl.Next()) {
-    TopoDS_Wire& W = TopoDS::Wire(itl.Value());
+    TopoDS_Wire& W = TopoDS::Wire(itl.ChangeValue());
     if (W.Closed()){
       FR.Add(W);
       continue;
@@ -291,7 +291,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
 //  for (TopTools_ListIteratorOfListOfShape itF(Faces); itF.More(); itF.Next()) {
   TopTools_ListIteratorOfListOfShape itF;
   for (itF.Initialize(Faces) ; itF.More(); itF.Next()) {
-    TopoDS_Face&          F = TopoDS::Face(itF.Value());
+    TopoDS_Face&          F = TopoDS::Face(itF.ChangeValue());
     BRepAdaptor_Surface   S(F,0);
     Standard_Real         Tol = BRep_Tool::Tolerance(F); 
 
@@ -299,7 +299,7 @@ static void BuildDomains(TopoDS_Face&               myFace,
 
     TopTools_ListIteratorOfListOfShape itW(LOW);
     while (itW.More()) {
-      TopoDS_Wire& W = TopoDS::Wire(itW.Value());
+      const TopoDS_Wire& W = TopoDS::Wire(itW.Value());
       //=======================================================
       // Choice of a point on the wire. + projection on the face.
       //=======================================================
@@ -409,7 +409,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
 
       for (itOW.Initialize(myLeft); itOW.More(); itOW.Next())
       {
-        BRepFill_OffsetWire& Algo = itOW.Value();
+        BRepFill_OffsetWire& Algo = itOW.ChangeValue();
         Algo.Perform(Abs(Offset),Alt);
         if (Algo.IsDone() && !Algo.Shape().IsNull())
         {
@@ -432,7 +432,7 @@ void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset,
 
       for(itOW.Initialize(myRight); itOW.More(); itOW.Next())
       {
-        BRepFill_OffsetWire& Algo = itOW.Value();
+        BRepFill_OffsetWire& Algo = itOW.ChangeValue();
         Algo.Perform(Offset,Alt);
 
         if (Algo.IsDone() && !Algo.Shape().IsNull())
@@ -494,7 +494,7 @@ const TopTools_ListOfShape& BRepOffsetAPI_MakeOffset::Generated
     Algos = &myRight;
   }
   for (itOW.Initialize(*Algos); itOW.More(); itOW.Next()) {
-    BRepFill_OffsetWire& OW = itOW.Value();
+    BRepFill_OffsetWire& OW = itOW.ChangeValue();
     TopTools_ListOfShape L;
     L =  OW.GeneratedShapes(S.Oriented(TopAbs_FORWARD));
     myGenerated.Append(L);

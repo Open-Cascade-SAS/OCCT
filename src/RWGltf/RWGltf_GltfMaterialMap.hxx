@@ -105,8 +105,8 @@ protected:
 protected:
 
   RWGltf_GltfOStreamWriter* myWriter;
-  NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView, Image_Texture> myImageMap;
-  NCollection_Map<Handle(Image_Texture), Image_Texture> myTextureMap;
+  NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView> myImageMap;
+  NCollection_Map<Handle(Image_Texture)> myTextureMap;
 
   Standard_Integer myDefSamplerId;
 

@@ -20,6 +20,7 @@
 #include <math_Matrix.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <Standard_DivideByZero.hxx>
+#include <math_Vector.hxx>
 
 //If Abs(a) <= aNulValue then it is considered that a = 0.
 static const Standard_Real aNulValue = 1.0e-11;
@@ -3845,7 +3846,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
   Handle(NCollection_IncAllocator) anAlloc = new NCollection_IncAllocator;
   for (Standard_Integer aCID = 0; aCID < 2; aCID++)
   {
-    anAlloc->Reset();
+    anAlloc->Reset(false);
     NCollection_List<Bnd_Range> aListOfRng(anAlloc);
     
     aListOfRng.Append(anURange[aCID][0]);
@@ -3860,7 +3861,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
       aListOfRng.Clear();
       for (anITrRng.Init(aLstTemp); anITrRng.More(); anITrRng.Next())
       {
-        Bnd_Range& aRng = anITrRng.Value();
+        Bnd_Range& aRng = anITrRng.ChangeValue();
         aRng.Split(aSplitArr[aSInd], aListOfRng, aPeriod);
       }
     }
@@ -3868,7 +3869,7 @@ IntPatch_ImpImpIntersection::IntStatus IntCyCy(const IntSurf_Quadric& theQuad1,
     anITrRng.Init(aListOfRng);
     for (; anITrRng.More(); anITrRng.Next())
     {
-      Bnd_Range& aCurrRange = anITrRng.Value();
+      Bnd_Range& aCurrRange = anITrRng.ChangeValue();
 
       Bnd_Range aBoundR;
       aBoundR.Add(aUSBou[aCID][0]);
@@ -4300,7 +4301,7 @@ Standard_Boolean IntCyCo(const IntSurf_Quadric& Quad1,
 	//
 	aIt.Initialize(aLC);
 	for (; aIt.More(); aIt.Next()) {
-	  IntAna_Curve& curvsol=aIt.Value();
+	  IntAna_Curve& curvsol=aIt.ChangeValue();
 	  //
 	  curvsol.Domain(first, last);
 	  firstp = !curvsol.IsFirstOpen();

@@ -17,11 +17,11 @@
 #ifndef TopLoc_MapOfLocation_HeaderFile
 #define TopLoc_MapOfLocation_HeaderFile
 
-#include <TopLoc_MapLocationHasher.hxx>
+#include <TopLoc_Location.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<TopLoc_Location,TopLoc_MapLocationHasher> TopLoc_MapOfLocation;
-typedef NCollection_Map<TopLoc_Location,TopLoc_MapLocationHasher>::Iterator TopLoc_MapIteratorOfMapOfLocation;
+typedef NCollection_Map<TopLoc_Location> TopLoc_MapOfLocation;
+typedef NCollection_Map<TopLoc_Location>::Iterator TopLoc_MapIteratorOfMapOfLocation;
 
 
 #endif

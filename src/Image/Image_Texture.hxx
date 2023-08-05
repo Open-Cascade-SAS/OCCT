@@ -76,29 +76,6 @@ public:
                                                        const TCollection_AsciiString& theFile);
 
 public: //! @name hasher interface
-
-  //! Hash value, for Map interface.
-  static int HashCode (const Handle(Image_Texture)& theTexture, const int theUpper)
-  {
-    return !theTexture.IsNull()
-          ? TCollection_AsciiString::HashCode (theTexture->myTextureId, theUpper)
-          : 0;
-  }
-
-  //! Matching two instances, for Map interface.
-  static Standard_Boolean IsEqual (const Handle(Image_Texture)& theTex1,
-                                   const Handle(Image_Texture)& theTex2)
-  {
-    if (theTex1.IsNull() != theTex2.IsNull())
-    {
-      return Standard_False;
-    }
-    else if (theTex1.IsNull())
-    {
-      return Standard_True;
-    }
-    return theTex1->myTextureId.IsEqual (theTex2->myTextureId);
-  }
   
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
@@ -126,5 +103,37 @@ protected:
   int64_t                    myLength; //!< length within file
 
 };
+
+namespace std
+{
+  template<>
+  struct equal_to<Handle(Image_Texture)>
+  {
+    bool operator()(const Handle(Image_Texture)& theTex1,
+                    const Handle(Image_Texture)& theTex2) const
+    {
+      if (theTex1.IsNull() != theTex2.IsNull())
+      {
+        return Standard_False;
+      }
+      else if (theTex1.IsNull())
+      {
+        return Standard_True;
+      }
+      return theTex1->TextureId().IsEqual(theTex2->TextureId());
+    }
+  };
+
+  template<>
+  struct hash<Handle(Image_Texture)>
+  {
+    size_t operator()(const Handle(Image_Texture)& theTexture) const noexcept
+    {
+      return !theTexture.IsNull()
+        ? std::hash<TCollection_AsciiString>{}(theTexture->TextureId())
+        : 0;
+    }
+  };
+}
 
 #endif // _Image_Texture_HeaderFile

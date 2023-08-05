@@ -15,6 +15,7 @@
 #define _Message_Attribute_HeaderFile
 
 #include <Standard_Transient.hxx>
+#include <NCollection_DefineAlloc.hxx>
 #include <TCollection_AsciiString.hxx>
 
 DEFINE_STANDARD_HANDLE(Message_Attribute, Standard_Transient)

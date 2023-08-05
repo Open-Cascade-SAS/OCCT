@@ -6,13 +6,9 @@ TopoDS_Builder.cxx
 TopoDS_Builder.hxx
 TopoDS_Builder.lxx
 TopoDS_Compound.hxx
-TopoDS_Compound.lxx
 TopoDS_CompSolid.hxx
-TopoDS_CompSolid.lxx
 TopoDS_Edge.hxx
-TopoDS_Edge.lxx
 TopoDS_Face.hxx
-TopoDS_Face.lxx
 TopoDS_FrozenShape.hxx
 TopoDS_HShape.cxx
 TopoDS_HShape.hxx
@@ -25,9 +21,7 @@ TopoDS_LockedShape.hxx
 TopoDS_Shape.cxx
 TopoDS_Shape.hxx
 TopoDS_Shell.hxx
-TopoDS_Shell.lxx
 TopoDS_Solid.hxx
-TopoDS_Solid.lxx
 TopoDS_TCompound.cxx
 TopoDS_TCompound.hxx
 TopoDS_TCompound.lxx
@@ -56,8 +50,6 @@ TopoDS_TWire.hxx
 TopoDS_TWire.lxx
 TopoDS_UnCompatibleShapes.hxx
 TopoDS_Vertex.hxx
-TopoDS_Vertex.lxx
 TopoDS_Wire.hxx
-TopoDS_Wire.lxx
 TopoDS_AlertWithShape.cxx
 TopoDS_AlertWithShape.hxx

@@ -19,11 +19,10 @@
 
 #include <MAT_BasicElt.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(MAT_BasicElt),TopoDS_Shape,TColStd_MapTransientHasher> BRepMAT2d_DataMapOfBasicEltShape;
-typedef NCollection_DataMap<Handle(MAT_BasicElt),TopoDS_Shape,TColStd_MapTransientHasher>::Iterator BRepMAT2d_DataMapIteratorOfDataMapOfBasicEltShape;
+typedef NCollection_DataMap<Handle(MAT_BasicElt),TopoDS_Shape> BRepMAT2d_DataMapOfBasicEltShape;
+typedef NCollection_DataMap<Handle(MAT_BasicElt),TopoDS_Shape>::Iterator BRepMAT2d_DataMapIteratorOfDataMapOfBasicEltShape;
 
 
 #endif

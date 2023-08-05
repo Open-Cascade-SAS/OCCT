@@ -19,7 +19,6 @@
 #define NCollection_DefineHArray2_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <NCollection_DefineArray2.hxx>
 #include <Standard_Transient.hxx>
 
 //      Declaration of Array2 class managed by Handle

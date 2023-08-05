@@ -134,6 +134,7 @@ protected:
   class OpenGl_LayerStack
   {
   public:
+    typedef NCollection_Array1<const Graphic3d_Layer*>::const_iterator const_iterator;
     typedef NCollection_Array1<const Graphic3d_Layer*>::iterator iterator;
 
     //! Reallocate internal buffer of the stack.
@@ -148,7 +149,7 @@ protected:
       else
       {
         NCollection_Array1<const Graphic3d_Layer*> aDummy;
-        myStackSpace.Move (aDummy);
+        myStackSpace.Move (std::move(aDummy));
         myBackPtr = iterator();
       }
     }
@@ -164,10 +165,13 @@ protected:
     void Push (const OpenGl_Layer* theLayer) { (*myBackPtr++) = theLayer; }
 
     //! Returns iterator to the origin of the stack.
-    iterator Origin() const { return myStackSpace.IsEmpty() ? iterator() : myStackSpace.begin(); }
+    const_iterator Origin() const { return myStackSpace.IsEmpty() ? const_iterator() : myStackSpace.begin(); }
 
     //! Returns iterator to the back of the stack (after last item added).
     iterator Back() const { return myBackPtr; }
+
+    //! Returns iterator to the origin of the stack.
+    iterator Origin() { return myStackSpace.IsEmpty() ? iterator() : myStackSpace.begin(); }
 
     //! Returns true if nothing has been pushed into the stack.
     Standard_Boolean IsEmpty() const { return Back() == Origin(); }

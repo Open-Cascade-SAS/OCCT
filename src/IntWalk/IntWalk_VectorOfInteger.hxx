@@ -17,11 +17,11 @@
 #define IntWalk_VectorOfInteger_HeaderFile
 
 #include <vector>
-#include <NCollection_StdAllocator.hxx>
+#include <NCollection_OccAllocator.hxx>
 
 // Defines a dynamic vector of integer.
 
-typedef std::vector<Standard_Integer, NCollection_StdAllocator<Standard_Integer> >
+typedef std::vector<Standard_Integer, NCollection_OccAllocator<Standard_Integer> >
     IntWalk_VectorOfInteger;
 
 #endif

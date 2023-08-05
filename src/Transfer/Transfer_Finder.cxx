@@ -21,10 +21,10 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_Finder,Standard_Transient)
 
-void  Transfer_Finder::SetHashCode (const Standard_Integer code)
+void  Transfer_Finder::SetHashCode (const size_t code)
       {  thecode = code;  }
 
-    Standard_Integer  Transfer_Finder::GetHashCode () const
+    size_t  Transfer_Finder::GetHashCode () const
       {  return thecode;  }
 
     Handle(Standard_Type)  Transfer_Finder::ValueType () const

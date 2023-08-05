@@ -32,6 +32,12 @@ public:
   //! Allocate memory with given size. Returns NULL on failure.
   Standard_EXPORT virtual void* Allocate (const size_t theSize) Standard_OVERRIDE;
 
+  //! Allocate memory with given size. Returns NULL on failure.
+  void* AllocateOptimal(const size_t theSize) Standard_OVERRIDE
+  {
+    return Allocate(theSize);
+  }
+
   //! Free a previously allocated memory.
   Standard_EXPORT virtual void  Free (void* thePtr) Standard_OVERRIDE;
 

@@ -26,7 +26,7 @@
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_LocalArray.hxx>
-#include <NCollection_StdAllocator.hxx>
+#include <NCollection_OccAllocator.hxx>
 #include <TColStd_Array1OfListOfInteger.hxx>
 
 #include <vector>
@@ -418,7 +418,7 @@ Standard_Boolean GeomInt_LineTool::
   typedef NCollection_List<Standard_Integer> ListOfInteger;
   //have to use std::vector, not NCollection_Vector in order to use copy constructor of
   //ListOfInteger which will be created with specific allocator instance
-  typedef std::vector<ListOfInteger, NCollection_StdAllocator<
+  typedef std::vector<ListOfInteger, NCollection_OccAllocator<
       ListOfInteger> > ArrayOfListOfInteger;
 
   Standard_Boolean bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
@@ -445,7 +445,7 @@ Standard_Boolean GeomInt_LineTool::
   }
   //
   Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
-  NCollection_StdAllocator<ListOfInteger> anAlloc (anIncAlloc);
+  NCollection_OccAllocator<ListOfInteger> anAlloc (anIncAlloc);
   const ListOfInteger aDummy (anIncAlloc); //empty list to be copy constructed from
   ArrayOfListOfInteger anArrayOfLines (aNbPnts + 1, aDummy, anAlloc);
 

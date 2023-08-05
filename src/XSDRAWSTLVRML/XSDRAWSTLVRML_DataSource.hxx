@@ -24,7 +24,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <MeshVS_EntityType.hxx>
-#include <Standard_Address.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <Poly_Triangulation.hxx>
 

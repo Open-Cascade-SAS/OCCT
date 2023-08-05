@@ -21,7 +21,7 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<TCollection_AsciiString,Standard_Integer,TCollection_AsciiString> Storage_PType;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString,Standard_Integer> Storage_PType;
 
 
 #endif

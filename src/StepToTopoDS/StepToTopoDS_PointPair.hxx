@@ -23,7 +23,6 @@
 
 class StepGeom_CartesianPoint;
 
-
 //! Stores a pair of Points from step
 class StepToTopoDS_PointPair 
 {
@@ -34,9 +33,21 @@ public:
   
   Standard_EXPORT StepToTopoDS_PointPair(const Handle(StepGeom_CartesianPoint)& P1, const Handle(StepGeom_CartesianPoint)& P2);
 
+  const Handle(StepGeom_CartesianPoint)& GetPoint1() const
+  {
+    return myP1;
+  }
 
-friend class StepToTopoDS_PointPairHasher;
+  const Handle(StepGeom_CartesianPoint)& GetPoint2() const
+  {
+    return myP2;
+  }
 
+  bool operator==(const StepToTopoDS_PointPair& thePointPair) const
+  {
+    return (((myP1 == thePointPair.myP1) && (myP2 == thePointPair.myP2)) ||
+            ((myP1 == thePointPair.myP2) && (myP2 == thePointPair.myP1)));
+  }
 
 protected:
 
@@ -54,6 +65,25 @@ private:
 
 };
 
+namespace std
+{
+  template <>
+  struct hash<StepToTopoDS_PointPair>
+  {
+    size_t operator()(const StepToTopoDS_PointPair& thePointPair) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      size_t aCombination[2];
+      aCombination[0] = std::hash<Handle(StepGeom_CartesianPoint)>{}(thePointPair.GetPoint1());
+      aCombination[1] = std::hash<Handle(StepGeom_CartesianPoint)>{}(thePointPair.GetPoint2());
+      if (aCombination[0] > aCombination[1])
+      {
+        std::swap(aCombination[0], aCombination[1]);
+      }
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
+}
 
 
 

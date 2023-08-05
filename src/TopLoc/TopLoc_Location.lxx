@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <TopLoc_SListOfItemLocation.hxx>
+#include <TopLoc_Datum3D.hxx>
 #include <TopLoc_ItemLocation.hxx>
 
 //=======================================================================
@@ -68,4 +69,48 @@ inline const Handle(TopLoc_Datum3D)&  TopLoc_Location::FirstDatum()const
   return (*(TopLoc_Location*) &(myItems.Tail()));
 }
 
+//=======================================================================
+// function : HashCode
+// purpose  :
+//=======================================================================
+inline size_t TopLoc_Location::HashCode() const
+{
+  // Hashing base on IsEqual function
+  if (myItems.IsEmpty())
+  {
+    return 0;
+  }
+  size_t aHash = opencascade::MurmurHash::optimalSeed<size_t>();
+  TopLoc_SListOfItemLocation items = myItems;
+  size_t aCombined[3];
+  while (items.More())
+  {
+    aCombined[0] = std::hash<Handle(TopLoc_Datum3D)>{}(items.Value().myDatum);
+    aCombined[1] = opencascade::hash(items.Value().myPower);
+    aCombined[2] = aHash;
+    aHash = opencascade::hashBytes(aCombined, sizeof(aCombined));
+    items.Next();
+  }
+  return aHash;
+}
 
+//=======================================================================
+// function : ShallowDump
+// purpose  :
+//=======================================================================
+inline void ShallowDump(const TopLoc_Location& me, Standard_OStream& S)
+{
+  me.ShallowDump(S);
+}
+
+namespace std
+{
+  template <>
+  struct hash<TopLoc_Location>
+  {
+    size_t operator()(const TopLoc_Location& theLocation) const
+    {
+      return theLocation.HashCode();
+    }
+  };
+}

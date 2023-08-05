@@ -25,7 +25,6 @@
 #include <TopoDS_Wire.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedMapOfOrientedShape.hxx>
-#include <Standard_Address.hxx>
 #include <TopTools_IndexedDataMapOfShapeShape.hxx>
 class TopoDS_Edge;
 class gp_Pnt2d;

@@ -19,6 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_HashUtils.hxx>
 #include <Standard_ShortReal.hxx>
 
 #include <Quantity_NameOfColor.hxx>
@@ -378,5 +379,20 @@ private:
   NCollection_Vec3<float> myRgb;
 
 };
+
+namespace std
+{
+  template <>
+  struct hash<Quantity_Color>
+  {
+    std::size_t operator()(const Quantity_Color& theColor) const noexcept
+    {
+      unsigned char aByteArr[3] = { static_cast<unsigned char>(255 * theColor.Red()),
+                                    static_cast<unsigned char>(255 * theColor.Green()),
+                                    static_cast<unsigned char>(255 * theColor.Blue()) };
+      return opencascade::hashBytes(aByteArr, sizeof(aByteArr));
+    }
+  };
+}
 
 #endif // _Quantity_Color_HeaderFile

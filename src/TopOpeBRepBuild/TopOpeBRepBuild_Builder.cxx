@@ -669,7 +669,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::IsShapeOf(const TopoDS_Shape& s,const 
 Standard_Boolean TopOpeBRepBuild_Builder::Contains(const TopoDS_Shape& S,const TopTools_ListOfShape& L) 
 {
   for (TopTools_ListIteratorOfListOfShape it(L); it.More(); it.Next() ) {
-    TopoDS_Shape& SL = it.Value();
+    const TopoDS_Shape& SL = it.Value();
     Standard_Boolean issame = SL.IsSame(S);
     if ( issame ) return Standard_True;
   }

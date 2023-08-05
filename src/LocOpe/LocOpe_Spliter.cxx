@@ -112,11 +112,11 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
   }
 
   theSubs.Build(myShape);
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdesc(myMap);
   if (theSubs.IsCopied(myShape)) {
     // on n`a fait que des substitutions de vertex. Donc chaque element
     // est remplace par lui meme ou par un seul element du meme type.
-    for (; itdesc.More(); itdesc.Next()) {
+    for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdesc(myMap); itdesc.More(); itdesc.Next())
+    {
       if (theSubs.IsCopied(itdesc.Key())) {
 	const TopTools_ListOfShape& lsub = theSubs.Copy(itdesc.Key());
 #ifdef OCCT_DEBUG
@@ -193,7 +193,8 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 
   // Mise a jour des descendants
 
-  for (itdesc.Reset(); itdesc.More(); itdesc.Next()) {
+  for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdesc(myMap); itdesc.More(); itdesc.Next())
+  {
     const TopoDS_Shape& sori = itdesc.Key();
     const TopoDS_Shape& scib = itdesc.Value().First();
     myMap(sori) = theCFace.DescendantShapes(scib);
@@ -294,7 +295,8 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
 
   theSubs.Build(myRes);
 
-  for (itdesc.Reset(); itdesc.More(); itdesc.Next()) {
+  for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itdesc(myMap); itdesc.More(); itdesc.Next())
+  {
     TopTools_ListOfShape& ldesc = myMap(itdesc.Key());
     TopTools_ListOfShape newdesc;
     for (itl.Initialize(ldesc); itl.More(); itl.Next()) {
@@ -471,7 +473,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
       }
     }
     if (itms.More()) {
-      const TopoDS_Shape& fac = itms.Key();
+      TopoDS_Shape fac = itms.Key();
       for (exp.Init(fac,TopAbs_EDGE); exp.More(); exp.Next()) {
 	if (!Mapebord.Add(exp.Current())) {
 	  Mapebord.Remove(exp.Current());

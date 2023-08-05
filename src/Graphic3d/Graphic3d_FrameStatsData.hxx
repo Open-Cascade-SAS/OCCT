@@ -61,8 +61,17 @@ public:
   //! Empty constructor.
   Standard_EXPORT Graphic3d_FrameStatsData();
 
+  //! Copy constructor.
+  Standard_EXPORT Graphic3d_FrameStatsData(const Graphic3d_FrameStatsData& theOther);
+
+  //! Move constructor.
+  Standard_EXPORT Graphic3d_FrameStatsData(Graphic3d_FrameStatsData&& theOther) noexcept;
+
   //! Assignment operator.
   Standard_EXPORT Graphic3d_FrameStatsData& operator= (const Graphic3d_FrameStatsData& theOther);
+
+  //! Assignment with move operator.
+  Standard_EXPORT Graphic3d_FrameStatsData& operator= (Graphic3d_FrameStatsData&& theOther) noexcept;
 
   //! Reset data.
   Standard_EXPORT void Reset();

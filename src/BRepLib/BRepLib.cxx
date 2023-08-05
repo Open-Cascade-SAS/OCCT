@@ -74,6 +74,7 @@
 #include <BRepTools_ReShape.hxx>
 #include <TopTools_DataMapOfShapeReal.hxx>
 #include <TopoDS_LockedShape.hxx>
+#include <Standard_HashUtils.hxx>
 
 #include <algorithm>
 
@@ -2235,7 +2236,6 @@ static void EncodeRegularity(const TopoDS_Shape&        theShape,
     TopTools_ListIteratorOfListOfShape It;
     TopExp_Explorer Ex;
     TopoDS_Face F1,F2;
-    Standard_Boolean found;
     for (Standard_Integer i = 1; i <= M.Extent(); i++){
       TopoDS_Edge E = TopoDS::Edge(M.FindKey(i));
       if (!theEdgesToEncode.IsEmpty())
@@ -2247,7 +2247,7 @@ static void EncodeRegularity(const TopoDS_Shape&        theShape,
           continue;
       }
 
-      found = Standard_False;                                     
+      Standard_Boolean found = Standard_False;
       F1.Nullify();
       for (It.Initialize(M.FindFromIndex(i)); It.More() && !found; It.Next()){
         if (F1.IsNull()) { F1 = TopoDS::Face(It.Value()); }
@@ -2511,12 +2511,6 @@ namespace
       Node[1] = theNode2;
     }
 
-    //! Computes a hash code for the this link
-    Standard_Integer HashCode (const Standard_Integer theUpperBound) const
-    {
-      return ::HashCode (Node[0] + Node[1], theUpperBound);
-    }
-
     //! Returns true if this link has the same nodes as the other.
     Standard_Boolean IsEqual (const Link& theOther) const
     {
@@ -2530,12 +2524,23 @@ namespace
       return IsEqual (theOther);
     }
   };
+}
 
-  //! Computes a hash code for the given link
-  inline Standard_Integer HashCode (const Link& theLink, const Standard_Integer theUpperBound)
+namespace std
+{
+  template <>
+  struct hash<Link>
   {
-    return theLink.HashCode (theUpperBound);
-  }
+    size_t operator()(const Link& theLink) const noexcept
+    {
+      int aCombination[2]{ theLink.Node[0], theLink.Node[1] };
+      if (aCombination[0] > aCombination[1])
+      {
+        std::swap(aCombination[0], aCombination[1]);
+      }
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
 }
 
 void BRepLib::UpdateDeflection (const TopoDS_Shape& theShape)
@@ -2823,7 +2828,7 @@ void BRepLib::BoundingVertex(const NCollection_List<TopoDS_Shape>& theLV,
     // of addition, thus sort the coordinates for stable result
     Standard_Integer i;
     NCollection_Array1<gp_Pnt> aPoints(0, aNb-1);
-    NCollection_List<TopoDS_Edge>::Iterator aIt(theLV);
+    NCollection_List<TopoDS_Shape>::Iterator aIt(theLV);
     for (i = 0; aIt.More(); aIt.Next(), ++i) {
       const TopoDS_Vertex& aVi = *((TopoDS_Vertex*)(&aIt.Value()));
       gp_Pnt aPi = BRep_Tool::Pnt(aVi);

@@ -379,7 +379,7 @@ void BRepLib_MakeWire::CreateNewListOfEdges(const TopTools_ListOfShape& theL,
     if (IsNewEdge)
     {
       TopoDS_Shape NewE = aCE.EmptyCopied();
-      NCollection_List<TopoDS_Edge>::Iterator it(aVList);
+      NCollection_List<TopoDS_Vertex>::Iterator it(aVList);
       for (; it.More(); it.Next())
         aBB.Add(NewE, it.Value());
       theNewEList.Append(TopoDS::Edge(NewE));

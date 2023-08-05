@@ -55,11 +55,12 @@ BOPTools_Set& operator = (const BOPTools_Set& Other)
   
   Standard_EXPORT Standard_Boolean IsEqual (const BOPTools_Set& aOther) const;
 
-  //! Computes a hash code for this set, in the range [1, theUpperBound]
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  Standard_EXPORT Standard_Integer HashCode (Standard_Integer theUpperBound) const;
+  bool operator==(const BOPTools_Set& theOther) const
+  {
+    return IsEqual(theOther);
+  }
 
+  size_t GetSum() const { return mySum; }
 
 protected:
 
@@ -71,22 +72,20 @@ protected:
   TopTools_ListOfShape myShapes;
   TopoDS_Shape myShape;
   Standard_Integer myNbShapes;
-  Standard_Integer mySum;
+  size_t mySum;
   Standard_Integer myUpper;
-
-
-private:
-
-
-
-
-
 };
 
-
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<BOPTools_Set>
+  {
+    size_t operator()(const BOPTools_Set& theSet) const noexcept
+    {
+      return theSet.GetSum();
+    }
+  };
+}
 
 #endif // _BOPTools_Set_HeaderFile

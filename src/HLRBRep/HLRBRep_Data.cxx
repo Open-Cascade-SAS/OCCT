@@ -1443,7 +1443,7 @@ HLRBRep_Data::HidingStartLevel (const Standard_Integer E,
   It.Initialize(IL);
 
   while(It.More() && Loop) {
-    HLRAlgo_Interference& Int = It.Value();
+    const HLRAlgo_Interference& Int = It.Value();
     Standard_Real p = Int.Intersection().Parameter();
     if (p < param - tolpar) {
       switch (Int.Transition()) {

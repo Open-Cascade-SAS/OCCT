@@ -18,10 +18,9 @@
 #define Interface_IndexedMapOfAsciiString_HeaderFile
 
 #include <TCollection_AsciiString.hxx>
-#include <Interface_MapAsciiStringHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<TCollection_AsciiString,Interface_MapAsciiStringHasher> Interface_IndexedMapOfAsciiString;
+typedef NCollection_IndexedMap<TCollection_AsciiString> Interface_IndexedMapOfAsciiString;
 
 
 #endif

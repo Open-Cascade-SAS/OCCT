@@ -82,7 +82,6 @@ TDF_LabelIndexedMap.hxx
 TDF_LabelIntegerMap.hxx
 TDF_LabelList.hxx
 TDF_LabelMap.hxx
-TDF_LabelMapHasher.hxx
 TDF_LabelNode.cxx
 TDF_LabelNode.hxx
 TDF_LabelNodePtr.hxx

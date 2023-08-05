@@ -19,11 +19,10 @@
 
 #include <StepGeom_CartesianPoint.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <StepToTopoDS_CartesianPointHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(StepGeom_CartesianPoint),TopoDS_Vertex,StepToTopoDS_CartesianPointHasher> StepToTopoDS_PointVertexMap;
-typedef NCollection_DataMap<Handle(StepGeom_CartesianPoint),TopoDS_Vertex,StepToTopoDS_CartesianPointHasher>::Iterator StepToTopoDS_DataMapIteratorOfPointVertexMap;
+typedef NCollection_DataMap<Handle(StepGeom_CartesianPoint),TopoDS_Vertex> StepToTopoDS_PointVertexMap;
+typedef NCollection_DataMap<Handle(StepGeom_CartesianPoint),TopoDS_Vertex>::Iterator StepToTopoDS_DataMapIteratorOfPointVertexMap;
 
 
 #endif

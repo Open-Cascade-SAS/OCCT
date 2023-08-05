@@ -18,11 +18,10 @@
 
 #include <Standard_Integer.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,Graphic3d_MaterialAspect,TColStd_MapIntegerHasher> MeshVS_DataMapOfIntegerMaterial;
-typedef NCollection_DataMap<Standard_Integer,Graphic3d_MaterialAspect,TColStd_MapIntegerHasher>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial;
+typedef NCollection_DataMap<Standard_Integer,Graphic3d_MaterialAspect> MeshVS_DataMapOfIntegerMaterial;
+typedef NCollection_DataMap<Standard_Integer,Graphic3d_MaterialAspect>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial;
 
 
 #endif

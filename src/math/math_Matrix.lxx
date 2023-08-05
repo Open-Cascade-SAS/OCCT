@@ -15,7 +15,6 @@
 // lpa le 29/10/91
 
 #include <Standard_DimensionError.hxx>
-#include <math_Vector.hxx>
 
 inline Standard_OStream& operator<<(Standard_OStream& o,
 				    const math_Matrix& mat)

@@ -20,7 +20,6 @@
 #include <Adaptor3d_Surface.hxx>
 
 #include <IntPolyh_Couple.hxx>
-#include <IntPolyh_CoupleMapHasher.hxx>
 #include <IntPolyh_MaillageAffinage.hxx>
 #include <IntPolyh_SectionLine.hxx>
 #include <IntPolyh_StartPoint.hxx>
@@ -419,7 +418,7 @@ void IntPolyh_Intersection::MergeCouples(IntPolyh_ListOfCouples &anArrayFF,
                                          IntPolyh_ListOfCouples &anArrayRR) const
 {
   // Fence map to remove from the lists the duplicating elements.
-  NCollection_Map<IntPolyh_Couple, IntPolyh_CoupleMapHasher> aFenceMap;
+  NCollection_Map<IntPolyh_Couple> aFenceMap;
   //
   IntPolyh_ListOfCouples* pLists[4] = {&anArrayFF, &anArrayFR, &anArrayRF, &anArrayRR};
   for (Standard_Integer i = 0; i < 4; ++i) {

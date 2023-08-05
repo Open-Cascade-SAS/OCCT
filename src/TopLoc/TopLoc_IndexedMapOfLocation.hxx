@@ -18,10 +18,9 @@
 #define TopLoc_IndexedMapOfLocation_HeaderFile
 
 #include <TopLoc_Location.hxx>
-#include <TopLoc_MapLocationHasher.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-typedef NCollection_IndexedMap<TopLoc_Location,TopLoc_MapLocationHasher> TopLoc_IndexedMapOfLocation;
+typedef NCollection_IndexedMap<TopLoc_Location> TopLoc_IndexedMapOfLocation;
 
 
 #endif

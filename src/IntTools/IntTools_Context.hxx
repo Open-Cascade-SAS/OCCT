@@ -26,7 +26,6 @@
 #include <Standard_Transient.hxx>
 #include <TopAbs_State.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 class IntTools_FClass2d;
 class TopoDS_Face;
 class GeomAPI_ProjectPointOnSurf;
@@ -247,7 +246,7 @@ protected:
   NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnSurf*, TopTools_ShapeMapHasher>  myProjPSMap;
   NCollection_DataMap<TopoDS_Shape, GeomAPI_ProjectPointOnCurve*, TopTools_ShapeMapHasher> myProjPCMap;
   NCollection_DataMap<TopoDS_Shape, BRepClass3d_SolidClassifier*, TopTools_ShapeMapHasher> mySClassMap;
-  NCollection_DataMap<Handle(Geom_Curve), GeomAPI_ProjectPointOnCurve*, TColStd_MapTransientHasher> myProjPTMap;
+  NCollection_DataMap<Handle(Geom_Curve), GeomAPI_ProjectPointOnCurve*> myProjPTMap;
   NCollection_DataMap<TopoDS_Shape, Geom2dHatch_Hatcher*, TopTools_ShapeMapHasher> myHatcherMap;
   NCollection_DataMap<TopoDS_Shape, IntTools_SurfaceRangeLocalizeData*, TopTools_ShapeMapHasher> myProjSDataMap;
   NCollection_DataMap<TopoDS_Shape, Bnd_Box*, TopTools_ShapeMapHasher> myBndBoxDataMap;

@@ -173,4 +173,20 @@ private:
 
 };
 
+namespace std
+{
+  template <>
+  struct hash<Quantity_ColorRGBA>
+  {
+    std::size_t operator()(const Quantity_ColorRGBA& theColor) const noexcept
+    {
+      const Quantity_Color& anRGB = theColor.GetRGB();
+      unsigned char aByteArr[4] = { static_cast<unsigned char>(100 * theColor.Alpha()),
+                                    static_cast<unsigned char>(255 * anRGB.Red()),
+                                    static_cast<unsigned char>(255 * anRGB.Green()),
+                                    static_cast<unsigned char>(255 * anRGB.Blue()) };
+      return opencascade::hashBytes(aByteArr, sizeof(aByteArr));
+    }
+  };
+}
 #endif // _Quantity_ColorRGBA_HeaderFile

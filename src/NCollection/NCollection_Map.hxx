@@ -22,6 +22,7 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_NoSuchObject.hxx>
+#include <utility>
 
 /**
  * Purpose:     Single hashed Map. This  Map is used  to store and
@@ -58,6 +59,7 @@ class NCollection_Map : public NCollection_BaseMap
 public:
   //! STL-compliant typedef for key type
   typedef TheKeyType key_type;
+  typedef Hasher hasher;
 
 public:
   //!   Adaptation of the TListNode to the map notations
@@ -68,6 +70,10 @@ public:
     MapNode (const TheKeyType& theKey, 
              NCollection_ListNode* theNext) :
       NCollection_TListNode<TheKeyType> (theKey, theNext) {}
+    //! Constructor with 'Next'
+    MapNode (TheKeyType&& theKey,
+             NCollection_ListNode* theNext) :
+      NCollection_TListNode<TheKeyType> (std::forward<TheKeyType>(theKey), theNext) {}
     //! Key
     const TheKeyType& Key (void)
     { return this->Value(); }
@@ -127,9 +133,21 @@ public:
   : NCollection_BaseMap (theNbBuckets, Standard_True, theAllocator) {}
 
   //! Copy constructor
-  NCollection_Map (const NCollection_Map& theOther) :
-    NCollection_BaseMap (theOther.NbBuckets(), Standard_True, theOther.myAllocator)
-  { *this = theOther; }
+  NCollection_Map(const NCollection_Map& theOther) :
+    NCollection_BaseMap(theOther.NbBuckets(), Standard_True, theOther.myAllocator)
+  {
+    const int anExt = theOther.Extent();
+    if (anExt <= 0)
+      return;
+    ReSize(anExt - 1);
+    for (Iterator anIter(theOther); anIter.More(); anIter.Next())
+      Add(anIter.Key());
+  }
+
+  //! Move constructor
+  NCollection_Map (NCollection_Map&& theOther) noexcept :
+    NCollection_BaseMap (std::forward<NCollection_BaseMap>(theOther))
+  {}
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
@@ -163,6 +181,15 @@ public:
     return Assign(theOther);
   }
 
+  //! Move operator
+  NCollection_Map& operator= (NCollection_Map&& theOther) noexcept
+  {
+    if (this == &theOther)
+      return *this;
+    exchangeMapsData(theOther);
+    return *this;
+  }
+
   //! ReSize
   void ReSize (const Standard_Integer N)
   {
@@ -175,15 +202,14 @@ public:
       {
         MapNode** olddata = (MapNode**) myData1;
         MapNode *p, *q;
-        Standard_Integer i,k;
-        for (i = 0; i <= NbBuckets(); i++) 
+        for (int i = 0; i <= NbBuckets(); i++) 
         {
           if (olddata[i]) 
           {
             p = olddata[i];
             while (p) 
             {
-              k = Hasher::HashCode(p->Key(),newBuck);
+              const size_t k = HashCode(p->Key(),newBuck);
               q = (MapNode*) p->Next();
               p->Next() = newdata[k];
               newdata[k] = p;
@@ -197,58 +223,80 @@ public:
   }
 
   //! Add
-  Standard_Boolean Add(const TheKeyType& K)
+  Standard_Boolean Add(const TheKeyType& theKey)
   {
     if (Resizable()) 
       ReSize(Extent());
-    MapNode** data = (MapNode**)myData1;
-    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
-    MapNode* p = data[k];
-    while (p) 
+    MapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey, aNode, aHash))
     {
-      if (Hasher::IsEqual(p->Key(),K))
-        return Standard_False;
-      p = (MapNode *) p->Next();
+      return Standard_False;
     }
-    data[k] = new (this->myAllocator) MapNode(K,data[k]);
+    MapNode** data = (MapNode**)myData1;
+    data[aHash] = new (this->myAllocator) MapNode(theKey,data[aHash]);
+    Increment();
+    return Standard_True;
+  }
+
+  //! Add
+  Standard_Boolean Add(TheKeyType&& theKey)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    MapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey, aNode, aHash))
+    {
+      return Standard_False;
+    }
+    MapNode** data = (MapNode**)myData1;
+    data[aHash] = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey),data[aHash]);
     Increment();
     return Standard_True;
   }
 
   //! Added: add a new key if not yet in the map, and return 
   //! reference to either newly added or previously existing object
-  const TheKeyType& Added(const TheKeyType& K)
+  const TheKeyType& Added(const TheKeyType& theKey)
   {
     if (Resizable()) 
       ReSize(Extent());
-    MapNode** data = (MapNode**)myData1;
-    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
-    MapNode* p = data[k];
-    while (p) 
+    MapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey, aNode, aHash))
     {
-      if (Hasher::IsEqual(p->Key(),K))
-        return p->Key();
-      p = (MapNode *) p->Next();
+      return aNode->Key();
     }
-    data[k] = new (this->myAllocator) MapNode(K,data[k]);
+    MapNode** data = (MapNode**)myData1;
+    data[aHash] = new (this->myAllocator) MapNode(theKey,data[aHash]);
     Increment();
-    return data[k]->Key();
+    return data[aHash]->Key();
+  }
+
+  //! Added: add a new key if not yet in the map, and return 
+  //! reference to either newly added or previously existing object
+  const TheKeyType& Added(TheKeyType&& theKey)
+  {
+    if (Resizable()) 
+      ReSize(Extent());
+    MapNode* aNode;
+    size_t aHash;
+    if (lookup(theKey, aNode, aHash))
+    {
+      return aNode->Key();
+    }
+    MapNode** data = (MapNode**)myData1;
+    data[aHash] = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey),data[aHash]);
+    Increment();
+    return data[aHash]->Key();
   }
 
   //! Contains
-  Standard_Boolean Contains(const TheKeyType& K) const
+  Standard_Boolean Contains(const TheKeyType& theKey) const
   {
-    if (IsEmpty()) 
-      return Standard_False;
-    MapNode** data = (MapNode**) myData1;
-    MapNode*  p = data[Hasher::HashCode(K,NbBuckets())];
-    while (p) 
-    {
-      if (Hasher::IsEqual(p->Key(),K)) 
-        return Standard_True;
-      p = (MapNode *) p->Next();
-    }
-    return Standard_False;
+    MapNode* p;
+    return lookup(theKey, p);
   }
 
   //! Remove
@@ -257,12 +305,12 @@ public:
     if (IsEmpty()) 
       return Standard_False;
     MapNode** data = (MapNode**) myData1;
-    Standard_Integer k = Hasher::HashCode(K,NbBuckets());
+    const size_t k = HashCode(K,NbBuckets());
     MapNode* p = data[k];
     MapNode* q = NULL;
     while (p) 
     {
-      if (Hasher::IsEqual(p->Key(),K)) 
+      if (IsEqual(p->Key(),K)) 
       {
         Decrement();
         if (q) 
@@ -281,20 +329,20 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const Standard_Boolean doReleaseMemory = Standard_True)
+  void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
   { Destroy (MapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
   { 
-    Clear();
+    Clear(theAllocator != this->myAllocator);
     this->myAllocator = ( ! theAllocator.IsNull() ? theAllocator :
                     NCollection_BaseAllocator::CommonBaseAllocator() );
   }
 
   //! Destructor
   virtual ~NCollection_Map (void)
-  { Clear(); }
+  { Clear(true); }
 
   //! Size
   Standard_Integer Size(void) const
@@ -590,7 +638,60 @@ public:
     return anOldExtent != Extent();
   }
 
-  //!@}
+protected:
+
+  //! Lookup for particular key in map.
+  //! @param[in] theKey key to compute hash
+  //! @param[out] theNode the detected node with equal key. Can be null.
+  //! @param[out] theHash computed bounded hash code for current key.
+  //! @return true if key is found
+  Standard_Boolean lookup(const TheKeyType& theKey, MapNode*& theNode, size_t& theHash) const
+  {
+    theHash = HashCode(theKey, NbBuckets());
+    if (IsEmpty())
+      return Standard_False; // Not found
+    for (theNode = (MapNode*)myData1[theHash];
+         theNode; theNode = (MapNode*)theNode->Next())
+    {
+      if (IsEqual(theNode->Key(), theKey)) 
+        return Standard_True;
+    }
+    return Standard_False; // Not found
+  }
+
+  //! Lookup for particular key in map.
+  //! @param[in] theKey key to compute hash
+  //! @param[out] theNode the detected node with equal key. Can be null.
+  //! @return true if key is found
+  Standard_Boolean lookup(const TheKeyType& theKey, MapNode*& theNode) const
+  {
+    if (IsEmpty())
+      return Standard_False; // Not found
+    for (theNode = (MapNode*)myData1[HashCode(theKey, NbBuckets())];
+         theNode; theNode = (MapNode*)theNode->Next())
+    {
+      if (IsEqual(theNode->Key(), theKey))
+      {
+        return Standard_True;
+      }
+    }
+    return Standard_False; // Not found
+  }
+
+  bool IsEqual(const TheKeyType& theKey1,
+               const TheKeyType& theKey2) const
+  {
+    return myHasher(theKey1, theKey2);
+  }
+
+  size_t HashCode(const TheKeyType& theKey,
+                  const int theUpperBound) const
+  {
+    return myHasher(theKey) % theUpperBound + 1;
+  }
+protected:
+
+  Hasher myHasher;
 };
 
 #endif

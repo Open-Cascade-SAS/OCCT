@@ -16,6 +16,7 @@
 
 #include <NCollection_Map.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Standard_HashUtils.hxx>
 
 //! Auxiliary tool for merging triangulation nodes for visualization purposes.
 //! Tool tries to merge all nodes within input triangulation, but split the ones on sharp corners at specified angle.
@@ -280,16 +281,16 @@ private:
     }
 
     //! Hash code for integer vec3.
-    Standard_EXPORT static int vec3iHashCode (const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
-                                              const int theUpper);
+    Standard_EXPORT static size_t vec3iHashCode (const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
+                                                 const int theUpper);
 
     //! Compute hash code.
-    Standard_EXPORT int hashCode (const NCollection_Vec3<float>& thePos,
-                                  const NCollection_Vec3<float>& theNorm,
-                                  const int theUpper) const;
+    Standard_EXPORT size_t hashCode (const NCollection_Vec3<float>& thePos,
+                                     const NCollection_Vec3<float>& theNorm,
+                                     const int theUpper) const;
 
     //! Compute hash code.
-    int hashCode (const Vec3AndNormal& theKey, const int theUpper) const
+    size_t hashCode (const Vec3AndNormal& theKey, const int theUpper) const
     {
       return hashCode (theKey.Pos, theKey.Norm, theUpper);
     }
@@ -317,17 +318,12 @@ private:
   //! Hasher for merging equal elements (with pre-sorted indexes).
   struct MergedElemHasher
   {
-    static int HashCode (const NCollection_Vec4<int>& theVec, const int theUpper)
+    size_t operator()(const NCollection_Vec4<int>& theVec) const
     {
-      unsigned int aHashCode = 0;
-      aHashCode = aHashCode ^ ::HashCode (theVec[0], theUpper);
-      aHashCode = aHashCode ^ ::HashCode (theVec[1], theUpper);
-      aHashCode = aHashCode ^ ::HashCode (theVec[2], theUpper);
-      aHashCode = aHashCode ^ ::HashCode (theVec[3], theUpper);
-      return ((aHashCode & 0x7fffffff) % theUpper) + 1;
+      return opencascade::hashBytes(&theVec[0], 4 * sizeof(int));
     }
 
-    static bool IsEqual (const NCollection_Vec4<int>& theKey1, const NCollection_Vec4<int>& theKey2)
+    bool operator()(const NCollection_Vec4<int>& theKey1, const NCollection_Vec4<int>& theKey2) const
     {
       return theKey1.IsEqual (theKey2);
     }

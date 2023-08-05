@@ -4720,7 +4720,7 @@ Standard_Boolean BuildShellsCompleteInter(const TopTools_ListOfShape& theLF,
     const TopoDS_Shape& aFR = aItLR.Value();
 
     // Reset the local allocator
-    anAllocLoc->Reset();
+    anAllocLoc->Reset(false);
     // Find the last splits of the root face, including the ones
     // created during MakeVolume operation
     TopTools_ListOfShape aLFIm(anAllocLoc);
@@ -4739,7 +4739,7 @@ Standard_Boolean BuildShellsCompleteInter(const TopTools_ListOfShape& theLF,
   }
 
   // Reset the local allocator
-  anAllocLoc->Reset();
+  anAllocLoc->Reset(false);
   // It is necessary to rebuild the solids, avoiding internal faces
   // Map faces to solids
   TopTools_IndexedDataMapOfShapeListOfShape aDMFS(1, anAllocLoc);
@@ -4787,7 +4787,7 @@ Standard_Boolean BuildShellsCompleteInter(const TopTools_ListOfShape& theLF,
   //
   aLF.Clear();
   aDMFS.Clear();
-  anAllocLoc->Reset();
+  anAllocLoc->Reset(true);
 
   // the result is non-manifold - resolve it comparing normal
   // directions of the offset faces and original faces
@@ -4896,7 +4896,7 @@ const TopTools_ListOfShape& BRepOffset_MakeOffset::Generated (const TopoDS_Shape
           // Useful only for faces without influence on others.
           TopTools_ListIteratorOfListOfShape it(myGenerated);
           for (; it.More(); it.Next())
-            it.Value().Reverse();
+            it.ChangeValue().Reverse();
         }
       }
       break;
@@ -4951,7 +4951,7 @@ const TopTools_ListOfShape& BRepOffset_MakeOffset::Modified (const TopoDS_Shape&
         // Useful only for faces without influence on others.
         TopTools_ListIteratorOfListOfShape it(myGenerated);
         for (; it.More(); it.Next())
-          it.Value().Reverse();
+          it.ChangeValue().Reverse();
       }
     }
   }

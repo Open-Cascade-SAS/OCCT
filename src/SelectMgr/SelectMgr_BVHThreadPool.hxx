@@ -45,9 +45,15 @@ public:
       myPool(nullptr),
       myMutex(),
       myToCatchFpe (Standard_False)
-    {
+    {}
 
-    }
+
+    BVHThread(const BVHThread& theOther)
+      : OSD_Thread(theOther),
+      myPool(theOther.myPool),
+      myMutex(),
+      myToCatchFpe(theOther.myToCatchFpe)
+    {}
 
     //! Returns mutex used for BVH building
     Standard_Mutex& BVHMutex()

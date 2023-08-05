@@ -17,11 +17,10 @@
 
 #include <Standard_Integer.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TColStd_ListOfInteger,TColStd_MapIntegerHasher> TColStd_DataMapOfIntegerListOfInteger;
-typedef NCollection_DataMap<Standard_Integer,TColStd_ListOfInteger,TColStd_MapIntegerHasher>::Iterator TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger;
+typedef NCollection_DataMap<Standard_Integer,TColStd_ListOfInteger> TColStd_DataMapOfIntegerListOfInteger;
+typedef NCollection_DataMap<Standard_Integer,TColStd_ListOfInteger>::Iterator TColStd_DataMapIteratorOfDataMapOfIntegerListOfInteger;
 
 
 #endif

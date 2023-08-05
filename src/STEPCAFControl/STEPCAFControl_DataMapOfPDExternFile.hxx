@@ -18,11 +18,10 @@
 
 #include <StepBasic_ProductDefinition.hxx>
 #include <STEPCAFControl_ExternFile.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(StepBasic_ProductDefinition),Handle(STEPCAFControl_ExternFile),TColStd_MapTransientHasher> STEPCAFControl_DataMapOfPDExternFile;
-typedef NCollection_DataMap<Handle(StepBasic_ProductDefinition),Handle(STEPCAFControl_ExternFile),TColStd_MapTransientHasher>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfPDExternFile;
+typedef NCollection_DataMap<Handle(StepBasic_ProductDefinition),Handle(STEPCAFControl_ExternFile)> STEPCAFControl_DataMapOfPDExternFile;
+typedef NCollection_DataMap<Handle(StepBasic_ProductDefinition),Handle(STEPCAFControl_ExternFile)>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfPDExternFile;
 
 
 #endif

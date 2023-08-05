@@ -157,8 +157,6 @@ TCollection_ExtendedString CDF_FWOSDriver::Concatenate(const TCollection_Extende
                                                           const TCollection_ExtendedString& aName)
 {
   TCollection_ExtendedString ff(aFolder);
-  ff = "";
-  ff += aFolder;
   PutSlash(ff);
   ff+=aName;
   return ff;

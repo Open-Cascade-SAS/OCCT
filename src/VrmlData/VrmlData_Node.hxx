@@ -19,7 +19,8 @@
 #include <NCollection_List.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_TypeDef.hxx>
-#include <TCollection_AsciiString.hxx> 
+#include <TCollection_AsciiString.hxx>
+#include <Standard_CStringHasher.hxx>
 #include <VrmlData_ErrorStatus.hxx>
 
 #define VRMLDATA_LCOMPARE(aa, bb) \
@@ -198,13 +199,34 @@ class VrmlData_Node : public Standard_Transient
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (VrmlData_Node, Standard_Transient)
 
-//! Computes a hash code for the given VRML node, in the range [1, theUpperBound]
-//! @param theNode the VRML node which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-Standard_EXPORT Standard_Integer HashCode (const Handle (VrmlData_Node) & theNode, Standard_Integer theUpperBound);
 
-Standard_EXPORT Standard_Boolean IsEqual (const Handle(VrmlData_Node)& theOne,
-                                          const Handle(VrmlData_Node)& theTwo);
+Standard_EXPORT Standard_Boolean IsEqual(const Handle(VrmlData_Node)& theOne,
+                                         const Handle(VrmlData_Node)& theTwo);
+
+namespace std
+{
+  template <>
+  struct hash<Handle(VrmlData_Node)>
+  {
+    size_t operator()(const Handle(VrmlData_Node)& theNode) const
+    {
+      if (!theNode->Name())
+      {
+        return 1;
+      }
+      return Standard_CStringHasher{}(theNode->Name());
+    }
+  };
+
+  template<>
+  struct equal_to<Handle(VrmlData_Node)>
+  {
+    bool operator()(const Handle(VrmlData_Node)& theNode1,
+                    const Handle(VrmlData_Node)& theNode2) const noexcept
+    {
+      return IsEqual(theNode1, theNode2);
+    }
+  };
+}
 
 #endif

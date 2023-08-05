@@ -28,7 +28,6 @@
 #include <TopOpeBRepBuild_ListOfLoop.hxx>
 #include <TopOpeBRepBuild_LoopEnum.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Address.hxx>
 class TopOpeBRepBuild_LoopSet;
 class TopOpeBRepBuild_LoopClassifier;
 class TopOpeBRepBuild_Loop;

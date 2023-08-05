@@ -24,7 +24,6 @@
 #include <TopOpeBRepBuild_AreaBuilder.hxx>
 #include <Standard_Boolean.hxx>
 #include <TopOpeBRepBuild_ListOfLoop.hxx>
-#include <Standard_Address.hxx>
 class TopOpeBRepBuild_PaveSet;
 class TopOpeBRepBuild_PaveClassifier;
 class TopOpeBRepBuild_LoopSet;

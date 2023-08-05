@@ -1718,7 +1718,7 @@ Standard_EXPORT void FUN_ds_completeforSE8(const Handle(TopOpeBRepDS_HDataStruct
       if (redu2d) { // {I1d=(Tr(Esd),vG,Esd), I2d=(Tr(F),vG,E)}	
 	TopOpeBRepDS_ListIteratorOfListOfInterference it(l2dFE); TopOpeBRepDS_ListOfInterference al2dFE;
 	while (it.More()) {
-	  Handle(TopOpeBRepDS_Interference)& I2dFE = it.Value();
+	  Handle(TopOpeBRepDS_Interference)& I2dFE = it.ChangeValue();
 	  TopOpeBRepDS_Transition newT2d; Standard_Boolean ok = FUN_ds_redu2d1d(BDS,ISE,I2dFE,l1dE, newT2d);
 	  if (!ok) {it.Next(); continue;}
 	  I2dFE->ChangeTransition() = newT2d; al2dFE.Append(I2dFE);

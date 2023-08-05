@@ -17,7 +17,7 @@
 #define IntWalk_VectorOfWalkingData_HeaderFile
 
 #include <vector>
-#include <NCollection_StdAllocator.hxx>
+#include <NCollection_OccAllocator.hxx>
 
 // Defines a dynamic vector of work data.
 
@@ -28,7 +28,7 @@ struct IntWalk_WalkingData
     Standard_Integer etat;
 };
 
-typedef std::vector<IntWalk_WalkingData, NCollection_StdAllocator<IntWalk_WalkingData> >
+typedef std::vector<IntWalk_WalkingData, NCollection_OccAllocator<IntWalk_WalkingData> >
     IntWalk_VectorOfWalkingData;
 
 #endif

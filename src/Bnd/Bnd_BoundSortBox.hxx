@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <TColStd_DataMapOfIntegerInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
-#include <Standard_Address.hxx>
 class gp_Pln;
 
 

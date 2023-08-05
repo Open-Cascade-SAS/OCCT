@@ -49,15 +49,6 @@ Standard_Boolean IsEqual (const Handle(VrmlData_Node)& theOne,
 }
 
 //=======================================================================
-// function : HashCode
-// purpose  : Global method
-//=======================================================================
-Standard_Integer HashCode (const Handle (VrmlData_Node) & theNode, const Standard_Integer theUpperBound)
-{
-  return (theNode->Name () == NULL ? 1 : HashCode (theNode->Name (), theUpperBound));
-}
-
-//=======================================================================
 //function : VrmlData_Node
 //purpose  : 
 //=======================================================================

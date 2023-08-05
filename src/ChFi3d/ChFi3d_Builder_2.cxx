@@ -2550,7 +2550,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
 #ifdef OCCT_DEBUG
     if(ChFi3d_GettraceCHRON()) elspine.Start();
 #endif
-    ChFi3d_PerformElSpine(ILES.Value(),Spine,myConti,tolesp);
+    ChFi3d_PerformElSpine(ILES.ChangeValue(),Spine,myConti,tolesp);
 #ifdef OCCT_DEBUG
     if(ChFi3d_GettraceCHRON()) { elspine.Stop(); }
 #endif
@@ -2559,7 +2559,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
   {
     ChFiDS_ListOfHElSpine& offsetll = Spine->ChangeOffsetElSpines();
     for (ILES.Initialize(offsetll); ILES.More(); ILES.Next())
-      ChFi3d_PerformElSpine(ILES.Value(),Spine,myConti,tolesp,Standard_True);
+      ChFi3d_PerformElSpine(ILES.ChangeValue(),Spine,myConti,tolesp,Standard_True);
   }
   Spine->SplitDone(Standard_True);
 }

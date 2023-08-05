@@ -19,11 +19,10 @@
 
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(StepShape_TopologicalRepresentationItem),TopoDS_Shape,TColStd_MapTransientHasher> StepToTopoDS_DataMapOfTRI;
-typedef NCollection_DataMap<Handle(StepShape_TopologicalRepresentationItem),TopoDS_Shape,TColStd_MapTransientHasher>::Iterator StepToTopoDS_DataMapIteratorOfDataMapOfTRI;
+typedef NCollection_DataMap<Handle(StepShape_TopologicalRepresentationItem),TopoDS_Shape> StepToTopoDS_DataMapOfTRI;
+typedef NCollection_DataMap<Handle(StepShape_TopologicalRepresentationItem),TopoDS_Shape>::Iterator StepToTopoDS_DataMapIteratorOfDataMapOfTRI;
 
 
 #endif

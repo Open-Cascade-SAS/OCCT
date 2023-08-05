@@ -620,7 +620,7 @@ Standard_EXPORT void FUNBUILD_ORIENTLOFS(TopOpeBRepBuild_Builder& B,
                                          TopTools_ListOfShape& LOFS)
 {
   for (TopTools_ListIteratorOfListOfShape it(LOFS);it.More();it.Next()) {
-    TopoDS_Shape& f = it.Value();
+    TopoDS_Shape& f = it.ChangeValue();
     Standard_Boolean of1,of2; FUNBUILD_ANCESTORRANKGET(B,f,of1,of2);
     TopAbs_Orientation orif = f.Orientation();
     Standard_Boolean r12 = B.Reverse(TB1,TB2); Standard_Boolean r21 = B.Reverse(TB2,TB1);

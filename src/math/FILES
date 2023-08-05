@@ -74,7 +74,6 @@ math_GlobOptMin.hxx
 math_Householder.cxx
 math_Householder.hxx
 math_Householder.lxx
-math_IntegerVector.cxx
 math_IntegerVector.hxx
 math_Jacobi.cxx
 math_Jacobi.hxx
@@ -122,5 +121,6 @@ math_Uzawa.cxx
 math_Uzawa.hxx
 math_Uzawa.lxx
 math_ValueAndWeight.hxx
-math_Vector.cxx
+math_VectorBase.hxx
+math_VectorBase.lxx
 math_Vector.hxx

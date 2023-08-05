@@ -19,11 +19,10 @@
 
 #include <Standard_Integer.hxx>
 #include <TopOpeBRepDS_SurfaceData.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_SurfaceData,TColStd_MapIntegerHasher> TopOpeBRepDS_MapOfSurface;
-typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_SurfaceData,TColStd_MapIntegerHasher>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfSurface;
+typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_SurfaceData> TopOpeBRepDS_MapOfSurface;
+typedef NCollection_DataMap<Standard_Integer,TopOpeBRepDS_SurfaceData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfSurface;
 
 
 #endif

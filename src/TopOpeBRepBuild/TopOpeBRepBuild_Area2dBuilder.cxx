@@ -85,7 +85,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
 
       Loopinside = Standard_False; 
       for (AreaIter.Initialize(myArea); AreaIter.More(); AreaIter.Next()) {
-	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.Value();
+	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.ChangeValue();
 	if ( aArea.IsEmpty() ) continue;
 	state = CompareLoopWithListOfLoop(LC,L,aArea,TopOpeBRepBuild_BLOCK );
 	if (state == TopAbs_UNKNOWN) Atomize(state,TopAbs_IN);
@@ -94,7 +94,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
       } // end of Area scan
 
       if ( Loopinside ) {
-	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.Value();
+	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.ChangeValue();
 	ADD_Loop_TO_LISTOFLoop(L,aArea,(void*)("IN, to current area"));
       }
       else if ( ! Loopinside ) {
@@ -117,7 +117,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
       
       Loopinside = Standard_False;
       for (AreaIter.Initialize(myArea); AreaIter.More(); AreaIter.Next() ) {
-	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.Value();
+	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.ChangeValue();
 	if ( aArea.IsEmpty() ) continue;
  	state = CompareLoopWithListOfLoop(LC,L,aArea,TopOpeBRepBuild_ANYLOOP);
 	if (state == TopAbs_UNKNOWN) Atomize(state,TopAbs_IN);
@@ -126,7 +126,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
       } // end of Area scan
       
       if ( Loopinside) {
-	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.Value();
+	TopOpeBRepBuild_ListOfLoop& aArea = AreaIter.ChangeValue();
 	Standard_Boolean allShape = Standard_True;
 	TopOpeBRepBuild_ListOfLoop removedLoops;
 	LoopIter.Initialize(aArea);
@@ -142,7 +142,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
 	    
 	    allShape = allShape && curL->IsShape();
 	    REM_Loop_FROM_LISTOFLoop
-	      (LoopIter,AreaIter.Value(),(void*)("loop of cur. area, cur. area"));
+	      (LoopIter,AreaIter.ChangeValue(),(void*)("loop of cur. area, cur. area"));
 	  }
 	  else {
 	    LoopIter.Next();

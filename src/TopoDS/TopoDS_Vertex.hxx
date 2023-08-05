@@ -17,11 +17,7 @@
 #ifndef _TopoDS_Vertex_HeaderFile
 #define _TopoDS_Vertex_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
 #include <TopoDS_Shape.hxx>
-
 
 //! Describes a vertex which
 //! - references an underlying vertex with the potential
@@ -37,32 +33,20 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Undefined Vertex.
-    TopoDS_Vertex();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  TopoDS_Vertex() {}
 };
 
-
-#include <TopoDS_Vertex.lxx>
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<TopoDS_Vertex>
+  {
+    size_t operator()(const TopoDS_Vertex& theShape) const
+    {
+      return std::hash<TopoDS_Shape>{}(theShape);
+    }
+  };
+}
 
 #endif // _TopoDS_Vertex_HeaderFile

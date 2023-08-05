@@ -64,6 +64,12 @@ public:
   //! Allocate memory with given size
   Standard_EXPORT virtual void* Allocate  (const size_t theSize) Standard_OVERRIDE;
 
+  //! Allocate memory with given size
+  void* AllocateOptimal(const size_t theSize) Standard_OVERRIDE
+  {
+    return Allocate(theSize);
+  }
+
   //! Free a previously allocated memory;
   //! memory is returned to the OS when all allocations in some block are freed
   Standard_EXPORT virtual void  Free      (void* theAddress) Standard_OVERRIDE;
@@ -108,17 +114,18 @@ protected:
   class Hasher
   {
   public:
-    //! Returns hash code for the given key, in the range [1, theUpperBound]
+    //! Returns hash code for the given key
     //! @param theKey the key which hash code is to be computed
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in the range [1, theUpperBound]
-    static Standard_Integer HashCode (const Key theKey, const Standard_Integer theUpperBound)
+    //! @return a computed hash code
+    size_t operator() (const Key theKey) const noexcept
     {
-      return ::HashCode (theKey.Value, theUpperBound);
+      return theKey.Value;
     }
 
-    static Standard_Boolean IsEqual(const Key theOne, const Key theTwo)
-    { return theOne.Value == theTwo.Value; }
+    bool operator() (const Key theKey1, const Key theKey2) const noexcept
+    {
+      return theKey1.Value == theKey2.Value;
+    }
   };
   
   //! Descriptor of a block

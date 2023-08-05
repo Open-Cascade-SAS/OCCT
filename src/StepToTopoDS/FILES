@@ -3,8 +3,6 @@ StepToTopoDS.hxx
 StepToTopoDS_Builder.cxx
 StepToTopoDS_Builder.hxx
 StepToTopoDS_BuilderError.hxx
-StepToTopoDS_CartesianPointHasher.cxx
-StepToTopoDS_CartesianPointHasher.hxx
 StepToTopoDS_DataMapIteratorOfDataMapOfRI.hxx
 StepToTopoDS_DataMapIteratorOfDataMapOfRINames.hxx
 StepToTopoDS_DataMapIteratorOfDataMapOfTRI.hxx
@@ -23,8 +21,6 @@ StepToTopoDS_NMTool.hxx
 StepToTopoDS_PointEdgeMap.hxx
 StepToTopoDS_PointPair.cxx
 StepToTopoDS_PointPair.hxx
-StepToTopoDS_PointPairHasher.cxx
-StepToTopoDS_PointPairHasher.hxx
 StepToTopoDS_PointVertexMap.hxx
 StepToTopoDS_Root.cxx
 StepToTopoDS_Root.hxx

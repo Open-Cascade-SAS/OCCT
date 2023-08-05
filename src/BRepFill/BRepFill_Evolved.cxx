@@ -1953,7 +1953,7 @@ void BRepFill_Evolved::Transfert(      BRepFill_Evolved&             Vevo,
 
       TopTools_ListIteratorOfListOfShape itl;
       for (itl.Initialize(GenShapes); itl.More(); itl.Next()) {
-        itl.Value().Move(LS);
+        itl.ChangeValue().Move(LS);
       }
 
       if (!myMap.IsBound(InitialSpine)) {

@@ -329,7 +329,7 @@ Standard_EXPORT void FUN_reducedoublons
   // process interferences of LI with VERTEX geometry
   it1.Initialize(LI);
   while (it1.More() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     const TopOpeBRepDS_Transition& T1 = I1->Transition();
     TopOpeBRepDS_Kind GT1,ST1; Standard_Integer G1,S1; FDS_data(I1,GT1,G1,ST1,S1);
     TopAbs_ShapeEnum tsb1,tsa1; Standard_Integer isb1,isa1;
@@ -403,7 +403,7 @@ Standard_EXPORT void FUN_unkeepUNKNOWN
   
   it1.Initialize(LI);
   while (it1.More() ) {
-    Handle(TopOpeBRepDS_Interference)& I1 = it1.Value();
+    Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();
     const TopOpeBRepDS_Transition& T1 = I1->Transition();
     Standard_Boolean isunk = T1.IsUnknown();
 
@@ -541,7 +541,7 @@ static Standard_Boolean FUN_find3dISEsameISF(const Handle(TopOpeBRepDS_Interfere
   TopAbs_ShapeEnum SB1,SA1; Standard_Integer IB1,IA1; FDS_Tdata(I1,SB1,IB1,SA1,IA1);
   
   while ( it2.More()){
-    Handle(TopOpeBRepDS_Interference)& I2 = it2.Value();
+    Handle(TopOpeBRepDS_Interference)& I2 = it2.ChangeValue();
     TopAbs_Orientation O2 = I2->Transition().Orientation(TopAbs_IN);
     TopOpeBRepDS_Kind GT2,ST2; Standard_Integer G2,S2; FDS_data(I2,GT2,G2,ST2,S2);
     TopAbs_ShapeEnum SB2,SA2; Standard_Integer IB2,IA2; FDS_Tdata(I2,SB2,IB2,SA2,IA2);

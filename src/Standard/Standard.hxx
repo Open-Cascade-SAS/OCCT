@@ -18,10 +18,7 @@
 #define _Standard_HeaderFile
 
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Address.hxx>
-#include <Standard_Size.hxx>
 #include <Standard_Integer.hxx>
-
 
 //! The package Standard provides global memory allocator and other basic
 //! services used by other OCCT components.
@@ -32,10 +29,25 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Enumiration of possible allocator types
+  enum class AllocatorType
+  {
+    NATIVE = 0,
+    OPT = 1,
+    TBB = 2,
+    JEMALLOC = 3
+  };
+
+  //! Returns default allocator type
+  Standard_EXPORT static AllocatorType GetAllocatorType();
   
   //! Allocates memory blocks
-  //! aSize - bytes to  allocate
-  Standard_EXPORT static Standard_Address Allocate (const Standard_Size aSize);
+  //! theSize - bytes to  allocate
+  Standard_EXPORT static Standard_Address Allocate (const Standard_Size theSize);
+
+  //! Allocates memory blocks
+  //! theSize - bytes to  allocate
+  Standard_EXPORT static Standard_Address AllocateOptimal (const Standard_Size theSize);
   
   //! Deallocates memory blocks
   //! @param thePtr - previously allocated memory block to be freed
@@ -51,9 +63,9 @@ public:
   }
   
   //! Reallocates memory blocks
-  //! aStorage - previously allocated memory block
-  //! aNewSize - new size in bytes
-  Standard_EXPORT static Standard_Address Reallocate (const Standard_Address aStorage, const Standard_Size aNewSize);
+  //! theStorage - previously allocated memory block
+  //! theNewSize - new size in bytes
+  Standard_EXPORT static Standard_Address Reallocate (const Standard_Address theStorage, const Standard_Size theNewSize);
   
   //! Allocates aligned memory blocks.
   //! Should be used with CPU instructions which require specific alignment.
@@ -103,9 +115,5 @@ public:
                                                       const int theNbTopSkip = 0);
 
 };
-
-// include definition of handle to make it always visible
-// (put at the and of the file due to cyclic dependency between headers)
-#include <Standard_Transient.hxx>
 
 #endif // _Standard_HeaderFile

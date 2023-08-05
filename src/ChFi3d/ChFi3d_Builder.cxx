@@ -236,7 +236,7 @@ void  ChFi3d_Builder::Compute()
     itel.Value()->Spine()->SetErrorStatus(ChFiDS_Ok);
     try {
       OCC_CATCH_SIGNALS
-      PerformSetOfSurf(itel.Value());
+      PerformSetOfSurf(itel.ChangeValue());
     }
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
@@ -412,7 +412,7 @@ void  ChFi3d_Builder::Compute()
       }
       if (!hasresult) {
       B1.MakeCompound(TopoDS::Compound(myShapeResult));
-      for(It.Reset(); It.More(); It.Next()){
+      for(It = TColStd_MapIteratorOfMapOfInteger(MapIndSo); It.More(); It.Next()){
 	Standard_Integer indsol = It.Key();
 	const TopoDS_Shape& curshape = DStr.Shape(indsol);
 	TopTools_ListIteratorOfListOfShape 
@@ -440,7 +440,7 @@ void  ChFi3d_Builder::Compute()
       else {
        done=Standard_False;
        B1.MakeCompound(TopoDS::Compound(badShape));
-      for(It.Reset(); It.More(); It.Next()){
+      for(It = TColStd_MapIteratorOfMapOfInteger(MapIndSo); It.More(); It.Next()){
 	Standard_Integer indsol = It.Key();
 	const TopoDS_Shape& curshape = DStr.Shape(indsol);
 	TopTools_ListIteratorOfListOfShape 

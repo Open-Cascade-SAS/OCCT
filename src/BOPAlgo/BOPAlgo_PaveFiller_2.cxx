@@ -229,7 +229,7 @@ void BOPAlgo_PaveFiller::IntersectVE
   // for all vertices having the same SD vertex.
   // It will also be used as a Fence map to avoid repeated
   // intersection of the same SD vertex with edge
-  NCollection_DataMap<BOPDS_Pair, TColStd_ListOfInteger, BOPDS_PairMapHasher> aDMVSD;
+  NCollection_DataMap<BOPDS_Pair, TColStd_ListOfInteger> aDMVSD;
   //
   Message_ProgressScope aPSOuter(theRange, NULL, 10);
   for (i = 1; i <= aNbVE; ++i) {
@@ -407,8 +407,7 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
   BOPDS_MapOfPair aMPairs;
   // Map to treat the Common Blocks
   NCollection_IndexedDataMap<Handle(BOPDS_CommonBlock),
-                             BOPDS_ListOfPaveBlock,
-                             TColStd_MapTransientHasher> aMCBNewPB;
+                             BOPDS_ListOfPaveBlock> aMCBNewPB;
   //
   // Map of vertices to init the pave blocks for them
   TColStd_MapOfInteger aMVerticesToInitPB;
@@ -507,7 +506,7 @@ void BOPAlgo_PaveFiller::SplitPaveBlocks(const TColStd_MapOfInteger& theMEdges,
     const BOPDS_ListOfPaveBlock& aLPBN = aMCBNewPB(i);
     //
     // For each group of pave blocks with the same vertices make new common block
-    NCollection_IndexedDataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock, BOPDS_PairMapHasher> aMInds;
+    NCollection_IndexedDataMap<BOPDS_Pair, BOPDS_ListOfPaveBlock> aMInds;
     BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPBN);
     for (; aItLPB.More(); aItLPB.Next()) {
       const Handle(BOPDS_PaveBlock)& aPB = aItLPB.Value();

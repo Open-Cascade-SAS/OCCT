@@ -68,7 +68,14 @@ public:
   NCollection_List (const NCollection_List& theOther) :
     NCollection_BaseList(theOther.myAllocator)
   {
-    Assign (theOther);
+    appendList(theOther.PFirst());
+  }
+
+  //! Move constructor
+  NCollection_List(NCollection_List&& theOther) noexcept :
+    NCollection_BaseList(theOther.myAllocator)
+  {
+    this->operator=(std::forward<NCollection_List>(theOther));
   }
 
   //! Size - Number of items
@@ -90,6 +97,22 @@ public:
   NCollection_List& operator= (const NCollection_List& theOther)
   {
     return Assign (theOther);
+  }
+
+  //! Move operator
+  NCollection_List& operator= (NCollection_List&& theOther) noexcept
+  {
+    if (this == &theOther)
+    {
+      return *this;
+    }
+    Clear(theOther.myAllocator);
+    myFirst = theOther.myFirst;
+    myLast = theOther.myLast;
+    myLength = theOther.myLength;
+    theOther.myFirst = theOther.myLast = nullptr;
+    theOther.myLength = 0;
+    return *this;
   }
 
   //! Clear this list
@@ -136,11 +159,27 @@ public:
     return ((ListNode *) PLast())->ChangeValue();
   }
 
+  //! Append one item at the end
+  TheItemType& Append (TheItemType&& theItem)
+  { 
+    ListNode * pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    PAppend(pNew);
+    return ((ListNode *) PLast())->ChangeValue();
+  }
+
   //! Append one item at the end and output iterator
   //!   pointing at the appended item
   void Append (const TheItemType& theItem, Iterator& theIter)
   { 
     ListNode * pNew = new (this->myAllocator) ListNode(theItem);
+    PAppend(pNew, theIter);
+  }
+
+  //! Append one item at the end and output iterator
+  //!   pointing at the appended item
+  void Append (TheItemType&& theItem, Iterator& theIter)
+  { 
+    ListNode * pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
     PAppend(pNew, theIter);
   }
 
@@ -168,6 +207,14 @@ public:
   TheItemType& Prepend (const TheItemType& theItem)
   { 
     ListNode * pNew = new (this->myAllocator) ListNode(theItem);
+    PPrepend(pNew);
+    return ((ListNode *) PFirst())->ChangeValue();
+  }
+
+  //! Prepend one item at the beginning
+  TheItemType& Prepend (TheItemType&& theItem)
+  { 
+    ListNode * pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
     PPrepend(pNew);
     return ((ListNode *) PFirst())->ChangeValue();
   }
@@ -228,6 +275,15 @@ public:
   }
 
   //! InsertBefore
+  TheItemType& InsertBefore (TheItemType&& theItem,
+                             Iterator& theIter) 
+  { 
+    ListNode * pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    PInsertBefore (pNew, theIter);
+    return pNew -> ChangeValue();
+  }
+
+  //! InsertBefore
   void InsertBefore (NCollection_List& theOther,
                      Iterator& theIter) 
   {
@@ -253,6 +309,15 @@ public:
                             Iterator& theIter) 
   {
     ListNode * pNew = new (this->myAllocator) ListNode(theItem);
+    PInsertAfter (pNew, theIter);
+    return pNew -> ChangeValue();
+  }
+
+  //! InsertAfter
+  TheItemType& InsertAfter (TheItemType&& theItem,
+                            Iterator& theIter)
+  {
+    ListNode * pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
     PInsertAfter (pNew, theIter);
     return pNew -> ChangeValue();
   }

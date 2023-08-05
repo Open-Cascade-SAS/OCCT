@@ -17,6 +17,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
 
 class PCDM_ReaderFilter;

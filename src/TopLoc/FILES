@@ -7,7 +7,6 @@ TopLoc_Location.cxx
 TopLoc_Location.hxx
 TopLoc_Location.lxx
 TopLoc_MapIteratorOfMapOfLocation.hxx
-TopLoc_MapLocationHasher.hxx
 TopLoc_MapOfLocation.hxx
 TopLoc_SListNodeOfItemLocation.cxx
 TopLoc_SListNodeOfItemLocation.hxx

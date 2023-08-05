@@ -17,6 +17,7 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <Standard_HashUtils.hxx>
 
 //! The class is to provide the pair of indices of interfering shapes.
 
@@ -62,17 +63,33 @@ class BOPDS_Pair {
            (myIndex1 == theOther.myIndex2 && myIndex2 == theOther.myIndex1);
   }
 
-  //! Computes a hash code for this pair, in the range [1, theUpperBound]
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
+  bool operator==(const BOPDS_Pair& theOther) const
   {
-    return ::HashCode(myIndex1 + myIndex2, theUpperBound);
+    return IsEqual(theOther);
   }
 
  protected:
   Standard_Integer myIndex1;
   Standard_Integer myIndex2;
 };
+
+namespace std
+{
+  template <>
+  struct hash<BOPDS_Pair>
+  {
+    size_t operator()(const BOPDS_Pair& thePair) const noexcept
+    {
+      // Combine two int values into a single hash value.
+      int aCombination[2];
+      thePair.Indices(aCombination[0], aCombination[1]);
+      if (aCombination[0] > aCombination[1])
+      {
+        std::swap(aCombination[0], aCombination[1]);
+      }
+      return opencascade::hashBytes(aCombination, sizeof(aCombination));
+    }
+  };
+}
 
 #endif // _BOPDS_Pair

@@ -90,6 +90,10 @@ IntTools_SurfaceRangeSample& operator = (const IntTools_SurfaceRangeSample& Othe
   
     Standard_Integer GetRangeIndexVDeeper (const Standard_Integer theNbSampleV) const;
 
+    bool operator==(const IntTools_SurfaceRangeSample& theOther) const
+    {
+      return IsEqual(theOther);
+    }
 
 
 

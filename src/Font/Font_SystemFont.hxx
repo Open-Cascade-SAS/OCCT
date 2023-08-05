@@ -18,6 +18,7 @@
 
 #include <Font_FontAspect.hxx>
 #include <Standard.hxx>
+#include <NCollection_DefineAlloc.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -122,21 +123,10 @@ public:
   Standard_EXPORT TCollection_AsciiString ToString() const;
 
 public:
-  //! Computes a hash code for the system font, in the range [1, theUpperBound]. Based on Font Family, so that the whole
-  //! family with different aspects can be found within the same bucket of some map
-  //! @param theSystemFont the system font which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  static Standard_Integer HashCode (const Handle (Font_SystemFont) & theSystemFont, const Standard_Integer theUpperBound)
-  {
-    return ::HashCode (theSystemFont->FontKey(), theUpperBound);
-  }
 
-  //! Matching two instances, for Map interface.
-  static bool IsEqual (const Handle(Font_SystemFont)& theFont1,
-                       const Handle(Font_SystemFont)& theFont2)
+  bool operator==(const Font_SystemFont& theFont) const
   {
-    return theFont1->IsEqual (theFont2);
+    return myFontKey.IsEqual(theFont.FontKey());
   }
 
 private:
@@ -147,6 +137,19 @@ private:
   TCollection_AsciiString myFontName;     //!< font family name
   Standard_Boolean        myIsSingleLine; //!< single stroke font flag, FALSE by default
 
+};
+
+namespace std
+{
+  template<>
+  struct hash<Handle(Font_SystemFont)>
+  {
+    size_t operator()(const Handle (Font_SystemFont)& theLink) const noexcept
+    {
+      if (theLink.IsNull()) return 0;
+      return std::hash<TCollection_AsciiString>{}(theLink->FontKey());
+    }
+  };
 };
 
 DEFINE_STANDARD_HANDLE(Font_SystemFont, Standard_Transient)

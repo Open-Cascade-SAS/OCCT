@@ -12,14 +12,15 @@
 // commercial license or contractual agreement.
 
 #include <BinTools_ShapeReader.hxx>
-#include <TopoDS.hxx>
+
+#include <BinTools_Curve2dSet.hxx>
+#include <BinTools_CurveSet.hxx>
+#include <BinTools_SurfaceSet.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_PointOnCurve.hxx>
 #include <BRep_PointOnCurveOnSurface.hxx>
 #include <BRep_PointOnSurface.hxx>
-#include <BRep_Builder.hxx>
-#include <BinTools_CurveSet.hxx>
-#include <BinTools_Curve2dSet.hxx>
-#include <BinTools_SurfaceSet.hxx>
+#include <TopoDS.hxx>
 
 //=======================================================================
 //function : BinTools_ShapeReader

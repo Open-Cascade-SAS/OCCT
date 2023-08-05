@@ -30,7 +30,6 @@
 #include <TColgp_HArray2OfPnt2d.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <Standard_Address.hxx>
 #include <AdvApprox_EvaluatorFunction.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>

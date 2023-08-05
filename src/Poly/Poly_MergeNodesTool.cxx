@@ -14,6 +14,7 @@
 #include <Poly_MergeNodesTool.hxx>
 
 #include <NCollection_IncAllocator.hxx>
+#include <Standard_CStringHasher.hxx>
 
 #include <algorithm>
 
@@ -87,30 +88,38 @@ void Poly_MergeNodesTool::MergedNodesMap::SetMergeTolerance (double theTolerance
 // function : MergedNodesMap::hashCode
 // purpose  :
 // =======================================================================
-inline int Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode (const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
-                                                               const int theUpper)
+inline size_t Poly_MergeNodesTool::MergedNodesMap::vec3iHashCode (const Poly_MergeNodesTool::MergedNodesMap::CellVec3i& theVec,
+                                                                  const int theUpper)
 {
   // copied from NCollection_CellFilter
-  const uint64_t aShiftBits = (BITS(int64_t)-1) / 3;
+  constexpr uint64_t aShiftBits = (CHAR_BIT * sizeof(int64_t)-1) / 3;
   uint64_t aHashCode = 0;
   aHashCode = (aHashCode << aShiftBits) ^ theVec[0];
   aHashCode = (aHashCode << aShiftBits) ^ theVec[1];
   aHashCode = (aHashCode << aShiftBits) ^ theVec[2];
-  return IntegerHashCode(aHashCode, 0x7fffffffffffffff, theUpper);
+  return aHashCode % theUpper + 1;
 }
 
 // =======================================================================
 // function : MergedNodesMap::hashCode
 // purpose  :
 // =======================================================================
-inline int Poly_MergeNodesTool::MergedNodesMap::hashCode (const NCollection_Vec3<float>& thePos,
-                                                          const NCollection_Vec3<float>& theNorm,
-                                                          const int theUpper) const
+inline size_t Poly_MergeNodesTool::MergedNodesMap::hashCode (const NCollection_Vec3<float>& thePos,
+                                                             const NCollection_Vec3<float>& theNorm,
+                                                             const int theUpper) const
 {
   (void )theNorm;
   if (myInvTol <= 0.0f)
   {
-    return ::HashCode (::HashCodes ((Standard_CString )&thePos, sizeof(NCollection_Vec3<float>)), theUpper);
+    // compute DJB2 hash of a string
+    const size_t aLength = sizeof(NCollection_Vec3<float>);
+    unsigned int aHashCode = 0;
+    const Standard_Character* c = (Standard_CString )&thePos;
+    for (size_t i = 0; i < aLength; ++i, ++c)
+    {
+      aHashCode = ((aHashCode << 5) + aHashCode) ^ (*c);
+    }
+    return aHashCode % theUpper + 1;
   }
 
   const CellVec3i anIndex = vec3ToCell (thePos);
@@ -190,7 +199,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind (int& theIndex,
   }
 
   DataMapNode** aData = (DataMapNode** )myData1;
-  const int aHash = hashCode (thePos, theNorm, NbBuckets());
+  const size_t aHash = hashCode (thePos, theNorm, NbBuckets());
   for (DataMapNode* aNodeIter = aData[aHash]; aNodeIter != NULL;
        aNodeIter = (DataMapNode* )aNodeIter->Next())
   {
@@ -214,7 +223,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind (int& theIndex,
     for (int aNeigIter = 0; aNeigIter < 26; ++aNeigIter)
     {
       const CellVec3i anIndex = anIndexCnt + THE_NEIGHBRS[aNeigIter];
-      const int aHashEx = vec3iHashCode (anIndex, NbBuckets());
+      const size_t aHashEx = vec3iHashCode (anIndex, NbBuckets());
       for (DataMapNode* aNodeIter = aData[aHashEx]; aNodeIter != NULL;
            aNodeIter = (DataMapNode* )aNodeIter->Next())
       {
@@ -249,7 +258,7 @@ inline void Poly_MergeNodesTool::MergedNodesMap::ReSize (const int theSize)
       {
         for (DataMapNode* anOldNodeIter = anOldData[anOldBuckIter]; anOldNodeIter != NULL; )
         {
-          const Standard_Integer aNewHash = hashCode (anOldNodeIter->Key(), aNbNewBuck);
+          const size_t aNewHash = hashCode (anOldNodeIter->Key(), aNbNewBuck);
           DataMapNode* aNextNode = (DataMapNode* )anOldNodeIter->Next();
           anOldNodeIter->Next() = aNewData[aNewHash];
           aNewData[aNewHash] = anOldNodeIter;

@@ -2334,7 +2334,7 @@ static void MergeSolutions(const IntTools_ListOfCurveRangeSample& theListCurveRa
                            IntTools_ListOfCurveRangeSample& theListCurveRangeSort,
                            IntTools_ListOfSurfaceRangeSample& theListSurfaceRangeSort) 
 {
-  NCollection_IndexedMap<IntTools_SurfaceRangeSample, IntTools_SurfaceRangeSampleMapHasher> aMapToAvoid;
+  NCollection_IndexedMap<IntTools_SurfaceRangeSample> aMapToAvoid;
 
   NCollection_DataMap<Standard_Integer, TColStd_ListOfInteger> aCurveIdMap;
   std::vector<IntTools_CurveRangeSample> aCurveRangeVector;

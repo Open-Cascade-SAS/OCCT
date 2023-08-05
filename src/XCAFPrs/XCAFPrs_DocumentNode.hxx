@@ -37,20 +37,22 @@ struct XCAFPrs_DocumentNode
 
 public: // Methods for hash map
 
-  //! Return hash code based on node string identifier.
-  static Standard_Integer HashCode (const XCAFPrs_DocumentNode& theNode,
-                                    const Standard_Integer theN)
+  bool operator==(const XCAFPrs_DocumentNode& theOther) const
   {
-    return ::HashCode (theNode.Id, theN);
+    return Id == theOther.Id;
   }
-
-  //! Return TRUE if two document nodes has the same string identifier.
-  static Standard_Boolean IsEqual (const XCAFPrs_DocumentNode& theNode1,
-                                   const XCAFPrs_DocumentNode& theNode2)
-  {
-    return theNode1.Id == theNode2.Id;
-  }
-
 };
+
+namespace std
+{
+  template <>
+  struct hash<XCAFPrs_DocumentNode>
+  {
+    size_t operator()(const XCAFPrs_DocumentNode& theDocumentNode) const
+    {
+      return std::hash<TCollection_AsciiString>{}(theDocumentNode.Id);
+    }
+  };
+}
 
 #endif // _XCAFPrs_DocumentNode_HeaderFile

@@ -36,7 +36,6 @@
 #include <Graphic3d_ZLayerId.hxx>
 #include <Graphic3d_ZLayerSettings.hxx>
 #include <Image_PixMap.hxx>
-#include <Standard_Address.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>
 

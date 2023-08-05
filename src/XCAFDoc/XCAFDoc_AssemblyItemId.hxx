@@ -80,25 +80,10 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-  struct Hasher
+  bool operator==(const XCAFDoc_AssemblyItemId& theOther) const
   {
-
-    //! Computes a hash code for the given value of the XCAFDoc_AssemblyItemId, in range [1, theUpperBound]
-    //! @param theAssemblyItemId the value of the XCAFDoc_AssemblyItemId type which hash code is to be computed
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in range [1, theUpperBound]
-    static Standard_Integer HashCode (const XCAFDoc_AssemblyItemId& theAssemblyItemId,
-                                      const Standard_Integer        theUpperBound)
-    {
-      return ::HashCode (theAssemblyItemId.ToString(), theUpperBound);
-    }
-
-    static int IsEqual(const XCAFDoc_AssemblyItemId& theItem1,
-                       const XCAFDoc_AssemblyItemId& theItem2)
-    {
-      return theItem1.IsEqual(theItem2);
-    }
-  };
+    return IsEqual(theOther);
+  }
 
 private:
 
@@ -106,4 +91,17 @@ private:
 
 };
 
+namespace std
+{
+
+  template<>
+  struct hash<XCAFDoc_AssemblyItemId>
+  {
+    size_t operator()(const XCAFDoc_AssemblyItemId& theAssemblyItemId) const
+    {
+      return std::hash<TCollection_AsciiString>{}(theAssemblyItemId.ToString());
+    }
+  };
+
+}
 #endif // _XCAFDoc_AssemblyItemId_HeaderFile

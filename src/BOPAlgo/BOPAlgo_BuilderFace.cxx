@@ -167,7 +167,7 @@ void BOPAlgo_BuilderFace::Perform(const Message_ProgressRange& theRange)
 void BOPAlgo_BuilderFace::PerformShapesToAvoid(const Message_ProgressRange& theRange)
 {
   Standard_Boolean bFound;
-  Standard_Integer i, iCnt, aNbV, aNbE;
+  Standard_Integer i, aNbV, aNbE;
   TopTools_IndexedDataMapOfShapeListOfShape aMVE;
   TopTools_ListIteratorOfListOfShape aIt;
   //
@@ -175,14 +175,11 @@ void BOPAlgo_BuilderFace::PerformShapesToAvoid(const Message_ProgressRange& theR
   //
   Message_ProgressScope aPS(theRange, NULL, 1);
   //
-  iCnt=0;
   for(;;) {
     if (UserBreak(aPS))
     {
       return;
     }
-
-    ++iCnt;
     bFound=Standard_False;
     //
     // 1. MEF

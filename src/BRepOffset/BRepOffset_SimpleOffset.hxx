@@ -17,13 +17,16 @@
 #define _BRepOffset_SimpleOffset_HeaderFile
 
 #include <BRepTools_Modification.hxx>
-#include <GeomAbs_Shape.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Macro.hxx>
-#include <Standard_Type.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_Macro.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Type.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 
 
 class BRepOffset_SimpleOffset;

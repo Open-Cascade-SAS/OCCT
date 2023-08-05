@@ -137,7 +137,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   TopTools_DataMapOfShapeListOfShape theFFMap;
   TopTools_MapOfShape toRemove;
   TopTools_MapIteratorOfMapOfShape itm;
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itf;
 
   // recherche des fusions de faces
   for (itm.Initialize(GEdg); itm.More(); itm.Next()) {
@@ -158,7 +157,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
       if (ToFuse(fac,facbis)) {
 	// On recherche si une face a deja fusionne avec facbis
 	Standard_Boolean facbisfound = Standard_False;
-	for (itf.Initialize(theFFMap); itf.More(); itf.Next()) {
+	for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itf(theFFMap); itf.More(); itf.Next()) {
 	  if (itf.Key().IsSame(fac)) {
 	    continue;
 	  }
@@ -204,8 +203,8 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   // a fusionner avec une meme face de base
 
 //  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itf(theFFMap);
-  itf.Initialize(theFFMap);
-  for (; itf.More(); itf.Next()) {
+  for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itf(theFFMap); itf.More(); itf.Next())
+  {
     for (itl.Initialize(itf.Value()); itl.More(); itl.Next()) {
       for (exp.Init(itl.Value(),TopAbs_EDGE); exp.More(); exp.Next()) {
 	const TopoDS_Edge& ed = TopoDS::Edge(exp.Current());
@@ -234,7 +233,8 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   TopTools_DataMapOfShapeShape DontFuse;
   TopAbs_Orientation orient,orface;
 
-  for (itf.Reset(); itf.More(); itf.Next()) {
+  for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itf(theFFMap); itf.More(); itf.Next())
+  {
     const TopoDS_Face& fac = TopoDS::Face(itf.Key());
     for (exp.Init(fac,TopAbs_EDGE); exp.More(); exp.Next()) {
       const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
@@ -445,7 +445,8 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   TopTools_MapOfShape EdgAdded;
 
   // Fusion des faces, ou reconstruction
-  for (itf.Reset();itf.More(); itf.Next()) {
+  for (TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itf(theFFMap);itf.More(); itf.Next())
+  {
     const TopoDS_Face& fac = TopoDS::Face(itf.Key());
     Standard_Boolean ModFace = Standard_False;
     TopTools_ListOfShape listofedg;

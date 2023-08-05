@@ -259,8 +259,9 @@ friend class TDF_ChildIterator;
 friend class TDF_Attribute;
 friend class TDF_AttributeIterator;
 friend class TDF_Data;
-friend class TDF_LabelMapHasher;
 
+template<class T>
+friend struct std::hash;
 
 protected:
 

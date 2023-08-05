@@ -15,6 +15,7 @@
 #define _Message_AttributeObject_HeaderFile
 
 #include <Message_Attribute.hxx>
+#include <NCollection_DefineAlloc.hxx>
 
 
 //! Alert object storing a transient object

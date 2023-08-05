@@ -16,7 +16,6 @@
 #ifndef Standard_ThreadId_HeaderFile
 #define Standard_ThreadId_HeaderFile
 
-#include <Standard_Size.hxx>
 
 // Platform-independent definition of the thread identifier type
 typedef Standard_Size Standard_ThreadId;

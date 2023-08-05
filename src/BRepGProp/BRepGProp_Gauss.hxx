@@ -17,7 +17,8 @@
 #include <NCollection_Handle.hxx>
 #include <NCollection_Array1.hxx>
 
-class math_Vector;
+template<typename T> class math_VectorBase;
+using math_Vector = math_VectorBase<double>;
 
 //! Class performs computing of the global inertia properties
 //! of geometric object in 3D space by adaptive and non-adaptive

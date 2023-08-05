@@ -17,11 +17,7 @@
 #ifndef _TopoDS_CompSolid_HeaderFile
 #define _TopoDS_CompSolid_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-
 #include <TopoDS_Shape.hxx>
-
 
 //! Describes a composite solid which
 //! - references an underlying composite solid with the
@@ -38,32 +34,20 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Constructs an Undefined CompSolid.
-    TopoDS_CompSolid();
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  TopoDS_CompSolid() {}
 };
 
-
-#include <TopoDS_CompSolid.lxx>
-
-
-
-
+namespace std
+{
+  template <>
+  struct hash<TopoDS_CompSolid>
+  {
+    size_t operator()(const TopoDS_CompSolid& theShape) const
+    {
+      return std::hash<TopoDS_Shape>{}(theShape);
+    }
+  };
+}
 
 #endif // _TopoDS_CompSolid_HeaderFile

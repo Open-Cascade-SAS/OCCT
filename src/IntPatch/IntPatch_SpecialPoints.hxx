@@ -28,7 +28,9 @@ class gp_Vec;
 class gp_XYZ;
 class IntPatch_Point;
 class IntSurf_PntOn2S;
-class math_Vector;
+
+template<typename T> class math_VectorBase;
+using math_Vector = math_VectorBase<double>;
 
 class IntPatch_SpecialPoints
 {

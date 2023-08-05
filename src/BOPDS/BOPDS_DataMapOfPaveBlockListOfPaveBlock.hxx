@@ -16,11 +16,10 @@
 #define BOPDS_DataMapOfPaveBlockListOfPaveBlock_HeaderFile
 
 #include <NCollection_DataMap.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <BOPDS_PaveBlock.hxx>   
 #include <BOPDS_ListOfPaveBlock.hxx>
 
-typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), BOPDS_ListOfPaveBlock, TColStd_MapTransientHasher> BOPDS_DataMapOfPaveBlockListOfPaveBlock; 
+typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), BOPDS_ListOfPaveBlock> BOPDS_DataMapOfPaveBlockListOfPaveBlock; 
 typedef BOPDS_DataMapOfPaveBlockListOfPaveBlock::Iterator BOPDS_DataMapIteratorOfDataMapOfPaveBlockListOfPaveBlock; 
  
 #endif

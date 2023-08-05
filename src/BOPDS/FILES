@@ -35,8 +35,6 @@ BOPDS_Pave.hxx
 BOPDS_Pave.lxx
 BOPDS_PaveBlock.cxx
 BOPDS_PaveBlock.hxx
-BOPDS_PaveMapHasher.hxx
-BOPDS_PaveMapHasher.lxx
 BOPDS_PDS.hxx
 BOPDS_PIterator.hxx
 BOPDS_PIteratorSI.hxx
@@ -67,7 +65,6 @@ BOPDS_VectorOfPave.hxx
 BOPDS_VectorOfPoint.hxx
 BOPDS_VectorOfShapeInfo.hxx
 BOPDS_Pair.hxx
-BOPDS_PairMapHasher.hxx
 BOPDS_MapOfPair.hxx
 BOPDS_VectorOfPair.hxx
 BOPDS_VectorOfVectorOfPair.hxx

@@ -171,7 +171,7 @@ Standard_Integer Poly_MakeLoops::Perform()
     {
       Standard_Integer aIndexS = myStartIndices.Top();
 
-      aTempAlloc->Reset();
+      aTempAlloc->Reset(false);
       NCollection_IndexedMap<Standard_Integer> aContour (100, aTempAlloc);
       Standard_Integer aStartNumber = findContour (aIndexS, aContour, aTempAlloc, aTempAlloc1);
 #ifdef OCCT_DEBUG
@@ -264,7 +264,7 @@ Standard_Integer Poly_MakeLoops::findContour
 
     // collect the list of links from this node able to participate
     // in this contour
-    theTempAlloc1->Reset();
+    theTempAlloc1->Reset(false);
     NCollection_List<Standard_Integer> aLstIndS (theTempAlloc1);
     const ListOfLink& aLinks = myHelper->GetAdjacentLinks (aLastNode);
     Poly_MakeLoops::ListOfLink::Iterator itLinks (aLinks);

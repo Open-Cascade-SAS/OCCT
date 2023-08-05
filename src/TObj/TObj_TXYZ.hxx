@@ -18,7 +18,6 @@
 #ifndef TObj_TXYZ_HeaderFile
 #define TObj_TXYZ_HeaderFile
 
-#include <TObj_Common.hxx>
 
 #include <gp_XYZ.hxx>
 #include <TDF_Attribute.hxx>

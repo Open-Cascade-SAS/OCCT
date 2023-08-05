@@ -16,11 +16,10 @@
 #define TColStd_MapOfTransient_HeaderFile
 
 #include <Standard_Transient.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_Map.hxx>
 
-typedef NCollection_Map<Handle(Standard_Transient),TColStd_MapTransientHasher> TColStd_MapOfTransient;
-typedef NCollection_Map<Handle(Standard_Transient),TColStd_MapTransientHasher>::Iterator TColStd_MapIteratorOfMapOfTransient;
+typedef NCollection_Map<Handle(Standard_Transient)> TColStd_MapOfTransient;
+typedef NCollection_Map<Handle(Standard_Transient)>::Iterator TColStd_MapIteratorOfMapOfTransient;
 
 
 #endif

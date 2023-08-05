@@ -17,8 +17,11 @@
 
 #include <Message_ProgressRange.hxx>
 
-class math_IntegerVector;
-class math_Vector;
+#include <NCollection_Allocator.hxx>
+
+template<typename T> class math_VectorBase;
+using math_IntegerVector = math_VectorBase<int>;
+using math_Vector = math_VectorBase<double>;
 class math_Matrix;
 
 const Standard_Integer math_Status_UserAborted         = -1;

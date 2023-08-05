@@ -17,12 +17,10 @@
 #define QANCollection_DoubleMapOfRealInteger_HeaderFile
 
 #include <Standard_Integer.hxx>
-#include <TColStd_MapRealHasher.hxx>
-#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-typedef NCollection_DoubleMap<Standard_Real,Standard_Integer,TColStd_MapRealHasher,TColStd_MapIntegerHasher> QANCollection_DoubleMapOfRealInteger;
-typedef NCollection_DoubleMap<Standard_Real,Standard_Integer,TColStd_MapRealHasher,TColStd_MapIntegerHasher>::Iterator QANCollection_DoubleMapIteratorOfDoubleMapOfRealInteger;
+typedef NCollection_DoubleMap<Standard_Real,Standard_Integer> QANCollection_DoubleMapOfRealInteger;
+typedef NCollection_DoubleMap<Standard_Real,Standard_Integer>::Iterator QANCollection_DoubleMapIteratorOfDoubleMapOfRealInteger;
 
 
 #endif

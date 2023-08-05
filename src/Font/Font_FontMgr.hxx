@@ -209,8 +209,22 @@ private:
 
 private:
 
+  struct FontHasher
+  {
+    size_t operator()(const Handle(Font_SystemFont)& theFont) const noexcept
+    {
+      return std::hash<TCollection_AsciiString>{}(theFont->FontKey());
+    }
+
+    bool operator()(const Handle(Font_SystemFont)& theFont1,
+                    const Handle(Font_SystemFont)& theFont2) const
+    {
+      return theFont1->IsEqual(theFont2);
+    }
+  };
+
   //! Map storing registered fonts.
-  class Font_FontMap : public NCollection_IndexedMap<Handle(Font_SystemFont), Font_SystemFont>
+  class Font_FontMap : public NCollection_IndexedMap<Handle(Font_SystemFont), FontHasher>
   {
   public:
     //! Empty constructor.
@@ -220,26 +234,6 @@ private:
     //! @param theFontName [in] font family to find (or empty string if family name can be ignored)
     //! @return best match font or NULL if not found
     Handle(Font_SystemFont) Find (const TCollection_AsciiString& theFontName) const;
-
-  public:
-    //! Computes a hash code for the system font, in the range [1, theUpperBound]. Based on Font Family, so that the
-    //! whole family with different aspects can be found within the same bucket of some map
-    //! @param theHExtendedString the handle referred to extended string which hash code is to be computed
-    //! @param theUpperBound the upper bound of the range a computing hash code must be within
-    //! @return a computed hash code, in the range [1, theUpperBound]
-    static Standard_Integer HashCode (const Handle (Font_SystemFont) & theSystemFont,
-                                      const Standard_Integer           theUpperBound)
-    {
-      return ::HashCode (theSystemFont->FontKey(), theUpperBound);
-    }
-
-    //! Matching two instances, for Map interface.
-    static bool IsEqual (const Handle(Font_SystemFont)& theFont1,
-                         const Handle(Font_SystemFont)& theFont2)
-    {
-      return theFont1->IsEqual (theFont2);
-    }
-
   };
 
   //! Structure defining font alias.

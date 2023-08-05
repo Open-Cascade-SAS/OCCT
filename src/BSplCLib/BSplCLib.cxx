@@ -35,6 +35,7 @@
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <math_Vector.hxx>
 
 typedef gp_Pnt Pnt;
 typedef gp_Vec Vec;

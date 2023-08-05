@@ -14,9 +14,6 @@ STEPConstruct_ExternRefs.cxx
 STEPConstruct_ExternRefs.hxx
 STEPConstruct_Part.cxx
 STEPConstruct_Part.hxx
-STEPConstruct_PointHasher.cxx
-STEPConstruct_PointHasher.hxx
-STEPConstruct_PointHasher.lxx
 STEPConstruct_Styles.cxx
 STEPConstruct_Styles.hxx
 STEPConstruct_Tool.cxx

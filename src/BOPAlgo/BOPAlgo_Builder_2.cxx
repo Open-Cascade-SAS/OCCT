@@ -549,8 +549,7 @@ void BOPAlgo_Builder::BuildSplitFaces(const Message_ProgressRange& theRange)
 //=======================================================================
 typedef
   NCollection_IndexedDataMap<BOPTools_Set,
-                             TopTools_ListOfShape,
-                             BOPTools_SetMapHasher> BOPAlgo_IndexedDataMapOfSetListOfShape;
+                             TopTools_ListOfShape> BOPAlgo_IndexedDataMapOfSetListOfShape;
 
 static void AddEdgeSet(const TopoDS_Shape& theS,
                        BOPAlgo_IndexedDataMapOfSetListOfShape& theMap,
@@ -619,8 +618,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
 
   // Data map of set of edges with all faces having this set
   NCollection_IndexedDataMap<BOPTools_Set,
-                             TopTools_ListOfShape,
-                             BOPTools_SetMapHasher> anESetFaces(1, aAllocator);
+                             TopTools_ListOfShape> anESetFaces(1, aAllocator);
   // Map of planar bounded faces. If such faces have the same Edge set
   // they are considered Same domain, without additional check.
   TopTools_MapOfShape aMFPlanar(1, aAllocator);
@@ -700,7 +698,7 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
         if (bCheckPlanar && aMFPlanar.Contains(aF2))
         {
           // Consider planar bounded faces as Same Domain without additional check
-          BOPAlgo_Tools::FillMap<TopoDS_Shape, TopTools_ShapeMapHasher>(aF1, aF2, aDMSLS, aAllocator);
+          BOPAlgo_Tools::FillMap(aF1, aF2, aDMSLS, aAllocator);
           continue;
         }
         // Add pair for analysis
@@ -736,14 +734,12 @@ void BOPAlgo_Builder::FillSameDomainFaces(const Message_ProgressRange& theRange)
   {
     BOPAlgo_PairOfShapeBoolean& aPSB = aVPSB(i);
     if (aPSB.Flag())
-      BOPAlgo_Tools::FillMap<TopoDS_Shape, TopTools_ShapeMapHasher>
-       (aPSB.Shape1(), aPSB.Shape2(), aDMSLS, aAllocator);
+      BOPAlgo_Tools::FillMap(aPSB.Shape1(), aPSB.Shape2(), aDMSLS, aAllocator);
   }
   aVPSB.Clear();
 
   // Make blocks of SD faces using the back and forth map
-  BOPAlgo_Tools::MakeBlocks<TopoDS_Shape, TopTools_ShapeMapHasher>
-    (aDMSLS, aMBlocks, aAllocator);
+  BOPAlgo_Tools::MakeBlocks(aDMSLS, aMBlocks, aAllocator);
 
   Message_ProgressScope aPS(aPSOuter.Next(3), "Filling same domain faces map", aMBlocks.Size());
   // Fill same domain faces map
@@ -1027,7 +1023,7 @@ TopoDS_Face BuildDraftFace(const TopoDS_Face& theFace,
       TopTools_ListIteratorOfListOfShape aItLEIm(*pLEIm);
       for (; aItLEIm.More(); aItLEIm.Next())
       {
-        TopoDS_Edge& aSp = TopoDS::Edge(aItLEIm.Value());
+        TopoDS_Edge& aSp = TopoDS::Edge(aItLEIm.ChangeValue());
 
         // Check if the split has multi-connected vertices
         if (!bIsDegenerated && HasMultiConnected(aSp, aVerticesCounter))

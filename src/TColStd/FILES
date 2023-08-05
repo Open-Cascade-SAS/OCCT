@@ -63,7 +63,6 @@ TColStd_ListOfAsciiString.hxx
 TColStd_ListOfInteger.hxx
 TColStd_ListOfReal.hxx
 TColStd_ListOfTransient.hxx
-TColStd_MapIntegerHasher.hxx
 TColStd_MapIteratorOfMapOfAsciiString.hxx
 TColStd_MapIteratorOfMapOfInteger.hxx
 TColStd_MapIteratorOfMapOfReal.hxx
@@ -73,8 +72,6 @@ TColStd_MapOfAsciiString.hxx
 TColStd_MapOfInteger.hxx
 TColStd_MapOfReal.hxx
 TColStd_MapOfTransient.hxx
-TColStd_MapRealHasher.hxx
-TColStd_MapTransientHasher.hxx
 TColStd_PackedMapOfInteger.cxx
 TColStd_PackedMapOfInteger.hxx
 TColStd_SequenceOfAddress.hxx

@@ -17,52 +17,26 @@
 #ifndef _TopTools_ShapeMapHasher_HeaderFile
 #define _TopTools_ShapeMapHasher_HeaderFile
 
+#include <TopoDS_Shape.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
-class TopoDS_Shape;
-
-
 //! Hash tool, used for generating maps of shapes in topology.
-class TopTools_ShapeMapHasher 
+class TopTools_ShapeMapHasher
 {
 public:
 
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_ALLOC;
 
-  //! Computes a hash code for the given shape, in the range [1, theUpperBound]
-  //! @param theShape the shape which hash code is to be computed
-  //! @param theUpperBound the upper bound of the range a computing hash code must be within
-  //! @return a computed hash code, in the range [1, theUpperBound]
-  static Standard_Integer HashCode (const TopoDS_Shape& theShape, Standard_Integer theUpperBound);
+  size_t operator()(const TopoDS_Shape& theShape) const noexcept
+  {
+    return std::hash<TopoDS_Shape>{}(theShape);
+  }
 
-  //! Returns True  when the two  keys are the same. Two
-  //! same  keys  must   have  the  same  hashcode,  the
-  //! contrary is not necessary.
-    static Standard_Boolean IsEqual (const TopoDS_Shape& S1, const TopoDS_Shape& S2);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  bool operator()(const TopoDS_Shape& S1, const TopoDS_Shape& S2) const noexcept
+  {
+    return S1.IsSame(S2);
+  }
 };
-
-
-#include <TopTools_ShapeMapHasher.lxx>
-
-
-
-
 
 #endif // _TopTools_ShapeMapHasher_HeaderFile

@@ -1188,6 +1188,7 @@ static Standard_Integer OCC369(Draw_Interpretor& di, Standard_Integer argc, cons
 }
 
 #include <math_Matrix.hxx>
+#include <math_Vector.hxx>
 static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if(argc != 9){

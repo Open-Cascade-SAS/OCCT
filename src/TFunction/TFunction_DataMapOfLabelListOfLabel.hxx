@@ -18,11 +18,10 @@
 #define TFunction_DataMapOfLabelListOfLabel_HeaderFile
 
 #include <TDF_LabelList.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<TDF_Label,TDF_LabelList,TDF_LabelMapHasher> TFunction_DataMapOfLabelListOfLabel;
-typedef NCollection_DataMap<TDF_Label,TDF_LabelList,TDF_LabelMapHasher>::Iterator TFunction_DataMapIteratorOfDataMapOfLabelListOfLabel;
+typedef NCollection_DataMap<TDF_Label,TDF_LabelList> TFunction_DataMapOfLabelListOfLabel;
+typedef NCollection_DataMap<TDF_Label,TDF_LabelList>::Iterator TFunction_DataMapIteratorOfDataMapOfLabelListOfLabel;
 
 
 #endif

@@ -157,8 +157,8 @@ public:
       {
         TheKey1Type aKey1 = anIter.Key1();
         TheKey2Type aKey2 = anIter.Key2();
-        Standard_Integer iK1 = Hasher1::HashCode (aKey1, NbBuckets());
-        Standard_Integer iK2 = Hasher2::HashCode (aKey2, NbBuckets());
+        const size_t iK1 = HashCode1 (aKey1, NbBuckets());
+        const size_t iK2 = HashCode2 (aKey2, NbBuckets());
         DoubleMapNode * pNode = new (this->myAllocator) DoubleMapNode (aKey1, aKey2, 
           myData1[iK1], 
           myData2[iK2]);
@@ -187,16 +187,15 @@ public:
       if (myData1) 
       {
         DoubleMapNode *p, *q;
-        Standard_Integer i, iK1, iK2;
-        for (i = 0; i <= NbBuckets(); i++) 
+        for (int i = 0; i <= NbBuckets(); i++) 
         {
           if (myData1[i]) 
           {
             p = (DoubleMapNode *) myData1[i];
             while (p) 
             {
-              iK1 = Hasher1::HashCode (p->Key1(), newBuck);
-              iK2 = Hasher2::HashCode (p->Key2(), newBuck);
+              const size_t iK1 = HashCode1 (p->Key1(), newBuck);
+              const size_t iK2 = HashCode2 (p->Key2(), newBuck);
               q = (DoubleMapNode*) p->Next();
               p->Next()  = ppNewData1[iK1];
               p->Next2() = (DoubleMapNode*)ppNewData2[iK2];
@@ -216,20 +215,20 @@ public:
   {
     if (Resizable()) 
       ReSize(Extent());
-    Standard_Integer iK1 = Hasher1::HashCode (theKey1, NbBuckets());
-    Standard_Integer iK2 = Hasher2::HashCode (theKey2, NbBuckets());
+    const size_t iK1 = HashCode1 (theKey1, NbBuckets());
+    const size_t iK2 = HashCode2 (theKey2, NbBuckets());
     DoubleMapNode * pNode;
     pNode = (DoubleMapNode *) myData1[iK1];
     while (pNode) 
     {
-      if (Hasher1::IsEqual (pNode->Key1(), theKey1))
+      if (IsEqual1 (pNode->Key1(), theKey1))
         throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
       pNode = (DoubleMapNode *) pNode->Next();
     }
     pNode = (DoubleMapNode *) myData2[iK2];
     while (pNode) 
     {
-      if (Hasher2::IsEqual (pNode->Key2(), theKey2))
+      if (IsEqual2 (pNode->Key2(), theKey2))
         throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
       pNode = (DoubleMapNode *) pNode->Next();
     }
@@ -246,13 +245,13 @@ public:
   {
     if (IsEmpty()) 
       return Standard_False;
-    Standard_Integer iK1 = Hasher1::HashCode (theKey1, NbBuckets());
-    Standard_Integer iK2 = Hasher2::HashCode (theKey2, NbBuckets());
+    const size_t iK1 = HashCode1 (theKey1, NbBuckets());
+    const size_t iK2 = HashCode2 (theKey2, NbBuckets());
     DoubleMapNode * pNode1, * pNode2;
     pNode1 = (DoubleMapNode *) myData1[iK1];
     while (pNode1) 
     {
-      if (Hasher1::IsEqual(pNode1->Key1(), theKey1)) 
+      if (IsEqual1(pNode1->Key1(), theKey1)) 
         break;
       pNode1 = (DoubleMapNode *) pNode1->Next();
     }
@@ -261,7 +260,7 @@ public:
     pNode2 = (DoubleMapNode *) myData2[iK2];
     while (pNode2) 
     {
-      if (Hasher2::IsEqual(pNode2->Key2(), theKey2)) 
+      if (IsEqual2(pNode2->Key2(), theKey2)) 
         break;
       pNode2 = (DoubleMapNode *) pNode2->Next();
     }
@@ -276,12 +275,12 @@ public:
   {
     if (IsEmpty()) 
       return Standard_False;
-    Standard_Integer iK1 = Hasher1::HashCode (theKey1, NbBuckets());
+    const size_t iK1 = HashCode1 (theKey1, NbBuckets());
     DoubleMapNode * pNode1;
     pNode1 = (DoubleMapNode *) myData1[iK1];
     while (pNode1) 
     {
-      if (Hasher1::IsEqual(pNode1->Key1(), theKey1)) 
+      if (IsEqual1(pNode1->Key1(), theKey1)) 
         return Standard_True;
       pNode1 = (DoubleMapNode *) pNode1->Next();
     }
@@ -293,12 +292,12 @@ public:
   {
     if (IsEmpty()) 
       return Standard_False;
-    Standard_Integer iK2 = Hasher2::HashCode (theKey2, NbBuckets());
+    const size_t iK2 = HashCode2 (theKey2, NbBuckets());
     DoubleMapNode * pNode2;
     pNode2 = (DoubleMapNode *) myData2[iK2];
     while (pNode2) 
     {
-      if (Hasher2::IsEqual(pNode2->Key2(), theKey2)) 
+      if (IsEqual2(pNode2->Key2(), theKey2)) 
         return Standard_True;
       pNode2 = (DoubleMapNode *) pNode2->Next2();
     }
@@ -310,20 +309,20 @@ public:
   {
     if (IsEmpty()) 
       return Standard_False;
-    Standard_Integer iK1 = Hasher1::HashCode (theKey1, NbBuckets());
+    const size_t iK1 = HashCode1 (theKey1, NbBuckets());
     DoubleMapNode * p1, * p2, * q1, *q2;
     q1 = q2 = NULL;
     p1 = (DoubleMapNode *) myData1[iK1];
     while (p1) 
     {
-      if (Hasher1::IsEqual (p1->Key1(), theKey1)) 
+      if (IsEqual1 (p1->Key1(), theKey1)) 
       {
         // remove from the data1
         if (q1) 
           q1->Next() = p1->Next();
         else
           myData1[iK1] = (DoubleMapNode*) p1->Next();
-        Standard_Integer iK2 = Hasher2::HashCode (p1->Key2(), NbBuckets());
+        const size_t iK2 = HashCode2 (p1->Key2(), NbBuckets());
         p2 = (DoubleMapNode *) myData2[iK2];
         while (p2)
         {
@@ -355,20 +354,22 @@ public:
   {
     if (IsEmpty()) 
       return Standard_False;
-    Standard_Integer iK2 = Hasher2::HashCode (theKey2, NbBuckets());
+    const size_t iK2 = HashCode2 (theKey2, NbBuckets());
     DoubleMapNode * p1, * p2, * q1, *q2;
     q1 = q2 = NULL;
     p2 = (DoubleMapNode *) myData2[iK2];
     while (p2) 
     {
-      if (Hasher2::IsEqual (p2->Key2(), theKey2)) 
+      if (IsEqual2 (p2->Key2(), theKey2)) 
       {
         // remove from the data2
         if (q2)
-          q2->Next() = p2->Next();
+        {
+          q2->Next2() = p2->Next2();
+        }
         else
           myData2[iK2] = (DoubleMapNode*) p2->Next2();
-        Standard_Integer iK1 = Hasher1::HashCode (p2->Key1(), NbBuckets());
+        const size_t iK1 = HashCode1 (p2->Key1(), NbBuckets());
         p1 = (DoubleMapNode *) myData1[iK1];
         while (p1)
         {
@@ -426,10 +427,10 @@ public:
   //! @return pointer to Key2 or NULL if Key1 is not found
   const TheKey2Type* Seek1 (const TheKey1Type& theKey1) const
   {
-    for (DoubleMapNode* aNode1 = !IsEmpty() ? (DoubleMapNode* )myData1[Hasher1::HashCode (theKey1, NbBuckets())] : NULL;
+    for (DoubleMapNode* aNode1 = !IsEmpty() ? (DoubleMapNode* )myData1[HashCode1 (theKey1, NbBuckets())] : NULL;
          aNode1 != NULL; aNode1 = (DoubleMapNode* )aNode1->Next())
     {
-      if (Hasher1::IsEqual (aNode1->Key1(), theKey1))
+      if (IsEqual1 (aNode1->Key1(), theKey1))
       {
         return &aNode1->Key2();
       }
@@ -468,10 +469,10 @@ public:
   //! @return pointer to Key1 if Key2 has been found
   const TheKey1Type* Seek2 (const TheKey2Type& theKey2) const
   {
-    for (DoubleMapNode* aNode2 = !IsEmpty() ? (DoubleMapNode* )myData2[Hasher2::HashCode (theKey2, NbBuckets())] : NULL;
+    for (DoubleMapNode* aNode2 = !IsEmpty() ? (DoubleMapNode* )myData2[HashCode2 (theKey2, NbBuckets())] : NULL;
          aNode2 != NULL; aNode2 = (DoubleMapNode* )aNode2->Next2())
     {
-      if (Hasher2::IsEqual (aNode2->Key2(), theKey2))
+      if (IsEqual2 (aNode2->Key2(), theKey2))
       {
         return &aNode2->Key1();
       }
@@ -481,24 +482,54 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const Standard_Boolean doReleaseMemory = Standard_True)
+  void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
   { Destroy (DoubleMapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
   { 
-    Clear();
+    Clear(true);
     this->myAllocator = ( ! theAllocator.IsNull() ? theAllocator :
                     NCollection_BaseAllocator::CommonBaseAllocator() );
   }
 
   //! Destructor
   ~NCollection_DoubleMap (void)
-  { Clear(); }
+  { Clear(true); }
 
   //! Size
   Standard_Integer Size(void) const
   { return Extent(); }
+protected:
+
+  bool IsEqual1(const TheKey1Type& theKey1,
+                const TheKey1Type& theKey2) const
+  {
+    return myHasher1(theKey1, theKey2);
+  }
+
+  size_t HashCode1(const TheKey1Type& theKey,
+                   const int theUpperBound) const
+  {
+    return myHasher1(theKey) % theUpperBound + 1;
+  }
+
+  bool IsEqual2(const TheKey2Type& theKey1,
+                const TheKey2Type& theKey2) const
+  {
+    return myHasher2(theKey1, theKey2);
+  }
+
+  size_t HashCode2(const TheKey2Type& theKey,
+                   const int theUpperBound) const
+  {
+    return myHasher2(theKey) % theUpperBound + 1;
+  }
+
+protected:
+
+  Hasher1 myHasher1;
+  Hasher2 myHasher2;
 };
 
 #endif

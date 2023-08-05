@@ -14,33 +14,20 @@
 #ifndef _ApproxInt_KnotTools_HeaderFile
 #define _ApproxInt_KnotTools_HeaderFile
 
-#ifndef _Standard_DefineAlloc_HeaderFile
 #include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
-
-#ifndef _Standard_Boolean_HeaderFile
 #include <Standard_Boolean.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
 #include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
 #include <Standard_Integer.hxx>
-#endif
-
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_List.hxx>
+#include <math_Vector.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <NCollection_LocalArray.hxx>
+#include <NCollection_Vector.hxx>
 #include <Approx_ParametrizationType.hxx>
-
-class math_Vector;
-template <class A> class NCollection_Sequence;
-template <class A> class NCollection_List;
-template <class A> class NCollection_Vector;
 
 class IntPatch_WLine;
 

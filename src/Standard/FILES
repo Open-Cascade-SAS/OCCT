@@ -1,7 +1,6 @@
 Standard.cxx
 Standard.hxx
 Standard_AbortiveTransaction.hxx
-Standard_Address.hxx
 Standard_ArrayStreamBuffer.hxx
 Standard_ArrayStreamBuffer.cxx
 Standard_Assert.hxx
@@ -17,6 +16,7 @@ Standard_ConstructionError.hxx
 Standard_Copy.tcl
 Standard_CString.cxx
 Standard_CString.hxx
+Standard_CStringHasher.hxx
 Standard_DefineAlloc.hxx
 Standard_DefineException.hxx
 Standard_DefineHandle.hxx
@@ -29,8 +29,6 @@ Standard_Dump.hxx
 Standard_ErrorHandler.cxx
 Standard_ErrorHandler.hxx
 Standard_ExtCharacter.hxx
-Standard_ExtString.cxx
-Standard_ExtString.hxx
 Standard_Failure.cxx
 Standard_Failure.hxx
 Standard_WarningDisableFunctionCast.hxx
@@ -38,6 +36,8 @@ Standard_GUID.cxx
 Standard_GUID.hxx
 Standard_Handle.hxx
 Standard_HandlerStatus.hxx
+Standard_HashUtils.hxx
+Standard_HashUtils.lxx
 Standard_ImmutableObject.hxx
 Standard_Integer.hxx
 Standard_IStream.hxx
@@ -45,16 +45,11 @@ Standard_JmpBuf.hxx
 Standard_LicenseError.hxx
 Standard_LicenseNotFound.hxx
 Standard_Macro.hxx
-Standard_math.cxx
-Standard_math.hxx
+Standard_MemoryUtils.hxx
 Standard_MMgrOpt.cxx
 Standard_MMgrOpt.hxx
-Standard_MMgrRaw.cxx
-Standard_MMgrRaw.hxx
 Standard_MMgrRoot.cxx
 Standard_MMgrRoot.hxx
-Standard_MMgrTBBalloc.cxx
-Standard_MMgrTBBalloc.hxx
 Standard_MultiplyDefined.hxx
 Standard_Mutex.cxx
 Standard_Mutex.hxx
@@ -83,9 +78,7 @@ Standard_ReadBuffer.hxx
 Standard_ReadLineBuffer.hxx
 Standard_Real.cxx
 Standard_Real.hxx
-Standard_ShortReal.cxx
 Standard_ShortReal.hxx
-Standard_Size.hxx
 Standard_SStream.hxx
 Standard_StackTrace.cxx
 Standard_Std.hxx
@@ -101,7 +94,6 @@ Standard_TypeDef.hxx
 Standard_TypeMismatch.hxx
 Standard_Underflow.hxx
 Standard_UUID.hxx
-Standard_values.h
 Standard_Version.hxx
 Standard_WarningsDisable.hxx
 Standard_WarningsRestore.hxx

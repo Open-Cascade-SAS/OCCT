@@ -17,10 +17,9 @@
 #define QANCollection_IndexedDataMapOfRealPnt_HeaderFile
 
 #include <gp_Pnt.hxx>
-#include <TColStd_MapRealHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-typedef NCollection_IndexedDataMap<Standard_Real,gp_Pnt,TColStd_MapRealHasher> QANCollection_IndexedDataMapOfRealPnt;
+typedef NCollection_IndexedDataMap<Standard_Real,gp_Pnt> QANCollection_IndexedDataMapOfRealPnt;
 
 
 #endif

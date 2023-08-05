@@ -526,7 +526,7 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
           // 2
           myDS->AddInterf(nE1, nE2);
           //
-          BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher>(aPB1, aPB2, aMPBLPB, aAllocator);
+          BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock)>(aPB1, aPB2, aMPBLPB, aAllocator);
         }//case TopAbs_EDGE
           break;
         default:
@@ -964,8 +964,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
   // Fill the connection map from bounding vertices to pave blocks
   // having those bounding vertices
   NCollection_IndexedDataMap<BOPDS_Pair,
-                             BOPDS_ListOfPaveBlock,
-                             BOPDS_PairMapHasher> aPBMap(1, anAlloc);
+                             BOPDS_ListOfPaveBlock> aPBMap(1, anAlloc);
   // Fence map of pave blocks
   BOPDS_MapOfPaveBlock aMPBFence(1, anAlloc);
 
@@ -1147,7 +1146,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
 
   aPBMap.Clear();
   aMPBFence.Clear();
-  anAlloc->Reset();
+  anAlloc->Reset(false);
 
   Message_ProgressScope aPS(aPSOuter.Next(9), "Checking for coinciding edges", aNbPairs);
   for (Standard_Integer i = 0; i < aNbPairs; i++)
@@ -1221,14 +1220,11 @@ void BOPAlgo_PaveFiller::ForceInterfEE(const Message_ProgressRange& theRange)
         const BOPDS_ListOfPaveBlock& aLPBCB = myDS->CommonBlock(aPB[j])->PaveBlocks();
         BOPDS_ListIteratorOfListOfPaveBlock aItLPB(aLPBCB);
         for (; aItLPB.More(); aItLPB.Next())
-          BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock),
-                           TColStd_MapTransientHasher>(aPB[j], aItLPB.Value(), aMPBLPB, anAlloc);
+          BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock)>(aPB[j], aItLPB.Value(), aMPBLPB, anAlloc);
       }
     }
-    BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock),
-                           TColStd_MapTransientHasher>(aPB[0], aPB[1], aMPBLPB, anAlloc);
+    BOPAlgo_Tools::FillMap<Handle(BOPDS_PaveBlock)>(aPB[0], aPB[1], aMPBLPB, anAlloc);
   }
-
   // Create new common blocks of coinciding pairs.
   BOPAlgo_Tools::PerformCommonBlocks(aMPBLPB, anAlloc, myDS);
 }

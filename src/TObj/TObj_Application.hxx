@@ -19,7 +19,6 @@
 #define TObj_Application_HeaderFile
 
 #include <TDocStd_Application.hxx>
-#include <TObj_Common.hxx>
 #include <Message_Gravity.hxx>
 #include <Message_Messenger.hxx>
 

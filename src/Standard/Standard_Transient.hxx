@@ -1,5 +1,5 @@
 // Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 1999-2023 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -19,9 +19,12 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_PrimitiveTypes.hxx>
 
+#include <atomic>
+
 class Standard_Type;
 
-namespace opencascade {
+namespace opencascade
+{
   template <class T> class handle;
 }
 
@@ -48,15 +51,12 @@ public:
   //! Destructor must be virtual
   virtual ~Standard_Transient() {}
 
-  //! Memory deallocator for transient classes
-  Standard_EXPORT virtual void Delete() const;
-
 public: 
   //!@name Support of run-time type information (RTTI)
 
   typedef void base_type;
 
-  static const char* get_type_name () { return "Standard_Transient"; }
+  static constexpr const char* get_type_name () { return "Standard_Transient"; }
 
   //! Returns type descriptor of Standard_Transient class
   Standard_EXPORT static const opencascade::handle<Standard_Type>& get_type_descriptor ();
@@ -90,33 +90,34 @@ public:
   //!@name Reference counting, for use by handle<>
 
   //! Get the reference counter of this object
-  Standard_Integer GetRefCount() const { return myRefCount_; }
+  inline Standard_Integer GetRefCount() const noexcept { return myRefCount_; }
 
   //! Increments the reference counter of this object
-  Standard_EXPORT void IncrementRefCounter() const;
+  inline void IncrementRefCounter() noexcept
+  {
+    myRefCount_.operator++();
+  }
 
   //! Decrements the reference counter of this object;
   //! returns the decremented value
-  Standard_EXPORT Standard_Integer DecrementRefCounter() const;
+  inline Standard_Integer DecrementRefCounter() noexcept
+  {
+    return myRefCount_.operator--();
+  }
+
+  //! Memory deallocator for transient classes
+  virtual void Delete() const
+  {
+    delete this;
+  }
 
 private:
 
   //! Reference counter.
   //! Note use of underscore, aimed to reduce probability 
   //! of conflict with names of members of derived classes.
-  mutable volatile Standard_Integer myRefCount_;
+  std::atomic_int myRefCount_;
 };
-
-
-//! Computes a hash code for the given transient object, in the range [1, theUpperBound]
-//! @param theTransientObject the transient object which hash code is to be computed
-//! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const Standard_Transient* const theTransientObject,
-                                  const Standard_Integer          theUpperBound)
-{
-  return ::HashCode (static_cast<const void*> (theTransientObject), theUpperBound);
-}
 
 //! Definition of Handle_Standard_Transient as typedef for compatibility
 typedef opencascade::handle<Standard_Transient> Handle_Standard_Transient;

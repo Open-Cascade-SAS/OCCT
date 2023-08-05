@@ -3673,7 +3673,7 @@ Standard_Boolean ChFi3d_Builder::MoreSurfdata(const Standard_Integer Index) cons
 
   ChFiDS_ListIteratorOfListOfStripe It;
   It.Initialize(myVDataMap(Index));
-  Handle(ChFiDS_Stripe)& stripe = It.Value();
+  Handle(ChFiDS_Stripe)& stripe = It.ChangeValue();
   ChFiDS_SequenceOfSurfData& SeqFil =
     stripe->ChangeSetOfSurfData()->ChangeSequence();
   const TopoDS_Vertex& Vtx = myVDataMap.FindKey(Index);

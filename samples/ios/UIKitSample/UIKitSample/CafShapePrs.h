@@ -23,12 +23,11 @@
 #define CafShapePrs_h
 
 #include <TDF_Label.hxx>
-#include <TDF_LabelMapHasher.hxx>
 #include <XCAFPrs_AISObject.hxx>
 #include <XCAFPrs_Style.hxx>
 
 typedef NCollection_DataMap<TopoDS_Shape, Handle(AIS_ColoredDrawer), TopTools_ShapeMapHasher> CafDataMapOfShapeColor;
-typedef NCollection_DataMap<TDF_Label, Handle(AIS_InteractiveObject), TDF_LabelMapHasher> MapOfPrsForShapes;
+typedef NCollection_DataMap<TDF_Label, Handle(AIS_InteractiveObject)> MapOfPrsForShapes;
 
 //! Interactive object for shape in DECAF document
 class CafShapePrs : public XCAFPrs_AISObject

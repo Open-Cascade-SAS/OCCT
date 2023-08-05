@@ -24,8 +24,8 @@ class TopoDS_Shape;
 class XSControl_WorkSession;
 class TDocStd_Document;
 
-typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(DE_ConfigurationNode), TCollection_AsciiString> DE_ConfigurationVendorMap;
-typedef NCollection_DataMap<TCollection_AsciiString, DE_ConfigurationVendorMap, TCollection_AsciiString> DE_ConfigurationFormatMap;
+typedef NCollection_IndexedDataMap<TCollection_AsciiString, Handle(DE_ConfigurationNode)> DE_ConfigurationVendorMap;
+typedef NCollection_DataMap<TCollection_AsciiString, DE_ConfigurationVendorMap> DE_ConfigurationFormatMap;
 
 //! The main class for working with CAD file exchange.
 //! Loads and Saves special CAD transfer property.

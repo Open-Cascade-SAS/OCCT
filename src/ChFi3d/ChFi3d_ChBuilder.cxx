@@ -590,7 +590,7 @@ void ChFi3d_ChBuilder::Simulate (const Standard_Integer IC)
   Standard_Integer i = 1;
   for (itel.Initialize(myListStripe);itel.More(); itel.Next(), i++) {
     if(i == IC){
-      PerformSetOfSurf(itel.Value(), Standard_True);
+      PerformSetOfSurf(itel.ChangeValue(), Standard_True);
       break;
     }
   }

@@ -19,11 +19,10 @@
 
 #include <Standard_Transient.hxx>
 #include <Standard_Integer.hxx>
-#include <TColStd_MapTransientHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-typedef NCollection_DataMap<Handle(Standard_Transient),Standard_Integer,TColStd_MapTransientHasher> Interface_DataMapOfTransientInteger;
-typedef NCollection_DataMap<Handle(Standard_Transient),Standard_Integer,TColStd_MapTransientHasher>::Iterator Interface_DataMapIteratorOfDataMapOfTransientInteger;
+typedef NCollection_DataMap<Handle(Standard_Transient),Standard_Integer> Interface_DataMapOfTransientInteger;
+typedef NCollection_DataMap<Handle(Standard_Transient),Standard_Integer>::Iterator Interface_DataMapIteratorOfDataMapOfTransientInteger;
 
 
 #endif

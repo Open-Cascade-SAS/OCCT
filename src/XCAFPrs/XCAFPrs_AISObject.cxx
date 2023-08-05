@@ -138,7 +138,7 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
 
   // collect sub-shapes with the same style into compounds
   BRep_Builder aBuilder;
-  NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style> aStyleGroups;
+  NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound> aStyleGroups;
   for (XCAFPrs_DataMapIteratorOfIndexedDataMapOfShapeStyle aStyledShapeIter (aSettings);
        aStyledShapeIter.More(); aStyledShapeIter.Next())
   {
@@ -160,7 +160,7 @@ void XCAFPrs_AISObject::DispatchStyles (const Standard_Boolean theToSyncStyles)
   aSettings.Clear();
 
   // assign custom aspects
-  for (NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound, XCAFPrs_Style>::Iterator aStyleGroupIter (aStyleGroups);
+  for (NCollection_IndexedDataMap<XCAFPrs_Style, TopoDS_Compound>::Iterator aStyleGroupIter (aStyleGroups);
        aStyleGroupIter.More(); aStyleGroupIter.Next())
   {
     const TopoDS_Compound& aComp = aStyleGroupIter.Value();

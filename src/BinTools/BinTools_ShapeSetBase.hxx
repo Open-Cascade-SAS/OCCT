@@ -29,12 +29,6 @@ class gp_Pnt;
 //! Writes to the stream a gp_Pnt data
 Standard_OStream& operator << (Standard_OStream& OS, const gp_Pnt& P);
 
-//! Computes a hash code for the given value of the uint64_t type, in range [1, theUpperBound]
-inline Standard_Integer HashCode (const uint64_t theValue, const Standard_Integer theUpperBound)
-{
-  return IntegerHashCode(theValue, 0xffffffffffffffff, theUpperBound);
-}
-
 //! A base class for all readers/writers of TopoDS_Shape into/from stream.
 class BinTools_ShapeSetBase
 {

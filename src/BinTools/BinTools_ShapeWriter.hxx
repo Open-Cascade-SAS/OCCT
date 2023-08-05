@@ -16,7 +16,7 @@
 
 #include <BinTools_ShapeSetBase.hxx>
 #include <BinTools_OStream.hxx>
-#include <NCollection_Map.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
 class Geom_Curve;

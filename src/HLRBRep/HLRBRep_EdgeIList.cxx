@@ -116,8 +116,8 @@ ProcessComplex(HLRAlgo_InterferenceList& IL,
 	  IL.Remove(It2);
 	}
 	// get the cumulated results
-	It1.Value().Transition(transTool.Transition());
-	It1.Value().BoundaryTransition(transTool.BoundaryTransition());
+	It1.ChangeValue().Transition(transTool.Transition());
+	It1.ChangeValue().BoundaryTransition(transTool.BoundaryTransition());
       }
     }
     It1.Next();

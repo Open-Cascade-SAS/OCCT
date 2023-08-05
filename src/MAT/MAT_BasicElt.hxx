@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Address.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Transient.hxx>
 class MAT_Arc;

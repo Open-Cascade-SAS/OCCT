@@ -29,8 +29,8 @@ void MessageModel_ItemRoot::SetReport (const int theRowId, const Handle(Message_
     if (aRowId == theRowId)
       break;
   }
-  aReportsIt.Value().myReport = theReport;
-  aReportsIt.Value().myDescription = theReportDescription;
+  aReportsIt.ChangeValue().myReport = theReport;
+  aReportsIt.ChangeValue().myDescription = theReportDescription;
 }
 
 // =======================================================================

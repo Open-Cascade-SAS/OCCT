@@ -181,7 +181,7 @@ void TopOpeBRepBuild_Builder1::MergeKPart()
    
     TopTools_ListIteratorOfListOfShape its(Merged(myShape1,myState1));
     for (; its.More(); its.Next()) {
-      CorrectResult2d(its.Value());
+      CorrectResult2d(its.ChangeValue());
     }
   }
     
@@ -1369,7 +1369,7 @@ Standard_Integer TopOpeBRepBuild_Builder1::PerformPieceOn2D (const TopoDS_Shape&
 	    // we are looking for the same piece as aPieceObj among aPartOnTool
 	    TopTools_ListIteratorOfListOfShape anItTool(aPartOnTool);
 	    for (k=1; anItTool.More(); anItTool.Next(), k++) {
-	      TopoDS_Shape& aPieceTool=anItTool.Value();
+	      TopoDS_Shape& aPieceTool=anItTool.ChangeValue();
 	      aPieceTool.Orientation(anEdgeTool.Orientation());
 
 	      Standard_Boolean aIsSameCnd, IsDegFlag;
