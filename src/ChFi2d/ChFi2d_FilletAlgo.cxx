@@ -597,7 +597,7 @@ TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint, TopoDS_Edge& theEd
   gp_Vec aCircleDir;
   aCircle->D1(aParam1, aPoint1, aCircleDir);
     
-  if ((aCircleDir.Angle(aDir) > M_PI / 2.0) ^ aIsOut)
+  if ((aCircleDir.Angle(aDir) > M_PI / 2.0) ? !aIsOut : aIsOut)
     aStart = aNearest->getParam();
   else
     anEnd = aNearest->getParam();
@@ -619,7 +619,7 @@ TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint, TopoDS_Edge& theEd
    
   aCircle->D1(aParam2, aPoint2, aCircleDir);
 
-  if ((aCircleDir.Angle(aDir) > M_PI / 2.0) ^ (!aIsOut))
+  if ((aCircleDir.Angle(aDir) > M_PI / 2.0) ? aIsOut : !aIsOut)
     aStart = aNearest->getParam2();
   else
     anEnd = aNearest->getParam2();
