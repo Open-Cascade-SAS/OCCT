@@ -1292,6 +1292,10 @@ BRepOffsetAPI_ThruSections::Generated(const TopoDS_Shape& S)
     for (; itl.More(); itl.Next())
     {
       Standard_Integer IndOfFace = itl.Value();
+      if (AllFaces.Size() < IndOfFace)
+      {
+        continue;
+      }
       myGenerated.Append(AllFaces(IndOfFace));
     }
 
@@ -1302,6 +1306,10 @@ BRepOffsetAPI_ThruSections::Generated(const TopoDS_Shape& S)
         {
           Standard_Integer IndOfFace = itl.Value();
           IndOfFace += (i-1)*myNbEdgesInSection;
+          if (AllFaces.Size() < IndOfFace)
+          {
+            continue;
+          }
           myGenerated.Append(AllFaces(IndOfFace));
         }
   }
