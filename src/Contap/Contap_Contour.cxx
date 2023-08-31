@@ -1236,8 +1236,11 @@ void ComputeInternalPoints
         // std::cout << "Changement de signe detecte" << std::endl;
         solution = Standard_False;
         while (!solution) {
-          X(1) = (XInf(1) + XSup(1)) /2.;
-          X(2) = (XInf(2) + XSup(2)) /2.;
+          // Selecting the middle point between XInf and XSup leads situation, where X values almost do not change.
+          // To prevent this situation, select shifted point instead of middle.
+          const Standard_Real aCoef = 2. / 3.;
+          X(1) = XInf(1) + aCoef * (XSup(1) - XInf(1));
+          X(2) = XInf(2) + aCoef * (XSup(2) - XInf(2));
           rsnld.Perform(SFunc,X,infb,supb);
 
           if (!rsnld.IsDone()) {
