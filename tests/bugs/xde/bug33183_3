@@ -1,0 +1,42 @@
+puts "========"
+puts "0033183: Data Exchange - Lose texture after saving XBF file"
+puts "Checking saving of textures for the previous version"
+puts "========"
+
+pload OCAF
+
+Close D -silent
+ReadGltf D [locate_data_file bug31706_launchvehicle.glb]
+
+set ref_1 [XGetVisMaterial D 0:1:10:1]
+set ref_2 [XGetVisMaterial D 0:1:10:7]
+
+set aTmpFile ${imagedir}/result.xbf
+XSave D $aTmpFile
+Close D
+XOpen $aTmpFile D
+
+set cur_1 [XGetVisMaterial D 0:1:10:1]
+set cur_2 [XGetVisMaterial D 0:1:10:7]
+
+for {set i 1} {$i <= 12} {incr i} {
+  set ref_1_str [lindex $ref_1 $i-1]
+  set ref_2_str  [lindex $ref_2  $i-1]
+  set cur_1_str [lindex $cur_1 $i-1]
+  set cur_2_str  [lindex $cur_2  $i-1]
+  if { $ref_1_str != $cur_1_str ||
+    $ref_2_str != $cur_2_str} {
+    puts "Error: Data is not equal"
+    break
+  }
+}
+
+vinit View1
+XDisplay -dispMode 1 D
+vfit
+if { [vreadpixel 50 300 rgb name] != "WHITE" || [vreadpixel 120 250 rgb name] != "LEMONCHIFFON1" } {
+  puts "Error: color not match"
+}
+
+Close D
+file delete -force $aTmpFile

@@ -126,23 +126,68 @@ static void readColor (const BinObjMgt_Persistent& theSource,
 static void writeTexture (BinObjMgt_Persistent& theTarget,
                           const Handle(Image_Texture)& theImage)
 {
-  theTarget.PutAsciiString (!theImage.IsNull()
-                         && !theImage->FilePath().IsEmpty()
-                         &&  theImage->FileOffset() == -1
-                          ? theImage->FilePath()
-                          : "");
+  if (theImage.IsNull())
+  {
+    theTarget.PutAsciiString("");
+    return;
+  }
+  if (theImage->DataBuffer().IsNull())
+  {
+    theTarget.PutAsciiString(theImage->FilePath());
+    theTarget.PutBoolean(false);
+    if (theImage->FileOffset() == -1 || theImage->FileLength() == -1)
+    {
+      theTarget.PutBoolean(true);
+      return;
+    }
+    theTarget.PutBoolean(false);
+    theTarget.PutInteger(static_cast<int>(theImage->FileOffset()));
+    theTarget.PutInteger(static_cast<int>(theImage->FileLength()));
+    return;
+  }
+  theTarget.PutAsciiString(theImage->TextureId());
+  theTarget.PutBoolean(true);
+  theTarget.PutInteger(static_cast<int>(theImage->DataBuffer()->Size()));
+  theTarget.PutByteArray((Standard_Byte*)theImage->DataBuffer()->Data(),
+                         static_cast<int>(theImage->DataBuffer()->Size()));
 }
 
 //! Decode texture path.
 static void readTexture (const BinObjMgt_Persistent& theSource,
                          Handle(Image_Texture)& theTexture)
 {
-  TCollection_AsciiString aPath;
-  theSource.GetAsciiString (aPath);
-  if (!aPath.IsEmpty())
+  TCollection_AsciiString aStr;
+  theSource.GetAsciiString(aStr);
+  if (aStr.IsEmpty())
   {
-    theTexture = new Image_Texture (aPath);
+    return;
   }
+  Standard_Boolean anUseBuffer;
+  if (!theSource.GetBoolean(anUseBuffer).IsOK())
+  {
+    theTexture = new Image_Texture(aStr);
+    return;
+  }
+  Standard_Integer anOffset = -1, aLength = -1;
+  if (!anUseBuffer)
+  {
+    Standard_Boolean isOnlyFilePath;
+    theSource.GetBoolean(isOnlyFilePath);
+    if (isOnlyFilePath)
+    {
+      theTexture = new Image_Texture(aStr);
+      return;
+    }
+    theSource.GetInteger(anOffset);
+    theSource.GetInteger(aLength);
+    theTexture = new Image_Texture(aStr, anOffset, aLength);
+    return;
+  }
+  theSource.GetInteger(aLength);
+  Handle(NCollection_Buffer) aBuff =
+    new NCollection_Buffer(NCollection_BaseAllocator::CommonBaseAllocator(), aLength);
+  theSource.GetByteArray(aBuff->ChangeData(), aLength);
+  theTexture = new Image_Texture(aBuff, aStr);
 }
 
 //=======================================================================
