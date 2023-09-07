@@ -87,6 +87,15 @@ void TDataStd_NamedData::clear()
 //Category: Integers
 
 //=======================================================================
+//function : HasIntegers
+//purpose  : Returns true if at least one named integer value is kept in the attribute.
+//=======================================================================
+Standard_Boolean TDataStd_NamedData::HasIntegers() const
+{
+  return !myIntegers.IsNull() && !myIntegers->Map().IsEmpty();
+}
+
+//=======================================================================
 //function : HasInteger
 //purpose  : Returns true if the attribute contains this named integer.
 //=======================================================================
@@ -187,6 +196,15 @@ void TDataStd_NamedData::ChangeIntegers(const TColStd_DataMapOfStringInteger& th
 //          =====    
 
 //=======================================================================
+//function : HasReals
+//purpose  : Returns true if at least one named real value is kept in the attribute.
+//=======================================================================
+Standard_Boolean TDataStd_NamedData::HasReals() const
+{
+  return !myReals.IsNull() && !myReals->Map().IsEmpty();
+}
+
+//=======================================================================
 //function : HasReal
 //purpose  : Returns true if the attribute contains this named real.
 //=======================================================================
@@ -283,6 +301,16 @@ void TDataStd_NamedData::ChangeReals(const TDataStd_DataMapOfStringReal& theReal
 
 //Category: Strings
 //          =======
+
+//=======================================================================
+//function : HasStrings
+//purpose  : Returns true if there are some named strings in the attribute.
+//=======================================================================
+Standard_Boolean TDataStd_NamedData::HasStrings() const
+{ 
+  return !myStrings.IsNull() && !myStrings->Map().IsEmpty();
+}
+
 //=======================================================================
 //function : HasString
 //purpose  : Returns true if the attribute contains this named string.
@@ -383,6 +411,16 @@ void TDataStd_NamedData::ChangeStrings(const TDataStd_DataMapOfStringString& the
 
 //Category: Bytes
 //          =====    
+
+//=======================================================================
+//function : HasBytes
+//purpose  : Returns true if there are some named bytes in the attribute.
+//=======================================================================
+Standard_Boolean TDataStd_NamedData::HasBytes() const
+{
+  return !myBytes.IsNull() && !myBytes->Map().IsEmpty();
+}
+
 //=======================================================================
 //function : HasByte
 //purpose  : Returns true if the attribute contains this named byte.
@@ -482,6 +520,16 @@ void TDataStd_NamedData::ChangeBytes(const TDataStd_DataMapOfStringByte& theByte
 
 //Category: Arrays of integers
 //          ==================
+
+//=======================================================================
+//function : HasArrayOfIntegers
+//purpose  : Returns true if there are some named arrays of integer values in the attribute.
+//=======================================================================
+Standard_Boolean TDataStd_NamedData::HasArraysOfIntegers() const
+{
+  return !myArraysOfIntegers.IsNull() && !myArraysOfIntegers->Map().IsEmpty();
+}
+
 //=======================================================================
 //function : HasArrayOfIntegers
 //purpose  : Returns true if the attribute contains this named array 
@@ -569,6 +617,16 @@ void TDataStd_NamedData::ChangeArraysOfIntegers
 
 //Category: Arrays of reals
 //          ===============
+
+//=======================================================================
+//function : HasArrayOfReals
+//purpose  : Returns true if there are some named arrays of real values in the attribute.
+//=======================================================================
+Standard_Boolean TDataStd_NamedData::HasArraysOfReals() const
+{
+  return !myArraysOfReals.IsNull() && !myArraysOfReals->Map().IsEmpty();
+}
+
 //=======================================================================
 //function : HasArrayOfReals
 //purpose  : Returns true if the attribute contains this named array of 

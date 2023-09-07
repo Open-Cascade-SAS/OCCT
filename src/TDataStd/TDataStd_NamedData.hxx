@@ -52,7 +52,7 @@ public:
   Standard_EXPORT TDataStd_NamedData();
 
   //! Returns true if at least one named integer value is kept in the attribute.
-  Standard_Boolean HasIntegers() const { return !myIntegers.IsNull(); }
+  Standard_EXPORT Standard_Boolean HasIntegers() const;
 
   //! Returns true if the attribute contains specified by Name
   //! integer value.
@@ -74,7 +74,7 @@ public:
   Standard_EXPORT void ChangeIntegers (const TColStd_DataMapOfStringInteger& theIntegers);
 
   //! Returns true if at least one named real value is kept in the attribute.
-  Standard_Boolean HasReals() const { return !myReals.IsNull(); }
+  Standard_EXPORT Standard_Boolean HasReals() const;
 
   //! Returns true if the attribute contains a real specified by Name.
   Standard_EXPORT Standard_Boolean HasReal (const TCollection_ExtendedString& theName) const;
@@ -95,7 +95,7 @@ public:
   Standard_EXPORT void ChangeReals (const TDataStd_DataMapOfStringReal& theReals);
 
   //! Returns true if there are some named strings in the attribute.
-  Standard_Boolean HasStrings() const { return !myStrings.IsNull(); }
+  Standard_EXPORT Standard_Boolean HasStrings() const;
 
   //! Returns true if the attribute contains this named string.
   Standard_EXPORT Standard_Boolean HasString (const TCollection_ExtendedString& theName) const;
@@ -116,7 +116,7 @@ public:
   Standard_EXPORT void ChangeStrings (const TDataStd_DataMapOfStringString& theStrings);
 
   //! Returns true if there are some named bytes in the attribute.
-  Standard_Boolean HasBytes() const { return !myBytes.IsNull(); }
+  Standard_EXPORT Standard_Boolean HasBytes() const;
 
   //! Returns true if the attribute contains this named byte.
   Standard_EXPORT Standard_Boolean HasByte (const TCollection_ExtendedString& theName) const;
@@ -137,7 +137,7 @@ public:
   Standard_EXPORT void ChangeBytes (const TDataStd_DataMapOfStringByte& theBytes);
 
   //! Returns true if there are some named arrays of integer values in the attribute.
-  Standard_Boolean HasArraysOfIntegers() const { return !myArraysOfIntegers.IsNull(); }
+  Standard_EXPORT Standard_Boolean HasArraysOfIntegers() const;
 
   //! Returns true if the attribute contains this named array of integer values.
   Standard_EXPORT Standard_Boolean HasArrayOfIntegers (const TCollection_ExtendedString& theName) const;
@@ -164,7 +164,7 @@ public:
   Standard_EXPORT void ChangeArraysOfIntegers (const TDataStd_DataMapOfStringHArray1OfInteger& theArraysOfIntegers);
 
   //! Returns true if there are some named arrays of real values in the attribute.
-  Standard_Boolean HasArraysOfReals() const { return !myArraysOfReals.IsNull(); }
+  Standard_EXPORT Standard_Boolean HasArraysOfReals() const;
 
   //! Returns true if the attribute contains this named array of real values.
   Standard_EXPORT Standard_Boolean HasArrayOfReals (const TCollection_ExtendedString& theName) const;
