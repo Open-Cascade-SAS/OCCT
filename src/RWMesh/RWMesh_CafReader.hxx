@@ -16,6 +16,7 @@
 #define _RWMesh_CafReader_HeaderFile
 
 #include <Message_ProgressRange.hxx>
+#include <OSD_OpenFile.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <RWMesh_NodeAttributes.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>
@@ -148,12 +149,22 @@ public:
 
 public:
 
-  //! Read the data from specified file.
+  //! Open stream and pass it to Perform method.
   //! The Document instance should be set beforehand.
   bool Perform (const TCollection_AsciiString& theFile,
                 const Message_ProgressRange& theProgress)
   {
-    return perform (theFile, theProgress, Standard_False);
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return Perform(aStream, theProgress, theFile);
+  }
+
+  //! Read the data from specified file.
+  bool Perform (std::istream& theStream,
+                const Message_ProgressRange& theProgress,
+                const TCollection_AsciiString& theFile = "")
+  {
+    return perform(theStream, theFile, theProgress, Standard_False);
   }
 
   //! Return extended status flags.
@@ -171,19 +182,28 @@ public:
   //! Return metadata map.
   const TColStd_IndexedDataMapOfStringString& Metadata() const { return myMetadata; }
 
-  //! Read the header data from specified file without reading entire model.
-  //! The main purpose is collecting metadata and external references - for copying model into a new location, for example.
-  //! Can be NOT implemented (unsupported by format / reader).
+  //! Open stream and pass it to ProbeHeader method.
   Standard_Boolean ProbeHeader (const TCollection_AsciiString& theFile,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
-    return perform (theFile, theProgress, Standard_True);
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return ProbeHeader (aStream, theFile, theProgress);
+  }
+
+  //! Read the header data from specified file without reading entire model.
+  //! The main purpose is collecting metadata and external references - for copying model into a new location, for example.
+  //! Can be NOT implemented (unsupported by format / reader).
+  Standard_Boolean ProbeHeader (std::istream& theStream,
+                                const TCollection_AsciiString& theFile = "",
+                                const Message_ProgressRange& theProgress = Message_ProgressRange())
+  {
+    return perform(theStream, theFile, theProgress, Standard_True);
   }
 
 protected:
 
-  //! Read the data from specified file.
-  //! Default implementation calls performMesh() and fills XDE document from collected shapes.
+  //! Open stream and pass it to Perform method.
   //! @param theFile    file to read
   //! @param optional   progress indicator
   //! @param theToProbe flag indicating that mesh data should be skipped and only basing information to be read
@@ -191,8 +211,30 @@ protected:
                                                     const Message_ProgressRange& theProgress,
                                                     const Standard_Boolean theToProbe);
 
-  //! Read the mesh from specified file - interface to be implemented by sub-classes.
+  //! Read the data from specified file.
+  //! Default implementation calls performMesh() and fills XDE document from collected shapes.
+  //! @param theStream  input stream
+  //! @param theFile    path of additional files
+  //! @param optional   progress indicator
+  //! @param theToProbe flag indicating that mesh data should be skipped and only basing information to be read
+  Standard_EXPORT virtual Standard_Boolean perform (std::istream& theStream,
+                                                    const TCollection_AsciiString& theFile,
+                                                    const Message_ProgressRange& theProgress,
+                                                    const Standard_Boolean theToProbe);
+
+  //! Read the mesh from specified file
   Standard_EXPORT virtual Standard_Boolean performMesh (const TCollection_AsciiString& theFile,
+                                                        const Message_ProgressRange& theProgress,
+                                                        const Standard_Boolean theToProbe)
+  {
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return performMesh(aStream, theFile, theProgress, theToProbe);
+  }
+
+  //! Read the mesh from specified file - interface to be implemented by sub-classes.
+  Standard_EXPORT virtual Standard_Boolean performMesh (std::istream& theStream,
+                                                        const TCollection_AsciiString& theFile,
                                                         const Message_ProgressRange& theProgress,
                                                         const Standard_Boolean theToProbe) = 0;
 

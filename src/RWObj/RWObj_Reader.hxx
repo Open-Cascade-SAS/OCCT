@@ -23,7 +23,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_Vector.hxx>
 #include <NCollection_Shared.hxx>
-
+#include <OSD_OpenFile.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <RWObj_Material.hxx>
 #include <RWObj_SubMesh.hxx>
@@ -48,17 +48,27 @@ public:
   //! Empty constructor.
   Standard_EXPORT RWObj_Reader();
 
-  //! Reads data from OBJ file.
-  //! Unicode paths can be given in UTF-8 encoding.
-  //! Returns true if success, false on error or user break.
+  //! Open stream and pass it to Read method
+  //! Returns true if success, false on error.
   Standard_Boolean Read (const TCollection_AsciiString& theFile,
                          const Message_ProgressRange& theProgress)
   {
-    return read (theFile, theProgress, Standard_False);
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return Read(aStream, theFile, theProgress);
   }
 
-  //! Probe data from OBJ file (comments, external references) without actually reading mesh data.
-  //! Although mesh data will not be collected, the full file content will be parsed, due to OBJ format limitations.
+  //! Reads data from OBJ file.
+  //! Unicode paths can be given in UTF-8 encoding.
+  //! Returns true if success, false on error or user break.
+  Standard_Boolean Read (std::istream& theStream,
+                         const TCollection_AsciiString& theFile,
+                         const Message_ProgressRange& theProgress)
+  {
+    return read(theStream, theFile, theProgress, Standard_False);
+  }
+
+  //! Open stream and pass it to Probe method.
   //! @param theFile     path to the file
   //! @param theProgress progress indicator
   //! @return TRUE if success, FALSE on error or user break.
@@ -66,7 +76,23 @@ public:
   Standard_Boolean Probe (const TCollection_AsciiString& theFile,
                           const Message_ProgressRange& theProgress)
   {
-    return read (theFile, theProgress, Standard_True);
+    std::ifstream aStream;
+    OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+    return Probe(aStream, theFile, theProgress);
+  }
+
+  //! Probe data from OBJ file (comments, external references) without actually reading mesh data.
+  //! Although mesh data will not be collected, the full file content will be parsed, due to OBJ format limitations.
+  //! @param theStream   input stream
+  //! @param theFile     path to the file
+  //! @param theProgress progress indicator
+  //! @return TRUE if success, FALSE on error or user break.
+  //! @sa FileComments(), ExternalFiles(), NbProbeNodes(), NbProbeElems().
+  Standard_Boolean Probe (std::istream& theStream,
+                          const TCollection_AsciiString& theFile,
+                          const Message_ProgressRange& theProgress)
+  {
+    return read(theStream, theFile, theProgress, Standard_True);
   }
 
   //! Returns file comments (lines starting with # at the beginning of file).
@@ -107,7 +133,8 @@ protected:
   //! Reads data from OBJ file.
   //! Unicode paths can be given in UTF-8 encoding.
   //! Returns true if success, false on error or user break.
-  Standard_EXPORT Standard_Boolean read (const TCollection_AsciiString& theFile,
+  Standard_EXPORT Standard_Boolean read (std::istream& theStream,
+                                         const TCollection_AsciiString& theFile,
                                          const Message_ProgressRange& theProgress,
                                          const Standard_Boolean theToProbe);
 
@@ -355,7 +382,6 @@ protected:
 
   RWObj_SubMesh                      myActiveSubMesh; //!< active sub-mesh definition
   std::vector<Standard_Integer>      myCurrElem;      //!< indices for the current element
-
 };
 
 #endif // _RWObj_Reader_HeaderFile

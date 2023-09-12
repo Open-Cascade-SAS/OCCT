@@ -94,7 +94,8 @@ Handle(RWObj_TriangulationReader) RWObj_CafReader::createReaderContext()
 // Function : performMesh
 // Purpose  :
 //================================================================
-Standard_Boolean RWObj_CafReader::performMesh (const TCollection_AsciiString& theFile,
+Standard_Boolean RWObj_CafReader::performMesh (std::istream& theStream,
+                                               const TCollection_AsciiString& theFile,
                                                const Message_ProgressRange& theProgress,
                                                const Standard_Boolean theToProbe)
 {
@@ -107,11 +108,11 @@ Standard_Boolean RWObj_CafReader::performMesh (const TCollection_AsciiString& th
   Standard_Boolean isDone = Standard_False;
   if (theToProbe)
   {
-    isDone = aCtx->Probe (theFile.ToCString(), theProgress);
+    isDone = aCtx->Probe (theStream, theFile, theProgress);
   }
   else
   {
-    isDone = aCtx->Read (theFile.ToCString(), theProgress);
+    isDone = aCtx->Read (theStream, theFile, theProgress);
   }
   if (!aCtx->FileComments().IsEmpty())
   {

@@ -99,6 +99,20 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
                                             const Message_ProgressRange& theProgress,
                                             const Standard_Boolean theToProbe)
 {
+  std::ifstream aStream;
+  OSD_OpenStream(aStream, theFile, std::ios_base::in | std::ios_base::binary);
+  return perform(aStream, theFile, theProgress, theToProbe);
+}
+
+// =======================================================================
+// function : perform
+// purpose  :
+// =======================================================================
+Standard_Boolean RWMesh_CafReader::perform (std::istream& theStream,
+                                            const TCollection_AsciiString& theFile,
+                                            const Message_ProgressRange& theProgress,
+                                            const Standard_Boolean theToProbe)
+{
   Standard_Integer aNewRootsLower = 1;
   if (!myXdeDoc.IsNull())
   {
@@ -109,7 +123,7 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
 
   OSD_Timer aLoadingTimer;
   aLoadingTimer.Start();
-  const Standard_Boolean isDone = performMesh (theFile, theProgress, theToProbe);
+  const Standard_Boolean isDone = performMesh (theStream, theFile, theProgress, theToProbe);
   if (theToProbe || theProgress.UserBreak())
   {
     return isDone;

@@ -89,14 +89,13 @@ namespace
 // function : performMesh
 // purpose  :
 //=======================================================================
-bool VrmlAPI_CafReader::performMesh(const TCollection_AsciiString& theFile,
+bool VrmlAPI_CafReader::performMesh(std::istream& theStream,
+                                    const TCollection_AsciiString& theFile,
                                     const Message_ProgressRange& theProgress,
                                     const Standard_Boolean theToProbe)
 {
   (void)theProgress;
-  Handle(OSD_FileSystem) aFile = OSD_FileSystem::DefaultFileSystem();
-  std::shared_ptr<std::istream> aFileStream = aFile->OpenIStream(theFile, std::ios::in | std::ios::binary);
-  if (aFileStream.get() == nullptr || !aFileStream->good())
+  if (!theStream.good())
   {
     Message::SendFail() << "Error in VrmlAPI_CafReader: file '" << theFile << "' is not found";
     return false;
@@ -115,7 +114,7 @@ bool VrmlAPI_CafReader::performMesh(const TCollection_AsciiString& theFile,
   VrmlData_Scene aScene;
   aScene.SetLinearScale(FileLengthUnit());
   aScene.SetVrmlDir(aFolder);
-  aScene << *aFileStream;
+  aScene << theStream;
 
   VrmlData_DataMapOfShapeAppearance aShapeAppMap;
   TopoDS_Shape aShape = aScene.GetShape(aShapeAppMap);

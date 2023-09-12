@@ -24,13 +24,15 @@ class VrmlAPI_CafReader : public RWMesh_CafReader
 protected:
 
   //! Read the mesh data from specified file.
-  //! @param theFile     file to read
+  //! @param theStream   input stream
+  //! @param theFile     path of additional files
   //! @param theProgress progress indicator
   //! @param theToProbe  flag for probing file without complete reading. Not supported.
   //! @return false when theToProbe is set to true or reading has completed with error.
-  Standard_EXPORT virtual Standard_Boolean performMesh(const TCollection_AsciiString& theFile,
-                                                       const Message_ProgressRange&   theProgress,
-                                                       const Standard_Boolean         theToProbe) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean performMesh (std::istream& theStream,
+                                                        const TCollection_AsciiString& theFile,
+                                                        const Message_ProgressRange&   theProgress,
+                                                        const Standard_Boolean         theToProbe) Standard_OVERRIDE;
 
 };
 

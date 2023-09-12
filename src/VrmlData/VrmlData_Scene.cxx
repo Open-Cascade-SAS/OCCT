@@ -170,6 +170,10 @@ Standard_OStream& operator << (Standard_OStream&     theOutput,
 void VrmlData_Scene::SetVrmlDir (const TCollection_ExtendedString& theDir)
 {
   TCollection_ExtendedString& aDir = myVrmlDir.Append (theDir);
+  if (aDir.IsEmpty())
+  {
+    return;
+  }
   const Standard_ExtCharacter aTerminator = aDir.Value(aDir.Length());
   if (aTerminator != Standard_ExtCharacter('\\') &&
       aTerminator != Standard_ExtCharacter('/'))
