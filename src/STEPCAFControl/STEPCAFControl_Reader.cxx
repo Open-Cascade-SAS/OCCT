@@ -219,6 +219,7 @@
 #include <StepVisual_TessellatedAnnotationOccurrence.hxx>
 #include <StepVisual_TessellatedGeometricSet.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
+#include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include <StepVisual_CoordinatesList.hxx>
 #include <NCollection_Vector.hxx>
 #include <StepVisual_OverRidingStyledItem.hxx>
@@ -1935,28 +1936,145 @@ static Standard_Boolean GetMassConversionFactor(Handle(StepBasic_NamedUnit)& NU,
   return Standard_True;
 }
 
+// ============================================================================
+// Method  : createMesh 
+// Purpose : creates a Poly_Triangulation from ComplexTriangulatedSurfaceSet
+// ============================================================================
+
+Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_ComplexTriangulatedSurfaceSet)& theTriangulatedSufaceSet,
+                                      const Standard_Real theFact)
+{
+  Handle(StepVisual_CoordinatesList) aCoords = theTriangulatedSufaceSet->Coordinates();
+  Handle(TColgp_HArray1OfXYZ) aNodes = aCoords->Points();
+  Handle(TColStd_HArray1OfTransient) aTriaStrips = theTriangulatedSufaceSet->TriangleStrips();
+  Handle(TColStd_HArray1OfTransient) aTriaFans = theTriangulatedSufaceSet->TriangleFans();
+  const Standard_Boolean aHasUVNodes = Standard_False;
+  const Standard_Integer aNbNormals = theTriangulatedSufaceSet->NbNormals();
+  // Number of pairs (Point, Normal). It is possible for one point to have multiple normals. This is
+  // useful when the underlying surface is not C1 continuous.
+  const Standard_Integer aNbPairs = aNbNormals > 1 ? theTriangulatedSufaceSet->NbPnindex() : aNodes->Length();
+  const Standard_Boolean aHasNormals = aNbNormals > 0;
+
+  // Counting number of triangles in the triangle strips list.
+  // A triangle strip is a list of 3 or more points defining a set of connected triangles.
+  Standard_Integer aNbTriaStrips = 0;
+  for (Standard_Integer i = 1; i <= theTriangulatedSufaceSet->NbTriangleStrips(); ++i)
+  {
+    Handle(TColStd_HArray1OfInteger) aTriangleStrip = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaStrips->Value(i));
+    aNbTriaStrips += aTriangleStrip->Length() - 2;
+  }
+
+  // Counting number of triangles in the triangle fans list.
+  // A triangle fan is a set of 3 or more points defining a set of connected triangles sharing a common vertex.
+  Standard_Integer aNbTriaFans = 0;
+  for (Standard_Integer i = 1; i <= theTriangulatedSufaceSet->NbTriangleFans(); ++i)
+  {
+    Handle(TColStd_HArray1OfInteger) aTriangleFan = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaFans->Value(i));
+    aNbTriaFans += aTriangleFan->Length() - 2;
+  }
+
+  Handle(Poly_Triangulation) aMesh = new Poly_Triangulation(aNbPairs, aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
+
+  for (Standard_Integer j = 1; j <= aNbPairs; ++j)
+  {
+    const gp_XYZ& aPoint = aNodes->Value(aNbNormals > 1 ? theTriangulatedSufaceSet->PnindexValue(j) : j);
+    aMesh->SetNode(j, theFact * aPoint);
+  }
+
+  // Creating triangles from triangle strips. Processing is split in two parts to
+  // path through nodes in the same direction.
+  Standard_Integer k = 1;
+  for (Standard_Integer i = 1; i <= theTriangulatedSufaceSet->NbTriangleStrips(); ++i)
+  {
+    Handle(TColStd_HArray1OfInteger) aTriangleStrip = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaStrips->Value(i));
+    for (Standard_Integer j = 3; j <= aTriangleStrip->Length(); j += 2)
+    {
+      if (aTriangleStrip->Value(j) != aTriangleStrip->Value(j - 2) &&
+          aTriangleStrip->Value(j) != aTriangleStrip->Value(j - 1))
+      {
+        aMesh->SetTriangle(k++, Poly_Triangle(aTriangleStrip->Value(j - 2),
+                                              aTriangleStrip->Value(j),
+                                              aTriangleStrip->Value(j - 1)));
+      }
+    }
+    for (Standard_Integer j = 4; j <= aTriangleStrip->Length(); j += 2)
+    {
+      if (aTriangleStrip->Value(j) != aTriangleStrip->Value(j - 2) &&
+          aTriangleStrip->Value(j) != aTriangleStrip->Value(j - 1))
+      {
+        aMesh->SetTriangle(k++, Poly_Triangle(aTriangleStrip->Value(j - 2),
+                                              aTriangleStrip->Value(j - 1),
+                                              aTriangleStrip->Value(j)));
+      }
+    }
+  }
+
+  // Creating triangles from triangle strips.
+  for (Standard_Integer i = 1; i <= theTriangulatedSufaceSet->NbTriangleFans(); ++i)
+  {
+    Handle(TColStd_HArray1OfInteger) aTriangleFan = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaFans->Value(i));
+    for (Standard_Integer j = 3; j <= aTriangleFan->Length(); ++j)
+    {
+      aMesh->SetTriangle(k++, Poly_Triangle(aTriangleFan->Value(1),
+                                            aTriangleFan->Value(j - 1),
+                                            aTriangleFan->Value(j)));
+    }
+  }
+
+  if (aHasNormals)
+  {
+    Handle(TColStd_HArray2OfReal) aNormals = theTriangulatedSufaceSet->Normals();
+    gp_XYZ aNorm;
+    if (theTriangulatedSufaceSet->NbNormals() == 1)
+    {
+      aNorm.SetX(aNormals->Value(1, 1));
+      aNorm.SetY(aNormals->Value(1, 2));
+      aNorm.SetZ(aNormals->Value(1, 3));
+      for (Standard_Integer i = 1; i <= aNbPairs; ++i)
+      {
+        aMesh->SetNormal(i, aNorm);
+      }
+    }
+    else
+    {
+      for (Standard_Integer i = 1; i <= aNbPairs; ++i)
+      {
+        aNorm.SetX(aNormals->Value(i, 1));
+        aNorm.SetY(aNormals->Value(i, 2));
+        aNorm.SetZ(aNormals->Value(i, 3));
+        aMesh->SetNormal(i, aNorm);
+      }
+    }
+  }
+
+  return aMesh;
+}
+
 //=======================================================================
 //function : readPMIPresentation
 //purpose  : read polyline or tessellated presentation for 
 // (Annotation_Curve_Occurrence or Draughting_Callout)
 //=======================================================================
 Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresentEntity,
-  const Handle(XSControl_TransferReader)& theTR,
-  const Standard_Real theFact,
-  TopoDS_Shape& thePresentation,
-  Handle(TCollection_HAsciiString)& thePresentName,
-  Bnd_Box& theBox,
-  const StepData_Factors& theLocalFactors)
+                                     const Handle(XSControl_TransferReader)& theTR,
+                                     const Standard_Real theFact,
+                                     TopoDS_Shape& thePresentation,
+                                     Handle(TCollection_HAsciiString)& thePresentName,
+                                     Bnd_Box& theBox,
+                                     const StepData_Factors& theLocalFactors)
 {
   if (thePresentEntity.IsNull())
+  {
     return Standard_False;
+  }
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
   Handle(StepVisual_AnnotationOccurrence) anAO;
   NCollection_Vector<Handle(StepVisual_StyledItem)> anAnnotations;
   if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)))
   {
     anAO = Handle(StepVisual_AnnotationOccurrence)::DownCast(thePresentEntity);
-    if (!anAO.IsNull()) {
+    if (!anAO.IsNull())
+    {
       thePresentName = anAO->Name();
       anAnnotations.Append(anAO);
     }
@@ -1981,17 +2099,17 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
   }
 
   if (!anAnnotations.Length())
+  {
     return Standard_False;
-
+  }
 
   BRep_Builder aB;
   TopoDS_Compound aResAnnotation;
   aB.MakeCompound(aResAnnotation);
 
-  Standard_Integer i = 0;
   Bnd_Box aBox;
-  Standard_Integer nbShapes = 0;
-  for (; i < anAnnotations.Length(); i++)
+  Standard_Integer aNbShapes = 0;
+  for (Standard_Integer i = 0; i < anAnnotations.Length(); i++)
   {
     Handle(StepVisual_StyledItem) anItem = anAnnotations(i);
     anAO = Handle(StepVisual_AnnotationOccurrence)::DownCast(anItem);
@@ -2002,19 +2120,19 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
       anAnnotationShape = STEPConstruct::FindShape(aTP, aCurveItem);
       if (anAnnotationShape.IsNull())
       {
-        Handle(Transfer_Binder) binder = theTR->Actor()->Transfer(aCurveItem, aTP);
-        if (!binder.IsNull() && binder->HasResult()) {
-          anAnnotationShape = TransferBRep::ShapeResult(aTP, binder);
+        Handle(Transfer_Binder) aBinder = theTR->Actor()->Transfer(aCurveItem, aTP);
+        if (!aBinder.IsNull() && aBinder->HasResult()) {
+          anAnnotationShape = TransferBRep::ShapeResult(aTP, aBinder);
         }
       }
     }
     //case of tessellated entities
     else
     {
-      Handle(StepRepr_RepresentationItem) aTessItem = anItem->Item();
-      if (aTessItem.IsNull())
+      Handle(StepRepr_RepresentationItem) aRepresentationItem = anItem->Item();
+      if (aRepresentationItem.IsNull())
         continue;
-      Handle(StepVisual_TessellatedGeometricSet) aTessSet = Handle(StepVisual_TessellatedGeometricSet)::DownCast(aTessItem);
+      Handle(StepVisual_TessellatedGeometricSet) aTessSet = Handle(StepVisual_TessellatedGeometricSet)::DownCast(aRepresentationItem);
       if (aTessSet.IsNull())
         continue;
       gp_Trsf aTransf;
@@ -2037,55 +2155,75 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
         }
       }
       NCollection_Handle<StepVisual_Array1OfTessellatedItem> aListItems = aTessSet->Items();
-      Standard_Integer nb = aListItems.IsNull() ? 0 : aListItems->Length();
-      Handle(StepVisual_TessellatedCurveSet) aTessCurve;
-      for (Standard_Integer n = 1; n <= nb && aTessCurve.IsNull(); n++)
-      {
-        aTessCurve = Handle(StepVisual_TessellatedCurveSet)::DownCast(aListItems->Value(n));
-      }
-      if (aTessCurve.IsNull())
-        continue;
-      Handle(StepVisual_CoordinatesList) aCoordList = aTessCurve->CoordList();
-      if (aCoordList.IsNull())
-        continue;
-      Handle(TColgp_HArray1OfXYZ)  aPoints = aCoordList->Points();
-
-      if (aPoints.IsNull() || aPoints->Length() == 0)
-        continue;
-      NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves = aTessCurve->Curves();
-      Standard_Integer aNbC = (aCurves.IsNull() ? 0 : aCurves->Length());
+      Standard_Integer aNbItems = aListItems.IsNull() ? 0 : aListItems->Length();
       TopoDS_Compound aComp;
       aB.MakeCompound(aComp);
-
-      Standard_Integer k = 0;
-      for (; k < aNbC; k++)
+      for (Standard_Integer j = 1; j <= aNbItems; j++)
       {
-        Handle(TColStd_HSequenceOfInteger) anIndexes = aCurves->Value(k);
-        TopoDS_Wire aCurW;
-        aB.MakeWire(aCurW);
-
-        for (Standard_Integer n = 1; n < anIndexes->Length(); n++)
+        Handle(StepVisual_TessellatedItem) aTessItem = aListItems->Value(j);
+        if (aTessItem.IsNull())
         {
-          Standard_Integer ind = anIndexes->Value(n);
-          Standard_Integer indnext = anIndexes->Value(n + 1);
-          if (ind > aPoints->Length() || indnext > aPoints->Length())
-            continue;
-          gp_Pnt aP1(aPoints->Value(ind) * theFact);
-          gp_Pnt aP2(aPoints->Value(indnext) * theFact);
-          BRepBuilderAPI_MakeEdge aMaker(aP1, aP2);
-          if (aMaker.IsDone())
+          continue;
+        }
+        if (aTessItem->IsKind(STANDARD_TYPE(StepVisual_TessellatedCurveSet)))
+        {
+          Handle(StepVisual_TessellatedCurveSet) aTessCurve = Handle(StepVisual_TessellatedCurveSet)::DownCast(aTessItem);
+          Handle(StepVisual_CoordinatesList) aCoordList = aTessCurve->CoordList();
+          if (aCoordList.IsNull())
           {
-            TopoDS_Edge aCurE = aMaker.Edge();
-            aB.Add(aCurW, aCurE);
+            continue;
+          }
+
+          Handle(TColgp_HArray1OfXYZ) aPoints = aCoordList->Points();
+          if (aPoints.IsNull() || aPoints->Length() == 0)
+          {
+            continue;
+          }
+
+          NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves = aTessCurve->Curves();
+          Standard_Integer aNbCurves = (aCurves.IsNull() ? 0 : aCurves->Length());
+          for (Standard_Integer k = 0; k < aNbCurves; k++)
+          {
+            Handle(TColStd_HSequenceOfInteger) anIndexes = aCurves->Value(k);
+            TopoDS_Wire aCurW;
+            aB.MakeWire(aCurW);
+            for (Standard_Integer n = 1; n < anIndexes->Length(); n++)
+            {
+              Standard_Integer anIndex = anIndexes->Value(n);
+              Standard_Integer aNextIndex = anIndexes->Value(n + 1);
+              if (anIndex > aPoints->Length() || aNextIndex > aPoints->Length())
+              {
+                continue;
+              }
+              gp_Pnt aP1(aPoints->Value(anIndex) * theFact);
+              gp_Pnt aP2(aPoints->Value(aNextIndex) * theFact);
+              BRepBuilderAPI_MakeEdge aMaker(aP1, aP2);
+              if (aMaker.IsDone())
+              {
+                TopoDS_Edge aCurE = aMaker.Edge();
+                aB.Add(aCurW, aCurE);
+              }
+            }
+            aB.Add(aComp, aCurW);
           }
         }
-        aB.Add(aComp, aCurW);
+        else if (aTessItem->IsKind(STANDARD_TYPE(StepVisual_ComplexTriangulatedSurfaceSet)))
+        {
+          Handle(StepVisual_ComplexTriangulatedSurfaceSet) aTessSurfSet = Handle(StepVisual_ComplexTriangulatedSurfaceSet)::DownCast(aTessItem);
+          Handle(Poly_Triangulation) aSurfSetMesh = createMesh(aTessSurfSet, theFact);
+          TopoDS_Face aFace;
+          aB.MakeFace(aFace, aSurfSetMesh);
+          aB.Add(aComp, aFace);
+        }
       }
-      anAnnotationShape = aComp.Moved(aTransf);
+      if (!aComp.IsNull())
+      {
+        anAnnotationShape = aComp.Moved(aTransf);
+      }
     }
     if (!anAnnotationShape.IsNull())
     {
-      nbShapes++;
+      aNbShapes++;
       aB.Add(aResAnnotation, anAnnotationShape);
       if (i == anAnnotations.Length() - 1)
         BRepBndLib::AddClose(anAnnotationShape, aBox);
@@ -2094,7 +2232,7 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
 
   thePresentation = aResAnnotation;
   theBox = aBox;
-  return (nbShapes > 0);
+  return (aNbShapes > 0);
 }
 
 //=======================================================================

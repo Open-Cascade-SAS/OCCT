@@ -2473,6 +2473,10 @@ void STEPCAFControl_Writer::writePresentation(const Handle(XSControl_WorkSession
 
   // Presentation
   Handle(StepVisual_TessellatedGeometricSet) aGeomSet = STEPCAFControl_GDTProperty::GetTessellation(thePresentation);
+  if (aGeomSet.IsNull())
+  {
+    return;
+  }
   Handle(StepVisual_TessellatedAnnotationOccurrence) aTAO = new StepVisual_TessellatedAnnotationOccurrence();
   aTAO->Init(new TCollection_HAsciiString(), myGDTPrsCurveStyle, aGeomSet);
   StepVisual_DraughtingCalloutElement aDCElement;

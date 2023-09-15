@@ -14,12 +14,12 @@ checkshape res f
 set dump [XDumpNbDGTs D f]
 set info "
 
- NbOfDimensions          : 14
+ NbOfDimensions          : 15
   NbOfDimensionalSize    : 7
   NbOfDimensionalLocation: 0
   NbOfAngular            : 0
   NbOfWithPath           : 0
-  NbOfCommonLabels       : 0
+  NbOfCommonLabels       : 1
  NbOfTolerances          : 22
   NbOfGTWithModifiers    : 4
   NbOfGTWithMaxTolerance : 0

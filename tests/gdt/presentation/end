@@ -108,39 +108,61 @@ if { $dump_file == 1 } {
     puts $fd_stream "set ref_data \{"
     puts $fd_stream $result
     puts $fd_stream "\}"
+    if (![string equal $xst $xst2]) {
+      puts $fd_stream "" 
+      puts $fd_stream "set ref_data_write \{"
+      puts $fd_stream $result2
+      puts $fd_stream "\}"
+    }
   }
   close $fd_stream 
 } elseif { $mist != 1 } {
   puts "========================== Comparison with reference data ========"
   puts ""
   # Comparison of reference data with obtained result
+  # Variable ref_data is used to check values on the first read.
+  # If after writing and reading file again values differ, variable
+  # ref_data_write should be used for the new reference data. In 
+  # case if it is not set, ref_data will be used to check the result again.
   set x_Ref 0; set y_Ref 0; set z_Ref 0;
+  set x_Ref_write 0; set y_Ref_write 0; set z_Ref_write 0;
   set mass_Ref 0;
+  set mass_Ref_write 0;
   regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $ref_data full x_Ref y_Ref z_Ref
   regexp {Mass+: +([-0-9.+eE]+)} $ref_data full mass_Ref
 
-  if {[expr abs($x_Ref - $x_First)] > 1e-4 || [expr abs($x_Ref - $x_Second)] > 1e-4} {
+  if { [info exists ref_data_write] } {
+    regexp {Centre of mass+: +([-0-9.+eE]+) +([-0-9.+eE]+) +([-0-9.+eE]+)} $ref_data_write full x_Ref_write y_Ref_write z_Ref_write
+    regexp {Mass+: +([-0-9.+eE]+)} $ref_data_write full mass_Ref_write
+  } else {
+    set x_Ref_write $x_Ref;
+    set y_Ref_write $y_Ref;
+    set z_Ref_write $z_Ref;
+    set mass_Ref_write $mass_Ref;
+  }
+
+  if {[expr abs($x_Ref - $x_First)] > 1e-4 || [expr abs($x_Ref_write - $x_Second)] > 1e-4} {
     incr ref_Compare
-    append err_compare_ref " Reference data - $x_Ref\n"
+    append err_compare_ref " Reference data - $x_Ref_write ($x_Ref)\n"
     append err_compare_ref " Current data - $x_Second ($x_First)\n"
     append err_compare_ref "--------------------------------------------------------------------\n"
   }
     
-  if {[expr abs($y_Ref - $y_First)] > 1e-4 || [expr abs($y_Ref - $y_Second)] > 1e-4} {
+  if {[expr abs($y_Ref - $y_First)] > 1e-4 || [expr abs($y_Ref_write - $y_Second)] > 1e-4} {
     incr ref_Compare
-    append err_compare_ref " Reference data - $y_Ref\n"
+    append err_compare_ref " Reference data - $y_Ref_write ($y_Ref)\n"
     append err_compare_ref " Current data - $y_Second ($y_First)\n"
     append err_compare_ref "--------------------------------------------------------------------\n"
     }
-  if {[expr abs($z_Ref - $z_First)] > 1e-4 || [expr abs($z_Ref - $z_Second)] > 1e-4} {
+  if {[expr abs($z_Ref - $z_First)] > 1e-4 || [expr abs($z_Ref_write - $z_Second)] > 1e-4} {
     incr ref_Compare
-    append err_compare_ref " Reference data - $z_Ref\n"
+    append err_compare_ref " Reference data - $z_Ref_write ($z_Ref)\n"
     append err_compare_ref " Current data - $z_Second ($z_First)\n"
     append err_compare_ref "--------------------------------------------------------------------\n"
     }
-  if {[expr abs($mass_Ref - $mass_First)] > 1e-4 || [expr abs($mass_Ref - $mass_Second)] > 1e-4} {
+  if {[expr abs($mass_Ref - $mass_First)] > 1e-4 || [expr abs($mass_Ref_write - $mass_Second)] > 1e-4} {
     incr ref_Compare
-    append err_compare_ref " Reference data - $mass_Ref\n"
+    append err_compare_ref " Reference data - $mass_Ref_write ($mass_Ref)\n"
     append err_compare_ref " Current data - $mass_Second ($mass_First)\n"
     append err_compare_ref "--------------------------------------------------------------------\n"
     }
