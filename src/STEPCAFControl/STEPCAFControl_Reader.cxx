@@ -3940,14 +3940,15 @@ static void setDimObjectToXCAF(const Handle(Standard_Transient)& theEnt,
           //for Oriented Dimensional Location
           Handle(TColStd_HArray1OfReal) aDirArr = anAP->RefDirection()->DirectionRatios();
           gp_Dir aDir;
+          Standard_Integer aDirLower = aDirArr->Lower();
           if (!aDirArr.IsNull() && aDirArr->Length() > 2)
           {
-            aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower() + 1, aDirArr->Lower() + 2);
+            aDir.SetCoord(aDirArr->Value(aDirLower), aDirArr->Value(aDirLower + 1), aDirArr->Value(aDirLower + 2));
             aDimObj->SetDirection(aDir);
           }
           else if (aDirArr->Length() > 1)
           {
-            aDir.SetCoord(aDirArr->Lower(), aDirArr->Lower() + 1, 0);
+            aDir.SetCoord(aDirArr->Value(aDirLower), aDirArr->Value(aDirLower + 1), 0);
             aDimObj->SetDirection(aDir);
           }
         }
