@@ -27,7 +27,7 @@
 #include <Standard_Real.hxx>
 #include <StepVisual_FaceOrSurface.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
 
 //=======================================================================
 //function : RWStepVisual_RWComplexTriangulatedFace
@@ -118,15 +118,16 @@ void RWStepVisual_RWComplexTriangulatedFace::ReadStep (const Handle(StepData_Ste
     }
   }
 
-  Handle(TColStd_HArray2OfInteger) aTriangleStrips;
+  Handle(TColStd_HArray1OfTransient) aTriangleStrips;
   Standard_Integer sub7 = 0;
   if (theData->ReadSubList(theNum, 7, "triangle_strips", theCheck, sub7))
   {
     Standard_Integer nb0 = theData->NbParams(sub7);
-    Standard_Integer nbj0 = theData->NbParams(theData->ParamNumber(sub7,1));
-    aTriangleStrips = new TColStd_HArray2OfInteger(1, nb0, 1, nbj0);
+    aTriangleStrips = new TColStd_HArray1OfTransient(1, nb0);
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
+      Standard_Integer nbj0 = theData->NbParams(theData->ParamNumber(sub7, i0));
+      Handle(TColStd_HArray1OfInteger) aSingleTriangleStrip = new TColStd_HArray1OfInteger(1, nbj0);
       Standard_Integer subj7 = 0;
       if ( theData->ReadSubList (sub7, i0, "sub-part(triangle_strips)", theCheck, subj7) ) {
         Standard_Integer num4 = subj7;
@@ -134,21 +135,23 @@ void RWStepVisual_RWComplexTriangulatedFace::ReadStep (const Handle(StepData_Ste
         {
           Standard_Integer anIt0;
           theData->ReadInteger(num4, j0, "integer", theCheck, anIt0);
-          aTriangleStrips->SetValue(i0,j0, anIt0);
+          aSingleTriangleStrip->SetValue(j0, anIt0);
         }
+        aTriangleStrips->SetValue(i0, aSingleTriangleStrip);
       }
     }
   }
 
-  Handle(TColStd_HArray2OfInteger) aTriangleFans;
+  Handle(TColStd_HArray1OfTransient) aTriangleFans;
   Standard_Integer sub8 = 0;
   if (theData->ReadSubList(theNum, 8, "triangle_fans", theCheck, sub8))
   {
     Standard_Integer nb0 = theData->NbParams(sub8);
-    Standard_Integer nbj0 = theData->NbParams(theData->ParamNumber(sub8,1));
-    aTriangleFans = new TColStd_HArray2OfInteger(1, nb0, 1, nbj0);
+    aTriangleFans = new TColStd_HArray1OfTransient(1, nb0);
     for (Standard_Integer i0 = 1; i0 <= nb0; i0++)
     {
+      Standard_Integer nbj0 = theData->NbParams(theData->ParamNumber(sub8, i0));
+      Handle(TColStd_HArray1OfInteger) aSingleTriangleFan = new TColStd_HArray1OfInteger(1, nbj0);
       Standard_Integer subj8 = 0;
       if ( theData->ReadSubList (sub8, i0, "sub-part(triangle_fans)", theCheck, subj8) ) {
         Standard_Integer num4 = subj8;
@@ -156,8 +159,9 @@ void RWStepVisual_RWComplexTriangulatedFace::ReadStep (const Handle(StepData_Ste
         {
           Standard_Integer anIt0;
           theData->ReadInteger(num4, j0, "integer", theCheck, anIt0);
-          aTriangleFans->SetValue(i0,j0, anIt0);
+          aSingleTriangleFan->SetValue(j0, anIt0);
         }
+        aTriangleFans->SetValue(i0, aSingleTriangleFan);
       }
     }
   }
@@ -219,13 +223,14 @@ void RWStepVisual_RWComplexTriangulatedFace::WriteStep (StepData_StepWriter& the
   theSW.CloseSub();
 
   theSW.OpenSub();
-  for (Standard_Integer i6 = 1; i6 <= theEnt->TriangleStrips()->RowLength(); i6++)
+  for (Standard_Integer i6 = 1; i6 <= theEnt->NbTriangleStrips(); i6++)
   {
     theSW.NewLine(Standard_False);
     theSW.OpenSub();
-    for (Standard_Integer j6 = 1; j6 <= theEnt->TriangleStrips()->ColLength(); j6++)
+    Handle(TColStd_HArray1OfInteger) aTriangleStrip = Handle(TColStd_HArray1OfInteger)::DownCast(theEnt->TriangleStrips()->Value(i6));
+    for (Standard_Integer j6 = 1; j6 <= aTriangleStrip->Length(); j6++)
     {
-      Standard_Integer Var0 = theEnt->TriangleStrips()->Value(i6,j6);
+      Standard_Integer Var0 = aTriangleStrip->Value(j6);
       theSW.Send(Var0);
     }
     theSW.CloseSub();
@@ -233,13 +238,14 @@ void RWStepVisual_RWComplexTriangulatedFace::WriteStep (StepData_StepWriter& the
   theSW.CloseSub();
 
   theSW.OpenSub();
-  for (Standard_Integer i7 = 1; i7 <= theEnt->TriangleFans()->RowLength(); i7++)
+  for (Standard_Integer i7 = 1; i7 <= theEnt->NbTriangleFans(); i7++)
   {
     theSW.NewLine(Standard_False);
     theSW.OpenSub();
-    for (Standard_Integer j7 = 1; j7 <= theEnt->TriangleFans()->ColLength(); j7++)
+    Handle(TColStd_HArray1OfInteger) aTriangleFan = Handle(TColStd_HArray1OfInteger)::DownCast(theEnt->TriangleFans()->Value(i7));
+    for (Standard_Integer j7 = 1; j7 <= aTriangleFan->Length(); j7++)
     {
-      Standard_Integer Var0 = theEnt->TriangleFans()->Value(i7,j7);
+      Standard_Integer Var0 = aTriangleFan->Value(j7);
       theSW.Send(Var0);
     }
     theSW.CloseSub();

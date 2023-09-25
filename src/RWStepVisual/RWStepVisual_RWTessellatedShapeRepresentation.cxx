@@ -114,11 +114,13 @@ Interface_EntityIterator& theIter) const
 {
 
   // Inherited fields of Representation
-
-  for (Standard_Integer i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
+  if (!theEnt->StepRepr_Representation::Items().IsNull())
   {
-    Handle(StepRepr_RepresentationItem) Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
-    theIter.AddItem(Var0);
+    for (Standard_Integer i1 = 1; i1 <= theEnt->StepRepr_Representation::Items()->Length(); i1++)
+    {
+      Handle(StepRepr_RepresentationItem) Var0 = theEnt->StepRepr_Representation::Items()->Value(i1);
+      theIter.AddItem(Var0);
+    }
   }
 
   theIter.AddItem(theEnt->StepRepr_Representation::ContextOfItems());

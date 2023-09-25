@@ -9,4 +9,4 @@ XGetOneShape S D
 
 set nb_faces     273
 set nb_nodes     3788
-set nb_triangles 2893
+set nb_triangles 3377

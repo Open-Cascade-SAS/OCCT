@@ -108,7 +108,6 @@ namespace {
                        Handle(TColStd_HArray1OfInteger)& thePnindices,
                        const Standard_Real theLengthFactor)
   {
-    //const Standard_Real aLF = StepData_GlobalFactors::Intance().LengthFactor();
     for (Standard_Integer aPnIndex = 1; aPnIndex <= theMesh->NbNodes(); ++aPnIndex)
     {
       const gp_XYZ& aPoint = theNodes->Value(thePnindices->Value(aPnIndex));
@@ -148,72 +147,6 @@ namespace {
         aNorm.SetY(theNormals->Value(aNormIndex, 2));
         aNorm.SetZ(theNormals->Value(aNormIndex, 3));
         theMesh->SetNormal(aNormIndex, aNorm);
-      }
-    }
-  }
-
-  // ============================================================================
-  // Method  : SetTriangles
-  // Purpose : Set triangles to the triangulation from an array
-  // ============================================================================
-  static void SetTriangles(const Handle(Poly_Triangulation)& theMesh,
-                           const Handle(TColStd_HArray2OfInteger) theTriangles,
-                           const Standard_Integer theTrianStripsNum,
-                           const Handle(TColStd_HArray2OfInteger)& theTrianStrips,
-                           const Standard_Integer theTrianFansNum,
-                           const Handle(TColStd_HArray2OfInteger)& theTrianFans)
-  {
-    if (theTrianStripsNum == 0 && theTrianFansNum == 0)
-    {
-      for (Standard_Integer aTrianIndex = 1; aTrianIndex <= theMesh->NbTriangles(); ++aTrianIndex)
-      {
-        theMesh->SetTriangle(aTrianIndex,
-                             Poly_Triangle(theTriangles->Value(aTrianIndex, 1),
-                                           theTriangles->Value(aTrianIndex, 2),
-                                           theTriangles->Value(aTrianIndex, 3)));
-      }
-    }
-    else
-    {
-      Standard_Integer aTriangleIndex = 1;
-      for (Standard_Integer aTrianStripIndex = 1; aTrianStripIndex <= theTrianStripsNum; ++aTrianStripIndex)
-      {
-        for (Standard_Integer anUCIndex = 3; anUCIndex <= theTrianStrips->UpperCol(); anUCIndex += 2)
-        {
-          if (theTrianStrips->Value(aTrianStripIndex, anUCIndex) != theTrianStrips->Value(aTrianStripIndex, anUCIndex - 2) &&
-            theTrianStrips->Value(aTrianStripIndex, anUCIndex) != theTrianStrips->Value(aTrianStripIndex, anUCIndex - 1))
-          {
-            theMesh->SetTriangle(aTriangleIndex++,
-                                 Poly_Triangle(theTrianStrips->Value(aTrianStripIndex, anUCIndex - 2),
-                                               theTrianStrips->Value(aTrianStripIndex, anUCIndex),
-                                               theTrianStrips->Value(aTrianStripIndex, anUCIndex - 1)));
-          }
-        }
-        for (Standard_Integer anUCIndex = 4; anUCIndex <= theTrianStrips->UpperCol(); anUCIndex += 2)
-        {
-          if (theTrianStrips->Value(aTrianStripIndex, anUCIndex) != theTrianStrips->Value(aTrianStripIndex, anUCIndex - 2)
-              && theTrianStrips->Value(aTrianStripIndex, anUCIndex) != theTrianStrips->Value(aTrianStripIndex, anUCIndex - 1))
-          {
-            theMesh->SetTriangle(aTriangleIndex++,
-                                 Poly_Triangle(theTrianStrips->Value(aTrianStripIndex, anUCIndex - 2),
-                                               theTrianStrips->Value(aTrianStripIndex, anUCIndex - 1),
-                                               theTrianStrips->Value(aTrianStripIndex, anUCIndex)));
-          }
-        }
-      }
-      for (Standard_Integer aTrianFanIndex = 1; aTrianFanIndex <= theTrianFansNum; ++aTrianFanIndex)
-      {
-        for (Standard_Integer anUCIndex = 3; anUCIndex <= theTrianFans->UpperCol(); ++anUCIndex)
-        {
-          if (theTrianFans->Value(aTrianFanIndex, anUCIndex) != theTrianFans->Value(aTrianFanIndex, anUCIndex - 2)
-              && theTrianFans->Value(aTrianFanIndex, anUCIndex - 1) != theTrianFans->Value(aTrianFanIndex, anUCIndex - 2))
-          {
-            theMesh->SetTriangle(aTriangleIndex++,
-                                 Poly_Triangle(theTrianStrips->Value(aTrianFanIndex, anUCIndex - 2),
-                                               theTrianStrips->Value(aTrianFanIndex, anUCIndex - 1),
-                                               theTrianStrips->Value(aTrianFanIndex, anUCIndex)));
-          }
-        }
       }
     }
   }
@@ -273,9 +206,9 @@ namespace {
           if (aTriangleFan->Value(anIndex) != aTriangleFan->Value(anIndex - 2) &&
               aTriangleFan->Value(anIndex - 1) != aTriangleFan->Value(anIndex - 2))
           {
-            theMesh->SetTriangle(aTriangleIndex++, Poly_Triangle(aTriangleFan->Value(anIndex - 2),
-                                                                 aTriangleFan->Value(anIndex - 1),
-                                                                 aTriangleFan->Value(anIndex)));
+            theMesh->SetTriangle(aTriangleIndex++, Poly_Triangle(aTriangleFan->Value(1),
+                                                                 aTriangleFan->Value(anIndex),
+                                                                 aTriangleFan->Value(anIndex - 1)));
           }
         }
       }
@@ -317,44 +250,13 @@ namespace {
   static void GetComplexFaceElements(Type theFace,
                                      Handle(TColgp_HArray1OfXYZ)& theNodes,
                                      Handle(TColStd_HArray2OfReal)& theNormals,
-                                     Handle(TColStd_HArray2OfInteger)& theTriangleStrips,
-                                     Handle(TColStd_HArray2OfInteger)& theTriangleFans,
+                                     Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
+                                     Handle(TColStd_HArray1OfTransient)& theTriangleFans,
                                      Standard_Integer& thePnIndNb,
                                      Standard_Integer& theNormNb,
                                      Standard_Integer& theTriStripsNb,
                                      Standard_Integer& theTriFansNb,
                                      Handle(TColStd_HArray1OfInteger)& thePnindices)
-  {
-    theNodes = theFace->Coordinates()->Points();
-    theNormals = theFace->Normals();
-    theTriangleStrips = theFace->TriangleStrips();
-    theTriangleFans = theFace->TriangleFans();
-    thePnIndNb = theFace->NbPnindex();
-    theNormNb = theFace->NbNormals();
-    theTriStripsNb = theFace->NbTriangleStrips();
-    theTriFansNb = theFace->NbTriangleFans();
-    thePnindices = new TColStd_HArray1OfInteger(1, thePnIndNb);
-    for (Standard_Integer anIndx = 1; anIndx <= thePnIndNb; ++anIndx)
-    {
-      thePnindices->SetValue(anIndx, theFace->PnindexValue(anIndx));
-    }
-  }
-
-  // ============================================================================
-// Method  : GetComplexFaceSetElements
-// Purpose : Get elements from complex face
-// ============================================================================
-  template<class Type>
-  static void GetComplexFaceSetElements(Type theFace,
-                                        Handle(TColgp_HArray1OfXYZ)& theNodes,
-                                        Handle(TColStd_HArray2OfReal)& theNormals,
-                                        Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
-                                        Handle(TColStd_HArray1OfTransient)& theTriangleFans,
-                                        Standard_Integer& thePnIndNb,
-                                        Standard_Integer& theNormNb,
-                                        Standard_Integer& theTriStripsNb,
-                                        Standard_Integer& theTriFansNb,
-                                        Handle(TColStd_HArray1OfInteger)& thePnindices)
   {
     theNodes = theFace->Coordinates()->Points();
     theNormals = theFace->Normals();
@@ -392,13 +294,10 @@ namespace {
     Standard_Integer aTrianNum = 0;
     Handle(TColStd_HArray1OfInteger) aPnindices;
 
-    Handle(TColStd_HArray2OfInteger) aTriaStrips;
-    Handle(TColStd_HArray2OfInteger) aTriaFans;
+    Handle(TColStd_HArray1OfTransient) aTriaStrips;
+    Handle(TColStd_HArray1OfTransient) aTriaFans;
     Standard_Integer aTrianStripsNum = 0;
     Standard_Integer aTrianFansNum = 0;
-
-    Handle(TColStd_HArray1OfTransient) aTriaStrips1;
-    Handle(TColStd_HArray1OfTransient) aTriaFans1;
 
     if (theTI->IsKind(STANDARD_TYPE(StepVisual_TriangulatedFace)))
     {
@@ -418,7 +317,7 @@ namespace {
     else if (theTI->IsKind(STANDARD_TYPE(StepVisual_ComplexTriangulatedSurfaceSet)))
     {
       Handle(StepVisual_ComplexTriangulatedSurfaceSet) aTSS = Handle(StepVisual_ComplexTriangulatedSurfaceSet)::DownCast(theTI);
-      GetComplexFaceSetElements(aTSS, aNodes, aNormals, aTriaStrips1, aTriaFans1, aNumPnindex, aNormNum, aTrianStripsNum, aTrianFansNum, aPnindices);
+      GetComplexFaceElements(aTSS, aNodes, aNormals, aTriaStrips, aTriaFans, aNumPnindex, aNormNum, aTrianStripsNum, aTrianFansNum, aPnindices);
     }
     else
     {
@@ -436,59 +335,28 @@ namespace {
     {
       Standard_Integer aNbTriaStrips = 0;
       Standard_Integer aNbTriaFans = 0;
-      if (aTriaStrips1.IsNull() && aTriaFans1.IsNull())
-      {
-        for (Standard_Integer aTrianStripIndex = 1; aTrianStripIndex <= aTrianStripsNum; ++aTrianStripIndex)
-        {
-          for (Standard_Integer anUCIndex = 3; anUCIndex <= aTriaStrips->UpperCol(); anUCIndex += 2)
-          {
-            if (aTriaStrips->Value(aTrianStripIndex, anUCIndex) != aTriaStrips->Value(aTrianStripIndex, anUCIndex - 2) &&
-                aTriaStrips->Value(aTrianStripIndex, anUCIndex) != aTriaStrips->Value(aTrianStripIndex, anUCIndex - 1))
-              ++aNbTriaStrips;
-          }
-          for (Standard_Integer anUCIndex = 4; anUCIndex <= aTriaStrips->UpperCol(); anUCIndex += 2)
-          {
-            if (aTriaStrips->Value(aTrianStripIndex, anUCIndex) != aTriaStrips->Value(aTrianStripIndex, anUCIndex - 2) &&
-                aTriaStrips->Value(aTrianStripIndex, anUCIndex) != aTriaStrips->Value(aTrianStripIndex, anUCIndex - 1))
-              ++aNbTriaStrips;
-          }
-        }
 
-        for (Standard_Integer aTrianFanIndex = 1; aTrianFanIndex <= aTrianFansNum; ++aTrianFanIndex)
+      for (Standard_Integer aTrianStripIndex = 1; aTrianStripIndex <= aTrianStripsNum; ++aTrianStripIndex)
+      {
+        Handle(TColStd_HArray1OfInteger) aTriangleStrip = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaStrips->Value(aTrianStripIndex));
+        for (Standard_Integer anIndex = 3; anIndex <= aTriangleStrip->Length(); anIndex += 2)
         {
-          Standard_Integer aFirst = aTriaStrips->Value(aTrianFanIndex, 1);
-          for (Standard_Integer anUCIndex = 3; anUCIndex <= aTriaStrips->UpperCol(); ++anUCIndex)
-          {
-            if (aTriaStrips->Value(aTrianFanIndex, anUCIndex) != aFirst &&
-                aTriaStrips->Value(aTrianFanIndex, anUCIndex - 1) != aFirst)
-              ++aNbTriaFans;
-          }
+          if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2) &&
+              aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
+            ++aNbTriaStrips;
+        }
+        for (Standard_Integer anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
+        {
+          if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2) &&
+              aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
+            ++aNbTriaStrips;
         }
       }
-      else
-      {
-        for (Standard_Integer aTrianStripIndex = 1; aTrianStripIndex <= aTrianStripsNum; ++aTrianStripIndex)
-        {
-          Handle(TColStd_HArray1OfInteger) aTriangleStrip = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaStrips1->Value(aTrianStripIndex));
-          for (Standard_Integer anIndex = 3; anIndex <= aTriangleStrip->Length(); anIndex += 2)
-          {
-            if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2) &&
-                aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-              ++aNbTriaStrips;
-          }
-          for (Standard_Integer anIndex = 4; anIndex <= aTriangleStrip->Length(); anIndex += 2)
-          {
-            if (aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 2) &&
-                aTriangleStrip->Value(anIndex) != aTriangleStrip->Value(anIndex - 1))
-              ++aNbTriaStrips;
-          }
-        }
 
-        for (Standard_Integer aTrianFanIndex = 1; aTrianFanIndex <= aTrianFansNum; ++aTrianFanIndex)
-        {
-          Handle(TColStd_HArray1OfInteger) aTriangleFan = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaFans1->Value(aTrianFansNum));
-          aNbTriaFans += aTriangleFan->Length() - 2;
-        }
+      for (Standard_Integer aTrianFanIndex = 1; aTrianFanIndex <= aTrianFansNum; ++aTrianFanIndex)
+      {
+        Handle(TColStd_HArray1OfInteger) aTriangleFan = Handle(TColStd_HArray1OfInteger)::DownCast(aTriaFans->Value(aTrianFanIndex));
+        aNbTriaFans += aTriangleFan->Length() - 2;
       }
 
       aMesh = new Poly_Triangulation(aNumPnindex, aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
@@ -501,14 +369,7 @@ namespace {
       SetNormals(aMesh, aNormals, aNormNum, aNumPnindex);
     }
 
-    if (aTriaStrips1.IsNull() && aTriaFans1.IsNull())
-    {
-      SetTriangles(aMesh, aTriangles, aTrianStripsNum, aTriaStrips, aTrianFansNum, aTriaFans);
-    }
-    else
-    {
-      SetTriangles(aMesh, aTriangles, aTrianStripsNum, aTriaStrips1, aTrianFansNum, aTriaFans1);
-    }
+    SetTriangles(aMesh, aTriangles, aTrianStripsNum, aTriaStrips, aTrianFansNum, aTriaFans);
 
     return aMesh;
   }
@@ -927,7 +788,7 @@ void StepToTopoDS_TranslateFace::Init(const Handle(StepVisual_TessellatedSurface
   }
   else if (DeclareAndCast(StepVisual_ComplexTriangulatedSurfaceSet, aCompTriaSS, theTSS))
   {
-    aMesh = createComplexMesh(aCompTriaSS, theLocalFactors);
+    aMesh = createMesh(aCompTriaSS, theLocalFactors);
   }
   else
   {
@@ -950,7 +811,8 @@ void StepToTopoDS_TranslateFace::Init(const Handle(StepVisual_TessellatedSurface
 
 // ============================================================================
 // Method  : createMesh 
-// Purpose : creates a Poly_Triangulation from TriangulatedFace or TriangulatedSurfaceSet
+// Purpose : creates a Poly_Triangulation from simple/complex
+//           TriangulatedFace or TriangulatedSurfaceSet
 // ============================================================================
 Handle(Poly_Triangulation)
   StepToTopoDS_TranslateFace::createMesh(const Handle(StepVisual_TessellatedItem)& theTI,
@@ -958,16 +820,6 @@ Handle(Poly_Triangulation)
 {
   return CreatePolyTriangulation(theTI, theLocalFactors);
 }
-
-// ============================================================================
-// Method  : createComplexMesh 
-// Purpose : creates a Poly_Triangulation from ComplexTriangulatedFace or ComplexTriangulatedSurfaceSet
-// ============================================================================
-Handle(Poly_Triangulation)
-  StepToTopoDS_TranslateFace::createComplexMesh(const Handle(StepVisual_TessellatedItem)& theTI,
-                                                const StepData_Factors& theLocalFactors) const
-{
-  return CreatePolyTriangulation(theTI, theLocalFactors);}
 
 // ============================================================================
 // Method  : Value 

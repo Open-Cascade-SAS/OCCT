@@ -86,8 +86,7 @@ private:
 
   Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_TessellatedItem)& theTI,
                                         const StepData_Factors& theLocalFactors) const;
-  Handle(Poly_Triangulation) createComplexMesh(const Handle(StepVisual_TessellatedItem)& theTI,
-                                               const StepData_Factors& theLocalFactors) const;
+
   StepToTopoDS_TranslateFaceError myError;
   TopoDS_Shape myResult;
 

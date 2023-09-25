@@ -22,7 +22,7 @@
 #include <StepVisual_TessellatedFace.hxx>
 
 #include <TColStd_HArray1OfInteger.hxx>
-#include <TColStd_HArray2OfInteger.hxx>
+#include <TColStd_HArray1OfTransient.hxx>
 
 DEFINE_STANDARD_HANDLE(StepVisual_ComplexTriangulatedFace, StepVisual_TessellatedFace)
 
@@ -43,8 +43,8 @@ public :
                             const Standard_Boolean theHasTessellatedFace_GeometricLink,
                             const StepVisual_FaceOrSurface& theTessellatedFace_GeometricLink,
                             const Handle(TColStd_HArray1OfInteger)& thePnindex,
-                            const Handle(TColStd_HArray2OfInteger)& theTriangleStrips,
-                            const Handle(TColStd_HArray2OfInteger)& theTriangleFans);
+                            const Handle(TColStd_HArray1OfTransient)& theTriangleStrips,
+                            const Handle(TColStd_HArray1OfTransient)& theTriangleFans);
 
   //! Returns field Pnindex
   Standard_EXPORT Handle(TColStd_HArray1OfInteger) Pnindex() const;
@@ -59,19 +59,19 @@ public :
   Standard_EXPORT Standard_Integer PnindexValue(const Standard_Integer theNum) const;
 
   //! Returns field TriangleStrips
-  Standard_EXPORT Handle(TColStd_HArray2OfInteger) TriangleStrips() const;
+  Standard_EXPORT Handle(TColStd_HArray1OfTransient) TriangleStrips() const;
 
   //! Sets field TriangleStrips
-  Standard_EXPORT void SetTriangleStrips (const Handle(TColStd_HArray2OfInteger)& theTriangleStrips);
+  Standard_EXPORT void SetTriangleStrips (const Handle(TColStd_HArray1OfTransient)& theTriangleStrips);
 
   //! Returns number of TriangleStrips
   Standard_EXPORT Standard_Integer NbTriangleStrips() const;
 
   //! Returns field TriangleFans
-  Standard_EXPORT Handle(TColStd_HArray2OfInteger) TriangleFans() const;
+  Standard_EXPORT Handle(TColStd_HArray1OfTransient) TriangleFans() const;
 
   //! Sets field TriangleFans
-  Standard_EXPORT void SetTriangleFans (const Handle(TColStd_HArray2OfInteger)& theTriangleFans);
+  Standard_EXPORT void SetTriangleFans (const Handle(TColStd_HArray1OfTransient)& theTriangleFans);
 
   //! Returns number of TriangleFans
   Standard_EXPORT Standard_Integer NbTriangleFans() const;
@@ -81,8 +81,8 @@ public :
 private:
 
   Handle(TColStd_HArray1OfInteger) myPnindex;
-  Handle(TColStd_HArray2OfInteger) myTriangleStrips;
-  Handle(TColStd_HArray2OfInteger) myTriangleFans;
+  Handle(TColStd_HArray1OfTransient) myTriangleStrips;
+  Handle(TColStd_HArray1OfTransient) myTriangleFans;
 
 };
 
