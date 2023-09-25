@@ -25,6 +25,7 @@
 #include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <OSD_OpenFile.hxx>
+#include <OSD_Parallel.hxx>
 #include <OSD_Path.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPCAFControl_Writer.hxx>
@@ -256,13 +257,13 @@ static Standard_Integer stepread(Draw_Interpretor& theDI,
 
 //=======================================================================
 //function : testreadstep
-//purpose  :
+//purpose  : 
 //=======================================================================
 static Standard_Integer testreadstep(Draw_Interpretor& theDI,
                                      Standard_Integer theNbArgs,
                                      const char** theArgVec)
 {
-  if (theNbArgs < 3 || theNbArgs > 4)
+  if (theNbArgs < 3)
   {
     theDI << "ERROR in " << theArgVec[0] << "Wrong Number of Arguments.\n";
     theDI << " Usage : " << theArgVec[0] << " file_name shape_name [-stream]\n";
@@ -270,37 +271,65 @@ static Standard_Integer testreadstep(Draw_Interpretor& theDI,
     return 1;
   }
 
-  Standard_Boolean useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[3], "-stream"));
-
-  STEPControl_Reader Reader;
-  Standard_CString filename = theArgVec[1];
-  IFSelect_ReturnStatus readstat;
-  if (useStream)
+  Standard_Boolean useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[theNbArgs - 1], "-stream"));
+  Standard_CString aShName = useStream ? theArgVec[theNbArgs - 2] : theArgVec[theNbArgs - 1];
+  Standard_Integer aSize = useStream ? (theNbArgs - 3) : (theNbArgs - 2);
+  NCollection_Array1<TopoDS_Shape> aShapes(0, aSize);
+  NCollection_Array1<TCollection_AsciiString> aFileNames(0, aSize);
+  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> aShapesMap;
+  for (int anInd = 1; anInd <= aSize; ++anInd)
   {
-    std::ifstream aStream;
-    OSD_OpenStream(aStream, filename, std::ios::in | std::ios::binary);
-    TCollection_AsciiString aFolder, aFileNameShort;
-    OSD_Path::FolderAndFileFromPath(filename, aFolder, aFileNameShort);
-    readstat = Reader.ReadStream(aFileNameShort.ToCString(), aStream);
+    aFileNames[anInd - 1] = theArgVec[anInd];
   }
-  else
+  STEPControl_Controller::Init();
+  XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+  IFSelect_ReturnStatus aReadStat;
+  StepData_ConfParameters aParameters;
+  aParameters.InitFromStatic();
+  int aNbSubShape = 0;
+  OSD_Parallel::For
+  (
+    0, aSize,
+    [&](const Standard_Integer theIndex)
+    {
+      STEPControl_Reader aReader;
+      aReader.SetSystemLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+      if (useStream)
+      {
+        std::ifstream aStream;
+        OSD_OpenStream(aStream, aFileNames[theIndex].ToCString(), std::ios::in | std::ios::binary);
+        TCollection_AsciiString aFolder, aFileNameShort;
+        OSD_Path::FolderAndFileFromPath(aFileNames[theIndex].ToCString(), aFolder, aFileNameShort);
+        aReadStat = aReader.ReadStream(aFileNameShort.ToCString(), aParameters, aStream);
+      }
+      else
+      {
+        aReadStat = aReader.ReadFile(aFileNames[theIndex].ToCString(), aParameters);
+      }
+      if (aReadStat == IFSelect_RetDone)
+      {
+        aReader.TransferRoots();
+        aShapes[theIndex] = aReader.OneShape();
+        TCollection_AsciiString aName(aShName);
+        if (aSize > 1)
+        {
+          aName += theIndex;
+        }
+        aShapesMap.Bind(aName, aShapes[theIndex]);
+        aNbSubShape += aReader.NbShapes();
+      }
+      else
+      {
+        theDI << "Error: Problem with reading shape by file: " << "[" << aFileNames[theIndex] << "]";
+      }
+    }
+  );
+  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>::Iterator anIt(aShapesMap);
+  for (; anIt.More(); anIt.Next())
   {
-    readstat = Reader.ReadFile(filename);
+    DBRep::Set(anIt.Key().ToCString(), anIt.Value());
   }
-  theDI << "Status from reading STEP file " << filename << " : ";
-  switch (readstat)
-  {
-    case IFSelect_RetVoid: { theDI << "empty file\n"; return 1; }
-    case IFSelect_RetDone: { theDI << "file read\n";    break; }
-    case IFSelect_RetError: { theDI << "file not found\n";   return 1; }
-    case IFSelect_RetFail: { theDI << "error during read\n";  return 1; }
-    default: { theDI << "failure\n";   return 1; }
-  }
-  Reader.SetSystemLengthUnit(XSDRAW::GetLengthUnit());
-  Reader.TransferRoots();
-  TopoDS_Shape shape = Reader.OneShape();
-  DBRep::Set(theArgVec[2], shape);
-  theDI << "Count of shapes produced : " << Reader.NbShapes() << "\n";
+  theDI << "Count of shapes produced : " << aNbSubShape << "\n";
   return 0;
 }
 
@@ -437,79 +466,75 @@ static Standard_Integer stepwrite(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
-//function : testwrite
-//purpose  :
+//function : testwritestep
+//purpose  : 
 //=======================================================================
 static Standard_Integer testwrite(Draw_Interpretor& theDI,
                                   Standard_Integer theNbArgs,
                                   const char** theArgVec)
 {
-  TCollection_AsciiString aFilePath;
-  TopoDS_Shape aShape;
-  bool toTestStream = false;
-  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  if (theNbArgs < 3)
   {
-    TCollection_AsciiString anArgCase(theArgVec[anArgIter]);
-    anArgCase.LowerCase();
-    if (anArgCase == "-stream")
-    {
-      toTestStream = true;
-    }
-    else if (aFilePath.IsEmpty())
-    {
-      aFilePath = theArgVec[anArgIter];
-    }
-    else if (aShape.IsNull())
-    {
-      aShape = DBRep::Get(theArgVec[anArgIter]);
-      if (aShape.IsNull())
-      {
-        theDI << "Syntax error: '" << theArgVec[anArgIter] << "' is not a shape\n";
-        return 1;
-      }
-    }
-    else
-    {
-      theDI << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'\n";
-      return 1;
-    }
+    theDI << "ERROR in " << theArgVec[0] << "Wrong Number of Arguments.\n";
+    theDI << " Usage : " << theArgVec[0] << " file_name shape_name [-stream]\n";
+    theDI << " Option -stream forces usage of API accepting stream\n";
+    return 1;
   }
+
+  Standard_Boolean useStream = (theNbArgs > 3 && !strcasecmp(theArgVec[theNbArgs - 1], "-stream"));
+  Standard_CString aShName = useStream ? theArgVec[theNbArgs - 2] : theArgVec[theNbArgs - 1];
+  Standard_Integer aSize = useStream ? (theNbArgs - 3) : (theNbArgs - 2);
+  NCollection_Array1<TCollection_AsciiString> aFileNames(0, aSize);
+  NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> aShapesMap;
+  for (int anInd = 1; anInd <= aSize; ++anInd)
+  {
+    aFileNames[anInd - 1] = theArgVec[anInd];
+  }
+  TopoDS_Shape aShape = DBRep::Get(aShName);
   if (aShape.IsNull())
   {
-    theDI << "Syntax error: wrong number of arguments\n";
+    theDI << "Syntax error: wrong number of arguments";
     return 1;
   }
 
-  STEPControl_Writer aWriter;
-  IFSelect_ReturnStatus aStat = aWriter.Transfer(aShape, STEPControl_AsIs);
-  if (aStat != IFSelect_RetDone)
-  {
-    theDI << "Error on transferring shape\n";
-    return 1;
-  }
+  StepData_ConfParameters aParameters;
+  aParameters.InitFromStatic();
 
-  if (toTestStream)
-  {
-    std::ofstream aStream;
-    OSD_OpenStream(aStream, aFilePath, std::ios::out | std::ios::binary);
-    aStat = aWriter.WriteStream(aStream);
-    aStream.close();
-    if (!aStream.good()
-        && aStat == IFSelect_RetDone)
+  OSD_Parallel::For
+  (
+    0, aSize,
+    [&](const Standard_Integer theIndex)
     {
-      aStat = IFSelect_RetFail;
+      STEPControl_Writer aWriter;
+      if (aWriter.Transfer(aShape, STEPControl_AsIs, aParameters) != IFSelect_RetDone)
+      {
+        theDI << "Error: Can't transfer input shape";
+        return;
+      }
+      IFSelect_ReturnStatus aStat = IFSelect_RetDone;
+      if (useStream)
+      {
+        std::ofstream aStream;
+        OSD_OpenStream(aStream, aFileNames[theIndex], std::ios::out | std::ios::binary);
+        if (!aStream.good())
+        {
+          theDI << "Error: Problem with opening stream by file: " << "[" << aFileNames[theIndex] << "]";
+          return;
+        }
+        aStat = aWriter.WriteStream(aStream);
+      }
+      else
+      {
+        aStat = aWriter.Write(aFileNames[theIndex].ToCString());
+      }
+        if (aStat != IFSelect_RetDone)
+        {
+          theDI << "Error on writing file: " << "[" << aFileNames[theIndex] << "]";
+          return;
+        }
     }
-  }
-  else
-  {
-    aStat = aWriter.Write(aFilePath.ToCString());
-  }
-  if (aStat != IFSelect_RetDone)
-  {
-    theDI << "Error on writing file\n";
-    return 1;
-  }
-  theDI << "File Is Written\n";
+  );
+  theDI << "File(s) are Written";
   return 0;
 }
 
@@ -1011,10 +1036,10 @@ void XSDRAWSTEP::Factory(Draw_Interpretor& theDI)
 
   const char* aGroup = "DE: STEP";  // Step transfer file commands
   theDI.Add("stepwrite", "stepwrite mode[0-4 afsmw] shape", __FILE__, stepwrite, aGroup);
-  theDI.Add("testwritestep", "testwritestep filename.stp shape [-stream]",
+  theDI.Add("testwritestep", "testwritestep [file_1.stp ... file_n.stp] shape [-stream]",
             __FILE__, testwrite, aGroup);
   theDI.Add("stepread", "stepread  [file] [f or r (type of model full or reduced)]", __FILE__, stepread, aGroup);
-  theDI.Add("testreadstep", "testreadstep file shape [-stream]", __FILE__, testreadstep, aGroup);
+  theDI.Add("testreadstep", "testreadstep [file_1 ... file_n] shape [-stream]", __FILE__, testreadstep, aGroup);
   theDI.Add("steptrans", "steptrans shape stepax1 stepax2", __FILE__, steptrans, aGroup);
   theDI.Add("countexpected", "TEST", __FILE__, countexpected, aGroup);
   theDI.Add("dumpassembly", "TEST", __FILE__, dumpassembly, aGroup);

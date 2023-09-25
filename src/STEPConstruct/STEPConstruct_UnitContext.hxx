@@ -25,6 +25,7 @@
 #include <Standard_CString.hxx>
 #include <StepBasic_SiPrefix.hxx>
 class StepData_Factors;
+class StepData_StepModel;
 class StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx;
 class StepRepr_GlobalUnitAssignedContext;
 class StepBasic_NamedUnit;
@@ -47,6 +48,7 @@ public:
   //! Creates new context (units are MM and radians,
   //! uncertainty equal to Tol3d)
   Standard_EXPORT void Init (const Standard_Real Tol3d,
+                             const Handle(StepData_StepModel)& theModel,
                              const StepData_Factors& theLocalFactors);
   
   //! Returns True if Init was called successfully

@@ -28,6 +28,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <Standard_Integer.hxx>
+class StepData_StepModel;
 class TopoDS_Shape;
 class StepShape_TopologicalRepresentationItem;
 
@@ -41,11 +42,15 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT TopoDSToStep_Tool();
+  Standard_EXPORT TopoDSToStep_Tool(const Handle(StepData_StepModel)& theModel);
   
-  Standard_EXPORT TopoDSToStep_Tool(const MoniTool_DataMapOfShapeTransient& M, const Standard_Boolean FacetedContext);
+  Standard_EXPORT TopoDSToStep_Tool(const MoniTool_DataMapOfShapeTransient& M,
+                                    const Standard_Boolean FacetedContext,
+                                    Standard_Integer theSurfCurveMode);
   
-  Standard_EXPORT void Init (const MoniTool_DataMapOfShapeTransient& M, const Standard_Boolean FacetedContext);
+  Standard_EXPORT void Init (const MoniTool_DataMapOfShapeTransient& M,
+                             const Standard_Boolean FacetedContext,
+                             Standard_Integer theSurfCurveMode);
   
   Standard_EXPORT Standard_Boolean IsBound (const TopoDS_Shape& S);
   

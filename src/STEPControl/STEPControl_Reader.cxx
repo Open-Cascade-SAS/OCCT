@@ -12,9 +12,12 @@
 // commercial license or contractual agreement.
 
 
+#include <IFSelect_WorkLibrary.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
 #include <Interface_Static.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ConversionBasedUnit.hxx>
 #include <StepBasic_DocumentProductEquivalence.hxx>
@@ -94,6 +97,150 @@ Handle(StepData_StepModel) STEPControl_Reader::StepModel () const
 }
 
 //=======================================================================
+//function : ReadFile
+//purpose  : 
+//=======================================================================
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filename)
+{
+  Handle(IFSelect_WorkLibrary) aLibrary = WS()->WorkLibrary();
+  Handle(Interface_Protocol) aProtocol = WS()->Protocol();
+  if (aLibrary.IsNull()) return IFSelect_RetVoid;
+  if (aProtocol.IsNull()) return IFSelect_RetVoid;
+  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
+  aStepModel->InternalParameters.InitFromStatic();
+  aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  IFSelect_ReturnStatus status = IFSelect_RetVoid;
+  try {
+    OCC_CATCH_SIGNALS
+      Standard_Integer stat = aLibrary->ReadFile(filename, aStepModel, aProtocol);
+    if (stat == 0) status = IFSelect_RetDone;
+    else if (stat < 0) status = IFSelect_RetError;
+    else status = IFSelect_RetFail;
+  }
+  catch (Standard_Failure const& anException) {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "    ****    Interruption ReadFile par Exception :   ****\n";
+    sout << anException.GetMessageString();
+    sout << "\n    Abandon" << std::endl;
+    status = IFSelect_RetFail;
+  }
+  if (status != IFSelect_RetDone) return status;
+  WS()->SetModel(aStepModel);
+  WS()->SetLoadedFile(filename);
+  WS()->InitTransferReader(4);
+  return status;
+}
+
+//=======================================================================
+//function : ReadFile
+//purpose  : 
+//=======================================================================
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filename,
+                                                   const StepData_ConfParameters& theParams)
+{
+  Handle(IFSelect_WorkLibrary) aLibrary = WS()->WorkLibrary();
+  Handle(Interface_Protocol) aProtocol = WS()->Protocol();
+  if (aLibrary.IsNull()) return IFSelect_RetVoid;
+  if (aProtocol.IsNull()) return IFSelect_RetVoid;
+  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
+  aStepModel->InternalParameters = theParams;
+  aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  IFSelect_ReturnStatus status = IFSelect_RetVoid;
+  try {
+    OCC_CATCH_SIGNALS
+      Standard_Integer stat = aLibrary->ReadFile(filename, aStepModel, aProtocol);
+    if (stat == 0) status = IFSelect_RetDone;
+    else if (stat < 0) status = IFSelect_RetError;
+    else status = IFSelect_RetFail;
+  }
+  catch (Standard_Failure const& anException) {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "    ****    Interruption ReadFile par Exception :   ****\n";
+    sout << anException.GetMessageString();
+    sout << "\n    Abandon" << std::endl;
+    status = IFSelect_RetFail;
+  }
+  if (status != IFSelect_RetDone) return status;
+  WS()->SetModel(aStepModel);
+  WS()->SetLoadedFile(filename);
+  WS()->InitTransferReader(4);
+  return status;
+}
+
+//=======================================================================
+//function : ReadStream
+//purpose  : 
+//=======================================================================
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theName,
+                                                     std::istream& theIStream)
+{
+  Handle(IFSelect_WorkLibrary) aLibrary = WS()->WorkLibrary();
+  Handle(Interface_Protocol) aProtocol = WS()->Protocol();
+  if (aLibrary.IsNull()) return IFSelect_RetVoid;
+  if (aProtocol.IsNull()) return IFSelect_RetVoid;
+  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
+  aStepModel->InternalParameters.InitFromStatic();
+  aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  IFSelect_ReturnStatus status = IFSelect_RetVoid;
+  try {
+    OCC_CATCH_SIGNALS
+      Standard_Integer stat = aLibrary->ReadStream(theName, theIStream, aStepModel, aProtocol);
+    if (stat == 0) status = IFSelect_RetDone;
+    else if (stat < 0) status = IFSelect_RetError;
+    else status = IFSelect_RetFail;
+  }
+  catch (Standard_Failure const& anException) {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "    ****    Interruption ReadFile par Exception :   ****\n";
+    sout << anException.GetMessageString();
+    sout << "\n    Abandon" << std::endl;
+    status = IFSelect_RetFail;
+  }
+  if (status != IFSelect_RetDone) return status;
+  WS()->SetModel(aStepModel);
+  WS()->SetLoadedFile(theName);
+  WS()->InitTransferReader(4);
+  return status;
+}
+
+//=======================================================================
+//function : ReadStream
+//purpose  : 
+//=======================================================================
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theName,
+                                                     const StepData_ConfParameters& theParams,
+                                                     std::istream& theIStream)
+{
+  Handle(IFSelect_WorkLibrary) aLibrary = WS()->WorkLibrary();
+  Handle(Interface_Protocol) aProtocol = WS()->Protocol();
+  if (aLibrary.IsNull()) return IFSelect_RetVoid;
+  if (aProtocol.IsNull()) return IFSelect_RetVoid;
+  Handle(StepData_StepModel) aStepModel = new StepData_StepModel;
+  aStepModel->InternalParameters = theParams;
+  aStepModel->SetSourceCodePage(aStepModel->InternalParameters.ReadCodePage);
+  IFSelect_ReturnStatus status = IFSelect_RetVoid;
+  try {
+    OCC_CATCH_SIGNALS
+      Standard_Integer stat = aLibrary->ReadStream(theName, theIStream, aStepModel, aProtocol);
+    if (stat == 0) status = IFSelect_RetDone;
+    else if (stat < 0) status = IFSelect_RetError;
+    else status = IFSelect_RetFail;
+  }
+  catch (Standard_Failure const& anException) {
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout << "    ****    Interruption ReadFile par Exception :   ****\n";
+    sout << anException.GetMessageString();
+    sout << "\n    Abandon" << std::endl;
+    status = IFSelect_RetFail;
+  }
+  if (status != IFSelect_RetDone) return status;
+  WS()->SetModel(aStepModel);
+  WS()->SetLoadedFile(theName);
+  WS()->InitTransferReader(4);
+  return status;
+}
+
+//=======================================================================
 //function : TransferRoot
 //purpose  : 
 //=======================================================================
@@ -114,11 +261,12 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
   if (therootsta) return theroots.Length();
   therootsta = Standard_True;
 
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(WS()->Model());
   //theroots.Clear();
   Standard_Integer nb = Model()->NbEntities();
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(Standard_Transient) ent = Model()->Value(i);
-    if (Interface_Static::IVal("read.step.all.shapes") == 1) {
+    if (aStepModel->InternalParameters.ReadAllShapes == 1) {
       // Special case to read invalid shape_representation without links to shapes.
       if (ent->IsKind(STANDARD_TYPE(StepShape_ManifoldSolidBrep))) {
         Interface_EntityIterator aShareds = WS()->Graph().Sharings(ent);
@@ -178,8 +326,9 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
       }
       // determinate roots used ProductDefinitionContext
       if(IsRoot) {
-        const char *str1 = Interface_Static::CVal("read.step.product.context");
-        Standard_Integer ICS = Interface_Static::IVal("read.step.product.context");
+        StepData_ConfParameters::ReadMode_ProductContext aProdContMode = aStepModel->InternalParameters.ReadProductContext;
+        TCollection_AsciiString str1 = aStepModel->InternalParameters.GetString(aProdContMode);
+        Standard_Integer ICS = aStepModel->InternalParameters.ReadProductContext;
         if(ICS>1) {
           subs = graph.Shareds(PD);
           for(subs.Start(); subs.More(); subs.Next()) {
@@ -188,7 +337,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
             if (PDC.IsNull()) continue;
             const char *str2 = PDC->LifeCycleStage()->String().ToCString();
             const char *str3 = PDC->Name()->String().ToCString();
-            if( !( strcasecmp(str1,str2)==0 || strcasecmp(str1,str3)==0 ) )
+            if( !( strcasecmp(str1.ToCString(),str2)==0 || strcasecmp(str1.ToCString(),str3) == 0))
               IsRoot=Standard_False;
           }
         }
@@ -212,8 +361,8 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
         WS()->TransferReader()->TransientProcess()->RootsForTransfer()->Append(ent);
       }
     }
-    TCollection_AsciiString aProdMode = Interface_Static::CVal("read.step.product.mode");
-    if(!aProdMode.IsEqual("ON")) {
+    bool aProdMode = aStepModel->InternalParameters.ReadProductMode;
+    if(!aProdMode) {
       if(ent->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation))) {
         Standard_Boolean IsRoot = Standard_True;
         Handle(StepShape_ShapeDefinitionRepresentation) SDR =
@@ -440,6 +589,10 @@ void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLength
 //=======================================================================
 void STEPControl_Reader::SetSystemLengthUnit(const Standard_Real theLengthUnit)
 {
+  if (StepModel().IsNull())
+  {
+    return;
+  }
   StepModel()->SetLocalLengthUnit(theLengthUnit);
 }
 
@@ -449,6 +602,10 @@ void STEPControl_Reader::SetSystemLengthUnit(const Standard_Real theLengthUnit)
 //=======================================================================
 Standard_Real STEPControl_Reader::SystemLengthUnit() const
 {
+  if (StepModel().IsNull())
+  {
+    return 1.;
+  }
   return StepModel()->LocalLengthUnit();
 }
 

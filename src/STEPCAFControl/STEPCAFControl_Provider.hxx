@@ -133,18 +133,6 @@ public:
   //! @return provider's vendor name
   Standard_EXPORT virtual TCollection_AsciiString GetVendor() const Standard_OVERRIDE;
 
- private:
-
-   //! Initialize static variables
-   void initStatic(const Handle(DE_ConfigurationNode)& theNode);
-
-   //! Initialize static variables
-   void setStatic(const STEPCAFControl_ConfigurationNode::STEPCAFControl_InternalSection& theParameter);
-
-   //! Reset used interface static variables
-   void resetStatic();
-
-   STEPCAFControl_ConfigurationNode::STEPCAFControl_InternalSection myOldValues;
 
 };
 

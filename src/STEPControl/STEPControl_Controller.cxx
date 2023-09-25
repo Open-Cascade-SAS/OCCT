@@ -23,6 +23,7 @@
 #include <IFSelect_SignCounter.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
+#include <MoniTool_Macros.hxx>
 #include <RWHeaderSection.hxx>
 #include <RWStepAP214.hxx>
 #include <Standard_Type.hxx>
@@ -35,6 +36,8 @@
 #include <STEPEdit.hxx>
 #include <STEPEdit_EditContext.hxx>
 #include <STEPEdit_EditSDR.hxx>
+#include <STEPControl_ActorRead.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepSelect_WorkLibrary.hxx>
 #include <STEPSelections_SelectAssembly.hxx>
 #include <STEPSelections_SelectDerived.hxx>
@@ -323,14 +326,12 @@ STEPControl_Controller::STEPControl_Controller ()
   aMutex.Unlock();
 
   Handle(STEPControl_ActorWrite) ActWrite = new STEPControl_ActorWrite;
-  ActWrite->SetGroupMode (Interface_Static::IVal("write.step.assembly"));
   myAdaptorWrite = ActWrite;
 
   Handle(StepSelect_WorkLibrary) swl = new StepSelect_WorkLibrary;
   swl->SetDumpLabel(1);
   myAdaptorLibrary  = swl;
   myAdaptorProtocol = STEPEdit::Protocol();
-  myAdaptorRead     = new STEPControl_ActorRead;  // par ex pour Recognize
 
   SetModeWrite (0,4);
   SetModeWriteHelp (0,"As Is");
@@ -405,6 +406,20 @@ Handle(Interface_InterfaceModel)  STEPControl_Controller::NewModel () const
   return STEPEdit::NewModel();
 }
 
+//=======================================================================
+//function : ActorRead
+//purpose  : 
+//=======================================================================
+Handle(Transfer_ActorOfTransientProcess) STEPControl_Controller::ActorRead(const Handle(Interface_InterfaceModel)& theModel) const
+{
+  DeclareAndCast(STEPControl_ActorRead, anAdap, myAdaptorRead);
+  if (anAdap.IsNull()) {
+    anAdap = new STEPControl_ActorRead(theModel);
+    anAdap->SetModel(theModel);
+  }
+  return anAdap;
+}
+
 //  ####    PROVISOIRE ???   ####
 
 IFSelect_ReturnStatus  STEPControl_Controller::TransferWriteShape
@@ -419,7 +434,7 @@ IFSelect_ReturnStatus  STEPControl_Controller::TransferWriteShape
     Handle(STEPControl_ActorWrite)::DownCast(myAdaptorWrite);
 //    A PRESENT ON PASSE PAR LE PROFILE
   if (!ActWrite.IsNull()) 
-    ActWrite->SetGroupMode (Interface_Static::IVal("write.step.assembly"));
+    ActWrite->SetGroupMode (Handle(StepData_StepModel)::DownCast(model)->InternalParameters.WriteAssembly);
 
   return XSControl_Controller::TransferWriteShape(shape, FP, model, modeshape, theProgress);
 }

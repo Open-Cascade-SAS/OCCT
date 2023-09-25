@@ -31,6 +31,7 @@ class StepBasic_ProductDefinitionContext;
 class StepBasic_Product;
 class StepBasic_ProductDefinitionFormation;
 class StepBasic_ProductDefinition;
+class StepData_StepModel;
 class StepRepr_ProductDefinitionShape;
 
 
@@ -47,7 +48,10 @@ public:
   
   Standard_EXPORT STEPConstruct_Part();
   
-  Standard_EXPORT void MakeSDR (const Handle(StepShape_ShapeRepresentation)& aShape, const Handle(TCollection_HAsciiString)& aName, const Handle(StepBasic_ApplicationContext)& AC);
+  Standard_EXPORT void MakeSDR (const Handle(StepShape_ShapeRepresentation)& aShape,
+                                const Handle(TCollection_HAsciiString)& aName,
+                                const Handle(StepBasic_ApplicationContext)& AC,
+                                Handle(StepData_StepModel)& theStepModel);
   
   Standard_EXPORT void ReadSDR (const Handle(StepShape_ShapeDefinitionRepresentation)& aShape);
   

@@ -391,6 +391,21 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const Handle(TDocStd_Document)&
                                                  const Standard_CString theMulti,
                                                  const Message_ProgressRange& theProgress)
 {
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWriter.WS()->Model());
+  aModel->InternalParameters.InitFromStatic();
+  return Transfer(theDoc, aModel->InternalParameters, theMode, theMulti, theProgress);
+}
+
+//=======================================================================
+//function : Transfer
+//purpose  :
+//=======================================================================
+Standard_Boolean STEPCAFControl_Writer::Transfer(const Handle(TDocStd_Document)& theDoc,
+                                                 const StepData_ConfParameters& theParams,
+                                                 const STEPControl_StepModelType theMode,
+                                                 const Standard_CString theMulti,
+                                                 const Message_ProgressRange& theProgress)
+{
   Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
   if (aShTool.IsNull())
     return Standard_False;
@@ -399,6 +414,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const Handle(TDocStd_Document)&
   myRootLabels.Add(theDoc->Main().Root());
   TDF_LabelSequence aLabels;
   aShTool->GetFreeShapes(aLabels);
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWriter.WS()->Model());
+  aModel->InternalParameters = theParams;
   return transfer(myWriter, aLabels, theMode, theMulti, Standard_False, theProgress);
 }
 
@@ -411,6 +428,21 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_Label& theLabel,
                                                  const Standard_CString theIsMulti,
                                                  const Message_ProgressRange& theProgress)
 {
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWriter.WS()->Model());
+  aModel->InternalParameters.InitFromStatic();
+  return Transfer(theLabel, aModel->InternalParameters, theMode, theIsMulti, theProgress);
+}
+
+//=======================================================================
+//function : Transfer
+//purpose  :
+//=======================================================================
+Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_Label& theLabel,
+                                                 const StepData_ConfParameters& theParams,
+                                                 const STEPControl_StepModelType theMode,
+                                                 const Standard_CString theIsMulti,
+                                                 const Message_ProgressRange& theProgress)
+{
   if (theLabel.IsNull())
   {
     return Standard_False;
@@ -419,6 +451,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_Label& theLabel,
   aLabels.Append(theLabel);
   myRootLabels.Clear();
   myRootLabels.Add(theLabel.Root());
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWriter.WS()->Model());
+  aModel->InternalParameters = theParams;
   return transfer(myWriter, aLabels, theMode, theIsMulti, Standard_False, theProgress);
 }
 
@@ -427,6 +461,21 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_Label& theLabel,
 //purpose  :
 //=======================================================================
 Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_LabelSequence& theLabels,
+                                                 const STEPControl_StepModelType theMode,
+                                                 const Standard_CString theIsMulti,
+                                                 const Message_ProgressRange& theProgress)
+{
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWriter.WS()->Model());
+  aModel->InternalParameters.InitFromStatic();
+  return Transfer(theLabels, aModel->InternalParameters, theMode, theIsMulti, theProgress);
+}
+
+//=======================================================================
+//function : Transfer
+//purpose  :
+//=======================================================================
+Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_LabelSequence& theLabels,
+                                                 const StepData_ConfParameters& theParams,
                                                  const STEPControl_StepModelType theMode,
                                                  const Standard_CString theIsMulti,
                                                  const Message_ProgressRange& theProgress)
@@ -441,6 +490,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_LabelSequence& theLab
       myRootLabels.Add(aLabel.Root());
     }
   }
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(myWriter.WS()->Model());
+  aModel->InternalParameters = theParams;
   return transfer(myWriter, theLabels, theMode, theIsMulti, Standard_False, theProgress);
 }
 
@@ -453,6 +504,20 @@ Standard_Boolean STEPCAFControl_Writer::Perform(const Handle(TDocStd_Document)& 
                                                 const Message_ProgressRange& theProgress)
 {
   if (!Transfer(theDoc, STEPControl_AsIs, 0L, theProgress))
+    return Standard_False;
+  return Write(theFileName) == IFSelect_RetDone;
+}
+
+//=======================================================================
+//function : Perform
+//purpose  :
+//=======================================================================
+Standard_Boolean STEPCAFControl_Writer::Perform(const Handle(TDocStd_Document)& theDoc,
+                                                const Standard_CString theFileName,
+                                                const StepData_ConfParameters& theParams,
+                                                const Message_ProgressRange& theProgress)
+{
+  if (!Transfer(theDoc, theParams, STEPControl_AsIs, 0L, theProgress))
     return Standard_False;
   return Write(theFileName) == IFSelect_RetDone;
 }
@@ -519,7 +584,6 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
   const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(theWriter.WS()->Model());
   prepareUnit(theLabels.First(), aModel, aLocalFactors); // set local length unit to the model
   // translate free top-level shapes of the DECAF document
-  const Standard_Integer aStepSchema = Interface_Static::IVal("write.step.schema");
   TDF_LabelSequence aSubLabels;
   Message_ProgressScope aPS(theProgress, "Labels", theLabels.Length());
   // Iterate on requested shapes
@@ -612,7 +676,7 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
       if (XCAFDoc_ShapeTool::IsAssembly(aCurL) || XCAFDoc_ShapeTool::IsReference(aCurL))
         anActor->RegisterAssembly(aCurShape);
 
-      theWriter.Transfer(aCurShape, theMode, Standard_False, aRange);
+      theWriter.Transfer(aCurShape, theMode, aModel->InternalParameters, Standard_False, aRange);
       anActor->SetStdMode(Standard_True); // restore default behaviour
     }
     else
@@ -623,10 +687,10 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
       if (aPS1.UserBreak())
         return Standard_False;
 
-      Standard_Integer assemblymode = Interface_Static::IVal("write.step.assembly");
-      Interface_Static::SetCVal("write.step.assembly", "On");
-      theWriter.Transfer(aSass, STEPControl_AsIs, Standard_True, aPS1.Next());
-      Interface_Static::SetIVal("write.step.assembly", assemblymode);
+      StepData_ConfParameters::WriteMode_Assembly assemblymode = aModel->InternalParameters.WriteAssembly;
+      aModel->InternalParameters.WriteAssembly = StepData_ConfParameters::WriteMode_Assembly_On;
+      theWriter.Transfer(aSass, STEPControl_AsIs, aModel->InternalParameters, Standard_True, aPS1.Next());
+      aModel->InternalParameters.WriteAssembly = assemblymode;
     }
   }
   if (aPS.UserBreak())
@@ -656,7 +720,7 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
     // write G&DTs
     if (GetDimTolMode())
     {
-      if (aStepSchema == 5)
+      if (aModel->InternalParameters.WriteSchema == 5)
       {
         writeDGTsAP242(theWriter.WS(), aSubLabels, aLocalFactors);
       }
@@ -691,7 +755,7 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
   theWriter.WS()->ComputeGraph(Standard_True);
 
   // Write names for the sub-shapes
-  if (Interface_Static::IVal("write.stepcaf.subshapes.name") != 0)
+  if (aModel->InternalParameters.WriteSubshapeNames != 0)
   {
     const Handle(XSControl_TransferWriter)& TW = this->ChangeWriter().WS()->TransferWriter();
     const Handle(Transfer_FinderProcess)& aFP = TW->FinderProcess();
@@ -785,11 +849,11 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label& theLabe
     anExtFile->SetWS(aNewWS);
     anExtFile->SetName(aNewName);
     anExtFile->SetLabel(theLabel);
-    Standard_Integer anAssemblymode = Interface_Static::IVal("write.step.assembly");
-    Interface_Static::SetCVal("write.step.assembly", "Off");
+    StepData_ConfParameters::WriteMode_Assembly anAssemblymode = aStepWriter.Model()->InternalParameters.WriteAssembly;
+    aStepWriter.Model()->InternalParameters.WriteAssembly = StepData_ConfParameters::WriteMode_Assembly_Off;
     const Standard_CString anIsMulti = 0;
     anExtFile->SetTransferStatus(transfer(aStepWriter, aLabelSeq, theMode, anIsMulti, Standard_True, theProgress));
-    Interface_Static::SetIVal("write.step.assembly", anAssemblymode);
+    aStepWriter.Model()->InternalParameters.WriteAssembly = anAssemblymode;
     myLabEF.Bind(theLabel, anExtFile);
     myFiles.Bind(aNewName->ToCString(), anExtFile);
 
@@ -842,7 +906,8 @@ Standard_Boolean STEPCAFControl_Writer::writeExternRefs(const Handle(XSControl_W
   const Handle(XSControl_TransferWriter)& aTW = theWS->TransferWriter();
   const Handle(Transfer_FinderProcess)& aFP = aTW->FinderProcess();
   STEPConstruct_ExternRefs anEFTool(theWS);
-  Standard_Integer aStepSchema = Interface_Static::IVal("write.step.schema");
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(theWS->Model());
+  Standard_Integer aStepSchema = aStepModel->InternalParameters.WriteSchema;
   // Iterate on requested shapes
   for (TDF_LabelSequence::Iterator aLabelIter(theLabels);
        aLabelIter.More(); aLabelIter.Next())
@@ -1290,6 +1355,10 @@ Standard_Boolean STEPCAFControl_Writer::writeColors(const Handle(XSControl_WorkS
     MakeSTEPStyles(Styles, aShape, aSettings, anOverride,
                    aMap, myMapCompMDGPR, DPDCs, ColRGBs, aSTool, 0, anIsComponent);
 
+    const Handle(XSControl_TransferWriter)& aTW = theWS->TransferWriter();
+    const Handle(Transfer_FinderProcess)& aFP = aTW->FinderProcess();
+    Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(aFP->Model());
+
     // create MDGPR and record it in model
     Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation) aMDGPR;
 
@@ -1299,15 +1368,13 @@ Standard_Boolean STEPCAFControl_Writer::writeColors(const Handle(XSControl_WorkS
       {
         Message::SendTrace() << "Error: Current Top-Level shape have MDGPR already " << "\n";
       }
-      Styles.CreateMDGPR(aContext, aMDGPR);
+      Styles.CreateMDGPR(aContext, aMDGPR, aStepModel);
       if (!aMDGPR.IsNull())
         myMapCompMDGPR.Bind(aTopSh, aMDGPR);
     }
     else
     {
       // create SDR and add to model.
-      const Handle(XSControl_TransferWriter)& aTW = theWS->TransferWriter();
-      const Handle(Transfer_FinderProcess)& aFP = aTW->FinderProcess();
       Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper(aFP, aShape);
       Handle(StepShape_ContextDependentShapeRepresentation) aCDSR;
       if (aFP->FindTypedTransient(aMapper,
@@ -1896,6 +1963,7 @@ static Standard_Boolean createSHUOStyledItem(const XCAFPrs_Style& theStyle,
   // find the repr item of the shape
   const Handle(XSControl_TransferWriter)& aTW = theWS->TransferWriter();
   const Handle(Transfer_FinderProcess)& aFP = aTW->FinderProcess();
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(aFP->Model());
   Handle(TransferBRep_ShapeMapper) aMapper = TransferBRep::ShapeMapper(aFP, theShape);
   Handle(StepShape_ContextDependentShapeRepresentation) aCDSR;
   aFP->FindTypedTransient(aMapper,
@@ -1938,7 +2006,7 @@ static Standard_Boolean createSHUOStyledItem(const XCAFPrs_Style& theStyle,
     // create MDGPR and record it in model
     Message::SendTrace() << "Warning: " << __FILE__ << ": Create new MDGPR for SHUO instance" << "\n";
     Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation) aMDGPR;
-    aStyles.CreateMDGPR(aContext, aMDGPR);
+    aStyles.CreateMDGPR(aContext, aMDGPR, aStepModel);
     if (!aMDGPR.IsNull())
       theMapCompMDGPR.Bind(aTopSh, aMDGPR);
   }

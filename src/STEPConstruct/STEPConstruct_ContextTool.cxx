@@ -33,7 +33,6 @@
 #include <STEPConstruct_Assembly.hxx>
 #include <STEPConstruct_ContextTool.hxx>
 #include <STEPConstruct_Part.hxx>
-#include <StepData_StepModel.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepRepr_NextAssemblyUsageOccurrence.hxx>
 #include <StepShape_ShapeDefinitionRepresentation.hxx>
@@ -69,7 +68,8 @@ STEPConstruct_ContextTool::STEPConstruct_ContextTool (const Handle(StepData_Step
 void STEPConstruct_ContextTool::SetModel (const Handle(StepData_StepModel)& aStepModel)
 {
   theAPD.Nullify();  //thePRPC.Nullify();
-
+  mySchema = aStepModel->InternalParameters.WriteSchema;
+  myProductName = aStepModel->InternalParameters.WriteProductName;
   Standard_Integer i, nb = aStepModel->NbEntities();
   for(i = 1; i<=nb && theAPD.IsNull(); i ++) {
     Handle(Standard_Transient) ent = aStepModel->Value(i);
@@ -111,7 +111,7 @@ void STEPConstruct_ContextTool::AddAPD (const Standard_Boolean enforce)
   Standard_Boolean noapd = theAPD.IsNull();
   if (noapd || enforce) theAPD  = new StepBasic_ApplicationProtocolDefinition;
 
-  switch (Interface_Static::IVal("write.step.schema")) { //j4
+  switch (mySchema) { //j4
   default:
   case 1:
     theAPD->SetApplicationProtocolYear (1997);
@@ -147,7 +147,7 @@ void STEPConstruct_ContextTool::AddAPD (const Standard_Boolean enforce)
   if (theAPD->Application().IsNull())
     theAPD->SetApplication (new StepBasic_ApplicationContext);
   Handle(TCollection_HAsciiString) appl;
-  switch (Interface_Static::IVal("write.step.schema")) { //j4
+  switch (mySchema) { //j4
   default:
   case 1:
   case 2: appl = new TCollection_HAsciiString ( "core data for automotive mechanical design processes" );
@@ -567,8 +567,8 @@ void STEPConstruct_ContextTool::SetIndex (const Standard_Integer ind)
 Handle(TCollection_HAsciiString) STEPConstruct_ContextTool::GetProductName () const
 {
   Handle(TCollection_HAsciiString) PdtName;
-  if (Interface_Static::IsSet("write.step.product.name"))
-    PdtName = new TCollection_HAsciiString(Interface_Static::CVal("write.step.product.name"));
+  if (!myProductName.IsEmpty())
+    PdtName = new TCollection_HAsciiString(myProductName);
   else PdtName = new TCollection_HAsciiString("Product");
 
   for ( Standard_Integer i=1; i <= myLevel.Length(); i++ ) {
@@ -596,7 +596,7 @@ Handle(TColStd_HSequenceOfTransient) STEPConstruct_ContextTool::GetRootsForPart 
   if ( ! SDRTool.PRPC().IsNull() ) seq->Append ( SDRTool.PRPC() );
 
   // for AP203, add required product management data
-  if ( Interface_Static::IVal("write.step.schema") == 3 ) {
+  if ( mySchema == 3 ) {
     theAP203.Init ( SDRTool );
     seq->Append (theAP203.GetProductCategoryRelationship());
     seq->Append (theAP203.GetCreator());
@@ -626,7 +626,7 @@ Handle(TColStd_HSequenceOfTransient) STEPConstruct_ContextTool::GetRootsForAssem
   seq->Append ( assembly.ItemValue() );
   
   // for AP203, write required product management data
-  if ( Interface_Static::IVal("write.step.schema") == 3 ) {
+  if ( mySchema == 3 ) {
     theAP203.Init ( assembly.GetNAUO() );
     seq->Append (theAP203.GetSecurity());
     seq->Append (theAP203.GetClassificationOfficer());

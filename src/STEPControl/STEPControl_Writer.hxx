@@ -23,6 +23,7 @@
 
 #include <Standard_Real.hxx>
 #include <IFSelect_ReturnStatus.hxx>
+#include <StepData_ConfParameters.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
@@ -86,6 +87,14 @@ public:
   Standard_EXPORT IFSelect_ReturnStatus Transfer
                    (const TopoDS_Shape& sh,
                     const STEPControl_StepModelType mode,
+                    const Standard_Boolean compgraph = Standard_True,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
+
+  //! Translates shape sh to a STEP entity
+  Standard_EXPORT IFSelect_ReturnStatus Transfer
+                   (const TopoDS_Shape& sh,
+                    const STEPControl_StepModelType mode,
+                    const StepData_ConfParameters& theParams,
                     const Standard_Boolean compgraph = Standard_True,
                     const Message_ProgressRange& theProgress = Message_ProgressRange());
 

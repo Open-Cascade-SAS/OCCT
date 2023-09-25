@@ -17,6 +17,7 @@
 #include <Interface_Macros.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
+#include <StepData_ConfParameters.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_StepWriter.hxx>
@@ -128,6 +129,21 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
    const Standard_Boolean compgraph,
    const Message_ProgressRange& theProgress)
 {
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(thesession->Model());
+  if (!aStepModel.IsNull())
+  {
+    aStepModel->InternalParameters.InitFromStatic();
+  }
+  return Transfer(sh, mode, aStepModel->InternalParameters, compgraph, theProgress);
+}
+
+IFSelect_ReturnStatus STEPControl_Writer::Transfer
+  (const TopoDS_Shape& sh,
+  const STEPControl_StepModelType mode,
+  const StepData_ConfParameters& theParams,
+  const Standard_Boolean compgraph,
+  const Message_ProgressRange& theProgress)
+{
   Standard_Integer mws = -1;
   switch (mode) {
     case STEPControl_AsIs :                   mws = 0;  break;
@@ -144,6 +160,13 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
     XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
     Model()->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
+  if (!thesession->Model().IsNull())
+  {
+    Handle(StepData_StepModel)::DownCast(thesession->Model())->InternalParameters = theParams;
+  }
+  Handle(STEPControl_ActorWrite) ActWrite =
+    Handle(STEPControl_ActorWrite)::DownCast(WS()->NormAdaptor()->ActorWrite());
+  ActWrite->SetGroupMode(Handle(StepData_StepModel)::DownCast(thesession->Model())->InternalParameters.WriteAssembly);
   return thesession->TransferWriteShape(sh, compgraph, theProgress);
 }
 

@@ -35,6 +35,7 @@
 #include <StepBasic_SiUnitAndVolumeUnit.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 #include <StepData_Factors.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
@@ -64,6 +65,7 @@ STEPConstruct_UnitContext::STEPConstruct_UnitContext()
 //=======================================================================
 
 void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d,
+                                     const Handle(StepData_StepModel)& theModel,
                                      const StepData_Factors& theLocalFactors)
 {
   done = Standard_True;
@@ -82,7 +84,7 @@ void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d,
   Standard_Boolean hasPref = Standard_True;
   StepBasic_SiPrefix siPref = StepBasic_spMilli;
   Standard_Real aScale = 1.;
-  switch (Interface_Static::IVal("write.step.unit"))
+  switch (theModel->InternalParameters.WriteUnit)
   {
     case  1: uName = "INCH"; aScale = 25.4; break;
     default:

@@ -281,6 +281,10 @@ STEPCAFControl_Reader::STEPCAFControl_Reader()
   myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
+  if (!myReader.WS().IsNull())
+  {
+    Init(myReader.WS());
+  }
 }
 
 
@@ -349,6 +353,16 @@ IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile (const Standard_CString th
 }
 
 //=======================================================================
+//function : ReadFile
+//purpose  :
+//=======================================================================
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile (const Standard_CString theFileName,
+                                                       const StepData_ConfParameters& theParams)
+{
+  return myReader.ReadFile(theFileName, theParams);
+}
+
+//=======================================================================
 //function : ReadStream
 //purpose  :
 //=======================================================================
@@ -412,6 +426,21 @@ Standard_Boolean STEPCAFControl_Reader::Perform (const Standard_CString filename
   return Transfer (doc, theProgress);
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPCAFControl_Reader::Perform (const Standard_CString filename,
+                                                 const Handle(TDocStd_Document)& doc,
+                                                 const StepData_ConfParameters& theParams,
+                                                 const Message_ProgressRange& theProgress)
+{
+  if (ReadFile(filename, theParams) != IFSelect_RetDone)
+  {
+    return Standard_False;
+  }
+  return Transfer(doc, theProgress);
+}
 
 //=======================================================================
 //function : Perform
@@ -429,6 +458,21 @@ Standard_Boolean STEPCAFControl_Reader::Perform (const TCollection_AsciiString &
   return Transfer (doc, theProgress);
 }
 
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPCAFControl_Reader::Perform (const TCollection_AsciiString& filename,
+                                                 const Handle(TDocStd_Document)& doc,
+                                                 const StepData_ConfParameters& theParams,
+                                                 const Message_ProgressRange& theProgress)
+{
+  if (ReadFile(filename.ToCString(), theParams) != IFSelect_RetDone)
+  {
+    return Standard_False;
+  }
+  return Transfer(doc, theProgress);
+}
 
 //=======================================================================
 //function : ExternFiles
@@ -2302,7 +2346,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   Handle(StepVisual_DraughtingModel) aDModel =
     Handle(StepVisual_DraughtingModel)::DownCast(aDMIA->UsedRepresentation());
   XSAlgo::AlgoContainer()->PrepareForTransfer();
-  STEPControl_ActorRead anActor;
+  STEPControl_ActorRead anActor(aTP->Model());
   StepData_Factors aLocalFactors = theLocalFactors;
   anActor.PrepareUnits(aDModel, aTP, aLocalFactors);
   Standard_Real aFact = aLocalFactors.LengthFactor();
@@ -2411,7 +2455,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
   if (!aSDR.IsNull())
   {
     XSAlgo::AlgoContainer()->PrepareForTransfer();
-    STEPControl_ActorRead anActor;
+    STEPControl_ActorRead anActor(theTR->Model());
     StepData_Factors aLocalFactors = theLocalFactors;
     anActor.PrepareUnits(aSDR, aTP, aLocalFactors);
     aFact = aLocalFactors.LengthFactor();
@@ -2824,7 +2868,7 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
                 Handle(StepGeom_Axis2Placement3d) anAx
                   = Handle(StepGeom_Axis2Placement3d)::DownCast(aSRWP->ItemsValue(j));
                 XSAlgo::AlgoContainer()->PrepareForTransfer();
-                STEPControl_ActorRead anActor;
+                STEPControl_ActorRead anActor(aTP->Model());
                 StepData_Factors aLocalFactors = theLocalFactors;
                 anActor.PrepareUnits(aSRWP, aTP, aLocalFactors);
                 Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement(anAx, aLocalFactors);
@@ -4363,7 +4407,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
       if (!aDMIA.IsNull())
       {
         XSAlgo::AlgoContainer()->PrepareForTransfer();
-        STEPControl_ActorRead anActor;
+        STEPControl_ActorRead anActor(aModel);
         Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
         anActor.PrepareUnits(aDMIA->UsedRepresentation(), aTP, aLocalFactors);
         aFact = aLocalFactors.LengthFactor();
@@ -4719,7 +4763,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
     if (!aDModel.IsNull())
     {
       XSAlgo::AlgoContainer()->PrepareForTransfer();
-      STEPControl_ActorRead anActor;
+      STEPControl_ActorRead anActor(aTP->Model());
       anActor.PrepareUnits(aDModel, aTP, aLocalFactors);
     }
 
@@ -4895,11 +4939,8 @@ void STEPCAFControl_Reader::ExpandSubShapes(const Handle(XCAFDoc_ShapeTool)& Sha
   const Handle(Transfer_TransientProcess)& TP = Reader().WS()->TransferReader()->TransientProcess();
   NCollection_DataMap<TopoDS_Shape, Handle(TCollection_HAsciiString)> ShapeNameMap;
   TColStd_MapOfTransient aRepItems;
-
-  // Read translation control variables
-  Standard_Boolean doReadSNames = (Interface_Static::IVal("read.stepcaf.subshapes.name") > 0);
-
-  if (!doReadSNames)
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  if (!aStepModel->InternalParameters.ReadSubshapeNames)
     return;
 
   const Interface_Graph& Graph = Reader().WS()->Graph();

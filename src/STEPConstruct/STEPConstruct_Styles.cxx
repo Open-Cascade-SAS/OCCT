@@ -228,7 +228,8 @@ Handle(StepVisual_StyledItem) STEPConstruct_Styles::AddStyle (const TopoDS_Shape
 //=======================================================================
 
 Standard_Boolean STEPConstruct_Styles::CreateMDGPR (const Handle(StepRepr_RepresentationContext) &Context,
-                                                    Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& Repr)
+                                                    Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& Repr,
+                                                    Handle(StepData_StepModel)& theStepModel)
 {
   if ( myStyles.Extent() <1 ) return Standard_False;
   
@@ -246,7 +247,7 @@ Standard_Boolean STEPConstruct_Styles::CreateMDGPR (const Handle(StepRepr_Repres
 //   Model()->AddWithRefs ( Repr ); add into the model upper
 
   // for AP203, add subschema name
-  if ( Interface_Static::IVal("write.step.schema") ==3 ) {
+  if ( theStepModel->InternalParameters.WriteSchema == 3 ) {
     APIHeaderSection_MakeHeader mkHdr ( Handle(StepData_StepModel)::DownCast ( Model() ) );
     Handle(TCollection_HAsciiString) subSchema = 
       new TCollection_HAsciiString ( "SHAPE_APPEARANCE_LAYER_MIM" );

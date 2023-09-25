@@ -81,6 +81,14 @@ public:
   //! @return read status
   Standard_EXPORT IFSelect_ReturnStatus ReadFile (const Standard_CString theFileName);
 
+  //! Loads a file and returns the read status
+  //! Provided for use like single-file reader.
+  //! @param theFileName [in] file to open
+  //! @param theParams [in] default configuration parameters
+  //! @return read status
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const Standard_CString theFileName,
+                                                 const StepData_ConfParameters& theParams);
+
   //! Loads a file from stream and returns the read status.
   //! @param theName [in] auxiliary stream name
   //! @param theIStream [in] stream to read from
@@ -108,11 +116,23 @@ public:
   Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& filename,
                                             const Handle(TDocStd_Document)& doc,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+
+  Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& filename,
+                                            const Handle(TDocStd_Document)& doc,
+                                            const StepData_ConfParameters& theParams,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
+ 
   //! Translate STEP file given by filename into the document
   //! Return True if succeeded, and False in case of fail
   Standard_EXPORT Standard_Boolean Perform (const Standard_CString filename,
                                             const Handle(TDocStd_Document)& doc,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
+
+  //! Translate STEP file given by filename into the document
+  //! Return True if succeeded, and False in case of fail
+  Standard_EXPORT Standard_Boolean Perform (const Standard_CString filename,
+                                            const Handle(TDocStd_Document)& doc,
+                                            const StepData_ConfParameters& theParams,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns data on external files

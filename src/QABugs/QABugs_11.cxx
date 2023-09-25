@@ -91,6 +91,8 @@
 #include <TDocStd_Application.hxx>
 #include <TPrsStd_AISPresentation.hxx>
 #include <ExprIntrp_GenExp.hxx>
+#include <StepData_StepModel.hxx>
+#include <XSControl_WorkSession.hxx>
 
 #if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();

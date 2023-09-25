@@ -211,9 +211,10 @@ namespace {
 // Purpose : Empty constructor
 // ============================================================================
 
-STEPControl_ActorRead::STEPControl_ActorRead()
+STEPControl_ActorRead::STEPControl_ActorRead(const Handle(Interface_InterfaceModel)& theModel)
 : myPrecision(0.0),
-  myMaxTol(0.0)
+  myMaxTol(0.0),
+  myModel(theModel)
 {
 }
 
@@ -231,8 +232,13 @@ Standard_Boolean  STEPControl_ActorRead::Recognize
 
   if (start->IsKind(STANDARD_TYPE(StepRepr_NextAssemblyUsageOccurrence))) return Standard_True;
 
-  TCollection_AsciiString aProdMode = Interface_Static::CVal("read.step.product.mode");
-  if(!aProdMode.IsEqual("ON"))
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(myModel);
+  if (aStepModel.IsNull())
+  {
+    return false;
+  }
+  bool aProdMode = aStepModel->InternalParameters.ReadProductMode;
+  if(!aProdMode)
     if(start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation))) return Standard_True;
 
   DeclareAndCast(StepShape_ShapeRepresentation,sr,start);
@@ -244,7 +250,7 @@ Standard_Boolean  STEPControl_ActorRead::Recognize
     return Standard_False;
   }
 
-  const Standard_Boolean aCanReadTessGeom = (Interface_Static::IVal("read.step.tessellated") != 0);
+  const Standard_Boolean aCanReadTessGeom = aStepModel->InternalParameters.ReadTessellated != 0;
 
   if (start->IsKind(STANDARD_TYPE(StepShape_FacetedBrep))) return Standard_True;
   if (start->IsKind(STANDARD_TYPE(StepShape_BrepWithVoids))) return Standard_True;
@@ -327,7 +333,7 @@ Handle(Transfer_Binder)  STEPControl_ActorRead::Transfer
     }
   }
   // [END] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  Standard_Boolean aTrsfUse = (Interface_Static::IVal("read.step.root.transformation") == 1);
+  Standard_Boolean aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
   return TransferShape(start, TP, aLocalFactors, Standard_True, aTrsfUse, theProgress);
 }
 
@@ -431,10 +437,12 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
                    Handle(TColStd_HSequenceOfTransient)& listSDRAspect,
                    const Handle(Transfer_TransientProcess)& TP)
 {
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+
   // Flag indicating preferred shape representation type, to be chosen if 
   // several different representations are attached to the same shape
   Standard_Integer delta = 100;
-  Standard_Integer ICS = Interface_Static::IVal("read.step.shape.repr");
+  Standard_Integer ICS = aStepModel->InternalParameters.ReadShapeRepr;
   Standard_Integer nbSDR0 = listSDR->Length();
   
   // Iterate by entities referring PDS
@@ -534,17 +542,19 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
       continue;
     }
   }
+
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   
   // Flag indicating whether SDRs associated with the product`s main SDR
   // by SRRs (which correspond to hybrid model representation in AP203 since 1998) 
   // should be taken into account 
-  Standard_Integer readSRR = Interface_Static::IVal("read.step.shape.relationship");
+  Standard_Integer readSRR = aStepModel->InternalParameters.ReadRelationship;
   
-  Standard_Integer readConstructiveGeomRR = Interface_Static::IVal("read.step.constructivegeom.relationship");
+  Standard_Integer readConstructiveGeomRR = aStepModel->InternalParameters.ReadConstrRelation;
   // Flag indicating whether SDRs associated with the product`s main SDR
   // by SAs (which correspond to hybrid model representation in AP203 before 1998) 
   // should be taken into account 
-  Standard_Integer readSA = Interface_Static::IVal("read.step.shape.aspect");
+  Standard_Integer readSA = aStepModel->InternalParameters.ReadShapeAspect;
   if ( ! readSA ) 
     listSDRAspect->Clear();  
     
@@ -558,7 +568,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
   // possibly attached directly to intermediate assemblies (1)
   // Special mode (4) is used to translate shape attached to this product only,
   // ignoring sub-assemblies if any
-  Standard_Integer readAssembly = Interface_Static::IVal("read.step.assembly.level");
+  Standard_Integer readAssembly = aStepModel->InternalParameters.ReadAssemblyLevel;
   if ( readAssembly ==3 || ( readAssembly ==2 && listNAUO->Length() >0 ) ) 
     listSDR->Clear();
   else if ( readAssembly == 4 )
@@ -824,6 +834,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
 {
   NM_DETECTED = Standard_False;
   Handle(TransferBRep_ShapeBinder) shbinder;
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   if(!Recognize(sr))
     return shbinder;
   isBound = Standard_False;
@@ -848,7 +859,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
   Standard_Integer nsh = 0;
 
   // [BEGIN] Proceed with non-manifold topology (ssv; 12.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("read.step.nonmanifold") != 0;
+  Standard_Boolean isNMMode = aStepModel->InternalParameters.ReadNonmanifold != 0;
   Standard_Boolean isManifold = Standard_True;
   if ( isNMMode && sr->IsKind(STANDARD_TYPE(StepShape_NonManifoldSurfaceShapeRepresentation)) ) {
     isManifold = Standard_False;
@@ -860,7 +871,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
   } 
   // Special processing for I-DEAS STP case (ssv; 15.11.2010)
   else {
-    Standard_Integer isIDeasMode = Interface_Static::IVal("read.step.ideas");
+    Standard_Integer isIDeasMode = aStepModel->InternalParameters.ReadIdeas;
     if (isNMMode && myNMTool.IsIDEASCase() && isIDeasMode) {
       isManifold = Standard_False;
       NM_DETECTED = Standard_True;
@@ -1412,7 +1423,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
          << start->DynamicType()->Name() << std::endl;
   chrono.Start();
 #endif
-  
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   //:S4136
   StepData_Factors aLocalFactors = theLocalFactors;
   Handle(StepRepr_Representation) oldSRContext = mySRContext;
@@ -1420,7 +1431,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
     Handle(StepRepr_Representation) context = FindContext ( start, TP );
     if ( context.IsNull() ) {
       TP->AddWarning ( start, "Entity with no unit context; default units taken" );
-      ResetUnits(aLocalFactors);
+      ResetUnits(aStepModel, aLocalFactors);
     }
     else PrepareUnits ( context, TP, aLocalFactors);
   }
@@ -1429,8 +1440,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
 
   // Start progress scope (no need to check if progress exists -- it is safe)
   Message_ProgressScope aPS(theProgress, "Transfer stage", isManifold ? 2 : 1);
-
-  const Standard_Boolean aReadTessellatedWhenNoBRepOnly = (Interface_Static::IVal("read.step.tessellated") == 2);
+  const Standard_Boolean aReadTessellatedWhenNoBRepOnly = (aStepModel->InternalParameters.ReadTessellated == 2);
   Standard_Boolean aHasGeom = Standard_True;
   try {
     OCC_CATCH_SIGNALS
@@ -1631,11 +1641,12 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
     myTF.Init(fs, myTool, dummyNMTool, theLocalFactors);
     Handle(StepRepr_Representation) oldSRContext = mySRContext;
     StepData_Factors aLocalFactors = theLocalFactors;
+    Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
     if (mySRContext.IsNull()) { // if no context, try to find it (ex: r0701_ug.stp #4790)
       Handle(StepRepr_Representation) context = FindContext(fs, TP);
       if (context.IsNull()) {
         TP->AddWarning(fs, "Entity with no unit context; default units taken");
-        ResetUnits(aLocalFactors);
+        ResetUnits(aStepModel, aLocalFactors);
       }
       else PrepareUnits(context, TP, aLocalFactors);
     }
@@ -1695,13 +1706,13 @@ Handle(Transfer_Binder) STEPControl_ActorRead::TransferShape(
 #endif
   
   Handle(TransferBRep_ShapeBinder) shbinder;
-  
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
 
   // Product Definition Entities
   // They should be treated with Design Manager
    // case ShapeDefinitionRepresentation if ProductMode != ON
-  TCollection_AsciiString aProdMode = Interface_Static::CVal("read.step.product.mode");
-  if(!aProdMode.IsEqual("ON") && 
+  bool aProdMode = aStepModel->InternalParameters.ReadProductMode;
+  if(!aProdMode && 
      start->IsKind(STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation))) 
     shbinder = OldWay(start,TP, theProgress);
   //skl
@@ -1773,10 +1784,10 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
                                          StepData_Factors& theLocalFactors)
 {
   mySRContext = rep;
-  
+  Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   Standard_Integer stat1, stat2 = 0;  // sera alimente par STEPControl_Unit
   if (rep.IsNull()) {
-    ResetUnits(theLocalFactors);
+    ResetUnits(aModel, theLocalFactors);
     return;
   }
   
@@ -1784,7 +1795,7 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
   Handle(StepRepr_RepresentationContext) theRepCont = rep->ContextOfItems();
   if (theRepCont.IsNull()) {
     TP->AddWarning(rep,"Bad RepresentationContext, default unit taken");
-    ResetUnits(theLocalFactors);
+    ResetUnits(aModel, theLocalFactors);
     return;
   }
 
@@ -1815,13 +1826,13 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
     aTol    = theGRCAGAUC->GlobalUncertaintyAssignedContext();
   }
 
-
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   // ----------------------------------------------------
   // Decoding and Setting the Values
   // ----------------------------------------------------
   if (!theGUAC.IsNull()) {
     stat1 = myUnit.ComputeFactors(theGUAC, theLocalFactors);
-    Standard_Integer anglemode = Interface_Static::IVal("step.angleunit.mode");
+    Standard_Integer anglemode = aStepModel->InternalParameters.AngleUnit;
     Standard_Real angleFactor = ( anglemode == 0 ? myUnit.PlaneAngleFactor() :
 				  anglemode == 1 ? 1. : M_PI/180. );
     theLocalFactors.InitializeFactors(myUnit.LengthFactor(),
@@ -1836,15 +1847,15 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
   }
 
 //  myPrecision = Precision::Confusion();
-  if (Interface_Static::IVal("read.precision.mode") == 1)  //:i1 gka S4136 05.04.99
-    myPrecision = Interface_Static::RVal("read.precision.val");
+  if (aStepModel->InternalParameters.ReadPrecisionMode == 1)  //:i1 gka S4136 05.04.99
+    myPrecision = aStepModel->InternalParameters.ReadPrecisionVal;
   else if (myUnit.HasUncertainty())
     myPrecision = myUnit.Uncertainty() * myUnit.LengthFactor();
   else {
     TP->AddWarning(theRepCont,"No Length Uncertainty, value of read.precision.val is taken");
-    myPrecision = Interface_Static::RVal("read.precision.val");
+    myPrecision = aStepModel->InternalParameters.ReadPrecisionVal;
   }
-  myMaxTol = Max ( myPrecision, Interface_Static::RVal("read.maxprecision.val") );
+  myMaxTol = Max ( myPrecision, aStepModel->InternalParameters.ReadMaxPrecisionVal );
   // Assign uncertainty
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 1) 
@@ -1857,11 +1868,11 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
 //purpose  : 
 //=======================================================================
 
-void  STEPControl_ActorRead::ResetUnits (StepData_Factors& theLocalFactors)
+void  STEPControl_ActorRead::ResetUnits (Handle(StepData_StepModel)& theModel, StepData_Factors& theLocalFactors)
 {
   theLocalFactors.InitializeFactors ( 1, 1, 1 );
-  myPrecision = Interface_Static::RVal("read.precision.val");
-  myMaxTol = Max ( myPrecision, Interface_Static::RVal("read.maxprecision.val") );
+  myPrecision = theModel->InternalParameters.ReadPrecisionVal;
+  myMaxTol = Max ( myPrecision, theModel->InternalParameters.ReadMaxPrecisionVal );
 }
 
 //=======================================================================
@@ -2070,4 +2081,13 @@ void STEPControl_ActorRead::computeIDEASClosings(const TopoDS_Compound& comp,
     if ( !closingShells.IsEmpty() )
       shellClosingsMap.Add(shellA, closingShells);
   }
+}
+
+//=======================================================================
+// Method  : SetModel
+// Purpose :
+//=======================================================================
+void STEPControl_ActorRead::SetModel(const Handle(Interface_InterfaceModel)& theModel)
+{
+  myModel = theModel;
 }

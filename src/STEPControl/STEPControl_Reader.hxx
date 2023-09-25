@@ -23,6 +23,7 @@
 
 #include <XSControl_Reader.hxx>
 #include <Standard_Integer.hxx>
+#include <StepData_ConfParameters.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_Array1OfAsciiString.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -83,6 +84,24 @@ public:
   //! Returns the model as a StepModel.
   //! It can then be consulted (header, product)
   Standard_EXPORT Handle(StepData_StepModel) StepModel() const;
+
+  //! Loads a file and returns the read status
+  //! Zero for a Model which compies with the Controller
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const Standard_CString filename) Standard_OVERRIDE;
+
+  //! Loads a file from stream and returns the read status
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const Standard_CString theName,
+                                                           std::istream& theIStream) Standard_OVERRIDE;
+
+  //! Loads a file and returns the read status
+  //! Zero for a Model which compies with the Controller
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const Standard_CString filename,
+                                                 const StepData_ConfParameters& theParams);
+
+  //! Loads a file from stream and returns the read status
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const Standard_CString theName,
+                                                   const StepData_ConfParameters& theParams,
+                                                   std::istream& theIStream);
   
   //! Transfers a root given its rank in the list of candidate roots
   //! Default is the first one
@@ -99,10 +118,12 @@ public:
   //! found in file
   Standard_EXPORT void FileUnits (TColStd_SequenceOfAsciiString& theUnitLengthNames, TColStd_SequenceOfAsciiString& theUnitAngleNames, TColStd_SequenceOfAsciiString& theUnitSolidAngleNames);
 
-  //! Sets system length unit used by transfer process
+  //! Sets system length unit used by transfer process.
+  //! Performs only if a model is not NULL
   Standard_EXPORT void SetSystemLengthUnit(const Standard_Real theLengthUnit);
 
-  //! Returns system length unit used by transfer process
+  //! Returns system length unit used by transfer process.
+  //! Performs only if a model is not NULL
   Standard_EXPORT Standard_Real SystemLengthUnit() const;
 
 

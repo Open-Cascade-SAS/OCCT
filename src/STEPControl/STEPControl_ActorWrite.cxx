@@ -545,12 +545,12 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::Transfer (const Handle(Transfer_
   }
   Standard_Real aLFactor = model->WriteLengthUnit();
   aLFactor /= model->LocalLengthUnit();
-  Standard_Integer anglemode = Interface_Static::IVal("step.angleunit.mode");
+  const Standard_Integer anglemode = model->InternalParameters.AngleUnit;
   StepData_Factors aLocalFactors;
   aLocalFactors.InitializeFactors(aLFactor, (anglemode <= 1 ? 1. : M_PI / 180.), 1.);
   // create SDR
   STEPConstruct_Part SDRTool;
-  SDRTool.MakeSDR ( 0, myContext.GetProductName(), myContext.GetAPD()->Application() );
+  SDRTool.MakeSDR ( 0, myContext.GetProductName(), myContext.GetAPD()->Application(), model);
   Handle(StepShape_ShapeDefinitionRepresentation) sdr = SDRTool.SDRValue();
   // transfer shape
 
@@ -575,18 +575,18 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::Transfer (const Handle(Transfer_
 
 //==========================================
 
-static Standard_Real UsedTolerance (const Standard_Real mytoler, 
-				    const TopoDS_Shape& theShape)
+static Standard_Real UsedTolerance (Handle(StepData_StepModel)& theStepModel,
+                                    const Standard_Real mytoler, 
+                                    const TopoDS_Shape& theShape)
 {
 
   //    COMPUTING 3D TOLERANCE
   //    Either from Session, or Computed (Least,Average, or Greatest)
   //    Then given to TopoDSToStep_Tool
-
   Standard_Real Tol = mytoler;
-  Standard_Integer tolmod = Interface_Static::IVal("write.precision.mode");
+  Standard_Integer tolmod = theStepModel->InternalParameters.WritePrecisionMode;
   if (Tol <= 0 && tolmod == 2) Tol =
-    Interface_Static::RVal("write.precision.val");
+    theStepModel->InternalParameters.WritePrecisionVal;
   if (Tol <= 0) {
     ShapeAnalysis_ShapeTolerance stu;
     Tol = stu.Tolerance (theShape,tolmod);
@@ -605,11 +605,12 @@ static Standard_Real UsedTolerance (const Standard_Real mytoler,
 // if GroupMode is >1 downgrades all compounds having single subshape to that 
 // subshape
 
-Standard_Boolean STEPControl_ActorWrite::IsAssembly (TopoDS_Shape &S) const
+Standard_Boolean STEPControl_ActorWrite::IsAssembly (const Handle(StepData_StepModel)& theModel,
+                                                     TopoDS_Shape &S) const
 {
   if ( ! GroupMode() || S.ShapeType() != TopAbs_COMPOUND ) return Standard_False;
   // PTV 16.09.2002  OCC725 for storing compound of vertices
-  if (Interface_Static::IVal("write.step.vertex.mode") == 0) {//bug 23950
+  if (theModel->InternalParameters.WriteVertexMode == 0) {//bug 23950
     if (S.ShapeType() == TopAbs_COMPOUND ) {
       Standard_Boolean IsOnlyVertices = Standard_True;
       TopoDS_Iterator anItr( S );
@@ -630,7 +631,7 @@ Standard_Boolean STEPControl_ActorWrite::IsAssembly (TopoDS_Shape &S) const
   it.Next();
   if ( it.More() ) return Standard_True;
   S = shape;
-  return IsAssembly ( S );
+  return IsAssembly ( theModel, S );
 }
 
 //=======================================================================
@@ -669,7 +670,8 @@ static Standard_Boolean transferVertex (const Handle(Transfer_FinderProcess)& FP
 {
   Standard_Boolean IsDone = Standard_False;
   MoniTool_DataMapOfShapeTransient aMap;
-  TopoDSToStep_Tool    aTool(aMap, Standard_True);
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(FP->Model());
+  TopoDSToStep_Tool    aTool(aMap, Standard_True, aStepModel->InternalParameters.WriteSurfaceCurMode);
   TopoDSToStep_MakeStepVertex aMkVrtx ( TopoDS::Vertex(aShVrtx), aTool, FP, theLocalFactors );
   
   if (!aMkVrtx.IsDone())
@@ -701,6 +703,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
   STEPControl_StepModelType mymode = Mode();
   Handle(TransferBRep_ShapeMapper) mapper = Handle(TransferBRep_ShapeMapper)::DownCast(start);
   Handle(Transfer_Binder) binder;
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(FP->Model());
 
   // Indicates whether to use an existing NMSSR to write items to (ss; 13.11.2010)
   Standard_Boolean useExistingNMSSR = Standard_False;
@@ -724,13 +727,13 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
   }
 
   // MODE ASSEMBLY : if Compound, (sub-)assembly
-  if ( IsAssembly(theShape) )
+  if ( IsAssembly(aStepModel, theShape) )
     return TransferCompound(start, SDR0, FP, theLocalFactors, theProgress);
 
   Message_ProgressScope aPSRoot(theProgress, NULL, 2);
 
   // [BEGIN] Separate manifold topology from non-manifold in group mode 0 (ssv; 18.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
+  Standard_Boolean isNMMode = aStepModel->InternalParameters.WriteNonmanifold != 0;
   Handle(Transfer_Binder) aNMBinder;
   if (isNMMode && !GroupMode() && theShape.ShapeType() == TopAbs_COMPOUND) {
     TopoDS_Compound aNMCompound;
@@ -823,7 +826,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
         sdr = SDR0;
       else {
         STEPConstruct_Part SDRTool;
-        SDRTool.MakeSDR( 0, myContext.GetProductName(), myContext.GetAPD()->Application() );
+        SDRTool.MakeSDR( 0, myContext.GetProductName(), myContext.GetAPD()->Application(), aStepModel );
         sdr = SDRTool.SDRValue();
       }
 
@@ -854,7 +857,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
   Handle(TopTools_HSequenceOfShape) RepItemSeq = new TopTools_HSequenceOfShape();
 
   Standard_Boolean isSeparateVertices =
-    Interface_Static::IVal("write.step.vertex.mode") == 0;//bug 23950
+    aStepModel->InternalParameters.WriteVertexMode == 0;//bug 23950
   // PTV 16.09.2002 OCC725 separate shape from solo vertices.
   Standard_Boolean isOnlyVertices = Standard_False;
   if (theShape.ShapeType() == TopAbs_COMPOUND && isSeparateVertices)
@@ -957,7 +960,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
   //    COMPUTING 3D TOLERANCE
   //    Either from Session, or Computed (Least,Average, or Greatest)
   //    Then given to TopoDSToStep_Tool
-  Standard_Real Tol = UsedTolerance (mytoler,theShape);
+  Standard_Real Tol = UsedTolerance (aStepModel, mytoler,theShape);
   
   // Create a STEP-Entity for each TopoDS_Shape  
   // according to the current StepModelMode
@@ -999,7 +1002,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
 
     if (hasGeometry(aShape)) 
     {
-      Standard_Real maxTol = Interface_Static::RVal("read.maxprecision.val");
+      Standard_Real maxTol = aStepModel->InternalParameters.ReadMaxPrecisionVal;
 
       aShape = XSAlgo::AlgoContainer()->ProcessShape(xShape, Tol, maxTol,
         "write.step.resource.name",
@@ -1323,7 +1326,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
       GetCasted(StepRepr_RepresentationItem, ItemSeq->Value(rep));
     items->SetValue(rep,repit);
   }
-  Standard_Integer ap = Interface_Static::IVal("write.step.schema");
+  Standard_Integer ap = aStepModel->InternalParameters.WriteSchema;
   Transfer_SequenceOfBinder aSeqBindRelation;
   if(ap == 3 && nbs > 1) {
     Standard_Integer j = 1;
@@ -1353,7 +1356,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
       repr1->SetValue(2,items->Value(j));
       ShapeRepr1->SetItems(repr1);
       STEPConstruct_UnitContext mk1;
-      mk1.Init(Tol, theLocalFactors);
+      mk1.Init(Tol, aStepModel, theLocalFactors);
       ShapeRepr1->SetContextOfItems(mk1.Value());  // la tolerance, voir au debut
       ShapeRepr1->SetName (new TCollection_HAsciiString(""));
       
@@ -1390,7 +1393,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
       Handle(StepShape_ShapeRepresentation) shapeTessRepr = new StepVisual_TessellatedShapeRepresentation;
       shapeTessRepr->SetItems(itemsTess);
       STEPConstruct_UnitContext mk1;
-      mk1.Init(Tol, theLocalFactors);
+      mk1.Init(Tol, aStepModel, theLocalFactors);
       shapeTessRepr->SetContextOfItems(mk1.Value());
       shapeTessRepr->SetName(new TCollection_HAsciiString(""));
 
@@ -1413,7 +1416,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
 
   // init representation
   STEPConstruct_UnitContext mk;
-  mk.Init(Tol, theLocalFactors);
+  mk.Init(Tol, aStepModel, theLocalFactors);
   shapeRep->SetContextOfItems(mk.Value());  // la tolerance, voir au debut
   shapeRep->SetName (new TCollection_HAsciiString(""));
 
@@ -1459,8 +1462,10 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound
   if (mapper.IsNull()) return binder;
   TopoDS_Shape theShape = mapper->Value();
 
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(FP->Model());
+
   // Inspect non-manifold topology case (ssv; 10.11.2010)
-  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
+  Standard_Boolean isNMMode = aStepModel->InternalParameters.WriteNonmanifold != 0;
   Standard_Boolean isManifold;
   if (isNMMode)
     isManifold = IsManifoldShape(theShape);
@@ -1472,7 +1477,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound
   // Prepare a collection for non-manifold group of shapes
   Handle(TopTools_HSequenceOfShape) NonManifoldGroup = new TopTools_HSequenceOfShape();
   Standard_Boolean isSeparateVertices = 
-    (Interface_Static::IVal("write.step.vertex.mode") == 0);//bug 23950
+    (aStepModel->InternalParameters.WriteVertexMode == 0);//bug 23950
   // PTV OCC725 17.09.2002 -- begin --
   Standard_Integer nbFreeVrtx = 0;
   TopoDS_Compound aCompOfVrtx;
@@ -1560,9 +1565,9 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound
   for (Standard_Integer rep = 1; rep <= nsub; rep++)
     items->SetValue(rep,GetCasted(StepRepr_RepresentationItem, ItemSeq->Value(rep)));
   shapeRep->SetItems(items);
-  Standard_Real Tol = UsedTolerance (mytoler,theShape);
+  Standard_Real Tol = UsedTolerance (aStepModel, mytoler,theShape);
   STEPConstruct_UnitContext mk;
-  mk.Init(Tol, theLocalFactors);
+  mk.Init(Tol, aStepModel, theLocalFactors);
   shapeRep->SetContextOfItems(mk.Value());  // la tolerance, voir au debut
   shapeRep->SetName (new TCollection_HAsciiString(""));
 
@@ -1612,14 +1617,15 @@ Handle(Transfer_Binder)  STEPControl_ActorWrite::TransferSubShape
   Handle(Transfer_Binder) resbind = FP->Find(mapper);
   Handle(StepShape_ShapeDefinitionRepresentation) sdr;
 //  Handle(StepShape_ShapeRepresentation) resultat;
-  STEPConstruct_Part SDRTool;  
+  STEPConstruct_Part SDRTool;
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(FP->Model());
 
   // Already SDR and SR available : take them as are
   Standard_Boolean iasdr = FP->GetTypedTransient
     (resbind,STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation),sdr);
   if ( iasdr ) SDRTool.ReadSDR ( sdr ); 
   else { 
-    SDRTool.MakeSDR ( 0, myContext.GetProductName(), myContext.GetAPD()->Application() );
+    SDRTool.MakeSDR ( 0, myContext.GetProductName(), myContext.GetAPD()->Application(), aStepModel );
     sdr = SDRTool.SDRValue();
   }
 //  resultat = GetCasted(StepShape_ShapeRepresentation,sdr->UsedRepresentation());

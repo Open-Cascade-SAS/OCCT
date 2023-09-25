@@ -346,9 +346,11 @@ Standard_Boolean STEPConstruct_ValidationProps::AddProp (const StepRepr_Characte
   // record SDR in order to have it written to the file
   Model()->AddWithRefs ( PrDR );
 
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(Model());
+
   // for AP203, add subschema name
-  if ( Interface_Static::IVal("write.step.schema") ==3 ) {
-    APIHeaderSection_MakeHeader mkHdr ( Handle(StepData_StepModel)::DownCast ( Model() ) );
+  if ( aStepModel->InternalParameters.WriteSchema ==3 ) {
+    APIHeaderSection_MakeHeader mkHdr ( aStepModel );
     Handle(TCollection_HAsciiString) subSchema = 
       new TCollection_HAsciiString ( "GEOMETRIC_VALIDATION_PROPERTIES_MIM" );
     mkHdr.AddSchemaIdentifier ( subSchema );

@@ -96,7 +96,9 @@ public:
   
   //! Create MDGPR, fill it with all the styles previously defined,
   //! and add it to the model
-  Standard_EXPORT Standard_Boolean CreateMDGPR (const Handle(StepRepr_RepresentationContext)& Context, Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& MDGPR);
+  Standard_EXPORT Standard_Boolean CreateMDGPR (const Handle(StepRepr_RepresentationContext)& Context,
+                                                Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation)& MDGPR,
+                                                Handle(StepData_StepModel)& theStepModel);
   
   //! Create MDGPR, fill it with all the styles previously defined,
   //! and add it to the model

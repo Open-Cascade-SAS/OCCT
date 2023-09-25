@@ -46,7 +46,10 @@ public:
   //! Creates a new empty Model ready to receive data of the Norm.
   //! It is taken from STEP Template Model
   Standard_EXPORT Handle(Interface_InterfaceModel) NewModel() const Standard_OVERRIDE;
-  
+
+  //! Returns the Actor for Read attached to the pair (norm,appli)
+  Standard_EXPORT Handle(Transfer_ActorOfTransientProcess) ActorRead(const Handle(Interface_InterfaceModel)& theModel) const Standard_OVERRIDE;
+
   Standard_EXPORT virtual void Customise (Handle(XSControl_WorkSession)& WS) Standard_OVERRIDE;
   
   //! Takes one Shape and transfers it to the InterfaceModel

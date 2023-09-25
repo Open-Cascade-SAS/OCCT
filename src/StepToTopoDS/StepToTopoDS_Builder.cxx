@@ -39,6 +39,7 @@
 #include <StdFail_NotDone.hxx>
 #include <STEPControl_ActorRead.hxx>
 #include <StepData_Factors.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_CompositeCurve.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>
@@ -90,10 +91,11 @@
 #include <TransferBRep.hxx>
 
 #include <stdio.h>
-static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
+static void ResetPreci (Handle(StepData_StepModel)& theStepModel,
+                        const TopoDS_Shape& S, Standard_Real maxtol)
 {
   //:S4136
-  Standard_Integer modetol = Interface_Static::IVal("read.maxprecision.mode");
+  Standard_Integer modetol = theStepModel->InternalParameters.ReadMaxPrecisionMode;
   if (modetol) {
     ShapeFix_ShapeTolerance STU;
     STU.LimitTolerance (S,Precision::Confusion(),maxtol);
@@ -120,6 +122,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_ManifoldSolidBrep)& theMa
                                 const Message_ProgressRange& theProgress)
 {
   Message_Messenger::StreamBuffer sout = theTP->Messenger()->SendInfo();
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(theTP->Model());
   // Initialisation of the Tool
 
   StepToTopoDS_Tool         aTool;
@@ -168,7 +171,7 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_ManifoldSolidBrep)& theMa
     sout << "                        - C2 : " << aTool.C2Cur2() << std::endl;
   }
 
-  ResetPreci (aSolid, MaxTol());
+  ResetPreci (aStepModel, aSolid, MaxTol());
 }
 
 // ============================================================================
@@ -258,7 +261,9 @@ void StepToTopoDS_Builder::Init(const Handle(StepShape_BrepWithVoids)& theBRepWi
     sout << "                        - C2 : " << aTool.C2Cur2() << std::endl;
   }
 
-  ResetPreci (aSolid, MaxTol());
+//:S4136  ShapeFix::SameParameter (S,Standard_False);
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(theTP->Model());
+  ResetPreci (aStepModel, aSolid, MaxTol());
 }
 
 // ============================================================================
@@ -460,8 +465,9 @@ void StepToTopoDS_Builder::Init
   }
 
 //:S4136  ShapeFix::SameParameter (S,Standard_False);
-  ResetPreci (S, MaxTol());
-  ResetPreci (Shl, MaxTol()); //skl
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  ResetPreci (aStepModel, S, MaxTol());
+  ResetPreci (aStepModel, Shl, MaxTol()); //skl
 }
 
 // ============================================================================
@@ -522,7 +528,8 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_EdgeBasedWireframeModel)
   myError  = ( myResult.IsNull() ? StepToTopoDS_BuilderDone : StepToTopoDS_BuilderOther );
   done     = ! myResult.IsNull();
 
-  ResetPreci (myResult, MaxTol());
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  ResetPreci (aStepModel, myResult, MaxTol());
 }
 
 // ============================================================================
@@ -585,7 +592,8 @@ void StepToTopoDS_Builder::Init (const Handle(StepShape_FaceBasedSurfaceModel)& 
   myError  = ( myResult.IsNull() ? StepToTopoDS_BuilderDone : StepToTopoDS_BuilderOther );
   done     = ! myResult.IsNull();
 
-  ResetPreci (myResult, MaxTol());
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  ResetPreci (aStepModel, myResult, MaxTol());
 }
 
 

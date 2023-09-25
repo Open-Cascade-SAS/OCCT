@@ -96,7 +96,8 @@ public:
   //! Default implementation uses flag GroupMode and analyses
   //! the shape itself
   //! NOTE: this method can modify shape
-  Standard_EXPORT virtual Standard_Boolean IsAssembly (TopoDS_Shape& S) const;
+  Standard_EXPORT virtual Standard_Boolean IsAssembly (const Handle(StepData_StepModel)& theModel,
+                                                       TopoDS_Shape& S) const;
 
 
 

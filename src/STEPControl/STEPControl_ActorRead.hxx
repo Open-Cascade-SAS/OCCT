@@ -26,6 +26,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Message_ProgressRange.hxx>
+#include <Interface_InterfaceModel.hxx>
 
 class StepRepr_Representation;
 class Standard_Transient;
@@ -47,6 +48,7 @@ class TopoDS_Shell;
 class TopoDS_Compound;
 class StepRepr_ConstructiveGeometryRepresentationRelationship;
 class StepData_Factors;
+class StepData_StepModel;
 
 
 class STEPControl_ActorRead;
@@ -62,8 +64,7 @@ class STEPControl_ActorRead : public Transfer_ActorOfTransientProcess
 
 public:
 
-
-  Standard_EXPORT STEPControl_ActorRead();
+  Standard_EXPORT STEPControl_ActorRead(const Handle(Interface_InterfaceModel)& theModel);
 
   Standard_EXPORT virtual Standard_Boolean Recognize (const Handle(Standard_Transient)& start) Standard_OVERRIDE;
 
@@ -88,7 +89,11 @@ public:
 
   //! reset units and tolerances context to default
   //! (mm, radians, read.precision.val, etc.)
-  Standard_EXPORT void ResetUnits(StepData_Factors& theLocalFactors);
+  Standard_EXPORT void ResetUnits(Handle(StepData_StepModel)& theModel,
+                                  StepData_Factors& theLocalFactors);
+
+  //! Set model
+  Standard_EXPORT void SetModel(const Handle(Interface_InterfaceModel)& theModel);
 
   //! Computes transformation defined by two axis placements (in MAPPED_ITEM
   //! or ITEM_DEFINED_TRANSFORMATION) taking into account their
@@ -205,7 +210,7 @@ private:
   Standard_Real myPrecision;
   Standard_Real myMaxTol;
   Handle(StepRepr_Representation) mySRContext;
-
+  Handle(Interface_InterfaceModel) myModel;
 
 };
 

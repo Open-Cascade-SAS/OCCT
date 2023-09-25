@@ -57,23 +57,23 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
 {
   TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
-  InternalParameters.ReadBSplineContinuity = (ReadMode_BSplineContinuity)
+  InternalParameters.ReadBSplineContinuity = (StepData_ConfParameters::ReadMode_BSplineContinuity)
     theResource->IntegerVal("read.iges.bspline.continuity", InternalParameters.ReadBSplineContinuity, aScope);
-  InternalParameters.ReadPrecisionMode = (ReadMode_Precision)
+  InternalParameters.ReadPrecisionMode = (StepData_ConfParameters::ReadMode_Precision)
     theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
-  InternalParameters.ReadMaxPrecisionMode = (ReadMode_MaxPrecision)
+  InternalParameters.ReadMaxPrecisionMode = (StepData_ConfParameters::ReadMode_MaxPrecision)
     theResource->IntegerVal("read.maxprecision.mode", InternalParameters.ReadMaxPrecisionMode, aScope);
   InternalParameters.ReadMaxPrecisionVal =
     theResource->RealVal("read.maxprecision.val", InternalParameters.ReadMaxPrecisionVal, aScope);
   InternalParameters.ReadSameParamMode =
     theResource->BooleanVal("read.stdsameparameter.mode", InternalParameters.ReadSameParamMode, aScope);
-  InternalParameters.ReadSurfaceCurveMode = (ReadMode_SurfaceCurve)
+  InternalParameters.ReadSurfaceCurveMode = (StepData_ConfParameters::ReadMode_SurfaceCurve)
     theResource->IntegerVal("read.surfacecurve.mode", InternalParameters.ReadSurfaceCurveMode, aScope);
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
-  InternalParameters.AngleUnit = (AngleUnitMode)
+  InternalParameters.AngleUnit = (StepData_ConfParameters::AngleUnitMode)
     theResource->IntegerVal("angleunit.mode", InternalParameters.AngleUnit, aScope);
 
   InternalParameters.ReadResourceName =
@@ -82,13 +82,13 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->StringVal("read.sequence", InternalParameters.ReadSequence, aScope);
   InternalParameters.ReadProductMode =
     theResource->BooleanVal("read.product.mode", InternalParameters.ReadProductMode, aScope);
-  InternalParameters.ReadProductContext = (ReadMode_ProductContext)
+  InternalParameters.ReadProductContext = (StepData_ConfParameters::ReadMode_ProductContext)
     theResource->IntegerVal("read.product.context", InternalParameters.ReadProductContext, aScope);
-  InternalParameters.ReadShapeRepr = (ReadMode_ShapeRepr)
+  InternalParameters.ReadShapeRepr = (StepData_ConfParameters::ReadMode_ShapeRepr)
     theResource->IntegerVal("read.shape.repr", InternalParameters.ReadShapeRepr, aScope);
-  InternalParameters.ReadTessellated = (RWMode_Tessellated)
+  InternalParameters.ReadTessellated = (StepData_ConfParameters::RWMode_Tessellated)
     theResource->IntegerVal("read.tessellated", InternalParameters.ReadTessellated, aScope);
-  InternalParameters.ReadAssemblyLevel = (ReadMode_AssemblyLevel)
+  InternalParameters.ReadAssemblyLevel = (StepData_ConfParameters::ReadMode_AssemblyLevel)
     theResource->IntegerVal("read.assembly.level", InternalParameters.ReadAssemblyLevel, aScope);
   InternalParameters.ReadRelationship =
     theResource->BooleanVal("read.shape.relationship", InternalParameters.ReadRelationship, aScope);
@@ -117,15 +117,15 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
   InternalParameters.ReadProps =
     theResource->BooleanVal("read.props", InternalParameters.ReadProps, aScope);
 
-  InternalParameters.WritePrecisionMode = (WriteMode_PrecisionMode)
+  InternalParameters.WritePrecisionMode = (StepData_ConfParameters::WriteMode_PrecisionMode)
     theResource->IntegerVal("write.precision.mode", InternalParameters.WritePrecisionMode, aScope);
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
-  InternalParameters.WriteAssembly = (WriteMode_Assembly)
+  InternalParameters.WriteAssembly = (StepData_ConfParameters::WriteMode_Assembly)
     theResource->IntegerVal("write.assembly", InternalParameters.WriteAssembly, aScope);
-  InternalParameters.WriteSchema = (WriteMode_StepSchema)
+  InternalParameters.WriteSchema = (StepData_ConfParameters::WriteMode_StepSchema)
     theResource->IntegerVal("write.schema", InternalParameters.WriteSchema, aScope);
-  InternalParameters.WriteTessellated = (RWMode_Tessellated)
+  InternalParameters.WriteTessellated = (StepData_ConfParameters::RWMode_Tessellated)
     theResource->IntegerVal("write.tessellated", InternalParameters.WriteTessellated, aScope);
   InternalParameters.WriteProductName =
     theResource->StringVal("write.product.name", InternalParameters.WriteProductName, aScope);
@@ -137,7 +137,7 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->StringVal("write.resource.name", InternalParameters.WriteResourceName, aScope);
   InternalParameters.WriteSequence =
     theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
-  InternalParameters.WriteVertexMode = (WriteMode_VertexMode)
+  InternalParameters.WriteVertexMode = (StepData_ConfParameters::WriteMode_VertexMode)
     theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
   InternalParameters.WriteSubshapeNames =
     theResource->BooleanVal("write.stepcaf.subshapes.name", InternalParameters.WriteSubshapeNames, aScope);

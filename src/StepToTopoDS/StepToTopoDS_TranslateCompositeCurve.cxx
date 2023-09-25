@@ -111,8 +111,10 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
   Standard_Boolean SurfMode = ( ! S.IsNull() && ! Surf.IsNull() );
   Standard_Boolean isClosed = Standard_False;
 
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+
   if ( SurfMode ) {
-    Standard_Integer modepcurve = Interface_Static::IVal("read.surfacecurve.mode");
+    Standard_Integer modepcurve = aStepModel->InternalParameters.ReadSurfaceCurveMode;
     if ( modepcurve ==-3 ) SurfMode = Standard_False;
   }
   

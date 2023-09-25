@@ -20,6 +20,7 @@
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_HArray1OfFace.hxx>
 #include <StepShape_ManifoldSolidBrep.hxx>
@@ -46,9 +47,9 @@ MakeManifoldSolidBrep(const TopoDS_Shell& aShell,
   Handle(StepVisual_TessellatedItem) aTessItem;
 
   MoniTool_DataMapOfShapeTransient aMap;
-  TopoDSToStep_Tool aTool(aMap, Standard_False);
-
-  const Standard_Integer aWriteTessGeom = Interface_Static::IVal("write.step.tessellated");
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(FP->Model());
+  TopoDSToStep_Tool aTool(aMap, Standard_False, aStepModel->InternalParameters.WriteSurfaceCurMode);
+  const Standard_Integer aWriteTessGeom = aStepModel->InternalParameters.WriteTessellated;
 
   TopoDSToStep_Builder StepB(aShell, aTool, FP, aWriteTessGeom, theLocalFactors, theProgress);
   if (theProgress.UserBreak())

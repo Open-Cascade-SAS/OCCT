@@ -44,6 +44,7 @@
 #include <ShapeFix_EdgeProjAux.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
+#include <StepData_StepModel.hxx>
 #include <StepGeom_Pcurve.hxx>
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SurfaceCurve.hxx>
@@ -217,11 +218,12 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     done     = Standard_True;
     return;
   }
-  Standard_Integer modepcurve = Interface_Static::IVal("read.surfacecurve.mode");
-  //  0,1 : suivre le code,  2 : ne prendre que pcurve,  3 : ne prendre que C3D
 
   BRep_Builder B;
   Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  Standard_Integer modepcurve = aStepModel->InternalParameters.ReadSurfaceCurveMode;
+  //  0,1 : suivre le code,  2 : ne prendre que pcurve,  3 : ne prendre que C3D
 
   Standard_Real preci = Precision();
   TopoDS_Wire   W;

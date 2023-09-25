@@ -60,9 +60,7 @@ Standard_Integer  StepSelect_WorkLibrary::ReadFile
 {
   DeclareAndCast(StepData_Protocol,stepro,protocol);
   if (stepro.IsNull()) return 1;
-  Handle(StepData_StepModel) stepmodel  = new StepData_StepModel;
-  model  = stepmodel;
-  Standard_Integer aStatus = StepFile_Read(name, 0, stepmodel, stepro);
+  Standard_Integer aStatus = StepFile_Read(name, 0, Handle(StepData_StepModel)::DownCast(model), stepro);
   return aStatus;
 }
 
@@ -73,9 +71,7 @@ Standard_Integer  StepSelect_WorkLibrary::ReadStream (const Standard_CString the
 {
   DeclareAndCast(StepData_Protocol, stepro, protocol);
   if (stepro.IsNull()) return 1;
-  Handle(StepData_StepModel) stepmodel = new StepData_StepModel;
-  model = stepmodel;
-  Standard_Integer aStatus = StepFile_Read(theName, &theIStream, stepmodel, stepro);
+  Standard_Integer aStatus = StepFile_Read(theName, &theIStream, Handle(StepData_StepModel)::DownCast(model), stepro);
   return aStatus;
 }
 
