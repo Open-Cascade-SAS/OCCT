@@ -331,6 +331,15 @@ void AIS_Manipulator::EnableMode(const AIS_ManipulatorMode theMode)
 
 //=================================================================================================
 
+void AIS_Manipulator::attachToPoint(const gp_Pnt& thePoint)
+{
+  gp_Ax2 aPosition = gp::XOY();
+  aPosition.SetLocation(thePoint);
+  SetPosition(aPosition);
+}
+
+//=================================================================================================
+
 void AIS_Manipulator::attachToBox(const Bnd_Box& theBox)
 {
   if (theBox.IsVoid())
@@ -392,7 +401,15 @@ void AIS_Manipulator::Attach(const Handle(AIS_ManipulatorObjectSequence)& theObj
 
   if (theOptions.AdjustPosition)
   {
-    attachToBox(aBox);
+    const Handle(Graphic3d_TransformPers)& aTransPers = aCurObject->TransformPersistence();
+    if (!aTransPers.IsNull() && (aTransPers->IsZoomOrRotate() || aTransPers->IsAxial()))
+    {
+      attachToPoint(aTransPers->AnchorPoint());
+    }
+    else
+    {
+      attachToBox(aBox);
+    }
   }
 
   if (theOptions.AdjustSize)
@@ -746,9 +763,18 @@ void AIS_Manipulator::Transform(const gp_Trsf& theTrsf)
     NCollection_Sequence<gp_Trsf>::Iterator aTrsfIter(myStartTrsfs);
     for (; anObjIter.More(); anObjIter.Next(), aTrsfIter.Next())
     {
-      const Handle(AIS_InteractiveObject)& anObj       = anObjIter.ChangeValue();
-      const gp_Trsf&                       anOldTrsf   = aTrsfIter.Value();
-      const Handle(TopLoc_Datum3D)&        aParentTrsf = anObj->CombinedParentTransformation();
+      const Handle(AIS_InteractiveObject)&   anObj      = anObjIter.ChangeValue();
+      const Handle(Graphic3d_TransformPers)& aTransPers = anObj->TransformPersistence();
+      if (!aTransPers.IsNull() && (aTransPers->IsZoomOrRotate() || aTransPers->IsAxial()))
+      {
+        gp_XYZ aNewAnchorPoint = aTransPers->AnchorPoint().XYZ() - myPosition.Location().XYZ();
+        aNewAnchorPoint += myStartPosition.Location().Transformed(theTrsf).XYZ();
+        aTransPers->SetAnchorPoint(aNewAnchorPoint);
+        continue;
+      }
+
+      const gp_Trsf&                anOldTrsf   = aTrsfIter.Value();
+      const Handle(TopLoc_Datum3D)& aParentTrsf = anObj->CombinedParentTransformation();
       if (!aParentTrsf.IsNull() && aParentTrsf->Form() != gp_Identity)
       {
         // recompute local transformation relative to parent transformation

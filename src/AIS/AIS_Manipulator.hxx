@@ -416,6 +416,8 @@ protected:
   Standard_EXPORT Handle(Graphic3d_Group) getGroup(const Standard_Integer    theIndex,
                                                    const AIS_ManipulatorMode theMode) const;
 
+  Standard_EXPORT void attachToPoint(const gp_Pnt& thePoint);
+
   Standard_EXPORT void attachToBox(const Bnd_Box& theBox);
 
   Standard_EXPORT void adjustSize(const Bnd_Box& theBox);

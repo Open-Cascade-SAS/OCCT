@@ -1,0 +1,41 @@
+puts "============"
+puts "0032116: Visualization - AIS_Manipulator is unusable when attaching to objects with Graphic3d_TMF_ZoomPers"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+
+box b1 10 10 10 10 20 30
+box b2 50 50 50 10 20 30
+
+vinit View1
+vdisplay b1 -dispmode 1 -trsfPers zoom -trsfPersPos 0 0 0
+vdisplay b2 -dispmode 1 -trsfPers zoom -trsfPersPos 10 10 10
+vfit
+
+vmanipulator m -attach b1 -addObject
+vmanipulator m -attach b2 -addObject
+
+set mouse_pick {90 225}
+set mouse_drag {90 150}
+
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag
+vmanipulator m -stopTransform
+vmoveto {*}$mouse_drag
+
+if { [vreadpixel {*}$mouse_drag -rgb -name] != "CYAN" } { puts "Error: wrong manipulator position" }
+if { [vreadpixel 115 170 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b1 tranformation" }
+if { [vreadpixel 400 10 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b2 tranformation" }
+
+vdump ${imagedir}/${casename}_1.png
+
+vmoveto 0 0
+vzoom 0.2
+
+if { [vreadpixel 210 170 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b1 tranformation" }
+if { [vreadpixel 310 120 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong b2 tranformation" }
+
+vdump ${imagedir}/${casename}_2.png
