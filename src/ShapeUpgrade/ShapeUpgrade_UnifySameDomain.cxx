@@ -435,9 +435,17 @@ static Standard_Boolean FindCoordBounds(const TopTools_SequenceOfShape&         
   theNumberOfIntervals = aPairSeq.Length();
 
   if (aPairSeq.Length() == 2)
+  {
     theMinCoord = aPairSeq(2).first - thePeriod;
-  else
+  }
+  else if (aPairSeq.Length() > 0)
+  {
     theMinCoord = aPairSeq(1).first;
+  }
+  else
+  {
+    return Standard_False;
+  }
 
   theMaxCoord = aPairSeq(1).second;
   return Standard_True;
