@@ -309,6 +309,10 @@ void Graphic3d_Camera::SetUp (const gp_Dir& theUp)
 // =======================================================================
 void Graphic3d_Camera::SetAxialScale (const gp_XYZ& theAxialScale)
 {
+  Standard_OutOfRange_Raise_if (theAxialScale.X() <= 0.0 
+                             || theAxialScale.Y() <= 0.0 
+                             || theAxialScale.Z() <= 0.0, 
+                               "Graphic3d_Camera::SetAxialScale, bad coefficient");
   if (AxialScale().IsEqual (theAxialScale, 0.0))
   {
     return;

@@ -1,0 +1,46 @@
+puts "========"
+puts "0027832: Visualization - Scaled zbuffer trihedron"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vinit
+box b 10 10 10
+vdisplay b
+vfit
+vsetdispmode 1
+vzbufftrihedron -on
+#draw initial picture of box without visual scale
+vdump $imagedir/${casename}_unscaled.png
+
+#draw picture of box after visual scale
+#and zoomed out
+vscale 1 3 10
+vzoom 1.0
+
+set color_1 [vreadpixel 55 360 -rgb -name]
+set color_2 [vreadpixel 50 350 -rgb -name]
+set color_3 [vreadpixel 55 355 -rgb -name]
+
+if {$color_1 != "RED3"} {
+  puts "ERROR: trihedron does not maintain position"
+  puts "       additional investigation is needed"
+  puts "       expected color is: RED3"
+  puts "       current color is:  $color_1"
+}
+
+if {$color_2 != "BLUE3"} {
+  puts "ERROR: trihedron does not maintain position"
+  puts "       additional investigation is needed"
+  puts "       expected color is: BLUE3"
+  puts "       current color is:  $color_2"
+}
+
+if {$color_3 != "GREEN3"} {
+  puts "ERROR: trihedron does not maintain position"
+  puts "       additional investigation is needed"
+  puts "       expected color is: GREEN3"
+  puts "       current color is:  $color_3"
+}
+
+vdump $imagedir/${casename}_scaled.png

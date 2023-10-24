@@ -40,6 +40,9 @@ DEFINE_STANDARD_HANDLE(Graphic3d_TransformPers, Standard_Transient)
 //! Beware that Graphic3d_RenderingParams::ResolutionRatio() will be ignored!
 //! For other Persistence flags, normal (world) length units will apply.
 //!
+//! Graphic3d_TMF_AxialPers and Graphic3d_TMF_AxialZoomPers defines persistence in the axial scale,
+//! i.e., keeps the object visual coherence when the camera's axial scale is changed.
+//! Meant to be used by objects such as Manipulators and trihedrons.
 //! WARNING: Graphic3d_TMF_None is not permitted for defining instance of this class - NULL handle should be used for this purpose!
 class Graphic3d_TransformPers : public Standard_Transient
 {
@@ -64,13 +67,19 @@ public:
     return (theMode & Graphic3d_TMF_OrthoPers) != 0;
   }
 
+  //! Return true if specified mode is axial transformation persistence.
+  static Standard_Boolean IsAxial (Graphic3d_TransModeFlags theMode)
+  {
+    return (theMode & Graphic3d_TMF_AxialScalePers) != 0;
+  }
+
 public:
 
   //! Set transformation persistence.
   Graphic3d_TransformPers (const Graphic3d_TransModeFlags theMode)
   : myMode (theMode)
   {
-    if (IsZoomOrRotate (theMode))
+    if (IsZoomOrRotate (theMode) || IsAxial (theMode))
     {
       SetPersistence (theMode, gp_Pnt(0.0, 0.0, 0.0));
     }
@@ -119,6 +128,9 @@ public:
   //! Return true for Graphic3d_TMF_OrthoPers mode.
   Standard_Boolean IsOrthoPers () const { return IsOrthoPers (myMode); }
 
+  //! Return true for Graphic3d_TMF_AxialScalePers modes.
+  Standard_Boolean IsAxial() const { return IsAxial (myMode); }
+
   //! Transformation persistence mode flags.
   Graphic3d_TransModeFlags Mode() const { return myMode; }
 
@@ -130,7 +142,7 @@ public:
   void SetPersistence (const Graphic3d_TransModeFlags theMode,
                        const gp_Pnt& thePnt)
   {
-    if (!IsZoomOrRotate (theMode))
+    if (!IsZoomOrRotate (theMode) && !IsAxial (theMode))
     {
       throw Standard_ProgramError("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
     }
@@ -163,7 +175,7 @@ public:
   //! Return the anchor point for zoom/rotate transformation persistence.
   gp_Pnt AnchorPoint() const
   {
-    if (!IsZoomOrRotate())
+    if (!IsZoomOrRotate() && !IsAxial())
     {
       throw Standard_ProgramError("Graphic3d_TransformPers::AnchorPoint(), wrong persistence mode.");
     }
@@ -174,7 +186,7 @@ public:
   //! Set the anchor point for zoom/rotate transformation persistence.
   void SetAnchorPoint (const gp_Pnt& thePnt)
   {
-    if (!IsZoomOrRotate())
+    if (!IsZoomOrRotate() && !IsAxial())
     {
       throw Standard_ProgramError("Graphic3d_TransformPers::SetAnchorPoint(), wrong persistence mode.");
     }
@@ -448,6 +460,10 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
       }
     }
 
+    Graphic3d_TransformUtils::Scale (aWorldView,
+                                     1.0 / theCamera->AxialScale().X(),
+                                     1.0 / theCamera->AxialScale().Y(),
+                                     1.0 / theCamera->AxialScale().Z());
     Graphic3d_TransformUtils::Translate (aWorldView, aCenter.X(), aCenter.Y(), aCenter.Z());
     Graphic3d_TransformUtils::Scale     (aWorldView, aScale,      aScale,      aScale);
   }
@@ -515,6 +531,14 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
       aWorldView.SetValue (0, 2, aRotMat.GetColumn (2).x());
       aWorldView.SetValue (1, 2, aRotMat.GetColumn (2).y());
       aWorldView.SetValue (2, 2, aRotMat.GetColumn (2).z());
+    }
+
+    if (IsAxial())
+    {
+      Graphic3d_TransformUtils::Scale (aWorldView,
+                                       1.0 / theCamera->AxialScale().X(),
+                                       1.0 / theCamera->AxialScale().Y(),
+                                       1.0 / theCamera->AxialScale().Z());
     }
 
     if ((myMode & Graphic3d_TMF_ZoomPers) != 0)

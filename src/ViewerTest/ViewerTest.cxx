@@ -4798,6 +4798,14 @@ inline Standard_Boolean parseTrsfPersFlag (const TCollection_AsciiString& theFla
   {
     theFlags = Graphic3d_TMF_TriedronPers;
   }
+  else if (theFlagString == "axial")
+  {
+    theFlags = Graphic3d_TMF_AxialScalePers;
+  }
+  else if (theFlagString == "zoomaxial")
+  {
+    theFlags = Graphic3d_TMF_AxialZoomPers;
+  }
   else if (theFlagString == "none")
   {
     theFlags = Graphic3d_TMF_None;
@@ -6648,7 +6656,7 @@ If last 3 optional parameters are not set prints numbers of U-, V- isolines and 
 
   addCmd ("vdisplay", VDisplay2, /* [vdisplay] */ R"(
 vdisplay [-noupdate|-update] [-mutable] [-neutral]
-         [-trsfPers {zoom|rotate|zoomRotate|trihedron|none}=none]
+         [-trsfPers {zoom|rotate|zoomRotate|trihedron|axial|zoomaxial|none}=none]
             [-trsfPersPos X Y [Z]] [-3d]
             [-2d|-trihedron [{top|bottom|left|right|topLeft
                             |topRight|bottomLeft|bottomRight}
