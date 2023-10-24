@@ -29,6 +29,8 @@ enum AIS_MouseGesture
   //
   AIS_MouseGesture_Zoom,            //!< view zoom gesture;
                                     //!  move mouse left to zoom-out, and to the right to zoom-in
+  AIS_MouseGesture_ZoomVertical,    //!< view zoom gesture;
+                                    //!  move mouse up to zoom-out, and to the down to zoom-in
   AIS_MouseGesture_ZoomWindow,      //!< view zoom by window gesture;
                                     //!  press button to start, move mouse to define rectangle, release to finish
   AIS_MouseGesture_Pan,             //!< view panning gesture

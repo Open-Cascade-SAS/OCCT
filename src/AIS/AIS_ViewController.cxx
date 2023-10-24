@@ -843,6 +843,7 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
         }
         case AIS_MouseGesture_Zoom:
         case AIS_MouseGesture_ZoomWindow:
+        case AIS_MouseGesture_ZoomVertical:
         {
           if (!myToAllowZooming)
           {
@@ -1043,6 +1044,7 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
       break;
     }
     case AIS_MouseGesture_Zoom:
+    case AIS_MouseGesture_ZoomVertical:
     {
       if (!myToAllowZooming)
       {
@@ -1051,15 +1053,20 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
       const double aZoomTol = theIsEmulated
                             ? double(myTouchToleranceScale) * myTouchZoomThresholdPx
                             : 0.0;
-      if (double (Abs (aDelta.x())) > aZoomTol)
+      const double aScrollDelta = myMouseActiveGesture == AIS_MouseGesture_Zoom
+                                ? aDelta.x()
+                                : aDelta.y();
+      if (Abs (aScrollDelta) > aZoomTol)
       {
-        UpdateZoom (Aspect_ScrollDelta (aDelta.x()));
+        if (UpdateZoom (Aspect_ScrollDelta (aScrollDelta)))
+        {
+          toUpdateView = true;
+        }
 
         myUI.Dragging.ToMove  = true;
         myUI.Dragging.PointTo = thePoint;
 
         myMouseProgressPoint = thePoint;
-        toUpdateView = true;
       }
       break;
     }
