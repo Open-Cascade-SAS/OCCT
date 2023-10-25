@@ -627,7 +627,7 @@ void Extrema_GenExtCC::Perform()
     {
       Standard_Real aDist1 = ProjPOnC(C1.Value(aT1[iT]), anExtPC2);
       Standard_Real aDist2 = ProjPOnC(C2.Value(aT2[iT]), anExtPC1);
-      isParallel = (Abs(Min(aDist1, aDist2) - aF) < Precision::Confusion());
+      isParallel = (Abs(Min(aDist1, aDist2) - aF * aF) < Precision::Confusion());
     }
   }
 

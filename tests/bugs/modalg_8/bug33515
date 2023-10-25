@@ -1,0 +1,14 @@
+puts "================================"
+puts "	0033515: Modeling Algorithm - BRepExtrema_DistShapeShape poduces wrong result"
+puts "================================"
+
+restore [locate_data_file bug33515_w1.brep] w1
+restore [locate_data_file bug33515_w2.brep] w2
+
+distmini d w1 w2 
+set dist [dval d_val]
+if { $dist < 3.e-10 } {
+	puts "OK: Extrema is valid"
+} else {
+	puts "Error: Extrema distance is too big"
+}

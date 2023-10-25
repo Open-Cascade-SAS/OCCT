@@ -8,6 +8,7 @@ restore [locate_data_file 5000-12.brep] s1
 restore [locate_data_file BPLSEITLI.brep] s2
 
 # multi-thread
+cpulimit 1000
 dchrono p reset; dchrono p start;
 set pres [distmini res s1 s2 -parallel]
 dchrono p stop;

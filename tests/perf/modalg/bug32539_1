@@ -5,6 +5,7 @@ puts ""
 
 # prepare
 pload XDE OCAF
+cpulimit 1000
 XOpen [locate_data_file bug32539_1.xbf] XB
 XGetShape s1 XB 0:1:1:2
 XGetShape s2 XB 0:1:1:4

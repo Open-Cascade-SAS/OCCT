@@ -43,7 +43,7 @@ static Standard_Boolean _Value(const Adaptor3d_Curve& C1,
     return Standard_False;
   }
 
-  F = C2.Value(v).SquareDistance(C1.Value(u));
+  F = C2.Value(v).Distance(C1.Value(u));
   return Standard_True;
 }
 
@@ -64,7 +64,7 @@ static Standard_Boolean _Value(const Adaptor2d_Curve2d& C1,
     return Standard_False;
   }
 
-  F = C2.Value(v).SquareDistance(C1.Value(u));
+  F = C2.Value(v).Distance(C1.Value(u));
   return Standard_True;
 }
 

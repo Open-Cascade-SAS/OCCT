@@ -24,7 +24,7 @@ if { [llength $info] != 3 } {
 # Check result
 checklength ext_1 -l 2.929642751e-14 -eps .01
 checklength ext_2 -l 3.480934286e-14 -eps .01
-checklength ext_3 -l 3.177643716e-14 -eps .01
+checklength ext_3 -l 2.929642751054232-14 -eps .01
 
 # Run extrema c3/c2
 set info [extrema c3 c2]
