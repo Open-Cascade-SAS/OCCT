@@ -168,13 +168,9 @@ TDF_Label XCAFDoc_ColorTool::AddColor(const Quantity_ColorRGBA& theColor) const
   if (XCAFDoc_ColorTool_AutoNaming)
   {
     // set name according to color value
-    const NCollection_Vec4<float>&       anRgbaF = theColor;
-    const NCollection_Vec4<unsigned int> anRgba(anRgbaF * 255.0f);
-    char                                 aColorHex[32];
-    Sprintf(aColorHex, "%02X%02X%02X%02X", anRgba.r(), anRgba.g(), anRgba.b(), anRgba.a());
     const TCollection_AsciiString aName =
-      TCollection_AsciiString(Quantity_Color::StringName(theColor.GetRGB().Name())) + " (#"
-      + aColorHex + ")";
+      TCollection_AsciiString(Quantity_Color::StringName(theColor.GetRGB().Name())) + " ("
+      + Quantity_ColorRGBA::ColorToHex(theColor) + ")";
     TDataStd_Name::Set(aLab, aName);
   }
 
