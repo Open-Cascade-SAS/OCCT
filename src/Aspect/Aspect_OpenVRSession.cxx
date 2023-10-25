@@ -206,7 +206,7 @@ TCollection_AsciiString defaultActionsManifestInit()
       return aCasRoot + "/XRResources/src/" + THE_ACTIONS_JSON;
     }
   }
-  return OSD_Process::ExecutablePath() + "/occtvr_actions.json";
+  return OSD_Process::ExecutableFolder() + "/occtvr_actions.json";
 }
 } // namespace
 #endif
