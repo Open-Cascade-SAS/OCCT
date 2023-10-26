@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SensitiveEntitySet, BVH_PrimitiveSet3d)
 SelectMgr_SensitiveEntitySet::SelectMgr_SensitiveEntitySet (const Handle(Select3D_BVHBuilder3d)& theBuilder)
 : BVH_PrimitiveSet3d (theBuilder)
 {
-  //
+  myNbEntityWithPersistence = 0;
 }
 
 //=======================================================================
@@ -42,7 +42,6 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntit
     theEntity->ResetSelectionActiveStatus();
     return;
   }
-
   const Standard_Integer anExtent = mySensitives.Extent();
   if (mySensitives.Add (theEntity) > anExtent)
   {
@@ -50,7 +49,7 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_SensitiveEntit
   }
   if (!theEntity->BaseSensitive()->TransformPersistence().IsNull())
   {
-    myHasEntityWithPersistence = Standard_True;
+    ++myNbEntityWithPersistence;
   }
   MarkDirty();
 }
@@ -78,7 +77,7 @@ void SelectMgr_SensitiveEntitySet::Append (const Handle(SelectMgr_Selection)& th
     }
     if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
     {
-      myHasEntityWithPersistence = Standard_True;
+      ++myNbEntityWithPersistence;
     }
   }
   MarkDirty();
@@ -93,7 +92,8 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
 {
   for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator aSelEntIter (theSelection->Entities()); aSelEntIter.More(); aSelEntIter.Next())
   {
-    const Standard_Integer anEntIdx = mySensitives.FindIndex (aSelEntIter.Value());
+    const Handle(SelectMgr_SensitiveEntity)& aSensEnt = aSelEntIter.Value();
+    const Standard_Integer anEntIdx = mySensitives.FindIndex (aSensEnt);
     if (anEntIdx == 0)
     {
       continue;
@@ -103,9 +103,13 @@ void SelectMgr_SensitiveEntitySet::Remove (const Handle(SelectMgr_Selection)& th
     {
       Swap (anEntIdx - 1, mySensitives.Size() - 1);
     }
+    if (!aSensEnt->BaseSensitive()->TransformPersistence().IsNull())
+    {
+      --myNbEntityWithPersistence;
+    }
 
     mySensitives.RemoveLast();
-    removeOwner (aSelEntIter.Value()->BaseSensitive()->OwnerId());
+    removeOwner (aSensEnt->BaseSensitive()->OwnerId());
   }
 
   MarkDirty();
