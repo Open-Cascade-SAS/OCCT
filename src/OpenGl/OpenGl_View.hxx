@@ -111,6 +111,12 @@ public:
   Standard_EXPORT virtual Standard_Boolean BufferDump (Image_PixMap& theImage,
                                                        const Graphic3d_BufferType& theBufferType) Standard_OVERRIDE;
 
+  //! Dumps the graphical contents of a shadowmap framebuffer into an image.
+  //! @param theImage the image to store the shadow map.
+  //! @param theLightName [in] name of the light used to generate the shadow map.
+  Standard_EXPORT virtual Standard_Boolean ShadowMapDump (Image_PixMap& theImage,
+	                                                      const TCollection_AsciiString& theLightName) Standard_OVERRIDE;
+
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   Standard_EXPORT virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) Standard_OVERRIDE;
 

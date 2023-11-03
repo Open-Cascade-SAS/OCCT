@@ -58,10 +58,12 @@ namespace
     //! Main constructor.
     OpenGl_FilteredIndexedLayerIterator (const NCollection_List<Handle(Graphic3d_Layer)>& theSeq,
                                          Standard_Boolean theToDrawImmediate,
-                                         OpenGl_LayerFilter theLayersToProcess)
+                                         OpenGl_LayerFilter theFilterMode,
+                                         Graphic3d_ZLayerId theLayersToProcess)
     : myIter (theSeq),
-      myLayersToProcess (theLayersToProcess),
-      myToDrawImmediate (theToDrawImmediate)
+      myFilterMode (theFilterMode),
+      myToDrawImmediate (theToDrawImmediate),
+      myLayersToProcess (theLayersToProcess)
     {
       next();
     }
@@ -94,11 +96,15 @@ namespace
           continue;
         }
 
-        switch (myLayersToProcess)
+        switch (myFilterMode)
         {
           case OpenGl_LF_All:
           {
-            return;
+            if (aLayer->LayerId() >= myLayersToProcess)
+            {
+              return;
+            }
+            break;
           }
           case OpenGl_LF_Upper:
           {
@@ -119,6 +125,14 @@ namespace
             }
             break;
           }
+          case OpenGl_LF_Single:
+          {
+            if (aLayer->LayerId() == myLayersToProcess)
+            {
+              return;
+            }
+            break;
+          }
           case OpenGl_LF_RayTracable:
           {
             if (aLayer->LayerSettings().IsRaytracable()
@@ -133,8 +147,9 @@ namespace
     }
   private:
     OpenGl_IndexedLayerIterator myIter;
-    OpenGl_LayerFilter          myLayersToProcess;
+    OpenGl_LayerFilter          myFilterMode;
     Standard_Boolean            myToDrawImmediate;
+    Graphic3d_ZLayerId          myLayersToProcess;
   };
 
   static const Standard_Integer THE_DRAW_BUFFERS0[]   = { GL_COLOR_ATTACHMENT0 };
@@ -714,7 +729,8 @@ void OpenGl_LayerList::renderLayer (const Handle(OpenGl_Workspace)& theWorkspace
 //=======================================================================
 void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
                                const Standard_Boolean          theToDrawImmediate,
-                               const OpenGl_LayerFilter        theLayersToProcess,
+                               const OpenGl_LayerFilter        theFilterMode,
+                               const Graphic3d_ZLayerId        theLayersToProcess,
                                OpenGl_FrameBuffer*             theReadDrawFbo,
                                OpenGl_FrameBuffer*             theOitAccumFbo) const
 {
@@ -750,7 +766,7 @@ void OpenGl_LayerList::Render (const Handle(OpenGl_Workspace)& theWorkspace,
                                   && !isShadowMapPass;
   const Handle(Graphic3d_LightSet)    aLightsBack = aCtx->ShaderManager()->LightSourceState().LightSources();
   const Handle(OpenGl_ShadowMapArray) aShadowMaps = aCtx->ShaderManager()->LightSourceState().ShadowMaps();
-  for (OpenGl_FilteredIndexedLayerIterator aLayerIterStart (myLayers, theToDrawImmediate, theLayersToProcess); aLayerIterStart.More();)
+  for (OpenGl_FilteredIndexedLayerIterator aLayerIterStart (myLayers, theToDrawImmediate, theFilterMode, theLayersToProcess); aLayerIterStart.More();)
   {
     bool hasSkippedDepthLayers = false;
     for (int aPassIter = toPerformDepthPrepass ? 0 : 2; aPassIter < 3; ++aPassIter)

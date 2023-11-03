@@ -102,7 +102,8 @@ public:
   //! Render this element
   Standard_EXPORT void Render (const Handle(OpenGl_Workspace)& theWorkspace,
                                const Standard_Boolean          theToDrawImmediate,
-                               const OpenGl_LayerFilter        theLayersToProcess,
+                               const OpenGl_LayerFilter        theFilterMode,
+                               const Graphic3d_ZLayerId        theLayersToProcess,
                                OpenGl_FrameBuffer*             theReadDrawFbo,
                                OpenGl_FrameBuffer*             theOitAccumFbo) const;
 

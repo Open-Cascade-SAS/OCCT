@@ -978,7 +978,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
         return false;
       }
 
-      aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
+      aFormat = theBufferType == Graphic3d_BT_Depth || theBufferType == Graphic3d_BT_ShadowMap ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_UNSIGNED_BYTE;
       break;
     }
@@ -989,7 +989,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
         return false;
       }
 
-      aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
+      aFormat = theBufferType == Graphic3d_BT_Depth || theBufferType == Graphic3d_BT_ShadowMap ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_UNSIGNED_SHORT;
       break;
     }
@@ -1000,7 +1000,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
         return false;
       }
 
-      aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
+      aFormat = theBufferType == Graphic3d_BT_Depth || theBufferType == Graphic3d_BT_ShadowMap ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_FLOAT;
       break;
     }
@@ -1113,7 +1113,7 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
 
   GLint aReadBufferPrev = GL_BACK;
   if (theGlCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES
-   && theBufferType == Graphic3d_BT_Depth
+   && (theBufferType == Graphic3d_BT_Depth || theBufferType == Graphic3d_BT_ShadowMap)
    && aFormat != GL_DEPTH_COMPONENT)
   {
     return Standard_False;
