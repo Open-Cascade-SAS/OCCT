@@ -31,38 +31,8 @@ namespace TextValue
   static char IdZero[] = "#0";
 }
 
-class StepFile_ReadData::CharactersPage {
-
-public:
-
-  CharactersPage(const Standard_Integer theMaxCar) :myNext(nullptr), myUsed(0)
-  {
-    myCharacters = new char[theMaxCar];
-  }
-
-  ~CharactersPage()
-  {
-    if (myCharacters != nullptr)
-    {
-      delete[] myCharacters;
-      myCharacters = nullptr;
-    }
-  }
-
-  DEFINE_STANDARD_ALLOC
-public:
-
-  CharactersPage* myNext; //!< Chaining of character pages
-  char* myCharacters;     //!< Own characters page
-  int myUsed;             //!< Counter employed characters
-};
-
-class StepFile_ReadData::Argument {
-
-public:
-  // Standard OCCT memory allocation stuff
-  DEFINE_STANDARD_ALLOC
-
+class StepFile_ReadData::Argument
+{
 public:
 
   Argument() :myNext(nullptr), myValue(nullptr), myType(Interface_ParamSub) {}
@@ -76,38 +46,8 @@ public:
   Interface_ParamType myType; //!< Type of the argument
 };
 
-class StepFile_ReadData::ArgumentsPage {
-
-public:
-  // Standard OCCT memory allocation stuff
-  DEFINE_STANDARD_ALLOC
-
-public:
-
-  ArgumentsPage(Standard_Integer theMaxArg) :myNext(nullptr), myUsed(0)
-  {
-    myArgs = new Argument[theMaxArg];
-  }
-
-  ~ArgumentsPage()
-  {
-    delete[] myArgs;
-    myArgs = nullptr;
-  }
-
-public:
-
-  ArgumentsPage*  myNext; //!< Chaining of arguments pages
-  Argument* myArgs;       //!< Own arguments page
-  int myUsed;             //!< Counter employed arguments
-};
-
-class StepFile_ReadData::Record {
-
-public:
-  // Standard OCCT memory allocation stuff
-  DEFINE_STANDARD_ALLOC
-
+class StepFile_ReadData::Record
+{
 public:
 
   Record() :myNext(nullptr), myFirst(nullptr), myLast(nullptr), myIdent(nullptr), myType(nullptr) {}
@@ -123,8 +63,8 @@ public:
   char* myType;      //!< Type of the record
 };
 
-class StepFile_ReadData::Scope {
-
+class StepFile_ReadData::Scope
+{
 public:
   // Standard OCCT memory allocation stuff
   DEFINE_STANDARD_ALLOC
@@ -137,7 +77,6 @@ public:
   {
     if (myRecord != nullptr)
     {
-      delete[] myRecord;
       myRecord = nullptr;
     }
   }
@@ -148,35 +87,8 @@ public:
   Record* myRecord;   //!< Record interrupted by the scope (to resume)
 };
 
-class StepFile_ReadData::RecordsPage
-{
-
-public:
-
-  RecordsPage(const Standard_Integer theMaxRec) :myNext(nullptr), myUsed(0)
-  {
-    myRecords = new Record[theMaxRec];
-  }
-
-  ~RecordsPage()
-  {
-    if (myRecords != nullptr)
-    {
-      delete[] myRecords;
-      myRecords = nullptr;
-    }
-  }
-  DEFINE_STANDARD_ALLOC
-public:
-
-  RecordsPage* myNext; //!< Chaining of records pages
-  Record* myRecords;   //!< Own records page
-  int myUsed;          //!< Counter employed records
-};
-
 class StepFile_ReadData::ErrorsPage
 {
-
 public:
 
   ErrorsPage(Standard_CString theError) :myNext(nullptr), myError(theError)
@@ -203,17 +115,13 @@ private:
 //purpose  : 
 //=======================================================================
 
-StepFile_ReadData::StepFile_ReadData()
-  :myMaxChar(50000), myMaxRec(5000), myMaxArg(10000), myModePrint(0),
-  myNbRec(0), myNbHead(0), myNbPar(0), myYaRec(0),
+StepFile_ReadData::StepFile_ReadData() :
+  myTextAlloc(), myOtherAlloc(),
+  myModePrint(0), myNbRec(0), myNbHead(0), myNbPar(0), myYaRec(0),
   myNumSub(0), myErrorArg(Standard_False), myResText(nullptr), myCurrType(TextValue::SubList),
   mySubArg(nullptr), myTypeArg(Interface_ParamSub), myCurrArg(nullptr), myFirstRec(nullptr),
   myCurRec(nullptr), myLastRec(nullptr), myCurScope(nullptr), myFirstError(nullptr), myCurError(nullptr)
-{
-  myOneCharPage = new CharactersPage(myMaxChar);
-  myOneArgPage = new ArgumentsPage(myMaxArg);
-  myOneRecPage = new RecordsPage(myMaxRec);
-};
+{};
 
 //=======================================================================
 //function : CreateNewText
@@ -229,22 +137,11 @@ void StepFile_ReadData::CreateNewText(const char* theNewText, int theLenText)
     return;
   }
   //  If error argument exists - prepare size to new text value and old result text
-  int aLength = (myErrorArg) ? theLenText + (int)strlen(myResText) : theLenText;
-
-  if (myOneCharPage->myUsed > myMaxChar - aLength - 1)
-  {
-    int aSizeOfPage = myMaxChar + 1;
-    if (aLength >= myMaxChar) aSizeOfPage += (aLength + 1 - myMaxChar);
-    CharactersPage* aNewPage = new CharactersPage(aSizeOfPage);
-    aNewPage->myNext = myOneCharPage;
-    myOneCharPage = aNewPage;
-    myOneCharPage->myUsed = 0;
-  }
+  const int aLength = (myErrorArg) ? theLenText + (int)strlen(myResText) : theLenText;
 
   char* anOldResText = myResText;
 
-  myResText = myOneCharPage->myCharacters + myOneCharPage->myUsed;
-  myOneCharPage->myUsed += (aLength + 1);
+  myResText = static_cast<char*>(myTextAlloc.AllocateOptimal(aLength + 1));
 
   // If error argument exists - append new text to old result text
   // Else create new result text
@@ -350,17 +247,8 @@ void StepFile_ReadData::RecordListStart()
 
 void StepFile_ReadData::CreateNewArg()
 {
-  Argument* aNewArg;
+  Argument* aNewArg = static_cast<Argument*>(myOtherAlloc.AllocateOptimal(sizeof(Argument)));
   myNbPar++;
-  if (myOneArgPage->myUsed >= myMaxArg)
-  {
-    ArgumentsPage* aNewArgPage;
-    aNewArgPage = new ArgumentsPage(myMaxArg);
-    aNewArgPage->myNext = myOneArgPage;
-    myOneArgPage = aNewArgPage;
-  }
-  aNewArg = &myOneArgPage->myArgs[myOneArgPage->myUsed];
-  myOneArgPage->myUsed++;
   aNewArg->myType = myTypeArg;
   if (myTypeArg == Interface_ParamSub)
     aNewArg->myValue = mySubArg;
@@ -419,7 +307,7 @@ void StepFile_ReadData::AddNewScope()
 {
   Scope* aNewScope;
   Record* aRecord;
-  aNewScope = new Scope;
+  aNewScope = new(myOtherAlloc.AllocateOptimal(sizeof(Scope))) Scope;
   aNewScope->myRecord = myCurRec;
   aNewScope->myPrevious = myCurScope;
   myCurScope = aNewScope;
@@ -466,7 +354,6 @@ void StepFile_ReadData::FinalOfScope()
   myYaRec = 1;
   anOldScope = myCurScope;
   myCurScope = anOldScope->myPrevious;
-  delete anOldScope;
 }
 
 //=======================================================================
@@ -478,32 +365,19 @@ void StepFile_ReadData::ClearRecorder(const Standard_Integer theMode)
 {
   if (theMode & 1)
   {
-    while (myOneRecPage != nullptr)
-    {
-      RecordsPage* aNewPage = myOneRecPage->myNext;
-      delete myOneRecPage;
-      myOneRecPage = aNewPage;
-    }
-    while (myOneArgPage != nullptr) {
-      ArgumentsPage* aNewPage = myOneArgPage->myNext;
-      delete myOneArgPage;
-      myOneArgPage = aNewPage;
-    }
-    while (myFirstError != nullptr)
-    {
-      ErrorsPage* aNewErrorPage = myFirstError->NextErrorPage();
-      delete myFirstError;
-      myFirstError = aNewErrorPage;
-    }
+    myCurrType = nullptr;
+    mySubArg = nullptr;
+    myCurrArg = nullptr;
+    myFirstRec = nullptr;
+    myCurRec = nullptr;
+    myLastRec = nullptr;
+    myCurScope = nullptr;
+    myOtherAlloc.Reset(true);
   }
   if (theMode & 2)
   {
-    while (myOneCharPage != nullptr)
-    {
-      CharactersPage* aNewPage = myOneCharPage->myNext;
-      delete myOneCharPage;
-      myOneCharPage = aNewPage;
-    }
+    myResText = nullptr;
+    myTextAlloc.Reset(true);
   }
 }
 
@@ -653,12 +527,12 @@ void StepFile_ReadData::AddError(Standard_CString theErrorMessage)
 {
   if (myFirstError == nullptr)
   {
-    myFirstError = new ErrorsPage(theErrorMessage);
+    myFirstError = new(myOtherAlloc.AllocateOptimal(sizeof(ErrorsPage))) ErrorsPage(theErrorMessage);
     myCurError = myFirstError;
   }
   else
   {
-    myCurError->SetNextErrorPage(new ErrorsPage(theErrorMessage));
+    myCurError->SetNextErrorPage(new(myOtherAlloc.AllocateOptimal(sizeof(ErrorsPage))) ErrorsPage(theErrorMessage));
     myCurError = myCurError->NextErrorPage();
   }
 }
@@ -736,18 +610,7 @@ void StepFile_ReadData::AddNewRecord(Record* theNewRecord)
 
 StepFile_ReadData::Record* StepFile_ReadData::CreateNewRecord()
 {
-  Record* aNewRecord;
-  if (myOneRecPage->myUsed >= myMaxRec)
-  {
-    RecordsPage* aNewRecPage;
-    aNewRecPage = new RecordsPage(myMaxRec);
-    aNewRecPage->myNext = myOneRecPage;
-    myOneRecPage = aNewRecPage;
-  }
-  aNewRecord = &myOneRecPage->myRecords[myOneRecPage->myUsed];
-  myOneRecPage->myUsed++;
-
-  return aNewRecord;
+  return static_cast<Record*>(myOtherAlloc.AllocateOptimal(sizeof(Record)));
 }
 
 //=======================================================================

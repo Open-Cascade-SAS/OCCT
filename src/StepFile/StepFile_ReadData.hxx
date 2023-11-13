@@ -19,6 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Handle.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 #include <Interface_ParamType.hxx>
 
@@ -113,12 +114,9 @@ public:
 
 private:
 
-  class CharactersPage; //!< List of characters pages, contains all text derived from Flex
   class Record;         //!< List of records, contains all text processed by Bison
   class Argument;       //!< List of arguments, contains all argument descriptions
-  class ArgumentsPage;  //!< List of arguments pages, contains all text derived from Flex
   class Scope;          //!< List of scopes pages, contains all records for external processing
-  class RecordsPage;    //!< List of records pages, contains all records
   class ErrorsPage;     //!< List of errors messages, contains all errors
 
 public:
@@ -237,10 +235,8 @@ private:
   void PrintRecord(Record* theRecord);
 
 private:
-
-  Standard_Integer myMaxChar;    //!< Maximum number of characters in a characters page
-  Standard_Integer myMaxRec;     //!< Maximum number of records in a records page
-  Standard_Integer myMaxArg;     //!< Maximum number of arguments in a arguments page
+  NCollection_IncAllocator myTextAlloc;  //!< Allocator for store text
+  NCollection_IncAllocator myOtherAlloc; //!< Allocator for internal tools
   Standard_Integer myModePrint;  //!< Control print output (for call from yacc)
   Standard_Integer myNbRec;      //!< Total number of data records read
   Standard_Integer myNbHead;     //!< Number of records taken by the Header
@@ -259,9 +255,6 @@ private:
   Scope* myCurScope;             //!< Current node of the scopes list
   ErrorsPage* myFirstError;      //!< First node of the errors pages list
   ErrorsPage* myCurError;        //!< Current node of the errors pages list
-  RecordsPage* myOneRecPage;     //!< Current node of the records pages list
-  CharactersPage* myOneCharPage; //!< Current node of the characters pages list
-  ArgumentsPage* myOneArgPage;   //!< Current node of the arguments pages list
 };
 
 #endif // _StepFile_ReadData_HeaderFile

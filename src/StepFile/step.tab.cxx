@@ -57,8 +57,6 @@
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER
 #pragma warning(disable:4065 4244 4131 4127 4702)
-#define YYMALLOC malloc
-#define YYFREE free
 #endif
 void StepFile_Interrupt (Standard_CString theErrorMessage, const Standard_Boolean theIsFail);
 
@@ -1130,11 +1128,11 @@ namespace step {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,    98,    98,    99,   100,   101,   102,   103,   104,   105,
-     105,   105,   108,   109,   111,   112,   114,   117,   118,   119,
-     120,   121,   124,   127,   130,   135,   136,   138,   139,   141,
-     142,   144,   145,   146,   147,   149,   150,   152,   153,   155,
-     158,   161,   162,   164,   167,   169,   174,   177
+       0,    96,    96,    97,    98,    99,   100,   101,   102,   103,
+     103,   103,   106,   107,   109,   110,   112,   115,   116,   117,
+     118,   119,   122,   125,   128,   133,   134,   136,   137,   139,
+     140,   142,   143,   144,   145,   147,   148,   150,   151,   153,
+     156,   159,   160,   162,   165,   167,   172,   175
   };
 
   void

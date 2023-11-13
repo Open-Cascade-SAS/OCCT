@@ -57,8 +57,6 @@ namespace step {
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER
 #pragma warning(disable:4065 4244 4131 4127 4702)
-#define YYMALLOC malloc
-#define YYFREE free
 #endif
 void StepFile_Interrupt (Standard_CString theErrorMessage, const Standard_Boolean theIsFail);
 }
