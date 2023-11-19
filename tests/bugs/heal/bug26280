@@ -8,5 +8,7 @@ puts ""
 # Mechanism 'ShapeFix' is unable to heal a shape
 ##################################################
 
+pload STEP
+
 stepread [locate_data_file bug26280_1kento13-mld-b-cv-qubit.stp] r *
 checkshape r_1

@@ -14,6 +14,7 @@
 #include <RWObj_ConfigurationNode.hxx>
 
 #include <DE_ConfigurationContext.hxx>
+#include <DE_PluginHolder.hxx>
 #include <RWObj_Provider.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWObj_ConfigurationNode, DE_ConfigurationNode)
@@ -25,6 +26,9 @@ namespace
     static const TCollection_AsciiString aScope = "provider";
     return aScope;
   }
+
+  // Wrapper to auto-load DE component
+  DE_PluginHolder<RWObj_ConfigurationNode> THE_OCCT_OBJ_COMPONENT_PLUGIN;
 }
 
 //=======================================================================

@@ -6,7 +6,7 @@ puts ""
 # Mesh generation hangs then crashes
 ###########################################
 
-pload DATAEXCHANGEKERNEL
+pload DATAEXCHANGEKERNEL STEP
 
 testreadstep [locate_data_file bug28118_18547.stp] result
 vclear

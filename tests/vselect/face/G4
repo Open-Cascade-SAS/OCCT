@@ -1,6 +1,6 @@
 # isolines on finite prism based on spline edge with poles closed to 1.4e+6
 
-if {[info commands testreadiges] == ""} {pload XSDRAW}
+if {[info commands testreadiges] == ""} {pload IGES}
 testreadiges [locate_data_file bug29356.igs] a
 
 mksurface s a

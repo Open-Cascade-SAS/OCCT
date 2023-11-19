@@ -6,7 +6,7 @@ puts ""
 # Visualization - randomly directed arrows on test v3d mesh B7
 ##########################################################################################################
 
-pload XSDRAW
+pload XSDRAW STL
 
 vinit
 vclear

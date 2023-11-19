@@ -32,8 +32,15 @@
   #endif
   #include <TObjDRAW.hxx>
   #include <ViewerTest.hxx>
-  #include <XSDRAWSTLVRML.hxx>
+  #include <XSDRAW.hxx>
   #include <XDEDRAW.hxx>
+  #include <XSDRAWSTEP.hxx>
+  #include <XSDRAWIGES.hxx>
+  #include <XSDRAWGLTF.hxx>
+  #include <XSDRAWOBJ.hxx>
+  #include <XSDRAWPLY.hxx>
+  #include <XSDRAWVRML.hxx>
+  #include <XSDRAWSTL.hxx>
 #endif
 
 Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
@@ -200,6 +207,13 @@ static Standard_Integer Pload (Draw_Interpretor& theDI,
     else if (anArg == "DATAEXCHANGE")
     {
       aPlugins.Add ("XSDRAW");
+      aPlugins.Add ("XSDRAWSTEP");
+      aPlugins.Add ("XSDRAWIGES");
+      aPlugins.Add ("XSDRAWGLTF");
+      aPlugins.Add ("XSDRAWOBJ");
+      aPlugins.Add ("XSDRAWPLY");
+      aPlugins.Add ("XSDRAWVRML");
+      aPlugins.Add ("XSDRAWSTL");
       aPlugins.Add ("XDEDRAW");
       aPlugins.Add ("AISV");
     }
@@ -215,6 +229,13 @@ static Standard_Integer Pload (Draw_Interpretor& theDI,
       aPlugins.Add ("XSDRAW");
       aPlugins.Add ("XDEDRAW");
       aPlugins.Add ("AISV");
+      aPlugins.Add ("XSDRAWSTEP");
+      aPlugins.Add ("XSDRAWIGES");
+      aPlugins.Add ("XSDRAWGLTF");
+      aPlugins.Add ("XSDRAWOBJ");
+      aPlugins.Add ("XSDRAWPLY");
+      aPlugins.Add ("XSDRAWVRML");
+      aPlugins.Add ("XSDRAWSTL");
     }
     else
     {
@@ -254,14 +275,40 @@ static Standard_Integer Pload (Draw_Interpretor& theDI,
   #endif
     else if (aPlugin == "XSDRAW")
     {
-      XSDRAWSTLVRML::Factory (theDI);
+      XSDRAW::Factory (theDI);
     }
     else if (aPlugin == "XDEDRAW")
     {
       XDEDRAW::Factory (theDI);
     }
-    //else if (aPlugin == "TOBJ")       { TObjDRAW::Factory (theDI); }
-    //else if (aPlugin == "QACOMMANDS") { QADraw::Factory (theDI); }
+    else if (aPlugin == "STEP")
+    {
+      XSDRAWSTEP::Factory (theDI);
+    }
+    else if (aPlugin == "IGES")
+    {
+      XSDRAWIGES::Factory (theDI);
+    }
+    else if (aPlugin == "PLY")
+    {
+      XSDRAWPLY::Factory (theDI);
+    }
+    else if (aPlugin == "GLTF")
+    {
+      XSDRAWGLTF::Factory (theDI);
+    }
+    else if (aPlugin == "VRML")
+    {
+      XSDRAWVRML::Factory (theDI);
+    }
+    else if (aPlugin == "STL")
+    {
+      XSDRAWSTL::Factory (theDI);
+    }
+    else if (aPlugin == "OBJ")
+    {
+      XSDRAWOBJ::Factory (theDI);
+    }
     else
     {
       theDI << "Error: unknown plugin '" << aPlugin << "'";

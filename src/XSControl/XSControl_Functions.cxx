@@ -93,7 +93,7 @@ static IFSelect_ReturnStatus XSControl_newmodel(const Handle(IFSelect_SessionPil
   if (!XSControl::Session(pilot)->NewModel().IsNull()) return IFSelect_RetDone;
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   sout<<"No new Model produced"<<std::endl;
-  return IFSelect_RetFail;
+  return IFSelect_RetDone;
 }
 
 

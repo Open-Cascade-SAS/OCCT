@@ -36,6 +36,8 @@ class Interface_CheckIterator;
 class XSControl_WorkSession;
 DEFINE_STANDARD_HANDLE(XSControl_WorkSession, IFSelect_WorkSession)
 
+using XSControl_WorkSessionMap = NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>;
+
 //! This WorkSession completes the basic one, by adding :
 //! - use of Controller, with norm selection...
 //! - management of transfers (both ways) with auxiliary classes
@@ -82,12 +84,12 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   
   //! Returns the current Context List, Null if not defined
   //! The Context is given to the TransientProcess for TransferRead
-  const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> & Context() const
+  const XSControl_WorkSessionMap& Context() const
   { return myContext; }
   
   //! Sets the current Context List, as a whole
   //! Sets it to the TransferReader
-  Standard_EXPORT void SetAllContext (const NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& theContext);
+  Standard_EXPORT void SetAllContext (const XSControl_WorkSessionMap& theContext);
   
   //! Clears the whole current Context (nullifies it)
   Standard_EXPORT void ClearContext();
@@ -199,7 +201,7 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   Handle(XSControl_Controller) myController;
   Handle(XSControl_TransferReader) myTransferReader;
   Handle(XSControl_TransferWriter) myTransferWriter;
-  NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> myContext;
+  XSControl_WorkSessionMap myContext;
   Handle(XSControl_Vars) myVars;
 };
 

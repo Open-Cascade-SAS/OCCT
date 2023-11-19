@@ -3,7 +3,7 @@ puts "0030595: Oriented Bounding Box seems not optimal for some shapes"
 puts "==============================================================="
 puts ""
 
-pload XSDRAW
+pload XSDRAW STEP
 
 stepread [locate_data_file bug30595_UC1.stp] s *
 incmesh s_1 0.1

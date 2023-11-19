@@ -43,10 +43,10 @@
 #pragma comment(lib, "TKService.lib")
 #pragma comment(lib, "TKV3d.lib")
 #pragma comment(lib, "TKOpenGl.lib")
-#pragma comment(lib, "TKIGES.lib")
-#pragma comment(lib, "TKSTEP.lib")
-#pragma comment(lib, "TKStl.lib")
-#pragma comment(lib, "TKVrml.lib")
+#pragma comment(lib, "TKDEIGES.lib")
+#pragma comment(lib, "TKDESTEP.lib")
+#pragma comment(lib, "TKDESTL.lib")
+#pragma comment(lib, "TKDEVRML.lib")
 #pragma comment(lib, "TKLCAF.lib")
 
 //! Auxiliary tool for converting C# string into UTF-8 string.

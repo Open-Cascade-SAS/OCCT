@@ -8,7 +8,7 @@ puts ""
 
 cpulimit 1000
 
-pload DATAEXCHANGEKERNEL
+pload DATAEXCHANGEKERNEL STEP
 
 # Restore testing shape and get timing characteristics for operation stepread
 dchrono perf_h restart

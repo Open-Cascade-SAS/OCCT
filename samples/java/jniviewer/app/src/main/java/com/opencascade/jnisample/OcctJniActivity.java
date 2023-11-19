@@ -138,11 +138,8 @@ public class OcctJniActivity extends Activity implements OnClickListener
      || !loadLibVerbose ("TKFillet",     aLoaded, aFailed)
      || !loadLibVerbose ("TKOffset",     aLoaded, aFailed)
      || !loadLibVerbose ("TKXSBase",     aLoaded, aFailed)
-     || !loadLibVerbose ("TKIGES",       aLoaded, aFailed)
-     || !loadLibVerbose ("TKSTEPBase",   aLoaded, aFailed)
-     || !loadLibVerbose ("TKSTEPAttr",   aLoaded, aFailed)
-     || !loadLibVerbose ("TKSTEP209",    aLoaded, aFailed)
-     || !loadLibVerbose ("TKSTEP",       aLoaded, aFailed)
+     || !loadLibVerbose ("TKDEIGES",       aLoaded, aFailed)
+     || !loadLibVerbose ("TKDESTEP",       aLoaded, aFailed)
         // OCCT Visualization
      || !loadLibVerbose ("TKService",    aLoaded, aFailed)
      || !loadLibVerbose ("TKHLR",        aLoaded, aFailed)

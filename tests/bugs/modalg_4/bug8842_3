@@ -10,7 +10,7 @@ puts ""
 
 set BugNumber OCC8842
 
-if {[info commands testreadiges] == ""} {pload XSDRAW}
+if {[info commands testreadiges] == ""} {pload XSDRAW IGES}
 
 proc myoffset {result sh val tan} {
   if {$tan == 1} {

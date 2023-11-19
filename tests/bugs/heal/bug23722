@@ -6,6 +6,8 @@ puts ""
 ## stack overflow during reading IGES in Test Harness
 #############################
 
+pload IGES
+
 restore [locate_data_file bug23722_face.brep]
 
 brepiges bug23722_face ${imagedir}/face.igs

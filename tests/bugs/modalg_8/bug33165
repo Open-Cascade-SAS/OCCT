@@ -3,7 +3,7 @@ puts "0033165: Data exchange - Instance name is not saved during writing step fi
 puts "===================================="
 puts ""
 
-pload OCAF XDEDRAW
+pload OCAF XDEDRAW STEP
 
 box b 1 1 1
 reset b

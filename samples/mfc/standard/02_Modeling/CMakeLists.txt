@@ -61,4 +61,4 @@ include_directories (${CMAKE_BINARY_DIR}/inc
                      ${Modeling_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
-target_link_libraries (Modeling mfcsample TKSTEP209 TKSTEPAttr TKSTEPBase TKBO)
+target_link_libraries (Modeling mfcsample TKDESTEP TKBO)

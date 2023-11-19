@@ -3,7 +3,7 @@ puts "0030829: BRepExtrema_ShapeProximity crashes with shape from STL/WRL"
 puts "========"
 puts ""
 
-pload XSDRAW
+pload XSDRAW STL
 
 box b 10 10 10
 pcylinder c 5 10

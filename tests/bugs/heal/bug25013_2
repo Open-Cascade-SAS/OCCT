@@ -6,6 +6,8 @@ puts ""
 # ShapeFix_Wire tweaks for better results
 ##################################################
 
+pload STEP
+
 stepread [locate_data_file bug25013_25013face.stp] a *
 
 tpcompound result

@@ -1,6 +1,6 @@
 # Test performance of dynamic loading / unloading of large OCCT library
 
-set libname TKSTEP
+set libname TKDESTEP
 
 switch -nocase [checkplatform] {
   windows {set libname    ${libname}.dll}

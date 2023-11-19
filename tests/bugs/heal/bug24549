@@ -6,7 +6,7 @@ puts ""
 ## Faulty shape after IGES translation with xstep.cascade.unit set to M
 #######################################################################
 
-pload DATAEXCHANGEKERNEL
+pload DATAEXCHANGEKERNEL IGES
 
 param xstep.cascade.unit M
 

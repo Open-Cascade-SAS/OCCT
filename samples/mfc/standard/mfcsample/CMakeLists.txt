@@ -158,15 +158,12 @@ include_directories( ${CMAKE_BINARY_DIR}/inc
                      ${COMMON_RESOURCE2D_DIR})
 
 # OCCT libraries for using
-set (mfcsample_USED_LIBS  TKVRML
-                          TKSTL
+set (mfcsample_USED_LIBS  TKDEVRML
+                          TKDESTL
                           TKBRep
-                          TKIGES
+                          TKDEIGES
                           TKShHealing
-                          TKSTEP
-                          TKSTEPBase
-                          TKSTEP209
-                          TKSTEPAttr
+                          TKDESTEP
                           TKXSBase
                           TKBool
                           TKBO

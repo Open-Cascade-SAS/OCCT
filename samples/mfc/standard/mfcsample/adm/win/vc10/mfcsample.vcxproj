@@ -115,7 +115,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBrep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\$(VCFMT)\bind/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -158,7 +158,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBrep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\$(VCFMT)\bind/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -202,7 +202,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBrep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\$(VCFMT)\bin/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -246,7 +246,7 @@
       <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBrep.lib;TKIGES.lib;TKShHealing.lib;TKStep.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBrep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKMesh.lib;TKV3d.lib;TKOpenGl.lib;TKLCAF.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\$(VCFMT)\bin/mfcsample.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

@@ -102,11 +102,11 @@ set (uwp_USED_LIBS        TKernel
                           TKHLR
                           TKOffset
                           TKXMesh
-                          TKIGES
-                          TKSTEP
+                          TKDEIGES
+                          TKDESTEP
                           TKXSBase
-                          TKSTL
-                          TKVRML
+                          TKDESTL
+                          TKDEVRML
                           )
 
 target_link_libraries (uwp ${uwp_USED_LIBS})

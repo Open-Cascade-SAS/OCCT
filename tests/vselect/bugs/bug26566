@@ -3,7 +3,7 @@ puts "OCC26566: Visualization - incorrect highlight after selection of owners wi
 puts "========"
 puts ""
 
-pload VISUALIZATION MODELING XSDRAW
+pload VISUALIZATION MODELING XSDRAW STL
 vinit View1
 
 # create an object with auto-highlight disabled

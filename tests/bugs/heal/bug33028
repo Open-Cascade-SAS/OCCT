@@ -3,6 +3,8 @@ puts " OCC33028: Standard_ConstructionError while using ShapeUpgrade_UnifySameDo
 puts "========================"
 puts ""
 
+pload STEP
+
 stepread [locate_data_file bug33028_kalip.stp] s *
 
 set nbsBefore "

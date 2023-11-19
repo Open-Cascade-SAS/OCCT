@@ -4,12 +4,6 @@ IFGraph
 IFSelect
 TransferBRep
 XSControl
-StepData
-StepFile
-HeaderSection
-RWHeaderSection
-APIHeaderSection
-StepSelect
 XSAlgo
 LibCtl
 MoniTool

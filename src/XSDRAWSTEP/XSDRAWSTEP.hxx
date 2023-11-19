@@ -1,7 +1,4 @@
-// Created on: 1996-01-12
-// Created by: Christian CAILLET
-// Copyright (c) 1996-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2023 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -22,41 +19,13 @@
 
 #include <Draw_Interpretor.hxx>
 
-
-//! XSDRAW for STEP AP214 and AP203
-class XSDRAWSTEP 
+class XSDRAWSTEP
 {
+  DEFINE_STANDARD_ALLOC
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
-  Standard_EXPORT static void Init();
-  
-  //! Inits commands to access product data and to write shapes
-  Standard_EXPORT static void InitCommands (Draw_Interpretor& theCommands);
-
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-
+  //! Loads all Draw commands of XSDRAWSTEP. Used for plugin.
+  Standard_EXPORT static void Factory(Draw_Interpretor& theDI);
 };
-
-
-
-
-
-
 
 #endif // _XSDRAWSTEP_HeaderFile

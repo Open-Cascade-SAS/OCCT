@@ -14,6 +14,7 @@
 #include <RWGltf_ConfigurationNode.hxx>
 
 #include <DE_ConfigurationContext.hxx>
+#include <DE_PluginHolder.hxx>
 #include <RWGltf_Provider.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_ConfigurationNode, DE_ConfigurationNode)
@@ -25,6 +26,9 @@ namespace
     static const TCollection_AsciiString aScope = "provider";
     return aScope;
   }
+
+  // Wrapper to auto-load DE component
+  DE_PluginHolder<RWGltf_ConfigurationNode> THE_OCCT_GLTF_COMPONENT_PLUGIN;
 }
 
 //=======================================================================

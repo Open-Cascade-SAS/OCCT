@@ -35,8 +35,11 @@ namespace
     return aScope;
   }
 
-  //! Global configuration of current DE Session
-  static Handle(DE_Wrapper) THE_GLOBAL_CONFIGURATION;
+  static Handle(DE_Wrapper)& THE_GLOBAL_CONFIGURATION()
+  {
+    static Handle(DE_Wrapper) aConf = new DE_Wrapper();
+    return aConf;
+  }
 }
 
 //=======================================================================
@@ -75,13 +78,9 @@ DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
 // function : GlobalWrapper
 // purpose  :
 //=======================================================================
-Handle(DE_Wrapper) DE_Wrapper::GlobalWrapper()
+const Handle(DE_Wrapper)& DE_Wrapper::GlobalWrapper()
 {
-  if (THE_GLOBAL_CONFIGURATION.IsNull())
-  {
-    THE_GLOBAL_CONFIGURATION = new DE_Wrapper();
-  }
-  return THE_GLOBAL_CONFIGURATION;
+  return THE_GLOBAL_CONFIGURATION();
 }
 
 //=======================================================================
@@ -92,8 +91,18 @@ void DE_Wrapper::SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper)
 {
   if (!theWrapper.IsNull())
   {
-    THE_GLOBAL_CONFIGURATION = theWrapper;
+    THE_GLOBAL_CONFIGURATION() = theWrapper;
   }
+}
+
+//=======================================================================
+// function : GlobalLoadMutex
+// purpose  :
+//=======================================================================
+Standard_Mutex& DE_Wrapper::GlobalLoadMutex()
+{
+  static Standard_Mutex THE_GLOBAL_LOAD_MUTEX;
+  return THE_GLOBAL_LOAD_MUTEX;
 }
 
 //=======================================================================
@@ -410,6 +419,28 @@ Standard_Boolean DE_Wrapper::Bind(const Handle(DE_ConfigurationNode)& theNode)
     aVendorMap = myConfiguration.Bound(aFileFormat, aTmpVendorMap);
   }
   return aVendorMap->Add(aVendorName, theNode) > 0;
+}
+
+//=======================================================================
+// function : UnBind
+// purpose  :
+//=======================================================================
+Standard_Boolean DE_Wrapper::UnBind(const Handle(DE_ConfigurationNode)& theNode)
+{
+  if (theNode.IsNull())
+  {
+    return false;
+  }
+  const TCollection_AsciiString aFileFormat = theNode->GetFormat();
+  const TCollection_AsciiString aVendorName = theNode->GetVendor();
+  DE_ConfigurationVendorMap* aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
+  if (aVendorMap == NULL)
+  {
+    return false;
+  }
+  const auto aPrevSize = aVendorMap->Size();
+  aVendorMap->RemoveKey(aVendorName);
+  return aVendorMap->Size() != aPrevSize;
 }
 
 //=======================================================================

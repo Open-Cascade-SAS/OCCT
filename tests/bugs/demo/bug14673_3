@@ -17,6 +17,6 @@ close $fd
 
 puts "# Load IGES file which is known to generate the message, and check it"
 puts "REQUIRED 14673 ALL: $message"
-pload XSDRAW
+pload XSDRAW IGES
 igesbrep [locate_data_file hammer.iges] a *
 tpstat c

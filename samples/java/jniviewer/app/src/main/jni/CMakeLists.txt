@@ -8,8 +8,8 @@ set (anOcctLibs
   # exchange
   TKPrim TKBO TKBool TKFillet TKOffset
   TKXSBase
-  TKIGES
-  TKSTEPBase TKSTEPAttr TKSTEP209 TKSTEP
+  TKDEIGES
+  TKDESTEP
   # OCCT Visualization
   TKService TKHLR TKV3d TKOpenGles
 )

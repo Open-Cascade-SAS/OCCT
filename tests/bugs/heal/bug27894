@@ -6,6 +6,8 @@ puts ""
 ## Crash when calling ShapeUpgrade_UnifySameDomain
 ###############################
 
+pload STEP
+
 stepread [locate_data_file bug27894_usd_raises_Standard_NullObject.stp] a *
 renamevar a_1 a
 unifysamedom result a

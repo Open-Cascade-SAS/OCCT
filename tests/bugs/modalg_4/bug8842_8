@@ -10,7 +10,7 @@ set BugNumber OCC8842
 
 cpulimit 500
 
-if {[info commands testreadiges] == ""} {pload XSDRAW}
+if {[info commands testreadiges] == ""} {pload XSDRAW IGES}
 
 proc myoffset {result sh val tan} {
   if {$tan == 1} {

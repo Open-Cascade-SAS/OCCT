@@ -14,6 +14,7 @@
 #include <RWStl_ConfigurationNode.hxx>
 
 #include <DE_ConfigurationContext.hxx>
+#include <DE_PluginHolder.hxx>
 #include <NCollection_Buffer.hxx>
 #include <RWStl_Provider.hxx>
 
@@ -26,6 +27,9 @@ namespace
     static const TCollection_AsciiString aScope = "provider";
     return aScope;
   }
+
+  // Wrapper to auto-load DE component
+  DE_PluginHolder<RWStl_ConfigurationNode> THE_OCCT_STL_COMPONENT_PLUGIN;
 }
 
 //=======================================================================

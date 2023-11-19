@@ -1089,10 +1089,10 @@ This group allows  testing extended data exchange packages.
 | Draw  | TKDraw, TKTopTest, TKViewerTest, TKXSDRAW, TKDCAF, TKXDEDRAW, TKTObjDRAW, TKQADraw, DRAWEXE, Problems of testing system | draw | 
 | Shape Healing | TKShHealing | heal |
 | Mesh  | TKMesh, TKXMesh | mesh |
-| Data Exchange | TKIGES  | iges |
-| Data Exchange | TKSTEPBase, TKSTEPAttr, TKSTEP209, TKSTEP | step |
-| Data Exchange | TKSTL, TKVRML   | stlvrml |
-| Data Exchange | TKXSBase, TKXCAF, TKXCAFSchema, TKXDEIGES, TKXDESTEP, TKXmlXCAF, TKBinXCAF | xde |
+| Data Exchange | TKDEIGES  | iges |
+| Data Exchange | TKDESTEP | step |
+| Data Exchange | TKDESTL, TKDEVRML   | stlvrml |
+| Data Exchange | TKXSBase, TKXCAF, TKXCAFSchema, TKXmlXCAF, TKBinXCAF | xde |
 | Foundation Classes |  TKernel, TKMath | fclasses |
 | Modeling_algorithms | TKGeomAlgo, TKTopAlgo, TKPrim, TKBO, TKBool, TKHLR, TKFillet, TKOffset, TKFeat, TKXMesh | modalg |
 | Modeling Data | TKG2d, TKG3d, TKGeomBase, TKBRep  | moddata |

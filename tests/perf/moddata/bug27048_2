@@ -6,7 +6,7 @@ puts ""
 #  Recalculation of BSpline cache causes a performance problems
 ############################################################################
 
-pload XSDRAW
+pload XSDRAW STEP
 
 dchrono t restart
 testreadstep [locate_data_file bug27048.stp] result

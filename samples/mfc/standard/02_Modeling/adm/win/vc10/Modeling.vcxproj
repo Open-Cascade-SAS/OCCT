@@ -115,7 +115,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBRep.lib;TKIGES.lib;TKShHealing.lib;TKSTEP.lib;TKSTEP209.lib;TKSTEPAttr.lib;TKSTEPBase.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBRep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\$(VCFMT)\bind/Modeling.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\$(VCFMT)\libd;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -157,7 +157,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBRep.lib;TKIGES.lib;TKShHealing.lib;TKSTEP.lib;TKSTEP209.lib;TKSTEPAttr.lib;TKSTEPBase.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBRep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\$(VCFMT)\bind/Modeling.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\$(VCFMT)\libd;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -200,7 +200,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBRep.lib;TKIGES.lib;TKShHealing.lib;TKSTEP.lib;TKSTEP209.lib;TKSTEPAttr.lib;TKSTEPBase.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBRep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\$(VCFMT)\bin/Modeling.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\$(VCFMT)\lib;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -242,7 +242,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>TKVCAF.lib;TKVrml.lib;TKStl.lib;TKBRep.lib;TKIGES.lib;TKShHealing.lib;TKSTEP.lib;TKSTEP209.lib;TKSTEPAttr.lib;TKSTEPBase.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>TKVCAF.lib;TKDEVRML.lib;TKDESTL.lib;TKBRep.lib;TKDEIGES.lib;TKShHealing.lib;TKDESTEP.lib;TKXSBase.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPrim.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;mfcsample.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\$(VCFMT)\bin/Modeling.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\$(VCFMT)\lib;$(CSF_OCCTLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

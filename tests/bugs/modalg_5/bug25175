@@ -6,7 +6,7 @@ puts ""
 # BRepBuilderAPI_Sewing can crash if an edge without 3D curve is presented
 ###########################################################################
 
-pload XSDRAW
+pload XSDRAW IGES
 
 igesread [locate_data_file bug25175_3.igs] a *
 

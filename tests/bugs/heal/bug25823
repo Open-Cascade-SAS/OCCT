@@ -6,6 +6,8 @@ puts ""
 # Self Intersecting wire translated from STEP file
 #######################################################################################
 
+pload STEP
+
 set BugNumber OCC25823
 
 set aFile [locate_data_file bug25823_280612.stp]

@@ -33,10 +33,10 @@ DEFAULT            : MODELING
 MODELING           : TOPTEST
 VISUALIZATION      : AISV
 OCAFKERNEL         : DCAF
-DATAEXCHANGEKERNEL : XSDRAW
+DATAEXCHANGEKERNEL : XSDRAW, DE
 OCAF               : VISUALIZATION, OCAFKERNEL
 DATAEXCHANGE       : XDE, VISUALIZATION
-XDE                : DATAEXCHANGEKERNEL, XDEDRAW
+XDE                : DATAEXCHANGEKERNEL, XDEDRAW, STEP, IGES, GLTF, OBJ, PLY, STL, VRML
 ALL                : MODELING, OCAFKERNEL, DATAEXCHANGE
 
 TOPTEST            : TKTopTest
@@ -54,3 +54,11 @@ DFBROWSER          : TKDFBrowser
 QAcommands         : TKQADraw
 VIS                : TKIVtkDraw
 INSPECTOR          : TKToolsDraw
+DE                 : TKXSDRAWDE
+STEP               : TKXSDRAWSTEP
+IGES               : TKXSDRAWIGES
+GLTF               : TKXSDRAWGLTF
+OBJ                : TKXSDRAWOBJ
+PLY                : TKXSDRAWPLY
+STL                : TKXSDRAWSTL
+VRML               : TKXSDRAWVRML

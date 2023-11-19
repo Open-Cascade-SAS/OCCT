@@ -6,7 +6,7 @@ puts ""
 # Extrema_GenExtPS needs to be optimized
 ##########################################
 
-pload DATAEXCHANGEKERNEL
+pload DATAEXCHANGEKERNEL STEP
 
 # Restore testing shape and get timing characteristics for operation stepread
 dchrono perf_h restart

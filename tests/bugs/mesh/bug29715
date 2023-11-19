@@ -3,7 +3,7 @@ puts "0029715: Mesh - Estimate the grid size of the acceleration structure by th
 puts "======="
 puts ""
 
-if {[info commands stepread] == ""} {pload XSDRAW}
+if {[info commands stepread] == ""} {pload XSDRAW STEP}
 
 stepread [locate_data_file bug29715_slow.stp] a *
 renamevar a_1 a

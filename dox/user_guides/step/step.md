@@ -1498,7 +1498,7 @@ It is necessary to call command *newmodel* to perform a new translation of the n
 
 @section occt_step_7 Reading from and writing to STEP
 
-The *STEPCAFControl* package (TKXDESTEP toolkit) provides tools to read and write STEP files (see XDE User's Guide). 
+The *STEPCAFControl* package (TKDESTEP toolkit) provides tools to read and write STEP files (see XDE User's Guide). 
 
 In addition to the translation of shapes implemented in basic translator, it provides the following: 
   * STEP assemblies, read as OCCT compounds by basic translator, are translated to XDE assemblies;

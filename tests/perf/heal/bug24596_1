@@ -6,7 +6,7 @@ puts ""
 ## Slow import of IGES data
 ###############################
 
-pload QAcommands
+pload QAcommands IGES
 
 if { [regexp {Debug mode} [dversion]] } {
   cpulimit 8500

@@ -14,6 +14,7 @@
 #include <DEBRepCascade_ConfigurationNode.hxx>
 
 #include <DE_ConfigurationContext.hxx>
+#include <DE_PluginHolder.hxx>
 #include <DEBRepCascade_Provider.hxx>
 #include <NCollection_Buffer.hxx>
 
@@ -26,6 +27,9 @@ namespace
     static const TCollection_AsciiString aScope = "provider";
     return aScope;
   }
+
+  // Wrapper to auto-load DE component
+  DE_PluginHolder<DEBRepCascade_ConfigurationNode> THE_OCCT_BREP_COMPONENT_PLUGIN;
 }
 
 //=======================================================================

@@ -14,10 +14,11 @@
 #ifndef _DE_Wrapper_HeaderFile
 #define _DE_Wrapper_HeaderFile
 
-#include <Message_ProgressRange.hxx>
 #include <DE_ConfigurationNode.hxx>
-#include <NCollection_IndexedDataMap.hxx>
+#include <Message_ProgressRange.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_IndexedDataMap.hxx>
+#include <Standard_Mutex.hxx>
 #include <TColStd_ListOfAsciiString.hxx>
 
 class TopoDS_Shape;
@@ -64,11 +65,13 @@ public:
   //! Gets global configuration singleton.
   //! If wrapper is not set, create it by default as base class object.
   //! @return point to global configuration
-  Standard_EXPORT static Handle(DE_Wrapper) GlobalWrapper();
+  Standard_EXPORT static const Handle(DE_Wrapper)& GlobalWrapper();
 
   //! Sets global configuration singleton
   //! @param[in] theWrapper object to set as global configuration
   Standard_EXPORT static void SetGlobalWrapper(const Handle(DE_Wrapper)& theWrapper);
+
+  Standard_EXPORT static Standard_Mutex& GlobalLoadMutex();
 
 public:
 
@@ -192,6 +195,11 @@ public:
   //! @param[in] theNode input node to copy
   //! @return Standard_True if binded
   Standard_EXPORT Standard_Boolean Bind(const Handle(DE_ConfigurationNode)& theNode);
+
+  //! Removes node with the same type from the map
+  //! @param[in] theNode input node to remove the same
+  //! @return Standard_True if removed
+  Standard_EXPORT Standard_Boolean UnBind(const Handle(DE_ConfigurationNode)& theNode);
 
   //! Finds a node associated with input format and vendor
   //! @param[in] theFormat input node CAD format
