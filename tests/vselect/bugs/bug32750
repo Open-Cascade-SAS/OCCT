@@ -1,0 +1,44 @@
+puts "========"
+puts "0032750: Visualization, AIS_Manipulator - selection of moved object is broken"
+puts "========"
+puts ""
+
+#load modules
+pload MODELING VISUALIZATION
+vinit
+
+#create box and attach manipulator
+box b 100 100 100
+vdisplay b
+vsetdispmode 1
+vaspects -shadingModel unlit
+vfront
+vfit
+vzoom 0.5
+vmanipulator m -attach b
+
+#set mouse coordinates for actions
+set mouse_pick {205 155}
+set mouse_drag1 {205 55}
+set mouse_pick2 {250 10}
+set mouse_pick3 {250 200}
+
+#NOTE: issue not reproducible by draw command
+#but similar action with mouse would show issue
+#set mouse action
+vmoveto {*}$mouse_pick
+vselect {*}$mouse_pick
+vmanipulator m -startTransform {*}$mouse_pick
+vmanipulator m -transform {*}$mouse_drag1
+vmanipulator m -stopTransform
+vselect 0 0
+
+#check if object is selected
+vremove m
+vmoveto 0 0
+vdump $imagedir/${casename}_unselected.png
+vmoveto {*}$mouse_pick2
+vdump $imagedir/${casename}_selectTop.png
+vmoveto {*}$mouse_pick3
+vdump $imagedir/${casename}_selectBot.png
+

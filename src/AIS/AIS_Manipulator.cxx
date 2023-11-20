@@ -643,7 +643,7 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation (const Standard_Integer t
 //function : ProcessDragging
 //purpose  :
 //=======================================================================
-Standard_Boolean AIS_Manipulator::ProcessDragging (const Handle(AIS_InteractiveContext)&,
+Standard_Boolean AIS_Manipulator::ProcessDragging (const Handle(AIS_InteractiveContext)& aCtx,
                                                    const Handle(V3d_View)& theView,
                                                    const Handle(SelectMgr_EntityOwner)&,
                                                    const Graphic3d_Vec2i& theDragFrom,
@@ -676,7 +676,16 @@ Standard_Boolean AIS_Manipulator::ProcessDragging (const Handle(AIS_InteractiveC
       return Standard_True;
     }
     case AIS_DragAction_Stop:
-      break;
+    {
+      //at the end of transformation redisplay for updating sensitive areas
+      StopTransform (true);
+      if (aCtx->IsDisplayed (this))
+      {
+        aCtx->Redisplay (this, true);
+      }
+      return Standard_True;
+    }
+    break;
   }
   return Standard_False;
 }
