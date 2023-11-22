@@ -154,6 +154,7 @@ if not ["%GLES2_DIR%"] == [""]         set "PATH=%GLES2_DIR%;%PATH%"
 if not ["%TBB_DIR%"] == [""]           set "PATH=%TBB_DIR%;%PATH%"
 if not ["%VTK_DIR%"] == [""]           set "PATH=%VTK_DIR%;%PATH%"
 if not ["%FFMPEG_DIR%"] == [""]        set "PATH=%FFMPEG_DIR%;%PATH%"
+if not ["%JEMALLOC_DIR%"] == [""]      set "PATH=%JEMALLOC_DIR%;%PATH%"
 if not ["%OPENVR_DIR%"] == [""]        set "PATH=%OPENVR_DIR%;%PATH%"
 
 rem ----- Set path to 3rd party and OCCT libraries -----

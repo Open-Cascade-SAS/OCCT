@@ -31,9 +31,6 @@
 extern "C" int posix_memalign(void** thePtr, size_t theAlign, size_t theSize);
 #endif
 
-// Temp define, after it will be part of CMake
-#define OCCT_MMGT_OPT_NATIVE
-
 namespace
 {
   static Standard::AllocatorType& allocatorTypeInstance()
@@ -41,12 +38,12 @@ namespace
     static Standard::AllocatorType aType =
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
       Standard::AllocatorType::NATIVE;
-#elif defined OCCT_MMGT_OPT_NATIVE
-      Standard::AllocatorType::NATIVE;
 #elif defined OCCT_MMGT_OPT_TBB
       Standard::AllocatorType::TBB;
 #elif defined OCCT_MMGT_OPT_JEMALLOC
       Standard::AllocatorType::JEMALLOC;
+#else
+      Standard::AllocatorType::NATIVE;
 #endif
     return aType;
   }
@@ -54,8 +51,21 @@ namespace
 
 #ifdef OCCT_MMGT_OPT_JEMALLOC
 #define JEMALLOC_NO_DEMANGLE
-#include <jemalloc/jemalloc.h>
+#include <jemalloc.h>
 #endif // OCCT_MMGT_OPT_JEMALLOC
+
+// paralleling with Intel TBB
+#ifdef HAVE_TBB
+#include <tbb/scalable_allocator.h>
+#else
+#ifdef OCCT_MMGT_OPT_TBB
+#undef OCCT_MMGT_OPT_TBB
+#endif
+#define scalable_malloc malloc
+#define scalable_calloc calloc
+#define scalable_realloc realloc
+#define scalable_free free
+#endif
 
 // Available macros definition
 // - OCCT_MMGT_OPT_FLEXIBLE, modifiable in real time
@@ -65,17 +75,6 @@ namespace
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
 #include <Standard_MMgrOpt.hxx>
 #include <Standard_Assert.hxx>
-
-  // paralleling with Intel TBB
-#ifdef HAVE_TBB
-#pragma comment (lib, "tbbmalloc.lib")
-#include <tbb/scalable_allocator.h>
-#else
-#define scalable_malloc malloc
-#define scalable_calloc calloc
-#define scalable_realloc realloc
-#define scalable_free free
-#endif
 
 // There is no support for environment variables in UWP
 // OSD_Environment could not be used here because of cyclic dependency
@@ -119,13 +118,13 @@ namespace
     Standard_Address Reallocate(Standard_Address thePtr,
                                 const Standard_Size theSize) override
     {
-      Standard_Address newStorage = (Standard_Address)realloc(thePtr, theSize);
-      if (!newStorage)
+      Standard_Address aNewStorage = (Standard_Address)realloc(thePtr, theSize);
+      if (!aNewStorage)
         throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
       // Note that it is not possible to ensure that additional memory
       // allocated by realloc will be cleared (so as to satisfy myClear mode);
       // in order to do that we would need using memset...
-      return newStorage;
+      return aNewStorage;
     }
 
     //! Free allocated memory. The pointer is nullified.
@@ -169,13 +168,13 @@ namespace
     Standard_Address Reallocate(Standard_Address thePtr,
                                 const Standard_Size theSize) override
     {
-      Standard_Address newStorage = (Standard_Address)scalable_realloc(thePtr, theSize);
-      if (!newStorage)
+      Standard_Address aNewStorage = (Standard_Address)scalable_realloc(thePtr, theSize);
+      if (!aNewStorage)
         throw Standard_OutOfMemory("Standard_MMgrTBBalloc::Reallocate(): realloc failed");
       // Note that it is not possible to ensure that additional memory
       // allocated by realloc will be cleared (so as to satisfy myClear mode);
       // in order to do that we would need using memset...
-      return newStorage;
+      return aNewStorage;
     }
 
     //! Free allocated memory
@@ -392,13 +391,18 @@ Standard_Address Standard::Allocate(const Standard_Size theSize)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Allocate(theSize);
-#elif defined OCCT_MMGT_OPT_NATIVE
-  Standard_Address aPtr = calloc(theSize, sizeof(char));
+#elif defined OCCT_MMGT_OPT_JEMALLOC
+  Standard_Address aPtr = je_calloc(theSize, sizeof(char));
   if (!aPtr)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
   return aPtr;
-#elif defined OCCT_MMGT_OPT_JEMALLOC
-  Standard_Address aPtr = je_calloc(theSize, sizeof(char));
+#elif defined OCCT_MMGT_OPT_TBB
+  Standard_Address aPtr = scalable_calloc(theSize, sizeof(char));
+  if (!aPtr)
+    throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
+  return aPtr;
+#else
+  Standard_Address aPtr = calloc(theSize, sizeof(char));
   if (!aPtr)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Allocate(): malloc failed");
   return aPtr;
@@ -413,10 +417,12 @@ Standard_Address Standard::AllocateOptimal(const Standard_Size theSize)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Allocate(theSize);
-#elif defined OCCT_MMGT_OPT_NATIVE
-  return malloc(theSize);
 #elif defined OCCT_MMGT_OPT_JEMALLOC
   return je_malloc(theSize);
+#elif defined OCCT_MMGT_OPT_TBB
+  return scalable_malloc(theSize);
+#else
+  return malloc(theSize);
 #endif
 }
 
@@ -428,10 +434,12 @@ void Standard::Free(Standard_Address theStorage)
 {
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   Standard_MMgrFactory::GetMMgr()->Free(theStorage);
-#elif defined OCCT_MMGT_OPT_NATIVE
-  free(theStorage);
 #elif defined OCCT_MMGT_OPT_JEMALLOC
-  return je_free(theStorage);
+  je_free(theStorage);
+#elif defined OCCT_MMGT_OPT_TBB
+  scalable_free(theStorage);
+#else
+  free(theStorage);
 #endif
 }
 
@@ -447,16 +455,21 @@ Standard_Address Standard::Reallocate(Standard_Address theStorage,
   // in order to do that we would need using memset..
 #ifdef OCCT_MMGT_OPT_FLEXIBLE
   return Standard_MMgrFactory::GetMMgr()->Reallocate(theStorage, theSize);
-#elif defined OCCT_MMGT_OPT_NATIVE
+#elif defined OCCT_MMGT_OPT_JEMALLOC
+  Standard_Address aNewStorage = (Standard_Address)je_realloc(theStorage, theSize);
+  if (!aNewStorage)
+    throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
+  return aNewStorage;
+#elif defined OCCT_MMGT_OPT_TBB
+  Standard_Address aNewStorage = (Standard_Address)scalable_realloc(theStorage, theSize);
+  if (!aNewStorage)
+    throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
+  return aNewStorage;
+#else
   Standard_Address aNewStorage = (Standard_Address)realloc(theStorage, theSize);
   if (!aNewStorage)
     throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
   return aNewStorage;
-#elif defined OCCT_MMGT_OPT_JEMALLOC
-  Standard_Address newStorage = (Standard_Address)je_realloc(theStorage, theSize);
-  if (!newStorage)
-    throw Standard_OutOfMemory("Standard_MMgrRaw::Reallocate(): realloc failed");
-  return newStorage;
 #endif
 }
 
@@ -480,7 +493,11 @@ Standard_Integer Standard::Purge()
 Standard_Address Standard::AllocateAligned(const Standard_Size theSize,
                                            const Standard_Size theAlign)
 {
-#if defined(OCCT_MMGT_OPT_FLEXIBLE) || defined(OCCT_MMGT_OPT_NATIVE)
+#ifdef OCCT_MMGT_OPT_JEMALLOC
+  return je_aligned_alloc(theAlign, theSize);
+#elif defined OCCT_MMGT_OPT_TBB
+  return scalable_aligned_malloc(theSize, theAlign);
+#else
 #if defined(_MSC_VER)
   return _aligned_malloc(theSize, theAlign);
 #elif defined(__ANDROID__) || defined(__QNX__)
@@ -495,8 +512,6 @@ Standard_Address Standard::AllocateAligned(const Standard_Size theSize,
   }
   return aPtr;
 #endif
-#elif defined OCCT_MMGT_OPT_JEMALLOC
-  return je_aligned_alloc(theAlign, theSize);
 #endif
 }
 
@@ -506,7 +521,11 @@ Standard_Address Standard::AllocateAligned(const Standard_Size theSize,
 //=======================================================================
 void Standard::FreeAligned(Standard_Address thePtrAligned)
 {
-#if defined(OCCT_MMGT_OPT_FLEXIBLE) || defined(OCCT_MMGT_OPT_NATIVE)
+#ifdef OCCT_MMGT_OPT_JEMALLOC
+return je_free(thePtrAligned);
+#elif defined OCCT_MMGT_OPT_TBB
+  return scalable_aligned_free(thePtrAligned);
+#else
 #if defined(_MSC_VER)
   _aligned_free(thePtrAligned);
 #elif defined(__ANDROID__) || defined(__QNX__)
@@ -516,7 +535,5 @@ void Standard::FreeAligned(Standard_Address thePtrAligned)
 #else
   free(thePtrAligned);
 #endif
-#elif defined OCCT_MMGT_OPT_JEMALLOC
-  return je_free(thePtrAligned);
 #endif
 }

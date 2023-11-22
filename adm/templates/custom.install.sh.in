@@ -12,6 +12,7 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export TBB_DIR="@USED_3RDPARTY_TBB_DIR@"
     export VTK_DIR="@USED_3RDPARTY_VTK_DIR@"
     export FFMPEG_DIR="@USED_3RDPARTY_FFMPEG_DIR@"
+    export JEMALLOC_DIR="@USED_3RDPARTY_JEMALLOC_DIR@"
 
     if [ "x@USED_3RDPARTY_QT_DIR@" != "x" ]; then
       export QTDIR="@USED_3RDPARTY_QT_DIR@"

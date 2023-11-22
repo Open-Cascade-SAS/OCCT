@@ -35,6 +35,10 @@ macro (OCCT_INCLUDE_CMAKE_FILE BEING_INCLUDED_FILE)
   endif()
 endmacro()
 
+# set using memory manager option for TKernel
+set (USE_MMGR_TYPE "NATIVE" CACHE STRING "Select using memory manager tool.")
+set_property(CACHE USE_MMGR_TYPE PROPERTY STRINGS "NATIVE" "FLEXIBLE" "TBB" "JEMALLOC")
+
 # include variable description
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vardescr")
 
@@ -832,6 +836,14 @@ if (BUILD_YACCLEX)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/flex")
 else()
   OCCT_CHECK_AND_UNSET ("3RDPARTY_FLEX_EXECUTABLE")
+endif()
+
+# Jemalloc
+if ("${USE_MMGR_TYPE}" STREQUAL "JEMALLOC")
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/jemalloc")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_JEMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_JEMALLOC")
 endif()
 
 # qt for inspector and samples
