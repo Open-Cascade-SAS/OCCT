@@ -1000,7 +1000,7 @@ Standard_Boolean StepData_StepReaderData::ReadAny(const Standard_Integer num,
   case Interface_ParamInteger: {
     if (!val.IsNull()) {
       DeclareAndCast(StepData_SelectMember, sm, val);
-      sm->SetInteger(atoi(str));
+      sm->SetReal(Interface_FileReaderData::Fastof(str));
       return Standard_True;
     }
     Handle(StepData_SelectInt) sin = new StepData_SelectInt;
@@ -1358,16 +1358,27 @@ Standard_Boolean StepData_StepReaderData::ReadInteger(const Standard_Integer num
   Standard_Integer& val) const
 {
   Handle(String) errmess;  // Null si pas d erreur
+  Standard_Boolean warn = Standard_False;
   if (nump > 0 && nump <= NbParams(num)) {
     const Interface_FileParameter& FP = Param(num, nump);
-    if (FP.ParamType() == Interface_ParamInteger)  val = atoi(FP.CValue());
-    else errmess = new String("Parameter n0.%d (%s) not an Integer");
+    if (FP.ParamType() == Interface_ParamInteger)
+      val = atoi(FP.CValue());
+    else if (FP.ParamType() == Interface_ParamReal)
+    {
+      val = static_cast<Standard_Integer>(std::round(Interface_FileReaderData::Fastof(FP.CValue())));
+      if (acceptvoid) warn = Standard_True;
+      errmess = new String("Parameter n0.%d (%s) was rounded");
+    }
+    if (FP.ParamType() != Interface_ParamInteger &&
+        FP.ParamType() != Interface_ParamReal)
+      errmess = new String("Parameter n0.%d (%s) not an Integer");
   }
   else errmess = new String("Parameter n0.%d (%s) absent");
 
   if (errmess.IsNull()) return Standard_True;
   sprintf(txtmes, errmess->ToCString(), nump, mess);
-  ach->AddFail(txtmes, errmess->ToCString());
+  if (warn) ach->AddWarning(txtmes, errmess->ToCString());
+  else ach->AddFail(txtmes, errmess->ToCString());
   return Standard_False;
 }
 

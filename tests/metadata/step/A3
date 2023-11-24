@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug28444_nist_ftc_06_asme1_ct5240_rd.stp
+
+set ref_data {
+Property for [0:1:1:1]:
+yCenterOfGravity : 0.0289950044
+Ixz : 0
+Izx : 0
+Surface : 0.28317040780000002
+Volume : 0.0033238733999999999
+Iyz : -1.3068999999999999e-06
+zCenterOfGravity : -0.10963042420000001
+Iyy : 4.46342e-05
+Ixy : 0
+xCenterOfGravity : -0
+Izz : 2.63853e-05
+Density : 1000
+Length : 0
+Ixx : 2.16819e-05
+Izy : -1.3068999999999999e-06
+Mass : 3.3238733752999998
+Iyx : 0
+
+}

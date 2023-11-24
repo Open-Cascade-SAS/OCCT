@@ -12,6 +12,8 @@ StepRepr_AssemblyComponentUsageSubstitute.cxx
 StepRepr_AssemblyComponentUsageSubstitute.hxx
 StepRepr_BetweenShapeAspect.cxx
 StepRepr_BetweenShapeAspect.hxx
+StepRepr_BooleanRepresentationItem.cxx
+StepRepr_BooleanRepresentationItem.hxx
 StepRepr_CentreOfSymmetry.cxx
 StepRepr_CentreOfSymmetry.hxx
 StepRepr_CharacterizedDefinition.cxx
@@ -110,6 +112,8 @@ StepRepr_PropertyDefinitionRepresentation.cxx
 StepRepr_PropertyDefinitionRepresentation.hxx
 StepRepr_QuantifiedAssemblyComponentUsage.cxx
 StepRepr_QuantifiedAssemblyComponentUsage.hxx
+StepRepr_RealRepresentationItem.cxx
+StepRepr_RealRepresentationItem.hxx
 StepRepr_Representation.cxx
 StepRepr_Representation.hxx
 StepRepr_RepresentationContext.cxx

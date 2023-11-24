@@ -62,6 +62,7 @@ Standard_CString StepBasic_MeasureValueMember::Name () const
     case 13 : return "MASS_MEASURE"; 
     case 14 : return "THERMODYNAMIC_TEMPERATURE_MEASURE"; 
     case 15 : return "COUNT_MEASURE";
+    case 16 : return "NUMERIC_MEASURE";
     default : break;
   }
   return "";
@@ -92,6 +93,7 @@ Standard_Boolean  StepBasic_MeasureValueMember::SetName (const Standard_CString 
   else if (name[0] == 'M' && !strcmp (name,"MASS_MEASURE"))        thecase = 13;
   else if (name[1] == 'H' && !strcmp (name,"THERMODYNAMIC_TEMPERATURE_MEASURE")) thecase = 14;
   else if (name[2] == 'U' && !strcmp (name,"COUNT_MEASURE"))       thecase = 15;
+  else if (name[0] == 'N' && !strcmp (name,"NUMERIC_MEASURE"))     thecase = 16;
   else return Standard_False;
 
   return Standard_True;

@@ -1,0 +1,19 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug29633_nist_ctc_05_asme1_ap242-1.stp
+
+set ref_data {
+Property for [0:1:1:1]:
+FILESIZE : 1495040
+GDT_STANDARD : 5302
+MaterialMultipleAssigned : FALSE
+ATTR_VERSION : 18.3.001
+Part Number : NIST PMI CTC 05 ASME1
+FILESAVETIME : Tue Dec 09 03:47:24 2014
+Revision : D
+CAD_SOURCE : ug
+MTIME : 1418096844
+MaterialMissingAssignments : TRUE
+FILENAME : nist_ctc_05_asme1.prt
+Description : NIST PMI test model downloaded from http://go.usa.gov/mGVm
+
+}

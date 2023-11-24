@@ -30,9 +30,12 @@
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_ConversionBasedUnitAndMassUnit.hxx>
+#include <StepBasic_ConversionBasedUnitAndTimeUnit.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>
 #include <StepBasic_DocumentFile.hxx>
+#include <StepBasic_GeneralProperty.hxx>
+#include <StepBasic_GeneralPropertyAssociation.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_NamedUnit.hxx>
 #include <StepBasic_Product.hxx>
@@ -40,6 +43,9 @@
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
+#include <StepBasic_SiUnitAndMassUnit.hxx>
+#include <StepBasic_SiUnitAndThermodynamicTemperatureUnit.hxx>
+#include <StepBasic_SiUnitAndTimeUnit.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_DataMapOfPDExternFile.hxx>
 #include <STEPCAFControl_DataMapOfShapePD.hxx>
@@ -129,6 +135,7 @@
 #include <StepShape_DimensionalLocation.hxx>
 #include <StepShape_EdgeCurve.hxx>
 #include <StepShape_EdgeLoop.hxx>
+#include <StepShape_GeometricCurveSet.hxx>
 #include <StepShape_GeometricSet.hxx>
 #include <StepShape_HArray1OfFace.hxx>
 #include <StepShape_HArray1OfFaceBound.hxx>
@@ -214,6 +221,7 @@
 #include <XSControl_WorkSession.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
+#include <StepAP242_IdAttribute.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <STEPCAFControl_GDTProperty.hxx>
 #include <StepVisual_TessellatedAnnotationOccurrence.hxx>
@@ -225,7 +233,15 @@
 #include <StepVisual_OverRidingStyledItem.hxx>
 #include <StepVisual_ContextDependentOverRidingStyledItem.hxx>
 #include <StepRepr_ShapeRepresentationRelationshipWithTransformation.hxx>
+#include <StepRepr_BooleanRepresentationItem.hxx>
+#include <StepRepr_IntegerRepresentationItem.hxx>
 #include <StepRepr_ItemDefinedTransformation.hxx>
+#include <StepRepr_PropertyDefinitionRelationship.hxx>
+#include <StepRepr_RealRepresentationItem.hxx>
+#include <StepRepr_ValueRepresentationItem.hxx>
+
+#include <StepRepr_ShapeAspectRelationship.hxx>
+
 
 #include <TColgp_HArray1OfXYZ.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -275,6 +291,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader()
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
   myPropsMode(Standard_True),
+  myMetaMode(Standard_False),
   mySHUOMode(Standard_False),
   myGDTMode(Standard_True),
   myMatMode(Standard_True),
@@ -299,6 +316,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
   myPropsMode(Standard_True),
+  myMetaMode(Standard_False),
   mySHUOMode(Standard_False),
   myGDTMode(Standard_True),
   myMatMode(Standard_True),
@@ -769,6 +787,10 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
   // read View entities from STEP model
   if (GetViewMode())
     ReadViews(reader.WS(), doc, aLocalFactors);
+
+  // read metadata
+  if (GetMetaMode())
+    ReadMetadata(reader.WS(), doc, aLocalFactors);
 
   // Expand resulting CAF structure for sub-shapes (optionally with their
   // names) if requested
@@ -1957,7 +1979,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(const Handle(XSControl_WorkSes
 //function : GetMassConversionFactor
 //purpose  : 
 //=======================================================================
-static Standard_Boolean GetMassConversionFactor(Handle(StepBasic_NamedUnit)& NU,
+static Standard_Boolean GetMassConversionFactor(const Handle(StepBasic_NamedUnit)& NU,
   Standard_Real& afact)
 {
   afact = 1.;
@@ -5244,6 +5266,26 @@ Standard_Boolean STEPCAFControl_Reader::GetPropsMode() const
 }
 
 //=======================================================================
+//function : SetMetaMode
+//purpose  : 
+//=======================================================================
+
+void STEPCAFControl_Reader::SetMetaMode(const Standard_Boolean theMetaMode)
+{
+  myMetaMode = theMetaMode;
+}
+
+//=======================================================================
+//function : GetMetaMode
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean STEPCAFControl_Reader::GetMetaMode() const
+{
+  return myMetaMode;
+}
+
+//=======================================================================
 //function : SetSHUOMode
 //purpose  : 
 //=======================================================================
@@ -5322,4 +5364,428 @@ void STEPCAFControl_Reader::SetViewMode(const Standard_Boolean viewmode)
 Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
 {
   return myViewMode;
+}
+
+//=======================================================================
+//function : ReadMetadata
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPCAFControl_Reader::ReadMetadata(const Handle(XSControl_WorkSession)& theWS,
+                                                     const Handle(TDocStd_Document)& theDoc,
+                                                     const StepData_Factors& theLocalFactors) const
+{
+  const Handle(Interface_InterfaceModel)& aModel = theWS->Model();
+  const Handle(XSControl_TransferReader)& aTR = theWS->TransferReader();
+  const Handle(Transfer_TransientProcess)& aTP = aTR->TransientProcess();
+  Handle(XCAFDoc_ShapeTool) aSTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
+  if (aSTool.IsNull())
+  {
+    return Standard_False;
+  }
+
+  Standard_Integer aNb = aModel->NbEntities();
+  STEPConstruct_Tool aTool(theWS);
+
+  for (Standard_Integer anEntityInd = 1; anEntityInd <= aNb; ++anEntityInd)
+  {
+    Handle(Standard_Transient) anEntity = aModel->Value(anEntityInd);
+    Handle(StepBasic_GeneralProperty) aGeneralProp = Handle(StepBasic_GeneralProperty)::DownCast(anEntity);
+    if (aGeneralProp.IsNull())
+      continue;
+
+    Handle(StepBasic_GeneralPropertyAssociation) aPropAssociation;
+    NCollection_List< Handle(StepRepr_PropertyDefinition)> aPropDefinitionList;
+    Interface_EntityIterator aSharingListOfGP = theWS->Graph().Sharings(aGeneralProp);
+    for (aSharingListOfGP.Start(); aSharingListOfGP.More(); aSharingListOfGP.Next())
+    {
+      aPropAssociation = Handle(StepBasic_GeneralPropertyAssociation)::DownCast(aSharingListOfGP.Value());
+      if (aPropAssociation.IsNull())
+        continue;
+
+      aPropDefinitionList.Append(aPropAssociation->PropertyDefinition());
+    }
+
+    if (aPropDefinitionList.IsEmpty())
+      continue;
+
+    NCollection_List< Handle(StepRepr_PropertyDefinition)>::Iterator aPropDefIter(aPropDefinitionList);
+    for ( ; aPropDefIter.More(); aPropDefIter.Next())
+    {
+      Handle(StepRepr_PropertyDefinition) aPropDefinition = aPropDefIter.Value();
+
+      // check group of PropertyDefinition
+      NCollection_List<Handle(StepRepr_PropertyDefinition)> aGroupedProperties;
+      Interface_EntityIterator aSharingsListOfPD = theWS->Graph().Sharings(aPropDefinition);
+      for (aSharingsListOfPD.Start(); aSharingsListOfPD.More(); aSharingsListOfPD.Next())
+      {
+        Handle(StepRepr_PropertyDefinitionRelationship) aRel =
+          Handle(StepRepr_PropertyDefinitionRelationship)::DownCast(aSharingsListOfPD.Value());
+        if (aRel.IsNull())
+        {
+          continue;
+        }
+
+        Handle(StepRepr_PropertyDefinition) aGroupedProp = aRel->RelatedPropertyDefinition();
+        if (!aGroupedProp.IsNull())
+        {
+          aGroupedProperties.Append(aGroupedProp);
+        }
+      }
+
+      NCollection_List<Handle(Transfer_Binder)> aBinders;
+      Interface_EntityIterator aSharedListOfPD = theWS->Graph().Shareds(aPropDefinition);
+      for (aSharedListOfPD.Start(); aSharedListOfPD.More(); aSharedListOfPD.Next())
+      {
+        Handle(Transfer_Binder) aBinder;
+        Handle(StepBasic_ProductDefinition) aProductDefinition =
+          Handle(StepBasic_ProductDefinition)::DownCast(aSharedListOfPD.Value());
+        if (!aProductDefinition.IsNull())
+        {
+          aBinder = aTP->Find(aProductDefinition);
+          if (!aBinder.IsNull())
+          {
+            aBinders.Append(aBinder);
+          }
+          continue;
+        }
+
+        Handle(StepRepr_ProductDefinitionShape) aProductDefinitionShape =
+          Handle(StepRepr_ProductDefinitionShape)::DownCast(aSharedListOfPD.Value());
+        if (!aProductDefinitionShape.IsNull())
+        {
+          Handle(StepBasic_ProductDefinition) aProductDef =
+            aProductDefinitionShape->Definition().ProductDefinition();
+          aBinder = aTP->Find(aProductDef);
+          if (!aBinder.IsNull())
+          {
+            aBinders.Append(aBinder);
+          }
+          continue;
+        }
+
+        Handle(StepRepr_NextAssemblyUsageOccurrence) aNextAssembUsOcc =
+          Handle(StepRepr_NextAssemblyUsageOccurrence)::DownCast(aSharedListOfPD.Value());
+        if (!aNextAssembUsOcc.IsNull())
+        {
+          aBinder = aTP->Find(aNextAssembUsOcc);
+          if (!aBinder.IsNull())
+          {
+            aBinders.Append(aBinder);
+          }
+          continue;
+        }
+
+        Handle(StepRepr_ShapeAspect) aShapeAspect =
+          Handle(StepRepr_ShapeAspect)::DownCast(aSharedListOfPD.Value());
+        if (!aShapeAspect.IsNull())
+        {
+          TDF_Label aLabel;
+          if (!aBinder.IsNull())
+          {
+            TopoDS_Shape aShape = TransferBRep::ShapeResult(aTP, aBinder);
+            if (aShape.IsNull())
+              continue;
+
+            if (myMap.IsBound(aShape))
+            {
+              aLabel = myMap.Find(aShape);
+            }
+          }
+          Interface_EntityIterator aSharedListOfSA = theWS->Graph().Sharings(aShapeAspect);
+          for (aSharedListOfSA.Start(); aSharedListOfSA.More(); aSharedListOfSA.Next())
+          {
+            Handle(StepAP242_DraughtingModelItemAssociation) aDMIA =
+              Handle(StepAP242_DraughtingModelItemAssociation)::DownCast(aSharedListOfSA.Value());
+            if (!aDMIA.IsNull())
+              break;
+
+            Handle(StepAP242_ItemIdentifiedRepresentationUsage) anItemIdentUsage =
+              Handle(StepAP242_ItemIdentifiedRepresentationUsage)::DownCast(aSharedListOfSA.Value());
+            if (!anItemIdentUsage.IsNull())
+            {
+              for (Standard_Integer anIndex = 1; anIndex <= anItemIdentUsage->NbIdentifiedItem(); ++anIndex)
+              {
+                Handle(StepRepr_RepresentationItem) aReprItem = anItemIdentUsage->IdentifiedItemValue(anIndex);
+                if (aReprItem.IsNull())
+                  continue;
+                aBinder = aTP->Find(aReprItem);
+                if (!aBinder.IsNull())
+                {
+                  aBinders.Append(aBinder);
+                }
+              }
+              continue;
+            }
+
+            Handle(StepRepr_PropertyDefinition) aPropDef =
+              Handle(StepRepr_PropertyDefinition)::DownCast(aSharedListOfSA.Value());
+            if (!aPropDef.IsNull() && aPropDef != aPropDefinition)
+            {
+              Interface_EntityIterator aSharingListOfPD = theWS->Graph().Sharings(aPropDef);
+              for (aSharingListOfPD.Start(); aSharingListOfPD.More(); aSharingListOfPD.Next())
+              {
+                Handle(StepShape_ShapeDefinitionRepresentation) aShDef =
+                  Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSharingListOfPD.Value());
+                if (aShDef.IsNull())
+                  continue;
+
+                findReprItems(theWS, aShDef, aBinders);
+              }
+              continue;
+            }
+
+            Handle(StepShape_ShapeDefinitionRepresentation) aShapeDefRepr =
+              Handle(StepShape_ShapeDefinitionRepresentation)::DownCast(aSharedListOfSA.Value());
+            if (!aShapeDefRepr.IsNull())
+            {
+              findReprItems(theWS, aShapeDefRepr, aBinders);
+            }
+          }
+        }
+      }
+
+      if (aBinders.IsEmpty())
+        continue;
+
+      TDF_LabelSequence aLabelSeq;
+      NCollection_List<Handle(Transfer_Binder)>::Iterator aBindIt(aBinders);
+      for (; aBindIt.More(); aBindIt.Next())
+      {
+        TopoDS_Shape aShape = TransferBRep::ShapeResult(aTP, aBindIt.Value());
+        if (aShape.IsNull())
+          continue;
+
+        TDF_Label aShapeLabel;
+        if (myMap.IsBound(aShape))
+        {
+          aShapeLabel = myMap.Find(aShape);
+        }
+        if (!aShapeLabel.IsNull())
+        {
+          aLabelSeq.Append(aShapeLabel);
+        }
+      }
+
+      //create metadata
+      for (TDF_LabelSequence::Iterator aLabelIt(aLabelSeq); aLabelIt.More(); aLabelIt.Next())
+      {
+        TDF_Label aLabel = aLabelIt.Value();
+        Handle(TDataStd_NamedData) anAttr;
+        if (!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAttr))
+        {
+          anAttr = new TDataStd_NamedData;
+          aLabel.AddAttribute(anAttr);
+        }
+
+        fillAttributes(theWS, aPropDefinition, theLocalFactors, anAttr);
+        if (!aGroupedProperties.IsEmpty())
+        {
+          NCollection_List<Handle(StepRepr_PropertyDefinition)>::Iterator aPropIt(aGroupedProperties);
+          for ( ; aPropIt.More(); aPropIt.Next())
+          {
+            fillAttributes(theWS, aPropIt.Value(), theLocalFactors, anAttr);
+          }
+        }
+      }
+    }
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : findReprItems
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPCAFControl_Reader::findReprItems(const Handle(XSControl_WorkSession)& theWS,
+                                                      const Handle(StepShape_ShapeDefinitionRepresentation)& theShDefRepr,
+                                                      NCollection_List<Handle(Transfer_Binder)>& theBinders) const
+{
+  Handle(StepRepr_Representation) aRepr = theShDefRepr->UsedRepresentation();
+  if (aRepr.IsNull())
+  {
+    return Standard_False;
+  }
+
+  Handle(Transfer_Binder) aBinder;
+  const Handle(Transfer_TransientProcess)& aTP = theWS->TransferReader()->TransientProcess();
+  Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = aRepr->Items();
+  if (!aReprItems->IsEmpty())
+  {
+    for (Standard_Integer anInd = aReprItems->Lower(); anInd <= aReprItems->Upper(); anInd++)
+    {
+      Handle(StepRepr_RepresentationItem) aReprItem = aReprItems->Value(anInd);
+      aBinder = aTP->Find(aReprItem);
+      if (!aBinder.IsNull())
+      {
+        theBinders.Append(aBinder);
+      }
+    }
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : fillAttributes
+//purpose  : 
+//=======================================================================
+Standard_Boolean STEPCAFControl_Reader::fillAttributes(const Handle(XSControl_WorkSession)& theWS,
+                                                       const Handle(StepRepr_PropertyDefinition)& thePropDef,
+                                                       const StepData_Factors& theLocalFactors,
+                                                       Handle(TDataStd_NamedData)& theAttr) const
+{
+  // skip if key is null
+  if (thePropDef->Name().IsNull())
+  {
+    return Standard_False;
+  }
+
+  Handle(StepRepr_PropertyDefinitionRepresentation) aPropDefRepr;
+  Interface_EntityIterator aSharingListOfPD = theWS->Graph().Sharings(thePropDef);
+  for (aSharingListOfPD.Start(); aSharingListOfPD.More(); aSharingListOfPD.Next())
+  {
+    aPropDefRepr = Handle(StepRepr_PropertyDefinitionRepresentation)::DownCast(aSharingListOfPD.Value());
+    if (aPropDefRepr.IsNull())
+      continue;
+
+    Handle(StepRepr_Representation) aUsedRepr = aPropDefRepr->UsedRepresentation();
+    if (aUsedRepr.IsNull())
+      continue;
+
+    Handle(StepRepr_HArray1OfRepresentationItem) aReprItems = aUsedRepr->Items();
+    if (!aReprItems.IsNull())
+    {
+      for (Standard_Integer anIndex = aReprItems->Lower(); anIndex <= aReprItems->Upper(); anIndex++)
+      {
+        Handle(StepRepr_RepresentationItem) anItem = aReprItems->Value(anIndex);
+        if (anItem.IsNull())
+          continue;
+
+        if (anItem->IsKind(STANDARD_TYPE(StepRepr_DescriptiveRepresentationItem)))
+        {
+          Handle(StepRepr_DescriptiveRepresentationItem) aDescrItem = Handle(StepRepr_DescriptiveRepresentationItem)::DownCast(anItem);
+          Handle(TCollection_HAsciiString) aDescription = aDescrItem->Description();
+          theAttr->SetString(thePropDef->Name()->ToCString(), aDescription->ToCString());
+        }
+        else if (anItem->IsKind(STANDARD_TYPE(StepRepr_MeasureRepresentationItem)))
+        {
+          Handle(StepRepr_MeasureRepresentationItem) aMeasureItem = Handle(StepRepr_MeasureRepresentationItem)::DownCast(anItem);
+          Standard_Real aValue = aMeasureItem->Measure()->ValueComponent();
+          TCollection_AsciiString aValType = aMeasureItem->Measure()->ValueComponentMember()->Name();
+          StepBasic_Unit anUnit = aMeasureItem->Measure()->UnitComponent();
+          if (!anUnit.IsNull())
+          {
+            Standard_Real aParam = 1.;
+            if (anUnit.Type() == STANDARD_TYPE(StepBasic_DerivedUnit))
+            {
+              Handle(StepBasic_DerivedUnit) aDUnit = anUnit.DerivedUnit();
+              for (Standard_Integer anInd = 1; anInd <= aDUnit->NbElements(); ++anInd)
+              {
+                Handle(StepBasic_DerivedUnitElement) aDUElem = aDUnit->ElementsValue(anInd);
+                Standard_Real anExp = aDUElem->Exponent();
+                Handle(StepBasic_NamedUnit) aNUnit = aDUElem->Unit();
+                if (!aNUnit.IsNull())
+                {
+                  if (aNUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit)) ||
+                    aNUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit)))
+                  {
+                    STEPConstruct_UnitContext anUnitCtx;
+                    anUnitCtx.ComputeFactors(aNUnit, theLocalFactors);
+                    if (aValType == "VOLUME_MEASURE")
+                    {
+                      aParam = pow(theLocalFactors.LengthFactor(), anExp);
+                    }
+                    else
+                    {
+                      aParam = aParam / pow(theLocalFactors.LengthFactor(), anExp);
+                    }
+                  }
+                  else if (aNUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndMassUnit))) {
+                    Standard_Real aFact = 1.;
+                    if (GetMassConversionFactor(aNUnit, aFact))
+                    {
+                      aParam = aParam * aFact;
+                    }
+                  }
+                  else
+                  {
+                    STEPConstruct_UnitContext anUnitCtx;
+                    anUnitCtx.ComputeFactors(aNUnit, theLocalFactors);
+                    if (anUnitCtx.AreaDone())
+                      aParam = anUnitCtx.AreaFactor();
+                    if (anUnitCtx.LengthDone())
+                    {
+                      Standard_Real aLengthFactor = anUnitCtx.LengthFactor();
+                      aParam *= pow(aLengthFactor, anExp);
+                    }
+                  }
+                }
+              }
+              aValue = aValue * aParam;
+            }
+            else
+            {
+              Handle(StepBasic_NamedUnit) aNUnit = anUnit.NamedUnit();
+              if (!aNUnit.IsNull())
+              {
+                if (aNUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndMassUnit)))
+                {
+                  Standard_Real aFact = 1.;
+                  if (GetMassConversionFactor(aNUnit, aFact))
+                  {
+                    aValue *= aFact;
+                  }
+                }
+                else
+                {
+                  STEPConstruct_UnitContext anUnitCtx;
+                  anUnitCtx.ComputeFactors(aNUnit, theLocalFactors);
+                  if (anUnitCtx.AreaDone())
+                    aParam = anUnitCtx.AreaFactor();
+                  if (anUnitCtx.VolumeDone())
+                    aParam = anUnitCtx.VolumeFactor();
+                  if (anUnitCtx.LengthDone())
+                    aParam = anUnitCtx.LengthFactor();
+
+                  aValue *= aParam;
+                }
+              }
+            }
+          }
+          theAttr->SetReal(thePropDef->Name()->ToCString(), aValue);
+        }
+        else if (anItem->IsKind(STANDARD_TYPE(StepRepr_ValueRepresentationItem)))
+        {
+          Handle(StepRepr_ValueRepresentationItem) aValueItem = Handle(StepRepr_ValueRepresentationItem)::DownCast(anItem);
+          Handle(StepBasic_MeasureValueMember) aMeasureValueMem = aValueItem->ValueComponentMember();
+          Interface_ParamType aParamType = aMeasureValueMem->ParamType();
+          if (aParamType == Interface_ParamInteger)
+          {
+            theAttr->SetInteger(thePropDef->Name()->ToCString(), aMeasureValueMem->Integer());
+          }
+          else if (aParamType == Interface_ParamReal)
+          {
+            theAttr->SetReal(thePropDef->Name()->ToCString(), aMeasureValueMem->Real());
+          }
+        }
+        else if (anItem->IsKind(STANDARD_TYPE(StepRepr_IntegerRepresentationItem)))
+        {
+          Handle(StepRepr_IntegerRepresentationItem) anIntegerItem = Handle(StepRepr_IntegerRepresentationItem)::DownCast(anItem);
+          theAttr->SetInteger(thePropDef->Name()->ToCString(), anIntegerItem->Value());
+        }
+        else if (anItem->IsKind(STANDARD_TYPE(StepRepr_RealRepresentationItem)))
+        {
+          Handle(StepRepr_RealRepresentationItem) aRealItem = Handle(StepRepr_RealRepresentationItem)::DownCast(anItem);
+          theAttr->SetReal(thePropDef->Name()->ToCString(), aRealItem->Value());
+        }
+        else if (anItem->IsKind(STANDARD_TYPE(StepRepr_BooleanRepresentationItem)))
+        {
+          Handle(StepRepr_BooleanRepresentationItem) aBoolItem = Handle(StepRepr_BooleanRepresentationItem)::DownCast(anItem);
+          theAttr->SetInteger(thePropDef->Name()->ToCString(), aBoolItem->Value());
+        }
+      }
+    }
+  }
+  return Standard_True;
 }

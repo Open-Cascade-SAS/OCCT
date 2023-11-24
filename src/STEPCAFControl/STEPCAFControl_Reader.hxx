@@ -29,16 +29,21 @@
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
 
 class XSControl_WorkSession;
+class TDataStd_NamedData;
 class TDocStd_Document;
 class STEPCAFControl_ExternFile;
 class TopoDS_Shape;
 class XCAFDoc_ShapeTool;
 class StepRepr_RepresentationItem;
 class Transfer_TransientProcess;
+class StepBasic_NamedUnit;
 class StepShape_ConnectedFaceSet;
+class StepShape_ShapeDefinitionRepresentation;
 class StepRepr_NextAssemblyUsageOccurrence;
+class StepRepr_PropertyDefinition;
 class STEPConstruct_Tool;
 class StepDimTol_Datum;
+class Transfer_Binder;
 
 //! Provides a tool to read STEP file and put it into
 //! DECAF document. Besides transfer of shapes (including
@@ -175,6 +180,11 @@ public:
   Standard_EXPORT void SetPropsMode (const Standard_Boolean propsmode);
   
   Standard_EXPORT Standard_Boolean GetPropsMode() const;
+
+  //! MetaMode for indicate read Metadata or not.
+  Standard_EXPORT void SetMetaMode(const Standard_Boolean theMetaMode);
+
+  Standard_EXPORT Standard_Boolean GetMetaMode() const;
   
   //! Set SHUO mode for indicate write SHUO or not.
   Standard_EXPORT void SetSHUOMode (const Standard_Boolean shuomode);
@@ -246,6 +256,12 @@ protected:
                                                  const Handle(TDocStd_Document)& doc,
                                                  const STEPCAFControl_DataMapOfPDExternFile& PDFileMap,
                                                  const StepData_Factors& theLocalFactors = StepData_Factors()) const;
+
+  //! Reads metadata assigned to shapes in the STEP model and
+  //! assigns them to corresponding labels in the DECAF document
+  Standard_EXPORT Standard_Boolean ReadMetadata(const Handle(XSControl_WorkSession)& theWS,
+                                                const Handle(TDocStd_Document)& theDoc,
+                                                const StepData_Factors& theLocalFactors = StepData_Factors()) const;
   
   //! Reads layers of parts defined in the STEP model and
   //! set reference between shape and layers in the DECAF document
@@ -333,6 +349,17 @@ private:
                     const Handle(TDocStd_Document)& theDoc,
                     StepData_Factors& theLocalFactors) const;
 
+  //! Find RepresentationItems
+  Standard_Boolean findReprItems(const Handle(XSControl_WorkSession) & theWS,
+                                 const Handle(StepShape_ShapeDefinitionRepresentation) & theShDefRepr,
+                                 NCollection_List<Handle(Transfer_Binder)>& theBinders) const;
+
+  //! Fill metadata
+  Standard_Boolean fillAttributes(const Handle(XSControl_WorkSession)& theWS,
+                                  const Handle(StepRepr_PropertyDefinition)& thePropDef,
+                                  const StepData_Factors& theLocalFactors,
+                                  Handle(TDataStd_NamedData)& theAttr) const;
+
 private:
 
   STEPControl_Reader myReader;
@@ -342,6 +369,7 @@ private:
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;
   Standard_Boolean myPropsMode;
+  Standard_Boolean myMetaMode;
   Standard_Boolean mySHUOMode;
   Standard_Boolean myGDTMode;
   Standard_Boolean myMatMode;

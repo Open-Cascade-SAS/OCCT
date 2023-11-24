@@ -158,6 +158,8 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepBasic_GeneralPropertyAssociation.hxx>
+#include <StepBasic_GeneralPropertyRelationship.hxx>
 #include <StepBasic_GroupRelationship.hxx>
 #include <StepShape_HalfSpaceSolid.hxx>
 #include <StepGeom_Hyperbola.hxx>
@@ -639,7 +641,9 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_BooleanRepresentationItem.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>
+#include <StepRepr_RealRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
@@ -1560,6 +1564,10 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind(STANDARD_TYPE(StepVisual_CubicBezierTessellatedEdge), 817);
   types.Bind(STANDARD_TYPE(StepVisual_CubicBezierTriangulatedFace), 818);
   types.Bind(STANDARD_TYPE(StepVisual_TriangulatedSurfaceSet), 819);
+  types.Bind(STANDARD_TYPE(StepBasic_GeneralPropertyAssociation), 820);
+  types.Bind(STANDARD_TYPE(StepBasic_GeneralPropertyRelationship), 821);
+  types.Bind(STANDARD_TYPE(StepRepr_BooleanRepresentationItem), 822);
+  types.Bind(STANDARD_TYPE(StepRepr_RealRepresentationItem), 823);
 }
 
 

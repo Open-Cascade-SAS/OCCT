@@ -116,6 +116,8 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->BooleanVal("read.layer", InternalParameters.ReadLayer, aScope);
   InternalParameters.ReadProps =
     theResource->BooleanVal("read.props", InternalParameters.ReadProps, aScope);
+  InternalParameters.ReadMetadata =
+    theResource->BooleanVal("read.metadata", InternalParameters.ReadMetadata, aScope);
 
   InternalParameters.WritePrecisionMode = (StepData_ConfParameters::WriteMode_PrecisionMode)
     theResource->IntegerVal("write.precision.mode", InternalParameters.WritePrecisionMode, aScope);
@@ -368,6 +370,12 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!Setting up the read.props parameter which is used to indicate read Validation properties or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "read.props :\t " + InternalParameters.ReadProps + "\n";
+  aResult += "!\n";
+
+  aResult += "!\n";
+  aResult += "!Setting up the read.metadata parameter which is used to indicate read Metadata or not\n";
+  aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
+  aResult += aScope + "read.metadata :\t " + InternalParameters.ReadMetadata + "\n";
   aResult += "!\n";
 
   aResult += "!\n";

@@ -58,6 +58,7 @@ void StepData_ConfParameters::InitFromStatic()
   ReadName = Interface_Static::IVal("read.name") == 1;
   ReadLayer = Interface_Static::IVal("read.layer") == 1;
   ReadProps = Interface_Static::IVal("read.props") == 1;
+  ReadMetadata = Interface_Static::IVal("read.metadata") == 1;
 
   WritePrecisionMode = (StepData_ConfParameters::WriteMode_PrecisionMode)Interface_Static::IVal("write.precision.mode");
   WritePrecisionVal = Interface_Static::RVal("write.precision.val");

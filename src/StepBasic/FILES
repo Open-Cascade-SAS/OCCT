@@ -135,6 +135,10 @@ StepBasic_ExternalSource.cxx
 StepBasic_ExternalSource.hxx
 StepBasic_GeneralProperty.cxx
 StepBasic_GeneralProperty.hxx
+StepBasic_GeneralPropertyAssociation.cxx
+StepBasic_GeneralPropertyAssociation.hxx
+StepBasic_GeneralPropertyRelationship.cxx
+StepBasic_GeneralPropertyRelationship.hxx
 StepBasic_Group.cxx
 StepBasic_Group.hxx
 StepBasic_GroupAssignment.cxx

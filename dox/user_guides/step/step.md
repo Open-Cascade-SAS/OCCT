@@ -1653,6 +1653,13 @@ For each Saved View OCCT STEP Reader will retrieve the following attributes:
 - clipping planes (single plane of combination of planes);
 - front and back plane clipping.
 
+### User defined attributes
+Attributes are implemented in accordance with <a href="https://www.mbx-if.org/documents/rec_prac_user_def_attributes_v18.pdf">Recommended practices for User Defined Attributes</a> section 4, 5, 6.1-6.3 and 7.
+Attributes can be read for shapes at levels:
+- Part/Product Level;
+- Component Instances in an Assembly;
+- Geometry Level.
+
 @subsection occt_step_7_3 Writing to STEP
 
 The translation from XDE to STEP can be initialized as follows: 
@@ -1729,6 +1736,9 @@ Interface_Static::SetIVal("write.step.schema", 5));
 ~~~~
 ### Saved views
 Saved Views are not exported by OCCT.
+
+### User defined attributes
+Attributes can be imported from STEP.
 
 
 

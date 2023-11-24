@@ -693,12 +693,11 @@ static Standard_Integer ReadStep(Draw_Interpretor& theDI,
   }
 
   STEPCAFControl_Reader aReader(XSDRAW::Session(), isFileMode);
-
   if (!aModeStr.IsEmpty())
   {
     Standard_Boolean aMode = Standard_True;
 
-    for (Standard_Integer i = 1; aModeStr.Value(i); ++i)
+    for (Standard_Integer i = 1; i <= aModeStr.Length(); ++i)
     {
       switch (aModeStr.Value(i))
       {
@@ -719,6 +718,9 @@ static Standard_Integer ReadStep(Draw_Interpretor& theDI,
         break;
       case 'v':
         aReader.SetPropsMode(aMode);
+        break;
+      case 'm':
+        aReader.SetMetaMode(aMode);
         break;
       default:
         Message::SendFail() << "Syntax error at '" << aModeStr << "'\n";

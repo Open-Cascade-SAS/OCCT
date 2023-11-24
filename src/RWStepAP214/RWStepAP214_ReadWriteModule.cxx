@@ -188,6 +188,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepShape_GeometricallyBoundedWireframeShapeRepresentation.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
+#include <StepBasic_GeneralPropertyAssociation.hxx>
+#include <StepBasic_GeneralPropertyRelationship.hxx>
 #include <StepBasic_Group.hxx>
 #include <StepBasic_GroupRelationship.hxx>
 #include <StepShape_HalfSpaceSolid.hxx>
@@ -622,6 +624,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepShape_RWGeometricallyBoundedWireframeShapeRepresentation.hxx>
 #include <RWStepRepr_RWGlobalUncertaintyAssignedContext.hxx>
 #include <RWStepRepr_RWGlobalUnitAssignedContext.hxx>
+#include <RWStepBasic_RWGeneralPropertyAssociation.hxx>
+#include <RWStepBasic_RWGeneralPropertyRelationship.hxx>
 #include <RWStepBasic_RWGroup.hxx>
 #include <RWStepBasic_RWGroupRelationship.hxx>
 #include <RWStepShape_RWHalfSpaceSolid.hxx>
@@ -1355,7 +1359,9 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
 #include <RWStepRepr_RWCompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.hxx>
+#include <RWStepRepr_RWBooleanRepresentationItem.hxx>
 #include <RWStepRepr_RWIntegerRepresentationItem.hxx>
+#include <RWStepRepr_RWRealRepresentationItem.hxx>
 #include <RWStepRepr_RWValueRepresentationItem.hxx>
 #include <RWStepRepr_RWValueRepresentationItem.hxx>
 #include <RWStepAP242_RWDraughtingModelItemAssociation.hxx>
@@ -1406,7 +1412,9 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndUneqDisGeoTol.hxx>
 #include <StepRepr_CompGroupShAspAndCompShAspAndDatumFeatAndShAsp.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>
+#include <StepRepr_BooleanRepresentationItem.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>
+#include <StepRepr_RealRepresentationItem.hxx>
 #include <StepRepr_ValueRepresentationItem.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndGeoTolWthMaxTol.hxx>
@@ -2352,6 +2360,10 @@ static TCollection_AsciiString Reco_ComplexTriangulatedSurfaceSet("COMPLEX_TRIAN
 static TCollection_AsciiString Reco_CubicBezierTessellatedEdge("CUBIC_BEZIER_TESSELLATED_EDGE");
 static TCollection_AsciiString Reco_CubicBezierTriangulatedFace("CUBIC_BEZIER_TRIANGULATED_FACE");
 static TCollection_AsciiString Reco_TriangulatedSurfaceSet("TRIANGULATED_SURFACE_SET");
+static TCollection_AsciiString Reco_GeneralPropertyAssociation("GENERAL_PROPERTY_ASSOCIATION");
+static TCollection_AsciiString Reco_GeneralPropertyRelationship("GENERAL_PROPERTY_RELATIONSHIP");
+static TCollection_AsciiString Reco_BooleanRepresentationItem("BOOLEAN_REPRESENTATION_ITEM");
+static TCollection_AsciiString Reco_RealRepresentationItem("REAL_REPRESENTATION_ITEM");
 
 // -- Definition of the libraries --
 
@@ -3109,6 +3121,10 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind(Reco_CubicBezierTessellatedEdge, 817);
   typenums.Bind(Reco_CubicBezierTriangulatedFace, 818);
   typenums.Bind(Reco_TriangulatedSurfaceSet, 819);
+  typenums.Bind(Reco_GeneralPropertyAssociation, 820);
+  typenums.Bind(Reco_GeneralPropertyRelationship, 821);
+  typenums.Bind(Reco_BooleanRepresentationItem, 822);
+  typenums.Bind(Reco_RealRepresentationItem, 823);
 
   
 //    SHORT NAMES
@@ -5097,6 +5113,10 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 817: return Reco_CubicBezierTessellatedEdge;
   case 818: return Reco_CubicBezierTriangulatedFace;
   case 819: return Reco_TriangulatedSurfaceSet;
+  case 820: return Reco_GeneralPropertyAssociation;
+  case 821: return Reco_GeneralPropertyRelationship;
+  case 822: return Reco_BooleanRepresentationItem;
+  case 823: return Reco_RealRepresentationItem;
   default : return PasReco;
   }
 }
@@ -10706,6 +10726,34 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     aTool.ReadStep(data, num, ach, anEnt);
   }
   break;
+  case 820:
+  {
+    DeclareAndCast(StepBasic_GeneralPropertyAssociation, anEnt, ent);
+    RWStepBasic_RWGeneralPropertyAssociation aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 821:
+  {
+    DeclareAndCast(StepBasic_GeneralPropertyRelationship, anEnt, ent);
+    RWStepBasic_RWGeneralPropertyRelationship aTool;
+    aTool.ReadStep(data, num, ach, anEnt);
+  }
+  break;
+  case 822:
+  {
+    DeclareAndCast(StepRepr_BooleanRepresentationItem, anent, ent);
+    RWStepRepr_RWBooleanRepresentationItem aTool;
+    aTool.ReadStep(data, num, ach, anent);
+  }
+  break;
+  case 823:
+  {
+    DeclareAndCast(StepRepr_RealRepresentationItem, anent, ent);
+    RWStepRepr_RWRealRepresentationItem aTool;
+    aTool.ReadStep(data, num, ach, anent);
+  }
+  break;
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
   }
@@ -16255,6 +16303,34 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     DeclareAndCast(StepVisual_TriangulatedSurfaceSet, anEnt, ent);
     RWStepVisual_RWTriangulatedSurfaceSet aTool;
     aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 820:
+  {
+    DeclareAndCast(StepBasic_GeneralPropertyAssociation, anEnt, ent);
+    RWStepBasic_RWGeneralPropertyAssociation aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 821:
+  {
+    DeclareAndCast(StepBasic_GeneralPropertyRelationship, anEnt, ent);
+    RWStepBasic_RWGeneralPropertyRelationship aTool;
+    aTool.WriteStep(SW, anEnt);
+  }
+  break;
+  case 822:
+  {
+    DeclareAndCast(StepRepr_BooleanRepresentationItem, anent, ent);
+    RWStepRepr_RWBooleanRepresentationItem aTool;
+    aTool.WriteStep(SW, anent);
+  }
+  break;
+  case 823:
+  {
+    DeclareAndCast(StepRepr_RealRepresentationItem, anent, ent);
+    RWStepRepr_RWRealRepresentationItem aTool;
+    aTool.WriteStep(SW, anent);
   }
   break;
   default:

@@ -1,0 +1,27 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug28389_CONFIDENTIAL_SHEET_METAL_F3D.stp
+
+set ref_data {
+Property for [0:1:1:1]:
+yCenterOfGravity : 0.1148447698
+Ixz : 9.3210000000000004e-07
+Izx : 9.3210000000000004e-07
+OriginY : 0
+Surface : 0.34595390710000001
+Volume : 0.0001375456
+Iyz : -1.2030000000000001e-07
+zCenterOfGravity : -0.056064514900000001
+Iyy : 3.6385e-06
+Ixy : 2.044e-07
+xCenterOfGravity : -0.12673526900000001
+Izz : 3.3558999999999999e-06
+Density : 1000
+Ixx : 1.7740000000000001e-06
+Izy : -1.2030000000000001e-07
+Mass : 0.13754561600000001
+Iyx : 2.044e-07
+OriginX : 0
+OriginZ : 0
+JoggleFormula : 
+
+}

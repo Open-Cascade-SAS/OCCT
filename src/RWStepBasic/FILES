@@ -108,6 +108,10 @@ RWStepBasic_RWExternalSource.cxx
 RWStepBasic_RWExternalSource.hxx
 RWStepBasic_RWGeneralProperty.cxx
 RWStepBasic_RWGeneralProperty.hxx
+RWStepBasic_RWGeneralPropertyAssociation.cxx
+RWStepBasic_RWGeneralPropertyAssociation.hxx
+RWStepBasic_RWGeneralPropertyRelationship.cxx
+RWStepBasic_RWGeneralPropertyRelationship.hxx
 RWStepBasic_RWGroup.cxx
 RWStepBasic_RWGroup.hxx
 RWStepBasic_RWGroupAssignment.cxx
