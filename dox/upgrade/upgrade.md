@@ -7,7 +7,7 @@ Upgrade from older OCCT versions  {#occt__upgrade}
 
 This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
-@ref upgrade_occt770 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.7.0)"
+@ref upgrade_occt780 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.8.0)"
 
 @subsection upgrade_intro_precautions Precautions
 
@@ -2343,3 +2343,69 @@ Please use `BRepLib_ToolTriangulatedShape::ComputeNormals()` to fill in normal a
 
 A new way of using the `BRepExtrema_ShapeProximity` class was provided for computing a proximity value between two shapes.
 If at initialization of the `BRepExtrema_ShapeProximity` class the *theTolerance* parameter is not defined (Precision::Infinite() by default), the proximity value will be computed.
+
+@section upgrade_occt780 Upgrade to OCCT 7.8.0
+
+@subsection upgrade_780_recommendations New Features and Recommendations
+
+The NCollection containers have been modernized to work with move semantics through the new `Move operator` and `Move constructor`. It is recommended to leverage this functionality in the development process.<br />
+Backward compatibility with STL allocators has been implemented to use the OCCT memory manager with STL allocators (NCollection_Allocator, NCollection_OccAllocator).<br />
+Additionally, utilities have been introduced to work with `shared_ptr` and `unique_ptr` using the OCCT memory manager (`Standard_MemoryUtils.hxx`).
+
+@subsection upgrade_780_ncollection_update Change in Default Clear Behavior for Containers
+
+NCollection container's `Clear(const bool theReleaseMemory = true)` have been changed to `Clear(const bool theReleaseMemory = false)`.<br />
+Impacted classes include `IndexedMap`, `IndexedDataMap`, `Map`, `DataMap`, `DynamicArray(Vector)`, `IncAllocator`.<br />
+This means that allocated memory for the container will be reused. In this case, it's necessary to be careful with `IncAllocator::Reset()` to control owners of memory blocks.
+
+@subsection upgrade_780_hash_utils Reworked Hash Mechanism for Hash Map (NCollection's map)
+
+The `HashCode(value, upperBound)` static method has been removed and `IsEqual(value1, value2)` is no longer used in the map.<br />
+NCollection's map now operates on an STL-like hash mechanism: a struct with a public operator `size_t operator()(object&) const` and `bool operator(object&, object&) const`.<br />
+The difference between STL and OCCT is that the hash struct and comparator are combined into a single struct to reduce conflicts on OCCT's user side.<br />
+Hash utils have been implemented to hash objects, returning `uint32_t` and `uint64_t` depending on the template (`Standard_HashUtils.hxx`). Algorithms used are `MurmurHash` and `FNVHash`.<br />
+Benefits:
+* x64 using 8 bytes to store the hash instead of 4 bytes.
+* OCCT classes will now be usable as elements in STL `unordered_map` and `unordered_set`.
+
+The migration problem will occur at compile time. Make sure that `int HashCode` has been changed anywhere to `size operator` and `bool IsEqual` to `bool operator`.
+
+@subsection upgrade_780_removed_files Removed Hash Specialization Classes
+
+The majority of include files containing only specialized hashes have been removed.
+Their functionality has been consolidated into the hashed object include file (in the "std" namespace).<br />
+It is guaranteed that each removed hash class has been transferred to the native hash mechanism of the hashed class.
+
+The migration problem may arise at compile time. Ensure that you remove any files that have been deprecated.
+
+@subsection upgrade_780_tk_rework Reorganized DE TK
+
+DE TK components have been combined or separated based on specific CAD formats to support plug-in ability.
+* Components now have a "TKDE" prefix. The available list includes `TKDESTEP`, `TKDEOBJ`, `TKDEIGES`, `TKDEGLTF`, `TKDEVRML`, `TKDEPLY`, `TKDESTL`.
+* The DE DRAW TK has been updated in a similar way: DRAW components now have a "TKXSDRAW" prefix. The available list includes `TKXSDRAWSTEP`, `TKXSDRAWOBJ`, `TKXSDRAWIGES`, `TKXSDRAWGLTF`, `TKXSDRAWVRML`, `TKXSDRAWPLY`, `TKXSDRAWSTL`.
+
+Migration problems may occur during configuration time or compile time. Ensure that you update your project configuration accordingly.
+
+@subsection upgrade_780_step_thread_safety Implemented STEP Thread-safety Interface
+
+The STEP interface now uses Static_Interface to extract exchange settings.<br />
+A new ability has been implemented to determine parameters in STEP, avoiding Static_Interface.
+* For reading, use an additional argument with STEP's parameters in `ReadFile` or `Perform`.
+* For writing, use an additional argument with STEP's parameters in `Transfer` or `Perform`.
+
+@subsection upgrade_780_new_memory_manager New Memory Management Functionality
+
+`Standard.hxx` has a new method `AllocateOptimal` for allocating without post-processing (cleaning).<br />
+New profiles to allocate memory (defined at configuration time):
+* `Native` - allocates with standard `malloc` and `calloc` functionality, performance depends on the OS.
+* `TBB` - allocates with TBB's `scalable` allocator functionality.
+* `JeMalloc` - allocates with `jemalloc` functions.
+* `Flexible` - old-way allocation which defines allocation method in real-time by environment variables.<br />
+
+The most recommended manager is `JeMalloc`. To use it with a plugin system, like `DRAW`, please ensure that JeMalloc was built with the `--disable-initial-exec-tls` flag. For more details, visit [JeMalloc](http://jemalloc.net/).
+
+@subsection upgrade_780_optimization_profiles New CMake Variable for Optimization Profiles
+
+`BUILD_OPT_PROFILE` is a new variable to define optimization level. Available profiles:
+* `Default` - specializes only in quality-dependent parameters for the compiler.
+* `Production` - specializes in performance and quality-dependent parameters for the compiler and linker.
