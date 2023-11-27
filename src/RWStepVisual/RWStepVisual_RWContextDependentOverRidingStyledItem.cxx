@@ -85,6 +85,10 @@ void RWStepVisual_RWContextDependentOverRidingStyledItem::ReadStep
 	      aStyleContext->SetValue(i5,aStyleContextItem);
 	  }
 	}
+	else
+	{
+	  aStyleContext = new StepVisual_HArray1OfStyleContextSelect();
+	}
 
 	//--- Initialisation of the read entity ---
 
