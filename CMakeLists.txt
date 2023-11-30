@@ -39,6 +39,10 @@ endmacro()
 set (USE_MMGR_TYPE "NATIVE" CACHE STRING "Select using memory manager tool.")
 set_property(CACHE USE_MMGR_TYPE PROPERTY STRINGS "NATIVE" "FLEXIBLE" "TBB" "JEMALLOC")
 
+# set profile for C++ compiler and linker
+set (BUILD_OPT_PROFILE "Default" CACHE STRING "Select profile for compiler and linker.")
+set_property(CACHE BUILD_OPT_PROFILE PROPERTY STRINGS "Default" "Production")
+
 # include variable description
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vardescr")
 

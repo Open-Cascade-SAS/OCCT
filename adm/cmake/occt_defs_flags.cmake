@@ -44,9 +44,25 @@ elseif (MSVC)
 endif()
 
 if (MSVC)
-  # string pooling (GF), function-level linking (Gy)
-  set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GF /Gy")
-  set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /GF /Gy")
+  if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
+    # string pooling (GF), function-level linking (Gy)
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GF /Gy")
+    set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /GF /Gy")
+
+    # Favor fast code (Ot), Omit frame pointers (Oy)
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ot /Oy")
+    set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /Ot /Oy")
+
+    # Whole Program Optimisation (GL), Enable intrinsic functions (Oi)
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL /Oi")
+    set (CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   /GL /Oi")
+
+    # Link-Time Code Generation(LTCG) is requared for Whole Program Optimisation(GL)
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
+    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
+    set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS_RELEASE} /LTCG")
+    set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS_RELEASE} /LTCG")
+  endif()
   if (BUILD_FORCE_RelWithDebInfo)
     # generate debug info (Zi), inline expansion level (Ob1)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi /Ob1")
@@ -118,6 +134,22 @@ if (MSVC)
   endif()
 elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]"))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+  if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
+    # /Ot (favor speed over size) is similar to -O2 or -O3 in GCC/Clang.
+    # /Oy (omit frame pointers) is similar to -fomit-frame-pointer in GCC/Clang.
+    # /GL (whole program optimization) is similar to -flto (Link Time Optimization) in GCC/Clang.
+    # /GF (eliminate duplicate strings) doesn't have a direct equivalent in GCC/Clang, but the compilers do string pooling automatically.
+    # /Gy (enable function-level linking) is similar to -ffunction-sections in GCC/Clang.
+    # /fp:precise (improve floating-point consistency) is similar to -ffloat-store in GCC, but there isn't a perfect equivalent in Clang.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fomit-frame-pointer -flto -ffunction-sections -ffloat-store")
+
+    # Link-Time Code Generation(LTCG) is requared for Whole Program Optimisation(GL)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -flto")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -flto")
+    set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} -flto")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -flto")
+  endif()
   if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshorten-64-to-32")
   endif()
