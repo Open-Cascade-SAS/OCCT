@@ -661,6 +661,10 @@ Standard_Boolean AIS_Manipulator::ProcessDragging (const Handle(AIS_InteractiveC
       }
       break;
     }
+    case AIS_DragAction_Confirmed:
+    {
+      return Standard_True;
+    }
     case AIS_DragAction_Update:
     {
       Transform (theDragTo.x(), theDragTo.y(), theView);

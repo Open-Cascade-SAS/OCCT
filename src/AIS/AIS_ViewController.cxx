@@ -332,6 +332,11 @@ void AIS_ViewController::flushBuffers (const Handle(AIS_InteractiveContext)& ,
       myGL.Dragging.ToStart = true;
       myGL.Dragging.PointStart = myUI.Dragging.PointStart;
     }
+    if (myUI.Dragging.ToConfirm)
+    {
+      myUI.Dragging.ToConfirm = false;
+      myGL.Dragging.ToConfirm = true;
+    }
     if (myUI.Dragging.ToMove)
     {
       myUI.Dragging.ToMove = false;
@@ -928,6 +933,7 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
       myMouseClickCounter = 0;
       myMouseSingleButton = -1;
       myMouseStopDragOnUnclick = true;
+      myUI.Dragging.ToConfirm = true;
     }
   }
 
@@ -2738,6 +2744,17 @@ void AIS_ViewController::OnObjectDragged (const Handle(AIS_InteractiveContext)& 
       }
       return;
     }
+    case AIS_DragAction_Confirmed:
+    {
+      if (myDragObject.IsNull())
+      {
+        return;
+      }
+
+      myDragObject->ProcessDragging (theCtx, theView, myDragOwner, myGL.Dragging.PointStart,
+                                     myGL.Dragging.PointTo, theAction);
+      return;
+    }
     case AIS_DragAction_Update:
     {
       if (myDragObject.IsNull())
@@ -3057,6 +3074,10 @@ void AIS_ViewController::handleDynamicHighlight (const Handle(AIS_InteractiveCon
     }
     else if (myGL.Dragging.ToMove)
     {
+      if (myGL.Dragging.ToConfirm)
+      {
+        OnObjectDragged (theCtx, theView, AIS_DragAction_Confirmed);
+      }
       OnObjectDragged (theCtx, theView, AIS_DragAction_Update);
       myGL.OrbitRotation.ToRotate = false;
       myGL.ViewRotation .ToRotate = false;

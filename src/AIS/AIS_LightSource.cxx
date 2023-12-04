@@ -259,6 +259,10 @@ Standard_Boolean AIS_LightSource::ProcessDragging (const Handle(AIS_InteractiveC
       myLocTrsfStart = LocalTransformation();
       return Standard_True;
     }
+    case AIS_DragAction_Confirmed:
+    {
+      return Standard_True;
+    }
     case AIS_DragAction_Update:
     {
       mySensSphere->ResetLastDetectedPoint();
