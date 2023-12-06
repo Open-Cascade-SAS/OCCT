@@ -32,6 +32,7 @@ n UnitsAPI
 n gp
 n math
 r OS
+n FlexLexer
 t TKMath
 t TKernel
 n Adaptor2d

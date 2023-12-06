@@ -253,6 +253,6 @@ void Message_AttributeMeter::DumpJson (Standard_OStream& theOStream,
        anIterator.More(); anIterator.Next())
   {
     OCCT_DUMP_VECTOR_CLASS (theOStream, Message::MetricToString (anIterator.Key()),
-                            2, anIterator.Value(), anIterator.Value())
+                            2, anIterator.Value().first, anIterator.Value().second)
   }
 }

@@ -94,6 +94,16 @@ public:
     ++(myCur);
   }
 
+  const typename Container::const_reference Value() const
+  {
+    return *myCur;
+  }
+
+  const typename Container::reference ChangeValue()
+  {
+    return *myCur;
+  }
+
   bool operator==(const NCollection_Iterator& theOther) { return myLast == theOther.myLast && myCur == theOther.myCur; }
 
   bool operator!=(const NCollection_Iterator& theOther) { return myLast != theOther.myLast || myCur != theOther.myCur; }
