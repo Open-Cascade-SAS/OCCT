@@ -5100,6 +5100,24 @@ static int VDisplay2 (Draw_Interpretor& theDI,
         aTrsfPers = new Graphic3d_TransformPers (aTrsfPers->Mode(), Aspect_TypeOfTriedronPosition (aCorner), Graphic3d_Vec2i (aZ.IntegerValue()));
       }
     }
+    else if (aNameCase == "-trsfPersOrtho")
+    {
+      if (aTrsfPers.IsNull())
+      {
+        Message::SendFail() << "Error: wrong syntax at " << aName << ".";
+        return 1;
+      }
+
+      toSetTrsfPers = Standard_True;
+      if (aTrsfPers->IsZoomOrRotate())
+      {
+        aTrsfPers = new Graphic3d_TransformPers (aTrsfPers->Mode() | Graphic3d_TMF_OrthoPers, aTrsfPers->AnchorPoint());
+      }
+      else if (aTrsfPers->IsTrihedronOr2d())
+      {
+        aTrsfPers = new Graphic3d_TransformPers (aTrsfPers->Mode() | Graphic3d_TMF_OrthoPers, aTrsfPers->Corner2d(), aTrsfPers->Offset2d());
+      }
+    }
     else if (aNameCase == "-layer"
           || aNameCase == "-zlayer")
     {
@@ -6630,42 +6648,45 @@ If last 3 optional parameters are not set prints numbers of U-, V- isolines and 
 
   addCmd ("vdisplay", VDisplay2, /* [vdisplay] */ R"(
 vdisplay [-noupdate|-update] [-mutable] [-neutral]
-         [-trsfPers {zoom|rotate|zoomRotate|none}=none]
+         [-trsfPers {zoom|rotate|zoomRotate|trihedron|none}=none]
             [-trsfPersPos X Y [Z]] [-3d]
             [-2d|-trihedron [{top|bottom|left|right|topLeft
                             |topRight|bottomLeft|bottomRight}
               [offsetX offsetY]]]
+            [-trsfPersOrtho]
          [-dispMode mode] [-highMode mode]
          [-layer index] [-top|-topmost|-overlay|-underlay]
          [-redisplay] [-erased]
          [-noecho] [-autoTriangulation {0|1}]
          name1 [name2] ... [name n]
 Displays named objects.
- -noupdate    Suppresses viewer redraw call.
- -mutable     Enables optimizations for mutable objects.
- -neutral     Draws objects in main viewer.
- -erased      Loads the object into context, but does not display it.
- -layer       Sets z-layer for objects.
-              Alternatively -overlay|-underlay|-top|-topmost
-              options can be used for the default z-layers.
- -top         Draws object on top of main presentations
-              but below topmost.
- -topmost     Draws in overlay for 3D presentations.
-              with independent Depth.
- -overlay     Draws objects in overlay for 2D presentations.
-              (On-Screen-Display)
- -underlay    Draws objects in underlay for 2D presentations.
-              (On-Screen-Display)
+ -noupdate      Suppresses viewer redraw call.
+ -mutable       Enables optimizations for mutable objects.
+ -neutral       Draws objects in main viewer.
+ -erased        Loads the object into context, but does not display it.
+ -layer         Sets z-layer for objects.
+                Alternatively -overlay|-underlay|-top|-topmost
+                options can be used for the default z-layers.
+ -top           Draws object on top of main presentations
+                but below topmost.
+ -topmost       Draws in overlay for 3D presentations.
+                with independent Depth.
+ -overlay       Draws objects in overlay for 2D presentations.
+                (On-Screen-Display)
+ -underlay      Draws objects in underlay for 2D presentations.
+                (On-Screen-Display)
  -selectable|-noselect Controls selection of objects.
- -trsfPers    Sets a transform persistence flags.
- -trsfPersPos Sets an anchor point for transform persistence.
- -2d          Displays object in screen coordinates.
-              (DY looks up)
- -dispmode    Sets display mode for objects.
- -highmode    Sets hilight mode for objects.
- -redisplay   Recomputes presentation of objects.
- -noecho      Avoid printing of command results.
- -autoTriang  Enable/disable auto-triangulation for displayed shape.
+ -trsfPers      Sets a transform persistence flags.
+ -trsfPersPos   Sets an anchor point for transform persistence.
+ -2d            Displays object in screen coordinates.
+                (DY looks up)
+ -trsfPersOrtho Set orthographic transform persistence.
+                (Objects shown with orthographic projection)
+ -dispmode      Sets display mode for objects.
+ -highmode      Sets hilight mode for objects.
+ -redisplay     Recomputes presentation of objects.
+ -noecho        Avoid printing of command results.
+ -autoTriang    Enable/disable auto-triangulation for displayed shape.
 )" /* [vdisplay] */);
 
   addCmd ("vnbdisplayed", VNbDisplayed, /* [vnbdisplayed] */ R"(

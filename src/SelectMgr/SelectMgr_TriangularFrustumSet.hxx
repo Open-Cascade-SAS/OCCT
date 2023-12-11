@@ -62,6 +62,13 @@ public:
                                                                                const gp_GTrsf& theTrsf,
                                                                                const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
+  //! Returns a copy of the frustum using the given frustum builder configuration.
+  //! Returned frustum should be re-constructed before being used.
+  //! @param theBuilder [in] argument that represents corresponding settings for re-constructing transformed frustum from scratch;
+  //!                        should NOT be NULL.
+  //! @return a copy of the frustum with the input builder assigned
+  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
+
 public:
 
   Standard_EXPORT virtual Standard_Boolean OverlapsBox (const SelectMgr_Vec3& theMinPnt,

@@ -93,6 +93,24 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::ScaleAndTransform (
   return aRes;
 }
 
+//=======================================================================
+// function : CopyWithBuilder
+// purpose  : Returns a copy of the frustum using the given frustum builder configuration.
+//            Returned frustum should be re-constructed before being used.
+//=======================================================================
+Handle(SelectMgr_BaseIntersector) SelectMgr_AxisIntersector::CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+{
+  (void )theBuilder;
+  Standard_ASSERT_RAISE(mySelectionType == SelectMgr_SelectionType_Point,
+    "Error! SelectMgr_AxisIntersector::CopyWithBuilder() should be called after selection axis initialization");
+
+  Handle(SelectMgr_AxisIntersector) aRes = new SelectMgr_AxisIntersector();
+  aRes->myAxis = myAxis;
+  aRes->mySelectionType = mySelectionType;
+
+  return aRes;
+}
+
 // =======================================================================
 // function : hasIntersection
 // purpose  :

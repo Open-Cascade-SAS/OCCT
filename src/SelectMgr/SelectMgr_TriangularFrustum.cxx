@@ -190,6 +190,20 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustum::ScaleAndTransform
 }
 
 //=======================================================================
+// function : CopyWithBuilder
+// purpose  : Returns a copy of the frustum using the given frustum builder configuration.
+//            Returned frustum should be re-constructed before being used.
+//=======================================================================
+Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustum::CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+{
+  Handle(SelectMgr_TriangularFrustum) aRes = new SelectMgr_TriangularFrustum();
+  aRes->mySelTriangle = mySelTriangle;
+  aRes->SetBuilder (theBuilder);
+
+  return aRes;
+}
+
+//=======================================================================
 // function : OverlapsBox
 // purpose  : SAT intersection test between defined volume and
 //            given axis-aligned box
