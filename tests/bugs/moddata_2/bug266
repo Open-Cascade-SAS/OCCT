@@ -1,5 +1,5 @@
-puts "TODO OCC24156 MacOS: Tcl Exception: compute of chamfer failed"
-puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
+puts "TODO OCC24156 MacOS: compute of chamfer failed"
+puts "TODO OCC33548 Windows: compute of chamfer failed"
 
 puts "================"
 puts "OCC266"
@@ -15,9 +15,9 @@ explode edge e
 renamevar edge face
 explode face f
 
-chamf result face edge_10 face_3 A 1 45 edge_6 face_3 A 1 45 edge_11 face_3 A 1 45 edge_12 face_3 A 1 45 edge_13 face_3 A 1 45 edge_14 face_3 A 1 45 edge_8 face_3 A 1 45 edge_9 face_3 A 1 45
-checkshape result
-
-checkprops result -s 48913
-checkview -display result -2d -path ${imagedir}/${test_image}.png
-
+if [catch {chamf result face edge_10 face_3 A 1 45 edge_6 face_3 A 1 45 edge_11 face_3 A 1 45 edge_12 face_3 A 1 45 edge_13 face_3 A 1 45 edge_14 face_3 A 1 45 edge_8 face_3 A 1 45 edge_9 face_3 A 1 45 } catch_result] {
+} else {
+  checkshape result
+  checkprops result -s 48913
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
+}

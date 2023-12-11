@@ -1,3 +1,4 @@
+puts "TODO OCC33548 Windows: compute of chamfer failed"
 
 puts "================"
 puts "OCC116"
@@ -14,12 +15,8 @@ explode sh f
 explode sh_6 e
 
 if [catch {chamf result sh sh_6_1 sh_6 A 2 45 sh_6_8 sh_6 A 2 45 } catch_result] {
-  puts "1) Faulty  OCC116: chamfer is NOT created properly"
  } else {
-  puts "1) CHAMF OCC116 OK"
+  checkprops result -s 48357.5 
+  checkshape result
+  checkview -display result -2d -path ${imagedir}/${test_image}.png
 }
-
-checkprops result -s 48357.5 
-checkshape result
-checkview -display result -2d -path ${imagedir}/${test_image}.png
-

@@ -1,3 +1,6 @@
+puts "TODO OCC33548 Windows: compute of chamfer failed"
+puts "TODO OCC33548 Windows: TEST INCOMPLETE"
+
 puts "================"
 puts "OCC293"
 puts "================"

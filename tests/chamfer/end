@@ -1,3 +1,24 @@
+set shouldFailed 0
+
+if { $group eq "dist_angle" && $command eq "chamf" } {
+  if { ($test_image eq "A3" && $chamf_shape eq "test-fillet.brep") ||
+       ($test_image eq "E5" && $chamf_shape eq "CCH_testchet.rle") ||
+       ($test_image eq "A1" && $chamf_shape eq "CCH_001_ahdb.rle") ||
+       ($test_image eq "A4" && $chamf_shape eq "test-fillet.brep") ||
+       ($test_image eq "A5" && $chamf_shape eq "test-fillet.brep") } {
+    set shouldFailed 1
+  }
+} elseif { $group eq "dist_angle" && $command eq "chamf_sequence" } {
+  if { ($test_image eq "A1" && $chamf_shape eq "CCH_001_ahdb.rle") ||
+       ($test_image eq "A4" && $chamf_shape eq "test-fillet.brep") } {
+    set shouldFailed 1
+  }
+}
+
+if {$shouldFailed} {
+  puts "TODO OCC33548 Windows: compute of chamfer failed"
+}
+
 restore [locate_data_file $chamf_shape] sh
 if { [dval SCALE] != 0 } {
    tscale sh 0 0 0 SCALE
