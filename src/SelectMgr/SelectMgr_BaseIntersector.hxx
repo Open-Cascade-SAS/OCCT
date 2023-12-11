@@ -71,6 +71,11 @@ public:
                                                                const gp_GTrsf& theTrsf,
                                                                const Handle(SelectMgr_FrustumBuilder)& theBuilder) const = 0;
 
+  //! @param theBuilder [in] argument that represents corresponding settings for re-constructing transformed frustum from scratch;
+  //!                        should NOT be NULL.
+  //! @return a copy of the frustum with the input builder assigned
+  virtual Handle(SelectMgr_BaseIntersector) CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const = 0;
+
 public:
 
   //! Return camera definition.

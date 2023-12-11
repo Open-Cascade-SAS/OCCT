@@ -13686,6 +13686,12 @@ static int VViewCube (Draw_Interpretor& ,
     {
       aViewCube->SetAxesSphereRadius (Draw::Atof (theArgVec[++anArgIter]));
     }
+    else if (anArg == "-orthopers")
+    {
+      const Handle(Graphic3d_TransformPers)& aTrsfPers = aViewCube->TransformPersistence();
+      Handle(Graphic3d_TransformPers) anOrthoPers = new Graphic3d_TransformPers (Graphic3d_TMF_TriedronPers | Graphic3d_TMF_OrthoPers, aTrsfPers->Corner2d(), aTrsfPers->Offset2d());
+      aViewCube->SetTransformPersistence (anOrthoPers);
+    }
     else
     {
       Message::SendFail() << "Syntax error: unknown argument '" << anArg << "'";
@@ -14983,6 +14989,7 @@ Displays interactive view manipulation object. Options:
  -axesSphereRadius Value  radius of the sphere (central point) of trihedron
  -fixedAnimation {0|1}    uninterruptible animation loop
  -duration Seconds        animation duration in seconds
+ -orthoPers               force orthographic projection persistence.
 )" /* [vviewcube] */);
 
   addCmd ("vcolorconvert", VColorConvert, /* [vcolorconvert] */ R"(

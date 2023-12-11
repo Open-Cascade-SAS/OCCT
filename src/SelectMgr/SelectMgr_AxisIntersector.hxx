@@ -52,6 +52,11 @@ public:
                                                                                const gp_GTrsf& theTrsf,
                                                                                const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
 
+  //! Returns a copy of the intersector transformed using the builder configuration given.
+  //! Builder is an argument that represents corresponding settings for re-constructing transformed frustum from scratch.
+  //! In this class, builder is not used and theBuilder parameter is ignored.
+  Standard_EXPORT virtual Handle(SelectMgr_BaseIntersector) CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const Standard_OVERRIDE;
+
 public:
 
   //! Intersection test between defined axis and given axis-aligned box

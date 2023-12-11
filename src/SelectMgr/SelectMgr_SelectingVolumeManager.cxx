@@ -68,6 +68,28 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
 }
 
 //=======================================================================
+// function : CopyWithBuilder
+// purpose  : Returns a copy of the selecting volume manager and its active frustum re-constructed using the passed builder.
+//            Builder is an argument that represents corresponding settings for re-constructing transformed
+//            frustum from scratch.
+//=======================================================================
+SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+{
+  SelectMgr_SelectingVolumeManager aMgr;
+  aMgr.myToAllowOverlap = myToAllowOverlap;
+  aMgr.myViewClipPlanes = myViewClipPlanes;
+  aMgr.myObjectClipPlanes = myObjectClipPlanes;
+  aMgr.myViewClipRange = myViewClipRange;
+  if (!myActiveSelectingVolume.IsNull())
+  {
+    aMgr.myActiveSelectingVolume = myActiveSelectingVolume->CopyWithBuilder (theBuilder);
+    aMgr.BuildSelectingVolume();
+  }
+
+  return aMgr;
+}
+
+//=======================================================================
 // function : GetActiveSelectionType
 // purpose  :
 //=======================================================================

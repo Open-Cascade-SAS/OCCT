@@ -186,6 +186,32 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::ScaleAndTransf
   return aRes;
 }
 
+//=======================================================================
+// function : CopyWithBuilder
+// purpose  : Returns a copy of the frustum using the given frustum builder configuration.
+//            Returned frustum should be re-constructed before being used.
+//=======================================================================
+Handle(SelectMgr_BaseIntersector) SelectMgr_TriangularFrustumSet::CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
+{
+  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Polyline,
+    "Error! SelectMgr_TriangularFrustumSet::CopyWithBuilder() should be called after selection frustum initialization");
+
+  Standard_ASSERT_RAISE (!theBuilder.IsNull(), 
+    "Error! SelectMgr_TriangularFrustumSet::CopyWithBuilder() should be called with valid builder");
+
+  Handle(SelectMgr_TriangularFrustumSet) aRes = new SelectMgr_TriangularFrustumSet();
+  aRes->SetCamera (myCamera);
+  for (SelectMgr_TriangFrustums::Iterator anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    aRes->myFrustums.Append (Handle(SelectMgr_TriangularFrustum)::DownCast (anIter.Value()->CopyWithBuilder (theBuilder)));
+  }
+  aRes->mySelectionType = mySelectionType;
+  aRes->mySelPolyline = mySelPolyline;
+  aRes->myToAllowOverlap = myToAllowOverlap;
+  aRes->SetBuilder (theBuilder);
+  return aRes;
+}
+
 // =======================================================================
 // function : OverlapsBox
 // purpose  :
