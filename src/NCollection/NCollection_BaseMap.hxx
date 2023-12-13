@@ -178,7 +178,7 @@ public:
     isDouble(theOther.isDouble)
   {
     theOther.myData1 = nullptr;
-    theOther.myData1 = nullptr;
+    theOther.myData2 = nullptr;
     theOther.mySize = 0;
     theOther.myNbBuckets = 0;
   }
