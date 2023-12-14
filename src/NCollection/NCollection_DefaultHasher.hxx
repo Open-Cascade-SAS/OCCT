@@ -29,8 +29,50 @@
  *              IsEqual.
 */
 template <class TheKeyType>
-DEFINE_HASHER(NCollection_DefaultHasher, TheKeyType, std::hash<TheKeyType>, std::equal_to<TheKeyType>)
+struct NCollection_DefaultHasher
+{
+  size_t operator()(const TheKeyType& theKey) const noexcept
+  {
+    return HashCode<TheKeyType>(theKey);
+  }
+  bool operator() (const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
+  {
+    return IsEqual<TheKeyType>(theK1, theK2);
+  }
 
+private:
+  // For non-enums
+  template <class T = TheKeyType>
+  typename std::enable_if<!std::is_enum<T>::value, size_t>::type
+    HashCode(const TheKeyType& theKey) const noexcept
+  {
+    return std::hash<TheKeyType>{}(theKey);
+  }
+
+  // For non-enums
+  template <class T = TheKeyType>
+  typename std::enable_if<!std::is_enum<T>::value, bool>::type
+    IsEqual(const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
+  {
+    return std::equal_to<TheKeyType>{}(theK1, theK2);
+  }
+
+  // For enums
+  template <class T = TheKeyType>
+  typename std::enable_if<std::is_enum<T>::value, size_t>::type
+    HashCode(const TheKeyType& theKey) const noexcept
+  {
+    return static_cast<size_t>(theKey);
+  }
+
+  // For enums
+  template <class T = TheKeyType>
+  typename std::enable_if<std::is_enum<T>::value, bool>::type
+    IsEqual(const TheKeyType& theK1, const TheKeyType& theK2) const noexcept
+  {
+    return theK1 == theK2;
+  }
+};
 
 #define DEFINE_DEFAULT_HASHER_PURE(TheKeyType)              \
 template <> struct NCollection_DefaultHasher<TheKeyType>    \
