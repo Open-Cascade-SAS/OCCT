@@ -46,15 +46,9 @@ namespace opencascade
     }
 
     template <typename T = size_t>
-    constexpr typename std::enable_if<sizeof(T) == 8, uint64_t>::type optimalSeed()
+    constexpr T optimalSeed()
     {
-      return 0xA329F1D3A586ULL;
-    }
-
-    template <typename T = size_t>
-    constexpr typename std::enable_if<sizeof(T) != 8, T >::type optimalSeed()
-    {
-      return static_cast<T>(0xc70f6907U);
+      return sizeof(T) == 8 ? static_cast<T>(0xA329F1D3A586ULL) : static_cast<T>(0xc70f6907U);
     }
   };
 
@@ -84,15 +78,9 @@ namespace opencascade
     }
 
     template <typename T = size_t>
-    constexpr typename std::enable_if<sizeof(T) == 8, uint64_t>::type optimalSeed()
+    constexpr T optimalSeed()
     {
-      return 14695981039346656037ULL;
-    }
-
-    template <typename T = size_t>
-    constexpr typename std::enable_if<sizeof(T) != 8, T>::type optimalSeed()
-    {
-      return static_cast<T>(2166136261U);
+      return sizeof(T) == 8 ? static_cast<T>(14695981039346656037ULL) : static_cast<T>(2166136261U);
     }
   };
 
