@@ -176,10 +176,11 @@ namespace
     GetDisplayConnection() = theDisplayConnection;
   }
 
-  static ViewerTest_ViewerCommandsViewMap ViewerTest_myViews;
   static ViewerTest_ViewerCommandsInteractiveContextMap ViewerTest_myContexts;
   static ViewerTest_ViewerCommandsGraphicDriverMap ViewerTest_myDrivers;
 }
+
+ViewerTest_ViewerCommandsViewMap ViewerTest_myViews;
 
 static struct
 {
