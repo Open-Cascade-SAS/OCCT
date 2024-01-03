@@ -515,8 +515,13 @@ BSplCLib::EvalBsplineBasis
       //
       // this should be always invertible if ii is correctly computed 
       //
-      Factor = (Parameter - FlatKnots(ii - qq + pp + 1)) 
-	/ (FlatKnots(ii + pp)   - FlatKnots(ii - qq + pp + 1)) ; 
+      const Standard_Real aScale = (FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1));
+      if (Abs (aScale) < gp::Resolution())
+      {
+        return 2;
+      }
+
+      Factor = (Parameter - FlatKnots(ii - qq + pp + 1)) / aScale;
       Saved = Factor *    BsplineBasis(1,pp) ;
       BsplineBasis(1,pp) *= (1.0e0 - Factor) ;
       BsplineBasis(1,pp) += BsplineBasis(1,qq) ;
@@ -536,7 +541,13 @@ BSplCLib::EvalBsplineBasis
     }
 
     for (pp = 1 ; pp <= qq - 1 ; pp++) {
-      Inverse = 1.0e0 / (FlatKnots(ii + pp)  - FlatKnots(ii - qq + pp + 1)) ;
+      const Standard_Real aScale = (FlatKnots(ii + pp) - FlatKnots(ii - qq + pp + 1));
+      if (Abs (aScale) < gp::Resolution())
+      {
+        return 2;
+      }
+
+      Inverse = 1.0e0 / aScale;
       Factor  =  (Parameter - FlatKnots(ii - qq + pp + 1)) * Inverse ;
       Saved = Factor *                 BsplineBasis(1,pp) ;
       BsplineBasis(1,pp) *= (1.0e0 - Factor) ;

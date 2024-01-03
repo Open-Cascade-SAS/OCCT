@@ -808,8 +808,11 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
   const Standard_Integer aNbp = lastP - firstP + 1;
 
 
+  // The first parameter should always be zero according to all the logic below,
+  // so division by any value will give zero anyway, so it should never be scaled
+  // to avoid case when there is only one parameter in the array thus division by zero happens.
+  TheParameters(firstP) = 0.0;
   if (aNbp == 2) {
-    TheParameters(firstP) = 0.0;
     TheParameters(lastP) = 1.0;
   }
   else if (Par == Approx_ChordLength || Par == Approx_Centripetal)
@@ -820,7 +823,6 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
     if (nbP3d == 0) mynbP3d = 1;
     if (nbP2d == 0) mynbP2d = 1;
 
-    TheParameters(firstP) = 0.0;
     dist = 0.0;
     TColgp_Array1OfPnt tabP(1, mynbP3d);
     TColgp_Array1OfPnt tabPP(1, mynbP3d);
@@ -861,10 +863,10 @@ void Approx_BSplComputeLine::Parameters(const MultiLine& Line,
         TheParameters(i) = TheParameters(i - 1) + Sqrt(dist);
       }
     }
-    for (i = firstP; i <= lastP; i++) TheParameters(i) /= TheParameters(lastP);
+    for (i = firstP + 1; i <= lastP; i++) TheParameters(i) /= TheParameters(lastP);
   }
   else {
-    for (i = firstP; i <= lastP; i++) {
+    for (i = firstP + 1; i <= lastP; i++) {
       TheParameters(i) = (Standard_Real(i) - firstP) /
         (Standard_Real(lastP - Standard_Real(firstP)));
     }
