@@ -23,8 +23,8 @@
 
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
+#include <StepData_Factors.hxx>
 #include <StepBasic_SiPrefix.hxx>
-class StepData_Factors;
 class StepData_StepModel;
 class StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx;
 class StepRepr_GlobalUnitAssignedContext;
@@ -49,7 +49,7 @@ public:
   //! uncertainty equal to Tol3d)
   Standard_EXPORT void Init (const Standard_Real Tol3d,
                              const Handle(StepData_StepModel)& theModel,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Returns True if Init was called successfully
   Standard_EXPORT Standard_Boolean IsDone() const;
@@ -60,10 +60,10 @@ public:
   //! Computes the length, plane angle and solid angle conversion
   //! factor  .  Returns a status, 0 if OK
   Standard_EXPORT Standard_Integer ComputeFactors (const Handle(StepRepr_GlobalUnitAssignedContext)& aContext,
-                                                   const StepData_Factors& theLocalFactors);
+                                                   const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT Standard_Integer ComputeFactors (const Handle(StepBasic_NamedUnit)& aUnit,
-                                                   const StepData_Factors& theLocalFactors);
+                                                   const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Computes the uncertainty value (for length)
   Standard_EXPORT Standard_Integer ComputeTolerance (const Handle(StepRepr_GlobalUncertaintyAssignedContext)& aContext);

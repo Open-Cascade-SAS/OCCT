@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_Circle;
 class gp_Circ;
 class Geom_Circle;
@@ -42,13 +41,13 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeCircle(const gp_Circ& C,
-                                        const StepData_Factors& theLocalFactors);
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeCircle(const Handle(Geom_Circle)& C,
-                                        const StepData_Factors& theLocalFactors);
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeCircle(const Handle(Geom2d_Circle)& C,
-                                        const StepData_Factors& theLocalFactors);
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Circle)& Value() const;
 

@@ -44,12 +44,12 @@ public:
   Standard_EXPORT TopoDSToStep_MakeStepVertex(const TopoDS_Vertex& V,
                                               TopoDSToStep_Tool& T,
                                               const Handle(Transfer_FinderProcess)& FP,
-                                              const StepData_Factors& theLocalFactors);
+                                              const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const TopoDS_Vertex& V,
                              TopoDSToStep_Tool& T,
                              const Handle(Transfer_FinderProcess)& FP,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepShape_TopologicalRepresentationItem)& Value() const;
   

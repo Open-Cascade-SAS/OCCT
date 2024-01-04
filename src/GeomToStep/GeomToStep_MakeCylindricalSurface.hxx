@@ -24,7 +24,6 @@
 #include <GeomToStep_Root.hxx>
 class StepGeom_CylindricalSurface;
 class Geom_CylindricalSurface;
-class StepData_Factors;
 
 
 //! This class implements the mapping between class
@@ -39,7 +38,7 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeCylindricalSurface(const Handle(Geom_CylindricalSurface)& CSurf,
-                                                    const StepData_Factors& theLocalFactors);
+                                                    const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_CylindricalSurface)& Value() const;
 

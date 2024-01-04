@@ -39,7 +39,7 @@ public:
   
   Standard_EXPORT TopoDSToStep_MakeGeometricCurveSet(const TopoDS_Shape& SH,
                                                      const Handle(Transfer_FinderProcess)& FP,
-                                                     const StepData_Factors& theLocalFactors);
+                                                     const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepShape_GeometricCurveSet)& Value() const;
 

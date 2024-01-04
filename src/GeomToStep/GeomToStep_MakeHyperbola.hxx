@@ -38,10 +38,10 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeHyperbola(const Handle(Geom2d_Hyperbola)& C,
-                                           const StepData_Factors& theLocalFactors);
+                                           const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeHyperbola(const Handle(Geom_Hyperbola)& C,
-                                           const StepData_Factors& theLocalFactors);
+                                           const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Hyperbola)& Value() const;
 

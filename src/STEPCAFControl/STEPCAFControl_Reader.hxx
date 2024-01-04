@@ -17,6 +17,7 @@
 #define _STEPCAFControl_Reader_HeaderFile
 
 #include <STEPControl_Reader.hxx>
+#include <StepData_Factors.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -38,8 +39,6 @@ class StepShape_ConnectedFaceSet;
 class StepRepr_NextAssemblyUsageOccurrence;
 class STEPConstruct_Tool;
 class StepDimTol_Datum;
-class StepData_Factors;
-
 
 //! Provides a tool to read STEP file and put it into
 //! DECAF document. Besides transfer of shapes (including
@@ -234,7 +233,7 @@ protected:
   Standard_EXPORT Standard_Boolean ReadColors
                 (const Handle(XSControl_WorkSession)& WS,
                  const Handle(TDocStd_Document)& doc,
-                 const StepData_Factors& theLocalFactors) const;
+                 const StepData_Factors& theLocalFactors = StepData_Factors()) const;
   
   //! Reads names of parts defined in the STEP model and
   //! assigns them to corresponding labels in the DECAF document
@@ -246,7 +245,7 @@ protected:
   Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS,
                                                  const Handle(TDocStd_Document)& doc,
                                                  const STEPCAFControl_DataMapOfPDExternFile& PDFileMap,
-                                                 const StepData_Factors& theLocalFactors) const;
+                                                 const StepData_Factors& theLocalFactors = StepData_Factors()) const;
   
   //! Reads layers of parts defined in the STEP model and
   //! set reference between shape and layers in the DECAF document
@@ -260,19 +259,19 @@ protected:
   //! set reference between shape instances from different assemblyes
   Standard_EXPORT Standard_Boolean ReadGDTs (const Handle(XSControl_WorkSession)& WS,
                                              const Handle(TDocStd_Document)& doc,
-                                             const StepData_Factors& theLocalFactors);
+                                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Reads materials for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
   Standard_EXPORT Standard_Boolean ReadMaterials (const Handle(XSControl_WorkSession)& WS,
                                                   const Handle(TDocStd_Document)& doc,
                                                   const Handle(TColStd_HSequenceOfTransient)& SeqPDS,
-                                                  const StepData_Factors& theLocalFactors) const;
+                                                  const StepData_Factors& theLocalFactors = StepData_Factors()) const;
   
   //! Reads Views for instances defined in the STEP model
   Standard_EXPORT Standard_Boolean ReadViews(const Handle(XSControl_WorkSession)& theWS,
                                              const Handle(TDocStd_Document)& theDoc,
-                                             const StepData_Factors& theLocalFactors) const;
+                                             const StepData_Factors& theLocalFactors = StepData_Factors()) const;
 
   //! Populates the sub-Label of the passed TDF Label with shape
   //! data associated with the given STEP Representation Item,
@@ -314,20 +313,20 @@ private:
     const Standard_Real theModifValue,
     const Handle(TDocStd_Document)& theDoc,
     const Handle(XSControl_WorkSession)& theWS,
-    const StepData_Factors& theLocalFactors);
+    const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Internal method. Read Datums, connected to GeomTolerance theGDTL.
   Standard_Boolean readDatumsAP242(const Handle(Standard_Transient)& theEnt,
     const TDF_Label theGDTL,
     const Handle(TDocStd_Document)& theDoc,
     const Handle(XSControl_WorkSession)& theWS,
-    const StepData_Factors& theLocalFactors);
+    const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Internal method. Read Dimension or GeomTolerance.
   TDF_Label createGDTObjectInXCAF(const Handle(Standard_Transient)& theEnt,
     const Handle(TDocStd_Document)& theDoc,
     const Handle(XSControl_WorkSession)& theWS,
-    const StepData_Factors& theLocalFactors);
+    const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Prepares units for transfer
   void prepareUnits(const Handle(StepData_StepModel)& theModel,

@@ -897,8 +897,8 @@ void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedFace)& theTF,
 // ============================================================================
 void StepToTopoDS_Builder::Init(const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
                                 const Handle(Transfer_TransientProcess)& theTP,
-                                const StepData_Factors& theLocalFactors,
-                                Standard_Boolean& theHasGeom)
+                                Standard_Boolean& theHasGeom,
+                                const StepData_Factors& theLocalFactors)
 {
   StepToTopoDS_TranslateFace aTranFace;
   aTranFace.SetPrecision(Precision());

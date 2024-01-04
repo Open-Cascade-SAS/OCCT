@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
-class StepData_Factors;
 class StepGeom_Plane;
 class gp_Pln;
 class Geom_Plane;
@@ -40,10 +39,10 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakePlane(const gp_Pln& P,
-                                       const StepData_Factors& theLocalFactors);
+                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakePlane(const Handle(Geom_Plane)& P,
-                                       const StepData_Factors& theLocalFactors);
+                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Plane)& Value() const;
 

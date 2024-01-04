@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_Ellipse;
 class gp_Elips;
 class Geom_Ellipse;
@@ -42,13 +41,13 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeEllipse(const gp_Elips& C,
-                                         const StepData_Factors& theLocalFactors);
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeEllipse(const Handle(Geom_Ellipse)& C,
-                                         const StepData_Factors& theLocalFactors);
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeEllipse(const Handle(Geom2d_Ellipse)& C,
-                                         const StepData_Factors& theLocalFactors);
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Ellipse)& Value() const;
 

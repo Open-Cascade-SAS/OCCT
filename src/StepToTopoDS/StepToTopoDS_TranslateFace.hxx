@@ -25,7 +25,6 @@
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
 class Poly_Triangulation;
-class StepData_Factors;
 class StepShape_FaceSurface;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
@@ -47,36 +46,36 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateFace(const Handle(StepShape_FaceSurface)& FS,
                                              StepToTopoDS_Tool& T,
                                              StepToTopoDS_NMTool& NMTool,
-                                             const StepData_Factors& theLocalFactors);
+                                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT StepToTopoDS_TranslateFace(const Handle(StepVisual_TessellatedFace)& theTF, 
                                              StepToTopoDS_Tool& theTool,
                                              StepToTopoDS_NMTool& theNMTool,
                                              const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                                              Standard_Boolean& theHasGeom,
-                                             const StepData_Factors& theLocalFactors);
+                                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT StepToTopoDS_TranslateFace(const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
                                              StepToTopoDS_Tool& theTool,
                                              StepToTopoDS_NMTool& theNMTool,
-                                             const StepData_Factors& theLocalFactors);
+                                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepShape_FaceSurface)& FS,
                              StepToTopoDS_Tool& T,
                              StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepVisual_TessellatedFace)& theTF,
                              StepToTopoDS_Tool& theTool,
                              StepToTopoDS_NMTool& theNMTool,
                              const Standard_Boolean theReadTessellatedWhenNoBRepOnly,
                              Standard_Boolean& theHasGeom,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Standard_EXPORT void Init(const Handle(StepVisual_TessellatedSurfaceSet)& theTSS,
                             StepToTopoDS_Tool& theTool,
                             StepToTopoDS_NMTool& theNMTool,
-                            const StepData_Factors& theLocalFactors);
+                            const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   
@@ -85,7 +84,7 @@ public:
 private:
 
   Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_TessellatedItem)& theTI,
-                                        const StepData_Factors& theLocalFactors) const;
+                                        const StepData_Factors& theLocalFactors = StepData_Factors()) const;
 
   StepToTopoDS_TranslateFaceError myError;
   TopoDS_Shape myResult;

@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_BoundedCurve;
 class Geom_BoundedCurve;
 class Geom2d_BoundedCurve;
@@ -42,10 +41,10 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeBoundedCurve(const Handle(Geom_BoundedCurve)& C,
-                                              const StepData_Factors& theLocalFactors);
+                                              const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeBoundedCurve(const Handle(Geom2d_BoundedCurve)& C,
-                                              const StepData_Factors& theLocalFactors);
+                                              const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_BoundedCurve)& Value() const;
 

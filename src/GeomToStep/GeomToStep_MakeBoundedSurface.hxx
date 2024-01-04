@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_BoundedSurface;
 class Geom_BoundedSurface;
 
@@ -41,7 +40,7 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeBoundedSurface(const Handle(Geom_BoundedSurface)& C,
-                                                const StepData_Factors& theLocalFactors);
+                                                const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_BoundedSurface)& Value() const;
 

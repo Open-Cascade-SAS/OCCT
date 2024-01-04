@@ -45,17 +45,17 @@ public:
   
   Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& F,
                                                           const Handle(Transfer_FinderProcess)& FP,
-                                                          const StepData_Factors& theLocalFactors,
+                                                          const StepData_Factors& theLocalFactors = StepData_Factors(),
                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Shell& S,
                                                           const Handle(Transfer_FinderProcess)& FP,
-                                                          const StepData_Factors& theLocalFactors,
+                                                          const StepData_Factors& theLocalFactors = StepData_Factors(),
                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Solid& S,
                                                           const Handle(Transfer_FinderProcess)& FP,
-                                                          const StepData_Factors& theLocalFactors,
+                                                          const StepData_Factors& theLocalFactors = StepData_Factors(),
                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const Handle(StepShape_ShellBasedSurfaceModel)& Value() const;

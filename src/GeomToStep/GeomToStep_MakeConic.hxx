@@ -25,7 +25,6 @@
 class StepGeom_Conic;
 class Geom_Conic;
 class Geom2d_Conic;
-class StepData_Factors;
 
 
 //! This class implements the mapping between classes
@@ -40,10 +39,10 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeConic(const Handle(Geom_Conic)& C,
-                                       const StepData_Factors& theLocalFactors);
+                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeConic(const Handle(Geom2d_Conic)& C,
-                                       const StepData_Factors& theLocalFactors);
+                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Conic)& Value() const;
 

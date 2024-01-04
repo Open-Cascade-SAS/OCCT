@@ -24,7 +24,6 @@
 #include <StepToTopoDS_TranslateVertexLoopError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-class StepData_Factors;
 class StepShape_VertexLoop;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
@@ -43,12 +42,12 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateVertexLoop(const Handle(StepShape_VertexLoop)& VL,
                                                    StepToTopoDS_Tool& T,
                                                    StepToTopoDS_NMTool& NMTool,
-                                                   const StepData_Factors& theLocalFactors);
+                                                   const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepShape_VertexLoop)& VL,
                              StepToTopoDS_Tool& T,
                              StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

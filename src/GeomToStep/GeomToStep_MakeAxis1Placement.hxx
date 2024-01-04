@@ -20,10 +20,10 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <StepData_Factors.hxx>
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_Axis1Placement;
 class gp_Ax1;
 class gp_Ax2d;
@@ -43,16 +43,16 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeAxis1Placement(const gp_Ax1& A,
-                                                const StepData_Factors& theLocalFactors);
+                                                const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeAxis1Placement(const gp_Ax2d& A,
-                                                const StepData_Factors& theLocalFactors);
+                                                const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeAxis1Placement(const Handle(Geom_Axis1Placement)& A,
-                                                const StepData_Factors& theLocalFactors);
+                                                const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeAxis1Placement(const Handle(Geom2d_AxisPlacement)& A,
-                                                const StepData_Factors& theLocalFactors);
+                                                const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Axis1Placement)& Value() const;
 

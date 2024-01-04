@@ -25,7 +25,6 @@
 #include <StepToTopoDS_Root.hxx>
 #include <Message_ProgressRange.hxx>
 
-class StepData_Factors;
 class StepGeom_Axis2Placement3d;
 class StepGeom_CartesianTransformationOperator3d;
 class TopoDS_Shape;
@@ -47,11 +46,11 @@ public:
   //! If not done, the transformation will by Identity
   Standard_EXPORT Standard_Boolean Compute (const Handle(StepGeom_Axis2Placement3d)& Origin,
                                             const Handle(StepGeom_Axis2Placement3d)& Target,
-                                            const StepData_Factors& theLocalFactors);
+                                            const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Computes a transformation defined by an operator 3D
   Standard_EXPORT Standard_Boolean Compute (const Handle(StepGeom_CartesianTransformationOperator3d)& Operator,
-                                            const StepData_Factors& theLocalFactors);
+                                            const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Returns the computed transformation (Identity if not yet or
   //! if failed)
@@ -73,7 +72,7 @@ public:
   //! transformed as an instance of this Shape
   Standard_EXPORT TopoDS_Shape TranslateMappedItem (const Handle(StepRepr_MappedItem)& mapit,
                                                     const Handle(Transfer_TransientProcess)& TP,
-                                                    const StepData_Factors& theLocalFactors,
+                                                    const StepData_Factors& theLocalFactors = StepData_Factors(),
                                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 

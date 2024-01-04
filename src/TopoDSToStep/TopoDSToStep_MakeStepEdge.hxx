@@ -23,7 +23,6 @@
 
 #include <TopoDSToStep_MakeEdgeError.hxx>
 #include <TopoDSToStep_Root.hxx>
-class StepData_Factors;
 class StepShape_TopologicalRepresentationItem;
 class TopoDS_Edge;
 class TopoDSToStep_Tool;
@@ -45,12 +44,12 @@ public:
   Standard_EXPORT TopoDSToStep_MakeStepEdge(const TopoDS_Edge& E,
                                             TopoDSToStep_Tool& T,
                                             const Handle(Transfer_FinderProcess)& FP,
-                                            const StepData_Factors& theLocalFactors);
+                                            const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const TopoDS_Edge& E,
                              TopoDSToStep_Tool& T,
                              const Handle(Transfer_FinderProcess)& FP,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepShape_TopologicalRepresentationItem)& Value() const;
   

@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
-class StepData_Factors;
 class StepGeom_Line;
 class gp_Lin;
 class gp_Lin2d;
@@ -42,16 +41,16 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeLine(const gp_Lin& L,
-                                      const StepData_Factors& theLocalFactors);
+                                      const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeLine(const gp_Lin2d& L,
-                                      const StepData_Factors& theLocalFactors);
+                                      const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeLine(const Handle(Geom_Line)& C,
-                                      const StepData_Factors& theLocalFactors);
+                                      const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeLine(const Handle(Geom2d_Line)& C,
-                                      const StepData_Factors& theLocalFactors);
+                                      const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Line)& Value() const;
 

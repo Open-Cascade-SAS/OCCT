@@ -49,26 +49,26 @@ public:
   //! Translates standalone composite_curve
   Standard_EXPORT StepToTopoDS_TranslateCompositeCurve(const Handle(StepGeom_CompositeCurve)& CC,
                                                        const Handle(Transfer_TransientProcess)& TP,
-                                                       const StepData_Factors& theLocalFactors);
+                                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Translates composite_curve lying on surface
   Standard_EXPORT StepToTopoDS_TranslateCompositeCurve(const Handle(StepGeom_CompositeCurve)& CC,
                                                        const Handle(Transfer_TransientProcess)& TP,
                                                        const Handle(StepGeom_Surface)& S,
                                                        const Handle(Geom_Surface)& Surf,
-                                                       const StepData_Factors& theLocalFactors);
+                                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Translates standalone composite_curve
   Standard_EXPORT Standard_Boolean Init (const Handle(StepGeom_CompositeCurve)& CC,
                                          const Handle(Transfer_TransientProcess)& TP,
-                                         const StepData_Factors& theLocalFactors);
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Translates composite_curve lying on surface
   Standard_EXPORT Standard_Boolean Init (const Handle(StepGeom_CompositeCurve)& CC,
                                          const Handle(Transfer_TransientProcess)& TP,
                                          const Handle(StepGeom_Surface)& S,
                                          const Handle(Geom_Surface)& Surf,
-                                         const StepData_Factors& theLocalFactors);
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Returns result of last translation or null wire if failed.
   Standard_EXPORT const TopoDS_Wire& Value() const;

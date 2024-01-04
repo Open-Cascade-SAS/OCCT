@@ -25,6 +25,7 @@
 #include <STEPControl_Writer.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepData_ConfParameters.hxx>
+#include <StepData_Factors.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_HArray1OfDatumSystemOrReference.hxx>
@@ -39,7 +40,6 @@ class XSControl_WorkSession;
 class TDocStd_Document;
 class STEPCAFControl_ExternFile;
 class TopoDS_Shape;
-class StepData_Factors;
 
 //! Provides a tool to write DECAF document to the
 //! STEP file. Besides transfer of shapes (including
@@ -233,7 +233,7 @@ protected:
   TopoDS_Shape transferExternFiles(const TDF_Label& theLabel,
                                    const STEPControl_StepModelType theMode,
                                    TDF_LabelSequence& theLabelSeq,
-                                   const StepData_Factors& theLocalFactors,
+                                   const StepData_Factors& theLocalFactors = StepData_Factors(),
                                    const Standard_CString thePrefix = "",
                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -256,7 +256,7 @@ protected:
   //! Write D&GTs assigned to specified labels, to STEP model, according AP242
   Standard_Boolean writeDGTsAP242(const Handle(XSControl_WorkSession)& theWS,
                                   const TDF_LabelSequence& theLabels,
-                                  const StepData_Factors& theLocalFactors);
+                                  const StepData_Factors& theLocalFactors = StepData_Factors());
 
   //! Write materials assigned to specified labels, to STEP model
   Standard_Boolean writeMaterials(const Handle(XSControl_WorkSession)& theWS,
@@ -297,14 +297,14 @@ protected:
                          const gp_Ax2& theAnnotationPlane,
                          const gp_Pnt& theTextPosition,
                          const Handle(Standard_Transient)& theDimension,
-                         const StepData_Factors& theLocalFactors);
+                         const StepData_Factors& theLocalFactors = StepData_Factors());
 
   Handle(StepDimTol_Datum) writeDatumAP242(const Handle(XSControl_WorkSession)& theWS,
                                            const TDF_LabelSequence& theShapeL,
                                            const TDF_Label& theDatumL,
                                            const Standard_Boolean isFirstDTarget,
                                            const Handle(StepDimTol_Datum)& theWrittenDatum,
-                                           const StepData_Factors& theLocalFactors);
+                                           const StepData_Factors& theLocalFactors = StepData_Factors());
 
   void writeToleranceZone(const Handle(XSControl_WorkSession)& theWS,
                           const Handle(XCAFDimTolObjects_GeomToleranceObject)& theObject,
@@ -316,7 +316,7 @@ protected:
                           const TDF_Label& theGeomTolL,
                           const Handle(StepDimTol_HArray1OfDatumSystemOrReference)& theDatumSystem,
                           const Handle(StepRepr_RepresentationContext)& theRC,
-                          const StepData_Factors& theLocalFactors);
+                          const StepData_Factors& theLocalFactors = StepData_Factors());
 
 private:
 

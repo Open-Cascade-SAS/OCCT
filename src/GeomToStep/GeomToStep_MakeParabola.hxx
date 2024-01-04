@@ -25,7 +25,6 @@
 class StepGeom_Parabola;
 class Geom2d_Parabola;
 class Geom_Parabola;
-class StepData_Factors;
 
 
 //! This class implements the mapping between the class
@@ -39,10 +38,10 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& C,
-                                          const StepData_Factors& theLocalFactors);
+                                          const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeParabola(const Handle(Geom_Parabola)& C,
-                                          const StepData_Factors& theLocalFactors);
+                                          const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Parabola)& Value() const;
 

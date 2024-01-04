@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_ElementarySurface;
 class Geom_ElementarySurface;
 
@@ -41,7 +40,7 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeElementarySurface(const Handle(Geom_ElementarySurface)& S,
-                                                   const StepData_Factors& theLocalFactors);
+                                                   const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_ElementarySurface)& Value() const;
 

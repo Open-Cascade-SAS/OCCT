@@ -24,7 +24,6 @@
 #include <StepToTopoDS_TranslateEdgeError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-class StepData_Factors;
 class StepShape_Edge;
 class StepToTopoDS_Tool;
 class StepToTopoDS_NMTool;
@@ -51,12 +50,12 @@ public:
   Standard_EXPORT StepToTopoDS_TranslateEdge(const Handle(StepShape_Edge)& E,
                                              StepToTopoDS_Tool& T,
                                              StepToTopoDS_NMTool& NMTool,
-                                             const StepData_Factors& theLocalFactors);
+                                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepShape_Edge)& E,
                              StepToTopoDS_Tool& T,
                              StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Warning! C3D is assumed to be a Curve 3D ...
   //! other cases to checked before calling this
@@ -68,11 +67,11 @@ public:
                                         TopoDS_Vertex& V1,
                                         TopoDS_Vertex& V2,
                                         StepToTopoDS_Tool& T,
-                                        const StepData_Factors& theLocalFactors);
+                                        const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT Handle(Geom2d_Curve) MakePCurve (const Handle(StepGeom_Pcurve)& PCU,
                                                    const Handle(Geom_Surface)& ConvSurf,
-                                                   const StepData_Factors& theLocalFactors) const;
+                                                   const StepData_Factors& theLocalFactors = StepData_Factors()) const;
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

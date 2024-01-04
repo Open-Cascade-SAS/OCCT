@@ -23,7 +23,6 @@
 
 #include <GeomToStep_Root.hxx>
 
-class StepData_Factors;
 class StepGeom_SurfaceOfLinearExtrusion;
 class Geom_SurfaceOfLinearExtrusion;
 
@@ -40,7 +39,7 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeSurfaceOfLinearExtrusion(const Handle(Geom_SurfaceOfLinearExtrusion)& CSurf,
-                                                          const StepData_Factors& theLocalFactors);
+                                                          const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_SurfaceOfLinearExtrusion)& Value() const;
 

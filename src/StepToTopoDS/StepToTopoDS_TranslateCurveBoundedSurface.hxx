@@ -41,12 +41,12 @@ public:
   //! Translate surface
   Standard_EXPORT StepToTopoDS_TranslateCurveBoundedSurface(const Handle(StepGeom_CurveBoundedSurface)& CBS,
                                                             const Handle(Transfer_TransientProcess)& TP,
-                                                            const StepData_Factors& theLocalFactors);
+                                                            const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Translate surface
   Standard_EXPORT Standard_Boolean Init (const Handle(StepGeom_CurveBoundedSurface)& CBS,
                                          const Handle(Transfer_TransientProcess)& TP,
-                                         const StepData_Factors& theLocalFactors);
+                                         const StepData_Factors& theLocalFactors = StepData_Factors());
   
   //! Returns result of last translation or null wire if failed.
   Standard_EXPORT const TopoDS_Face& Value() const;

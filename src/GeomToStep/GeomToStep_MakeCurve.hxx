@@ -22,7 +22,6 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomToStep_Root.hxx>
-class StepData_Factors;
 class StepGeom_Curve;
 class Geom_Curve;
 class Geom2d_Curve;
@@ -40,10 +39,10 @@ public:
 
   
   Standard_EXPORT GeomToStep_MakeCurve(const Handle(Geom_Curve)& C,
-                                       const StepData_Factors& theLocalFactors);
+                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT GeomToStep_MakeCurve(const Handle(Geom2d_Curve)& C,
-                                       const StepData_Factors& theLocalFactors);
+                                       const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const Handle(StepGeom_Curve)& Value() const;
 

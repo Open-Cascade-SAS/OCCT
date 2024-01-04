@@ -24,7 +24,6 @@
 #include <StepToTopoDS_TranslatePolyLoopError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
-class StepData_Factors;
 class StepShape_PolyLoop;
 class StepToTopoDS_Tool;
 class Geom_Surface;
@@ -45,13 +44,13 @@ public:
                                                  StepToTopoDS_Tool& T,
                                                  const Handle(Geom_Surface)& S,
                                                  const TopoDS_Face& F,
-                                                 const StepData_Factors& theLocalFactors);
+                                                 const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepShape_PolyLoop)& PL,
                              StepToTopoDS_Tool& T,
                              const Handle(Geom_Surface)& S,
                              const TopoDS_Face& F,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

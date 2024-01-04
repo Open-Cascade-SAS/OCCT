@@ -25,7 +25,6 @@
 #include <TopoDSToStep_Root.hxx>
 #include <Message_ProgressRange.hxx>
 
-class StepData_Factors;
 class StepShape_TopologicalRepresentationItem;
 class StepVisual_TessellatedItem;
 class TopoDS_Shape;
@@ -48,14 +47,14 @@ public:
                                        TopoDSToStep_Tool& T,
                                        const Handle(Transfer_FinderProcess)& FP,
                                        const Standard_Integer theTessellatedGeomParam,
-                                       const StepData_Factors& theLocalFactors,
+                                       const StepData_Factors& theLocalFactors = StepData_Factors(),
                                        const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT void Init (const TopoDS_Shape& S,
                              TopoDSToStep_Tool& T,
                              const Handle(Transfer_FinderProcess)& FP,
                              const Standard_Integer theTessellatedGeomParam,
-                             const StepData_Factors& theLocalFactors,
+                             const StepData_Factors& theLocalFactors = StepData_Factors(),
                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT TopoDSToStep_BuilderError Error() const;

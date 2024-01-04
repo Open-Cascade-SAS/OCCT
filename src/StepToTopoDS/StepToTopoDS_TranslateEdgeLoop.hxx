@@ -49,7 +49,7 @@ public:
                                                  const Standard_Boolean ss,
                                                  StepToTopoDS_Tool& T,
                                                  StepToTopoDS_NMTool& NMTool,
-                                                 const StepData_Factors& theLocalFactors);
+                                                 const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepShape_FaceBound)& FB,
                              const TopoDS_Face& F,
@@ -58,7 +58,7 @@ public:
                              const Standard_Boolean ss,
                              StepToTopoDS_Tool& T,
                              StepToTopoDS_NMTool& NMTool,
-                             const StepData_Factors& theLocalFactors);
+                             const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   
