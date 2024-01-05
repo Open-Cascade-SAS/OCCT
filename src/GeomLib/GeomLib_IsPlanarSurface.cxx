@@ -50,22 +50,27 @@ static Standard_Boolean Controle(const TColgp_Array1OfPnt& Poles,
     Standard_Real umin, umax, vmin, vmax;
     S->Bounds(umin, umax, vmin, vmax);
     S->D1((umin + umax) / 2, (vmin + vmax) / 2, P, DU, DV);
-    // On prend DX le plus proche possible de DU
-    gp_Dir du(DU);
-    Standard_Real Angle1 = du.Angle(DX);
-    Standard_Real Angle2 = du.Angle(DY);
-    if (Angle1 > M_PI / 2) Angle1 = M_PI - Angle1;
-    if (Angle2 > M_PI / 2) Angle2 = M_PI - Angle2;
-    if (Angle2 < Angle1) {
-      du = DY; DY = DX; DX = du;
-    }
-    if (DX.Angle(DU) > M_PI / 2) DX.Reverse();
-    if (DY.Angle(DV) > M_PI / 2) DY.Reverse();
+    
+    if (DU.SquareMagnitude() > gp::Resolution() &&
+        DV.SquareMagnitude() > gp::Resolution())
+    {
+      // On prend DX le plus proche possible de DU
+      gp_Dir du(DU);
+      Standard_Real Angle1 = du.Angle(DX);
+      Standard_Real Angle2 = du.Angle(DY);
+      if (Angle1 > M_PI / 2) Angle1 = M_PI - Angle1;
+      if (Angle2 > M_PI / 2) Angle2 = M_PI - Angle2;
+      if (Angle2 < Angle1) {
+        du = DY; DY = DX; DX = du;
+      }
+      if (DX.Angle(DU) > M_PI / 2) DX.Reverse();
+      if (DY.Angle(DV) > M_PI / 2) DY.Reverse();
 
-    gp_Ax3 axe(Bary, DX^DY, DX);
-    Plan.SetPosition(axe);
-    Plan.SetLocation(Bary);
-    IsPlan = Standard_True;
+      gp_Ax3 axe(Bary, DX^DY, DX);
+      Plan.SetPosition(axe);
+      Plan.SetLocation(Bary);
+      IsPlan = Standard_True;
+    }
   }
   return IsPlan;
 }
