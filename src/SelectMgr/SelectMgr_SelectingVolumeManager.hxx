@@ -81,11 +81,6 @@ public:
                                                                               const gp_GTrsf& theTrsf,
                                                                               const Handle(SelectMgr_FrustumBuilder)& theBuilder) const;
 
-  //! Returns a copy of the selecting volume manager and its active frustum re-constructed using the passed builder.
-  //! Builder is an argument that represents corresponding settings for re-constructing transformed
-  //! frustum from scratch.
-  Standard_EXPORT virtual SelectMgr_SelectingVolumeManager CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const;
-
 public:
 
   //! Returns current camera definition.

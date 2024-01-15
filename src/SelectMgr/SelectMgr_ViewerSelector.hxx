@@ -328,7 +328,7 @@ protected:
   //! @param theObject [in] the selectable object for traversal.
   //! @param theMgr [in] the (un)transformed copy of the selecting volume manager representing active selection frustum.
   //! @param theCamera, theProjectionMat, theWorldViewMat [in] the source camera and matrices for theMgr given.
-  //! @param theWinSize [in] viewport (window) dimensions for evaluating 
+  //! @param theViewportWidth, theViewportHeight [in] viewport (window) dimensions for evaluating 
   //!        object's transformation persistence.
   Standard_EXPORT void traverseObject (const Handle(SelectMgr_SelectableObject)& theObject,
                                        const SelectMgr_SelectingVolumeManager& theMgr,

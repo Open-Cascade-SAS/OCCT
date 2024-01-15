@@ -450,28 +450,6 @@ Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::ScaleAndTransfor
 }
 
 // =======================================================================
-// function : CopyWithBuilder
-// purpose  : Returns a copy of the frustum using the given frustum builder configuration.
-//            Returned frustum should be re-constructed before being used.
-// =======================================================================
-Handle(SelectMgr_BaseIntersector) SelectMgr_RectangularFrustum::CopyWithBuilder (const Handle(SelectMgr_FrustumBuilder)& theBuilder) const
-{
-  Standard_ASSERT_RAISE (mySelectionType == SelectMgr_SelectionType_Point || mySelectionType == SelectMgr_SelectionType_Box,
-    "Error! SelectMgr_RectangularFrustum::CopyWithBuilder() should be called after selection frustum initialization");
-
-  Standard_ASSERT_RAISE (!theBuilder.IsNull(), 
-    "Error! SelectMgr_RectangularFrustum::CopyWithBuilder() should be called with valid builder");
-
-  Handle(SelectMgr_RectangularFrustum) aRes = new SelectMgr_RectangularFrustum();
-  aRes->mySelectionType = mySelectionType;
-  aRes->mySelRectangle = mySelRectangle;
-  aRes->myPixelTolerance = myPixelTolerance;
-  aRes->SetBuilder (theBuilder);
-
-  return aRes;
-}
-
-// =======================================================================
 // function : IsScalable
 // purpose  :
 // =======================================================================

@@ -138,12 +138,12 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
     case SelectMgr_TypeOfDepthTolerance_UniformPixels:
     case SelectMgr_TypeOfDepthTolerance_SensitivityFactor:
     {
-      if (theMgr.Camera().IsNull())
+      if (mySelectingVolumeMgr.Camera().IsNull())
       {
         // fallback for an arbitrary projection matrix
         theCriterion.Tolerance = aSensFactor / 33.0;
       }
-      else if (theMgr.Camera()->IsOrthographic())
+      else if (mySelectingVolumeMgr.Camera()->IsOrthographic())
       {
         theCriterion.Tolerance = myCameraScale * aSensFactor;
       }
@@ -634,7 +634,6 @@ void SelectMgr_ViewerSelector::TraverseSensitives (const Standard_Integer theVie
 
   Graphic3d_Vec2i aWinSize;
   mySelectingVolumeMgr.WindowSize (aWinSize.x(), aWinSize.y());
-  const double aPixelSize = Max (1.0 / aWinSize.x(), 1.0 / aWinSize.y());
 
   const Handle(Graphic3d_Camera)& aCamera = mySelectingVolumeMgr.Camera();
   Graphic3d_Mat4d aProjectionMat, aWorldViewMat;
@@ -647,6 +646,11 @@ void SelectMgr_ViewerSelector::TraverseSensitives (const Standard_Integer theVie
 
     myCameraEye = aCamera->Eye().XYZ();
     myCameraDir = aCamera->Direction().XYZ();
+    myCameraScale = aCamera->IsOrthographic()
+                  ? aCamera->Scale()
+                  : 2.0 * Tan (aCamera->FOVy() * M_PI / 360.0);
+    const double aPixelSize = Max (1.0 / aWinSize.x(), 1.0 / aWinSize.y());
+    myCameraScale *= aPixelSize;
   }
   mySelectableObjects.UpdateBVH (aCamera, aWinSize);
 
@@ -668,8 +672,7 @@ void SelectMgr_ViewerSelector::TraverseSensitives (const Standard_Integer theVie
     // for 2D space selection transform selecting volumes to perform overlap testing
     // directly in camera's eye space omitting the camera position, which is not
     // needed there at all
-    if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent 
-     || aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_ortho2dPersistent)
+    if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_2dPersistent)
     {
       gp_GTrsf aTFrustum;
       aTFrustum.SetValue (1, 1, aWorldViewMat.GetValue (0, 0));
@@ -685,42 +688,21 @@ void SelectMgr_ViewerSelector::TraverseSensitives (const Standard_Integer theVie
                                             aWorldViewMat.GetValue (1, 3),
                                             aWorldViewMat.GetValue (2, 3)));
 
-      // define corresponding frustum builder parameters for 2d persistence.
+      // define corresponding frustum builder parameters
       Handle(SelectMgr_FrustumBuilder) aBuilder = new SelectMgr_FrustumBuilder();
       Handle(Graphic3d_Camera) aNewCamera = new Graphic3d_Camera();
       aNewCamera->CopyMappingData (aCamera);
       aNewCamera->SetIdentityOrientation();
-      if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_ortho2dPersistent)
-      {
-        aNewCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
-      }
       aWorldViewMat = aNewCamera->OrientationMatrix(); // should be identity matrix
       aProjectionMat = aNewCamera->ProjectionMatrix(); // should be the same to aProjectionMat
       aBuilder->SetCamera (aNewCamera);
       aBuilder->SetWindowSize (aWinSize.x(), aWinSize.y());
       aMgr = mySelectingVolumeMgr.ScaleAndTransform (1, aTFrustum, aBuilder);
     }
-    else if (aBVHSubset == SelectMgr_SelectableObjectSet::BVHSubset_ortho3dPersistent)
-    {
-      // define corresponding frustum builder parameters for 3d orthographic persistence.
-      Handle(SelectMgr_FrustumBuilder) aBuilder = new SelectMgr_FrustumBuilder();
-      Handle(Graphic3d_Camera) aNewCamera = new Graphic3d_Camera (*aCamera);
-      aNewCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
-      aWorldViewMat = aNewCamera->OrientationMatrix(); // should be the same to aWorldViewMat
-      aProjectionMat = aNewCamera->ProjectionMatrix(); // should be orthographic projection
-      aBuilder->SetCamera (aNewCamera);
-      aBuilder->SetWindowSize (aWinSize.x(), aWinSize.y());
-      aMgr = mySelectingVolumeMgr.CopyWithBuilder (aBuilder);
-    }
     else
     {
       aMgr = mySelectingVolumeMgr;
     }
-
-    myCameraScale = aMgr.Camera()->IsOrthographic()
-                  ? aMgr.Camera()->Scale()
-                  : 2.0 * Tan (aMgr.Camera()->FOVy() * M_PI / 360.0);
-    myCameraScale *= aPixelSize;
 
     const opencascade::handle<BVH_Tree<Standard_Real, 3> >& aBVHTree = mySelectableObjects.BVH (aBVHSubset);
 

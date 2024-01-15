@@ -241,23 +241,17 @@ namespace
 //=============================================================================
 SelectMgr_SelectableObjectSet::SelectMgr_SelectableObjectSet()
 {
-  myBVH[BVHSubset_ortho2dPersistent] = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_ortho3dPersistent] = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_2dPersistent]      = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_3dPersistent]      = new BVH_Tree<Standard_Real, 3>();
-  myBVH[BVHSubset_3d]                = new BVH_Tree<Standard_Real, 3>();
+  myBVH[BVHSubset_2dPersistent] = new BVH_Tree<Standard_Real, 3>();
+  myBVH[BVHSubset_3dPersistent] = new BVH_Tree<Standard_Real, 3>();
+  myBVH[BVHSubset_3d]           = new BVH_Tree<Standard_Real, 3>();
 
-  myBuilder[BVHSubset_ortho2dPersistent] = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
-  myBuilder[BVHSubset_ortho3dPersistent] = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
-  myBuilder[BVHSubset_2dPersistent]      = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
-  myBuilder[BVHSubset_3dPersistent]      = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
-  myBuilder[BVHSubset_3d]                = new BVH_BinnedBuilder<Standard_Real, 3, 4> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth, Standard_True);
+  myBuilder[BVHSubset_2dPersistent] = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
+  myBuilder[BVHSubset_3dPersistent] = new BVH_LinearBuilder<Standard_Real, 3>    (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth);
+  myBuilder[BVHSubset_3d]           = new BVH_BinnedBuilder<Standard_Real, 3, 4> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth, Standard_True);
 
-  myIsDirty[BVHSubset_ortho2dPersistent] = Standard_False;
-  myIsDirty[BVHSubset_ortho3dPersistent] = Standard_False;
-  myIsDirty[BVHSubset_2dPersistent]      = Standard_False;
-  myIsDirty[BVHSubset_3dPersistent]      = Standard_False;
-  myIsDirty[BVHSubset_3d]                = Standard_False;
+  myIsDirty[BVHSubset_2dPersistent] = Standard_False;
+  myIsDirty[BVHSubset_3dPersistent] = Standard_False;
+  myIsDirty[BVHSubset_3d]           = Standard_False;
 }
 
 //=============================================================================
@@ -268,9 +262,10 @@ Standard_Boolean SelectMgr_SelectableObjectSet::Append (const Handle(SelectMgr_S
 {
   // get an appropriate BVH subset to insert the object into it
   const Standard_Integer aSubsetIdx = appropriateSubset (theObject);
-  
+
   // check that the object is excluded from other subsets
-  if (currentSubset (theObject) != -1)
+  if (myObjects[(aSubsetIdx + 1) % BVHSubsetNb].Contains (theObject)
+   || myObjects[(aSubsetIdx + 2) % BVHSubsetNb].Contains (theObject))
   {
     return Standard_False;
   }
@@ -406,51 +401,9 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
       myBuilder[BVHSubset_2dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_2dPersistent].get(), anAdaptor.Box());
     }
 
-    // -------------------------------------------------------------------
-    // check and update 3D orthographic persistence BVH tree if necessary
-    // -------------------------------------------------------------------
-    if (!IsEmpty (BVHSubset_ortho3dPersistent)
-      && (myIsDirty[BVHSubset_ortho3dPersistent]
-       || myLastViewState.IsChanged (aViewState)
-       || isWinSizeChanged))
-    {
-      Handle(Graphic3d_Camera) aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
-      aNewOrthoCam->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
-
-      // construct adaptor over private fields to provide direct access for the BVH builder
-      BVHBuilderAdaptorPersistent anAdaptor (myObjects[BVHSubset_ortho3dPersistent],
-                                             aNewOrthoCam, aNewOrthoCam->ProjectionMatrix(), 
-                                             aNewOrthoCam->OrientationMatrix(), theWinSize);
-
-      // update corresponding BVH tree data structure
-      myBuilder[BVHSubset_ortho3dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_ortho3dPersistent].get(), anAdaptor.Box());
-    }
-
-    // -------------------------------------------------------------------
-    // check and update 2D orthographic persistence BVH tree if necessary
-    // -------------------------------------------------------------------
-    if (!IsEmpty (BVHSubset_ortho2dPersistent)
-      && (myIsDirty[BVHSubset_ortho2dPersistent]
-       || myLastViewState.IsProjectionChanged (aViewState)
-       || isWinSizeChanged))
-    {
-      Handle(Graphic3d_Camera) aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
-      aNewOrthoCam->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
-
-      // construct adaptor over private fields to provide direct access for the BVH builder
-      BVHBuilderAdaptorPersistent anAdaptor (myObjects[BVHSubset_ortho2dPersistent],
-                                             aNewOrthoCam, aNewOrthoCam->ProjectionMatrix(), 
-                                             SelectMgr_SelectableObjectSet_THE_IDENTITY_MAT, theWinSize);
-
-      // update corresponding BVH tree data structure
-      myBuilder[BVHSubset_ortho2dPersistent]->Build (&anAdaptor, myBVH[BVHSubset_ortho2dPersistent].get(), anAdaptor.Box());
-    }
-
     // release dirty state for every subset
-    myIsDirty[BVHSubset_3dPersistent]      = Standard_False;
-    myIsDirty[BVHSubset_2dPersistent]      = Standard_False;
-    myIsDirty[BVHSubset_ortho3dPersistent] = Standard_False;
-    myIsDirty[BVHSubset_ortho2dPersistent] = Standard_False;
+    myIsDirty[BVHSubset_3dPersistent] = Standard_False;
+    myIsDirty[BVHSubset_2dPersistent] = Standard_False;
 
     // keep last view state
     myLastViewState = aViewState;
@@ -466,11 +419,9 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
 //=============================================================================
 void SelectMgr_SelectableObjectSet::MarkDirty()
 {
-  myIsDirty[BVHSubset_3d]                = Standard_True;
-  myIsDirty[BVHSubset_3dPersistent]      = Standard_True;
-  myIsDirty[BVHSubset_2dPersistent]      = Standard_True;
-  myIsDirty[BVHSubset_ortho3dPersistent] = Standard_True;
-  myIsDirty[BVHSubset_ortho2dPersistent] = Standard_True;
+  myIsDirty[BVHSubset_3d]           = Standard_True;
+  myIsDirty[BVHSubset_3dPersistent] = Standard_True;
+  myIsDirty[BVHSubset_2dPersistent] = Standard_True;
 }
 //=======================================================================
 //function : DumpJson
