@@ -35,6 +35,10 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
+#if !defined(_WIN32) && !defined(__APPLE__)
+  #include <Xw_DisplayConnection.hxx>
+#endif
+
 // ================================================================
 // Function : GlfwOcctWindow
 // Purpose  :
@@ -55,7 +59,7 @@ GlfwOcctWindow::GlfwOcctWindow (int theWidth, int theHeight, const TCollection_A
     myYBottom = myYTop + aHeight;
 
   #if !defined(_WIN32) && !defined(__APPLE__)
-    myDisplay = new Aspect_DisplayConnection ((Aspect_XDisplay* )glfwGetX11Display());
+    myDisplay = new Xw_DisplayConnection ((Aspect_XDisplay* )glfwGetX11Display());
   #endif
   }
 }
