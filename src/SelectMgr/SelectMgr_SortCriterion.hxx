@@ -28,14 +28,16 @@ class SelectMgr_SortCriterion
 public:
 
   Handle(Select3D_SensitiveEntity) Entity; //!< detected entity
-  gp_Pnt             Point;           //!< 3D point
-  Graphic3d_Vec3     Normal;          //!< surface normal or 0 vector if undefined
-  Standard_Real      Depth;           //!< distance from the view plane to the entity
-  Standard_Real      MinDist;         //!< distance from the clicked point to the entity on the view plane
-  Standard_Real      Tolerance;       //!< tolerance used for selecting candidates
-  Standard_Integer   Priority;        //!< selection priority
-  Standard_Integer   ZLayerPosition;  //!< ZLayer rendering order index, stronger than a depth
-  Standard_Integer   NbOwnerMatches;  //!< overall number of entities collected for the same owner
+  gp_Pnt             Point;             //!< 3D point
+  Graphic3d_Vec3     Normal;            //!< surface normal or 0 vector if undefined
+  Standard_Real      Depth;             //!< distance from the view plane to the entity
+  Standard_Real      MinDist;           //!< distance from the clicked point to the entity on the view plane
+  Standard_Real      Tolerance;         //!< tolerance used for selecting candidates
+  Standard_Integer   SelectionPriority; //!< selection priority
+  Standard_Integer   DisplayPriority;   //!< display priority
+  Standard_Integer   ZLayerPosition;    //!< ZLayer rendering order index, stronger than a depth
+  Standard_Integer   NbOwnerMatches;    //!< overall number of entities collected for the same owner
+  Standard_Boolean   IsPreferPriority;  //!< flag to signal comparison to be done over priority
 
 public:
   DEFINE_STANDARD_ALLOC
@@ -45,9 +47,11 @@ public:
   : Depth    (0.0),
     MinDist  (0.0),
     Tolerance(0.0),
-    Priority (0),
+    SelectionPriority (0),
+    DisplayPriority(0),
     ZLayerPosition (0),
-    NbOwnerMatches (0) {}
+    NbOwnerMatches (0),
+    IsPreferPriority (Standard_False) {}
 
   //! Compare with another item by depth, priority and minDist.
   bool IsCloserDepth (const SelectMgr_SortCriterion& theOther) const
@@ -86,13 +90,18 @@ public:
     }
 
     // if two objects have similar depth, select the one with higher priority
-    if (Priority > theOther.Priority)
+    if (SelectionPriority > theOther.SelectionPriority)
+    {
+      return true;
+    }
+
+    if (DisplayPriority > theOther.DisplayPriority)
     {
       return true;
     }
 
     // if priorities are equal, one closest to the mouse
-    return Priority == theOther.Priority
+    return SelectionPriority == theOther.SelectionPriority
         && MinDist  <  theOther.MinDist;
   }
 
@@ -105,13 +114,14 @@ public:
       return ZLayerPosition > theOther.ZLayerPosition;
     }
 
-    if (Priority > theOther.Priority)
+    if (SelectionPriority != theOther.SelectionPriority)
     {
-      return true;
+      return SelectionPriority > theOther.SelectionPriority;
     }
-    else if (Priority != theOther.Priority)
+
+    if (DisplayPriority != theOther.DisplayPriority)
     {
-      return false;
+      return DisplayPriority > theOther.DisplayPriority;
     }
 
     //if (Abs (Depth - theOther.Depth) <= (Tolerance + theOther.Tolerance))

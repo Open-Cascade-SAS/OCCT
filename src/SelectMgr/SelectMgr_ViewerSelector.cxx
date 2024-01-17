@@ -16,6 +16,7 @@
 
 #include <SelectMgr_ViewerSelector.hxx>
 
+#include <AIS_InteractiveObject.hxx>
 #include <BVH_Tree.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pnt.hxx>
@@ -54,13 +55,13 @@ namespace
     {
       const SelectMgr_SortCriterion& anElemLeft  = myMapOfCriterion->FindFromIndex (theLeft);
       const SelectMgr_SortCriterion& anElemRight = myMapOfCriterion->FindFromIndex (theRight);
-      if (myToPreferClosest)
+      if ((anElemLeft.IsPreferPriority && anElemRight.IsPreferPriority) || !myToPreferClosest)
       {
-        return anElemLeft.IsCloserDepth (anElemRight);
+        return anElemLeft.IsHigherPriority (anElemRight);
       }
       else
       {
-        return anElemLeft.IsHigherPriority (anElemRight);
+        return anElemLeft.IsCloserDepth (anElemRight);
       }
     }
 
@@ -270,13 +271,32 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(Select3D_SensitiveEnti
   {
     return;
   }
-
   SelectMgr_SortCriterion aCriterion;
   myZLayerOrderMap.Find (!aSelectable.IsNull() ? aSelectable->ZLayer() : Graphic3d_ZLayerId_Default, aCriterion.ZLayerPosition);
-  aCriterion.Entity    = theEntity;
-  aCriterion.Priority  = anOwner->Priority();
-  aCriterion.Depth     = aPickResult.Depth();
-  aCriterion.MinDist   = aPickResult.DistToGeomCenter();
+  aCriterion.Entity            = theEntity;
+  aCriterion.SelectionPriority = anOwner->Priority();
+  aCriterion.Depth             = aPickResult.Depth();
+  aCriterion.MinDist           = aPickResult.DistToGeomCenter();
+  Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (aSelectable);
+  if (!aSelectable.IsNull())
+  {
+    if (aSelectable->Presentations().Size() > 0 && !aSelectable->TransformPersistence().IsNull())
+    {
+      if (aSelectable->TransformPersistence()->Mode() == Graphic3d_TMF_2d)
+      {
+        aCriterion.IsPreferPriority = Standard_True;
+        aCriterion.DisplayPriority = Graphic3d_DisplayPriority_INVALID;
+        if (!anObj.IsNull())
+        {
+          Handle(Prs3d_Presentation) aPrs = anObj->Presentation();
+          if (!aPrs.IsNull())
+          {
+            aCriterion.DisplayPriority = aPrs->DisplayPriority();
+          }
+        }
+      }
+    }
+  }
 
   if (SelectMgr_SortCriterion* aPrevCriterion = mystored.ChangeSeek (anOwner))
   {
