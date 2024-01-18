@@ -2553,11 +2553,36 @@ static Standard_Boolean ReadDatums(const Handle(XCAFDoc_ShapeTool) &STool,
   const Handle(StepDimTol_GeometricToleranceWithDatumReference)& GTWDR)
 {
   if (GTWDR.IsNull()) return Standard_False;
-  Handle(StepDimTol_HArray1OfDatumReference) HADR = GTWDR->DatumSystem();
-  if (HADR.IsNull()) return Standard_False;
-  for (Standard_Integer idr = 1; idr <= HADR->Length(); idr++) {
-    Handle(StepDimTol_DatumReference) DR = HADR->Value(idr);
-    Handle(StepDimTol_Datum) aDatum = DR->ReferencedDatum();
+  Handle(StepDimTol_HArray1OfDatumSystemOrReference) aHADSOR = GTWDR->DatumSystemAP242();
+  if (aHADSOR.IsNull())
+  {
+    return Standard_False;
+  }
+  NCollection_List<Handle(StepDimTol_Datum)> aDatumList;
+  for (Standard_Integer idr = 1; idr <= aHADSOR->Length(); idr++)
+  {
+    const StepDimTol_DatumSystemOrReference aDSOR = aHADSOR->Value(idr);
+    if (aDSOR.IsNull()) continue;
+    Handle(StepDimTol_DatumSystem) aDS = aDSOR.DatumSystem();
+    Handle(StepDimTol_DatumReference) aDR = aDSOR.DatumReference();
+    Handle(StepDimTol_Datum) aDatum;
+    if (!aDS.IsNull())
+    {
+      auto aDatumConList = aDS->Constituents();
+      for (Standard_Integer anInd = 1; anInd <= aDatumConList->Length(); anInd++)
+      {
+        Handle(StepDimTol_DatumReferenceCompartment) aDatRefC = aDatumConList->Value(anInd);
+        aDatumList.Append(aDatRefC->Base().Datum());
+      }
+    }
+    else if (!aDR.IsNull())
+    {
+      aDatumList.Append(aDR->ReferencedDatum());
+    }
+  }
+  for(NCollection_List<Handle(StepDimTol_Datum)>::Iterator anIt(aDatumList); anIt.More(); anIt.Next())
+  {
+    Handle(StepDimTol_Datum) aDatum = anIt.Value();
     if (aDatum.IsNull()) continue;
     Interface_EntityIterator subs4 = graph.Sharings(aDatum);
     for (subs4.Start(); subs4.More(); subs4.Next()) {
