@@ -545,7 +545,10 @@ void StepToTopoDS_TranslateFace::Init(const Handle(StepShape_FaceSurface)& FS,
 #endif    
     FaceBound = FS->BoundsValue(i);
     Loop      = FaceBound->Bound();
-    
+    if (Loop.IsNull())
+    {
+      continue;
+    }
     // ------------------------
     // The Loop is a VertexLoop
     // ------------------------
