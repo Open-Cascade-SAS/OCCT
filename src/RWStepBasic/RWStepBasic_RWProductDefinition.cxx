@@ -78,7 +78,14 @@ void RWStepBasic_RWProductDefinition::WriteStep
 
 	// --- own field : description ---
 
-	SW.Send(ent->Description());
+	if (!ent->Description().IsNull())
+	{
+		SW.Send(ent->Description());
+	}
+	else
+	{
+		SW.SendUndef();
+	}
 
 	// --- own field : formation ---
 
