@@ -1292,11 +1292,10 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
             for ( ;exp2.More(); exp2.Next()) {
               LOE.Append(exp2.Current());
             }
-            BRepOffset_Tool::TryProject(CF,OF1,LOE,LInt1,LInt2,mySide,myTol);
             //-------------------------------------------------------
             // If no trace try intersection.
             //-------------------------------------------------------
-            if (LInt1.IsEmpty()) {
+            if (!BRepOffset_Tool::TryProject(CF, OF1, LOE, LInt1, LInt2, mySide, myTol) || LInt1.IsEmpty()) {
               BRepOffset_Tool::Inter3D (CF,OF1,LInt1,LInt2,mySide,NullEdge,NullFace,NullFace);
             }
             Store (CF,OF1,LInt1,LInt2);

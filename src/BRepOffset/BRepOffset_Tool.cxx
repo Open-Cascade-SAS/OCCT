@@ -1881,6 +1881,10 @@ Standard_Boolean BRepOffset_Tool::TryProject
     if (C.IsNull()) {
       BRepLib::BuildCurve3d(CurE,BRep_Tool::Tolerance(CurE));
       C  = BRep_Tool::Curve(CurE,L,f,l);
+      if (C.IsNull())
+      {
+        return Standard_False;
+      }
     }
     C = new Geom_TrimmedCurve(C,f,l);
     if ( !L.IsIdentity()) C->Transform(L);
@@ -3519,9 +3523,8 @@ void BRepOffset_Tool::ExtentFace (const TopoDS_Face&            F,
       if (ToBuild.IsBound(E)) {
 	TopTools_ListOfShape LOE;
 	LOE.Append(E);
-	BRepOffset_Tool::TryProject (TopoDS::Face(ToBuild(E)),
-				     EF,LOE,LInt2,LInt1,Side,TolConf);
-	if (!LInt1.IsEmpty()) 
+	if (BRepOffset_Tool::TryProject(TopoDS::Face(ToBuild(E)), EF, LOE, LInt2, LInt1, Side, TolConf)
+        && !LInt1.IsEmpty())
 	  ToBuild.UnBind(E);
       }
     }

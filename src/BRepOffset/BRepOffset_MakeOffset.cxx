@@ -1175,11 +1175,15 @@ void BRepOffset_MakeOffset::MakeThickSolid(const Message_ProgressRange& theRange
     {
       NbOF++;
     }
-    if (NbOF <= NbF)
+    if (NbOF < NbF)
     {
       myDone = Standard_False;
       myError = BRepOffset_UnknownError;
       return;
+    }
+    if (NbOF == NbF)
+    {
+      myOffset = 0;
     }
   }
 

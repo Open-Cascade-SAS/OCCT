@@ -1,5 +1,3 @@
-puts "TODO OCC31845 All: ERROR. offsetperform operation not done."
-
 puts "============================================"
 puts "OCC31845: BRepOffsetAPI_MakeThickSolid fails"
 puts "============================================"

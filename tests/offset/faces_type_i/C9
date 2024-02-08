@@ -1,5 +1,4 @@
-puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."
-puts "TODO OCC23748 ALL: Error : The offset cannot be built."
+puts "TODO OCC23068 ALL: Error : The area of face "
 
 psphere s 15 270
 

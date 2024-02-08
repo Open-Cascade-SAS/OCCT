@@ -1,5 +1,3 @@
-puts "TODO OCC25395 ALL: ERROR. offsetperform operation not done."
-
 puts "========"
 puts "OCC25395"
 puts "========"
