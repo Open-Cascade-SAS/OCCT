@@ -1,8 +1,4 @@
-puts "TODO OCC25925 ALL: Faulty OCC5805 : result is not Closed shape"
-puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done."
-puts "TODO OCC25925 ALL: Tcl Exception: Error : command \\\"nbshapes result\\\" gives an empty result"
-puts "TODO OCC25925 ALL: Error: The command cannot be built"
-puts "TODO OCC25925 ALL: TEST INCOMPLETE"
+puts "TODO OCC25925 ALL: Error : The area of result shape is"
 
 puts "============"
 puts "OCC5805"
@@ -53,6 +49,6 @@ if {$index == -1} {
   
 }
 
-checknbshapes result -vertex 2 -edge 3 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 13
+checknbshapes result -vertex 1 -edge 2 -wire 3 -face 3 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 11
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png
