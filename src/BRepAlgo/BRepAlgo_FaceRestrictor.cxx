@@ -103,7 +103,7 @@ static Standard_Boolean  ChangePCurve (TopoDS_Edge&          E,
 //purpose  : 
 //=======================================================================
 
-static void ProjCurve3d (TopoDS_Edge&          E,
+static bool ProjCurve3d (TopoDS_Edge&          E,
                          const Handle(Geom_Surface)& S,
                          TopLoc_Location&      L)
 {
@@ -111,6 +111,10 @@ static void ProjCurve3d (TopoDS_Edge&          E,
   TopLoc_Location           LE;
   Standard_Real             f,l;
   Handle(Geom_Curve)        C  = BRep_Tool::Curve(E,LE,f,l);
+  if (C.IsNull())
+  {
+    return false;
+  }
   Handle(Geom_TrimmedCurve) CT = new Geom_TrimmedCurve(C,f,l);
   
   TopLoc_Location LL = L.Inverted().Multiplied(LE);
@@ -118,6 +122,7 @@ static void ProjCurve3d (TopoDS_Edge&          E,
   
   Handle(Geom2d_Curve) C2 = GeomProjLib::Curve2d (CT,S);
   BB.UpdateEdge(E,C2,S,L,Precision::Confusion());
+  return true;
 }
 
 //=======================================================================
@@ -165,13 +170,19 @@ void BRepAlgo_FaceRestrictor::Perform()
         // no pcurve on the reference surface.
         if (modeProj) {
           // Projection of the 3D curve on surface.
-          ProjCurve3d ( E, S, L);
+          if (!ProjCurve3d(E, S, L))
+          {
+            return;
+          }
         }
         else {
           // return the first pcurve glued on <S>
           Standard_Boolean YaPCurve = ChangePCurve (E, S, L);
           if (!YaPCurve) {
-            ProjCurve3d (E, S, L);
+            if (!ProjCurve3d(E, S, L))
+            {
+              return;
+            }
           }
         }
       }
