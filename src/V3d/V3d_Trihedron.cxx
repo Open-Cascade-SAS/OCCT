@@ -238,6 +238,7 @@ void V3d_Trihedron::Display(const V3d_View& theView)
     myStructure->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
     myStructure->CStructure()->ViewAffinity->SetVisible(Standard_False);
     myStructure->CStructure()->ViewAffinity->SetVisible(theView.View()->Identification(), true);
+    myStructure->CStructure()->OcclusionMask = new Graphic3d_ViewOcclusionMask();
     myToCompute = Standard_True;
   }
   if (myToCompute)

@@ -98,6 +98,14 @@ public:
     FrustumCulling_NoUpdate //!< culling is active, but the list of culled entities is not updated
   };
 
+  //! State of occlusion query
+  enum OcclusionQuery
+  {
+    OcclusionQuery_Off,     //!< occlusion query is disabled
+    OcclusionQuery_On,      //!< occlusion query is active
+    OcclusionQuery_NoUpdate //!< occlusion query is active, but the list of occluded entities is not updated
+  };
+
 public:
   //! Creates default rendering parameters.
   Graphic3d_RenderingParams()
@@ -144,6 +152,7 @@ public:
         CameraApertureRadius(0.0f),
         CameraFocalPlaneDist(1.0f),
         FrustumCullingState(FrustumCulling_On),
+        OcclusionQueryState(OcclusionQuery_Off),
         ToneMappingMethod(Graphic3d_ToneMappingMethod_Disabled),
         Exposure(0.f),
         WhitePoint(1.f),
@@ -258,6 +267,7 @@ public: //! @name Ray-Tracing/Path-Tracing parameters
   Standard_ShortReal                CameraApertureRadius;        //!< aperture radius of perspective camera used for depth-of-field, 0.0 by default (no DOF) (path tracing only)
   Standard_ShortReal                CameraFocalPlaneDist;        //!< focal  distance of perspective camera used for depth-of field, 1.0 by default (path tracing only)
   FrustumCulling                    FrustumCullingState;         //!< state of frustum culling optimization; FrustumCulling_On by default
+  OcclusionQuery                    OcclusionQueryState;         //!< state of occlusion query; OcclusionQuery_OFF by default
 
   Graphic3d_ToneMappingMethod       ToneMappingMethod;           //!< specifies tone mapping method for path tracing, Graphic3d_ToneMappingMethod_Disabled by default
   Standard_ShortReal                Exposure;                    //!< exposure value used for tone mapping (path tracing), 0.0 by default

@@ -381,6 +381,7 @@ void PrsMgr_PresentationManager::displayImmediate(const Handle(V3d_Viewer)& theV
       {
         aShadowPrs->CStructure()->ViewAffinity = new Graphic3d_ViewAffinity();
         aShadowPrs->CStructure()->ViewAffinity->SetVisible(Standard_False);
+        aShadowPrs->CStructure()->OcclusionMask = new Graphic3d_ViewOcclusionMask();
         aShadowPrs->Display();
       }
 
@@ -503,7 +504,11 @@ Handle(PrsMgr_Presentation) PrsMgr_PresentationManager::Presentation(
   thePrsObj->Presentations().Append(aPrs);
   thePrsObj->Fill(this, aPrs, theMode);
 
-  // set layer index accordingly to object's presentations
+  // Update object occlusion state by passing occlusion state handle to
+  // underlying graphic structures
+  aPrs->CStructure()->OcclusionMask = thePrsObj->ViewOcclusionMask();
+
+  // Set layer index accordingly to object's presentations
   aPrs->SetUpdateStatus(Standard_False);
   return aPrs;
 }

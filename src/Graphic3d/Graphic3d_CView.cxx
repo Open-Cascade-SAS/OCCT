@@ -533,6 +533,17 @@ void Graphic3d_CView::DisplayedStructures(Graphic3d_MapOfStructure& theStructure
 
 //=================================================================================================
 
+void Graphic3d_CView::OccludedStructures(Graphic3d_MapOfStructure& theStructures) const
+{
+  for (Graphic3d_MapOfStructure::Iterator aStructIter(myStructsDisplayed); aStructIter.More(); aStructIter.Next())
+  {
+    if (aStructIter.Value()->CStructure()->IsOccluded(this->myId))
+      theStructures.Add(aStructIter.Key());
+  }
+}
+
+//=================================================================================================
+
 Bnd_Box Graphic3d_CView::MinMaxValues(const Standard_Boolean theToIncludeAuxiliary) const
 {
   if (!IsDefined())

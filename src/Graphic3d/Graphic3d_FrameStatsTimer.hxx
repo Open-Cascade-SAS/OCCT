@@ -22,11 +22,12 @@ enum Graphic3d_FrameStatsTimer
   Graphic3d_FrameStatsTimer_CpuCulling,
   Graphic3d_FrameStatsTimer_CpuPicking,
   Graphic3d_FrameStatsTimer_CpuDynamics,
+  Graphic3d_FrameStatsTimer_OcclusionCulling,
 };
 
 enum
 {
-  Graphic3d_FrameStatsTimer_NB = Graphic3d_FrameStatsTimer_CpuDynamics + 1
+  Graphic3d_FrameStatsTimer_NB = Graphic3d_FrameStatsTimer_OcclusionCulling + 1
 };
 
 #endif // _Graphic3d_FrameStatsTimer_HeaderFile
