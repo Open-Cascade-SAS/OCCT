@@ -33,6 +33,7 @@
 #include <Storage_Schema.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <TDataStd_TreeNode.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
@@ -324,7 +325,16 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   // read sub-tree of the root label
   if (!theFilter.IsNull())
     theFilter->StartIteration();
-  Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root(), theFilter, aQuickPart, aPS.Next());
+  const auto aStreamStartPosition = theIStream.tellg();
+  Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root(), theFilter, aQuickPart, Standard_False, aPS.Next());
+  if (!myUnresolvedLinks.IsEmpty())
+  {
+    // In case we have skipped some linked TreeNodes before getting to
+    // their children.
+    theFilter->StartIteration();
+    theIStream.seekg(aStreamStartPosition, std::ios_base::beg);
+    nbRead += ReadSubTree(theIStream, aData->Root(), theFilter, aQuickPart, Standard_True, aPS.Next());
+  }
   if (!aPS.More()) 
   {
     myReaderStatus = PCDM_RS_UserBreak;
@@ -373,6 +383,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
   const TDF_Label& theLabel,
   const Handle(PCDM_ReaderFilter)& theFilter,
   const Standard_Boolean& theQuickPart,
+  const Standard_Boolean theReadMissing,
   const Message_ProgressRange& theRange)
 {
   Standard_Integer nbRead = 0;
@@ -393,7 +404,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
     aLabelSize = InverseUint64(aLabelSize);
 #endif
     // no one sub-label is needed, so, skip everything
-    if (aSkipAttrs && !theFilter->IsSubPassed())
+    if (aSkipAttrs && !theFilter->IsSubPassed() && myUnresolvedLinks.IsEmpty())
     {
       aLabelSize -= sizeof (uint64_t);
       theIS.seekg (aLabelSize, std::ios_base::cur);
@@ -403,6 +414,11 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
     }
   }
 
+  if (theReadMissing)
+  {
+    aSkipAttrs = Standard_True;
+  }
+  const auto anAttStartPosition = theIS.tellg();
   // Read attributes:
   for (theIS >> myPAtt;
     theIS && myPAtt.TypeId() > 0 &&             // not an end marker ?
@@ -414,6 +430,12 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
     {
       myReaderStatus = PCDM_RS_UserBreak;
       return -1;
+    }
+    if (myUnresolvedLinks.Remove(myPAtt.Id()) && aSkipAttrs)
+    {
+      aSkipAttrs = Standard_False;
+      theIS.seekg(anAttStartPosition, std::ios_base::beg);
+      continue;
     }
     if (aSkipAttrs)
     {
@@ -487,7 +509,17 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
           aDriver->TypeName(), Message_Warning);
       }
       else if (!isBound)
+      {
         myRelocTable.Bind(anID, tAtt);
+        Handle(TDataStd_TreeNode) aNode = Handle(TDataStd_TreeNode)::DownCast(tAtt);
+        if (!theFilter.IsNull() && !aNode.IsNull() && !aNode->Father().IsNull() && aNode->Father()->IsNew())
+        {
+          Standard_Integer anUnresolvedLink;
+          myPAtt.SetPosition(BP_HEADSIZE);
+          myPAtt >> anUnresolvedLink;
+          myUnresolvedLinks.Add(anUnresolvedLink);
+        }
+      }
     }
     else if (!myMapUnsupported.Contains(myPAtt.TypeId()))
       myMsgDriver->Send(aMethStr + "warning: type ID not registered in header: "
@@ -522,7 +554,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
     // read sub-tree
     if (!theFilter.IsNull())
       theFilter->Down (aTag);
-    Standard_Integer nbSubRead = ReadSubTree (theIS, aLab, theFilter, theQuickPart, aPS.Next());
+    Standard_Integer nbSubRead = ReadSubTree (theIS, aLab, theFilter, theQuickPart, theReadMissing, aPS.Next());
     // check for error
     if (nbSubRead == -1)
       return -1;

@@ -80,6 +80,7 @@ protected:
      const TDF_Label& theData, 
      const Handle(PCDM_ReaderFilter)& theFilter,
      const Standard_Boolean& theQuickPart,
+     const Standard_Boolean theReadMissing,
      const Message_ProgressRange& theRanges = Message_ProgressRange());
   
   
@@ -125,6 +126,7 @@ private:
   BinObjMgt_Persistent myPAtt;
   TColStd_MapOfInteger myMapUnsupported;
   BinLDrivers_VectorOfDocumentSection mySections;
+  NCollection_Map<Standard_Integer> myUnresolvedLinks;
 
 
 };
