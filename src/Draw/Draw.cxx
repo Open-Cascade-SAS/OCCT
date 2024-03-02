@@ -645,11 +645,12 @@ Standard_Boolean Draw_Interprete(const char* com)
     {
       Message_PrinterOStream::SetConsoleTextColor(&std::cout, Message_ConsoleColor_Red, true);
     }
-    std::cout << theCommands.Result() << std::endl;
+    std::cout << theCommands.Result();
     if (c > 0 && theCommands.ToColorize())
     {
       Message_PrinterOStream::SetConsoleTextColor(&std::cout, Message_ConsoleColor_Default, false);
     }
+    std::cout << std::endl;
   }
 
   if (Draw_Chrono && hadchrono)
