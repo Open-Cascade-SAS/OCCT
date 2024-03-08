@@ -475,7 +475,7 @@ Modify this parameter with:
 if(!Interface_Static::SetIVal("read.step.tessellated",1))  
 .. error .. 
 ~~~~
-Default value is 0 (On). 
+Default value is 1 (On). 
 
 @subsubsection occt_step_2_3_4 Performing the STEP file translation
 
