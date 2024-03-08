@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #ifndef _RWStepBasic_RWGeneralPropertyRelationship_HeaderFile
-#define _RWStepBasic_RWGeneralPropertyAssociation_HeaderFile
+#define _RWStepBasic_RWGeneralPropertyRelationship_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
