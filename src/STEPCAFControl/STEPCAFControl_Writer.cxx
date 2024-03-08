@@ -983,7 +983,7 @@ static Standard_Integer FindEntities(const Handle(Transfer_FinderProcess)& theFP
     //Handle(Transfer_TransientListBinder)::DownCast( bnd->Next(Standard_True) );
     Handle(Transfer_TransientListBinder)::DownCast(aBinder);
   Standard_Integer aResCount = 0;
-  if (aTransientListBinder.IsNull() && theShape.ShapeType() == TopAbs_COMPOUND)
+  if (aTransientListBinder.IsNull())
   {
     for (TopoDS_Iterator anIter(theShape); anIter.More(); anIter.Next())
     {
