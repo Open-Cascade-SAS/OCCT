@@ -1008,7 +1008,7 @@ Handle(Geom_BSplineSurface) StepToGeom::MakeBSplineSurface (const Handle(StepGeo
 Handle(Geom_CartesianPoint) StepToGeom::MakeCartesianPoint (const Handle(StepGeom_CartesianPoint)& SP,
                                                             const StepData_Factors& theLocalFactors)
 {
-  if (SP->NbCoordinates() == 3)
+  if (!SP.IsNull() && SP->NbCoordinates() == 3)
   {
     const Standard_Real LF = theLocalFactors.LengthFactor();
     const Standard_Real X = SP->CoordinatesValue(1) * LF;
