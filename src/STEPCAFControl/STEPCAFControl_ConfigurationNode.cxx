@@ -374,7 +374,7 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Setting up the read.metadata parameter which is used to indicate read Metadata or not\n";
-  aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
+  aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
   aResult += aScope + "read.metadata :\t " + InternalParameters.ReadMetadata + "\n";
   aResult += "!\n";
 
