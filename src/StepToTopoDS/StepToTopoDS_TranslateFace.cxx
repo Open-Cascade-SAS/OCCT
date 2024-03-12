@@ -105,12 +105,13 @@ namespace {
   // ============================================================================
   static void SetNodes(const Handle(Poly_Triangulation)& theMesh,
                        Handle(TColgp_HArray1OfXYZ)& theNodes,
+                       const Standard_Integer theNumPnindex,
                        Handle(TColStd_HArray1OfInteger)& thePnindices,
                        const Standard_Real theLengthFactor)
   {
     for (Standard_Integer aPnIndex = 1; aPnIndex <= theMesh->NbNodes(); ++aPnIndex)
     {
-      const gp_XYZ& aPoint = theNodes->Value(thePnindices->Value(aPnIndex));
+      const gp_XYZ& aPoint = theNodes->Value((theNumPnindex > 0) ? thePnindices->Value(aPnIndex) : aPnIndex);
       theMesh->SetNode(aPnIndex, theLengthFactor * aPoint);
     }
   }
@@ -326,10 +327,11 @@ namespace {
 
     const Standard_Boolean aHasUVNodes = Standard_False;
     const Standard_Boolean aHasNormals = (aNormNum > 0);
+    const Standard_Integer aNbNodes = (aNumPnindex > 0) ? aNumPnindex : aNodes->Length();
 
     if (aTrianStripsNum == 0 && aTrianFansNum == 0)
     {
-      aMesh = new Poly_Triangulation(aNumPnindex, aTrianNum, aHasUVNodes, aHasNormals);
+      aMesh = new Poly_Triangulation(aNbNodes, aTrianNum, aHasUVNodes, aHasNormals);
     }
     else
     {
@@ -359,14 +361,14 @@ namespace {
         aNbTriaFans += aTriangleFan->Length() - 2;
       }
 
-      aMesh = new Poly_Triangulation(aNumPnindex, aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
+      aMesh = new Poly_Triangulation(aNbNodes, aNbTriaStrips + aNbTriaFans, aHasUVNodes, aHasNormals);
     }
 
-    SetNodes(aMesh, aNodes, aPnindices, theLocalFactors.LengthFactor());
+    SetNodes(aMesh, aNodes, aNumPnindex, aPnindices, theLocalFactors.LengthFactor());
 
     if (aHasNormals)
     {
-      SetNormals(aMesh, aNormals, aNormNum, aNumPnindex);
+      SetNormals(aMesh, aNormals, aNormNum, aNbNodes);
     }
 
     SetTriangles(aMesh, aTriangles, aTrianStripsNum, aTriaStrips, aTrianFansNum, aTriaFans);
