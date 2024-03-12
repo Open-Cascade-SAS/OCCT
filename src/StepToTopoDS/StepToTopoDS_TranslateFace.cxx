@@ -761,6 +761,8 @@ void StepToTopoDS_TranslateFace::Init(const Handle(StepVisual_TessellatedFace)& 
   if (theNMTool.IsActive())
     theNMTool.Bind(theTF, aF);
 
+  aTP->Bind(theTF, new TransferBRep_ShapeBinder(aF));
+
   myResult = aF;
   myError = StepToTopoDS_TranslateFaceDone;
   done = Standard_True;
