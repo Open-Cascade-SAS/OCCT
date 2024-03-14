@@ -661,6 +661,7 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
+#include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
@@ -1568,6 +1569,7 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind(STANDARD_TYPE(StepBasic_GeneralPropertyRelationship), 821);
   types.Bind(STANDARD_TYPE(StepRepr_BooleanRepresentationItem), 822);
   types.Bind(STANDARD_TYPE(StepRepr_RealRepresentationItem), 823);
+  types.Bind(STANDARD_TYPE(StepRepr_MechanicalDesignAndDraughtingRelationship), 824);
 }
 
 
