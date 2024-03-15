@@ -299,7 +299,7 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
         }
       }
     }
-    if (aChar == '\n')
+    if (aChar == '\n' || aChar == '\r')
     {
       aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd);
       aResStringSize--;
