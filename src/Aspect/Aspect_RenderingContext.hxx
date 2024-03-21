@@ -33,6 +33,8 @@
       struct EAGLContext;
     #endif
     typedef EAGLContext* Aspect_RenderingContext;
+  #elif HAVE_EGL
+    typedef void* Aspect_RenderingContext;
   #else
     #ifdef __OBJC__
       @class NSOpenGLContext;

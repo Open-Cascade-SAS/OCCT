@@ -993,6 +993,10 @@ public: //! @name methods to alter or retrieve current state
   //! Set GL_SHADE_MODEL value.
   Standard_EXPORT void SetShadeModel (Graphic3d_TypeOfShadingModel theModel);
 
+  Standard_EXPORT void *makeFence (void *clientFence, bool enqueueSignal, bool setSignaledValue, uint64_t signaledValue);
+  Standard_EXPORT void waitFence (void *fence);
+  Standard_EXPORT void deleteFence (void *fence);
+  Standard_EXPORT void *getMetalDevice ();
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -1076,7 +1080,11 @@ public: //! @name extensions
   Standard_Boolean       nvxMem;             //!< GL_NVX_gpu_memory_info
   Standard_Boolean       oesSampleVariables; //!< GL_OES_sample_variables
   Standard_Boolean       oesStdDerivatives;  //!< GL_OES_standard_derivatives
-
+#if defined(__APPLE__)
+  Standard_Boolean       angleMetalCTexBuf;  //!< EGL_ANGLE_metal_texture_client_buffer
+  Standard_Boolean       angleMetalSharedEv; //!< EGL_ANGLE_metal_shared_event_sync
+  Standard_Boolean       angleMetalDevice;   //!< EGL_ANGLE_device_metal
+#endif
 public: //! @name public properties tracking current state
 
   OpenGl_MatrixState<Standard_ShortReal> ModelWorldState; //!< state of orientation matrix

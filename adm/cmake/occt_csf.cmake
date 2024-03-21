@@ -123,6 +123,7 @@ else()
       find_library (OpenGlLibs_LIB NAMES OpenGL)
       set (CSF_OpenGlLibs ${OpenGlLibs_LIB})
       OCCT_CHECK_AND_UNSET (OpenGlLibs_LIB)
+      set (CSF_OpenGlesLibs "EGL GLESv2")
     endif()
 
   elseif (EMSCRIPTEN)

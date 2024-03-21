@@ -45,9 +45,12 @@
 #include <Cocoa_LocalPool.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //
+#elif defined(HAVE_EGL)
+  #include <EGL/egl.h>
 #else
   #include <OpenGL/CGLRenderers.h>
 #endif
@@ -89,6 +92,7 @@ void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
 #if defined(__APPLE__)
   mySizePt = mySize;
 #endif
+  bool isCore = false;
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   EAGLContext* aGLContext = theGContext;
@@ -128,16 +132,104 @@ void OpenGl_Window::Init (const Handle(OpenGl_GraphicDriver)& theDriver,
       throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
     }
 
-    myGlContext->Init (aGLContext, Standard_False);
+    myGlContext->Init (aGLContext, isCore);
   }
-#else
+#elif defined(HAVE_EGL)
+  EGLDisplay anEglDisplay = (EGLDisplay )theDriver->getRawGlDisplay();
+  EGLContext anEglContext = (EGLContext )theDriver->getRawGlContext();
+  EGLConfig  anEglConfig  = (EGLConfig  )theDriver->getRawGlConfig();
+  if (anEglDisplay == EGL_NO_DISPLAY
+   || anEglContext == EGL_NO_CONTEXT
+   || (anEglConfig == NULL
+    && (EGLContext )theGContext == EGL_NO_CONTEXT))
+  {
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL does not provide compatible configurations!");
+  }
+  EGLSurface anEglSurf = EGL_NO_SURFACE;
+  if ((EGLContext )theGContext == EGL_NO_CONTEXT)
+  {
+    // create new surface
+    NSView* aView = (NSView* )myPlatformWindow->NativeHandle();
+    [aView setWantsLayer:YES];
+    const auto layer = [aView layer];
+    layer.opaque = TRUE;
 
+    anEglSurf = eglCreateWindowSurface (anEglDisplay,
+                                        anEglConfig,
+                                        layer,
+                                        NULL);
+    if (anEglSurf == EGL_NO_SURFACE
+     && myPlatformWindow->NativeHandle() != 0)
+    {
+      throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to create surface for window!");
+    }
+    else if (anEglSurf == EGL_NO_SURFACE)
+    {
+      // window-less EGL context (off-screen)
+      //throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current surface!");
+      if (anEglConfig != NULL)
+      {
+      #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
+        const int aSurfAttribs[] =
+        {
+          EGL_WIDTH,  mySize.x(),
+          EGL_HEIGHT, mySize.y(),
+          // EGL_KHR_gl_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
+          //EGL_GL_COLORSPACE_KHR, !theCaps->sRGBDisable ? EGL_GL_COLORSPACE_SRGB_KHR : EGL_GL_COLORSPACE_LINEAR_KHR,
+          EGL_NONE
+        };
+        anEglSurf = eglCreatePbufferSurface (anEglDisplay, anEglConfig, aSurfAttribs);
+        if (anEglSurf == EGL_NO_SURFACE)
+        {
+          throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to create off-screen surface!");
+        }
+      #endif
+      }
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
+                                "OpenGl_Window::CreateWindow: WARNING, a Window is created without a EGL Surface!");
+    }
+  }
+  else if (theGContext != anEglContext)
+  {
+    throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is used in unsupported combination!");
+  }
+  else
+  {
+    anEglSurf = eglGetCurrentSurface(EGL_DRAW);
+    if (anEglSurf == EGL_NO_SURFACE)
+    {
+      // window-less EGL context (off-screen)
+      //throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to retrieve current surface!");
+      if (anEglConfig != NULL)
+      {
+      #if !defined(__EMSCRIPTEN__) // eglCreatePbufferSurface() is not implemented by Emscripten EGL
+        const int aSurfAttribs[] =
+        {
+          EGL_WIDTH,  mySize.x(),
+          EGL_HEIGHT, mySize.y(),
+          // EGL_KHR_gl_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
+          //EGL_GL_COLORSPACE_KHR, !theCaps->sRGBDisable ? EGL_GL_COLORSPACE_SRGB_KHR : EGL_GL_COLORSPACE_LINEAR_KHR,
+          EGL_NONE
+        };
+        anEglSurf = eglCreatePbufferSurface (anEglDisplay, anEglConfig, aSurfAttribs);
+        if (anEglSurf == EGL_NO_SURFACE)
+        {
+          throw Aspect_GraphicDeviceDefinitionError("OpenGl_Window, EGL is unable to create off-screen surface!");
+        }
+      #endif
+      }
+      myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_LOW,
+                                "OpenGl_Window::CreateWindow: WARNING, a Window is created without a EGL Surface!");
+    }
+  }
+
+  myGlContext->Init ((Aspect_Drawable )anEglSurf, (Aspect_Display )anEglDisplay, (Aspect_RenderingContext )anEglContext, isCore);
+#else
   Cocoa_LocalPool aLocalPool;
 
   // all GL context within one OpenGl_GraphicDriver should be shared!
   NSOpenGLContext* aGLCtxShare = theShareCtx.IsNull() ? NULL : theShareCtx->myGContext;
   NSOpenGLContext* aGLContext  = theGContext;
-  bool isCore = false;
   if (aGLContext == NULL)
   {
     NSOpenGLPixelFormatAttribute anAttribs[32] = {};
@@ -257,6 +349,12 @@ OpenGl_Window::~OpenGl_Window()
   myGlContext.Nullify();
   [EAGLContext setCurrentContext: NULL];
   myUIView = NULL;
+#elif defined(HAVE_EGL)
+  if ((EGLSurface )myGlContext->myWindow != EGL_NO_SURFACE)
+  {
+    eglDestroySurface ((EGLDisplay )myGlContext->myDisplay,
+                       (EGLSurface )myGlContext->myWindow);
+  }
 #else
   NSOpenGLContext* aGLCtx = myGlContext->myGContext;
   myGlContext.Nullify();
@@ -288,6 +386,9 @@ void OpenGl_Window::Resize()
   else if (mySizePt == aWinSize)
   {
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+    return;
+  #elif HAVE_EGL
+    // if the size is not changed - do nothing
     return;
   #else
     // check backing store change (moving to another screen)
@@ -371,6 +472,38 @@ void OpenGl_Window::init()
   myGlContext->SetDefaultFrameBuffer (aDefFbo);
   aDefFbo->BindBuffer (myGlContext);
   aDefFbo.Nullify();
+#elif defined(HAVE_EGL)
+  if ((EGLSurface )myGlContext->myWindow == EGL_NO_SURFACE)
+  {
+    // define an offscreen default FBO to avoid rendering into EGL_NO_SURFACE;
+    // note that this code is currently never called, since eglCreatePbufferSurface() is used instead as more robust solution
+    // for offscreen rendering on bugged OpenGL ES drivers
+    Handle(OpenGl_FrameBuffer) aDefFbo = myGlContext->SetDefaultFrameBuffer (Handle(OpenGl_FrameBuffer)());
+    if (!aDefFbo.IsNull())
+    {
+      aDefFbo->Release (myGlContext.operator->());
+    }
+    else
+    {
+      aDefFbo = new OpenGl_FrameBuffer();
+    }
+
+    OpenGl_ColorFormats aColorFormats;
+    aColorFormats.Append (GL_RGBA8);
+    if (!aDefFbo->InitRenderBuffer (myGlContext, mySize, aColorFormats, GL_DEPTH24_STENCIL8))
+    {
+      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: default FBO creation failed");
+      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
+    }
+    myGlContext->SetDefaultFrameBuffer (aDefFbo);
+    aDefFbo->BindBuffer (myGlContext);
+  }
+  else if (!myPlatformWindow->IsVirtual()
+         && mySizeWindow == myPlatformWindow)
+  {
+    eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &mySize.x());
+    eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &mySize.y());
+  }
 #else
   if (!myPlatformWindow->IsVirtual()
     && mySizeWindow == myPlatformWindow)

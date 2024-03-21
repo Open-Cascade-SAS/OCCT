@@ -49,6 +49,8 @@
   #define GL_SILENCE_DEPRECATION
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
     #include <OpenGLES/ES3/gl.h>
+  #elif defined(HAVE_GLES2)
+      #include <GLES3/gl3.h>
   #else
     #include <OpenGL/gl.h>
   #endif

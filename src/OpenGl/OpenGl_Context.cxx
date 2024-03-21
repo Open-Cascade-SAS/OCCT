@@ -55,6 +55,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
 
 #if defined(HAVE_EGL)
   #include <EGL/egl.h>
+  #define EGL_EGLEXT_PROTOTYPES
+  #include <EGL/eglext.h>
   #ifdef _MSC_VER
     #pragma comment(lib, "libEGL.lib")
   #endif
@@ -183,6 +185,11 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   nvxMem (Standard_False),
   oesSampleVariables (Standard_False),
   oesStdDerivatives (Standard_False),
+#if defined(__APPLE__)
+  angleMetalCTexBuf (Standard_False),
+  angleMetalSharedEv (Standard_False),
+  angleMetalDevice (Standard_False),
+#endif
   myWindow  (0),
   myDisplay (0),
   myGContext(0),
@@ -637,7 +644,7 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
   }
 }
 
-#if !defined(__APPLE__) || defined(HAVE_XLIB)
+#if (!defined(__APPLE__) || HAVE_EGL) || defined(HAVE_XLIB)
 
 // =======================================================================
 // function : IsCurrent
@@ -803,7 +810,7 @@ Standard_Boolean OpenGl_Context::SetSwapInterval (const Standard_Integer theInte
   }
 #elif defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   (void )theInterval; // vsync cannot be turned OFF on iOS
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(OCC_USE_GLES2)
   if (::CGLSetParameter (CGLGetCurrentContext(), kCGLCPSwapInterval, &theInterval) == kCGLNoError)
   {
     return Standard_True;
@@ -945,7 +952,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtString,
   return Standard_False;
 }
 
-#if !defined(__APPLE__) || defined(HAVE_XLIB)
+#if (!defined(__APPLE__) || HAVE_EGL) || defined(HAVE_XLIB)
 
 // =======================================================================
 // function : Init
@@ -1524,7 +1531,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     // macOS drivers seems to be also report GL_LINEAR even for [NSColorSpace sRGBColorSpace].
     if (myGapi != Aspect_GraphicsLibrary_OpenGLES)
     {
-    #ifdef __APPLE__
+    #if defined(__APPLE__) && !HAVE_EGL
       myIsSRgbWindow = true;
     #else
       if (!myIsSRgbWindow
@@ -1724,7 +1731,7 @@ void OpenGl_Context::MemoryInfo (TColStd_IndexedDataMapOfStringString& theDict) 
 {
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   (void )theDict;
-#elif defined(__APPLE__) && !defined(HAVE_XLIB)
+#elif defined(__APPLE__) && !defined(HAVE_XLIB) && !defined(OCC_USE_GLES2)
   GLint aGlRendId = 0;
   CGLGetParameter (CGLGetCurrentContext(), kCGLCPCurrentRendererID, &aGlRendId);
 
@@ -2667,6 +2674,61 @@ void OpenGl_Context::SetShadeModel (Graphic3d_TypeOfShadingModel theModel)
     myShadeModel = aModel;
     core11ffp->glShadeModel (aModel);
   }
+}
+
+void *OpenGl_Context::makeFence (void *clientFence, bool enqueueSignal, bool setSignaledValue, uint64_t signaledValue)
+{
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  EGLAttrib attribs[9] =
+  {
+    EGL_SYNC_METAL_SHARED_EVENT_OBJECT_ANGLE,
+    (EGLAttrib&)clientFence,
+    EGL_SYNC_CONDITION,
+    enqueueSignal ? EGL_SYNC_PRIOR_COMMANDS_COMPLETE : EGL_SYNC_METAL_SHARED_EVENT_SIGNALED_ANGLE,
+    EGL_NONE
+  };
+  if (setSignaledValue) {
+    attribs[4] = EGL_SYNC_METAL_SHARED_EVENT_SIGNAL_VALUE_LO_ANGLE;
+    attribs[5] = signaledValue & 0xFFFFFFFF;
+    attribs[6] = EGL_SYNC_METAL_SHARED_EVENT_SIGNAL_VALUE_HI_ANGLE;
+    attribs[7] = (signaledValue >> 32) & 0xFFFFFFFF;
+    attribs[8] = EGL_NONE;
+  }
+
+  return eglCreateSync(myDisplay, EGL_SYNC_METAL_SHARED_EVENT_ANGLE, attribs);
+#else
+  return 0;
+#endif
+}
+
+void OpenGl_Context::waitFence (void *fence)
+{
+#if defined(HAVE_EGL)
+  eglWaitSync(myDisplay, fence, 0);
+#endif
+}
+
+void OpenGl_Context::deleteFence (void *fence)
+{
+#if defined(HAVE_EGL)
+  eglDestroySync(myDisplay, fence);
+#endif
+}
+
+void *OpenGl_Context::getMetalDevice ()
+{
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  if (!angleMetalDevice)
+    return 0;
+
+  EGLAttrib angleDevice = 0;
+  EGLAttrib device      = 0;
+  eglQueryDisplayAttribEXT(myDisplay, EGL_DEVICE_EXT, &angleDevice);
+  eglQueryDeviceAttribEXT(reinterpret_cast<EGLDeviceEXT>(angleDevice), EGL_METAL_DEVICE_ANGLE, &device);
+  return reinterpret_cast<void *>(device);
+#else
+  return 0;
+#endif
 }
 
 // =======================================================================

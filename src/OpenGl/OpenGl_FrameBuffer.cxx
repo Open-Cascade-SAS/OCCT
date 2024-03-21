@@ -21,6 +21,15 @@
 #include <Standard_Assert.hxx>
 #include <Standard_NotImplemented.hxx>
 
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  #include <EGL/egl.h>
+  #define EGL_EGLEXT_PROTOTYPES
+  #include <EGL/eglext.h>
+  #define GL_GLEXT_PROTOTYPES
+  #include <GLES2/gl2.h>
+  #include <GLES2/gl2ext.h>
+#endif
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_NamedResource)
 
 namespace
@@ -178,6 +187,33 @@ Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& 
 
   UnbindBuffer (theGlContext);
   return true;
+}
+
+Standard_EXPORT Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(OpenGl_Context)& theGlContext, void *clientBuffer,
+                                                                  const Graphic3d_Vec2i& theSize, const Standard_Integer theDepthFormat)
+{
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  if (!theGlContext->angleMetalCTexBuf || theGlContext->arbFBO == NULL)
+    return Standard_False;
+
+  // Bind metal texture to OpenGL's texture object
+  constexpr EGLint kDefaultEGLImageAttribs[] = {
+    EGL_NONE,
+  };
+  myImageEGL =
+    eglCreateImageKHR(theGlContext->GetDisplay(), EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE,
+                      reinterpret_cast<EGLClientBuffer>(clientBuffer), kDefaultEGLImageAttribs);
+
+  // Create a texture target to bind the egl image
+  GLuint rBufferGL = -1;
+  theGlContext->arbFBO->glGenRenderbuffers(1, &rBufferGL);
+  theGlContext->arbFBO->glBindRenderbuffer(GL_RENDERBUFFER, rBufferGL);
+  glEGLImageTargetRenderbufferStorageOES(GL_RENDERBUFFER, myImageEGL);
+
+  return initRenderBuffer(theGlContext, theSize, OpenGl_ColorFormats(), theDepthFormat, 0, rBufferGL);
+#else
+  return Standard_False;
+#endif
 }
 
 // =======================================================================
@@ -852,6 +888,14 @@ void OpenGl_FrameBuffer::Release (OpenGl_Context* theGlCtx)
     myDepthStencilTexture->Release (theGlCtx);
     myIsOwnDepth = false;
   }
+
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  if (myImageEGL)
+  {
+    eglDestroyImageKHR(theGlCtx->GetDisplay(), myImageEGL);
+    myImageEGL = 0;
+  }
+#endif
 
   myVPSizeX = 0;
   myVPSizeY = 0;

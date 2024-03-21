@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#if defined(__APPLE__) && !defined(HAVE_XLIB)
+#if (defined(__APPLE__) && !HAVE_EGL) && !defined(HAVE_XLIB)
 
 #ifndef GL_GLEXT_LEGACY
 #define GL_GLEXT_LEGACY // To prevent inclusion of system glext.h on Mac OS X 10.6.8

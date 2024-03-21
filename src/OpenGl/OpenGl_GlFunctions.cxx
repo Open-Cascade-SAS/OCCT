@@ -28,6 +28,12 @@
   #include <GL/glx.h>
 #endif
 
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  #include <EGL/egl.h>
+  #define EGL_EGLEXT_PROTOTYPES
+  #include <EGL/eglext.h>
+#endif
+
 #ifdef __EMSCRIPTEN__
   #include <emscripten.h>
   #include <emscripten/html5.h>
@@ -2114,6 +2120,21 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
       theCtx.hasHalfFloatBuffer = isGlGreaterEqualShort (3, 0) ? OpenGl_FeatureInCore : OpenGl_FeatureInExtensions;
     }
   }
+
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  const auto eglExtensions = reinterpret_cast<const char *> (eglQueryString (theCtx.GetDisplay(), EGL_EXTENSIONS));
+  // Required extensions (if using MetalANGLE and the running macOS version is 10.14+, these extensions are guaranteed to exist)
+  theCtx.angleMetalCTexBuf = checkExtensionShort (eglExtensions, "EGL_ANGLE_metal_texture_client_buffer");
+  theCtx.angleMetalSharedEv = checkExtensionShort (eglExtensions, "EGL_ANGLE_metal_shared_event_sync");
+
+  EGLAttrib angleDevice = 0;
+  eglQueryDisplayAttribEXT (theCtx.GetDisplay(), EGL_DEVICE_EXT, &angleDevice);
+  if (angleDevice) {
+    auto extensionString = static_cast<const char *>(
+      eglQueryDeviceStringEXT (reinterpret_cast<EGLDeviceEXT>(angleDevice), EGL_EXTENSIONS));
+    theCtx.angleMetalDevice = checkExtensionShort (extensionString, "EGL_ANGLE_device_metal");
+  }
+#endif
 
   theCtx.oesSampleVariables = checkExtensionShort ("GL_OES_sample_variables");
   theCtx.oesStdDerivatives  = checkExtensionShort ("GL_OES_standard_derivatives");

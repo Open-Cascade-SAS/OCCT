@@ -208,6 +208,9 @@ public:
   Standard_EXPORT Standard_Boolean InitWrapper (const Handle(OpenGl_Context)& theGlContext,
                                                 const NCollection_Sequence<Handle(OpenGl_Texture)>& theColorTextures,
                                                 const Handle(OpenGl_Texture)& theDepthTexture = Handle(OpenGl_Texture)());
+  //! Wrap client buffer
+  Standard_EXPORT Standard_Boolean InitWrapper (const Handle(OpenGl_Context)& theGlContext, void *clientBuffer,
+                                                const Graphic3d_Vec2i& theSize, const Standard_Integer theDepthFormat);
 
   //! Setup viewport to render into FBO
   Standard_EXPORT void SetupViewport (const Handle(OpenGl_Context)& theGlCtx);
@@ -370,7 +373,9 @@ protected:
   bool                   myIsOwnDepth;          //!< flag indicating that depth texture  should be deallocated by this class
   OpenGl_TextureArray    myColorTextures;       //!< color texture objects
   Handle(OpenGl_Texture) myDepthStencilTexture; //!< depth-stencil texture object
-
+#if defined(__APPLE__)
+  void *                 myImageEGL = 0;        //!< egl-external texture wrapper
+#endif
 };
 
 #endif // OPENGL_FRAME_BUFFER_H
