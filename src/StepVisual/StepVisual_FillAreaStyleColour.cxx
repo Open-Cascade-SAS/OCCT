@@ -37,7 +37,7 @@ void StepVisual_FillAreaStyleColour::SetName(const Handle(TCollection_HAsciiStri
 
 Handle(TCollection_HAsciiString) StepVisual_FillAreaStyleColour::Name() const
 {
-	return name;
+	return this == nullptr ? nullptr : name;
 }
 
 void StepVisual_FillAreaStyleColour::SetFillColour(const Handle(StepVisual_Colour)& aFillColour)
@@ -47,5 +47,5 @@ void StepVisual_FillAreaStyleColour::SetFillColour(const Handle(StepVisual_Colou
 
 Handle(StepVisual_Colour) StepVisual_FillAreaStyleColour::FillColour() const
 {
-	return fillColour;
+	return this == nullptr ? nullptr : fillColour;
 }
