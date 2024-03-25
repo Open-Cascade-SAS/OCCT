@@ -82,7 +82,6 @@ set (COMMON_HEADER_FILES ${MFC_STANDARD_COMMON_SAMPLES_DIR}/AISDialogs.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/OCC_StereoConfigDlg.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ParamsFacesPage.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ResultDialog.h
-                         ${MFC_STANDARD_COMMON_SAMPLES_DIR}/User_Cylinder.hxx
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/ColoredMeshDlg.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/DimensionDlg.h
                          ${MFC_STANDARD_COMMON_SAMPLES_DIR}/LengthParamsEdgePage.h
