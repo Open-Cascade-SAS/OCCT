@@ -287,11 +287,12 @@ static Standard_Boolean TryMakeLine(const Handle(Geom2d_Curve)& thePCurve,
   return Standard_True;
 }
 
-static void RemoveEdgeFromMap(const TopoDS_Edge& theEdge,
+static Standard_Size RemoveEdgeFromMap(const TopoDS_Edge& theEdge,
                               TopTools_IndexedDataMapOfShapeListOfShape& theVEmap)
 {
   TopoDS_Vertex VV [2];
   TopExp::Vertices(theEdge, VV[0], VV[1]);
+  Standard_Size aNumRemovedEdges = 0;
   for (Standard_Integer i = 0; i < 2; i++)
   {
     if (!theVEmap.Contains (VV[i]))
@@ -301,12 +302,15 @@ static void RemoveEdgeFromMap(const TopoDS_Edge& theEdge,
     while (itl.More())
     {
       const TopoDS_Shape& anEdge = itl.Value();
-      if (anEdge.IsSame(theEdge))
+      if (anEdge.IsSame(theEdge)) {
         Elist.Remove(itl);
+        aNumRemovedEdges++;
+      }
       else
         itl.Next();
     }
   }
+  return aNumRemovedEdges;
 }
 
 static Standard_Real ComputeMinEdgeSize(const TopTools_SequenceOfShape& theEdges,
@@ -554,7 +558,7 @@ static void RelocatePCurvesToNewUorigin(const TopTools_SequenceOfShape& theEdges
     
     for (;;) //collect pcurves of a contour
     {
-      RemoveEdgeFromMap(CurEdge, theVEmap);
+      Standard_Size aNumRemovedEdges = RemoveEdgeFromMap(CurEdge, theVEmap);
       theUsedEdges.Add(CurEdge);
       TopoDS_Vertex CurVertex = (anOr == TopAbs_FORWARD)?
         TopExp::LastVertex(CurEdge, Standard_True) : TopExp::FirstVertex(CurEdge, Standard_True);
@@ -563,6 +567,7 @@ static void RelocatePCurvesToNewUorigin(const TopTools_SequenceOfShape& theEdges
       if (Elist.IsEmpty())
         break; //end of contour in 3d
       
+      TopoDS_Edge aPriorEdge = CurEdge;
       TopTools_ListIteratorOfListOfShape itl(Elist);
       for (; itl.More(); itl.Next())
       {
@@ -605,6 +610,9 @@ static void RelocatePCurvesToNewUorigin(const TopTools_SequenceOfShape& theEdges
         CurPoint = aPCurve->Value(CurParam);
         break;
       }
+
+      if (aNumRemovedEdges == 0 && CurEdge == aPriorEdge)
+          break; // CurEdge is no longer in theVEmap and theVEmap does not contain any more valid edges to advance to
     } //for (;;) (collect pcurves of a contour)
   } //for (;;) (walk by contours)
 }
