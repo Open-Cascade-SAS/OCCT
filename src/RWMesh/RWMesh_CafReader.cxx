@@ -383,6 +383,16 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (CafDocumentTools& theTools,
     return Standard_False;
   }
 
+  if (toMakeAssembly)
+  {
+    TDF_Label aRefLabel;
+    theTools.ShapeTool->GetReferredShape(aNewLabel, aRefLabel);
+    if (!aRefLabel.IsNull())
+    {
+      theTools.OriginalShapeMap.Bind(theShape, aRefLabel);
+    }
+  }
+
   // if new label is a reference get referred shape
   TDF_Label aNewRefLabel = aNewLabel;
   theTools.ShapeTool->GetReferredShape (aNewLabel, aNewRefLabel);
