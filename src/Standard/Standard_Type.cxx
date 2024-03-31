@@ -14,8 +14,10 @@
 
 
 #include <Standard_Type.hxx>
-#include <Standard_Mutex.hxx>
+
 #include <Standard_Assert.hxx>
+#include <Standard_CStringHasher.hxx>
+#include <Standard_Mutex.hxx>
 
 #include <unordered_map>
 
@@ -23,12 +25,23 @@ IMPLEMENT_STANDARD_RTTIEXT(Standard_Type,Standard_Transient)
 
 //============================================================================
 
+namespace
+{
+  static Standard_CString copy_string (const char* theString)
+  {
+    size_t aLength = strlen (theString);
+    char* aResult = static_cast<char*> (Standard::Allocate (aLength + 1));
+    strncpy (aResult, theString, aLength + 1); //including null-character
+    return aResult;
+  }
+}
+
 Standard_Type::Standard_Type (const std::type_info& theInfo,
                               const char* theName,
                               Standard_Size theSize,
                               const Handle(Standard_Type)& theParent) :
   myInfo(theInfo),
-  myName(theName),
+  myName(copy_string (theName)),
   mySize(theSize), 
   myParent(theParent)
 {
@@ -62,7 +75,7 @@ void Standard_Type::Print (Standard_OStream& AStream) const
 
 namespace {
   // Map of string to type
-  typedef std::unordered_map<std::type_index, Standard_Type*> registry_type;
+  typedef std::unordered_map<Standard_CString, Standard_Type*, Standard_CStringHasher, Standard_CStringHasher> registry_type;
 
   // Registry is made static in the function to ensure that it gets
   // initialized by the time of first access
@@ -87,7 +100,7 @@ Standard_Type* Standard_Type::Register (const std::type_info& theInfo, const cha
   // return existing descriptor if already in the registry
   registry_type& aRegistry = GetRegistry();
   Standard_Type* aType = 0;
-  auto anIter = aRegistry.find(theInfo);
+  auto anIter = aRegistry.find(theName);
   if (anIter != aRegistry.end())
     return anIter->second;
 
@@ -95,7 +108,7 @@ Standard_Type* Standard_Type::Register (const std::type_info& theInfo, const cha
   aType = new Standard_Type (theInfo, theName, theSize, theParent);
 
   // then add it to registry and return (the reference to the handle stored in the registry)
-  aRegistry.emplace(theInfo, aType);
+  aRegistry.emplace(theName, aType);
   return aType;
 }
 
@@ -103,5 +116,6 @@ Standard_Type::~Standard_Type ()
 {
   // remove descriptor from the registry
   registry_type& aRegistry = GetRegistry();
-  Standard_ASSERT(aRegistry.erase(myInfo) > 0, "Standard_Type::~Standard_Type() cannot find itself in registry",);
+  Standard_ASSERT(aRegistry.erase(myName) > 0, "Standard_Type::~Standard_Type() cannot find itself in registry",);
+  Standard::Free (myName);
 }
