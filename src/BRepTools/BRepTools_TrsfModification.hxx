@@ -89,13 +89,10 @@ public:
                                                              Handle(Poly_PolygonOnTriangulation)& P)
     Standard_OVERRIDE;
 
-  //! Returns true if the edge E has been modified.
-  //! If the edge has been modified:
+  //! Always returns true indicating that the edge E is always modified.
   //! - C is the new geometric support of the edge,
   //! - L is the new location, and
   //! - Tol is the new tolerance.
-  //! If the edge has not been modified, this function
-  //! returns false, and the values of C, L and Tol are not significant.
   Standard_EXPORT Standard_Boolean NewCurve(const TopoDS_Edge&  E,
                                             Handle(Geom_Curve)& C,
                                             TopLoc_Location&    L,
