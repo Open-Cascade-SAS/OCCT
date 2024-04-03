@@ -2134,11 +2134,12 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
     return Standard_False;
   }
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
-  Handle(StepVisual_AnnotationOccurrence) anAO;
+  Handle(StepVisual_StyledItem) anAO;
   NCollection_Vector<Handle(StepVisual_StyledItem)> anAnnotations;
-  if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)))
+  if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)) ||
+      thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
   {
-    anAO = Handle(StepVisual_AnnotationOccurrence)::DownCast(thePresentEntity);
+    anAO = Handle(StepVisual_StyledItem)::DownCast(thePresentEntity);
     if (!anAO.IsNull())
     {
       thePresentName = anAO->Name();
@@ -4368,7 +4369,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
       }
     }
     else if (anEnt->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout)) ||
-      anEnt->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)))
+      anEnt->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)) ||
+      anEnt->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
     {
       // Protection against import presentation twice
       Handle(StepVisual_DraughtingCallout) aDC;

@@ -3,12 +3,12 @@ set filename bug29362_MMT200.stp
 
 set ref_data {
 
- NbOfDimensions          : 2
+ NbOfDimensions          : 4
   NbOfDimensionalSize    : 1
   NbOfDimensionalLocation: 1
   NbOfAngular            : 0
   NbOfWithPath           : 0
-  NbOfCommonLabels       : 0
+  NbOfCommonLabels       : 1
  NbOfTolerances          : 0
   NbOfGTWithModifiers    : 0
   NbOfGTWithMaxTolerance : 0
