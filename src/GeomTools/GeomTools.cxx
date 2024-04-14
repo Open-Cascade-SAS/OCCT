@@ -96,16 +96,21 @@ Handle(GeomTools_UndefinedTypeHandler) GeomTools::GetUndefinedTypeHandler()
 //purpose  : 
 //=======================================================================
 
-void GeomTools::GetReal(Standard_IStream& IS,Standard_Real& theValue)
+void GeomTools::GetReal(Standard_IStream& IS, Standard_Real& theValue)
 {
   theValue = 0.;
-  if (IS.eof()) 
+  if (IS.eof())
+  {
     return;
+  }
+  // According IEEE-754 Specification and standard stream parameters
+  // the most optimal buffer length not less then 25
+  constexpr size_t THE_BUFFER_SIZE = 32;
+  char             aBuffer[THE_BUFFER_SIZE];
 
-  char buffer[256];
-  buffer[0] = '\0';
-  std::streamsize anOldWide = IS.width(256);
-  IS >> buffer;
+  aBuffer[0]                = '\0';
+  std::streamsize anOldWide = IS.width(THE_BUFFER_SIZE - 1);
+  IS >> aBuffer;
   IS.width(anOldWide);
-  theValue = Strtod(buffer, NULL);
+  theValue = Strtod(aBuffer, nullptr);
 }
