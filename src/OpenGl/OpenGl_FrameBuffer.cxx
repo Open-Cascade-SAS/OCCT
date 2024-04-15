@@ -200,7 +200,7 @@ Standard_EXPORT Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(O
   constexpr EGLint kDefaultEGLImageAttribs[] = {
     EGL_NONE,
   };
-  myImageEGL =
+  const auto imageEGL =
     eglCreateImageKHR(theGlContext->GetDisplay(), EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE,
                       reinterpret_cast<EGLClientBuffer>(clientBuffer), kDefaultEGLImageAttribs);
 
@@ -208,9 +208,11 @@ Standard_EXPORT Standard_Boolean OpenGl_FrameBuffer::InitWrapper (const Handle(O
   GLuint rBufferGL = -1;
   theGlContext->arbFBO->glGenRenderbuffers(1, &rBufferGL);
   theGlContext->arbFBO->glBindRenderbuffer(GL_RENDERBUFFER, rBufferGL);
-  glEGLImageTargetRenderbufferStorageOES(GL_RENDERBUFFER, myImageEGL);
+  glEGLImageTargetRenderbufferStorageOES(GL_RENDERBUFFER, imageEGL);
 
-  return initRenderBuffer(theGlContext, theSize, OpenGl_ColorFormats(), theDepthFormat, 0, rBufferGL);
+  const Standard_Boolean result = initRenderBuffer(theGlContext, theSize, OpenGl_ColorFormats(), theDepthFormat, 0, rBufferGL);
+  myImageEGL = imageEGL;
+  return result;
 #else
   return Standard_False;
 #endif
@@ -929,7 +931,12 @@ void OpenGl_FrameBuffer::ChangeViewport (const Standard_Integer theVPSizeX,
 void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
-  theGlCtx->SetFrameBufferSRGB (true);
+  bool srgbBuffer = true;
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  if (myImageEGL)
+    srgbBuffer = false;
+#endif
+  theGlCtx->SetFrameBufferSRGB (srgbBuffer);
 }
 
 // =======================================================================
@@ -939,7 +946,12 @@ void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 void OpenGl_FrameBuffer::BindDrawBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myGlFBufferId);
-  theGlCtx->SetFrameBufferSRGB (true);
+  bool srgbBuffer = true;
+#if defined(__APPLE__) && defined(HAVE_EGL)
+  if (myImageEGL)
+    srgbBuffer = false;
+#endif
+  theGlCtx->SetFrameBufferSRGB (srgbBuffer);
 }
 
 // =======================================================================
