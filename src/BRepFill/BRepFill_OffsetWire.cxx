@@ -926,7 +926,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     if (StartOnEdge) {
       Standard_Boolean Start = 1;
       Trim.AddOrConfuse(Start, E[0], E[1], Params);
-      if (Params.Length() == Vertices.Length()) 
+      if (Params.Length() == Vertices.Length() && Params.Length() != 0)
         Vertices.SetValue(1,VS);
       
       else
@@ -936,7 +936,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     if (EndOnEdge) {	  
       Standard_Boolean Start = 0;
       Trim.AddOrConfuse(Start, E[0], E[1], Params);
-      if (Params.Length() == Vertices.Length()) 
+      if (Params.Length() == Vertices.Length() && Params.Length() != 0)
         Vertices.SetValue(Params.Length(),VE);
       
       else
@@ -962,7 +962,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     // Storage of vertices on parallel edges.
     // fill MapBis and MapVerPar.
     //----------------------------------------------
-    if (!Vertices.IsEmpty()) {
+    if (!Vertices.IsEmpty() && Params.Length() == Vertices.Length()) {
       for (k = 0; k <= 1; k++) {
         if (!MapBis.IsBound(E[k])) {
           MapBis   .Bind(E[k],EmptySeq);
@@ -1298,7 +1298,7 @@ void BRepFill_OffsetWire::UpdateDetromp (BRepFill_DataMapOfOrientedShapeListOfSh
       ii++; 
     }
     
-    while (ii <= Vertices.Length()) {
+    while (ii <= Vertices.Length() && ii <= Params.Length()) {
       U2 = Params.Value(ii).X();
       V2 = TopoDS::Vertex(Vertices.Value(ii));
       
