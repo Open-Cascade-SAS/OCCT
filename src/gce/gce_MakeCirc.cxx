@@ -141,6 +141,13 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt&  P1 ,
       dist2 = P2.Distance(pInt);
       dist3 = P3.Distance(pInt);
       pInt.Coord(x3,y3,z3);
+      if (dist1 < aResolution)
+      {
+        gp_Dir Dirx(1., 0., 0.);
+        gp_Dir Dirz(0., 0., 1.);
+        TheCirc = gp_Circ(gp_Ax2(pInt, Dirx, Dirz), 0.);
+        return;
+      }
       Dir1 = gp_Dir(x1-x3,y1-y3,z1-z3);
       //modified by NIZNHY-PKV Thu Mar  3 11:31:11 2005f
       //Dir2 = gp_Dir(x2-x3,y2-y3,z2-z3);
