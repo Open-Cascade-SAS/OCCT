@@ -309,8 +309,7 @@ Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString f
             }
             else
             {
-              Standard_Utf32Char* aChar32 = new Standard_Utf32Char[1];
-              aChar32[0] = uni;
+              Standard_Utf32Char aChar32[] = {uni};
               NCollection_Utf32String aStr32(aChar32);
               NCollection_Utf16String aStr16 = aStr32.ToUtf16();
 
