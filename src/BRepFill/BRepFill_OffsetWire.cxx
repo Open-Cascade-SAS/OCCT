@@ -1198,7 +1198,9 @@ void BRepFill_OffsetWire::PrepareSpine()
       // Cut
       TopoDS_Shape aLocalShape = E.Oriented(TopAbs_FORWARD);
       //  Modified by Sergey KHROMOV - Thu Nov 16 17:29:29 2000 Begin
-      if (nbEdges == 2 && nbResEdges == 0)
+      Handle(BRep_TEdge) TEdge = Handle(BRep_TEdge)::DownCast(E.TShape());
+      const Standard_Integer aNumCurvesInEdge = TEdge->Curves().Size();
+      if (nbEdges == 2 && nbResEdges == 0 && aNumCurvesInEdge > 1)
         ForcedCut = 1;
       //  Modified by Sergey KHROMOV - Thu Nov 16 17:29:33 2000 End
       nbResEdges = CutEdge (TopoDS::Edge(aLocalShape), mySpine, ForcedCut, Cuts);
