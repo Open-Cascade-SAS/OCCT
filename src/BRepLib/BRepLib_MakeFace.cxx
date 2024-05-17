@@ -273,18 +273,32 @@ BRepLib_MakeFace::BRepLib_MakeFace(const TopoDS_Wire& W,
     aB.MakeWire (aW);
 
     TopoDS_Wire aWForw = W;
+    Standard_Boolean hasDegenerated = Standard_False;
     aWForw.Orientation (TopAbs_FORWARD);
     TopoDS_Iterator anIter (aWForw);
     for (; anIter.More(); anIter.Next())
     {
       const TopoDS_Edge& aE = TopoDS::Edge (anIter.Value());
 
-      if (!BRep_Tool::Degenerated (aE))
-        aB.Add (aW, aE);
+      if (BRep_Tool::Degenerated(aE))
+      {
+        hasDegenerated = Standard_True;
+      }
+      else
+      {
+        aB.Add(aW, aE);
+      }
     }
 
-    aW.Orientation (W.Orientation()); // return to original orient
-    aW.Closed (W.Closed());
+    if (hasDegenerated)
+    {
+      aW.Orientation (W.Orientation()); // return to original orient
+      aW.Closed (W.Closed());
+    }
+    else
+    {
+      aW = W;
+    }
   }
   else
   {

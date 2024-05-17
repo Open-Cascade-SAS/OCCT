@@ -1,0 +1,21 @@
+puts "============="
+puts "0033156: Modeling Algorithms - Planar face creation problem"
+puts "============="
+
+pload MODELING
+vertex v1 0 0 0
+vertex v2 10 0 0
+vertex v3 0 10 0
+
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v1
+
+wire w1 e1 e2 e3
+mkplane f1 w1 1
+
+set state [issubshape w1 f1]
+
+if { [regexp "w1 is NOT sub-shape of f1" $state] == 1 } {
+  puts "Error : w1 is NOT sub-shape of f1"
+}
