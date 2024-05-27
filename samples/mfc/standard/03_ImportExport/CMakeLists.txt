@@ -11,7 +11,7 @@ project (ImportExport)
 add_definitions (-DWINVER=0x0501 -DUNICODE -D_UNICODE)
 set (CMAKE_MFC_FLAG 2)
 
-set (ImportExport_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport/src)
+set (ImportExport_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/03_ImportExport/src)
 set (ImportExport_HEADER_FILES ${ImportExport_SRC_DIR}/ColoredShapes.h
                                ${ImportExport_SRC_DIR}/ImportExportApp.h
                                ${ImportExport_SRC_DIR}/ImportExportDoc.h
@@ -21,7 +21,7 @@ set (ImportExport_SOURCE_FILES ${ImportExport_SRC_DIR}/ColoredShapes.cpp
                                ${ImportExport_SRC_DIR}/ImportExportDoc.cpp
                                ${ImportExport_SRC_DIR}/StdAfx.cpp)
 
-set (ImportExport_RESOURCE_DIR    ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport/res)
+set (ImportExport_RESOURCE_DIR    ${MFC_STANDARD_SAMPLES_DIR}/03_ImportExport/res)
 set (ImportExport_RESOURCE_HEADER ${ImportExport_RESOURCE_DIR}/resource.h)
 set (ImportExport_RESOURCE_FILES  ${ImportExport_RESOURCE_DIR}/Toolbar.bmp
                                   ${ImportExport_RESOURCE_DIR}/ImportExport.rc)
@@ -55,7 +55,7 @@ else()
 endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport
+                     ${MFC_STANDARD_SAMPLES_DIR}/03_ImportExport
                      ${ImportExport_SRC_DIR}
                      ${MFC_STANDARD_SAMPLES_DIR}/Common)
 

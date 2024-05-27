@@ -11,7 +11,7 @@ project (HLR)
 add_definitions(-DWINVER=0x0501 -DUNICODE -D_UNICODE)
 set (CMAKE_MFC_FLAG 2)
 
-set (HLR_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/08_HLR/src)
+set (HLR_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/04_HLR/src)
 set (HLR_HEADER_FILES ${HLR_SRC_DIR}/HLRApp.h
                       ${HLR_SRC_DIR}/HLRDoc.h
                       ${HLR_SRC_DIR}/HLRView2D.h
@@ -23,7 +23,7 @@ set (HLR_SOURCE_FILES ${HLR_SRC_DIR}/HLRApp.cpp
                       ${HLR_SRC_DIR}/SelectionDialog.cpp
                       ${HLR_SRC_DIR}/StdAfx.cpp )
 
-set (HLR_RESOURCE_DIR    ${MFC_STANDARD_SAMPLES_DIR}/08_HLR/res)
+set (HLR_RESOURCE_DIR    ${MFC_STANDARD_SAMPLES_DIR}/04_HLR/res)
 set (HLR_RESOURCE_HEADER ${HLR_RESOURCE_DIR}/resource.h)
 set (HLR_RESOURCE_FILES  ${HLR_RESOURCE_DIR}/axoviewd.bmp
                          ${HLR_RESOURCE_DIR}/axoviewf.bmp
