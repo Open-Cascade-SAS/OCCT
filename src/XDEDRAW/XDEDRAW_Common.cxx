@@ -264,6 +264,53 @@ static Standard_Integer Extract(Draw_Interpretor& theDI,
 }
 
 //=======================================================================
+//function : Filter
+//purpose  :
+//=======================================================================
+static Standard_Integer Filter(Draw_Interpretor& theDI,
+                                Standard_Integer theNbArgs,
+                                const char** theArgVec)
+{
+  if (theNbArgs < 3)
+  {
+    theDI << "Use: " << theArgVec[0] << "Doc label1 label2 ...\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(theArgVec[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    theDI << "Error " << theArgVec[1] << " is not a document\n";
+    return 1;
+  }
+  TDF_LabelMap aSrcShapes;
+  for (Standard_Integer anArgInd = 2; anArgInd < theNbArgs; anArgInd++)
+  {
+    TDF_Label aSrcLabel;
+    TDF_Tool::Label(aDoc->GetData(), theArgVec[anArgInd], aSrcLabel);
+    if (aSrcLabel.IsNull() || !XCAFDoc_ShapeTool::IsShape(aSrcLabel))
+    {
+      theDI << "[" << theArgVec[anArgInd] << "] is not valid shape label\n";
+      return 1;
+    }
+    aSrcShapes.Add(aSrcLabel);
+  }
+  if (aSrcShapes.IsEmpty())
+  {
+    theDI << "Error: No Shapes to keep\n";
+    return 1;
+  }
+  Handle(XCAFDoc_ShapeTool) aShTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+  if (!XCAFDoc_Editor::FilterShapeTree(aShTool, aSrcShapes))
+  {
+    theDI << "Error: Cannot filter shape tree. Document can be corrupted\n";
+    return 1;
+  }
+  return 0;
+}
+
+//=======================================================================
 //function : InitCommands
 //purpose  :
 //=======================================================================
@@ -288,7 +335,9 @@ void XDEDRAW_Common::InitCommands(Draw_Interpretor& theDI)
   theDI.Add("XExtract", "XExtract dstDoc [dstAssmblSh] srcDoc srcLabel1 srcLabel2 ...\t"
             "Extracts given srcLabel1 srcLabel2 ... from srcDoc into given Doc or assembly shape",
             __FILE__, Extract, aGroup);
-
+  theDI.Add("XShapeTreeFilter", "XShapeTreeFilter Doc label1 label2 ...\t"
+            "Removes not related labels with input labels from original document. Hierarchical structure is kept",
+            __FILE__, Filter, aGroup);
   // Load XSDRAW session for pilot activation
   XSDRAW::LoadDraw(theDI);
 }
