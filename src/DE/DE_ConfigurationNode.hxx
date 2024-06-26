@@ -147,7 +147,7 @@ public:
   //!
   //! The main goal - real-time loading plug-in activation.
   //! OpenSource components don't need to have activation process.
-  Standard_EXPORT void virtual CustomActivation(const TColStd_ListOfAsciiString&) {};
+  Standard_EXPORT virtual void CustomActivation(const TColStd_ListOfAsciiString&) {};
 
 public:
 
