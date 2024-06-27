@@ -520,12 +520,12 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
   if (theBufferType != Graphic3d_BT_RGB_RayTraceHdrLeft)
   {
-    return myWorkspace->BufferDump(myFBO, theImage, theBufferType);
+    return myWorkspace->BufferDump (myFBO, theImage, theBufferType);
   }
 
   if (!myRaytraceParameters.AdaptiveScreenSampling)
   {
-    return myWorkspace->BufferDump(myAccumFrames % 2 ? myRaytraceFBO2[0] : myRaytraceFBO1[0], theImage, theBufferType);
+    return myWorkspace->BufferDump (myAccumFrames % 2 ? myRaytraceFBO2[0] : myRaytraceFBO1[0], theImage, theBufferType);
   }
 
   if (aCtx->GraphicsLibrary() == Aspect_GraphicsLibrary_OpenGLES)
@@ -570,6 +570,71 @@ Standard_Boolean OpenGl_View::BufferDump (Image_PixMap& theImage, const Graphic3
   }
 
   return true;
+}
+
+//=======================================================================
+//function : ShadowMapDump
+//purpose  :
+//=======================================================================
+Standard_Boolean OpenGl_View::ShadowMapDump (Image_PixMap& theImage, const TCollection_AsciiString& theLightName)
+{
+  if (!myShadowMaps->IsValid())
+  {
+    return Standard_False;
+  }
+
+  const Handle(OpenGl_Context)& aGlCtx = myWorkspace->GetGlContext();
+  for (Standard_Integer aShadowIter = 0; aShadowIter < myShadowMaps->Size(); ++aShadowIter)
+  {
+    Handle(OpenGl_ShadowMap)& aShadow = myShadowMaps->ChangeValue(aShadowIter);
+    if (!aShadow.IsNull() && aShadow->LightSource()->Name() == theLightName)
+    {
+      const Handle(OpenGl_FrameBuffer)& aShadowFbo = aShadow->FrameBuffer();
+      if (aShadowFbo->GetVPSizeX() == myRenderParams.ShadowMapResolution)
+      {
+        if ((Standard_Integer)theImage.Width() != aShadowFbo->GetVPSizeX() || (Standard_Integer)theImage.Height() != aShadowFbo->GetVPSizeY())
+        {
+          theImage.InitZero(Image_Format_GrayF, aShadowFbo->GetVPSizeX(), aShadowFbo->GetVPSizeY());
+        }
+        GLint aReadBufferPrev = GL_BACK;
+        // Bind FBO if used.
+        if (!aShadowFbo.IsNull() && aShadowFbo->IsValid())
+        {
+          aShadowFbo->BindBuffer (aGlCtx);
+        }
+        else if (aGlCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+        {
+          aGlCtx->core11fwd->glGetIntegerv (GL_READ_BUFFER, &aReadBufferPrev);
+          GLint aDrawBufferPrev = GL_BACK;
+          aGlCtx->core11fwd->glGetIntegerv (GL_DRAW_BUFFER, &aDrawBufferPrev);
+          aGlCtx->core11fwd->glReadBuffer (aDrawBufferPrev);
+        }
+        // Setup alignment.
+        const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
+        aGlCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
+        // Read data.
+        aGlCtx->core11fwd->glReadPixels (0, 0, GLsizei(theImage.SizeX()), GLsizei(theImage.SizeY()), GL_DEPTH_COMPONENT, GL_FLOAT, theImage.ChangeData());
+        aGlCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, 1);
+        if (aGlCtx->hasPackRowLength)
+        {
+          aGlCtx->core11fwd->glPixelStorei (GL_PACK_ROW_LENGTH, 0);
+        }
+        // Unbind FBO.
+        if (!aShadowFbo.IsNull() && aShadowFbo->IsValid())
+        {
+          aShadowFbo->UnbindBuffer (aGlCtx);
+        }
+        else if (aGlCtx->GraphicsLibrary() != Aspect_GraphicsLibrary_OpenGLES)
+        {
+          aGlCtx->core11fwd->glReadBuffer (aReadBufferPrev);
+        }
+        // Check for errors.
+        const bool hasErrors = aGlCtx->ResetErrors (true);
+        return !hasErrors;
+      }
+    }
+  }
+  return Standard_False;
 }
 
 // =======================================================================
@@ -2583,7 +2648,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
       if (aCtx->arbFBOBlit != NULL)
       {
         // Render bottom OSD layer
-        myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Bottom, theReadDrawFbo, theOitAccumFbo);
+        myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Bottom, myZLayerTarget, theReadDrawFbo, theOitAccumFbo);
 
         const Standard_Integer aPrevFilter = myWorkspace->RenderFilter() & ~(Standard_Integer )(OpenGl_RenderFilter_NonRaytraceableOnly);
         myWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_NonRaytraceableOnly);
@@ -2599,7 +2664,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
           }
 
           // Render non-polygonal elements in default layer
-          myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_RayTracable, theReadDrawFbo, theOitAccumFbo);
+          myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_RayTracable, myZLayerTarget, theReadDrawFbo, theOitAccumFbo);
         }
         myWorkspace->SetRenderFilter (aPrevFilter);
       }
@@ -2622,7 +2687,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
       raytrace (aSizeXY.x(), aSizeXY.y(), theProjection, theReadDrawFbo, aCtx);
 
       // Render upper (top and topmost) OpenGL layers
-      myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Upper, theReadDrawFbo, theOitAccumFbo);
+      myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_Upper, myZLayerTarget, theReadDrawFbo, theOitAccumFbo);
     }
   }
 
@@ -2630,7 +2695,9 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
   // mode or in case of ray-tracing failure
   if (toRenderGL)
   {
-    myZLayers.Render (myWorkspace, theToDrawImmediate, OpenGl_LF_All, theReadDrawFbo, theOitAccumFbo);
+    // check if only a single layer is to be dumped
+    OpenGl_LayerFilter aFilter = myZLayerRedrawMode ? OpenGl_LF_Single : OpenGl_LF_All;
+    myZLayers.Render (myWorkspace, theToDrawImmediate, aFilter, myZLayerTarget, theReadDrawFbo, theOitAccumFbo);
 
     // Set flag that scene was redrawn by standard pipeline
     myWasRedrawnGL = Standard_True;

@@ -42,6 +42,9 @@ Graphic3d_CView::Graphic3d_CView (const Handle(Graphic3d_StructureManager)& theM
   myBackfacing (Graphic3d_TypeOfBackfacingModel_Auto),
   myVisualization (Graphic3d_TOV_WIREFRAME),
   //
+  myZLayerTarget (Graphic3d_ZLayerId_BotOSD),
+  myZLayerRedrawMode (Standard_False),
+  //
   myBgColor (Quantity_NOC_BLACK),
   myBackgroundType (Graphic3d_TOB_NONE),
   myToUpdateSkydome (Standard_False),

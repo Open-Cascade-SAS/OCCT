@@ -6391,6 +6391,79 @@ static Standard_Integer VSelect (Draw_Interpretor& ,
 }
 
 //=======================================================================
+//function : VSelectPriority
+//purpose  : Prints or sets the selection priority for an object
+//=======================================================================
+static Standard_Integer VSelectPriority (Draw_Interpretor& theDI,
+                                         Standard_Integer theNbArgs,
+                                         const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  ViewerTest_AutoUpdater anUpdateTool (aContext, ViewerTest::CurrentView());
+  if (aContext.IsNull())
+  {
+    Message::SendFail("Error: no active viewer");
+    return 1;
+  }
+
+  TCollection_AsciiString aLastArg(theArgVec[theNbArgs - 1]);
+  Standard_Integer aPriority = -1;
+  Standard_Integer aNbArgs = theNbArgs;
+  if (aNbArgs < 2 || aNbArgs > 3)
+  {
+    Message::SendFail("Syntax error: wrong number of arguments! See usage:");
+    theDI.PrintHelp (theArgVec[0]);
+    return 1;
+  }
+
+  if (aLastArg.IsIntegerValue())
+  {
+    TCollection_AsciiString aFocusArg(theArgVec[1]);
+    aPriority = aLastArg.IntegerValue();
+    --aNbArgs;
+    if (aPriority < 0)
+    {
+      Message::SendFail() << "Syntax error: the specified selection priority value '" << aLastArg << "' is invalid ]";
+      return 1;
+    }
+  }
+  else
+  {
+    anUpdateTool.Invalidate();
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < aNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString aName(theArgVec[anArgIter]);
+    Handle(AIS_InteractiveObject) anIObj;
+    GetMapOfAIS().Find2 (aName, anIObj);
+    if (anIObj.IsNull())
+    {
+      Message::SendFail() << "Error: the object '" << theArgVec[1] << "' is not displayed";
+      return 1;
+    }
+
+    Handle(SelectMgr_EntityOwner) anOwner = anIObj->GlobalSelOwner();
+    if (!anOwner.IsNull())
+    {
+      if (aPriority == Graphic3d_DisplayPriority_INVALID)
+      {
+        theDI << anOwner->Priority() << " ";
+      }
+      else
+      {
+        anOwner->SetPriority (aPriority);
+      }
+    }
+    else 
+    {
+      Message::SendFail() << "Error: the object '" << theArgVec[1] << "' is does not have a selection priority attached.";
+      return 1;
+    }
+  }
+  return 0;
+}
+//=======================================================================
 //function : VMoveTo
 //purpose  : Emulates cursor movement to defined pixel position
 //=======================================================================
@@ -14430,6 +14503,11 @@ Emulate different types of selection:
     (partial inclusion - overlap - is not allowed by default).
  5) Selection scheme replace, replaceextra, xor, add or remove (replace by default).
 )" /* [vselect] */);
+
+addCmd("vselectpriority", VSelectPriority, /* [vselectpriority] */ R"(
+vselectpriority name [value]
+Prints or sets the selection priority for an object.
+)" /* [vselectpriority] */);
 
   addCmd ("vmoveto", VMoveTo, /* [vmoveto] */ R"(
 vmoveto [x y] [-reset]

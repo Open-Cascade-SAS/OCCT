@@ -1,0 +1,10 @@
+puts "==============================================================="
+puts "0033146: Modeling Algorithms - 2D Offset with arc-lin approximation fails on open B-spline edge"
+puts "==============================================================="
+puts ""
+
+pload MODELING
+restore [locate_data_file bug33146.brep] a
+wire a a
+openoffset result a 1 1. -approx
+checkview -display result_1 -2d -path ${imagedir}/${test_image}.png

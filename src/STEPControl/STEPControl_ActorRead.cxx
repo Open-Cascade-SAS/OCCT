@@ -122,6 +122,7 @@
 #include <XSAlgo_AlgoContainer.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
+#include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <Geom_Plane.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorRead,Transfer_ActorOfTransientProcess)
@@ -1225,6 +1226,72 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
 }
 
 //=======================================================================
+//function : TransferEntity
+//purpose  : 
+//=======================================================================
+Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
+  const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theMDADR,
+  const Handle(Transfer_TransientProcess)& theTP,
+  const StepData_Factors& theLocalFactors,
+  const Message_ProgressRange& theProgress)
+{
+  Handle(TransferBRep_ShapeBinder) aShBinder;
+  if (theMDADR.IsNull())
+    return aShBinder;
+
+  Standard_Boolean aResetUnits = Standard_False;
+  Handle(StepRepr_Representation) anOldSRContext = mySRContext;
+  StepData_Factors aLocalFactors = theLocalFactors;
+  TopoDS_Compound aComp;
+  BRep_Builder aBuilder;
+  aBuilder.MakeCompound(aComp);
+
+  Message_ProgressScope aPS(theProgress, NULL, 2);
+  for (Standard_Integer anIndex = 1; anIndex <= 2; anIndex++)
+  {
+    Message_ProgressRange aRange = aPS.Next();
+    Handle(StepRepr_Representation) aRepr = (anIndex == 1) ? theMDADR->Rep1() : theMDADR->Rep2();
+    if (aRepr.IsNull())
+      continue;
+    if (mySRContext.IsNull() || aRepr->ContextOfItems() != mySRContext->ContextOfItems())
+    {
+      PrepareUnits(aRepr, theTP, aLocalFactors);
+      aResetUnits = Standard_True;
+    }
+    Handle(Transfer_Binder) aBinder;
+    if (aRepr->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
+    {
+      Handle(StepShape_ShapeRepresentation) aShapeRepr = Handle(StepShape_ShapeRepresentation)::DownCast(aRepr);
+      Standard_Boolean isBound = Standard_False;
+      if (!theTP->IsBound(aShapeRepr))
+      {
+        aBinder = TransferEntity(aShapeRepr, theTP, theLocalFactors, isBound, false, aRange);
+      }
+      else
+      {
+        aBinder = theTP->Find(aShapeRepr);
+      }
+    }
+    TopoDS_Shape aResult = TransferBRep::ShapeResult(aBinder);
+    if (!aResult.IsNull())
+    {
+      aBuilder.Add(aComp, aResult);
+    }
+  }
+
+  aShBinder = new TransferBRep_ShapeBinder(aComp);
+  mySRContext = anOldSRContext;
+  if (anOldSRContext.IsNull() || aResetUnits)
+  {
+    PrepareUnits(anOldSRContext, theTP, aLocalFactors);
+  }
+
+  theTP->Bind(theMDADR, aShBinder);
+
+  return aShBinder;
+}
+
+//=======================================================================
 //function : IsNeedRepresentation
 //purpose  : 
 //=======================================================================
@@ -2121,6 +2188,12 @@ TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(const Handle(Transfer_Tra
         Handle(StepRepr_ShapeRepresentationRelationship)::DownCast(anItem);
       Standard_Integer aNbRep = (theRep == aSRR->Rep1() ? 2 : 1);
       aBinder = TransferEntity(aSRR, theTP, theLocalFactors, aNbRep, theUseTrsf, thePS.Next());
+    }
+    else if (anItem->DynamicType() == STANDARD_TYPE(StepRepr_MechanicalDesignAndDraughtingRelationship))
+    {
+      Handle(StepRepr_MechanicalDesignAndDraughtingRelationship) aMDADR =
+        Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)::DownCast(anItem);
+      aBinder = TransferEntity(aMDADR, theTP, theLocalFactors, thePS.Next());
     }
     else if (theReadConstructiveGeomRR &&
              anItem->DynamicType() == STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship))

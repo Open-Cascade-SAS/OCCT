@@ -408,7 +408,24 @@ void  StepToTopoDS_TranslateEdge::MakeFromCurve3D
   temp1 = pU1.Distance ( pv1 );
   temp2 = pU2.Distance ( pv2 );
   if ( temp1 > preci || temp2 > preci ) {
-    TP->AddWarning (C3D,"Poor result from projection vertex / curve 3d");
+    // #25415: handling of special case found on some STEP files produced by FPX Expert 2013 (PCB design system):
+    // edge curve is line displaced from its true position but with correct direction;
+    // we can shift the line in this case so that it passes through vertices correcty
+    if (Abs (temp1 - temp2) < preci && Abs (U2 - U1 - pnt1.Distance(pnt2)) < Precision::Confusion() && 
+        C1->IsKind(STANDARD_TYPE(Geom_Line)))
+    {
+      Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast (C1);
+      gp_Lin aLin = aLine->Lin();
+      gp_Pnt anOrigin = pnt1.XYZ() - aLin.Position().Direction().XYZ() * U1;
+      aLin.SetLocation (anOrigin);
+      C1 = new Geom_Line (aLin);
+
+      TP->AddWarning (C3D,"Poor result from projection vertex / line 3d, line shifted");
+    }
+    else
+    {
+      TP->AddWarning (C3D,"Poor result from projection vertex / curve 3d");
+    }
   }
   B.UpdateVertex ( V1, 1.000001*temp1 ); //:h6 abv 14 Jul 98: PRO8845 #2746: *=1.0001
   B.UpdateVertex ( V2, 1.000001*temp2 ); //:h6

@@ -96,6 +96,11 @@ void StepToTopoDS_TranslateVertex::Init(const Handle(StepShape_Vertex)& aVertex,
 //:S4136    Standard_Real preci = BRepAPI::Precision();
     const Handle(StepShape_VertexPoint) VP = Handle(StepShape_VertexPoint)::DownCast(aVertex);
     const Handle(StepGeom_Point) P = VP->VertexGeometry();
+    if (P.IsNull()) {
+      myError = StepToTopoDS_TranslateVertexOther;
+      done = Standard_False;
+      return;
+    }
     const Handle(StepGeom_CartesianPoint) P1 = Handle(StepGeom_CartesianPoint)::DownCast(P);
     Handle(Geom_CartesianPoint) P2 = StepToGeom::MakeCartesianPoint (P1, theLocalFactors);
     BRep_Builder B;

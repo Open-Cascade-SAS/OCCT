@@ -1,0 +1,17 @@
+puts "==============================================================="
+puts "0033367: Modeling Algorithms - Normal projection or BOP problem"
+puts "==============================================================="
+puts ""
+
+pload MODELING
+restore [locate_data_file bug33367_1.brep] sou
+restore [locate_data_file bug33367_2.brep] des
+checkshape sou
+checkshape des
+nproject prj sou des
+checknbshapes prj -vertex 2 -edge 2 -compound 1 -shape 5
+baddobjects des
+baddtools prj
+bfillds
+bbuild res
+checkshape res

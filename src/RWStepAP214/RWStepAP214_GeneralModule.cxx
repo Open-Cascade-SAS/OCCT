@@ -327,6 +327,7 @@
 #include <RWStepRepr_RWMaterialDesignation.hxx>
 #include <RWStepRepr_RWMaterialProperty.hxx>
 #include <RWStepRepr_RWMaterialPropertyRepresentation.hxx>
+#include <RWStepRepr_RWMechanicalDesignAndDraughtingRelationship.hxx>
 #include <RWStepRepr_RWMeasureRepresentationItem.hxx>
 #include <RWStepRepr_RWProductConcept.hxx>
 #include <RWStepRepr_RWProductDefinitionShape.hxx>
@@ -789,6 +790,7 @@
 #include <StepRepr_ConfigurationEffectivity.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
+#include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <StepRepr_DataEnvironment.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
 #include <StepRepr_Extension.hxx>
@@ -5896,6 +5898,13 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
     aTool.Share(anEnt, iter);
   }
   break;
+  case 824:
+  {
+    DeclareAndCast(StepRepr_MechanicalDesignAndDraughtingRelationship, anEnt, ent);
+    RWStepRepr_RWMechanicalDesignAndDraughtingRelationship aTool;
+    aTool.Share(anEnt, iter);
+  }
+  break;
   default : break;
   }
 }
@@ -8216,6 +8225,9 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
      break;
    case 823:
      ent = new StepRepr_RealRepresentationItem;
+     break;
+   case 824:
+     ent = new StepRepr_MechanicalDesignAndDraughtingRelationship;
      break;
 
   default: 

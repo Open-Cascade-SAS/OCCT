@@ -1,6 +1,4 @@
-puts "TODO OCC25925 ALL: Faulty OCC5805 : result is not Closed shape"
-puts "TODO OCC25925 ALL: ERROR. offsetperform operation not done."
-puts "TODO OCC25925 ALL: Error: The command cannot be built"
+puts "TODO OCC25925 ALL: Error : The area of result shape is"
 
 puts "============"
 puts "OCC5805"

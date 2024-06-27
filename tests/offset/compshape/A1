@@ -1,6 +1,3 @@
-puts "TODO OCC23068 ALL: ERROR. offsetperform operation not done."
-puts "TODO OCC23068 ALL: Error : The volume of result shape "
-
 ## ======================================
 ## Grid    : CCV002
 ## Test    : A1
@@ -12,4 +9,4 @@ explode s F
 offsetcompshape result s -10 s_1
 
 #real volume of result shape is unknown yet
-checkprops result -v 0
+checkprops result -v 1.01e+06

@@ -1,0 +1,12 @@
+puts "========================"
+puts "0033410: Data Exchange, Step Import - TRIANGULATED_FACE from STEP where there are no pnval entries"
+puts "========================"
+
+pload OCAF
+
+# Read file
+ReadStep D [locate_data_file bug33410.step]
+XGetOneShape sh D
+checktrinfo sh -face 1 -nod 81 -tri 128
+
+Close D

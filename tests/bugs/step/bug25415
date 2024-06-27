@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC25415"
+puts "========"
+puts ""
+##########################################################################
+# Invalid result of loading a STEP file
+##########################################################################
+
+stepread [locate_data_file bug25415_part_of_hdrv8w64p254_4x2_1016x502h838p.stp] a *
+
+checkshape a_1

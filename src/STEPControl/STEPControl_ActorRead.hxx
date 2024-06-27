@@ -48,6 +48,7 @@ class StepShape_FaceSurface;
 class TopoDS_Shell;
 class TopoDS_Compound;
 class StepRepr_ConstructiveGeometryRepresentationRelationship;
+class StepRepr_MechanicalDesignAndDraughtingRelationship;
 class StepData_StepModel;
 
 
@@ -190,6 +191,12 @@ protected:
   Handle(TransferBRep_ShapeBinder) TransferEntity( const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& theCGRR,
                                                    const Handle(Transfer_TransientProcess)& theTP,
                                                    const StepData_Factors& theLocalFactors = StepData_Factors());
+
+  //! Transfers MechanicalDesignAndDraughtingRelationship entity
+  Handle(TransferBRep_ShapeBinder) TransferEntity(const Handle(StepRepr_MechanicalDesignAndDraughtingRelationship)& theMDADR,
+                                                  const Handle(Transfer_TransientProcess)& theTP,
+                                                  const StepData_Factors& theLocalFactors,
+                                                  const Message_ProgressRange& theProgress);
 
   //! Translates file by old way when CDSR are roots . Acts only if "read.step.product_mode" is equal Off.
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay

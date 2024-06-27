@@ -1,0 +1,88 @@
+puts "========"
+puts "0032752: Visualization, TKOpenGl - extend V3d_View::ToPixMap() options with Z-layer"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit
+box b1 20 0 0 10 10 10
+box b2 -20 0 0 10 10 10
+box b3 0 -10 0 5 5 5
+box b4 0 5 0 5 5 5
+box b5 0 0 5 3 3 3
+box b6 0 0 -5 7 7 7
+box b7 0 -5 -10 3 3 3
+
+set aLayerId1 [vzlayer -add -enable depthTest -enable depthWrite -disable depthClear]
+set aLayerId2 [vzlayer -add -enable depthTest -enable depthWrite -disable depthClear]
+
+vdisplay -dispmode 1 -layer ${aLayerId1} b1
+vdisplay -dispmode 1 -layer ${aLayerId2} b2
+vdisplay -dispmode 1 -layer 0 b3
+vdisplay -dispmode 1 -layer -2 b4
+vdisplay -dispmode 1 -layer -3 b5
+vdisplay -dispmode 1 -layer -4 b6
+vdisplay -dispmode 1 -layer -5 b7
+vfit
+vviewparams -scale 15.0 -proj 0.57735 -0.57735 0.57735 -up -0.1 0.1 0.1 -at 0.0 0.0 0.0
+
+vsetcolor b1 RED3
+vsetcolor b2 GREEN3
+vsetcolor b3 BLUE3
+vsetcolor b4 ORANGE3
+vsetcolor b5 YELLOW3
+vsetcolor b6 SALMON3
+vsetcolor b7 PURPLE3
+
+#dump entire scene
+#color
+vdump $imagedir/${casename}_all.png
+#depth
+vdump $imagedir/${casename}_depth.png -buffer depth
+
+#dump single layer
+vdump $imagedir/${casename}_only_b1.png -singlelayer ${aLayerId1}
+vdump $imagedir/${casename}_only_b2.png -singlelayer ${aLayerId2}
+vdump $imagedir/${casename}_only_b3.png -singlelayer 0
+vdump $imagedir/${casename}_only_b4.png -singlelayer -2
+vdump $imagedir/${casename}_only_b5.png -singlelayer -3
+vdump $imagedir/${casename}_only_b6.png -singlelayer -4
+vdump $imagedir/${casename}_only_b7.png -singlelayer -5
+
+#dump a group of layers
+vdump $imagedir/${casename}_upto_b1.png -grouplayer ${aLayerId1}
+vdump $imagedir/${casename}_upto_b2.png -grouplayer ${aLayerId2}
+vdump $imagedir/${casename}_upto_b3.png -grouplayer 0
+vdump $imagedir/${casename}_upto_b4.png -grouplayer -2
+vdump $imagedir/${casename}_upto_b5.png -grouplayer -3
+vdump $imagedir/${casename}_upto_b6.png -grouplayer -4
+vdump $imagedir/${casename}_upto_b7.png -grouplayer -5
+
+#dump single layer depth values
+vdump $imagedir/${casename}_only_b1_depth.png -buffer depth -singlelayer ${aLayerId1}
+vdump $imagedir/${casename}_only_b2_depth.png -buffer depth -singlelayer ${aLayerId2}
+vdump $imagedir/${casename}_only_b3_depth.png -buffer depth -singlelayer 0
+vdump $imagedir/${casename}_only_b4_depth.png -buffer depth -singlelayer -2
+vdump $imagedir/${casename}_only_b5_depth.png -buffer depth -singlelayer -3
+vdump $imagedir/${casename}_only_b6_depth.png -buffer depth -singlelayer -4
+vdump $imagedir/${casename}_only_b7_depth.png -buffer depth -singlelayer -5
+
+#dump a group of layers depth values
+vdump $imagedir/${casename}_upto_b1_depth.png -buffer depth -grouplayer ${aLayerId1}
+vdump $imagedir/${casename}_upto_b2_depth.png -buffer depth -grouplayer ${aLayerId2}
+vdump $imagedir/${casename}_upto_b3_depth.png -buffer depth -grouplayer 0
+vdump $imagedir/${casename}_upto_b4_depth.png -buffer depth -grouplayer -2
+vdump $imagedir/${casename}_upto_b5_depth.png -buffer depth -grouplayer -3
+vdump $imagedir/${casename}_upto_b6_depth.png -buffer depth -grouplayer -4
+vdump $imagedir/${casename}_upto_b7_depth.png -buffer depth -grouplayer -5
+
+#dump shadow maps
+vlight -clear
+vlight v1 -type directional -intensity 1 -dir -1 0 -0.5 -castShadows 1
+vlight v2 -type directional -intensity 1 -dir -1 0.1 0 -castShadows 1
+#dump scene
+vdump $imagedir/${casename}_newlights.png
+#dump shadowmaps
+vdump $imagedir/${casename}_shadowmap_v1.png -buffer shadowmap v1
+vdump $imagedir/${casename}_shadowmap_v2.png -buffer shadowmap v2

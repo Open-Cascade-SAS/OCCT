@@ -641,6 +641,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepShape_RWManifoldSurfaceShapeRepresentation.hxx>
 #include <RWStepRepr_RWMappedItem.hxx>
 #include <RWStepBasic_RWMeasureWithUnit.hxx>
+#include <RWStepRepr_RWMechanicalDesignAndDraughtingRelationship.hxx>
 #include <RWStepVisual_RWMechanicalDesignGeometricPresentationArea.hxx>
 #include <RWStepVisual_RWMechanicalDesignGeometricPresentationRepresentation.hxx>
 // Removed from Rev2 to Rev4 : <RWStepVisual_RWMechanicalDesignPresentationArea.hxx>
@@ -1431,6 +1432,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
+#include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 
 #include <RWStepVisual_RWTessellatedAnnotationOccurrence.hxx>
 #include <RWStepVisual_RWTessellatedItem.hxx>
@@ -2364,6 +2366,7 @@ static TCollection_AsciiString Reco_GeneralPropertyAssociation("GENERAL_PROPERTY
 static TCollection_AsciiString Reco_GeneralPropertyRelationship("GENERAL_PROPERTY_RELATIONSHIP");
 static TCollection_AsciiString Reco_BooleanRepresentationItem("BOOLEAN_REPRESENTATION_ITEM");
 static TCollection_AsciiString Reco_RealRepresentationItem("REAL_REPRESENTATION_ITEM");
+static TCollection_AsciiString Reco_MechanicalDesignAndDraughtingRelationship("MECHANICAL_DESIGN_AND_DRAUGHTING_RELATIONSHIP");
 
 // -- Definition of the libraries --
 
@@ -3125,6 +3128,7 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind(Reco_GeneralPropertyRelationship, 821);
   typenums.Bind(Reco_BooleanRepresentationItem, 822);
   typenums.Bind(Reco_RealRepresentationItem, 823);
+  typenums.Bind(Reco_MechanicalDesignAndDraughtingRelationship, 824);
 
   
 //    SHORT NAMES
@@ -5117,6 +5121,7 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 821: return Reco_GeneralPropertyRelationship;
   case 822: return Reco_BooleanRepresentationItem;
   case 823: return Reco_RealRepresentationItem;
+  case 824: return Reco_MechanicalDesignAndDraughtingRelationship;
   default : return PasReco;
   }
 }
@@ -10754,6 +10759,13 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     aTool.ReadStep(data, num, ach, anent);
   }
   break;
+  case 824:
+  {
+    DeclareAndCast(StepRepr_MechanicalDesignAndDraughtingRelationship, anent, ent);
+    RWStepRepr_RWMechanicalDesignAndDraughtingRelationship aTool;
+    aTool.ReadStep(data, num, ach, anent);
+  }
+  break;
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
   }
@@ -16330,6 +16342,13 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
   {
     DeclareAndCast(StepRepr_RealRepresentationItem, anent, ent);
     RWStepRepr_RWRealRepresentationItem aTool;
+    aTool.WriteStep(SW, anent);
+  }
+  break;
+  case 824:
+  {
+    DeclareAndCast(StepRepr_MechanicalDesignAndDraughtingRelationship, anent, ent);
+    RWStepRepr_RWMechanicalDesignAndDraughtingRelationship aTool;
     aTool.WriteStep(SW, anent);
   }
   break;

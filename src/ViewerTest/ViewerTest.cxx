@@ -966,8 +966,11 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   ViewerTest_StereoPair aStereoPair = ViewerTest_SP_Single;
   V3d_ImageDumpOptions  aParams;
   Handle(Graphic3d_Camera) aCustomCam;
-  aParams.BufferType    = Graphic3d_BT_RGB;
-  aParams.StereoOptions = V3d_SDO_MONO;
+  aParams.BufferType     = Graphic3d_BT_RGB;
+  aParams.StereoOptions  = V3d_SDO_MONO;
+  aParams.TargetZLayerId = Graphic3d_ZLayerId_BotOSD;
+  aParams.IsSingleLayer  = Standard_False;
+  aParams.LightName      = "";
   for (; anArgIter < theArgNb; ++anArgIter)
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
@@ -997,6 +1000,31 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       else if (aBufArg == "depth")
       {
         aParams.BufferType = Graphic3d_BT_Depth;
+      }
+      else if (aBufArg == "shadowmap")
+      {
+        if (++anArgIter >= theArgNb)
+        {
+          Message::SendFail() << "Error: missing light name for shadowmap dump";
+          return 1;
+        }
+        aParams.BufferType = Graphic3d_BT_ShadowMap;
+        aParams.LightName = theArgVec[anArgIter];
+        Standard_Boolean isLightFound = Standard_False;
+        for (V3d_ListOfLightIterator aLightIter(aView->ActiveLightIterator()); aLightIter.More(); aLightIter.Next())
+        {
+          Handle(V3d_Light) aLight = aLightIter.Value();
+          if (aLight->Name() == aParams.LightName)
+          {
+            isLightFound = Standard_True;
+            break;
+          }
+        }
+        if (!isLightFound)
+        {
+          Message::SendFail() << "Error: couldn't find light '" << aParams.LightName << "'";
+          return 1;
+        }
       }
       else
       {
@@ -1105,6 +1133,11 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     {
       aParams.BufferType = Graphic3d_BT_Depth;
     }
+    else if (anArg == "-shadowmap"
+          || anArg == "shadowmap")
+    {
+      aParams.BufferType = Graphic3d_BT_ShadowMap;
+    }
     else if (anArg == "-width"
           || anArg ==  "width"
           || anArg ==  "sizex")
@@ -1147,6 +1180,39 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       }
       aParams.TileSize = Draw::Atoi (theArgVec[anArgIter]);
     }
+    else if (anArg == "-grouplayer")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        Message::SendFail() << "Error: integer value is expected right after 'grouplayer'";
+        return 1;
+      }
+      Graphic3d_ZLayerId aZLayer = (Graphic3d_ZLayerId)Draw::Atoi (theArgVec[anArgIter]);
+      if (!ViewerTest::ParseZLayer (theArgVec[anArgIter], aZLayer) ||
+          aZLayer == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        Message::SendFail() << "Error: invalid layer " << aZLayer << ".";
+        return 1;
+      }
+      aParams.TargetZLayerId = aZLayer;
+    }
+    else if (anArg == "-singlelayer")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        Message::SendFail() << "Error: integer value is expected right after 'singlelayer'";
+        return 1;
+      }
+      Graphic3d_ZLayerId aZLayer = (Graphic3d_ZLayerId)Draw::Atoi (theArgVec[anArgIter]);
+      if (!ViewerTest::ParseZLayer (theArgVec[anArgIter], aZLayer) ||
+          aZLayer == Graphic3d_ZLayerId_UNKNOWN)
+      {
+        Message::SendFail() << "Error: invalid layer " << aZLayer << ".";
+        return 1;
+      }
+      aParams.TargetZLayerId = aZLayer;
+      aParams.IsSingleLayer = Standard_True;
+    }
     else
     {
       Message::SendFail() << "Error: unknown argument '" << theArgVec[anArgIter] << "'";
@@ -1174,6 +1240,7 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     case Graphic3d_BT_Depth:               aFormat = Image_Format_GrayF; break;
     case Graphic3d_BT_RGB_RayTraceHdrLeft: aFormat = Image_Format_RGBF;  break;
     case Graphic3d_BT_Red:                 aFormat = Image_Format_Gray;  break;
+    case Graphic3d_BT_ShadowMap:           aFormat = Image_Format_GrayF;  break;
   }
 
   const bool wasImmUpdate = aView->SetImmediateUpdate (false);
@@ -1194,8 +1261,11 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       else if (aPixMap.SizeX() != Standard_Size(aParams.Width)
             || aPixMap.SizeY() != Standard_Size(aParams.Height))
       {
-        theDI << "Fail: dumped dimensions "    << (Standard_Integer )aPixMap.SizeX() << "x" << (Standard_Integer )aPixMap.SizeY()
-              << " are lesser than requested " << aParams.Width << "x" << aParams.Height << "\n";
+        if (aParams.BufferType != Graphic3d_BT_ShadowMap)
+        {
+          theDI << "Fail: dumped dimensions " << (Standard_Integer)aPixMap.SizeX() << "x" << (Standard_Integer)aPixMap.SizeY()
+            << " are lesser than requested " << aParams.Width << "x" << aParams.Height << "\n";
+        }
       }
       break;
     }
@@ -4798,6 +4868,14 @@ inline Standard_Boolean parseTrsfPersFlag (const TCollection_AsciiString& theFla
   {
     theFlags = Graphic3d_TMF_TriedronPers;
   }
+  else if (theFlagString == "axial")
+  {
+    theFlags = Graphic3d_TMF_AxialScalePers;
+  }
+  else if (theFlagString == "zoomaxial")
+  {
+    theFlags = Graphic3d_TMF_AxialZoomPers;
+  }
   else if (theFlagString == "none")
   {
     theFlags = Graphic3d_TMF_None;
@@ -6648,7 +6726,7 @@ If last 3 optional parameters are not set prints numbers of U-, V- isolines and 
 
   addCmd ("vdisplay", VDisplay2, /* [vdisplay] */ R"(
 vdisplay [-noupdate|-update] [-mutable] [-neutral]
-         [-trsfPers {zoom|rotate|zoomRotate|trihedron|none}=none]
+         [-trsfPers {zoom|rotate|zoomRotate|trihedron|axial|zoomaxial|none}=none]
             [-trsfPersPos X Y [Z]] [-3d]
             [-2d|-trihedron [{top|bottom|left|right|topLeft
                             |topRight|bottomLeft|bottomRight}
@@ -6776,6 +6854,9 @@ vdump <filename>.png [-width Width -height Height]
       [-stereo mono|left|right|blend|sideBySide|overUnder=mono]
       [-xrPose base|head|handLeft|handRight=base]
       [-tileSize Size=0]
+      [-grouplayer zlayerId]
+      [-singlelayer zlayerId]
+      [-buffer shadowmap lightname]
 Dumps content of the active view into image file.
 )" /* [vdump] */);
 

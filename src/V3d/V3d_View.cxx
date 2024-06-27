@@ -2814,6 +2814,7 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
         case Graphic3d_BT_Depth:               aFormat = Image_Format_GrayF; break;
         case Graphic3d_BT_RGB_RayTraceHdrLeft: aFormat = Image_Format_RGBF;  break;
         case Graphic3d_BT_Red:                 aFormat = Image_Format_Gray;  break;
+        case Graphic3d_BT_ShadowMap:           aFormat = Image_Format_GrayF; break;
       }
 
       if (!theImage.InitZero (aFormat, Standard_Size(aTargetSize.x()), Standard_Size(aTargetSize.y())))
@@ -2940,7 +2941,9 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   {
     aCamera->SetAspect (Standard_Real(aTargetSize.x()) / Standard_Real(aTargetSize.y()));
   }
-
+  //apply zlayer rendering parameters to view
+  myView->SetZLayerTarget (theParams.TargetZLayerId);
+  myView->SetZLayerRedrawMode (theParams.IsSingleLayer);
   // render immediate structures into back buffer rather than front
   const Standard_Boolean aPrevImmediateMode = myView->SetImmediateModeDrawToFront (Standard_False);
 
@@ -2952,7 +2955,19 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
       myView->FBOChangeViewport (aFBOPtr, aTargetSize.x(), aTargetSize.y());
     }
     Redraw();
-    isSuccess = isSuccess && myView->BufferDump (theImage, theParams.BufferType);
+    if (theParams.BufferType == Graphic3d_BT_ShadowMap)
+    {
+      // draw shadow maps
+      if (!myView->ShadowMapDump (theImage, theParams.LightName))
+      {
+        Message::SendFail ("OpenGl_View::BufferDump() failed to dump shadowmap");
+        isSuccess = Standard_False;
+      }
+    }
+    else 
+    {
+      isSuccess = isSuccess && myView->BufferDump (theImage, theParams.BufferType);
+    }
   }
   else
   {
@@ -3024,6 +3039,9 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     myView->FBOChangeViewport (aPrevFBOPtr, aPrevFBOVPSize.x(), aPrevFBOVPSize.y());
   }
   myView->SetFBO (aPrevFBOPtr);
+  //apply default zlayer rendering parameters to view
+  myView->SetZLayerTarget (Graphic3d_ZLayerId_BotOSD);
+  myView->SetZLayerRedrawMode (Standard_False);
   return isSuccess;
 }
 

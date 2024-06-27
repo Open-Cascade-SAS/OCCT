@@ -1,0 +1,51 @@
+puts "============="
+puts "0030484: Visualization - 2d persistent: order of detection doesn't coincide with order of objects creation"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit
+vselprops dynHighlight -dispMode 1 -color WHITE
+# compare boxes displayed with 2d transform persistence 
+# with the same properties (zlayer, depth and priority)
+box box_1 75 -250 0 200 200 200
+box box_2 175 -300 0 200 200 200
+vdisplay box_1 -2d topLeft -top -dispmode 1
+vsetmaterial box_1  PLASTIC
+vsetcolor    box_1 DEEPPINK2
+vdisplay box_2 -2d topLeft -top -dispmode 1
+vsetmaterial box_2 PLASTIC
+vsetcolor    box_2 PALEGREEN2
+# verify colors
+if { [vreadpixel 205 170 rgb name] != "DARKSEAGREEN4" } { puts "Error: selected pixel should be green." }
+if { [vreadpixel 150 170 rgb name] != "MAROON" } { puts "Error: selected pixel should be maroon." }
+vmoveto 205 170
+if { [vreadpixel 205 170 rgb name] != "WHITE" } { puts "Error: box_1 should be highlighted" }
+# dump image
+vdump $imagedir/${casename}_boxes_undefined.png
+
+# modify display priority and test selection based on display priority
+# Set box_1 with higher priority
+vmoveto 0 0
+vpriority -update box_1 5
+vpriority -update box_2 4
+# test if box_1 is selected by moving mouse close to 
+# edge close to box_2
+vmoveto 270 170
+if { [vreadpixel 100 170 rgb name] != "WHITE" } { puts "Error: box_1 should be highlighted" }
+vdump $imagedir/${casename}_highlight_box1.png
+vmoveto 280 170
+if { [vreadpixel 350 170 rgb name] != "WHITE" } { puts "Error: box_2 should be highlighted" }
+vdump $imagedir/${casename}_highlight_box2.png
+
+# modify selection priority and test selection based on selection priority
+# Set box_2 with higher priority
+vmoveto 0 0
+vselectpriority box_1 4
+vselectpriority box_2 5
+vmoveto 180 170
+if { [vreadpixel 350 170 rgb name] != "WHITE" } { puts "Error: box_2 should be highlighted" }
+vdump $imagedir/${casename}_highlight_box1.png
+vmoveto 170 170
+if { [vreadpixel 100 170 rgb name] != "WHITE" } { puts "Error: box_1 should be highlighted" }
+vdump $imagedir/${casename}_highlight_box2.png

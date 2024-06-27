@@ -1,0 +1,11 @@
+puts "========"
+puts "0033616: Data Exchange - Using filter while reading XBF may result in unresolved links"
+puts "========"
+
+pload ALL
+
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D -read0:1:1:2:1
+XGetShape sh D 0:1:1:2:1
+checknbshapes sh -solid 1
+
+Close D

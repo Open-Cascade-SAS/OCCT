@@ -112,6 +112,18 @@ public:
   //! Sets visualization type of the view.
   void SetVisualizationType (const Graphic3d_TypeOfVisualization theType) { myVisualization = theType; }
 
+  //! Returns ZLayerId target
+  Graphic3d_ZLayerId ZLayerTarget() const { return myZLayerTarget; }
+
+  //! Sets ZLayerId target.
+  void SetZLayerTarget (const Graphic3d_ZLayerId theTarget) { myZLayerTarget = theTarget; }
+
+  //! Returns ZLayerId redraw mode
+  Standard_Boolean ZLayerRedrawMode() const { return myZLayerRedrawMode; }
+
+  //! Sets ZLayerId redraw mode.
+  void SetZLayerRedrawMode (const Standard_Boolean theMode) { myZLayerRedrawMode = theMode; }
+
   //! Switches computed HLR mode in the view
   Standard_EXPORT void SetComputedMode (const Standard_Boolean theMode);
 
@@ -257,6 +269,11 @@ public:
 
   //! Dump active rendering buffer into specified memory buffer.
   virtual Standard_Boolean BufferDump (Image_PixMap& theImage, const Graphic3d_BufferType& theBufferType) = 0;
+
+  //! Dumps the graphical contents of a shadowmap framebuffer into an image.
+  //! @param theImage the image to store the shadow map.
+  //! @param theLightName [in] name of the light used to generate the shadow map.
+  virtual Standard_Boolean ShadowMapDump (Image_PixMap& theImage, const TCollection_AsciiString& theLightName) = 0;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) = 0;
@@ -638,15 +655,18 @@ protected:
   Graphic3d_Vec2d               mySubviewOffset;            //!< subview corner offset within parent view
 
   Handle(Graphic3d_StructureManager) myStructureManager;
-  Handle(Graphic3d_Camera)  myCamera;
-  Graphic3d_SequenceOfStructure myStructsToCompute;
-  Graphic3d_SequenceOfStructure myStructsComputed;
-  Graphic3d_MapOfStructure myStructsDisplayed;
-  Standard_Boolean myIsInComputedMode;
-  Standard_Boolean myIsActive;
-  Standard_Boolean myIsRemoved;
-  Graphic3d_TypeOfBackfacingModel myBackfacing;
-  Graphic3d_TypeOfVisualization myVisualization;
+  Handle(Graphic3d_Camera)           myCamera;
+  Graphic3d_SequenceOfStructure      myStructsToCompute;
+  Graphic3d_SequenceOfStructure      myStructsComputed;
+  Graphic3d_MapOfStructure           myStructsDisplayed;
+  Standard_Boolean                   myIsInComputedMode;
+  Standard_Boolean                   myIsActive;
+  Standard_Boolean                   myIsRemoved;
+  Graphic3d_TypeOfBackfacingModel    myBackfacing;
+  Graphic3d_TypeOfVisualization      myVisualization;
+
+  Graphic3d_ZLayerId      myZLayerTarget;      //!< ZLayerId for redrawing the content of specific zlayers.
+  Standard_Boolean        myZLayerRedrawMode;  //!< If true redraws single layer, otherwise redraws group of layers.
 
   Quantity_ColorRGBA           myBgColor;
   Handle(Graphic3d_TextureMap) myBackgroundImage;

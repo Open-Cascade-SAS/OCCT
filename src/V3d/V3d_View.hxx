@@ -851,19 +851,25 @@ public:
   //! @param theBufferType     type of the view buffer to dump (color / depth)
   //! @param theToAdjustAspect when true, active view aspect ratio will be overridden by (theWidth / theHeight)
   //! @param theStereoOptions  how to dump stereographic camera
-  Standard_Boolean ToPixMap (Image_PixMap& theImage,
-                             const Standard_Integer theWidth,
-                             const Standard_Integer theHeight,
+  Standard_Boolean ToPixMap (Image_PixMap&               theImage,
+                             const Standard_Integer      theWidth,
+                             const Standard_Integer      theHeight,
                              const Graphic3d_BufferType& theBufferType     = Graphic3d_BT_RGB,
                              const Standard_Boolean      theToAdjustAspect = Standard_True,
-                             const V3d_StereoDumpOptions theStereoOptions  = V3d_SDO_MONO)
+                             const Graphic3d_ZLayerId    theTargetZLayerId = Graphic3d_ZLayerId_BotOSD,
+                             const Standard_Integer      theIsSingleLayer  = Standard_False,
+                             const V3d_StereoDumpOptions theStereoOptions  = V3d_SDO_MONO,
+                             const Standard_CString      theLightName = "")
   {
     V3d_ImageDumpOptions aParams;
-    aParams.Width  = theWidth;
-    aParams.Height = theHeight;
-    aParams.BufferType = theBufferType;
+    aParams.Width          = theWidth;
+    aParams.Height         = theHeight;
+    aParams.BufferType     = theBufferType;
     aParams.StereoOptions  = theStereoOptions;
     aParams.ToAdjustAspect = theToAdjustAspect;
+    aParams.TargetZLayerId = theTargetZLayerId;
+    aParams.IsSingleLayer  = theIsSingleLayer;
+    aParams.LightName      = theLightName;
     return ToPixMap (theImage, aParams);
   }
 

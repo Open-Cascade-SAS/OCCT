@@ -1,0 +1,54 @@
+puts "============="
+puts "0030484: Visualization - 2d persistent: order of detection doesn't coincide with order of objects creation"
+puts "============="
+
+pload MODELING VISUALIZATION
+vclear
+vinit
+vselprops dynHighlight -dispMode 1 -color WHITE
+# Compare behaviour in a scene with a quad (2 triangles)
+# and a point in the center
+vpoint pt1 75 -250 0
+vpoint pt2 275 -250 0
+vpoint pt3 275 -50 0
+vpoint pt4 75 -50 0
+vtriangle tri1 pt1 pt2 pt3
+vtriangle tri2 pt3 pt4 pt1
+vdisplay tri1 -2d topLeft -top -dispmode 1
+vdisplay tri2 -2d topLeft -top -dispmode 1
+vsetmaterial tri1 PLASTIC
+vsetcolor tri1 ORANGE
+vsetmaterial tri2 PLASTIC
+vsetcolor tri2 ORANGE
+vremove pt1 pt2 pt3 pt4
+vaspects -update tri1 -faceBoundaryDraw 1
+vaspects -update tri2 -faceBoundaryDraw 1
+
+vpoint p1 175 150 -2d
+vdisplay p1 -2d topLeft -top -dispmode 1
+
+# dump image
+vdump $imagedir/${casename}_quad_point_undefined.png
+vmoveto 175 150
+if { [vreadpixel 175 150 rgb name] != "CYAN" } { puts "Error: point should be highlighted" }
+vdump $imagedir/${casename}_quad_point_onpoint.png
+vmoveto 150 100
+vdump $imagedir/${casename}_quad_point_ontri2.png
+vmoveto 200 200
+vdump $imagedir/${casename}_quad_point_ontri1.png
+
+# test selection priority
+vmoveto 0 0
+vpriority -update tri1 4
+vpriority -update tri2 4
+vpriority -update p1 4
+vselectpriority tri1 6
+vselectpriority tri2 6
+vselectpriority p1 5
+vmoveto 175 150
+if { [vreadpixel 175 150 rgb name] == "CYAN" } { puts "Error: point should not be highlighted" }
+vdump $imagedir/${casename}_quad_point_changedpriorityfocus.png
+vmoveto 0 0
+vselectpriority p1 4
+vmoveto 175 150
+vdump $imagedir/${casename}_quad_point_reducedpointpriority.png

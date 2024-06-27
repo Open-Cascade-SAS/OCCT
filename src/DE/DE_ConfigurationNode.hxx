@@ -140,6 +140,15 @@ public:
     myIsEnabled = theIsLoaded;
   }
 
+  //! Custom function to activate commercial DE component.
+  //! The input is special sequence of values that described in
+  //! specific component documentation. Order is important.
+  //! Each component can have own way of activation.
+  //!
+  //! The main goal - real-time loading plug-in activation.
+  //! OpenSource components don't need to have activation process.
+  Standard_EXPORT void virtual CustomActivation(const TColStd_ListOfAsciiString&) {};
+
 public:
 
   //!< Internal parameters for transfer process

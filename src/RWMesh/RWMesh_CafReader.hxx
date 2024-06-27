@@ -57,6 +57,7 @@ public:
     Handle(XCAFDoc_ColorTool)       ColorTool;
     Handle(XCAFDoc_VisMaterialTool) VisMaterialTool;
     NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> ComponentMap;
+    NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> OriginalShapeMap;
   };
 
 public:

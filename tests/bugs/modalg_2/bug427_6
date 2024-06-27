@@ -1,8 +1,3 @@
-puts "TODO OCC23068 ALL: ERROR. offsetperform operation not done."
-puts "TODO OCC23068 ALL: result is not a topological shape!!!"
-puts "TODO OCC23068 ALL: Error: The command cannot be built"
-puts "TODO OCC23068 ALL: TEST INCOMPLETE"
-
 puts "========================"
 puts " OCC427 "
 puts "(case 6)"

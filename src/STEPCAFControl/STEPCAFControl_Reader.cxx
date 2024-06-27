@@ -291,7 +291,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader()
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
   myPropsMode(Standard_True),
-  myMetaMode(Standard_False),
+  myMetaMode(Standard_True),
   mySHUOMode(Standard_False),
   myGDTMode(Standard_True),
   myMatMode(Standard_True),
@@ -316,7 +316,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
   myPropsMode(Standard_True),
-  myMetaMode(Standard_False),
+  myMetaMode(Standard_True),
   mySHUOMode(Standard_False),
   myGDTMode(Standard_True),
   myMatMode(Standard_True),
@@ -2018,7 +2018,7 @@ Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_ComplexTriangulate
   const Standard_Integer aNbNormals = theTriangulatedSufaceSet->NbNormals();
   // Number of pairs (Point, Normal). It is possible for one point to have multiple normals. This is
   // useful when the underlying surface is not C1 continuous.
-  const Standard_Integer aNbPairs = aNbNormals > 1 ? theTriangulatedSufaceSet->NbPnindex() : aNodes->Length();
+  const Standard_Integer aNbPairs = aNbNormals > 1 ? theTriangulatedSufaceSet->Pnmax() : aNodes->Length();
   const Standard_Boolean aHasNormals = aNbNormals > 0;
 
   // Counting number of triangles in the triangle strips list.
@@ -2043,7 +2043,7 @@ Handle(Poly_Triangulation) createMesh(const Handle(StepVisual_ComplexTriangulate
 
   for (Standard_Integer j = 1; j <= aNbPairs; ++j)
   {
-    const gp_XYZ& aPoint = aNodes->Value(aNbNormals > 1 ? theTriangulatedSufaceSet->PnindexValue(j) : j);
+    const gp_XYZ& aPoint = aNodes->Value((aNbNormals > 1 && theTriangulatedSufaceSet->NbPnindex() > 0) ? theTriangulatedSufaceSet->PnindexValue(j) : j);
     aMesh->SetNode(j, theFact * aPoint);
   }
 
@@ -2134,11 +2134,12 @@ Standard_Boolean readPMIPresentation(const Handle(Standard_Transient)& thePresen
     return Standard_False;
   }
   Handle(Transfer_TransientProcess) aTP = theTR->TransientProcess();
-  Handle(StepVisual_AnnotationOccurrence) anAO;
+  Handle(StepVisual_StyledItem) anAO;
   NCollection_Vector<Handle(StepVisual_StyledItem)> anAnnotations;
-  if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)))
+  if (thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)) ||
+      thePresentEntity->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
   {
-    anAO = Handle(StepVisual_AnnotationOccurrence)::DownCast(thePresentEntity);
+    anAO = Handle(StepVisual_StyledItem)::DownCast(thePresentEntity);
     if (!anAO.IsNull())
     {
       thePresentName = anAO->Name();
@@ -4368,7 +4369,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
       }
     }
     else if (anEnt->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout)) ||
-      anEnt->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)))
+      anEnt->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)) ||
+      anEnt->IsKind(STANDARD_TYPE(StepVisual_TessellatedAnnotationOccurrence)))
     {
       // Protection against import presentation twice
       Handle(StepVisual_DraughtingCallout) aDC;
