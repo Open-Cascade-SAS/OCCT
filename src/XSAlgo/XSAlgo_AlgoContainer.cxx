@@ -104,16 +104,11 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
   if (aContext.IsNull())
   {
     Standard_CString aRscfile = Interface_Static::CVal(thePrscfile);
-    if (aRscfile != nullptr && strlen(aRscfile) == 0)
+    aContext = new ShapeProcess_ShapeContext(theShape, aRscfile);
+    if (!aContext->ResourceManager()->IsInitialized())
     {
-      aContext = new ShapeProcess_ShapeContext(theShape, nullptr);
+      // If resource file wasn't found, use static values instead
       Interface_Static::FillMap(aContext->ResourceManager()->GetMap());
-    }
-    else
-    {
-      if (!aRscfile)
-        aRscfile = thePrscfile;
-      aContext = new ShapeProcess_ShapeContext(theShape, aRscfile);
     }
     aContext->SetDetalisation(theDetalisationLevel);
   }
