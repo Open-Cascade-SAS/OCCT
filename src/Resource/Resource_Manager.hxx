@@ -116,6 +116,9 @@ public:
 
   //! Returns internal Ref or User map with parameters 
   Standard_EXPORT Resource_DataMapOfAsciiStringAsciiString& GetMap(Standard_Boolean theRefMap = Standard_True);
+
+  //! Returns true if Resource have been found
+  Standard_Boolean IsInitialized() const { return myInitialized; }
   
 private:
 
@@ -129,6 +132,7 @@ private:
   Resource_DataMapOfAsciiStringAsciiString myUserMap;
   Resource_DataMapOfAsciiStringExtendedString myExtStrMap;
   Standard_Boolean myVerbose;
+  Standard_Boolean myInitialized;
 
 };
 

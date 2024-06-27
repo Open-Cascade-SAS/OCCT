@@ -62,7 +62,8 @@ Resource_Manager::Resource_Manager (const TCollection_AsciiString& theName,
                                     const TCollection_AsciiString& theUserDefaultsDirectory,
                                     const Standard_Boolean theIsVerbose)
 : myName (theName),
-  myVerbose (theIsVerbose)
+  myVerbose (theIsVerbose),
+  myInitialized(Standard_False)
 {
   if (!theDefaultsDirectory.IsEmpty())
   {
@@ -102,7 +103,7 @@ Resource_Manager::Resource_Manager (const TCollection_AsciiString& theName,
 }
 
 Resource_Manager::Resource_Manager(const Standard_CString aName,
-				   const Standard_Boolean Verbose) : myName(aName), myVerbose(Verbose)
+				   const Standard_Boolean Verbose) : myName(aName), myVerbose(Verbose), myInitialized(Standard_False)
 {
   OSD_Environment envDebug("ResourceDebug");
   Debug = (!envDebug.Value().IsEmpty()) ;
@@ -157,6 +158,7 @@ void Resource_Manager::Load(const TCollection_AsciiString& thePath,
 	   << "\". File not found or permission denied." << std::endl;
     return;
   }
+  myInitialized = Standard_True;
   Standard_Integer LineNumber = 1;
   while ((aKind = WhatKindOfLine(File, Token1, Token2)) != Resource_KOL_End) {
     switch (aKind) {
