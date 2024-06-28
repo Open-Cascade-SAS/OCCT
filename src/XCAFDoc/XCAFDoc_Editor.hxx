@@ -19,6 +19,7 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelDataMap.hxx>
+#include <TDF_LabelMap.hxx>
 #include <TDF_LabelSequence.hxx>
 
 class XCAFDoc_VisMaterial;
@@ -94,6 +95,34 @@ public:
                                             const Standard_Boolean theToCopyMaterial = Standard_True,
                                             const Standard_Boolean theToCopyVisMaterial = Standard_True,
                                             const Standard_Boolean theToCopyAttributes = Standard_True);
+
+  //! Gets shape labels that has down relation with the input label.
+  //! @param[in] theLabel input label
+  //! @param[out] theRelatedLabels output labels
+  Standard_EXPORT static void GetParentShapeLabels(const TDF_Label& theLabel,
+                                                   TDF_LabelMap& theRelatedLabels);
+
+  //! Gets shape labels that has up relation with the input label.
+  //! @param[in] theLabel input label
+  //! @param[out] theRelatedLabels output labels
+  Standard_EXPORT static void GetChildShapeLabels(const TDF_Label& theLabel,
+                                                  TDF_LabelMap& theRelatedLabels);
+
+  //! Filters original shape tree with keeping structure.
+  //! The result will include the full label hierarchy lower then input labels.
+  //! Any higher hierarchy labels will be filtered to keep only necessary labels.
+  //! All not related shape labels with input will be cleared (all attributes will be removed).
+  //!
+  //! The result impact directly into original document and existed shape labels.
+  //! Attributes related to removed shape can became invalide.
+  //! For example, GDT with relation on removed shape label(s) and without
+  //! attachment point(s) became invalid for visualization.
+  //!
+  //! @param[in] theShapeTool shape tool to extract from
+  //! @param[in] theLabelsToKeep labels to keep
+  //! @return true if the tree was filtered successfully.
+  Standard_EXPORT static bool FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTool,
+                                              const TDF_LabelMap& theLabelsToKeep);
 
   //! Applies geometrical scaling to the following assembly components:
   //! - part geometry
