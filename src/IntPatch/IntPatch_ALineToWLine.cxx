@@ -647,6 +647,26 @@ void IntPatch_ALineToWLine::MakeWLine(const Handle(IntPatch_ALine)& theALine,
         {// Strictly equal!!!
           break;
         }
+        else if (aParameter + aStep < theLPar)
+        {
+          // Prediction of the next point 
+          gp_Pnt aPnt3dNext;
+          gp_Vec aTg;
+          theALine->D1(aParameter + aStep, aPnt3dNext, aTg);
+          Standard_Real anU1 = 0.0, aV1 = 0.0, anU2 = 0.0, aV2 = 0.0;
+          myQuad1.Parameters(aPnt3dNext, anU1, aV1);
+          myQuad2.Parameters(aPnt3dNext, anU2, aV2);
+          IntSurf_PntOn2S aPOn2SNext;
+          aPOn2SNext.SetValue(aPnt3dNext, anU1, aV1, anU2, aV2);
+
+          if (aPOn2SNext.ValueOnSurface(0).SquareDistance(aRPT.ValueOnSurface(0)) > M_PI * M_PI ||
+            aPOn2SNext.ValueOnSurface(1).SquareDistance(aRPT.ValueOnSurface(1)) > M_PI * M_PI)
+          {
+            aPrevLPoint = aRPT;
+            aPrevParam = aParameter;
+            continue;
+          }
+        }
       }
 
       aPrePointExist = IntPatch_SPntNone;

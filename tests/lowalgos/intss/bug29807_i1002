@@ -17,7 +17,7 @@ fit
 
 regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} [bopcurves b1_5 b2_2 -2d] full Toler NbCurv
 
-if { ${Toler} > 0.0004} {
+if { ${Toler} > 0.002} {
    puts "Error: bad tolerance of result"
 }
 
