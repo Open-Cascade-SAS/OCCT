@@ -1,0 +1,12 @@
+puts "================================"
+puts "0033702: Modeling Algorithms - Regression: Intersection curve is not built between cone and cylinder"
+puts "================================"
+puts ""
+
+restore [locate_data_file bug33702_ext.brep] ext 
+restore [locate_data_file bug33702_rev.brep] rev 
+
+bcut result ext rev
+
+checknbshapes result -vertex 51 -edge 75 -wire 42 -face 30
+checkview -display result -2d -path ${imagedir}/${test_image}.png
