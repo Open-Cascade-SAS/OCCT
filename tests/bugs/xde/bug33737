@@ -1,0 +1,61 @@
+puts "========"
+puts "	0033737: Data Exchange, XCAF - Implementing filter tree functionality"
+puts "========"
+
+pload DE OCAF
+
+Close D_orig D_part1 D_part2 D_part3 D_part4 D_part5 -silent
+
+# get original shape
+Close D_orig -silent
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D_orig
+XGetOneShape sh_orig D_orig
+
+# any bolt inside assembly
+Close D_orig D_part1 -silent
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D_part1
+XShapeTreeFilter D_part1 "0:1:1:7"
+XGetOneShape sh1 D_part1
+
+# rod
+Close D_part1 D_part2 -silent
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D_part2
+XShapeTreeFilter D_part2 "0:1:1:2:3"
+XGetOneShape sh2 D_part2
+
+# plate
+Close D_part2 D_part3 -silent
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D_part3
+XShapeTreeFilter D_part3 "0:1:1:1:3"
+XGetOneShape sh3 D_part3
+
+# any nuts
+Close D_part3 D_part4 -silent
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D_part4
+XShapeTreeFilter D_part4 "0:1:1:3"
+XGetOneShape sh4 D_part4
+
+# any nuts
+Close D_part4 D_part5 -silent
+XOpen [locate_data_file bug28905_as1-oc-214.xbf] D_part5
+XShapeTreeFilter D_part5 "0:1:1:8"
+XGetOneShape sh5 D_part5
+
+Close D_part5 -silent
+
+compound sh1 sh2 sh3 sh4 sh5 comp
+
+set props_orig [vprops sh_orig]
+set props_comp [vprops comp]
+
+checkprops sh_orig -equal comp
+
+if { ![regexp {Center of gravity[^0-9=]+= +([-0-9.+eE]+)[^0-9=]+= +([-0-9.+eE]+)[^0-9=]+= +([-0-9.+eE]+)} $props_orig full x_orig y_orig z_orig] } {
+  puts "Error: Problem with properties calculation"
+}
+if { ![regexp {Center of gravity[^0-9=]+= +([-0-9.+eE]+)[^0-9=]+= +([-0-9.+eE]+)[^0-9=]+= +([-0-9.+eE]+)} $props_comp full x_comp y_comp z_comp] } {
+  puts "Error: Problem with properties calculation"
+}
+if {$x_orig != $x_comp || $y_orig != $y_comp || $z_orig != $z_comp} {
+  puts "Error: Different center of gravity"
+}

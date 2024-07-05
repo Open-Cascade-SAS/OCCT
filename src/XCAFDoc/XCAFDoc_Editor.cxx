@@ -17,6 +17,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <Message.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
@@ -583,11 +584,114 @@ static Standard_Boolean shouldRescaleAndCheckRefLabels(
 }
 
 //=======================================================================
+//function : GetChildShapeLabels
+//purpose  :
+//=======================================================================
+void XCAFDoc_Editor::GetChildShapeLabels(const TDF_Label& theLabel,
+                                         TDF_LabelMap& theRelatedLabels)
+{
+  if (theLabel.IsNull() || !XCAFDoc_ShapeTool::IsShape(theLabel))
+  {
+    return;
+  }
+  if (!theRelatedLabels.Add(theLabel))
+  {
+    return; // Label already processed
+  }
+  if (XCAFDoc_ShapeTool::IsAssembly(theLabel) ||
+      XCAFDoc_ShapeTool::IsSimpleShape(theLabel))
+  {
+    for(TDF_ChildIterator aChildIter(theLabel); aChildIter.More(); aChildIter.Next())
+    {
+      const TDF_Label& aChildLabel = aChildIter.Value();
+      GetChildShapeLabels(aChildLabel, theRelatedLabels);
+    }
+  }
+  if (XCAFDoc_ShapeTool::IsReference(theLabel))
+  {
+    TDF_Label aRefLabel;
+    XCAFDoc_ShapeTool::GetReferredShape(theLabel, aRefLabel);
+    GetChildShapeLabels(aRefLabel, theRelatedLabels);
+  }
+}
+
+//=======================================================================
+//function : GetParentShapeLabels
+//purpose  :
+//=======================================================================
+void XCAFDoc_Editor::GetParentShapeLabels(const TDF_Label& theLabel,
+                                          TDF_LabelMap& theRelatedLabels)
+{
+  if (theLabel.IsNull() || !XCAFDoc_ShapeTool::IsShape(theLabel))
+  {
+    return;
+  }
+  if (!theRelatedLabels.Add(theLabel))
+  {
+    return; // Label already processed
+  }
+  if (XCAFDoc_ShapeTool::IsSubShape(theLabel) ||
+      XCAFDoc_ShapeTool::IsComponent(theLabel))
+  {
+    TDF_Label aFatherLabel = theLabel.Father();
+    GetParentShapeLabels(aFatherLabel, theRelatedLabels);
+  }
+  else
+  {
+    TDF_LabelSequence aUsers;
+    XCAFDoc_ShapeTool::GetUsers(theLabel, aUsers);
+    if (!aUsers.IsEmpty())
+    {
+      for (TDF_LabelSequence::Iterator aUserIter(aUsers); aUserIter.More(); aUserIter.Next())
+      {
+        const TDF_Label& aUserLabel = aUserIter.Value();
+        GetParentShapeLabels(aUserLabel, theRelatedLabels);
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : FilterShapeTree
+//purpose  :
+//=======================================================================
+bool XCAFDoc_Editor::FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTool,
+                                     const TDF_LabelMap& theLabelsToKeep)
+{
+  if (theLabelsToKeep.IsEmpty())
+  {
+    return false;
+  }
+  Handle(NCollection_BaseAllocator) anAllocator = new NCollection_IncAllocator();
+  TDF_LabelMap aLabelsToKeep (theLabelsToKeep.Size(), anAllocator);
+  for (TDF_LabelMap::Iterator aLabelIter (theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
+  {
+    GetChildShapeLabels (aLabelIter.Key(), aLabelsToKeep);
+  }
+  TDF_LabelMap aInternalLabels (1, anAllocator);
+  for (TDF_LabelMap::Iterator aLabelIter (theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
+  {
+    GetParentShapeLabels (aLabelIter.Key(), aInternalLabels);
+    aLabelsToKeep.Unite(aInternalLabels);
+    aInternalLabels.Clear(false);
+  }
+  for(TDF_ChildIterator aLabelIter (theShapeTool->Label(), true); aLabelIter.More(); aLabelIter.Next())
+  {
+    const TDF_Label& aLabel = aLabelIter.Value();
+    if (!aLabelsToKeep.Contains (aLabel))
+    {
+      aLabel.ForgetAllAttributes (Standard_False);
+    }
+  }
+  theShapeTool->UpdateAssemblies();
+  return true;
+}
+
+//=======================================================================
 //function : RescaleGeometry
 //purpose  : Applies geometrical scale to all assembly parts, component
 //           locations and related attributes
 //=======================================================================
-
 Standard_Boolean XCAFDoc_Editor::RescaleGeometry(const TDF_Label& theLabel,
                                                  const Standard_Real theScaleFactor,
                                                  const Standard_Boolean theForceIfNotRoot)
