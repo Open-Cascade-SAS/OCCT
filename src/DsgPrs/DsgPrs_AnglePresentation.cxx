@@ -39,7 +39,7 @@
 
 #include <stdio.h>
 //------------------------------------------------------------------------------------------------------------------
-// Returns 1 if C is above of CMin; 0 if C is bitween CMin and CMax; -1 if C is Below CMax   
+// Returns 1 if C is above of CMin; 0 if C is between CMin and CMax; -1 if C is Below CMax   
 //-----------------------------------------------------------------------------------------------------------------
 static Standard_Integer AboveInBelowCone(const gp_Circ &CMax, const gp_Circ &CMin, const gp_Circ &C)
 {

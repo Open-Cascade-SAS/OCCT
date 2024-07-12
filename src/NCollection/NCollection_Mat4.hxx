@@ -36,7 +36,7 @@ public:
   }
 
   //! Get number of columns.
-  //! @retur number of columns.
+  //! @return number of columns.
   static size_t Cols()
   {
     return 4;

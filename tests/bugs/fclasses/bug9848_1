@@ -3,7 +3,7 @@ puts "OCC9848"
 puts "============"
 puts ""
 #######################################################################
-# Specififying invalid name of unit produces exception.(for example tonne instead ton)
+# Specifying invalid name of unit produces exception.(for example tonne instead ton)
 #######################################################################
 
 set BugNumber OCC9848

@@ -3306,7 +3306,7 @@ The following example illustrates how to use Common operation:
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Common aBuilder;
   
-  // perpare the arguments
+  // prepare the arguments
   TopTools_ListOfShape& aLS=…;
   TopTools_ListOfShape& aLT=…;
   //
@@ -3373,7 +3373,7 @@ The following example illustrates how to use Fuse operation:
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Fuse aBuilder;
   
-  // perpare the arguments
+  // prepare the arguments
   TopTools_ListOfShape& aLS=…;
   TopTools_ListOfShape& aLT=…;
   //
@@ -3440,7 +3440,7 @@ The following example illustrates how to use Cut operation:
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Cut aBuilder;
   
-  // perpare the arguments
+  // prepare the arguments
   TopTools_ListOfShape& aLS=…;
   TopTools_ListOfShape& aLT=…;
   //
@@ -3508,7 +3508,7 @@ The following example illustrates how to use Section operation:
   Standard_Real aFuzzyValue;
   BRepAlgoAPI_Section aBuilder;
   
-  // perpare the arguments
+  // prepare the arguments
   TopTools_ListOfShape& aLS=…;
   TopTools_ListOfShape& aLT=…;
   //

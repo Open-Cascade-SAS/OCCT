@@ -65,7 +65,7 @@ class IFSelect_GeneralModifier : public Standard_Transient
 public:
 
   //! Returns True if this modifier may change the graph of
-  //! dependences (aknowledged at creation time)
+  //! dependences (acknowledged at creation time)
   Standard_EXPORT Standard_Boolean MayChangeGraph() const;
   
   //! Attaches to a Dispatch. If <disp> is Null, Resets it

@@ -410,7 +410,7 @@ Current goal is to speed up Monte-Carlo integration of Cook-Torrance like integr
 
 Where \f$g(v, l)\f$ is just arbitrary function representing Fresnel's factor itself or its components.
 In order to increase convergence the samples with larger contribution (or in other words with larger function's values) have to appear more frequently than others proportionally to its contribution.
-So that less significant summand with less influence to result will be considered rarely and in opposite way parts brining noticeable changes to the sum will be taken often.
+So that less significant summand with less influence to result will be considered rarely and in opposite way parts bringing noticeable changes to the sum will be taken often.
 That is the main idea of **importance sampling technique**.
 \f$p(l)\f$ has to represent significance of sample in terms of integrated function via probability somehow.
 And it will be like that if PDF is already part of original function because in that case probability density directly affects to contribution forming.

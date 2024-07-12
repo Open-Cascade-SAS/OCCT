@@ -453,7 +453,7 @@ void ChFi2d_FilletAlgo::PerformNewton(FilletPoint* theLeft, FilletPoint* theRigh
     else
     {
       if (Abs(aB) > Abs(aDet * 1000000.)) 
-      {	// possible floating point operations accurancy errors
+      {	// possible floating point operations accuracy errors
         //std::cout<<"*";
         ProcessPoint(theLeft, theRight, theLeft->getParam() + aDX / 2.0); // linear division otherwise
       } 

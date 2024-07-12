@@ -22,7 +22,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_IncAllocator.hxx>
 
-//! Auxiliary enumeration serving as responce from method Inspect
+//! Auxiliary enumeration serving as response from method Inspect
 enum NCollection_CellFilter_Action 
 {
   CellFilter_Keep  = 0, //!< Target is needed and should be kept
@@ -136,7 +136,7 @@ public:
     Reset (theCellSize, theAlloc);
   }
 
-  //! Constructor when dimenstion count is known at compilation time.
+  //! Constructor when dimension count is known at compilation time.
   NCollection_CellFilter (const Standard_Real theCellSize = 0,
                           const Handle(NCollection_IncAllocator)& theAlloc = 0)
   : myCellSize(0, Inspector::Dimension - 1)

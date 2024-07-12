@@ -193,7 +193,7 @@ Modify this parameter  with:
 if  (!Interface_Static::SetIVal ("read.stdsameparameter.mode",1))  
 .. error ..; 
 ~~~~
-Deafault value is 0 (Off).  
+Default value is 0 (Off).  
 
 <h4>read.surfacecurve.mode</h4>
 preference for the  computation of curves in case of 2D/3D inconsistency in an entity which has  both 2D and 3D representations.  

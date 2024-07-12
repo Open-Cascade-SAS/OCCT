@@ -4581,7 +4581,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
     __FILE__,
     QACheckBends, group);
   theCommands.Add("OCC26441",
-    "OCC26441 shape ref_shape [tol [all_diff 0/1]] \nif all_diff = 0, only icreasing tolerances is considered" ,
+    "OCC26441 shape ref_shape [tol [all_diff 0/1]] \nif all_diff = 0, only increasing tolerances is considered" ,
     __FILE__,
     OCC26441, group);
 

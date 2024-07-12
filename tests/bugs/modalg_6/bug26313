@@ -3,7 +3,7 @@ puts "OCC26313"
 puts "============"
 puts ""
 #######################################################################
-# Method BRepBuilderAPI_GTransform::ModifiedShape(...) thows exception
+# Method BRepBuilderAPI_GTransform::ModifiedShape(...) throws exception
 #######################################################################
 
 pload QAcommands

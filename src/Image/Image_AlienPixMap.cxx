@@ -1098,7 +1098,7 @@ bool Image_AlienPixMap::Save (Standard_Byte* theBuffer,
   if (theBuffer != NULL)
   {
     // a memory buffer wrapped by FreeImage is read only (images can be loaded but not be saved)
-    // so we call FreeImage_OpenMemory() with default arguments and just memcpy in requsted buffer.
+    // so we call FreeImage_OpenMemory() with default arguments and just memcpy in requested buffer.
     FIMEMORY* aFiMem = FreeImage_OpenMemory();
     isSaved = (FreeImage_SaveToMemory (anImageFormat, anImageToDump, aFiMem) != FALSE);
     BYTE* aData = NULL;

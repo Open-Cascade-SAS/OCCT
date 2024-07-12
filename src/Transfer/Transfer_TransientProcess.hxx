@@ -57,7 +57,7 @@ public:
   //! Returns the Model used for StartTrace
   Standard_EXPORT Handle(Interface_InterfaceModel) Model() const;
   
-  //! Sets a Graph : superseedes SetModel if already done
+  //! Sets a Graph : supersedes SetModel if already done
   Standard_EXPORT void SetGraph (const Handle(Interface_HGraph)& HG);
   
   Standard_EXPORT Standard_Boolean HasGraph() const;
@@ -89,7 +89,7 @@ public:
   
   //! Returns the list of sharings entities, AT ANY LEVEL, which are
   //! kind of a given type. Calls TypedSharings from Graph
-  //! Returns an empty list if the Graph has not been aknowledged
+  //! Returns an empty list if the Graph has not been acknowledged
   Standard_EXPORT Interface_EntityIterator TypedSharings (const Handle(Standard_Transient)& start, const Handle(Standard_Type)& type) const;
   
   //! Tells if an entity is well loaded from file (even if its data

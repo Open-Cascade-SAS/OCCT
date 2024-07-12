@@ -167,7 +167,7 @@ Standard_Boolean XmlObjMgt::GetTagEntryString
   if (strncmp (aSource, aRefPrefix, aPrefixSize))
     return Standard_False;
 
-  //    Beging aTagEntry string
+  //    Begin aTagEntry string
   char * aTagEntry =
     (char *) Standard::Allocate (strlen(aSource)/2);  // quite enough to hold it
   char * aTagEntryPtr = aTagEntry + 1;

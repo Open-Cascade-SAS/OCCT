@@ -21,7 +21,7 @@
 // The array of prime numbers used as consecutive steps for
 // size of array of buckets in the map.
 // The prime numbers are used for array size with the hope that this will 
-// lead to less probablility of having the same hash codes for
+// lead to less probability of having the same hash codes for
 // different map items (note that all hash codes are modulo that size).
 // The value of each next step is chosen to be ~2 times greater than previous.
 // Though this could be thought as too much, actually the amount of 

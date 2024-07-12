@@ -515,7 +515,7 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
       //  Ici, on exploite les infos deja connues
       Standard_Real uf,ul,vf,vl;
       surf->Bounds (uf,ul,vf,vl);
-      //#4 rln 19/02/98 ProSTEP ug_exhaust-A.stp entity #284920 (thoroidal surface)
+      //#4 rln 19/02/98 ProSTEP ug_exhaust-A.stp entity #284920 (toroidal surface)
       //#13 rln 17/03/98 (updating fix #4) call to TranslatePCurve in the case
       //when a surface is either u- and vclosed or neither u- nor vclosed
       //#78 rln 12.03.99 S4135: checking spatial closure with prec

@@ -37,7 +37,7 @@ IGESGeom_CopiousData::IGESGeom_CopiousData ()
    const Standard_Real aZPlane,
    const Handle(TColStd_HArray1OfReal)& allData)
 {
-  // PTV OCC386 crach application while reading So5771b.igs
+  // PTV OCC386 crash application while reading So5771b.igs
   if (allData.IsNull())
     throw Standard_NullObject("IGESGeom_CopiousData : Init with null data");
   

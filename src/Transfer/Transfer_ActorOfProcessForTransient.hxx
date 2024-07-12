@@ -43,7 +43,7 @@ public:
   
   Standard_EXPORT Transfer_ActorOfProcessForTransient();
   
-  //! Prerequesite for Transfer : the method Transfer is
+  //! Prerequisite for Transfer : the method Transfer is
   //! called on a starting object only if Recognize has
   //! returned True on it
   //! This allows to define a list of Actors, each one

@@ -27,7 +27,7 @@ find_package(OpenGL REQUIRED)
 # Open CASCADE Technology
 find_package (OpenCASCADE REQUIRED)
 if (NOT OpenCASCADE_FOUND)
-  message (FATAL_ERROR "coult not find OpenCASCADE, please set OpenCASCADE_DIR variable" )
+  message (FATAL_ERROR "could not find OpenCASCADE, please set OpenCASCADE_DIR variable" )
 else()
   message (STATUS "Using OpenCASCADE from \"${OpenCASCADE_INSTALL_PREFIX}\"" )
   message (STATUS "OpenCASCADE_INCLUDE_DIR=${OpenCASCADE_INCLUDE_DIR}")

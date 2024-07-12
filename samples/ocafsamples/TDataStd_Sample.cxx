@@ -346,7 +346,7 @@ static void Sample()
 
   constraint->Set(TDataXtd_PARALLEL, NS1, NS2);
 
-  // Getting number of geometries which define a constarint
+  // Getting number of geometries which define a constraint
   
   Standard_Integer number = constraint->NbGeometries();
 
