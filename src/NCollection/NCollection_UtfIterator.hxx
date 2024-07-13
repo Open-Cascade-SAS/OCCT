@@ -202,7 +202,7 @@ private:
   //! Helper overload methods to dispatch reading function depending on code unit size
   void readNext (const Standard_Utf8Char*)  { readUTF8(); }
   void readNext (const Standard_Utf16Char*) { readUTF16(); }
-  void readNext (const Standard_Utf32Char*) { myCharUtf32 = *myPosNext++; }
+  void readNext (const Standard_Utf32Char*) { myCharUtf32 = *myPosNext++; } // NOLINT
 
   //! Helper overload methods to dispatch advance function depending on code unit size
   Standard_Integer advanceBytes (const Standard_Utf8Char*)  const { return AdvanceBytesUtf8(); }

@@ -165,8 +165,10 @@ void Bnd_Range::Split(const Standard_Real theVal,
     theList.Append(Bnd_Range(myFirst, aValPrev));
   }
 
-  for (Standard_Real aVal = aValPrev+aPeriod; aVal <= myLast; aVal += aPeriod)
+  const size_t aNumSteps = static_cast<size_t>((myLast - aValPrev) / aPeriod) + 1;
+  for (size_t aStep = 1; aStep <= aNumSteps; ++aStep)
   {
+    const Standard_Real aVal = aValPrev + aStep * aPeriod;
     theList.Append(Bnd_Range(aValPrev, aVal));
     aValPrev = aVal;
   }

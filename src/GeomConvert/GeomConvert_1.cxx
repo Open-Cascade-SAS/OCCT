@@ -534,7 +534,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
       Standard_Real AlfaU;
       if (Strim->IsUPeriodic()) {
         NbUKnots = 4;
-        nbUSpans = 3;
+        nbUSpans = 3; // NOLINT
         AlfaU    = M_PI / 3.;
         NbUPoles = 6;
         periodic = Standard_True;

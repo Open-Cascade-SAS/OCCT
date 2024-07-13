@@ -68,7 +68,7 @@ static void ComputePoles ( const Standard_Real R,
 
   Standard_Real UStart = U1;
   for ( j = 0; j <= nbVP-1; j++) {
-    Poles( 1, j+1) = gp_Pnt(x[j]*Cos(UStart),x[j]*Sin(UStart),z[j]);
+    Poles( 1, j+1) = gp_Pnt(x[j]*Cos(UStart),x[j]*Sin(UStart),z[j]); // NOLINT
   }
 
   for ( i = 1; i <= nbUSpans; i++) {

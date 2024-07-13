@@ -5917,7 +5917,6 @@ int mma2er2_(integer *ndjacu,
   integer i2rdu, i2rdv;
   doublereal errnu, errnv;
   integer ii, nd, jj, nu, nv;
-  doublereal bid0, bid1;
 
 /* ********************************************************************** 
 */
@@ -6031,12 +6030,11 @@ L1001:
 /* ---------------- by U, the degree by V is fixed to NV ----------------- 
 */
 
-    bid0 = 0.;
     if (nv > *mindgv) {
-	bid0 = xmaxjv[nv - i2rdv];
+	doublereal bid0 = xmaxjv[nv - i2rdv];
 	i__1 = *ndimen;
 	for (nd = 1; nd <= i__1; ++nd) {
-	    bid1 = 0.;
+	    doublereal bid1 = 0.;
 	    i__2 = nu;
 	    for (ii = i2rdu; ii <= i__2; ++ii) {
 		bid1 += (d__1 = patjac[ii + (nv + nd * patjac_dim2) * 
@@ -6056,12 +6054,11 @@ L1001:
 /* ---------------- by V, the degree by U is fixed to NU ----------------- 
 */
 
-    bid0 = 0.;
     if (nu > *mindgu) {
-	bid0 = xmaxju[nu - i2rdu];
+	doublereal bid0 = xmaxju[nu - i2rdu];
 	i__1 = *ndimen;
 	for (nd = 1; nd <= i__1; ++nd) {
-	    bid1 = 0.;
+	    doublereal bid1 = 0.;
 	    i__2 = nv;
 	    for (jj = i2rdv; jj <= i__2; ++jj) {
 		bid1 += (d__1 = patjac[nu + (jj + nd * patjac_dim2) * 

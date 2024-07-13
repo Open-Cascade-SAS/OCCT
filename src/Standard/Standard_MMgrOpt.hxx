@@ -124,6 +124,10 @@ protected:
   //! Internal - free memory pools allocated for small size blocks
   void FreePools();
 
+  //! Release medium-sized blocks of memory in free lists to the system.
+  //! Returns number of actually freed blocks
+  Standard_Integer purge(const Standard_Boolean theIsDestroyed);
+
  protected:
   Standard_Boolean myClear;         //!< option to clear allocated memory
   

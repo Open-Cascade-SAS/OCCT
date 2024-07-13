@@ -23,7 +23,7 @@ namespace
   size_t HashCode(const int theKey,
                   const size_t theBound)
   {
-    return static_cast<size_t>(theKey) % theBound + 1;
+    return static_cast<size_t>(theKey) % theBound + 1; // NOLINT
   }
 }
 

@@ -96,8 +96,7 @@ static void VmsExtract(const TCollection_AsciiString& what,
    // If we found a node then we must find "::"
    if (buffer.Search("::") != -1)
     buffer.Remove(1,2);            // Removes <<::>>
- }
- else  // No name or password
+ } // No name or password
  if (buffer.Search("::") != -1){ // a node to extract
   node = buffer.Token(":");
   buffer.Remove(1,node.Length()+2); // Removes <<node::>
@@ -115,7 +114,7 @@ static void VmsExtract(const TCollection_AsciiString& what,
   trek = buffer.Token("[]");
 
   if (trek.Value(1) == '.') trek.Remove(1,1);  // Removes first '.'
-    else trek.Insert(1,'|');                   // Add root
+  else trek.Insert(1,'|');                   // Add root
 
   trek.ChangeAll('.','|');   // Translates to portable syntax
   trek.ChangeAll('-','^');  
@@ -699,7 +698,7 @@ OSD_SysType pType;
     }
 
     if (Way.Length()!=0)
-     FullName = FullName + Way + "\\";
+      FullName = FullName + Way + "\\";
     
     FullName += myName; 
     FullName += myExtension;
@@ -1521,7 +1520,6 @@ TCollection_AsciiString OSD_Path::RelativePath(
   TCollection_AsciiString EmptyString = "" ;
   TCollection_AsciiString FilePath ;
   Standard_Integer len ;
-  Standard_Integer i, n ;
   Standard_Boolean Wnt = 0 ;
 
   FilePath = aAbsFilePath ;
@@ -1554,14 +1552,14 @@ TCollection_AsciiString OSD_Path::RelativePath(
   TCollection_AsciiString DirToken, FileToken ;
   Standard_Boolean Sibling = 0 ;
 
-  for (i = n = 1 ;; n++) {
+  for (Standard_Integer n = 1 ;; n++) {
       DirToken = aDirPath.Token("/\\",n) ;
       if (DirToken.IsEmpty())
           return FilePath ;
 
       if (!Sibling) {
           len = FilePath.Length() ;
-          i = FilePath.Search("/") ;
+          Standard_Integer i = FilePath.Search("/") ;
           if (i > 0) {
               if (i == len)
                   return EmptyString ;

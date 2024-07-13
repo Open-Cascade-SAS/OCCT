@@ -195,29 +195,29 @@ Standard_Utf8UChar* NCollection_UtfIterator<Type>::GetUtf8 (Standard_Utf8UChar* 
   }
   else if (myCharUtf32 < Standard_Utf32Char(0x80))
   {
-    *theBuffer++ = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[1]);
+    *theBuffer++ = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[1]); // NOLINT
     return theBuffer;
   }
   else if (myCharUtf32 < Standard_Utf32Char(0x800))
   {
-    *++theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[2]);
+    *++theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6; // NOLINT
+    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[2]); // NOLINT
     return theBuffer + 2;
   }
   else if (myCharUtf32 < Standard_Utf32Char(0x10000))
   {
     theBuffer += 3;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[3]);
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6; // NOLINT
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6; // NOLINT
+    *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[3]); // NOLINT
     return theBuffer + 3;
   }
   else if (myCharUtf32 <= UTF32_MAX_LEGAL)
   {
     theBuffer += 4;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
-    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;  // NOLINT
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;  // NOLINT
+    *--theBuffer = Standard_Utf8UChar((aChar | UTF8_BYTE_MARK) & UTF8_BYTE_MASK); aChar >>= 6;  // NOLINT
     *--theBuffer = Standard_Utf8UChar (aChar | UTF8_FIRST_BYTE_MARK[4]);
     return theBuffer + 4;
   }
@@ -288,7 +288,7 @@ Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16 (Standard_Utf16Char*
     }
     else
     {
-      *theBuffer++ = Standard_Utf16Char(myCharUtf32);
+      *theBuffer++ = Standard_Utf16Char(myCharUtf32); // NOLINT
       return theBuffer;
     }
   }
@@ -301,8 +301,8 @@ Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16 (Standard_Utf16Char*
   {
     // surrogate pair
     Standard_Utf32Char aChar = myCharUtf32 - UTF16_SURROGATE_LOW_BASE;
-    *theBuffer++ = Standard_Utf16Char((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START);
-    *theBuffer++ = Standard_Utf16Char((aChar &  UTF16_SURROGATE_LOW_MASK)   + UTF16_SURROGATE_LOW_START);
+    *theBuffer++ = Standard_Utf16Char((aChar >> UTF16_SURROGATE_HIGH_SHIFT) + UTF16_SURROGATE_HIGH_START); // NOLINT
+    *theBuffer++ = Standard_Utf16Char((aChar &  UTF16_SURROGATE_LOW_MASK)   + UTF16_SURROGATE_LOW_START); // NOLINT
     return theBuffer;
   }
 }
@@ -314,6 +314,6 @@ Standard_Utf16Char* NCollection_UtfIterator<Type>::GetUtf16 (Standard_Utf16Char*
 template<typename Type> inline
 Standard_Utf32Char* NCollection_UtfIterator<Type>::GetUtf32 (Standard_Utf32Char* theBuffer) const
 {
-  *theBuffer++ = myCharUtf32;
+  *theBuffer++ = myCharUtf32; // NOLINT
   return theBuffer;
 }

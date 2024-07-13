@@ -19,13 +19,6 @@
 #include <AdvApp2Var_Data.hxx>
 #include <Standard.hxx>
 
-
-static 
-int __i__len();
-
-static
-int __s__cmp();
-
 static
 int macrbrk_();
 
@@ -59,15 +52,6 @@ static
 int madbtbk_(integer *indice);
 
 static
-int magtlog_(const char *cnmlog, 
-	     const char *chaine, 
-	     integer *long__, 
-	     integer *iercod, 
-	     ftnlen cnmlog_len, 
-	     ftnlen chaine_len);
-
-
-static
 int mamdlng_(char *cmdlng, 
 	     ftnlen cmdlng_len);
 
@@ -80,22 +64,6 @@ int maostrd_();
 static
 int maoverf_(integer *nbentr, 
 	     doublereal *dtable);
-
-static
-int matrlog_(const char *cnmlog, 
-	     const char *chaine, 
-	     integer *length, 
-	     integer *iercod, 
-	     ftnlen cnmlog_len, 
-	     ftnlen chaine_len);
-
-static
-int matrsym_(const char *cnmsym, 
-	     const char *chaine, 
-	     integer *length, 
-	     integer *iercod, 
-	     ftnlen cnmsym_len, 
-	     ftnlen chaine_len);
 
 static
 int mcrcomm_(integer *kop, 
@@ -704,16 +672,7 @@ int macrgfl_(intptr_t *iadfld,
 
 {
   /* Initialized data */
-  
-  /* original code used static integer ifois=0 which served as static
-     initialization flag and was only used to call matrsym_() once; now
-     this flag is not used as matrsym_() always returns 0 and has no
-     useful contents
-  */
-  integer ifois = 1;
-  
-  char cbid[1] = {};
-  integer ibid, ienr;
+  integer ienr;
   integer novfl = 0;
   
   /* ***********************************************************************
@@ -795,20 +754,6 @@ int macrgfl_(intptr_t *iadfld,
 /*   LPROT : COMMUNICATION BETWEEN CRPROT AND MCRRQST, SET TO 0 BY MCRRQST */
 /*   FLAG  : VALUE OF THE FLAG USED FOR EXCESSES */
 
-
-  
-  
-
-  /* ----------------------------------------------------------------------*
-   */
-  
-
-  if (ifois == 0) {
-    matrsym_("NO_OVERFLOW", cbid, &novfl, &ibid, 11L, 1L);
-    ifois = 1;
-  }
-  
- 
   /* CALCULATE THE OFFSET */
   double* t = reinterpret_cast<double*>(*iadfld);
   
@@ -1135,144 +1080,6 @@ int AdvApp2Var_SysBase::maermsg_(const char *,//cnompg,
 {
   return 0 ;
 } /* maermsg_ */
-
-//=======================================================================
-//function : magtlog_
-//purpose  : 
-//=======================================================================
-int magtlog_(const char *cnmlog, 
-	     const char *,//chaine, 
-	     integer *long__, 
-	     integer *iercod, 
-	     ftnlen cnmlog_len, 
-	     ftnlen )//chaine_len)
-
-{
- 
-  /* Local variables */
-  char cbid[255];
-  integer ibid, ier;
-  
-
-/* ********************************************************************** 
-*/
-
-/*     FUNCTION : */
-/*     ---------- */
-/*        RETURN TRANSLATION OF "NAME LOGIC STRIM" IN */
-/*        "INTERNAL SYNTAX" CORRESPONDING TO "PLACE OF RANKING" */
-
-/*     KEYWORDS : */
-/*     ----------- */
-/*        NOM LOGIQUE STRIM , TRADUCTION */
-
-/*     INPUT ARGUMENTS : */
-/*     ------------------ */
-/*        CNMLOG : NAME OF "NAME LOGIC STRIM" TO TRANSLATE */
-
-/*     OUTPUT ARGUMENTS  : */
-/*     ------------------- */
-/*        CHAINE : ADDRESS OF "PLACE OF RANKING" */
-/*        LONG   : USEFUL LENGTH OF "PLACE OF RANKING" */
-/*        IERCOD : ERROR CODE */
-/*        IERCOD = 0 : OK */
-/*        IERCOD = 5 : PLACE OF RANKING CORRESPONDING TO INEXISTING LOGIC NAME */
-        
-/*        IERCOD = 6 : TRANSLATION TOO LONG FOR THE 'CHAIN' VARIABLE */
-/*        IERCOD = 7 : CRITICAL ERROR */
-
-/*     COMMONS USED   : */
-/*     ---------------- */
-/*        NONE */
-
-/*     REFERENCES CALLED   : */
-/*     --------------------- */
-/*        GNMLOG, MACHDIM */
-
-/*     DESCRIPTION/NOTES/LIMITATIONS : */
-/*     ------------------------------- */
-
-/*        SPECIFIC SGI ROUTINE */
-
-/*        IN ALL CASES WHEN IERCOD IS >0, NO RESULT IS RETURNED*/
-/*        NOTION OF  "USER SYNTAX' AND "INTERNAL SYNTAX" */
-/*        --------------------------------------------------- */
-
-/*       THE "USER SYNTAX" IS THE SYNTAX WHERE THE USER*/
-/*       VISUALIZES OR INDICATES THE FILE OR DIRECTORY NAME */
-/*       DURING A SESSION OF STRIM100 */
-
-/*        "INTERNAL SYNTAX" IS SYNTAX USED TO CARRY OUT */
-/*        OPERATIONS OF FILE PROCESSING INSIDE THE CODE */
-/*        (OPEN,INQUIRE,...ETC) */
-
-/* > */
-/* ***********************************************************************
- */
-/*              DECLARATIONS */
-/* ***********************************************************************
- */
-
-
-/* ***********************************************************************
- */
-/*              PROCESSING */
-/* ***********************************************************************
- */
-
-  *long__ = 0;
-  *iercod = 0;
-  
-  /* CONTROL OF EXISTENCE OF THE LOGIC NAME */
-  
-  matrlog_(cnmlog, cbid, &ibid, &ier, cnmlog_len, 255L);
-  if (ier == 1) {
-    goto L9500;
-  }
-  if (ier == 2) {
-    goto L9700;
-  }
-  
-  /* CONTROL OF THE LENGTH OF CHAIN */
-  
-  if (ibid > __i__len()/*chaine, chaine_len)*/) {
-    goto L9600;
-  }
-  
-  //__s__copy(chaine, cbid, chaine_len, ibid);
-  *long__ = ibid;
-  
-  goto L9999;
-  
-  /* ***********************************************************************
-   */
-  /*              ERROR PROCESSING */
-  /* ***********************************************************************
-   */
-  
- L9500:
-  *iercod = 5;
-  //__s__copy(chaine, " ", chaine_len, 1L);
-  goto L9999;
-  
- L9600:
-  *iercod = 6;
-  //__s__copy(chaine, " ", chaine_len, 1L);
-  goto L9999;
-  
- L9700:
-  *iercod = 7;
-  //__s__copy(chaine, " ", chaine_len, 1L);
-  
-  /* ***********************************************************************
-   */
-  /*              RETURN TO THE CALLING PROGRAM */
-  /* ***********************************************************************
-   */
-  
- L9999:
-  return 0;
-} /* magtlog_ */
 
 //=======================================================================
 //function : mainial_
@@ -1609,10 +1416,6 @@ int maoverf_(integer *nbentr,
 	     doublereal *dtable) 
 
 {
-  /* Initialized data */
-  
-  integer ifois = 0;
-  
   /* System generated locals */
   integer i__1;
   
@@ -1764,15 +1567,12 @@ int maoverf_(integer *nbentr,
   /*         DATA BUFF / NLONGR * R8OVR / */
   
   /*    init of BUFF is done only once */
-  
-  if (ifois == 0) {
-    for (icompt = 1; icompt <= 63; ++icompt) {
-      buff[icompt - 1] = maovpar_.r8ovr;
-      /* L20: */
-    }
-    ifois = 1;
+
+  for (icompt = 1; icompt <= 63; ++icompt) {
+    buff[icompt - 1] = maovpar_.r8ovr;
+    /* L20: */
   }
-  
+
   /* ^JMB */
   /* Exception */
   if (*nbentr < 63) {
@@ -1818,114 +1618,6 @@ int AdvApp2Var_SysBase::maovsr8_(integer *ivalcs)
   *ivalcs = maovpar_.r8ncs;
   return 0 ;
 } /* maovsr8_ */
-
-//=======================================================================
-//function : matrlog_
-//purpose  : 
-//=======================================================================
-int matrlog_(const char *,//cnmlog, 
-	     const char *,//chaine, 
-	     integer *length, 
-	     integer *iercod, 
-	     ftnlen ,//cnmlog_len, 
-	     ftnlen )//chaine_len)
-
-{
-  *iercod = 1;
-  *length = 0;
-  
-  return 0 ;
-} /* matrlog_ */
-
-//=======================================================================
-//function : matrsym_
-//purpose  : 
-//=======================================================================
-int matrsym_(const char *cnmsym, 
-	     const char *,//chaine, 
-	     integer *length, 
-	     integer *iercod, 
-	     ftnlen cnmsym_len, 
-	     ftnlen )//chaine_len)
-
-{
-  /* Local variables */
-  char chainx[255] = {};
-
-/* ***********************************************************************
- */
-
-/*     FUNCTION : */
-/*     ---------- */
-/*       RETURN THE VALUE OF A SYMBOL DEFINED DURING THE */
-/*       INITIALISATION OF A USER */
-
-/*     KEYWORDS : */
-/*     ----------- */
-/*       TRANSLATION, SYMBOL */
-
-/*     INPUT ARGUMENTS : */
-/*     -------------------- */
-/*       CNMSYM : NAME OF THE SYMBOL */
-
-/*     OUTPUT ARGUMENTS : */
-/*     ------------------ */
-/*       CHAINE : TRANSLATION OF THE SYMBOL */
-/*       LENGTH : USEFUL LENGTH OF THE CHAIN */
-/*       IERCOD : ERROR CODE */
-/*              = 0 : OK */
-/*              = 1 : INEXISTING SYMBOL */
-/*              = 2 : OTHER ERROR */
-
-/*     COMMONS USED : */
-/*     ------------------ */
-/*       NONE */
-
-/*     REFERENCES CALLED : */
-/*     --------------------- */
-/*       LIB$GET_SYMBOL,MACHDIM */
-
-/*     DESCRIPTION/NOTES/LIMITATIONS : */
-/*     ----------------------------------- */
-/*       - THIS ROUTINE IS VAX SPECIFIC */
-/*       - IN CASE OF ERROR (IERCOD>0), CHAIN = ' ' AND LENGTH = 0 */
-/*       - IF THE INPUT VARIABLE CNMSYM IS EMPTY, THE ROUTINE RETURNS IERCOD=1*/
-/* > */
-/* ***********************************************************************
- */
-
-
-/* SGI...v */
-  
-  /* SGI  CALL MAGTLOG (CNMSYM,CHAINE,LENGTH,IERCOD) */
-  magtlog_(cnmsym, chainx, length, iercod, cnmsym_len, 255L);
-  /* SO...v */
-  if (*iercod == 5) {
-    *iercod = 1;
-  }
-  /* SO...^ */
-  if (*iercod >= 2) {
-    *iercod = 2;
-  }
-  //if (__s__cmp(chainx, "NONE", 255L, 4L) == 0) {
-  if (__s__cmp() == 0) {
-    //__s__copy(chainx, " ", 255L, 1L);
-    *length = 0;
-  }
-  //__s__copy(chaine, chainx, chaine_len, 255L);
-  /* SGI...^ */
-  
-  
-  /* ***********************************************************************
-   */
-  /*     ERROR PROCESSING */
-  /* ***********************************************************************
-   */
-  
-  
-  /* L9999: */
-  return 0;
-} /* matrsym_ */
 
 //=======================================================================
 //function : mcrcomm_
@@ -3237,18 +2929,6 @@ int AdvApp2Var_SysBase::mswrdbg_(const char *,//ctexte,
     }
  return 0 ;
 } /* mswrdbg_ */
-
-
-
-int __i__len()
-{
-  return 0;
-}
-
-int __s__cmp()
-{
-  return 0;
-}
 
 //=======================================================================
 //function : do__fio

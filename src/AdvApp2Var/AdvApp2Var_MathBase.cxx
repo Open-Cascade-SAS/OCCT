@@ -353,7 +353,7 @@ int AdvApp2Var_MathBase::mdsptpt_(integer *ndimen,
 	i__1 = *ndimen;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    j=iofset + i__ - 1;
-	    differ[j] = point2[i__] - point1[i__];
+	    differ[j] = point2[i__] - point1[i__]; // NOLINT
 	}
 
 	*distan = AdvApp2Var_MathBase::mzsnorm_(ndimen, &differ[iofset]);
@@ -1436,7 +1436,7 @@ int AdvApp2Var_MathBase::mmaperx_(integer *ncofmx,
 
     i__1 = *ndimen;
     for (nd = 1; nd <= i__1; ++nd) {
-	crvnew[nd + crvnew_dim1] = crvold[nd + crvold_dim1];
+	crvnew[nd + crvnew_dim1] = crvold[nd + crvold_dim1]; // NOLINT
 /* L100: */
     }
     if (*ncoeff == 1) {
@@ -1863,9 +1863,9 @@ int mmatvec_(integer *nligne,
 	i__2 = jmax;
 	for (j = jmin; j <= i__2; ++j) {
 	    k = j + aux;
-	    somme += gmatri[k] * vecin[j];
+	    somme += gmatri[k] * vecin[j]; // NOLINT
 	}
-	vecout[i__] = somme;
+	vecout[i__] = somme; // NOLINT
     }
 
 
@@ -2565,14 +2565,14 @@ int mmchole_(integer *,//mxcoef,
 	i__2 = ptini - 1;
 	for (k = ptini - aposit[(j << 1) + 1]; k <= i__2; ++k) {
 /* Computing 2nd power */
-	    d__1 = chomat[k];
+	    d__1 = chomat[k]; // NOLINT
 	    somme += d__1 * d__1;
 	}
 
-	if (amatri[ptini] - somme < 1e-32) {
+	if (amatri[ptini] - somme < 1e-32) { // NOLINT
 	    goto L9101;
 	}
-	chomat[ptini] = sqrt(amatri[ptini] - somme);
+	chomat[ptini] = sqrt(amatri[ptini] - somme); // NOLINT
 
 	ptcou = ptini;
 
@@ -4834,7 +4834,7 @@ int AdvApp2Var_MathBase::mmfmtb1_(integer *maxsz1,
 	i__2 = *jsize1;
 	for (jj = 1; jj <= i__2; ++jj) {
 	    jjpt = iipt + (jj - 1);
-	    work[jjpt] = table1[ii + jj * table1_dim1];
+	    work[jjpt] = table1[ii + jj * table1_dim1]; // NOLINT
 /* L200: */
 	}
 /* L100: */
@@ -5089,7 +5089,6 @@ int mmherm0_(doublereal *debfin,
     /* Local variables */
     doublereal amat[36]	/* was [6][6] */;
     integer iord[2];
-    doublereal prod;
     integer iord1, iord2;
     doublereal miden[36]	/* was [6][6] */;
     integer ncmat;
@@ -5300,7 +5299,6 @@ L100:
 
 
 		if (iord[cot - 1] > -1) {
-		    prod = 1.;
 		    i__1 = ncf;
 		    for (jj = 1; jj <= i__1; ++jj) {
 			cof[jj - 1] = 1.;
@@ -5313,7 +5311,7 @@ L100:
 
 		    ii = pp + iof[cot - 1];
 
-		    prod = 1.;
+		    doublereal prod = 1.;
 
 		    i__2 = pp - 1;
 		    for (jj = 1; jj <= i__2; ++jj) {
@@ -5804,9 +5802,9 @@ int AdvApp2Var_MathBase::mmhjcan_(integer *ndimen,
 		    i__5 = i__ - 1;
 		    mfact = AdvApp2Var_MathBase::pow__di(&ctenor, &i__5);
 		    taux1[k - 1] += (tcbold[d__ + (i__ + e * tcbold_dim2) * 
-			    tcbold_dim1] * hermit[k + (i__ + 2) * 6 - 19] + 
+			    tcbold_dim1] * hermit[k + (i__ + 2) * 6 - 19] + // NOLINT
 			    tcbold[d__ + (i__ + aux1 + e * tcbold_dim2) * 
-			    tcbold_dim1] * hermit[k + (i__ + 5) * 6 - 19]) * 
+			    tcbold_dim1] * hermit[k + (i__ + 5) * 6 - 19]) * // NOLINT
 			    mfact;
 		}
 	    }
@@ -6339,10 +6337,6 @@ int mmloncv_(integer *ndimax,
 	     integer *iercod)
 
 {
-  /* Initialized data */
-  
-  integer kgar = 0;
-  
   /* System generated locals */
   integer courbe_dim1, courbe_offset, i__1, i__2;
   
@@ -6478,14 +6472,12 @@ int mmloncv_(integer *ndimax,
 /* ****** Return the coefficients for the integral (DEGRE=4*KK) */
 /*       if KK <> KGAR. */
 
-    if (kk != kgar) {
+    if (kk != 0) {
 	mvgaus0_(&kk, uroot, wgaus, &ngaus, iercod);
 	if (*iercod > 0) {
-	    kgar = 0;
 	    *iercod = 2;
 	    goto L9900;
 	}
-	kgar = kk;
     }
 
 /*      C1 => Point medium interval */
@@ -7945,15 +7937,15 @@ int mmrslss_(integer *,//mxcoef,
 	somme = 0.;
 	i__2 = i__ - 1;
 	for (j = i__ - sposit[(i__ << 1) + 1]; j <= i__2; ++j) {
-	    somme += smatri[pointe - (i__ - j)] * soluti[j];
+	    somme += smatri[pointe - (i__ - j)] * soluti[j]; // NOLINT
 	}
 
-	soluti[i__] = (mscnmbr[i__] - somme) / smatri[pointe];
+	soluti[i__] = (mscnmbr[i__] - somme) / smatri[pointe]; // NOLINT
     }
 /*                     T */
 /* ----- Solution of S u = w */
 
-    for (i__ = *dimens; i__ >= 1; --i__) {
+    for (i__ = *dimens; i__ >= 1; --i__) { // NOLINT
 
 	pointe = sposit[(i__ << 1) + 2];
 	j = posuiv[pointe];
@@ -8752,7 +8744,7 @@ int mmtmave_(integer *nligne,
 		somme += gmatri[k] * vecin[j];
 	    }
 	}
-	vecout[i__] = somme;
+	vecout[i__] = somme; // NOLINT
     }
 
 
@@ -8805,7 +8797,7 @@ int mmtrpj0_(integer *ncofmx,
   
   /* Local variables */
   integer ncut, i__;
-  doublereal bidon, error;
+  doublereal bidon;
   integer nd;
   
 
@@ -8866,8 +8858,6 @@ int mmtrpj0_(integer *ncofmx,
 /* L100: */
     }
     *epstrc = 0.;
-    error = 0.;
-
 /*   Cutting of coefficients. */
 
     ncut = 2;
@@ -8885,7 +8875,7 @@ int mmtrpj0_(integer *ncofmx,
 /* L310: */
 	}
 /*   Cutting is stopped if the norm becomes too great. */
-	error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
+	doublereal error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
 	if (error > *epsi3d) {
 	    *ncfnew = i__;
 	    goto L9999;
@@ -8985,7 +8975,7 @@ int mmtrpj2_(integer *ncofmx,
 
     /* Local variables */
     integer ncut, i__;
-    doublereal bidon, error;
+    doublereal bidon;
     integer ia, nd;
     doublereal bid, eps1;
 
@@ -9051,8 +9041,6 @@ int mmtrpj2_(integer *ncofmx,
 /* L100: */
     }
     *epstrc = 0.;
-    error = 0.;
-
 /*   Cutting of coefficients. */
 
     ncut = ia + 1;
@@ -9069,7 +9057,7 @@ int mmtrpj2_(integer *ncofmx,
 /* L310: */
 	}
 /*   One stops to cut if the norm becomes too great. */
-	error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
+	doublereal error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
 	if (error > *epsi3d) {
 	    *ncfnew = i__;
 	    goto L400;
@@ -9189,7 +9177,7 @@ int mmtrpj4_(integer *ncofmx,
 
     /* Local variables */
     integer ncut, i__;
-    doublereal bidon, error;
+    doublereal bidon;
     integer ia, nd;
     doublereal bid, eps1;
 
@@ -9256,8 +9244,6 @@ int mmtrpj4_(integer *ncofmx,
 /* L100: */
     }
     *epstrc = 0.;
-    error = 0.;
-
 /*   Cutting of coefficients. */
 
     ncut = ia + 1;
@@ -9274,7 +9260,7 @@ int mmtrpj4_(integer *ncofmx,
 /* L310: */
 	}
 /*   Stop cutting if the norm becomes too great. */
-	error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
+	doublereal error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
 	if (error > *epsi3d) {
 	    *ncfnew = i__;
 	    goto L400;
@@ -9393,7 +9379,7 @@ int mmtrpj6_(integer *ncofmx,
 
     /* Local variables */
     integer ncut, i__;
-    doublereal bidon, error;
+    doublereal bidon;
     integer ia, nd;
     doublereal bid, eps1;
 
@@ -9459,8 +9445,6 @@ int mmtrpj6_(integer *ncofmx,
 /* L100: */
     }
     *epstrc = 0.;
-    error = 0.;
-
 /*   Cutting of coefficients. */
 
     ncut = ia + 1;
@@ -9477,7 +9461,7 @@ int mmtrpj6_(integer *ncofmx,
 /* L310: */
 	}
 /*   Stop cutting if the norm becomes too great. */
-	error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
+	doublereal error = AdvApp2Var_MathBase::mzsnorm_(ndimen, &ycvmax[1]);
 	if (error > *epsi3d) {
 	    *ncfnew = i__;
 	    goto L400;
@@ -9973,7 +9957,7 @@ L9999:
 	    goto L9101;
 	}
 	vaux2[d__ - 1] += 1;
-	valaux = vaux1[1] * vaux2[2] - vaux1[2] * vaux2[1];
+	valaux = vaux1[1] * vaux2[2] - vaux1[2] * vaux2[1]; // NOLINT
 	if (valaux == 0.) {
 	    valaux = vaux1[2] * vaux2[0] - vaux1[0] * vaux2[2];
 	    if (valaux == 0.) {
@@ -10443,7 +10427,7 @@ int mvcvin2_(integer *ncoeff,
 
 /* CONSTANT TERM OF THE NEW CURVE */
 
-    cij1 = crvold[3];
+    cij1 = crvold[3]; // NOLINT
     cij2 = crvold[4];
     i__1 = *ncoeff;
     for (k = 2; k <= i__1; ++k) {
@@ -10589,7 +10573,7 @@ int mvcvinv_(integer *ncoeff,
 
 /* CONSTANT TERM OF THE NEW CURVE */
 
-    cij1 = crvold[4];
+    cij1 = crvold[4]; // NOLINT
     cij2 = crvold[5];
     cij3 = crvold[6];
     i__1 = *ncoeff;

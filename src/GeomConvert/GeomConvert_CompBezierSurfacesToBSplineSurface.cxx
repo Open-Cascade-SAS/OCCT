@@ -111,7 +111,7 @@ GeomConvert_CompBezierSurfacesToBSplineSurface(
     myUKnots->SetValue(ii+1, val + Ratio*(val- myUKnots->Value(ii-1)) );
 
     // Et c'est reparti, pour un tour
-    L1 = L2;
+    L1 = L2; // NOLINT
     V1 = V3;
     FirstCurve = SecondCurve;
   }
@@ -157,7 +157,7 @@ GeomConvert_CompBezierSurfacesToBSplineSurface(
     myVKnots->SetValue(jj+1, val + Ratio*(val-myVKnots->Value(jj-1)) );
 
     // Et c'est reparti, pour un tour
-    L1 = L2;
+    L1 = L2; // NOLINT
     V1 = V3;
     FirstCurve = SecondCurve;
   }

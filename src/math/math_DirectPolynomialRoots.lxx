@@ -43,7 +43,7 @@ inline  Standard_Real math_DirectPolynomialRoots::Value(const Standard_Integer N
   StdFail_InfiniteSolutions_Raise_if(InfiniteStatus, " ");
   Standard_RangeError_Raise_if((Nieme < 0) ||
 				     (Nieme > NbSol), " ");
-  return TheRoots[Nieme - 1];
+  return TheRoots[Nieme - 1]; // NOLINT
 }
 
 

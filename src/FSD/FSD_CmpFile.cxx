@@ -69,7 +69,7 @@ Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName, const Stor
   SetName(aName);
 
   if (OpenMode() == Storage_VSNone) {
-    std::ios_base::openmode anOpenMode = std::ios_base::openmode(0);
+    std::ios_base::openmode anOpenMode = std::ios_base::openmode{};
     switch (aMode)
     {
     case Storage_VSNone:

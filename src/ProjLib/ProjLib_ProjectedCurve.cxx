@@ -94,7 +94,7 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
 				   const Standard_Real      TolMin,
 				   const Standard_Real      TolMax) 
 {
-    Standard_Real U1=0.,U2=0.,V1=0.,V2=0.,T;
+    Standard_Real U1=0.,U2=0.,V1=0.,V2=0.;
     Standard_Boolean Along = Standard_True;
     U1 = S.FirstUParameter();
     U2 = S.LastUParameter();
@@ -107,10 +107,12 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
     {
       Step = (U2 - U1)/10;
       D1NormMax=0.;
-      for (T=U1;T<=U2;T=T+Step) 
+      const size_t aNumSteps = static_cast<size_t>((U2 - U1) / Step);
+      for (size_t aStep = 0; aStep <= aNumSteps; ++aStep)
       {
-        S.D1(T,Param,P,D1U,D1V);
-        D1NormMax=Max(D1NormMax,D1U.Magnitude());
+        const Standard_Real aUValue = U1 + aStep * Step;
+        S.D1(aUValue, Param, P, D1U, D1V);
+        D1NormMax = Max(D1NormMax, D1U.Magnitude());
       }
 
       if (D1NormMax >TolMax || D1NormMax < TolMin ) 
@@ -120,10 +122,12 @@ static Standard_Boolean IsoIsDeg  (const Adaptor3d_Surface& S,
     {
       Step = (V2 - V1)/10;
       D1NormMax=0.;
-      for (T=V1;T<=V2;T=T+Step) 
+      const size_t aNumSteps = static_cast<size_t>((V2 - V1) / Step);
+      for (size_t aStep = 0; aStep <= aNumSteps; ++aStep)
       {
-	S.D1(Param,T,P,D1U,D1V);
-        D1NormMax=Max(D1NormMax,D1V.Magnitude());
+        const Standard_Real aVValue = V1 + aStep * Step;
+        S.D1(Param, aVValue, P, D1U, D1V);
+        D1NormMax = Max(D1NormMax, D1V.Magnitude());
       }
 
       if (D1NormMax >TolMax || D1NormMax < TolMin ) 

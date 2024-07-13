@@ -746,7 +746,6 @@ Standard_Boolean Geom2dConvert_ApproxArcsSegments::checkCurve
   Standard_Boolean isCircle = (!isLine);
   if (isLine)
     aLin2d = aGeomLine->Lin2d();
-
   else {
     Handle(Geom2d_Circle) aGeomCircle =
       Handle(Geom2d_Circle)::DownCast(aCurve1);
@@ -786,7 +785,6 @@ Standard_Boolean Geom2dConvert_ApproxArcsSegments::checkCurve
       aParameterCurve = ElCLib::Parameter(aCirc2d, aPointAdaptor);
       aProjPoint = ElCLib::Value(aParameterCurve, aCirc2d);
     }
-    else isLess = Standard_False;
 
     isLess = (aProjPoint.Distance(aPointAdaptor) <
               myTolerance + Precision::PConfusion());
