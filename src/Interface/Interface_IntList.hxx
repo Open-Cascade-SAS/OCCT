@@ -74,7 +74,7 @@ public:
   //! Returns internal values, used for copying
   Standard_EXPORT void Internals (Standard_Integer& nbrefs, Handle(TColStd_HArray1OfInteger)& ents, Handle(TColStd_HArray1OfInteger)& refs) const;
   
-  //! Returns count of entities to be aknowledged
+  //! Returns count of entities to be acknowledged
   Standard_EXPORT Standard_Integer NbEntities() const;
   
   //! Changes the count of entities (ignored if decreased)

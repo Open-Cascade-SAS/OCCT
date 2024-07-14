@@ -55,7 +55,7 @@ void DsgPrs_EqualRadiusPresentation::Add( const Handle( Prs3d_Presentation )& aP
   DsgPrs::ComputeSymbol( aPresentation, LA, FirstCenter, FirstPoint, FirstDir.Reversed(), FirstDir, DsgPrs_AS_FIRSTPT_LASTAR );
   DsgPrs::ComputeSymbol( aPresentation, LA, SecondCenter, SecondPoint, SecondDir.Reversed(), SecondDir, DsgPrs_AS_FIRSTPT_LASTAR );
 
-//ota === beging ===
+//ota === begin ===
   gp_Pnt Middle( (FirstCenter.XYZ() + SecondCenter.XYZ()) *0.5 ), aTextPos;
   Standard_Real SmallDist;
   //Mark of constraint

@@ -87,7 +87,7 @@ public:
   //! begin by <root>
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) List (const Standard_CString root = "") const;
   
-  //! Returns True if the list of Entities is aknowledged, else
+  //! Returns True if the list of Entities is acknowledged, else
   //! the method Entities will always return a Null Handle
   Standard_EXPORT Standard_Boolean HasEntities() const;
   

@@ -3,7 +3,7 @@ puts "CR23699"
 puts "========="
 puts ""
 ###############################
-## Exception reaised during intersection between two surfaces
+## Exception raised during intersection between two surfaces
 ###############################
 
 restore [locate_data_file bug23699_Compound_sigsegv.brep] b1

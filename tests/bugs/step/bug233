@@ -1,7 +1,7 @@
 puts "========"
 puts "OCC233"
 puts "========"
-puts "Problem during translation in dev in optimaze mode .Debug mode is OK)"
+puts "Problem during translation in dev in optimize mode .Debug mode is OK)"
 
 stepread [locate_data_file Sbottle.stp] a *
 

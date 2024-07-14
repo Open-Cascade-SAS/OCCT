@@ -104,7 +104,7 @@ fi
 
 export CSF_OPT_CMPL=""
 
-# Optiona 3rd-parties should be enabled by HAVE macros
+# Optional 3rd-parties should be enabled by HAVE macros
 if [ "$HAVE_TBB"       == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_TBB"; fi
 if [ "$HAVE_OPENCL"    == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_OPENCL"; fi
 if [ "$HAVE_TK"        == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_TK"; fi

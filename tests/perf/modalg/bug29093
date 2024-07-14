@@ -1,5 +1,5 @@
 puts "========"
-puts "0029093: BOP PaveFiller hungs and constantly consumes memory"
+puts "0029093: BOP PaveFiller hangs and constantly consumes memory"
 puts "========"
 puts ""
 

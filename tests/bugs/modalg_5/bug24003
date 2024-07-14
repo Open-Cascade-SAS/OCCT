@@ -3,7 +3,7 @@ puts "OCC24003"
 puts "================"
 puts ""
 #######################################################################
-# Exception reaised during intersection between two faces
+# Exception raised during intersection between two faces
 #######################################################################
 
 restore [locate_data_file bug24003_fz33.brep] b1

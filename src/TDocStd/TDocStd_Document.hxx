@@ -98,7 +98,7 @@ public:
   //! Returns True if the main label has no attributes
   Standard_EXPORT Standard_Boolean IsEmpty() const;
   
-  //! Returns False if the  document has been modified
+  //! Returns False if the document has been modified
   //! but not recomputed.
   Standard_EXPORT Standard_Boolean IsValid() const;
   
@@ -198,7 +198,7 @@ public:
   Standard_EXPORT void UpdateReferences (const TCollection_AsciiString& aDocEntry);
   
   //! Recompute if the document was  not valid and propagate
-  //! the reccorded modification.
+  //! the recorded modification.
   Standard_EXPORT void Recompute();
   
   //! This method Update   will be called

@@ -3,7 +3,7 @@ puts "CR23722"
 puts "========="
 puts ""
 ###############################
-## Exception reaised during intersection between two surfaces
+## Exception raised during intersection between two surfaces
 ###############################
 
 restore [locate_data_file bug23732_fx1.brep] b1

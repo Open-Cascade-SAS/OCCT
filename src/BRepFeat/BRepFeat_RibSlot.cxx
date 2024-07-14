@@ -540,7 +540,7 @@ Standard_Real BRepFeat_RibSlot::IntPar(const Handle(Geom_Curve)& C,
 
 //=======================================================================
 //function : EdgeExtention
-//purpose  : extention of a edge by tangence
+//purpose  : extension of a edge by tangence
 //=======================================================================
 
 void BRepFeat_RibSlot::EdgeExtention(TopoDS_Edge& e,

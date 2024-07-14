@@ -227,7 +227,7 @@ protected:
   //! wires. This is done by traversing all the segments in allowed
   //! directions, starting only from the REVERSED and FORWARD and
   //! taking EXTERNAL as necessary in fork points. Forks are detected
-  //! by common vertices. In fork point, most left way is seleccted
+  //! by common vertices. In fork point, most left way is selected
   //! among all possible ways.
   Standard_EXPORT void CollectWires (ShapeFix_SequenceOfWireSegment& wires, ShapeFix_SequenceOfWireSegment& seqw);
   

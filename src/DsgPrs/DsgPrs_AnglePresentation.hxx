@@ -40,7 +40,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Draws the presenation of the full angle of a cone.
+  //! Draws the presentation of the full angle of a cone.
   //! VminCircle - a circle at V parameter = Vmin
   //! VmaxCircle - a circle at V parameter = Vmax
   //! aCircle - a circle at V parameter from projection of aPosition to axis of the cone

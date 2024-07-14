@@ -1,7 +1,7 @@
 puts "=========="
 puts "PRO19854"
 puts "=========="
-puts "Incorrect translation of one entity from STEP file in optimaze mode of C30."
+puts "Incorrect translation of one entity from STEP file in optimize mode of C30."
 
 stepread [locate_data_file id_turbine-B.stp] a *
 

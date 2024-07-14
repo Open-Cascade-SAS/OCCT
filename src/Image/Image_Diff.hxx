@@ -37,7 +37,7 @@
 //! (about 90 degree between the normal and the direction to the user's eye).
 //! Deflection of the light for such a triangle depends on implementation of the video driver.
 //! In order to skip this difference the following algorithm is used:
-//!  a) "Different" pixels are groupped and checked on "one-pixel width line".
+//!  a) "Different" pixels are grouped and checked on "one-pixel width line".
 //!     indeed, the pixels may represent not a line, but any curve.
 //!     But the width of this curve should be not more than a pixel.
 //!     This group of pixels become a candidate to be ignored because of boundary effect.

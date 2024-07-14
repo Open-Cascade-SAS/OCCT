@@ -524,7 +524,7 @@ help checkprops {
     -deps DEPSILON: the epsilon defines relative precision to compare corresponding values
     -equal SHAPE: compare area\volume\length of input shapes. Puts error if its are not equal
     -notequal SHAPE: compare area\volume\length of input shapes. Puts error if its are equal
-    -skip: count shared shapes only once, skipping repeatitions
+    -skip: count shared shapes only once, skipping repetitions
   Options -l, -s and -v are independent and can be used in any order. Tolerance epsilon is the same for all options.
 }
 

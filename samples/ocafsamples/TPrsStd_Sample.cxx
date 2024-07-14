@@ -167,7 +167,7 @@ static void Sample()
   if( ShapeLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), PRS) ) PRS->Erase();
   // The method Erase() marks presentation of attribute as erased in AIS_InteractiveContext; 
   // in order to make changes visible in a viewer's window viewer has to be updated  
-  TPrsStd_AISViewer::Update(ShapeLabel);  //Update viewer to erase presenation of the attribute in a viewer's window
+  TPrsStd_AISViewer::Update(ShapeLabel);  //Update viewer to erase presentation of the attribute in a viewer's window
                                           //Presentation of the attribute is erased from viewer but
                                           // stays in AIS_InteractiveContext
  
@@ -182,7 +182,7 @@ static void Sample()
     // Updating and displaying presentation of the attribute to be displayed 
 
     P->Display(Standard_True); 
-    TPrsStd_AISViewer::Update(ShapeLabel);  //Update presenation of the attribute in a viewer's window
+    TPrsStd_AISViewer::Update(ShapeLabel);  //Update presentation of the attribute in a viewer's window
 
     //Getting Standard_GUID of attribute with which TPrsStd_AISPresentation attribute is associated
 

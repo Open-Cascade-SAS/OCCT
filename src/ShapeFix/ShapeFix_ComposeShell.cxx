@@ -923,7 +923,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
       }
     }
 
-    //pdn Claculating parametric shift
+    //pdn Calculating parametric shift
     Standard_Boolean sp = (f3d == firstPar && l3d  == lastPar);
     Standard_Real span2d = lastPar - firstPar;
     //    Standard_Real ln2d  = lastPar-prevPar;

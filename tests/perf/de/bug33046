@@ -10,7 +10,7 @@ chrono c reset; chrono c start;
 readstl m [locate_data_file model_stl_025.stl] -brep
 chrono c stop; chrono c show;
 
-# Check that model is converted succesfully.
+# Check that model is converted successfully.
 checknbshapes m -face 54337;
 
 # Visual check

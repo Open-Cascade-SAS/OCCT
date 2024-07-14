@@ -66,7 +66,7 @@ public:
   
   //! Returns True if the Case Number corresponds to a Complex Type
   //! ("Plex"). Remember that all possible combinations must be
-  //! aknowledged to be processed
+  //! acknowledged to be processed
   //! Default is False for all cases. For a Protocol which defines
   //! possible Plexes, this method must be redefined.
   Standard_EXPORT virtual Standard_Boolean IsComplex (const Standard_Integer CN) const;

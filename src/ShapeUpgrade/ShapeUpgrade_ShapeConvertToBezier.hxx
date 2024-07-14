@@ -123,7 +123,7 @@ protected:
   
   Standard_EXPORT virtual Message_Msg GetWireMsg() const Standard_OVERRIDE;
   
-  //! Returns a message decsribing modification of a shape.
+  //! Returns a message describing modification of a shape.
   Standard_EXPORT virtual Message_Msg GetEdgeMsg() const Standard_OVERRIDE;
 
 

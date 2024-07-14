@@ -1924,6 +1924,7 @@ Standard_Boolean BOPTools_AlgoTools::IsBlockInOnFace
     return bFlag;
   }
   //
+
   // Treatment intemediate
   Standard_Real m1, aTolF, aTolE, aTol, aDist;
   m1=IntTools_Tools::IntermediatePoint(f1, l1);

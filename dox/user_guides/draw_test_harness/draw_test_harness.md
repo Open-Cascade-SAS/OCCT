@@ -4878,7 +4878,7 @@ For a curve at a given parameter, and depending on the number of arguments, **cv
 
 **Example:**
 
-Let on a bezier curve at parameter 0 the point is the first pole; the first derivative is the vector to the second pole multiplied by the degree; the second derivative is the difference first to the second pole, second to the third pole multipied by *degree-1* : 
+Let on a bezier curve at parameter 0 the point is the first pole; the first derivative is the vector to the second pole multiplied by the degree; the second derivative is the difference first to the second pole, second to the third pole multiplied by *degree-1* : 
 
 ~~~~{.php}
 2dbeziercurve c 4 0 0 1 1 2 1 3 0 

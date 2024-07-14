@@ -84,7 +84,7 @@ void TFunction_Logbook::Clear()
 
 //=======================================================================
 //function : IsEmpty
-//purpose  : Returns Standard_True if the nothing is reccorded in the logbook
+//purpose  : Returns Standard_True if the nothing is recorded in the logbook
 //=======================================================================
 
 Standard_Boolean TFunction_Logbook::IsEmpty () const

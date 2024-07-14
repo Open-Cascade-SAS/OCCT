@@ -41,7 +41,7 @@ Tools->Options->Android
 * In Android SDK location specify path to Android SDK
 * In Android NDK location specify path to Android NDK
 (During this location definition, warning is possible and OK:
- "Qt version for architecture mips is missing. To add the Qt version, select Options > Build & Run > Qt Versins.")
+ "Qt version for architecture mips is missing. To add the Qt version, select Options > Build & Run > Qt Versions.")
 * In Ant executable specify path to ant.bat file located in Apache Ant bin directory
 
 Make sure that "Android for armeabi-v7a" kit has been detected (present in the list).

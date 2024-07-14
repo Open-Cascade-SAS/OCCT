@@ -57,7 +57,7 @@ void TDocStd_XLinkTool::Copy (const TDF_Label& target,
   }
 
 
-  // Remove TreeNode, then resotre, if present
+  // Remove TreeNode, then restore, if present
   Handle(TDataStd_TreeNode) aFather, aPrev, aNext;
   Handle(TDataStd_TreeNode) anOldFather, anOldPrev, anOldNext;
   Handle(TDataStd_TreeNode) aNode, anOldNode;
