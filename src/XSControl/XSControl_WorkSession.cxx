@@ -105,7 +105,7 @@ void XSControl_WorkSession::SetController(const Handle(XSControl_Controller)& ct
   ClearShareOut(Standard_False);
   ClearFile();
 
-  // Set worksession parameters from teh controller
+  // Set worksession parameters from the controller
   Handle(XSControl_WorkSession) aWorkSession(this);
   myController->Customise (aWorkSession);
 

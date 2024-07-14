@@ -1428,7 +1428,7 @@ bool Graphic3d_Camera::FitMinMax (const Bnd_Box& theBox,
   // but the axial scale is integrated into camera orientation matrix and the other
   // option is to perform frustum plane adjustment algorithm in view camera space,
   // which will lead to a number of additional world-view space conversions and
-  // loosing precision as well.
+  // losing precision as well.
   const gp_Pnt aBndMin = theBox.CornerMin().XYZ().Multiplied (myAxialScale);
   const gp_Pnt aBndMax = theBox.CornerMax().XYZ().Multiplied (myAxialScale);
   if (aBndMax.IsEqual (aBndMin, RealEpsilon()))

@@ -22,7 +22,7 @@
 #include <Graphic3d_LevelOfTextureAnisotropy.hxx>
 class TCollection_AsciiString;
 
-//! This is an abstract class for managing texture applyable on polygons.
+//! This is an abstract class for managing texture applicable on polygons.
 class Graphic3d_TextureMap : public Graphic3d_TextureRoot
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_TextureMap, Graphic3d_TextureRoot)

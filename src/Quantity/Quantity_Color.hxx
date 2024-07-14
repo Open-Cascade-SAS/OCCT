@@ -145,7 +145,7 @@ public:
   //! Returns the value of the perceptual difference between this color
   //! and @p theOther, computed using the CIEDE2000 formula.
   //! The difference is in range [0, 100.], with 1 approximately corresponding
-  //! to the minimal percievable difference (usually difference 5 or greater is
+  //! to the minimal perceivable difference (usually difference 5 or greater is
   //! needed for the difference to be recognizable in practice).
   Standard_EXPORT Standard_Real DeltaE2000 (const Quantity_Color& theOther) const;
 

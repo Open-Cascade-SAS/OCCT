@@ -791,7 +791,7 @@ private:
                               First;
  Standard_Real PreLast = 0.;
  GeomAbs_Shape                Cont;
- gp_Vec                       Vec1,Vec2;                   //concecutive tangential vectors 
+ gp_Vec                       Vec1,Vec2;                   //consecutive tangential vectors 
  gp_Pnt                       Pint;
  Handle(Geom_BSplineCurve)    Curve1,Curve2;                       
  TColStd_Array1OfBoolean      tabG1(0,nb_curve-2);         //array of the G1 continuity at the intersections
@@ -1019,7 +1019,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
  Standard_Real PreLast = 0.;
 
  GeomAbs_Shape                Cont;
- gp_Vec                       Vec1,Vec2;                   //concecutive tangential vectors
+ gp_Vec                       Vec1,Vec2;                   //consecutive tangential vectors
  gp_Pnt                       Pint;
  Handle(Geom_BSplineCurve)    Curve1,Curve2;                       
  TColStd_Array1OfBoolean      tabG1(0,nb_curve-2);         //array of the G1 continuity at the intersections

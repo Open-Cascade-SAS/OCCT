@@ -208,8 +208,8 @@ public:
     Add(theRight);
   }
 
-  //! Returns new vector as adding curent vector with the value "theRight".
-  //! An exception is raised if the vectors have not the same length.
+  //! Returns new vector as adding current vector with the value "theRight".
+  //! An exception is raised if the vectors do not have the same length.
   //! An exception is raised if the lengths are not equal.
   Standard_NODISCARD inline math_VectorBase Added(const math_VectorBase& theRight) const;
 

@@ -185,7 +185,7 @@ public:
   //! (2 circles).
   //! If R1 is the radius of the first argument and Rsol the radius
   //! of the solution and dist the distance between the two centers,
-  //! we concider the two circles are identical if R1+dist-Rsol is
+  //! we consider the two circles are identical if R1+dist-Rsol is
   //! less than Tolerance.
   //! False in the other cases.
   //! Raises OutOfRange if Index is greater than the number
@@ -196,7 +196,7 @@ public:
   //! (2 circles).
   //! If R2 is the radius of the second argument and Rsol the radius
   //! of the solution and dist the distance between the two centers,
-  //! we concider the two circles are identical if R2+dist-Rsol is
+  //! we consider the two circles are identical if R2+dist-Rsol is
   //! less than Tolerance.
   //! False in the other cases.
   //! Raises OutOfRange if Index is greater than the number

@@ -38,7 +38,7 @@
 //! class Functor
 //! {
 //! public:
-//!   void operator() ([proccesing instance]) const
+//!   void operator() ([processing instance]) const
 //!   {
 //!     //...
 //!   }

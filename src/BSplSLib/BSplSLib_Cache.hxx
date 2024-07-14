@@ -113,7 +113,7 @@ private:
 
 private:
   Standard_Boolean myIsRational;                //!< identifies the rationality of Bezier/B-spline surface
-  BSplCLib_CacheParams myParamsU, myParamsV;    //!< cach parameters by U and V directions
+  BSplCLib_CacheParams myParamsU, myParamsV;    //!< cache parameters by U and V directions
   Handle(TColStd_HArray2OfReal) myPolesWeights; //!< array of poles and weights of calculated cache
                                                 // the array has following structure:
                                                 //       x11 y11 z11 [w11] x12 y12 z12 [w12] ...

@@ -472,7 +472,7 @@ Handle(Geom_BSplineSurface) GeomConvert::SurfaceToBSplineSurface
 
       gp_Torus Tr = TheElSurf->Torus();
       //
-      // if isUClosed = true and U trim does not coinside with first period of torus, 
+      // if isUClosed = true and U trim does not coincide with first period of torus, 
       // method CheckAndSegment shifts position of U seam boundary of surface.
       // probably bug? So, for this case we must build not periodic surface. 
       Standard_Boolean isUFirstPeriod = !(UFirst < 0. || ULast > 2.*M_PI);

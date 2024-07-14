@@ -3680,7 +3680,7 @@ int AdvApp2Var_MathBase::mmeps1_(doublereal *epsilo)
 /*     equal to 1.D-9 */
 
 /*     KEYWORDS : */
-/*     ----------- */
+/*     ---------- */
 /*        MPRCSN,PRECISON,EPS1. */
 
 /*     INPUT ARGUMENTS : */

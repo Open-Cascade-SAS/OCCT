@@ -264,7 +264,7 @@ public:
   
   //! Perform the evaluation of the Taylor expansion
   //! of the Bspline normalized between 0 and 1.
-  //! If rational computes the homogeneous Taylor expension
+  //! If rational computes the homogeneous Taylor expansion
   //! for the numerator and stores it in CachePoles
   Standard_EXPORT static void BuildCache (const Standard_Real U, const Standard_Real V, const Standard_Real USpanDomain, const Standard_Real VSpanDomain, const Standard_Boolean UPeriodicFlag, const Standard_Boolean VPeriodicFlag, const Standard_Integer UDegree, const Standard_Integer VDegree, const Standard_Integer UIndex, const Standard_Integer VIndex, const TColStd_Array1OfReal& UFlatKnots, const TColStd_Array1OfReal& VFlatKnots, const TColgp_Array2OfPnt& Poles, const TColStd_Array2OfReal* Weights, TColgp_Array2OfPnt& CachePoles, TColStd_Array2OfReal* CacheWeights);
   

@@ -35,7 +35,7 @@ DEFINE_STANDARD_HANDLE(Bisector_BisecPC, Bisector_Curve)
 
 //! Provides the bisector between a point and a curve.
 //! the curvature on the curve has to be monoton.
-//! the point can't be on the curve exept at the extremities.
+//! the point can't be on the curve except at the extremities.
 class Bisector_BisecPC : public Bisector_Curve
 {
 
@@ -91,7 +91,7 @@ public:
   Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
   
 
-  //! Transformation of a geometric object. This tansformation
+  //! Transformation of a geometric object. This transformation
   //! can be a translation, a rotation, a symmetry, a scaling
   //! or a complex transformation obtained by combination of
   //! the previous elementaries transformations.

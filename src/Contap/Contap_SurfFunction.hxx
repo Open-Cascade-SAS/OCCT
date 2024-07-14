@@ -31,7 +31,7 @@ class math_Matrix;
 
 //! This class describes the function on a parametric surface.
 //! the form of the function is F(u,v) = 0 where u and v are
-//! the parameteric coordinates of a point on the surface,
+//! the parametric coordinates of a point on the surface,
 //! to compute the contours of the surface.
 class Contap_SurfFunction  : public math_FunctionSetWithDerivatives
 {

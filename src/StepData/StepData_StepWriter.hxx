@@ -150,7 +150,7 @@ public:
   //! same as above but accepts a CString (ex.: "..." directly)
   Standard_EXPORT void SendComment (const Standard_CString text);
   
-  //! sets entity's StepType, opens brakets, starts param no to 0
+  //! sets entity's StepType, opens brackets, starts param no to 0
   //! params are separated by comma
   //! Remark : for a Multiple Type Entity (see Express ANDOR clause)
   //! StartComplex must be called before sending components, then
@@ -161,7 +161,7 @@ public:
   Standard_EXPORT void StartEntity (const TCollection_AsciiString& atype);
   
   //! sends the start of a complex entity, which is a simple open
-  //! bracket (without increasing braket level)
+  //! bracket (without increasing bracket level)
   //! It must be called JUST AFTER SendEntity and BEFORE sending
   //! components, each one begins by StartEntity
   Standard_EXPORT void StartComplex();

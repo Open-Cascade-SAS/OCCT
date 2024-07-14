@@ -211,14 +211,14 @@ public:
   //! Returns True if the object has annotation plane.
   Standard_Boolean HasPlane() const { return myHasPlane; }
 
-  //! Returns true, if connection point exists (for dimesional_size),
+  //! Returns true, if connection point exists (for dimensional_size),
   //! if connection point for the first shape exists (for dimensional_location).
   Standard_Boolean HasPoint() const { return myHasPoint1; }
 
   // Returns true, if connection point for the second shape exists (for dimensional_location only).
   Standard_Boolean HasPoint2() const { return myHasPoint2; }
 
-  //! Set connection point (for dimesional_size),
+  //! Set connection point (for dimensional_size),
   //! Set connection point for the first shape (for dimensional_location).
   void SetPoint(const gp_Pnt& thePnt) {
     myPnt1 = thePnt;
@@ -231,7 +231,7 @@ public:
     myHasPoint2 = Standard_True;
   }
 
-  //! Get connection point (for dimesional_size),
+  //! Get connection point (for dimensional_size),
   //! Get connection point for the first shape (for dimensional_location).
   gp_Pnt GetPoint() const {
     return myPnt1;

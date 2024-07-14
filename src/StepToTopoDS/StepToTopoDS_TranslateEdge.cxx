@@ -410,7 +410,7 @@ void  StepToTopoDS_TranslateEdge::MakeFromCurve3D
   if ( temp1 > preci || temp2 > preci ) {
     // #25415: handling of special case found on some STEP files produced by FPX Expert 2013 (PCB design system):
     // edge curve is line displaced from its true position but with correct direction;
-    // we can shift the line in this case so that it passes through vertices correcty
+    // we can shift the line in this case so that it passes through vertices correctly
     if (Abs (temp1 - temp2) < preci && Abs (U2 - U1 - pnt1.Distance(pnt2)) < Precision::Confusion() && 
         C1->IsKind(STANDARD_TYPE(Geom_Line)))
     {

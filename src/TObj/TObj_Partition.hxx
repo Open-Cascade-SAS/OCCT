@@ -66,7 +66,7 @@ class TObj_Partition : public TObj_Object
 
  public:
   /**
-  * Method for updating object afrer restoring
+  * Method for updating object after restoring
   */
 
   //! Performs updating the links and dependencies of the object which are not

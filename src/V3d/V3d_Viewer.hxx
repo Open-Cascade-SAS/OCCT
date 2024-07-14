@@ -394,7 +394,7 @@ public: //! @name grid management
   //! Display grid echo at requested point in the view.
   Standard_EXPORT void ShowGridEcho (const Handle(V3d_View)& theView, const Graphic3d_Vertex& thePoint);
 
-  //! Temporarly hide grid echo.
+  //! Temporarily hide grid echo.
   Standard_EXPORT void HideGridEcho (const Handle(V3d_View)& theView);
 
 public: //! @name deprecated methods

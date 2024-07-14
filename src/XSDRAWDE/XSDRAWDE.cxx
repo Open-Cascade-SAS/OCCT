@@ -387,19 +387,19 @@ void XSDRAWDE::Factory(Draw_Interpretor& theDI)
             "\n\t\t: Dump special resource generated from global configuration."
             "\n\t\t:   '-path' - save resource configuration to the file"
             "\n\t\t:   '-recursive' - flag to generate a resource from providers. Default is On. Off disables other options"
-            "\n\t\t:   '-format' - flag to generate a resource for choosen formats. If list is empty, generate it for all"
-            "\n\t\t:   '-vendor' - flag to generate a resource for choosen vendors. If list is empty, generate it for all",
+            "\n\t\t:   '-format' - flag to generate a resource for chosen formats. If list is empty, generate it for all"
+            "\n\t\t:   '-vendor' - flag to generate a resource for chosen vendors. If list is empty, generate it for all",
             __FILE__, DumpConfiguration, aGroup);
   theDI.Add("LoadConfiguration",
             "LoadConfiguration conf [-recursive {on|off}]\n"
-            "\n\t\t:   'conf' - path to the resouce file or string value in the special format"
+            "\n\t\t:   'conf' - path to the resource file or string value in the special format"
             "\n\t\t:   '-recursive' - flag to generate a resource for all providers. Default is true"
             "\n\t\t: Configure global configuration according special resource",
             __FILE__, LoadConfiguration, aGroup);
   theDI.Add("CompareConfiguration",
             "CompareConfiguration conf1 conf2\n"
-            "\n\t\t:   'conf1' - path to the first resouce file or string value in the special format"
-            "\n\t\t:   'conf2' - path to the second resouce file or string value in the special format"
+            "\n\t\t:   'conf1' - path to the first resource file or string value in the special format"
+            "\n\t\t:   'conf2' - path to the second resource file or string value in the special format"
             "\n\t\t: Compare two configurations",
             __FILE__, CompareConfiguration, aGroup);
   theDI.Add("ReadFile",

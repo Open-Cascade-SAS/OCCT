@@ -170,7 +170,7 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkOrder (const NCollection_Array1<u
 
   if (!anOrderIsValid)
   {
-    throw Standard_Failure ("Ivalid order format in tiles of Graphic3d_CubeMapPacked");
+    throw Standard_Failure ("Invalid order format in tiles of Graphic3d_CubeMapPacked");
   }
 
   return anOrderIsValid;

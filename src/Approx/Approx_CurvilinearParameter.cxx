@@ -196,7 +196,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
   std::cout<<"initialization time = "<<t_init<<std::endl;
   std::cout<<"approximation time = "<<t_approx<<std::endl;
   std::cout<<"total time for uparam computation = "<<t_uparam<<std::endl;
-  std::cout<<"number uparam calles = "<<uparam_count<<std::endl;
+  std::cout<<"number uparam calls = "<<uparam_count<<std::endl;
 #endif
 }
 
@@ -357,7 +357,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   std::cout<<"initialization time = "<<t_init<<std::endl;
   std::cout<<"approximation time = "<<t_approx<<std::endl;
   std::cout<<"total time for uparam computation = "<<t_uparam<<std::endl;
-  std::cout<<"number uparam calles = "<<uparam_count<<std::endl;
+  std::cout<<"number uparam calls = "<<uparam_count<<std::endl;
 #endif
 }
 
@@ -530,7 +530,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   std::cout<<"initialization time = "<<t_init<<std::endl;
   std::cout<<"approximation time = "<<t_approx<<std::endl;
   std::cout<<"total time for uparam computation = "<<t_uparam<<std::endl;
-  std::cout<<"number uparam calles = "<<uparam_count<<std::endl;
+  std::cout<<"number uparam calls = "<<uparam_count<<std::endl;
 #endif
 }
 

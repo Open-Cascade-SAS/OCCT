@@ -301,7 +301,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
                   Arrive =  Standard_False;
                   break;
               }
-              // necessairily N > 0 jag 940617
+              // necessarily N > 0 jag 940617
               // point of stop given at input 
               PathPnt = Pnts1.Value(N);
 

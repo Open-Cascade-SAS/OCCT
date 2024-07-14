@@ -91,7 +91,7 @@ public:
   Standard_EXPORT Handle(Geom2d_Geometry) Copy() const Standard_OVERRIDE;
   
 
-  //! Transformation of a geometric object. This tansformation
+  //! Transformation of a geometric object. This transformation
   //! can be a translation, a rotation, a symmetry, a scaling
   //! or a complex transformation obtained by combination of
   //! the previous elementaries transformations.

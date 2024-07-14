@@ -51,7 +51,7 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
     else
     {
       /* PTV: 21.03.2002 it is necessary for files that have only `\r` but no `\n`
-              examle file is 919-001-T02-04-CP-VL.iges */
+              example file is 919-001-T02-04-CP-VL.iges */
       while ( fgets ( ligne, 2, lefic ) && ( ligne[0] == '\r' || ligne[0] == '\n' ) )
       {
       }

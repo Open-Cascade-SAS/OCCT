@@ -67,7 +67,7 @@ static void FusionneIntervalles(const TColStd_Array1OfReal& I1,
 
 
 //--- TABSOR is filled by parsing TABLE1 and TABLE2 simultaneously ---
-//------------------ and eliminating multiple occurrencies ------------
+//------------------ and eliminating multiple occurrences ------------
 
  while ((ind1<=I1.Upper()) && (ind2<=I2.Upper())) {
       v1 = I1(ind1);

@@ -774,7 +774,7 @@ public:
   //! Creates a new object which is a copy of this BSpline curve.
   Standard_EXPORT Handle(Geom_Geometry) Copy() const Standard_OVERRIDE;
   
-  //! Comapare two Bspline curve on identity;
+  //! Compare two Bspline curve on identity;
   Standard_EXPORT Standard_Boolean IsEqual (const Handle(Geom_BSplineCurve)& theOther, const Standard_Real thePreci) const;
 
   //! Dumps the content of me into the stream

@@ -233,7 +233,7 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_Rectangular
     // one another, only 2 vertices that belong to opposite faces can be projected
     // to simplify calculations.
     Standard_Integer aVertIdxs[6] = { LeftTopNear, LeftBottomNear,       // opposite planes in height direction
-                                      LeftBottomNear, RightBottomNear,   // opposite planes in width direcion
+                                      LeftBottomNear, RightBottomNear,   // opposite planes in width direction
                                       LeftBottomFar, RightBottomNear };  // opposite planes in depth direction
     for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; aPlaneIdx += 2)
     {

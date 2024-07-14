@@ -66,7 +66,7 @@ private:
   //! :  returns false for case when some points of polygon
   //! : were replaced on line and exact point of intersection was not found
   //! : for case when point of intersection was found
-  //! : during prelimanary search for line (case of bad paramerization of Bspline for example).
+  //! : during prelimanary search for line (case of bad parameterization of Bspline for example).
   Standard_EXPORT Standard_Boolean findIntersect (const Standard_Address& Curve1, const IntRes2d_Domain& Domain1, const Standard_Address& Curve2, const IntRes2d_Domain& Domain2, const Standard_Real TolConf, const Standard_Real Tol, const Standard_Integer NbIter, const Standard_Real DeltaU, const Standard_Real DeltaV, const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& thePoly1, const HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter& thePoly2, const Standard_Boolean isFullRepresentation);
 
 

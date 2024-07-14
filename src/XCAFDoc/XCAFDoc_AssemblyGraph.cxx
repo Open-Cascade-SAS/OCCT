@@ -256,7 +256,7 @@ Standard_Integer XCAFDoc_AssemblyGraph::addNode(const TDF_Label&       theLabel,
 
 // =======================================================================
 // function : Iterator constructor
-// purpose  : Iteration starts from the specifid node.
+// purpose  : Iteration starts from the specified node.
 // =======================================================================
 
 XCAFDoc_AssemblyGraph::Iterator::Iterator(const Handle(XCAFDoc_AssemblyGraph)& theGraph,

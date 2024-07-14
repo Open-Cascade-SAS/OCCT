@@ -330,7 +330,7 @@ void PLib_JacobiPolynomial::D0123(const Standard_Integer NDeriv,
 
   if (myTNorm.IsNull()) {
 
-    // Inizialization of myTNorm,myCofA,myCofB,myDenom
+    // Initialization of myTNorm,myCofA,myCofB,myDenom
 
     myTNorm = new TColStd_HArray1OfReal(0,myDegree);
     for (i=0; i<=myDegree; i++) {

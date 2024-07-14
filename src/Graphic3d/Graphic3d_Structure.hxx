@@ -373,7 +373,7 @@ public:
   }
 
   //! Returns true if structure has mutable nature (content or location are be changed regularly).
-  //! Mutable structure will be managed in different way than static onces.
+  //! Mutable structure will be managed in different way than static ones.
   Standard_Boolean IsMutable() const
   {
     return !myCStructure.IsNull()

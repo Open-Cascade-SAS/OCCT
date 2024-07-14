@@ -44,11 +44,11 @@ public:
   Standard_EXPORT Geom2dConvert_PPoint (const Standard_Real      theParameter,
                                         const Adaptor2d_Curve2d& theAdaptor);
 
-  //! Compute the distance betwwen two 2d points.
+  //! Compute the distance between two 2d points.
   inline Standard_Real        Dist      (const Geom2dConvert_PPoint& theOth) const
   { return myPoint.Distance(theOth.myPoint); }
 
-  //! Query the parmeter value.
+  //! Query the parameter value.
   inline Standard_Real        Parameter () const { return myParameter; }
 
   //! Query the point location.

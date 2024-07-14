@@ -48,7 +48,7 @@ class Graphic3d_TransformPers;
 //! 1) Non-modifiable, or unbounded, group ('black box').
 //! Developers can repeat a sequence of
 //! SetPrimitivesAspect() with AddPrimitiveArray() methods arbitrary number of times
-//! to define arbitrary number of primitive "blocks" each having individual apect values.
+//! to define arbitrary number of primitive "blocks" each having individual aspect values.
 //! Any modification of such a group is forbidden, as aspects and primitives are mixed
 //! in memory without any high-level logical structure, and any modification is very likely to result
 //! in corruption of the group internal data.

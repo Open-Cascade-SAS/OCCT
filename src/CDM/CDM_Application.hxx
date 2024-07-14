@@ -51,7 +51,7 @@ public:
   //! By default, writes in MessageDriver().
   Standard_EXPORT virtual void BeginOfUpdate (const Handle(CDM_Document)& aDocument);
   
-  //! this method is called affter the update of a document.
+  //! this method is called after the update of a document.
   //! By default, writes in MessageDriver().
   Standard_EXPORT virtual void EndOfUpdate (const Handle(CDM_Document)& aDocument, const Standard_Boolean theStatus, const TCollection_ExtendedString& ErrorString);
   

@@ -826,8 +826,8 @@ Standard_Boolean ShapeAnalysis_CanonicalRecognition::GetSurfaceByLS(const TopoDS
                                // with relative precision about aRelDev.
                                // For example, if radius of sample surface is R,
                                // it means, that "exact" vaue is in interav 
-                               //[R - aRelDev*R, R + aRelDev*R]. This intrrval is set
-                               // for R as boundary values for dptimization algo.
+                               //[R - aRelDev*R, R + aRelDev*R]. This interval is set
+                               // for R as boundary values for optimization algo.
   FillSolverData(theTarget, thePos, theParams,
                  aStartPoint, aFBnd, aLBnd, aRelDev);
 

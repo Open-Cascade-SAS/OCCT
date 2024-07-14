@@ -78,7 +78,7 @@ public:
                                                            const TopAbs_ShapeEnum theType,
                                                            TopTools_ListOfShape& theLSC);
 
-  //! Computes the   Section betwwen  <F1> and  <F2> the
+  //! Computes the   Section between  <F1> and  <F2> the
   //! edges solution   are  stored in <LInt1>  with  the
   //! orientation on <F1>, the sames edges are stored in
   //! <Lint2> with the orientation on <F2>.

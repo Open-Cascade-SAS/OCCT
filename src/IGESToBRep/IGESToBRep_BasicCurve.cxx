@@ -21,7 +21,7 @@
 //#60 rln 29.12.98 PRO17015
 //:l3 abv 11.01.99: CATIA01.igs: using less values for checking short lines
 //%11 pdn 12.01.98 CTS22023 correcting used tolerances
-//sln 29.12.2001 OCC90 : Method checkBSplineCurve and varification before creation of bspline curves were added
+//sln 29.12.2001 OCC90 : Method checkBSplineCurve and verification before creation of bspline curves were added
 //=======================================================================
 
 #include <ElCLib.hxx>
@@ -80,7 +80,7 @@
 //=======================================================================
 //function : CheckBSplineCurve
 //purpose  : Check coincidede knots Check whether knots are in ascending 
-//           order and difference between vaues of weights more than 1000. 
+//           order and difference between values of weights more than 1000. 
 //           Send corresponding messages. The function returns Standard_False 
 //           if curve can not be created, Standard_True otherwise.
 //=======================================================================
@@ -89,7 +89,7 @@ static Standard_Boolean checkBSplineCurve(IGESToBRep_BasicCurve*               t
                                           TColStd_Array1OfReal&                CKnots,
                                           const TColStd_Array1OfReal&          CWeights)
 {
-  // check whether difference between vaues of weights more than 1000.
+  // check whether difference between values of weights more than 1000.
   if(!theBSplineCurve->IsPolynomial()) {
     Standard_Real aMinValue = CWeights.Value(CWeights.Lower());
     Standard_Real aMaxValue = CWeights.Value(CWeights.Lower());

@@ -23,7 +23,7 @@
 
 /**
  * This class provides consistency check of the TObj model.
- * It collects all inconsistencies in the status bits and prepaires
+ * It collects all inconsistencies in the status bits and prepares
  * messages to be sent using SendStatusMessages (SendMessages) method.
  * It supports also the fix mode, in which some inconsistencies are
  * corrected.

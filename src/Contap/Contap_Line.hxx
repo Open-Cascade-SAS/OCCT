@@ -79,7 +79,7 @@ public:
   
   Standard_EXPORT const Handle(Adaptor2d_Curve2d)& Arc() const;
   
-  //! Set The Tansition of the line.
+  //! Set The Transition of the line.
   Standard_EXPORT void SetTransitionOnS (const IntSurf_TypeTrans T);
   
   //! returns IN if at the "left" of the line, the normale of the
