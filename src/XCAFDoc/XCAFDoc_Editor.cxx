@@ -520,7 +520,7 @@ static void rescaleDimensionRefLabels(const TDF_LabelSequence& theRefLabels,
         if (!theBRepTrsf.IsDone())
         {
           Standard_SStream aSS;
-          aSS << "Dimmension PMI " << theEntryDimension << " is not scaled.";
+          aSS << "Dimension PMI " << theEntryDimension << " is not scaled.";
           Message::SendWarning(aSS.str().c_str());
         }
         else

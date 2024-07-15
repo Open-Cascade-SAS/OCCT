@@ -511,7 +511,7 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
 
 //=======================================================================
 //function : RationalDerivatives
-//purpose  : Uses Homogeneous Poles Derivatives and Deivatives of Weights
+//purpose  : Uses Homogeneous Poles Derivatives and Derivatives of Weights
 //=======================================================================
 
 void  PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,

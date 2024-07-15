@@ -30,7 +30,7 @@ DEFINE_STANDARD_HANDLE(IGESSolid_SolidOfLinearExtrusion, IGESData_IGESEntity)
 
 //! defines SolidOfLinearExtrusion, Type <164> Form Number <0>
 //! in package IGESSolid
-//! Solid of linear extrusion is defined by translatin an
+//! Solid of linear extrusion is defined by translating an
 //! area determined by a planar curve
 class IGESSolid_SolidOfLinearExtrusion : public IGESData_IGESEntity
 {

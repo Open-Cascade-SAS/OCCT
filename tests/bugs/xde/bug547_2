@@ -6,7 +6,7 @@ puts "(case 2)"
 puts "========================"
 puts ""
 ##################################
-## Big tolerance after "sewing" with tolearnce 0.5  
+## Big tolerance after "sewing" with tolerance 0.5  
 ##################################
 
 restore [locate_data_file OCC547.brep] a

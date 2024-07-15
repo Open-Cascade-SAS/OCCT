@@ -4612,7 +4612,7 @@ void BRepBuilderAPI_Sewing::CreateSections(const TopoDS_Shape& section,
     //gka  - Convert to BSpline was commented because
     //it is not necessary to create BSpline instead of Lines or cIrcles.
     //Besides after conversion circles to BSpline
-    //it is necessary to recompute parameters of cutting because paramerization of created
+    //it is necessary to recompute parameters of cutting because parameterization of created
     //BSpline curve differs from parametrization of circle.
 
     // Convert pcurve to BSpline

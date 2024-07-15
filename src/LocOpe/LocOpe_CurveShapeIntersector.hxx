@@ -43,11 +43,11 @@ public:
   //! Empty constructor.
     LocOpe_CurveShapeIntersector();
   
-  //! Creates  and performs the intersection     betwwen
+  //! Creates  and performs the intersection     between
   //! <Ax1> and <S>.
     LocOpe_CurveShapeIntersector(const gp_Ax1& Axis, const TopoDS_Shape& S);
   
-  //! Creates  and performs yte intersection     betwwen
+  //! Creates  and performs yte intersection     between
   //! <C> and <S>.
     LocOpe_CurveShapeIntersector(const gp_Circ& C, const TopoDS_Shape& S);
   

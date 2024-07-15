@@ -30,9 +30,9 @@ class Geom_Surface;
 class Geom_SurfaceOfRevolution;
 class Geom_Circle;
 
-//! Converts a surface to the analitical form with given
+//! Converts a surface to the analytical form with given
 //! precision. Conversion is done only the surface is bspline
-//! of bezier and this can be approximed by some analytical
+//! of bezier and this can be approximated by some analytical
 //! surface with that precision.
 class GeomConvert_SurfToAnaSurf 
 {

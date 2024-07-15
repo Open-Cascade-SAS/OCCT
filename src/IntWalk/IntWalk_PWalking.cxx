@@ -3493,7 +3493,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection(const IntImp_ConstIso
     Now, let substitute required deflection (tolconf or tolconf/2) to z. Then
     it is necessary to check if e < z or if e > z.
 
-    In this case, it is enough to comapare Fs(e) and Fs(z).
+    In this case, it is enough to compare Fs(e) and Fs(z).
     At that Fs(e) > 0 because sin(B/2) > 0 always.
 
     Therefore, if Fs(z) < 0.0 then Fs(e) > Fs(z) ==> e < z definitely.

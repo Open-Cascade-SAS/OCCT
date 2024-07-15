@@ -2200,8 +2200,8 @@ int AdvApp2Var_SysBase::mcrdelt_(integer *iunit,
 /*     ---------- */
 /*       TABLE OF MANAGEMENT OF DYNAMIC ALLOCATIONS IN MEMORY */
 
-/*     KEYWORS : */
-/*     ----------- */
+/*     KEYWORDS : */
+/*     ---------- */
 /*       SYSTEM, MEMORY, ALLOCATION */
 
 /*     DEMSCRIPTION/NOTES/LIMITATIONS : */
@@ -2867,7 +2867,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /*     . add size of the user zone */
 /*     . add 8 for alinement of start address of */
 /*       allocation on multiple of 8 so that to be able to  */
-/*       set flags with Double Precision without other pb than alignement */
+/*       set flags with Double Precision without other pb than alignment */
 /*     . add 16 octets for two flags */
 
     ibyte = izu + 24;

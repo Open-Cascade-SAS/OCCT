@@ -141,7 +141,7 @@ public:
   //! @return status of the check.
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const Standard_Integer theTargetIndex);
 
-  //! Checks indices for equlity.
+  //! Checks indices for equality.
   static Standard_Boolean IsEqual(const Standard_Integer theIndex,
                                                   const Standard_Integer theTargetIndex)
   {

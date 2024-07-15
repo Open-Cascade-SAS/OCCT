@@ -1687,7 +1687,7 @@ void RWStepKinematics_RWActuatedKinPairAndOrderKinPair::WriteStep
 (StepData_StepWriter& theSW,
   const Handle(StepKinematics_ActuatedKinPairAndOrderKinPair)& theEnt) const
 {
-  // --- Instance of plex componant BoundedCurve ---
+  // --- Instance of plex component BoundedCurve ---
 
   theSW.StartEntity("(ACTUATED_KINEMATIC_PAIR");
 

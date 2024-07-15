@@ -1255,7 +1255,7 @@ foreach (OCCT_TOOLKIT ${BUILD_TOOLKITS})
 endforeach()
 list (REMOVE_DUPLICATES OCCT_MODULES_ENABLED)
 list (REMOVE_DUPLICATES OCCT_COMPILE_DEFINITIONS)
-# these macros are defined for specific tookits, not globalwise
+# these macros are defined for specific toolkits, not globalwise
 list (REMOVE_ITEM OCCT_COMPILE_DEFINITIONS HAVE_OPENGL)
 list (REMOVE_ITEM OCCT_COMPILE_DEFINITIONS HAVE_GLES2)
 

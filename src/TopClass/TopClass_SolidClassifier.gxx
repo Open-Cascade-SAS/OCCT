@@ -50,7 +50,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 
     gp_Lin L;
     Standard_Real Par;
-    //-- We compute the intersection betwwen the line builded in the Solid Explorer
+    //-- We compute the intersection between the line builded in the Solid Explorer
     //-- and the shape.
 
     SolidExplorer.Segment(P,L,Par);

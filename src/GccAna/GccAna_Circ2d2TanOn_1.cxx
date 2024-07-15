@@ -36,14 +36,14 @@
 //   Creation of a circle tangent to Circle C1 and a straight line L2.    +
 //                        centered on a straight line.                    +
 //  We start by making difference between cases that we are going to      +
-//  proceess separately.                                            +
-//  In general case:                                                  +
+//  process separately.                                                   +
+//  In general case:                                                      +
 //  ====================                                                  +
-//  We calculate bissectrices to C1 and L2 that give us            +
-//  all possibles locations of centers of all circles tangent to C1 and L2+                                                  +
-//  We intersect these bissectrices with straight line OnLine which gives   +
-//  us points among which we'll choose the solutions.   +
-//  The choices are made basing on Qualifiers of C1 and L2.  +
+//  We calculate bissectrices to C1 and L2 that give us                   +
+//  all possible locations of centers of all circles tangent to C1 and L2 +
+//  We intersect these bissectrices with straight line OnLine which gives +
+//  us points among which we'll choose the solutions.                     +
+//  The choices are made basing on Qualifiers of C1 and L2.               +
 //=========================================================================
 GccAna_Circ2d2TanOn::
    GccAna_Circ2d2TanOn (const GccEnt_QualifiedCirc& Qualified1  , 

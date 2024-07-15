@@ -41,7 +41,7 @@
 //! application memory consumption!
 //!
 //! User should analyze all values in specific case to make correct decision
-//! about memory (over)usage. This is also prefferred to use specialized
+//! about memory (over)usage. This is also preferred to use specialized
 //! tools to detect memory leaks.
 //!
 //! This also means that these values should not be used for intellectual

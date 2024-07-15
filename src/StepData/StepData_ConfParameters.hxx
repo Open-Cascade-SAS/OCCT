@@ -182,7 +182,7 @@ public:
   WriteMode_VertexMode WriteVertexMode = WriteMode_VertexMode_OneCompound; //<! Indicates which of free vertices writing mode is switch on
   bool WriteSubshapeNames = false; //<! Indicates whether to write sub-shape names to 'Name' attributes of STEP Representation Items
   bool WriteColor = true; //<! ColorMode is used to indicate write Colors or not
-  bool WriteNonmanifold = false; //<! Defines non-manifold topology writting
+  bool WriteNonmanifold = false; //<! Defines non-manifold topology writing
   bool WriteName = true; //<! NameMode is used to indicate write Name or not
   bool WriteLayer = true; //<! LayerMode is used to indicate write Layers or not
   bool WriteProps = true; //<! PropsMode is used to indicate write Validation properties or not

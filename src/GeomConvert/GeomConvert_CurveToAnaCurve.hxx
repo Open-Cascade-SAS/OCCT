@@ -94,7 +94,7 @@ public:
     return myConvType;
   }
 
-  //! Sets type of convertion
+  //! Sets type of conversion
   void SetConvType(const GeomConvert_ConvType theConvType)
   {
     myConvType = theConvType;

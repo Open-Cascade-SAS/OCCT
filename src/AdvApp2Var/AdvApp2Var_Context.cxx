@@ -33,7 +33,7 @@ static Standard_Boolean lesparam(const Standard_Integer iordre,
     ndgjac += (9 - (iordre+1)); //iordre rescales the frequences upwards
     ndgjac += (icodeo-1)*10;
   }
-  // ---> Min Number of required pointss.
+  // ---> Min Number of required points.
   if (ndgjac < 8) { nbpnts = 8;  } 
   else if (ndgjac < 10) { nbpnts = 10; }
   //  else if (ndgjac < 15) { nbpnt = 15; } Bug Uneven number

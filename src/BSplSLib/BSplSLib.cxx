@@ -64,7 +64,7 @@ struct BSplSLib_DataContainer
 
 //=======================================================================
 //function : RationalDerivative
-//purpose  : computes the rational derivatives when whe have the
+//purpose  : computes the rational derivatives when we have the
 //           the derivatives of the homogeneous numerator and the
 //           the derivatives of the denominator 
 //=======================================================================

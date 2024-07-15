@@ -249,7 +249,7 @@ Handle(Geom2d_TrimmedCurve) Geom2dConvert_ApproxArcsSegments::makeLine
 
     // if the derivatives in the end points differ from the derivative line
     // more than value of the specified continuity tolerance
-    // then a biarc should be build instead of a line.
+    // then a biarc should be built instead of a line.
     const Standard_Real aContTolerance = ::Max(myAngleTolerance, 0.01);
     if (absAngle[0] > aContTolerance || absAngle[1] > aContTolerance) {
       //std::cout << "makeLine(): Line not built" << std::endl;
@@ -257,7 +257,7 @@ Handle(Geom2d_TrimmedCurve) Geom2dConvert_ApproxArcsSegments::makeLine
     }
   } // end if (isCheck)
 
-  //bulding segment of line
+  //building segment of line
   GCE2d_MakeSegment aMakeSeg (theFirst.Point(), theLast.Point());
   if (aMakeSeg.IsDone()) {
     Handle(Geom2d_TrimmedCurve) aCurve = aMakeSeg.Value();
@@ -367,7 +367,7 @@ Standard_Boolean Geom2dConvert_ApproxArcsSegments::makeFreeform()
 
 //=======================================================================
 //function : getLinearParts
-//purpose  : method for geting inflection points
+//purpose  : method for getting inflection points
 //=======================================================================
 
 void Geom2dConvert_ApproxArcsSegments::getLinearParts (Geom2dConvert_SequenceOfPPoint& theSeqPar)
@@ -730,7 +730,7 @@ Standard_Boolean Geom2dConvert_ApproxArcsSegments::checkCurve
   if (aCurve.IsNull())
     return Standard_False;              // check fails on empty input
   Standard_Boolean isUniformDone = !mySeqParams.IsEmpty();
-  //calcualtion sequence of the parameters or step by parameter.
+  //calculation sequence of the parameters or step by parameter.
   Standard_Integer aNbPnts = (isUniformDone ? mySeqParams.Length() :MAXPOINTS);
   Standard_Real aParamStep = (theLastParam - theFirstParam)/MAXPOINTS;
 

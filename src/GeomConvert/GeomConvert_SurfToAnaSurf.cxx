@@ -230,9 +230,9 @@ Standard_Boolean GeomConvert_SurfToAnaSurf::GetCylByLS(const Handle(TColgp_HArra
   Standard_Real aRelDev = 0.2; //Customer can set parameters of sample surface
                                // with relative precision about aRelDev.
                                // For example, if radius of sample surface is R,
-                               // it means, that "exact" vaue is in interav 
-                               //[R - aRelDev*R, R + aRelDev*R]. This intrrval is set
-                               // for R as boundary values for dptimization algo.
+                               // it means, that "exact" value is in interav 
+                               //[R - aRelDev*R, R + aRelDev*R]. This interval is set
+                               // for R as boundary values for optimization algo.
 
   aStartPoint(1) = thePos.Location().X();
   aStartPoint(2) = thePos.Location().Y();
@@ -279,7 +279,7 @@ Standard_Boolean GeomConvert_SurfToAnaSurf::GetCylByLS(const Handle(TColgp_HArra
     aDirMatrix(i, i) = 1.0;
 
   //Set search direction for location to be perpendicular to axis to avoid
-  //seaching along axis
+  //searching along axis
   const gp_Dir aDir = thePos.Direction();
   gp_Pln aPln(thePos.Location(), aDir);
   gp_Dir aUDir = aPln.Position().XDirection();

@@ -31,7 +31,7 @@ public:
   
   Standard_EXPORT BRepTools_PurgeLocations();
    
-  //! Removes all locations correspodingly to criterium from theShape.
+  //! Removes all locations correspondingly to criterium from theShape.
   Standard_EXPORT Standard_Boolean Perform(const TopoDS_Shape& theShape);
 
   //! Returns shape with removed locations.

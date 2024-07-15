@@ -44,7 +44,7 @@ public:
   //! C2 separates the elements C et D.
   //! If B an C have the same geometry. <ComunElement>
   //! Has to be True.
-  //! It Permits an optimiztion of the computation.
+  //! It Permits an optimization of the computation.
   Standard_EXPORT Bisector_Inter(const Bisector_Bisec& C1, const IntRes2d_Domain& D1, const Bisector_Bisec& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol, const Standard_Boolean ComunElement);
   
   //! Intersection between 2 curves.
@@ -52,7 +52,7 @@ public:
   //! C2 separates the elements C et D.
   //! If B an C have the same geometry. <ComunElement>
   //! Has to be True.
-  //! It Permits an optimiztion of the computation.
+  //! It Permits an optimization of the computation.
   Standard_EXPORT void Perform (const Bisector_Bisec& C1, const IntRes2d_Domain& D1, const Bisector_Bisec& C2, const IntRes2d_Domain& D2, const Standard_Real TolConf, const Standard_Real Tol, const Standard_Boolean ComunElement);
 
 

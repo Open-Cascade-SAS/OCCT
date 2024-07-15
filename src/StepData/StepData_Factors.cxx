@@ -14,7 +14,7 @@
 #include <StepData_Factors.hxx>
 
 // ============================================================================
-// Method : Consturctor
+// Method : Constructor
 // Purpose:
 // ============================================================================
 StepData_Factors::StepData_Factors()

@@ -38,7 +38,7 @@ public:
   //! Empty constructor
   Standard_EXPORT ShapeUpgrade_RemoveLocations();
   
-  //! Removes all location correspodingly to RemoveLevel.
+  //! Removes all location correspondingly to RemoveLevel.
   Standard_EXPORT Standard_Boolean Remove (const TopoDS_Shape& theShape);
   
   //! Returns shape with removed locations.

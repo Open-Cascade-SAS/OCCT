@@ -43,7 +43,7 @@ public:
   //! Empty constructor.
     LocOpe_CSIntersector();
   
-  //! Creates  and performs the intersection     betwwen
+  //! Creates  and performs the intersection     between
   //! <Ax1> and <S>.
     LocOpe_CSIntersector(const TopoDS_Shape& S);
   

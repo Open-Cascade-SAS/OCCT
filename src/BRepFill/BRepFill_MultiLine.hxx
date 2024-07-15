@@ -59,7 +59,7 @@ public:
   //! Returns true if the approximation is not needed.
   Standard_EXPORT   Standard_Boolean IsParticularCase()  const;
 
-  //! Returns   the continuity  betwwen  the two  faces
+  //! Returns   the continuity  between  the two  faces
   //! seShape         from GeomAbsparated by myBis.
   Standard_EXPORT   GeomAbs_Shape Continuity()  const;
 

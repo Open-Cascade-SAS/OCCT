@@ -242,7 +242,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   }
   Handle(AIS_InteractiveContext) context = ViewerTest::GetAISContext();
 
-  //The following dimesion code has problems regarding arrow_size. The desired effect is not produced.
+  //The following dimension code has problems regarding arrow_size. The desired effect is not produced.
   /***************************************/
   //First view
   /***************************************/

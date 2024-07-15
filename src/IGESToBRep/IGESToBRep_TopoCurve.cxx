@@ -20,7 +20,7 @@
 //:q5 abv 19.03.99 unnecessary includes removed
 //%14 03.03.99 pdn USA60022 do not insert lacking edge before fix missing seam
 // pdn 10.03.99 S4135 Creating vertices using minimal tolerance.
-//S4181 pdn 17.04.99 Inplementing of reading IGES elementary surfaces. Transform
+//S4181 pdn 17.04.99 Implementing of reading IGES elementary surfaces. Transform
 //pcurves using gp_Trsf2d that depends on type of pair (IGES surface, resulting 
 //CAS.CADE surface)
 //szv#9:PRO19565:04Oct99 missing location for standalone vertices corrected

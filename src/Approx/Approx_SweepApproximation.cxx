@@ -128,7 +128,7 @@ void Approx_SweepApproximation::Perform(const Standard_Real First,
  if (Num2DSS == 0) {TwoDTol.Nullify();}
  else {
    // for 2d define affinity using resolutions, to 
-   // avoid homogenuous tolerance of approximation (u/v and 2d/3d)
+   // avoid homogeneous tolerance of approximation (u/v and 2d/3d)
    Standard_Real res, tolu, tolv; 
    TwoDTol = new (TColStd_HArray1OfReal) (1, Num2DSS);
    AAffin = new (Approx_HArray1OfGTrsf2d) (1, Num2DSS);

@@ -48,13 +48,13 @@ public:
   //! performed.
     void Init (const TopoDS_Shape& S, const gp_Ax1& Axis);
 
-  //! Performs every  holes of   radius  <Radius>.  This
+  //! Performs every  hole of    radius  <Radius>.  This
   //! command  has the  same effect as   a cut operation
   //! with an  infinite cylinder   defined by the  given
   //! axis and <Radius>.
   Standard_EXPORT void Perform (const Standard_Real Radius);
   
-  //! Performs evry   hole  of  radius  <Radius> located
+  //! Performs every  hole  of  radius  <Radius> located
   //! between PFrom  and  PTo  on the  given  axis.   If
   //! <WithControl> is set  to Standard_False no control
   //! are  done  on   the  resulting  shape   after  the
@@ -69,7 +69,7 @@ public:
   //! operation is performed.
   Standard_EXPORT void PerformThruNext (const Standard_Real Radius, const Standard_Boolean WithControl = Standard_True);
   
-  //! Performs  evry  holes of  radius  <Radius> located
+  //! Performs every  hole of   radius  <Radius> located
   //! after  the   origin  of   the given    axis.    If
   //! <WithControl> is  set to Standard_False no control
   //! are done   on   the  resulting  shape   after  the

@@ -24,7 +24,7 @@ class BRepTools_CopyModification : public BRepTools_Modification
 {
 public:
   //! Constructor.
-  //! \param[in] theCopyGeom  indicates that the geomtery (surfaces and curves) should be copied
+  //! \param[in] theCopyGeom  indicates that the geometry (surfaces and curves) should be copied
   //! \param[in] theCopyMesh  indicates that the triangulation should be copied
   Standard_EXPORT explicit BRepTools_CopyModification(const Standard_Boolean theCopyGeom = Standard_True,
                                                       const Standard_Boolean theCopyMesh = Standard_True);
@@ -34,7 +34,7 @@ public:
   //! - theSurf is the new geometry of the face,
   //! - theLoc is its new location, and
   //! - theTol is the new tolerance.
-  //! theRevWires, theRevFace are always set to false, because the orientaion is not changed.
+  //! theRevWires, theRevFace are always set to false, because the orientation is not changed.
   Standard_EXPORT Standard_Boolean NewSurface(const TopoDS_Face&    theFace,
                                               Handle(Geom_Surface)& theSurf,
                                               TopLoc_Location&      theLoc,

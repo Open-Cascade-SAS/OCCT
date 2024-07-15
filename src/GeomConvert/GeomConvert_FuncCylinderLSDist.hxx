@@ -31,7 +31,7 @@
 //! for use in math_BFGS algorithm.
 //!
 //! Parametrisation:
-//! Cylinder is defined by its axis and radius. Axis is defined by 3 cartesian coordinats it location x0, y0, z0 
+//! Cylinder is defined by its axis and radius. Axis is defined by 3 cartesian coordinates at location x0, y0, z0 
 //! and direction, which is constant and set by user: 
 //! dir.x, dir.y, dir.z
 //! The criteria is:

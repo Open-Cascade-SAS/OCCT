@@ -1086,7 +1086,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
         if(   Tr1.PositionOnCurve() == IntRes2d_Middle
            || Tr2.PositionOnCurve() == IntRes2d_Middle) {
           //-- Checking of points with true tolerances (ie Tol in 3d)
-          //-- If the point of intersection is within the tolearnce of a vertex
+          //-- If the point of intersection is within the tolerance of a vertex
           //-- this intersection is considered correct (no error)
           Standard_Boolean localok = Standard_False;
           Standard_Real f,l;

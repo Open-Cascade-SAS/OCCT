@@ -1026,7 +1026,7 @@ void  BSplCLib::BoorScheme(const Standard_Real U,
   //  They are alternatively written if the odd and even positions.
   //
   //  The successives contents of the array are
-  //   ***** means unitialised, l = Degree + Length
+  //   ***** means uninitialised, l = Degree + Length
   //
   //  P(0,0) ****** P(0,1) ...... P(0,l-1) ******** P(0,l)
   //  P(0,0) P(1,0) P(0,1) ...... P(0,l-1) P(1,l-1) P(0,l)

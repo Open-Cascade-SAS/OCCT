@@ -207,7 +207,7 @@ Standard_Boolean TDataStd_TreeNode::InsertAfter (const Handle(TDataStd_TreeNode)
 
 //=======================================================================
 //function : Remove
-//purpose  : Removees the function from the function tree
+//purpose  : Removes the function from the function tree
 //=======================================================================
 
 Standard_Boolean TDataStd_TreeNode::Remove ()
