@@ -1,0 +1,21 @@
+puts "============"
+puts "0033664: Visualization - Selection does not work for simple shape"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+restore [locate_data_file cylinder_surface.brep] b
+vdisplay -dispMode 1 b
+vfit
+vsensdis
+
+vselect 200 200
+if {[vnbselected] != "1"} {
+  puts "ERROR: wrong sensitive area"
+}
+
+vselect 0 0
+vdump $::imagedir/${::casename}_cylinder.png

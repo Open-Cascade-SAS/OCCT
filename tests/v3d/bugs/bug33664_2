@@ -1,0 +1,36 @@
+puts "============"
+puts "0033664: Visualization - Selection does not work for simple shape"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vinit View1
+
+pcone c1 50 100 100
+ttranslate c1 100 0 100
+explode c1
+explode c1_1
+
+pcone c2 100 50 100
+ttranslate c2 -100 0 100
+explode c2
+explode c2_1
+
+pcone c3 0 100 100
+ttranslate c3 100 0 -100
+explode c3
+explode c3_1
+
+pcone c4 100 0 100
+ttranslate c4 -100 0 -100
+explode c4
+explode c4_1
+
+vdisplay c1_1_1 c2_1_1 c3_1_1 c4_1_1 -dispmode 1
+vsensdis
+
+vfront
+vfit
+
+vdump $::imagedir/${::casename}_cone.png
