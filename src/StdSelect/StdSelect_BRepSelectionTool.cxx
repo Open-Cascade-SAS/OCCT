@@ -562,54 +562,40 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive (const TopoDS_Shape& theShape
 }
 
 //=======================================================================
-//function : getCylinderHeight
+//function : getCylinderCircles
 //purpose  :
 //=======================================================================
-static Standard_Real getCylinderHeight (const Handle(Poly_Triangulation)& theTriangulation,
-                                        const TopLoc_Location& theLoc)
+static NCollection_Array1<gp_Circ> getCylinderCircles (const TopoDS_Face& theHollowCylinder, Standard_Size& theNumCircles)
 {
-  Bnd_Box aBox;
-  gp_Trsf aScaleTrsf;
-  aScaleTrsf.SetScaleFactor (theLoc.Transformation().ScaleFactor());
-  theTriangulation->MinMax (aBox, aScaleTrsf);
-  return aBox.CornerMax().Z() - aBox.CornerMin().Z();
-}
-
-//=======================================================================
-//function : isCylinderOrCone
-//purpose  :
-//=======================================================================
-static Standard_Boolean isCylinderOrCone (const TopoDS_Face& theHollowCylinder, const gp_Pnt& theLocation, gp_Dir& theDirection)
-{
-  Standard_Integer aCirclesNb = 0;
-  Standard_Boolean isCylinder = Standard_False;
-  gp_Pnt aPos;
+  NCollection_Array1<gp_Circ> aCircles (1, 2);
+  theNumCircles = 0;
+  Standard_Integer aLinesNb = 0;
 
   TopExp_Explorer anEdgeExp;
   for (anEdgeExp.Init (theHollowCylinder, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge (anEdgeExp.Current());
     BRepAdaptor_Curve anAdaptor (anEdge);
+    aLinesNb++;
 
     if (anAdaptor.GetType() == GeomAbs_Circle
      && BRep_Tool::IsClosed (anEdge))
     {
-      aCirclesNb++;
-      isCylinder = Standard_True;
-      if (aCirclesNb == 2)
-      {
-        // Reverse the direction of the cylinder, relevant if the cylinder was created as a prism
-        if (aPos.IsEqual (theLocation, Precision::Confusion()))
-        {
-          theDirection.Reverse();
-        }
-        return Standard_True;
-      }
-      aPos = anAdaptor.Circle().Location().XYZ();
+      theNumCircles++;
+      aCircles[theNumCircles] = anAdaptor.Circle();
+    }
+    else if (anAdaptor.GetType() != GeomAbs_Line || aLinesNb > 4)
+    {
+      theNumCircles = 0;
+      return NCollection_Array1<gp_Circ>();
+    }
+    if (theNumCircles == 2)
+    {
+      break;
     }
   }
 
-  return isCylinder;
+  return aCircles;
 }
 
 //=======================================================================
@@ -658,29 +644,33 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
     }
     else if (Handle(Geom_ConicalSurface) aGeomCone = Handle(Geom_ConicalSurface)::DownCast (aSurf))
     {
-      gp_Dir aDummyDir;
-      if (isCylinderOrCone (theFace, gp_Pnt(), aDummyDir))
+      Standard_Size aNumCircles;
+      NCollection_Array1<gp_Circ> aCircles = getCylinderCircles (theFace, aNumCircles);
+      if (aNumCircles > 0 && aNumCircles < 3)
       {
         const gp_Cone aCone = BRepAdaptor_Surface (theFace).Cone();
-        const Standard_Real aRad1 = aCone.RefRadius();
-        const Standard_Real aHeight = getCylinderHeight (aTriangulation, aLoc);
 
         gp_Trsf aTrsf;
-        aTrsf.SetTransformation (aCone.Position(), gp::XOY());
-
+        Standard_Real aRad1;
         Standard_Real aRad2;
-        if (aRad1 == 0.0)
+        Standard_Real aHeight;
+        if (aNumCircles == 1)
         {
-          aRad2 = Tan (aCone.SemiAngle()) * aHeight;
+          aRad1 = 0.0;
+          aRad2 = aCircles.First().Radius();
+          aHeight = aRad2 * Tan (aCone.SemiAngle());
+          aTrsf.SetTransformation (aCone.Position(), gp::XOY());
         }
         else
         {
-          const Standard_Real aTriangleHeight = (aCone.SemiAngle() > 0.0)
-            ? aRad1 / Tan (aCone.SemiAngle())
-            : aRad1 / Tan (Abs (aCone.SemiAngle())) - aHeight;
-          aRad2 = (aCone.SemiAngle() > 0.0)
-            ? aRad1 * (aTriangleHeight + aHeight) / aTriangleHeight
-            : aRad1 * aTriangleHeight / (aTriangleHeight + aHeight);
+          aRad1 = aCircles.First().Radius();
+          aRad2 = aCircles.Last().Radius();
+          aHeight = aCircles.First().Location().Distance (aCircles.Last().Location());
+
+          const gp_Pnt aPos = aCircles.First().Location();
+          const gp_Dir aDirection (aCircles.Last().Location().XYZ() - aPos.XYZ());
+
+          aTrsf.SetTransformation (gp_Ax3(aPos, aDirection), gp::XOY());
         }
 
         Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad1, aRad2, aHeight, aTrsf, true);
@@ -690,18 +680,19 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
     }
     else if (Handle(Geom_CylindricalSurface) aGeomCyl = Handle(Geom_CylindricalSurface)::DownCast (aSurf))
     {
-      const gp_Cylinder aCyl = BRepAdaptor_Surface (theFace).Cylinder();
-      gp_Ax3 aPos = aCyl.Position();
-      gp_Dir aDirection = aPos.Direction();
-
-      if (isCylinderOrCone (theFace, aPos.Location(), aDirection))
+      Standard_Size aNumCircles;
+      NCollection_Array1<gp_Circ> aCircles = getCylinderCircles (theFace, aNumCircles);
+      if (aNumCircles == 2)
       {
+        const gp_Cylinder aCyl = BRepAdaptor_Surface (theFace).Cylinder();
+
         const Standard_Real aRad = aCyl.Radius();
-        const Standard_Real aHeight = getCylinderHeight (aTriangulation, aLoc);
+        const gp_Pnt aPos = aCircles.First().Location();
+        const gp_Dir aDirection (aCircles.Last().Location().XYZ() - aPos.XYZ());
+        const Standard_Real aHeight = aPos.Distance (aCircles.Last().Location());
 
         gp_Trsf aTrsf;
-        aPos.SetDirection (aDirection);
-        aTrsf.SetTransformation (aPos, gp::XOY());
+        aTrsf.SetTransformation (gp_Ax3 (aPos, aDirection), gp::XOY());
 
         Handle(Select3D_SensitiveCylinder) aSensSCyl = new Select3D_SensitiveCylinder (theOwner, aRad, aRad, aHeight, aTrsf, true);
         theSensitiveList.Append (aSensSCyl);
