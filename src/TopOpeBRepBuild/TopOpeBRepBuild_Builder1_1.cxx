@@ -497,7 +497,7 @@ void DumpMapOfShapeWithState (const Standard_Integer iP,
 	}
       } //end of else {// Wire has an interferences 
     } // next Wire
-  } // next interferred Face ... for (i=1; i<=nF; i++) ...
+  } // next interfered Face ... for (i=1; i<=nF; i++) ...
 }
 
 //=======================================================================

@@ -104,7 +104,7 @@ public:
     return (identifiedItem.IsNull() ? 0 : identifiedItem->Length());
   }
   
-  //! Set fiels IdentifiedItem
+  //! Set field IdentifiedItem
   inline void SetIdentifiedItem (const Handle(StepRepr_HArray1OfRepresentationItem)& theIdentifiedItem)
   {  
     identifiedItem = theIdentifiedItem;

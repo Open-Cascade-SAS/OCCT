@@ -194,7 +194,7 @@ private:
 
   //! Reference point of the proximity value on the 1st shape.
   gp_Pnt myProxPoint1;
-  //! Reference point of the proximity value on the 2st shape.
+  //! Reference point of the proximity value on the 2nd shape.
   gp_Pnt myProxPoint2;
 
   //! Status of reference points of the proximity value.

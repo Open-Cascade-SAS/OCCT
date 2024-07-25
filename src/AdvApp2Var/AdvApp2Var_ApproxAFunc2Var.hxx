@@ -42,13 +42,13 @@ class Geom_BSplineSurface;
 //! OneDTol, TwoDTol, ThreeDTol: The tolerance of approximation in each
 //! subspaces
 //! OneDTolFr, TwoDTolFr, ThreeDTolFr: The tolerance of approximation on
-//! the boundarys in each subspaces
+//! the boundaries in each subspaces
 //! [FirstInU, LastInU]: The Bounds in U of the Approximation
 //! [FirstInV, LastInV]: The Bounds in V of the Approximation
 //! FavorIso : Give preference to extract u-iso or v-iso on F(U,V)
 //! This can be useful to optimize the <Func> method
 //! ContInU, ContInV : Continuity waiting in u and v
-//! PrecisCode : Precision on approximation's error mesurement
+//! PrecisCode : Precision on approximation's error measurement
 //! 1 : Fast computation and average precision
 //! 2 : Average computation and good precision
 //! 3 : Slow computation and very good precision

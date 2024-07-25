@@ -88,7 +88,7 @@ public:
 
 public:
 
-  //! Creates new unitialized tool.
+  //! Creates new uninitialized tool.
   Standard_EXPORT BRepExtrema_ProximityDistTool();
 
   //! Creates new tool for the given element sets.
@@ -169,7 +169,7 @@ protected:
 
 private:
 
-  //! Goes throught vertices from the 1st set.
+  //! Goes through vertices from the 1st set.
   void goThroughtSet1 (const BVH_Array3d& aVertices1,
                        const Standard_Boolean theIsAdditionalSet);
 

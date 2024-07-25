@@ -114,7 +114,7 @@ class XSControl_Controller : public Standard_Transient
   //! Read from field. Can be redefined
   Standard_EXPORT virtual Handle(Transfer_ActorOfFinderProcess) ActorWrite() const;
   
-  //! Sets mininum and maximum values for modetrans (write)
+  //! Sets minimum and maximum values for modetrans (write)
   //! Erases formerly recorded bounds and values
   //! Actually only for shape
   //! Then, for each value a little help can be attached

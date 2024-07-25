@@ -215,7 +215,7 @@ static void TreatInfinitePlane(const gp_Pln        &aPlane,
 // theMinIdx - minimum poles index, that can be used.
 // theMaxIdx - maximum poles index, that can be used.
 // theShiftCoeff - shift between flatknots array and poles array.
-// This vaule should be equal to 1 in case of non periodic BSpline,
+// This value should be equal to 1 in case of non periodic BSpline,
 // and (degree + 1) - mults(the lowest index).
 
 void ComputePolesIndexes(const TColStd_Array1OfReal &theKnots,

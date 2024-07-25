@@ -1587,7 +1587,7 @@ void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape& S1,
       TopOpeBRepTool_ShapeExplorer ex11(aSubShape,t11);
       SplitShapes(ex11,ToBuild1,ToBuild2,aSet,RevOri);
     } 
-  } // exploration ot SubShapes of type <t1> of shape <S1>
+  } // exploration of SubShapes of type <t1> of shape <S1>
 
 } // FillShape
 

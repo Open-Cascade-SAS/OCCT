@@ -48,7 +48,7 @@ public:
   //! defines surface commands.
   Standard_EXPORT static void SurfaceCommands (Draw_Interpretor& I);
   
-  //! defines cosntrained curves commands.
+  //! defines constrained curves commands.
   Standard_EXPORT static void ConstraintCommands (Draw_Interpretor& I);
 
   //! defines commands to test the GeomAPI

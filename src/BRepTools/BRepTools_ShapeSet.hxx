@@ -72,7 +72,7 @@ public:
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
-  //! Stores the goemetry of <S>.
+  //! Stores the geometry of <S>.
   Standard_EXPORT virtual void AddGeometry (const TopoDS_Shape& S) Standard_OVERRIDE;
   
   //! Dumps the geometry of me on the stream <OS>.

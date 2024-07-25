@@ -260,7 +260,7 @@ static  Standard_Boolean GetShells(TopTools_SequenceOfShape& Lface,
       aMapFaceShells.Bind(F1,nshell);
       Lface.Remove(i);
       
-      // check if closed shell is obtained in multy connex mode and add to sequence of 
+      // check if closed shell is obtained in multi connex mode and add to sequence of 
       // shells and new shell begin to construct.
       // (check is n*2)
       if(isMultiConnex && BRep_Tool::IsClosed (nshell)) {
@@ -300,7 +300,7 @@ static  Standard_Boolean GetShells(TopTools_SequenceOfShape& Lface,
       numFace++;
     }
     if(numFace >1) {
-      // close all closed shells in no multy connex mode
+      // close all closed shells in no multi connex mode
       if(!isMultiConnex)
         nshell.Closed (BRep_Tool::IsClosed (nshell));
       aSeqShells.Append(nshell);
@@ -514,7 +514,7 @@ static Standard_Integer BoxIn(const Bnd_Box& theBox1,const Bnd_Box& theBox2)
 //=======================================================================
 // function : GetClosedShells
 // purpose  : Check if one shell is a part from other shell.
-//            For case of compsolid when afew shells are created from
+//            For case of compsolid when a few shells are created from
 //            the same set of faces.
 //=======================================================================
 static void GetClosedShells(TopTools_SequenceOfShape& Shells, TopTools_SequenceOfShape& aRemainShells)

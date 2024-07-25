@@ -287,7 +287,7 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
     }
   } // end of the loop
   
-  if (!SignDenom(Polesinit)) //invertion of the polynome sign
+  if (!SignDenom(Polesinit)) //inversion of the polynome sign
   {
     for (index=0;index<=3;index++)
       Polesinit(index).SetCoord(0.0,-Polesinit(index).Y());
@@ -520,7 +520,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
     }
   } // end of the loop
   
-  if (!SignDenom(Polesinit)) // invertion of the polynome sign
+  if (!SignDenom(Polesinit)) // inversion of the polynome sign
   {
     for (index=0;index<=3;index++)
       Polesinit(index).SetCoord(0.0,-Polesinit(index).Y());

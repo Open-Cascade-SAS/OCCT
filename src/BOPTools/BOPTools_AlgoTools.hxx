@@ -182,7 +182,7 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Computes the 3-D state of the point thePoint
   //! toward solid theSolid.
   //! theTol - value of precision of computation
-  //! theContext- cahed geometrical tools
+  //! theContext- cached geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const gp_Pnt& thePoint,
                                                    const TopoDS_Solid& theSolid,
@@ -192,7 +192,7 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Computes the 3-D state of the vertex theVertex
   //! toward solid theSolid.
   //! theTol - value of precision of computation
-  //! theContext- cahed geometrical tools
+  //! theContext- cached geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Vertex& theVertex,
                                                    const TopoDS_Solid& theSolid,
@@ -202,7 +202,7 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Computes the 3-D state of the edge theEdge
   //! toward solid theSolid.
   //! theTol - value of precision of computation
-  //! theContext- cahed geometrical tools
+  //! theContext- cached geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Edge& theEdge,
                                                   const TopoDS_Solid& theSolid,
@@ -213,7 +213,7 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! toward solid theSolid.
   //! theTol - value of precision of computation
   //! theBounds - set of edges of <theSolid> to avoid
-  //! theContext- cahed geometrical tools
+  //! theContext- cached geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeState(const TopoDS_Face& theFace,
                                                    const TopoDS_Solid& theSolid,
@@ -224,7 +224,7 @@ public: //! @name Point/Edge/Face classification relatively solid
   //! Computes the 3-D state of the shape theShape
   //! toward solid theSolid.
   //! theTol - value of precision of computation
-  //! theContext- cahed geometrical tools
+  //! theContext- cached geometrical tools
   //! Returns 3-D state.
   Standard_EXPORT static TopAbs_State ComputeStateByOnePoint(const TopoDS_Shape& theShape,
                                                              const TopoDS_Solid& theSolid,
@@ -274,7 +274,7 @@ public: //! @name Face classification relatively solid
   //! solid theSolid.
   //! theMEF - Map Edge/Faces for theSolid
   //! theTol - value of precision of computation
-  //! theContext- cahed geometrical tools
+  //! theContext- cached geometrical tools
   Standard_EXPORT static Standard_Boolean IsInternalFace(const TopoDS_Face& theFace,
                                                          const TopoDS_Solid& theSolid,
                                                          TopTools_IndexedDataMapOfShapeListOfShape& theMEF,

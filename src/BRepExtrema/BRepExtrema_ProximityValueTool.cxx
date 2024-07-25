@@ -27,7 +27,7 @@
 
 //=======================================================================
 //function : BRepExtrema_ProximityValueTool
-//purpose  : Creates new unitialized proximity tool
+//purpose  : Creates new uninitialized proximity tool
 //=======================================================================
 BRepExtrema_ProximityValueTool::BRepExtrema_ProximityValueTool()
 : myIsRefinementRequired1 (Standard_False),
@@ -262,8 +262,8 @@ Standard_Boolean BRepExtrema_ProximityValueTool::getEdgeAdditionalVertices (
 //=======================================================================
 //function : doRecurTrgSplit
 //purpose  : Splits the triangle into two ones recursively, halving the longest side
-//           untill the area of ​​the current triangle > input step
-//! @param theTrg points of the triangle to be splitted
+//           until the area of ​​the current triangle > input step
+//! @param theTrg points of the triangle to be split
 //! @param theEdgesStatus status of triangle edges - on the border or middle of the face
 //! @param theTol telerance used in search of coincidence points
 //! @param theStep minimum area of ​​the resulting triangle

@@ -337,7 +337,7 @@ int mma1cdi_(integer *ndimen,
 /*     HERMIT: Table of coeff. 2*(IORDRE+1) Hermite polynoms */
 /*             of degree 2*IORDRE+1. */
 /*     IERCOD: Error code, */
-/*             = 0, Everythig is OK */
+/*             = 0, Everything is OK */
 /*             = 1, The value of IORDRE is out of (0,2) */
 /*     COMMON USED   : */
 /*     ---------------- */
@@ -989,8 +989,8 @@ int mma1fer_(integer *,//ndimen,
 /*     IORDRE: Order of constraint at the extremities of the border */
 /*              -1 = no constraints, */
 /*               0 = constraints of passage to limits (i.e. C0), */
-/*               1 = C0 + constraintes of 1st derivatives (i.e. C1), */
-/*               2 = C1 + constraintes of 2nd derivatives (i.e. C2). */
+/*               1 = C0 + constraints of 1st derivatives (i.e. C1), */
+/*               2 = C1 + constraints of 2nd derivatives (i.e. C2). */
 /*     NDGJAC: Degree of development in series to use for the calculation  */
 /*             in the base of Jacobi. */
 /*     CRVJAC: Table of coeff. of the curve of approximation in the */
@@ -1131,7 +1131,7 @@ int mma1fer_(integer *,//ndimen,
 
 /* ------------------------------ The end ------------------------------- 
 */
-/* --> The order of constraints is not within autorized values. */
+/* --> The order of constraints is not within authorized values. */
 L9100:
     *iercod = 1;
     goto L9999;
@@ -3520,7 +3520,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 	    goto L9100;
 	}
 
-/* ---- Subract discretizations of polynoms of constraints 
+/* ---- Subtract discretizations of polynoms of constraints 
 ---- */
 
 	mma2cd3_(ndimen, nbpntu, &urootl[1], nbpntv, iordru, &sotbu1[1],
@@ -4919,7 +4919,7 @@ int mma2cfv_(integer *ndvjac,
 /*   MAXDGU: Degree maximum by U of coeff. to calculate. */
 /*   NBPNTV: Degree of the Legendre polynom on the roots which of */
 /*           the coefficients of integration by V are calculated */
-/*           by Gauss method. It is reqired that NBPNTV = 30, 40, 50 or 61 and NDVJAC < NBPNTV. */
+/*           by Gauss method. It is required that NBPNTV = 30, 40, 50 or 61 and NDVJAC < NBPNTV. */
 /*   GSSVTB: Table of coefficients of integration by Gauss method */
 /*           by V for NDVJAC fixed: j varies from 0 to NBPNTV/2. */
 /*   CHPAIR: Table of terms connected to degrees from MINDGU to MAXDGU by U to */
@@ -7511,7 +7511,7 @@ int mmmapcoe_(integer *ndim,
 
 /*     FUNCTION : */
 /*     ---------- */
-/*     Calculate the coefficients of polinomial approximation curve */
+/*     Calculate the coefficients of polynomial approximation curve */
 /*     of degree NDGJAC by the method of smallest squares starting from */
 /*     the discretization of function on the roots of Legendre polynom */
 /*     of degree NBPNTS. */
@@ -8102,7 +8102,7 @@ int mmjacpt_(const integer *ndimen,
 
 /*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        PTCAUX : Auxilliary space. */
+/*        PTCAUX : Auxiliary space. */
 /*        PTCCAN : The square in the canonic base (-1,1) */
 
 /*     COMMONS USED   : */

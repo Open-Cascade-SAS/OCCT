@@ -43,7 +43,7 @@ class Geom_Surface;
 
 //! This class provides operators for analysis surfaces and curves of shapes
 //! in order to find out more simple geometry entities, which could replace
-//! existing complex (for exampe, BSpline) geometry objects with given tolerance.
+//! existing complex (for example, BSpline) geometry objects with given tolerance.
 class ShapeAnalysis_CanonicalRecognition  
 {
 public:

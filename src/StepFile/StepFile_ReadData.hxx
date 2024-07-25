@@ -127,7 +127,7 @@ public:
   //! Destructor cleans allocated memory of all fields
   ~StepFile_ReadData() { ClearRecorder(3); }
 
-  //! Preperes the text value for analysis.
+  //! Prepares the text value for analysis.
   //! It is the main tool for transferring data from flex to bison
   //! If characters page is full, allocates a new page.
   void CreateNewText(const char* theNewText, int theLenText);

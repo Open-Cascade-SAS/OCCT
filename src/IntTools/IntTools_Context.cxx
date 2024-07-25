@@ -844,7 +844,7 @@ Standard_Boolean IntTools_Context::IsVertexOnLine
   aFirst=aC3D->FirstParameter();
   aLast =aC3D->LastParameter();
   //
-  // Checking extermities first
+  // Checking extremities first
   // It is necessary to chose the closest bound to the point
   Standard_Boolean bFirstValid = Standard_False;
   Standard_Real aFirstDist = Precision::Infinite();

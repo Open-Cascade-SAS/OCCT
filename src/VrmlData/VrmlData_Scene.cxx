@@ -871,7 +871,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex
           if (vecInt.Length() > 2)
           {
             // additional check for redundant point:
-            // ignore last point which is a dublicate of first point
+            // ignore last point which is a duplicate of first point
             if (anIntValue == vecInt[0])
             {
               continue;

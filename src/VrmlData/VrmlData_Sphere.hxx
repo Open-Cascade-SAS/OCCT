@@ -49,7 +49,7 @@ class VrmlData_Sphere : public VrmlData_Geometry
   inline Standard_Real  Radius          () const        { return myRadius; } 
 
   /**
-   * Set the spere radius
+   * Set the sphere radius
    */
   inline void           SetRadius       (const Standard_Real  theRadius)
   { myRadius = theRadius; SetModified(); }

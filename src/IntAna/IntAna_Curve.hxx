@@ -51,7 +51,7 @@ public:
   //! last parameter or at the first parameter of the domain.
   Standard_EXPORT Standard_Boolean IsOpen() const;
   
-  //! Returns the paramatric domain of the curve.
+  //! Returns the parametric domain of the curve.
   Standard_EXPORT void Domain(Standard_Real& theFirst, Standard_Real& theLast) const;
   
   //! Returns TRUE if the function is constant.

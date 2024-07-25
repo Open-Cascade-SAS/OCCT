@@ -32,7 +32,7 @@
 class PLib_JacobiPolynomial;
 
 
-//! Approximate  a function on   an intervall [First,Last]
+//! Approximate  a function on   an interval [First,Last]
 //! The result  is  a simple  polynomial  whose  degree is  as low as
 //! possible  to   satisfy  the required  tolerance  and  the
 //! maximum degree.  The maximum  error and the averrage error
