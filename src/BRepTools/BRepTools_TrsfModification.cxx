@@ -171,7 +171,7 @@ Standard_Boolean BRepTools_TrsfModification::NewTriangulation
   // modify normals
   if (theTriangulation->HasNormals())
   {
-    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbTriangles(); ++anInd)
+    for (Standard_Integer anInd = 1; anInd <= theTriangulation->NbNodes(); ++anInd)
     {
       gp_Dir aNormal = theTriangulation->Normal(anInd);
       aNormal.Transform(aTrsf);
