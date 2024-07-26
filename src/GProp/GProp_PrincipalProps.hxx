@@ -60,7 +60,7 @@ public:
   //! returns true if the geometric system has an axis of symmetry.
   //! For  comparing  moments  relative  tolerance  1.e-10  is  used.
   //! Usually  it  is  enough  for  objects,  restricted  by  faces  with
-  //! analitycal  geometry.
+  //! analytical  geometry.
   Standard_EXPORT Standard_Boolean HasSymmetryAxis() const;
   
 
@@ -73,7 +73,7 @@ public:
   //! returns true if the geometric system has a point of symmetry.
   //! For  comparing  moments  relative  tolerance  1.e-10  is  used.
   //! Usually  it  is  enough  for  objects,  restricted  by  faces  with
-  //! analitycal  geometry.
+  //! analytical  geometry.
   Standard_EXPORT Standard_Boolean HasSymmetryPoint() const;
   
 

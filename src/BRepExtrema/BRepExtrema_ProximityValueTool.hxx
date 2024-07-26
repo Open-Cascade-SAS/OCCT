@@ -90,7 +90,7 @@ class BRepExtrema_ProximityValueTool
 
 public:
 
-  //! Creates new unitialized proximity tool.
+  //! Creates new uninitialized proximity tool.
   Standard_EXPORT BRepExtrema_ProximityValueTool();
 
   //! Creates new proximity tool for the given element sets.

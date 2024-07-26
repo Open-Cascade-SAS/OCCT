@@ -26,10 +26,10 @@
 //! to the system.
 //!
 //! This allocator can also be created per each working thread
-//! hovewer it real multi-threading performance is dubious.
+//! however its real multi-threading performance is dubious.
 //!
 //! Notice that this also means that existing pointers will be broken
-//! and you shoould control that allocator is alive along all objects
+//! and you should control that allocator is alive along all objects
 //! allocated with him.
 class NCollection_WinHeapAllocator : public NCollection_BaseAllocator
 {

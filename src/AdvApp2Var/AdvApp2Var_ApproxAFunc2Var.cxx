@@ -363,7 +363,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
       throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
-// calculate the number and the type of autorized cuts
+// calculate the number and the type of authorized cuts
 // depending on the max number of squares and the validity of next cuts.
     NbU = myResult.NbPatchInU();
     NbV = myResult.NbPatchInV();
@@ -457,7 +457,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
       throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Surface Discretisation Error");
     }
 
-// calculate the number and type of autorized cuts
+// calculate the number and type of authorized cuts
 // depending on the max number of squares and the validity of next cuts
     NbU = myResult.NbPatchInU();
     NbV = myResult.NbPatchInV();

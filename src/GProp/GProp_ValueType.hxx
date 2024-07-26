@@ -17,7 +17,7 @@
 #ifndef _GProp_ValueType_HeaderFile
 #define _GProp_ValueType_HeaderFile
 
-//! Algorithmes :
+//! Algorithms:
 enum GProp_ValueType
 {
 GProp_Mass,

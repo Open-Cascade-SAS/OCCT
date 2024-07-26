@@ -72,7 +72,7 @@ public:
   //! Gets array, can be null
   void** GetArray() const { return myArray; }
 
-  //! Gets value by index, no acess validation
+  //! Gets value by index, no access validation
   void* Value (const size_t theInd) const { return myArray[theInd]; }
 
 public:

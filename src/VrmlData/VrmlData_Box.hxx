@@ -20,8 +20,8 @@
 #include <gp_XYZ.hxx>
 
 /**
- *  Inplementation of the Box node.
- *  This node is defined by Size vector, assumong that the box center is located
+ *  Implementation of the Box node.
+ *  This node is defined by Size vector, assuming that the box center is located
  *  in (0., 0., 0.) and that each corner is 0.5*|Size| distance from the center.
  */
 class VrmlData_Box : public VrmlData_Geometry

@@ -157,7 +157,7 @@ static Standard_Boolean SearchFD(TopOpeBRepDS_DataStructure& DStr,
 
 //=======================================================================
 //function : ToricCorner
-//purpose  : Test if this is a paricular cas of a torus corner 
+//purpose  : Test if this is a particular case of a torus corner 
 //           (or spherical limited by isos).
 //=======================================================================
 
@@ -601,7 +601,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
 #endif
       
       // the contour to be fillet consists of straight lines uv in beginning and end 
-      // of two pcurves (only one if c1pointu) calculted as possible
+      // of two pcurves (only one if c1pointu) calculated as possible
       // on piv and the opposite face.
       Handle(GeomFill_Boundary) Bdeb,Bfin,Bpiv,Bfac;
       Handle(Geom2d_Curve) PCurveOnFace;

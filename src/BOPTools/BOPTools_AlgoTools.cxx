@@ -1925,7 +1925,7 @@ Standard_Boolean BOPTools_AlgoTools::IsBlockInOnFace
   }
   //
 
-  // Treatment intemediate
+  // Treatment intermediate
   Standard_Real m1, aTolF, aTolE, aTol, aDist;
   m1=IntTools_Tools::IntermediatePoint(f1, l1);
   BOPTools_AlgoTools::PointOnEdge(aE1, m1, aP12);

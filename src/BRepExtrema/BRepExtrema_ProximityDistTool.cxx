@@ -95,7 +95,7 @@ void BRepExtrema_ProximityDistTool::LoadAdditionalPointsFirstSet (const BVH_Arra
 
 //=======================================================================
 //function : goThroughtSet1
-//purpose  : Goes throught vertices from the 1st set
+//purpose  : Goes through vertices from the 1st set
 //=======================================================================
 void BRepExtrema_ProximityDistTool::goThroughtSet1 (const BVH_Array3d& theVertices1,
                                                     const Standard_Boolean theIsAdditionalSet)

@@ -223,7 +223,7 @@ typedef NCollection_Vector<BOPAlgo_VFI> BOPAlgo_VectorOfVFI;
 //=======================================================================
 void BOPAlgo_Builder::FillImagesFaces(const Message_ProgressRange& theRange)
 {
-  Message_ProgressScope aPS(theRange, "Filing spligs of faces", 10);
+  Message_ProgressScope aPS(theRange, "Filling splits of faces", 10);
   BuildSplitFaces(aPS.Next(9));
   if (HasErrors())
   {

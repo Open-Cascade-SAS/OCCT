@@ -82,7 +82,7 @@ public:
     return *this;
   }
 
-  //! Returne true if this list is empty
+  //! Return true if this list is empty
   Standard_Boolean IsEmpty() const
   {
     return myNode.IsNull();

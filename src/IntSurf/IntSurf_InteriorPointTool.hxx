@@ -44,11 +44,11 @@ public:
   //! it's the parameters which start the marching algorithm
     static void Value2d (const IntSurf_InteriorPoint& PStart, Standard_Real& U, Standard_Real& V);
   
-  //! returns the tangent at the intersectin in 3d space
+  //! returns the tangent at the intersection in 3d space
   //! associated to <P>
     static gp_Vec Direction3d (const IntSurf_InteriorPoint& PStart);
   
-  //! returns the tangent at the intersectin in the
+  //! returns the tangent at the intersection in the
   //! parametric space of the parametrized surface.This tangent
   //! is associated to the value2d
     static gp_Dir2d Direction2d (const IntSurf_InteriorPoint& PStart);

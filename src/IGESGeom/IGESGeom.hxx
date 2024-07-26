@@ -32,7 +32,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Prepares dymanic data (Protocol, Modules) for this package
+  //! Prepares dynamic data (Protocol, Modules) for this package
   Standard_EXPORT static void Init();
   
   //! Returns the Protocol for this Package

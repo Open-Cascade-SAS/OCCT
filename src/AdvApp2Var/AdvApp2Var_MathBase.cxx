@@ -1229,7 +1229,7 @@ int AdvApp2Var_MathBase::mmaperx_(integer *ncofmx,
 /*        ERRMAX : Precision of the approximation. */
 /*        IERCOD = 0, OK */
 /*               = 1, order of constraints (IORDRE) is not within the */
-/*                    autorized values. */
+/*                    authorized values. */
 /*     COMMONS USED   : */
 /*     ---------------- */
 
@@ -2281,7 +2281,7 @@ int AdvApp2Var_MathBase::mmcglc1_(integer *ndimax,
 /*               length calculation. */
 /*      TFINAL : Upper limit of the interval of integration for */
 /*               length calculation. */
-/*      EPSILN : REQIRED precision for length calculation. */
+/*      EPSILN : REQUIRED precision for length calculation. */
 
 /*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
@@ -2677,14 +2677,14 @@ int AdvApp2Var_MathBase::mmcvctx_(integer *ndimen,
 /*              2 --> cas (0)+ (1) +   "         "   2nd derivatives. */
 /*                 etc... */
 /*     CTRTES : Table of constraints. */
-/*              CTRTES(*,1,*) = contraints at -1. */
-/*              CTRTES(*,2,*) = contraints at  1. */
+/*              CTRTES(*,1,*) = constraints at -1. */
+/*              CTRTES(*,2,*) = constraints at  1. */
 
 /*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
 /*     CRVRES : Resulting curve defined on (-1,1). */
-/*     TABAUX : Auxilliary matrix. */
-/*     XMATRI : Auxilliary matrix. */
+/*     TABAUX : Auxiliary matrix. */
+/*     XMATRI : Auxiliary matrix. */
 
 /*     COMMONS UTILISES   : */
 /*     ---------------- */
@@ -3560,7 +3560,7 @@ int AdvApp2Var_MathBase::mmdrvck_(integer *ncoeff,
  */
 
 
-/*     Factorials (1 to 21)  caculated on VAX in R*16 */
+/*     Factorials (1 to 21)  calculated on VAX in R*16 */
 
 
 /* ********************************************************************** 
@@ -3845,7 +3845,7 @@ int mmexthi_(integer *ndegre,
 /*   within the interval [0,1]. They are ranked for the degrees increasing from */
 /*   2 to 61. */
 /*   HILTAB : Table of Legendre interpolators concerning ROOTAB. */
-/*   The adressing is the same. */
+/*   The addressing is the same. */
 /*   HI0TAB : Table of Legendre interpolators for root x=0 */
 /*   of polynoms of UNEVEN degree. */
 /*   RTLTB0 : Table of Li(uk) where uk are the roots of */
@@ -3990,7 +3990,7 @@ int mmextrl_(integer *ndegre,
 /*   within the interval [0,1]. They are ranked for the degrees increasing from */
 /*   2 to 61. */
 /*   HILTAB : Table of Legendre interpolators concerning ROOTAB. */
-/*   The adressing is the same. */
+/*   The addressing is the same. */
 /*   HI0TAB : Table of Legendre interpolators for root x=0 */
 /*   of polynoms of UNEVEN degree. */
 /*   RTLTB0 : Table of Li(uk) where uk are the roots of */
@@ -4610,7 +4610,7 @@ int AdvApp2Var_MathBase::mmfmcb5_(integer *isenmsc,
 
 /*     FUNCTION : */
 /*     ---------- */
-/*       Reformating (and  eventual compression/decompression) of curve */
+/*       Reformatting (and eventual compression/decompression) of curve */
 /*       (ndim,.) by (.,ndim) and vice versa. */
 
 /*     KEYWORDS : */
@@ -6260,7 +6260,7 @@ L9999:
 
 /*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        POLAUX : Auxilliary space. */
+/*        POLAUX : Auxiliary space. */
 /*        CRVCAN : The curve in the canonic base [-1,1] */
 
 /*     COMMONS USED   : */
@@ -6297,7 +6297,7 @@ L9999:
 
     i__1 = *ndim;
     for (nd = 1; nd <= i__1; ++nd) {
-/*  Loading of the auxilliary table. */
+/*  Loading of the auxiliary table. */
 	ii = 0;
 	i__2 = ndeg / 2;
 	for (i__ = 0; i__ <= i__2; ++i__) {
@@ -6377,7 +6377,7 @@ int mmloncv_(integer *ndimax,
 /*     -------------------- */
 
 /*      NDIMAX : Max number of lines of tables (max number of polynoms). */
-/*      NDIMEN : Dimension of the polynom (Nomber of polynoms). */
+/*      NDIMEN : Dimension of the polynom (Number of polynoms). */
 /*      NCOEFF : Number of coefficients of the polynom (no limitation) */
 /*               This is degree + 1 */
 /*      COURBE : Coefficients of the polynom ordered by increasing power */
@@ -6606,7 +6606,7 @@ L9900:
 /*     FUNCTION : */
 /*     ---------- */
 /*       Position on the polynoms of base hermit-Jacobi */
-/*       and their succesive derivatives */
+/*       and their successive derivatives */
 
 /*     KEYWORDS : */
 /*     ----------- */
@@ -7160,7 +7160,7 @@ int mmpojac_(doublereal *tparam,
  */
 
 
-/*     static varaibles */
+/*     static variables */
 
 
 
@@ -7519,12 +7519,12 @@ L9999:
 
 /*     INPUT ARGUMENTS : */
 /*     -------------------- */
-/*      HDIMEN: NOMBER OF LINE (OR COLUMN) OF THE HESSIAN MATRIX */
-/*      GDIMEN: NOMBER OF LINE OF THE MATRIX OF CONSTRAINTS */
-/*      HNSTOC: NOMBErS OF TERMS IN THE PROFILE OF HESSIAN MATRIX 
+/*      HDIMEN: NUMBER OF LINE (OR COLUMN) OF THE HESSIAN MATRIX */
+/*      GDIMEN: NUMBER OF LINE OF THE MATRIX OF CONSTRAINTS */
+/*      HNSTOC: NUMBERS OF TERMS IN THE PROFILE OF HESSIAN MATRIX 
 */
-/*      GNSTOC: NOMBERS OF TERMS IN THE PROFILE OF THE MATRIX OF CONSTRAINTS */
-/*      MNSTOC: NOMBERS OF TERMS IN THE PROFILE OF THE MATRIX M= G H t(G) */
+/*      GNSTOC: NUMBERS OF TERMS IN THE PROFILE OF THE MATRIX OF CONSTRAINTS */
+/*      MNSTOC: NUMBERS OF TERMS IN THE PROFILE OF THE MATRIX M= G H t(G) */
 /*              where H IS THE HESSIAN MATRIX AND G IS THE MATRIX OF CONSTRAINTS */
 /*      MATSYH: TRIANGULAR INFERIOR PART OF THE HESSIAN MATRIX */
 /*              IN FORM OF PROFILE */
@@ -7896,7 +7896,7 @@ int mmrslss_(integer *,//mxcoef,
 /*     ----------------------------------- */
 /*       T */
 /*     SS  is the decomposition of choleski of a symmetric matrix */
-/*     defined postive, that can result from routine MMCHOLE. */
+/*     defined positive, that can result from routine MMCHOLE. */
 
 /*     For a full matrix it is possible to use MRSLMSC */
 
@@ -8409,7 +8409,7 @@ L9999:
 /* > */
 /* ********************************************************************** 
 */
-/*   Nome of the routine */
+/*   Name of the routine */
 
 
 /*   Common MLGDRTL: */
@@ -8675,7 +8675,7 @@ int mmtmave_(integer *nligne,
 /*     INPUT ARGUMENTS : */
 /*     -------------------- */
 /*       NLIGNE : NUMBER OF LINE OF THE MATRIX */
-/*       NCOLON : NOMBER OF COLUMN OF THE MATRIX */
+/*       NCOLON : NUMBER OF COLUMN OF THE MATRIX */
 /*       GPOSIT: TABLE OF POSITIONING OF TERMS OF STORAGE */
 /*               GPOSIT(1,I) CONTAINS THE NUMBER of TERMS-1 ON LINE */
 /*               I IN THE PROFILE OF THE MATRIX */
@@ -11193,7 +11193,7 @@ L9900:
 
 /*     FUNCTION : */
 /*     ---------- */
-/*        SERVES to calculate the euclidian norm of a vector : */
+/*        SERVES to calculate the euclidean norm of a vector : */
 /*                       ____________________________ */
 /*                  Z = V  V(1)**2 + V(2)**2 + ... */
 
@@ -11208,7 +11208,7 @@ L9900:
 
 /*     OUTPUT ARGUMENTS : */
 /*     ------------------- */
-/*        MZSNORM : Value of the euclidian norm of vector VECTEU */
+/*        MZSNORM : Value of the euclidean norm of vector VECTEU */
 
 /*     COMMONS USED   : */
 /*     ---------------- */

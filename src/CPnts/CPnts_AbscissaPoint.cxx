@@ -451,7 +451,7 @@ void CPnts_AbscissaPoint::Perform(const Standard_Real   Abscissa,
   }
   else {
     Standard_Real Ui = U0 + (Abscissa / myL) * (myUMax - myUMin) / 3.;
-    // exercice : why 3 ?
+    // exercise : why 3 ?
     Perform(Abscissa,U0,Ui,Resolution);
   }
 }

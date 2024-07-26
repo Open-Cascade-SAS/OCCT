@@ -630,7 +630,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray
     if (OK(aStatus) && OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
       if (theBuffer.LinePtr[0] != '[')  // opening bracket
       {
-        // Handle case when brackets are ommited for single element of array
+        // Handle case when brackets are omitted for single element of array
         gp_XYZ anXYZ;
         // Read three numbers (XYZ value)
         if (!OK(aStatus, Scene().ReadXYZ(theBuffer, anXYZ,

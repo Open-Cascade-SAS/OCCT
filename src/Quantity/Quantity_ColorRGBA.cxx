@@ -131,7 +131,7 @@ namespace
     {
       return false;
     }
-    // std::all_of is not used due to VS2008 compilability limitation
+    // std::all_of is not used due to VS2008 compatibility limitation
     return std::count_if (theString, theString + theLength, isHexDigit) == static_cast<std::ptrdiff_t> (theLength);
   }
 

@@ -42,8 +42,8 @@ static void FUN_Raise()
 
 // myIsVertex :
 // ------------
-// POINT :<Eref> interfers with <E> at a point
-// <Eref> interfers with <E> at a vertex V,
+// POINT :<Eref> interferes with <E> at a point
+// <Eref> interferes with <E> at a vertex V,
 //   VERTEXonref  : V is on shape of <Eref>
 //   VERTEXonOO   : V is on shape of <E>
 //   VERTEXonOref : V is on 2 shapes.

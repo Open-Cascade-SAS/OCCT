@@ -416,7 +416,7 @@ int AdvApp2Var_SysBase::macrchk_()
 
 /*     FONCTION : */
 /*     ---------- */
-/*        TABLE OF MANAGEMENT OF DYNAMIC MEMOTY ALLOCATIONS */
+/*        TABLE OF MANAGEMENT OF DYNAMIC MEMORY ALLOCATIONS */
 
 /*     KEYWORDS : */
 /*     ----------- */
@@ -2484,7 +2484,7 @@ int mcrfree_(integer *,//ibyte,
 /*                                                                        */
 /*                   = 0  ==> OK                                          */
 /*                   = 1  ==> Allocation impossible                       */
-/*                   = -1 ==> Ofset > 2**31 - 1                           */
+/*                   = -1 ==> Offset > 2**31 - 1                          */
 /*                                                                        */
 
 /*                                                                        */

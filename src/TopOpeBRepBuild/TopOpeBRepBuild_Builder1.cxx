@@ -878,7 +878,7 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
     }
 
     //we should process all same domain edges (ON2D) in the code above
-    //and we can not proceess edges with UNKNOWN state
+    //and we can not process edges with UNKNOWN state
     if(aState == TopAbs_ON || aState == TopAbs_UNKNOWN) 
       continue;
 
@@ -1586,7 +1586,7 @@ Standard_Integer TopOpeBRepBuild_Builder1::TwoPiecesON (const TopTools_SequenceO
       if(!anAd1 || !anAd2)
 	return 12;
       else
-	return 10; //10 doesn't mean anything just to retutn something
+	return 10; //10 doesn't mean anything just to return something
     }
     
     // case c.  No==Nt , To==Tt
@@ -1640,7 +1640,7 @@ Standard_Integer TopOpeBRepBuild_Builder1::TwoPiecesON (const TopTools_SequenceO
       if(!anAd1 || !anAd2) 
 	 return 14;
        else
-	 return 10; //10 doesn't mean anything just to retutn something
+	 return 10; //10 doesn't mean anything just to return something
     }
     return 10;
   } // end of if (!anAd1 || !anAd2 || !aScPrFlag1 || !aScPrFlag2)

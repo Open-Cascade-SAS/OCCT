@@ -36,7 +36,7 @@
 //! The Datum groups together the construction elements such as lines, circles, points, trihedra, plane trihedra, planes and axes.
 //! The Relation is made up of constraints on one or more interactive shapes and the corresponding reference geometry.
 //! For example, you might want to constrain two edges in a parallel relation.
-//! This contraint is considered as an object in its own right, and is shown as a sensitive primitive.
+//! This constraint is considered as an object in its own right, and is shown as a sensitive primitive.
 //! This takes the graphic form of a perpendicular arrow marked with the || symbol and lying between the two edges.
 //! The Object type includes topological shapes, and connections between shapes.
 //! None, in order not to eliminate the object, tells the application to look further until it finds an object definition in its generation which is accepted.

@@ -40,7 +40,7 @@ public:
   //! @warning It binds this object with Graphic3d_ZLayerId_TopOSD layer.
   Standard_EXPORT AIS_RubberBand();
 
-  //! Consructs the rubber band with empty filling and defined line style.
+  //! Constructs the rubber band with empty filling and defined line style.
   //! @param theLineColor [in] color of rubber band lines
   //! @param theType [in] type of rubber band lines
   //! @param theLineWidth [in] width of rubber band line. By default it is 1.

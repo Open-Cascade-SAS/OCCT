@@ -31,7 +31,7 @@ public:
   //! \param theDegreeU    degree along the first parameter (U) of the surface
   //! \param thePeriodicU  identify the surface is periodical along U axis
   //! \param theFlatKnotsU knots of the surface (with repetition) along U axis
-  //! \param theDegreeV    degree alogn the second parameter (V) of the surface
+  //! \param theDegreeV    degree along the second parameter (V) of the surface
   //! \param thePeriodicV  identify the surface is periodical along V axis
   //! \param theFlatKnotsV knots of the surface (with repetition) along V axis
   //! \param theWeights    array of weights of corresponding poles

@@ -50,7 +50,7 @@ DEFINE_STANDARD_HANDLE (Poly_CoherentTriangulation, Standard_Transient)
  *
  * This class is useful for algorithms that need to analyse and/or edit a triangulated mesh -- for example for mesh refining.
  * The connectivity model follows the idea that all Triangles in a mesh should have coherent orientation like on a surface of a solid body.
- * Connections between more than 2 triangles are not suppoorted.
+ * Connections between more than 2 triangles are not supported.
  *
  * @section Poly_CoherentTriangulation Architecture
  * The data types used in this structure are:

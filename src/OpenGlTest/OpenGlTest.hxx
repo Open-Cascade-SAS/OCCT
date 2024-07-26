@@ -23,7 +23,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! Adds Draw commands to the draw interpretor.
+  //! Adds Draw commands to the draw interpreter.
   Standard_EXPORT static void Commands (Draw_Interpretor& theDI);
 
   //! Plugin entry point function.
