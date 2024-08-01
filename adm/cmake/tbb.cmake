@@ -192,13 +192,8 @@ else ()
 
     # Achive *.so files and directory containing it.
     get_target_property (TBB_SO_FILE "TBB::${LIB_LOWER}" IMPORTED_LOCATION_RELEASE)
-    # Reserve cache variable for *.so.
-    if (NOT DEFINED 3RDPARTY_${LIB_UPPER}_LIBRARY)
-      set (3RDPARTY_${LIB_UPPER}_LIBRARY "" CACHE FILEPATH "${LIB_UPPER} library (*.so)")
-    endif()
-    # Reserve cache variable for directory containing *.so file.
-    if (NOT DEFINED 3RDPARTY_${LIB_UPPER}_LIBRARY_DIR)
-      set (3RDPARTY_${LIB_UPPER}_LIBRARY_DIR "" CACHE PATH "The directory containing ${LIB_UPPER} library (*.so)")
+    if (NOT EXISTS "${TBB_SO_FILE}")
+      get_target_property (TBB_SO_FILE "TBB::${LIB_LOWER}" IMPORTED_LOCATION_NONE)
     endif()
     if (EXISTS "${TBB_SO_FILE}")
       set (3RDPARTY_${LIB_UPPER}_LIBRARY
@@ -214,6 +209,14 @@ else ()
            FORCE)
       list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_${LIB_UPPER}_LIBRARY_DIR}")
     else()
+      # Reserve cache variable for *.so.
+      if (NOT DEFINED 3RDPARTY_${LIB_UPPER}_LIBRARY)
+        set (3RDPARTY_${LIB_UPPER}_LIBRARY "" CACHE FILEPATH "${LIB_UPPER} library (*.so)")
+      endif()
+      # Reserve cache variable for directory containing *.so file.
+      if (NOT DEFINED 3RDPARTY_${LIB_UPPER}_LIBRARY_DIR)
+        set (3RDPARTY_${LIB_UPPER}_LIBRARY_DIR "" CACHE PATH "The directory containing ${LIB_UPPER} library (*.so)")
+      endif()
       list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_${LIB_UPPER}_LIBRARY_DIR)
     endif()
 
