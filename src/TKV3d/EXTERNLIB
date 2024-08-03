@@ -12,7 +12,5 @@ TKGeomAlgo
 TKHLR
 CSF_user32
 CSF_gdi32
-CSF_OpenGlLibs
-CSF_XwLibs
 CSF_FREETYPE
 CSF_TBB
