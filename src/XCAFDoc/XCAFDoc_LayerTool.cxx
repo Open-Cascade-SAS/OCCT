@@ -241,11 +241,9 @@ void XCAFDoc_LayerTool::SetLayer(const TDF_Label& L,
   Handle(XCAFDoc_GraphNode) FGNode;
   Handle(XCAFDoc_GraphNode) ChGNode;
   if (! LayerL.FindAttribute( XCAFDoc::LayerRefGUID(), FGNode) ) {
-    FGNode = new XCAFDoc_GraphNode;
     FGNode = XCAFDoc_GraphNode::Set(LayerL);
   }
   if (! L.FindAttribute( XCAFDoc::LayerRefGUID(), ChGNode) ) {
-    ChGNode = new XCAFDoc_GraphNode;
     ChGNode = XCAFDoc_GraphNode::Set(L);
   }
   FGNode->SetGraphID( XCAFDoc::LayerRefGUID() );
