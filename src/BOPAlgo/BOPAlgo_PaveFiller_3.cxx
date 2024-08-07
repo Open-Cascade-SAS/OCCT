@@ -341,12 +341,8 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
       GeomAbs_CurveType aType1 = aBAC1.GetType();
       GeomAbs_CurveType aType2 = aBAC2.GetType();
       //
-      bAnalytical = (((aType1 == GeomAbs_Line) &&
-                      (aType2 == GeomAbs_Line ||
-                       aType2 == GeomAbs_Circle)) ||
-                     ((aType2 == GeomAbs_Line) &&
-                      (aType1 == GeomAbs_Line ||
-                       aType1 == GeomAbs_Circle)));
+      bAnalytical = (aType1 == GeomAbs_Line && aType2 == GeomAbs_Circle) ||
+                    (aType1 == GeomAbs_Circle && aType2 == GeomAbs_Line);
     }
     //
     for (i=1; i<=aNbCPrts; ++i) {
@@ -443,7 +439,7 @@ void BOPAlgo_PaveFiller::PerformEE(const Message_ProgressRange& theRange)
 
           Standard_Real aTolVnew = BRep_Tool::Tolerance(aVnew);
           if (bAnalytical) {
-            // increase tolerance for Line/Line intersection, but do not update 
+            // increase tolerance for Line/Circle intersection, but do not update 
             // the vertex till its intersection with some other shape
             Standard_Real aTolMin = (BRepAdaptor_Curve(aE1).GetType() == GeomAbs_Line) ?
               (aCR1.Last() - aCR1.First()) / 2. : (aCR2.Last() - aCR2.First()) / 2.;
