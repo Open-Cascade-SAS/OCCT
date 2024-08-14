@@ -1,5 +1,4 @@
-Foundation Classes  {#occt_user_guides__foundation_classes}
-=================================
+<h1><a id="occt_user_guides__foundation_classes" class="anchor">Foundation Classes </a></h1>
 
 @tableofcontents
 

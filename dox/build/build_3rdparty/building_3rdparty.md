@@ -1,5 +1,4 @@
-﻿ Build 3rd-parties {#build_upgrade_building_3rdparty}
-==============================================
+﻿<h1><a id="build_upgrade_building_3rdparty" class="anchor"> Build 3rd-parties</a></h1>
 @tableofcontents
 
 On Windows, the easiest way to install third-party libraries is to download archive with pre-built binaries from https://dev.opencascade.org/resources/download/3rd-party-components.

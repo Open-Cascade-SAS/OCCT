@@ -1,5 +1,4 @@
-OCAF  {#occt_user_guides__ocaf}
-========================
+<h1><a id="occt_user_guides__ocaf" class="anchor">OCAF </a></h1>
 
 @tableofcontents
 

@@ -1,5 +1,4 @@
-﻿Introduction {#mainpage}
-========
+﻿<h1><a id="mainpage" class="anchor">Introduction</a></h1>
 
 @tableofcontents
 

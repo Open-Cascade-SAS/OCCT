@@ -1,5 +1,4 @@
-Upgrade from older OCCT versions  {#occt__upgrade}
-================================
+<h1><a id="occt__upgrade" class="anchor">Upgrade from older OCCT versions </a></h1>
 
 @tableofcontents
 

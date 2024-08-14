@@ -1,5 +1,4 @@
-Qt: Bottle Tutorial (C++|Qt Widgets) {#samples_qt_tutorial}
-==========
+<h1><a id="samples_qt_tutorial" class="anchor">Qt: Bottle Tutorial (C++|Qt Widgets)</a></h1>
 
 The Qt programming tutorial teaches how to use Open CASCADE Technology services to model a 3D object.
 The purpose of the tutorial is not to explain all OCCT classes but to help start thinking in terms of the Open CASCADE Technology.

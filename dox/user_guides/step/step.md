@@ -1,5 +1,4 @@
-STEP Translator  {#occt_user_guides__step}
-========================
+<h1><a id="occt_user_guides__step" class="anchor">STEP Translator </a></h1>
 
 @tableofcontents
 

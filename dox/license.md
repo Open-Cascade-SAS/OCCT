@@ -1,5 +1,4 @@
-License {#occt_public_license}
-=======
+<h1><a id="occt_public_license" class="anchor">License</a></h1>
 
 Open CASCADE Technology is available under GNU Lesser General Public License 
 (LGPL) version 2.1 with additional exception.

@@ -1,5 +1,4 @@
-Contribution Workflow {#occt_contribution__contribution_workflow}
-====================================
+<h1><a id="occt_contribution__contribution_workflow" class="anchor">Contribution Workflow</a></h1>
 @tableofcontents 
 
 <h2><a id="occt_contribution_intro">Introduction</a></h2>

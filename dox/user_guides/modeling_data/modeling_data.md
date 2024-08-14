@@ -1,5 +1,4 @@
-Modeling Data {#occt_user_guides__modeling_data}
-========================
+<h1><a id="occt_user_guides__modeling_data" class="anchor">Modeling Data</a></h1>
 
 @tableofcontents
 

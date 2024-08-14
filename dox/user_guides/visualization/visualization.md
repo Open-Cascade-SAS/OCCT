@@ -1,5 +1,4 @@
-Visualization    {#occt_user_guides__visualization}
-========================
+<h1><a id="occt_user_guides__visualization" class="anchor">Visualization   </a></h1>
 @tableofcontents 
 
 <h2><a id="occt_visu_1">Introduction</a></h2>

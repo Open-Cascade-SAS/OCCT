@@ -1,5 +1,4 @@
-﻿AIS: Custom Presentation {#tutorials__ais_object}
-========
+﻿<h1><a id="tutorials__ais_object" class="anchor">AIS: Custom Presentation</a></h1>
 
 @tableofcontents
 

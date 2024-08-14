@@ -1,5 +1,4 @@
-BRep Format {#specification__brep_format}
-========================
+<h1><a id="specification__brep_format" class="anchor">BRep Format</a></h1>
 
 @tableofcontents
 

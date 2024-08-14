@@ -1,5 +1,4 @@
-Draw Test Harness  {#occt_user_guides__test_harness}
-===============================
+<h1><a id="occt_user_guides__test_harness" class="anchor">Draw Test Harness </a></h1>
 
 @tableofcontents
  

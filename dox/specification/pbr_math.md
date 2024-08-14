@@ -1,5 +1,4 @@
-PBR math (rasterization) {#specification__pbr_math}
-========================
+<h1><a id="specification__pbr_math" class="anchor">PBR math (rasterization)</a></h1>
 @tableofcontents
 
 <h2><a id="pbr_preface">Preface</a></h2>

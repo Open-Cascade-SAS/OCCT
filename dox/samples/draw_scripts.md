@@ -1,5 +1,4 @@
-﻿Draw: Demo Scripts {#samples__draw_scripts}
-================
+﻿<h1><a id="samples__draw_scripts" class="anchor">Draw: Demo Scripts</a></h1>
 
 All demo scripts are provided with OCCT sources and locate in <i>CASROOT/samples/tcl</i>. To play around them please 
 follow the steps below:

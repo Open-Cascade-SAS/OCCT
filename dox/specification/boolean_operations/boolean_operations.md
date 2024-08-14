@@ -1,5 +1,4 @@
-Boolean Operations {#specification__boolean_operations}
-=========================
+<h1><a id="specification__boolean_operations" class="anchor">Boolean Operations</a></h1>
 
 @tableofcontents
 

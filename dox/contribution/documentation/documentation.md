@@ -1,5 +1,4 @@
- Documentation System {#occt_contribution__documentation}
-======================
+<h1><a id="occt_contribution__documentation" class="anchor"> Documentation System</a></h1>
 
 @tableofcontents
 
@@ -170,8 +169,7 @@ http://www.stack.nl/~dimitri/doxygen/manual
 A document file in *.md format must start with a proper header defining a caption and a unique tag.
 
 @verbatim
-Documentation System {#contribution__documentation}
-=====================
+<h1><a id="contribution__documentation" class="anchor">Documentation System</a></h1>
 @endverbatim
 
 The document structure is formed by sections that must be defined consistently.

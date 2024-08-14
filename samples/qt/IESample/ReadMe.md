@@ -1,5 +1,4 @@
-Qt: Import/Export (C++|Qt Widgets) {#samples_qt_iesample}
-==========
+<h1><a id="samples_qt_iesample" class="anchor">Qt: Import/Export (C++|Qt Widgets)</a></h1>
 
 OCCT includes several samples based on Qt application framework.
 These samples are available on all supported desktop platforms.

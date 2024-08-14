@@ -1,5 +1,4 @@
-Extended Data Exchange (XDE)  {#occt_user_guides__xde}
-============================
+<h1><a id="occt_user_guides__xde" class="anchor">Extended Data Exchange (XDE) </a></h1>
 
 @tableofcontents
 

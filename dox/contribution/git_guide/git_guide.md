@@ -1,5 +1,4 @@
-Guide to installing and using Git for OCCT development {#occt_contribution__git_guide}
-=================================
+<h1><a id="occt_contribution__git_guide" class="anchor">Guide to installing and using Git for OCCT development</a></h1>
 
 @tableofcontents 
 

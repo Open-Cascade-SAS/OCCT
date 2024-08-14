@@ -1,5 +1,4 @@
-Inspector  {#occt_user_guides__inspector}
-===============================
+<h1><a id="occt_user_guides__inspector" class="anchor">Inspector </a></h1>
 
 @tableofcontents
  

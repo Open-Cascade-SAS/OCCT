@@ -1,5 +1,4 @@
-Mesh {#occt_user_guides__mesh}
-=========================
+<h1><a id="occt_user_guides__mesh" class="anchor">Mesh</a></h1>
 
 @tableofcontents
 

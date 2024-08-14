@@ -1,5 +1,4 @@
-Shape Healing  {#occt_user_guides__shape_healing}
-===================
+<h1><a id="occt_user_guides__shape_healing" class="anchor">Shape Healing </a></h1>
 
 @tableofcontents
 

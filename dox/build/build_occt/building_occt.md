@@ -1,5 +1,4 @@
-Build OCCT {#build_upgrade__building_occt}
-===================
+<h1><a id="build_upgrade__building_occt" class="anchor">Build OCCT</a></h1>
 
 @tableofcontents
 

@@ -1,5 +1,4 @@
-﻿Build Documentation {#build_upgrade__building_documentation}
-=================
+﻿<h1><a id="build_upgrade__building_documentation" class="anchor">Build Documentation</a></h1>
 
 To generate HTML documentation from sources contained in *dox* subdirectory, 
 you need to have Tcl and Doxygen 1.8.5 (or above) installed on your system.

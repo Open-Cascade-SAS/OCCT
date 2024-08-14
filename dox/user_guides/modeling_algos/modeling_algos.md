@@ -1,5 +1,4 @@
-Modeling Algorithms  {#occt_user_guides__modeling_algos}
-=========================
+<h1><a id="occt_user_guides__modeling_algos" class="anchor">Modeling Algorithms </a></h1>
 
 @tableofcontents
 

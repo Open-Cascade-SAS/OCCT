@@ -1,5 +1,4 @@
-Debugging tools and hints {#occt__debug}
-=========================
+<h1><a id="occt__debug" class="anchor">Debugging tools and hints</a></h1>
 
 @tableofcontents
 

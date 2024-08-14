@@ -1,5 +1,4 @@
-﻿Tutorials and Samples {#samples}
-=====================
+﻿<h1><a id="samples" class="anchor">Tutorials and Samples</a></h1>
 
 - @subpage samples__tutorials
   * @ref samples__novice_guide

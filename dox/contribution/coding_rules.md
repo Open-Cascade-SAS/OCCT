@@ -1,5 +1,4 @@
-Coding Rules {#occt_contribution__coding_rules}
-======================================
+<h1><a id="occt_contribution__coding_rules" class="anchor">Coding Rules</a></h1>
 
 @tableofcontents
 

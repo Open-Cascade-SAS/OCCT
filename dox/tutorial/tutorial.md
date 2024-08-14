@@ -1,5 +1,4 @@
-Modeling: Bottle Tutorial {#occt__tutorial}
-=======
+<h1><a id="occt__tutorial" class="anchor">Modeling: Bottle Tutorial</a></h1>
 
 @tableofcontents
 

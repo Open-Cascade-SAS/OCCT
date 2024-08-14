@@ -1,5 +1,4 @@
-.NET: D3D/OpenGL Viewer (C#|C++/CLI|WPF) {#samples_csharp_direct3d}
-==================
+<h1><a id="samples_csharp_direct3d" class="anchor">.NET: D3D/OpenGL Viewer (C#|C++/CLI|WPF)</a></h1>
 	
 This sample demonstrates how to use OCCT and DirectX libraries in <b>.Net</b> application
 written using **CSharp** and **Windows Presentation Foundation** (WPF).

@@ -1,5 +1,4 @@
- VTK Integration Services (VIS)  {#occt_user_guides__vis}
-============================
+<h1><a id="occt_user_guides__vis" class="anchor"> VTK Integration Services (VIS) </a></h1>
 
 @tableofcontents
 

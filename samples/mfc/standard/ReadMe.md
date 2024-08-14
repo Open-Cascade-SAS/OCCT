@@ -1,5 +1,4 @@
-MFC: OCCT Samples (C++|MFC) {#samples_mfc_standard}
-==========
+<h1><a id="samples_mfc_standard" class="anchor">MFC: OCCT Samples (C++|MFC)</a></h1>
 
 Visual C++ programming samples for Windows platform containing illustrating how to use a particular module or functionality, including the following MFC samples:
 

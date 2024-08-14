@@ -1,5 +1,4 @@
-Novice Guide {#samples__novice_guide}
-=======
+<h1><a id="samples__novice_guide" class="anchor">Novice Guide</a></h1>
 
 @tableofcontents
 

@@ -1,5 +1,4 @@
-Data Exchange Wrapper (DE_Wrapper)  {#occt_user_guides__de_wrapper}
-============================
+<h1><a id="occt_user_guides__de_wrapper" class="anchor">Data Exchange Wrapper (DE_Wrapper) </a></h1>
 
 @tableofcontents
 

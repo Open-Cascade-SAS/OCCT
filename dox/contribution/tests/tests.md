@@ -1,5 +1,4 @@
- Automated Testing System  {#occt_contribution__tests}
-======================================
+<h1><a id="occt_contribution__tests" class="anchor"> Automated Testing System </a></h1>
 
 @tableofcontents
 

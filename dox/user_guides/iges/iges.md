@@ -1,5 +1,4 @@
-IGES Translator  {#occt_user_guides__iges}
-==================
+<h1><a id="occt_user_guides__iges" class="anchor">IGES Translator </a></h1>
 
 @tableofcontents
 
