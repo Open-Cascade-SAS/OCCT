@@ -449,7 +449,7 @@ Equations can be written by several ways:
 These formulas should be put between \@f\[ and \@f\] tags. An example: 
 
 ```
-$$
+\[
     |I_2|=\left| \int_{0}^T \psi(t)
             \left\{ 
                 u(a,t)-
@@ -458,12 +458,12 @@ $$
                 \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
             \right\} dt
         \right|
-$$
+\]
 ```
 
 gives the following result:
-$$
-       |I_2|=\left| \int_{0}^T \psi(t)
+\[
+|I_2|=\left| \int_{0}^T \psi(t)
                \left\{ 
                    u(a,t)-
                    \int_{\gamma(t)}^a 
@@ -471,27 +471,27 @@ $$
                    \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
                \right\} dt
            \right|
-$$
+\]
 2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. 
 
   For example: 
 ```
-$$
+\[
   \begin{align}
   \dot{x} & = \sigma(y-x) \\
   \dot{y} & = \rho x - y - xz \\
   \dot{z} & = -\beta z + xy
   \end{align}
-$$
+\]
 ```
   gives the following result:
-$$
+\[
   \begin{align}
   \dot{x} & = \sigma(y-x) \\
   \dot{y} & = \rho x - y - xz \\
   \dot{z} & = -\beta z + xy
   \end{align}
-$$
+\]
 
 3.Inline formulas can be specified using this syntax:
 
@@ -499,5 +499,5 @@ $$
   \sqrt{3x-1}+(1+x)^2
 ```
 that leads to the following result:
-$$\sqrt{3x-1}+(1+x)^2$$
+\[\sqrt{3x-1}+(1+x)^2\]
   
