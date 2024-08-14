@@ -515,11 +515,11 @@ $$
  
 **Description**  
  
-\<3D curve record 8\> describes a trimmed curve.  The trimmed curve data consist of reals *u<sub>min</sub>* and *u<sub>max</sub>* and \<3D curve record\> so that *u<sub>min</sub>* < *u<sub>max</sub>*. The trimmed curve is a restriction of the base curve *B* described in the record to the segment $ [u_{min},\;u_{max}]\subseteq domain(B) $. The trimmed curve is  defined by the following parametric equation:  
+\<3D curve record 8\> describes a trimmed curve.  The trimmed curve data consist of reals *u<sub>min</sub>* and *u<sub>max</sub>* and \<3D curve record\> so that *u<sub>min</sub>* < *u<sub>max</sub>*. The trimmed curve is a restriction of the base curve *B* described in the record to the segment $[u_{min},\;u_{max}]\subseteq domain(B)$. The trimmed curve is  defined by the following parametric equation:  
  
-$$ C(u)=B(u),\; u \in [u_{min},\;u_{max}]. $$  
+$$ C(u)=B(u),\; u \in [u_{min},\;u_{max}] $$
  
-The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve $ B(u)=(1,2,3)+u \cdot (1,0,0) $. The trimmed curve is  defined by the following parametric equation: $C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5]$.
+The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve $B(u)=(1,2,3)+u \cdot (1,0,0)$. The trimmed curve is  defined by the following parametric equation: $C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5]$.
  
  
 <h4><a id="specification__brep_format_5_1_9">Offset Curve - \<3D curve record 9\> </a></h4>
