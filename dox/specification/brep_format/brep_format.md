@@ -114,9 +114,9 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 $$
 Q =
 \begin{pmatrix}
-{q}_{1,1} &{q}_{1,2} &{q}_{1,3} &{q}_{1,4}\\
-{q}_{2,1} &{q}_{2,2} &{q}_{2,3} &{q}_{2,4}\\
-{q}_{3,1} &{q}_{3,2} &{q}_{3,3} &{q}_{3,4}
+q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\
+q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4} \\
+q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4}
 \end{pmatrix}
 $$
 
