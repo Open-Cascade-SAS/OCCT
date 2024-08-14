@@ -483,14 +483,17 @@ N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i
 $$
 
 where 
- 
-$$ \bar{u}_{i} = u_{j},\; (1 \leq j \leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l} ). $$  
- 
+
+$$
+\bar{u}_{i} = u_{j},\; (1 \leq j \leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l} )
+$$
+
 The example record is interpreted as a B-spline curve  with a rational flag *r*=1, a degree *m*=1, pole count *n*=3, multiplicity knot count *k*=5, weight poles *B<sub>1</sub>*=(0,1,0), *h<sub>1</sub>*=4, *B<sub>2</sub>*=(1,-2,0), *h<sub>2</sub>*=5 and *B<sub>3</sub>*=(2,3,0), *h<sub>3</sub>*=6, multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1. The B-spline curve is defined  by the following parametric equation:  
- 
-$$ C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(u)+(2,3,0) \cdot 6 \cdot N_{3,2}(u)}{4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)}. $$  
- 
- 
+
+$$
+C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(u)+(2,3,0) \cdot 6 \cdot N_{3,2}(u)}{4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)}
+$$
+
 <h4><a id="specification__brep_format_5_1_8">Trimmed Curve - <3D curve record 8></a></h4>
  
 **Example**  
@@ -516,7 +519,7 @@ $$ C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(
  
 $$ C(u)=B(u),\; u \in [u_{min},\;u_{max}]. $$  
  
-The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve $ B(u)=(1,2,3)+u \cdot (1,0,0) $. The trimmed curve is  defined by the following parametric equation: $ C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5] $.  
+The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve $ B(u)=(1,2,3)+u \cdot (1,0,0) $. The trimmed curve is  defined by the following parametric equation: $C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5]$.
  
  
 <h4><a id="specification__brep_format_5_1_9">Offset Curve - \<3D curve record 9\> </a></h4>
