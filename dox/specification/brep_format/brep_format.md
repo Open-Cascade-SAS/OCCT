@@ -121,7 +121,8 @@ q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4}
 $$
 
 which describes transformation of 3 dimensional space and satisfies the following constraints:  
-$d \neq 0$ where $d = |Q_{2}|$ where $Q_{2}$ = $\begin{pmatrix} q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\ q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4} \\ q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4} \end{pmatrix}$
+$d \neq 0$ where $d = |Q_{2}|$ where $Q_{2}$ =
+$\begin{pmatrix} q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\ q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4} \\ q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4} \end{pmatrix}$
 
 $Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = \frac{Q_{2}}{d^{1/3}}$
  
