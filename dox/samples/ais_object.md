@@ -3,7 +3,7 @@
 
 @tableofcontents
 
-@section intro Getting Started
+<h2><a id="intro">Getting Started</a></h2>
 
 OCCT provides a strong set of built-in Interactive Objects for rapid application development,
 but the real power and flexibility of **Application Interactive Services** (@c AIS) could be revealed by subclassing and implementing custom presentations.
@@ -37,7 +37,7 @@ The @c AIS_InteractiveObject interface defines only a couple of pure virtual met
 Selection and presentation are two independent mechanisms in **AIS**. Presentation rendering is done with help of OpenGL or a similar low-level graphics library, while selection doesn't depend on a graphic driver at all.
 Providing an empty implementation of these two methods would be enough for adding the object to @c AIS_InteractiveContext (@c @::Display()), but obviously nothing will appear on the screen.
 
-@section prs_builders Presentation builders
+<h2><a id="prs_builders">Presentation builders</a></h2>
 
 To go ahead, we need to define some presentation of our object.
 OCCT provides a set of presentation building tools for common elements like arrows, shapes, boxes, etc.
@@ -205,7 +205,7 @@ In this particular use case we've used the method @c AIS_InteractiveContext::Hil
 Highlighted presentation appears on the screen with modulated color (see left screenshot above).
 Using a dedicated display mode for highlighting (right screenshot above) allows customizing presentation in selected / highlighted states.
 
-@section prim_arrays Primitive arrays
+<h2><a id="prim_arrays">Primitive arrays</a></h2>
 
 @c Prs3d_Presentation might be filled in by the following **primitives**:
 - **Triangles**
@@ -274,7 +274,7 @@ and with different aspects @c Graphic3d_Group::SetPrimitivesAspect(), which migh
 Method @c Graphic3d_Group::AddText() allows adding text labels to a presentation.
 Internally, text labels are rendered as an array of textured triangles using texture atlas created from a font, but this complex logic is hidden from the user.
 
-@section prim_aspects Primitive aspects
+<h2><a id="prim_aspects">Primitive aspects</a></h2>
 
 @c Graphic3d_Aspects is a class defining **display properties** of a primitive array (@c Graphic3d_Group::SetGroupPrimitivesAspect()) -
 _**material**, **shading model**, **color**, **texture maps**, **blending mode**, **line width**_ and others.
@@ -317,7 +317,7 @@ MyAisObject::MyAisObject()
 }
 ~~~~
 
-@section quadric_builders Quadric builders
+<h2><a id="quadric_builders">Quadric builders</a></h2>
 
 Previously, we've used @c StdPrs_ShadedShape for displaying cylinder geometry.
 The @c Prs3d package provides a simpler way for displaying geometry like cylinders, spheres and toruses - based on the @c Prs3d_ToolQuadric interface.
@@ -467,7 +467,7 @@ After reversing vertex normal direction, cylinder looks exactly like when @c Prs
 
 Front / back face orientation might be displayed using different material based on @c Graphic3d_Aspects::SetDistinguish() flag and @c @::FrontMaterial() / @c @::BackMaterial() setup.
 
-@section ais_selection Computing selection
+<h2><a id="ais_selection">Computing selection</a></h2>
 In the first part of the tutorial we have created a custom @c AIS object @c MyAisObject computing presentation by implementing the @c PrsMgr_PresentableObject::Compute() interface.
 In this part we will extend our object with interactive capabilities and make it selectable through implementing @c SelectMgr_SelectableObject interface.
 
@@ -566,7 +566,7 @@ theCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
 Later on @c AIS_InteractiveContext::SetSelectionModeActive(), or it's wrappers @c AIS_InteractiveContext::Activate() and @c AIS_InteractiveContext::Deactivate(),
 could be used to enable or disable desired selection modes one by one.
 
-@section sel_owner_highlight Highlighting selection owner
+<h2><a id="sel_owner_highlight">Highlighting selection owner</a></h2>
 
 As has been mentioned in the previous section, @c SelectMgr_EntityOwner is a key object which can be used as an identifier of selectable part(s).
 Naturally, you might want to subclass it to put some application-specific ids for identification of selected parts.
@@ -773,7 +773,7 @@ This solves the problem within our specific use case.
 Keep in mind that most objects don't need updating highlight presentation on every mouse move;
 overriding this flag everywhere would be a waste of resources and may cause performance issues - use it sparingly.
 
-@section highlight_apporaches Highlighting approaches
+<h2><a id="highlight_apporaches">Highlighting approaches</a></h2>
 
 @c AIS provides one more alternative to handle presentation highlighting, which is managed by option @c SelectMgr_SelectableObject::IsAutoHilight().
 By default, this option is turned ON and redirects highlighting logic to @c SelectMgr_EntityOwner::HilightWithColor() demonstrated in the previous section.
@@ -813,7 +813,7 @@ We wouldn't describe these advanced techniques here in detail - let's just summa
 
 The number of options looks overwhelming but in general, it is better to stick to the simplest approach working for you and consider alternatives only when you have to.
 
-@section mouse_click Mouse click
+<h2><a id="mouse_click">Mouse click</a></h2>
 
 Dynamic highlighting is only one of scenarios where @c SelectMgr_EntityOwner could be useful.
 Another feature is an interface for handling a mouse click @c SelectMgr_EntityOwner @c @::HandleMouseClick().
@@ -897,7 +897,7 @@ aPrs->SetAnimation (theViewCtrl->ObjectsAnimation());
 theCtx->Display (aPrs, MyAisObject::MyDispMode_Main, 0, false);
 ~~~~
 
-@section final Final result
+<h2><a id="final">Final result</a></h2>
 
 The final sample could be seen by calling @c QATutorialAisObject command from Draw Harness plugin @c QAcommands (@c TKQADraw toolkit):
 

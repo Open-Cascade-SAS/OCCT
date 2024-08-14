@@ -3,7 +3,7 @@
 
 @tableofcontents
 
-@section occt_vis_1	Introduction
+<h2><a id="occt_vis_1">Introduction</a></h2>
 VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. This User’s Guide describes how to apply VIS classes in application dealing with 3D visualization based on VTK library.
 
 @figure{/user_guides/vis/images/vis_image001.png,"3D visualization based on VTK library",421}
@@ -13,8 +13,8 @@ There are two ways to use VIS in the application:
 * Use a **low-level API**. It is an advanced scenario for the users with specific needs, which are not addressed by the higher-level utilities of VIS. It presumes implementation of custom VTK algorithms (such as filters) with help of low-level API of VIS component.
 This document describes both scenarios of VIS integration into application. To understand this document, it is necessary to be familiar with VTK and OCCT libraries.
 
-@section occt_vis_2	Component Architecture
-@subsection occt_vis_2_1	Common structure
+<h2><a id="occt_vis_2">Component Architecture</a></h2>
+<h3><a id="occt_vis_2_1">Common structure</a></h3>
 VIS component consists of the following packages:
 * **IVtk** -- common interfaces which define the principal objects playing as foundation of VIS.
 * **IVtkOCC** -- implementation of interfaces related to CAD domain. The classes from this package deal with topological shapes, faceting and interactive selection facilities of OCCT;
@@ -33,7 +33,7 @@ The idea behind the mentioned organization of packages is separation of interfac
 Basically, it is enough to use the first three packages in the end user’s application  (*IVtk, IVtkOCC* and *IVtkVTK*) to be able to work with OCCT shapes in VTK viewer. However, *IVtkTools* package is also provided as a part of the component to make the work more comfortable.
 
 
-@subsection occt_vis_2_2	 IVtk package
+<h3><a id="occt_vis_2_2">IVtk package</a></h3>
 **IVtk** package contains the following classes:
 * *IVtk_Interface* -- Base class for all interfaces of the component. Provides inheritance for *Handle* (OCCT “smart pointer”) functionality.
 * *IVtk_IShape* -- Represents a 3D shape of arbitrary nature. Provides its ID property. Implementation of this interface should maintain unique IDs for all visualized shapes. These IDs can be easily converted into original shape objects at the application level.
@@ -42,7 +42,7 @@ Basically, it is enough to use the first three packages in the end user’s appl
 * *IVtk_IShapePickerAlgo* -- Algorithmic interface for interactive picking of shapes in a scene. Provides methods for finding shapes and their parts (sub-shapes) at a given location according to the chosen selection mode.
 * *IVtk_IView* -- Interface for obtaining view transformation parameters. It is used by *IVtk_IShapePickerAlgo*.
 
-@subsection occt_vis_2_3	 IVtkOCC package
+<h3><a id="occt_vis_2_3">IVtkOCC package</a></h3>
 
 **IVtkOCC** package contains the implementation of classes depending on OCCT:
 * *IVtkOCC_Shape* -- Implementation of *IVtk_IShape* interface as a wrapper for *TopoDS_Shape*.
@@ -54,12 +54,12 @@ Basically, it is enough to use the first three packages in the end user’s appl
 
 * *IVtkOCC_SelectableObject* -- OCCT shape wrapper used in the picking algorithm for computation of selection primitives of a shape for a chosen selection mode.
 
-@subsection occt_vis_2_4 IVtkVtk package
+<h3><a id="occt_vis_2_4">IVtkVtk package</a></h3>
 **IVtkVTK** package contains implementation of classes depending on VTK:
 * *IVtkVTK_ShapeData* -- Implementation of *IVtk_IShapeData* interface for VTK polydata. This class also stores information related to sub-shape IDs and sub-shape mesh type *IVtk_MeshType* (free vertex, shared vertex, free edge, boundary edge, shared edge, wireframe face or shaded face). This information is stored in VTK data arrays for cells.
 * *IVtkVTK_View* -- Implementation of *IVtk_IView* interface for VTK viewer. This implementation class is used to connect *IVtkOCC_ViewerSelector* to VTK renderer.
 
-@subsection occt_vis_2_5	 IVtkTools package
+<h3><a id="occt_vis_2_5">IVtkTools package</a></h3>
 **IVtkTools** package gives you a ready-to-use toolbox of algorithms facilitating the integration of OCCT shapes into visualization pipeline of VTK. This package contains the following classes:
 * *IVtkTools_ShapeDataSource* -- VTK polygonal data source for OCCT shapes. It inherits *vtkPolyDataAlgorithm* class and provides a faceted representation of OCCT shape for visualization pipelines.
 * *IVtkTools_ShapeObject* -- Auxiliary wrapper class for OCCT shapes to pass them through pipelines by means of VTK information keys.
@@ -69,8 +69,8 @@ Basically, it is enough to use the first three packages in the end user’s appl
 
 Additionally, *IVtkTools* package contains auxiliary methods in *IVtkTools* namespace. E.g. there is a convenience function populating *vtkLookupTable* instances to set up a color scheme for better visualization of sub-shapes.
 
-@section occt_vis_3	Using high-level API (simple scenario)
-@subsection occt_vis_3_1	OCCT shape presentation in VTK viewer
+<h2><a id="occt_vis_3">Using high-level API (simple scenario)</a></h2>
+<h3><a id="occt_vis_3_1">OCCT shape presentation in VTK viewer</a></h3>
 
 To visualize an OCCT topological shape in VTK viewer, it is necessary to perform the following steps:
 
@@ -110,8 +110,8 @@ It is also possible to get a shape wrapper from the shape data source:
 IVtkOCC_Shape::Handle occShape = DS->GetShape();
 ~~~~
 
-@subsection occt_vis_3_2	 Color schemes
-@subsubsection occt_vis_3_2_1	Default OCCT color scheme
+<h3><a id="occt_vis_3_2">Color schemes</a></h3>
+<h4><a id="occt_vis_3_2_1">Default OCCT color scheme</a></h4>
 
 To colorize different parts of a shape according to the default OCCT color scheme, it is possible to configure the corresponding VTK mapper using a dedicated auxiliary function of *IVtkTools* namespace:
 
@@ -124,14 +124,14 @@ It is possible to get an instance of *vtkLookupTable class* with a default OCCT 
 vtkSmartPointer<vtkLookupTable> Table = IVtkTools::InitLookupTable();
 ~~~~
 
-@subsubsection occt_vis_3_2_2	Custom color scheme
+<h4><a id="occt_vis_3_2_2">Custom color scheme</a></h4>
 To set up application-specific colors for a shape presentation, use *InitShapeMapper* function with an additional argument passing a custom lookup table:
 
 ~~~~{.cpp}
 IVtkTools::InitShapeMapper(Mapper, Table);
 ~~~~
 
-@subsubsection occt_vis_3_2_3	Setting custom colors for sub-shapes
+<h4><a id="occt_vis_3_2_3">Setting custom colors for sub-shapes</a></h4>
 
 It is also possible to bind custom colors to any sub-shape type listed in *IVtk_MeshType* enumeration. For example, to access the color bound to *free edge* entities, the following calls are available in *IVtkTools* namespace:
 ~~~~{.cpp}
@@ -142,7 +142,7 @@ GetLookupTableColor(aLookupTable, MT_FreeEdge, R, G, B, A);
 ~~~~
 Here *R, G, B* are double values of red, green and blue components of a color from the range [0, 1]. The optional parameter *A* stands for the alpha value (the opacity) as a double from the same range [0, 1]. By default alpha value is 1, i.e. a color is not transparent.
 
-@subsubsection occt_vis_3_2_4	Using color scheme of mapper
+<h4><a id="occt_vis_3_2_4">Using color scheme of mapper</a></h4>
 
 As VTK color mapping approach is based on associating scalar data arrays to VTK cells, the coloring of shape components can be turned on/off in the following way:
 
@@ -153,7 +153,7 @@ Mapper->ScalarVisibilityOff(); // use a color of actor’s property
 
 For example, the scalar-based coloring can be disabled to bind a single color to the entire VTK actor representing the shape.
 
-@subsection occt_vis_3_3	 Display modes
+<h3><a id="occt_vis_3_3">Display modes</a></h3>
 The output of the shape data source can be presented in wireframe or shading display mode.  A specific filter from class *IVtkTools_DisplayModeFilter* can be applied to select the display mode. The filter passes only the cells corresponding to the given mode. The set of available modes is defined by *IVtk_DisplayMode* enumeration.
 
 @figure{/user_guides/vis/images/vis_image004.png,"",360}
@@ -178,7 +178,7 @@ TIP: to make the shading representation smooth, use additional *vtkPolyDataNorma
 
 @figure{/user_guides/vis/images/vis_image005.png,"",360}
 
-@subsection occt_vis_3_4	 Interactive selection
+<h3><a id="occt_vis_3_4">Interactive selection</a></h3>
 *IVtkTools* package provides *IVtkTools_ShapePicker* class to perform selection of OCCT shapes and sub-shapes in VTK viewer and access the picking results. The typical usage of *IVtkTools_ShapePicker* tool consists in the following sequence of actions:
 1. Create a picker and set its renderer to your active VTK renderer:
 ~~~~{.cpp}
@@ -243,7 +243,7 @@ WARNING: VIS picker essentially works on the initial topological data structures
 
 @figure{/user_guides/vis/images/vis_image006.png,"",420}
 
-@subsubsection occt_vis_3_5	 Selection of sub-shapes
+<h4><a id="occt_vis_3_5">Selection of sub-shapes</a></h4>
 
 *IVtkTools_SubPolyDataFilter* is a handy VTK filter class which allows extraction of polygonal cells corresponding to the sub-shapes of the initial shape. It can be used to produce a *vtkPolyData* object from the input *vtkPolyData* object, using selection results from *IVTkTools_ShapePicker* tool.
 
@@ -276,8 +276,8 @@ aMapper->AddInputConnection(subShapesFilter->GetOutputPort());
 ...
 ~~~~
 
-@section occt_vis_4	Using of low-level API (advanced scenario)
-@subsection occt_vis_4_1	Shape presentation
+<h2><a id="occt_vis_4">Using of low-level API (advanced scenario)</a></h2>
+<h3><a id="occt_vis_4_1">Shape presentation</a></h3>
 The usage of low-level tools is justified in cases when the utilities from *IVtkTools* are not enough.
 
 The low-level scenario of VIS usage in VTK pipeline is shown in the figure below. The Mesher component produces shape facet (VTK polygonal data) using implementation of *IShapeData* interface. Then result can be retrieved from this implementation as a *vtkPolyData* instance.
@@ -313,7 +313,7 @@ The resulting *vtkPolyData* instance can be used for initialization of VTK pipel
 * *SUBSHAPE_IDS* - array of *vtkIdTypeArray* type. It contains the shape IDs the corresponding cells were generated for. The name of this array is defined in *ARRNAME_SUBSHAPE_IDS* constant of *IVtkVTK_ShapeData* class.
 * *MESH_TYPES* - array of *vtkShortArray type*. It contains the type tags of the shape parts the corresponding cells were generated for. The name of this array is defined in *ARRNAME_MESH_TYPES* constant of *IVtkVTK_ShapeData* class.
 
-@subsection occt_vis_4_2	 Usage of OCCT picking algorithm
+<h3><a id="occt_vis_4_2">Usage of OCCT picking algorithm</a></h3>
 
 It is possible to create a custom VTK picker for interactive selection of OCCT 3D shapes using an instance of the picking algorithm *IVtk_IShapePickerAlgo*.
 
@@ -360,7 +360,7 @@ IVtk_ShapeIdList subShapeIds
   = myOccPickerAlgo->SubShapesPicked(shapeId);
 ~~~~
 
-@section occt_vis_5	DRAW Test Harness
+<h2><a id="occt_vis_5">DRAW Test Harness</a></h2>
 
 *TKIVtkDraw* toolkit contains classes for embedding VIS functionality into DRAW Test Harness with possibility of simple interactions, including detection and highlighting.
 * *IVtkDraw_HighlightAndSelectionPipeline* -- Creates VTK pipeline with OCCT shape data source and properly initialized VIS filters.

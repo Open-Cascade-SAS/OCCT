@@ -3,13 +3,13 @@ Modeling Algorithms  {#occt_user_guides__modeling_algos}
 
 @tableofcontents
 
-@section occt_modalg_1 Introduction
+<h2><a id="occt_modalg_1">Introduction</a></h2>
 
 This manual explains how  to use the Modeling Algorithms. It provides basic documentation on modeling  algorithms.
 
 The Modeling Algorithms module brings together a  wide range of topological algorithms used in modeling. Along with these tools,  you will find the geometric algorithms, which they call. 
 
-@section occt_modalg_2 Geometric Tools
+<h2><a id="occt_modalg_2">Geometric Tools</a></h2>
 
 Open CASCADE Technology geometric tools provide algorithms to: 
   * Calculate the intersection of two 2D curves, surfaces, or a 3D curve and a surface;
@@ -18,7 +18,7 @@ Open CASCADE Technology geometric tools provide algorithms to:
   * Construct curves and surfaces from constraints; 
   * Construct curves and surfaces by interpolation.
   
-@subsection occt_modalg_2_2 Intersections
+<h3><a id="occt_modalg_2_2">Intersections</a></h3>
 
 The Intersections component is used to compute intersections between 2D or 3D geometrical objects: 
   * the intersections between two 2D curves;
@@ -36,7 +36,7 @@ In both cases, the  algorithm requires a value for the tolerance (Standard_Real)
 
 The algorithm returns a  point in the case of an intersection and a segment in the case of tangent  intersection. 
 
-@subsubsection occt_modalg_2_2_1 Intersection of two curves
+<h4><a id="occt_modalg_2_2_1">Intersection of two curves</a></h4>
 
 *Geom2dAPI_InterCurveCurve* class may be instantiated for intersection of curves *C1* and *C2*.
 ~~~~{.cpp}
@@ -78,7 +78,7 @@ If you need access to a wider range of functionalities the following method will
 Geom2dInt_GInter& TheIntersector = Intersector.Intersector(); 
 ~~~~
 
-@subsubsection occt_modalg_2_2_2 Intersection of Curves and Surfaces
+<h4><a id="occt_modalg_2_2_2">Intersection of Curves and Surfaces</a></h4>
 
 The *GeomAPI_IntCS* class  is used to compute the intersection points between a curve and a surface. 
 
@@ -99,7 +99,7 @@ gp_Pnt& P = Intersector.Point(Index);
 
 Where *Index* is an  integer between 1 and *nb*, calls the intersection points.
 
-@subsubsection occt_modalg_2_2_3 Intersection of two Surfaces
+<h4><a id="occt_modalg_2_2_3">Intersection of two Surfaces</a></h4>
 The *GeomAPI_IntSS* class  is used to compute the intersection of two surfaces from *Geom_Surface* with  respect to a given tolerance. 
 
 This class is  instantiated as follows: 
@@ -119,7 +119,7 @@ Handle(Geom_Curve) C = Intersector.Line(Index)
 Where *Index* is an  integer between 1 and *nb*, calls the intersection curves.
 
 
-@subsection occt_modalg_2_3  Interpolations
+<h3><a id="occt_modalg_2_3">Interpolations</a></h3>
 
 The Interpolation Laws component provides definitions of functions: <i> y=f(x) </i>.
 
@@ -132,7 +132,7 @@ Such functions can be used to define, for example, the evolution law of a fillet
 
 The validity of the function built is never checked: the Law package does not know for what application or to what end the function will be used. In particular, if the function is used as the evolution law of a fillet, it is important that the function is always positive. The user must check this.
 
-@subsubsection occt_modalg_2_3_1 Geom2dAPI_Interpolate
+<h4><a id="occt_modalg_2_3_1">Geom2dAPI_Interpolate</a></h4>
 This class is used to  interpolate a BSplineCurve passing through an array of points. If tangency is  not requested at the point of interpolation, continuity will be *C2*. If  tangency is requested at the point, continuity will be *C1*. If  Periodicity is requested, the curve will be closed and the junction will be the  first point given. The curve will then have a continuity of *C1* only. 
 This class may be  instantiated as follows: 
 ~~~~{.cpp}
@@ -160,7 +160,7 @@ Geom2dAPI_Interpolate(Points,
     Precision::Confusion()); 
 ~~~~
 
-@subsubsection occt_modalg_2_3_2 GeomAPI_Interpolate
+<h4><a id="occt_modalg_2_3_2">GeomAPI_Interpolate</a></h4>
 
 This class may be  instantiated as follows: 
 ~~~~{.cpp}
@@ -191,9 +191,9 @@ GeomAPI_Interpolate AnInterpolator
 AnInterpolator.Load (StartingTangent, EndingTangent); 
 ~~~~
 
-@subsection occt_modalg_2_4 Lines and  Circles from Constraints
+<h3><a id="occt_modalg_2_4">Lines and  Circles from Constraints</a></h3>
 
-@subsubsection occt_modalg_2_4_1 Types of constraints
+<h4><a id="occt_modalg_2_4_1">Types of constraints</a></h4>
 
 The algorithms for construction of 2D circles or lines can be described with numeric or geometric constraints in relation to other curves. 
 
@@ -242,7 +242,7 @@ GccAna_Circ2d2TanRad
 
 This expression finds all circles  of radius *Rad*, which are tangent to both circle *C1* and *C2*, while *C1* is outside and *C2* is inside.
   
-@subsubsection occt_modalg_2_4_2 Available types of lines and circles
+<h4><a id="occt_modalg_2_4_2">Available types of lines and circles</a></h4>
 
 The following analytic algorithms using value-handled entities for creation of 2D lines or circles with geometric constraints are available: 
   * circle tangent to three  elements (lines, circles, curves, points),
@@ -434,7 +434,7 @@ GccAna_Circ2d2TanRad  Solver(GccEnt::Unqualified(C1),
 ~~~~							
 
 
-@subsubsection occt_modalg_2_4_3 Types of  algorithms
+<h4><a id="occt_modalg_2_4_3">Types of  algorithms</a></h4>
 
 OCCT implements several categories of algorithms:
 
@@ -465,7 +465,7 @@ Each elementary solution is given as an elementary bisecting locus object (line,
 
 Note: Curves used by <i>GccAna</i> algorithms to define the geometric problem to be solved, are 2D lines or circles from the <i> gp</i> package: they are not explicitly parameterized. However, these lines or circles retain an implicit parameterization, corresponding to that which they induce on equivalent Geom2d objects. This induced parameterization is the one used when returning parameter values on such curves, for instance with the functions <i> Tangency1, Tangency2, Tangency3, Intersection2</i> and <i> CenterOn3</i> provided by construction algorithms from the <i> GccAna </i> or <i> Geom2dGcc</i> packages.
 
-@subsection occt_modalg_2_5 Curves and Surfaces from Constraints
+<h3><a id="occt_modalg_2_5">Curves and Surfaces from Constraints</a></h3>
 
 The Curves and Surfaces from Constraints component groups together high level functions used in 2D and 3D geometry for:
   * creation of faired and minimal variation 2D curves
@@ -479,7 +479,7 @@ OPEN CASCADE company also provides a product known as <a href="https://www.openc
 
 SSP product is not supplied with Open CASCADE Technology, but can be purchased separately.
 
-@subsubsection occt_modalg_2_5_1 Faired and Minimal Variation 2D Curves
+<h4><a id="occt_modalg_2_5_1">Faired and Minimal Variation 2D Curves</a></h4>
 
 Elastic beam curves have their origin in traditional methods of modeling applied 
 in boat-building, where a long thin piece of wood, a lathe, was forced to pass
@@ -529,7 +529,7 @@ In other cases, when  sliding is imposed and the sliding factor is too large, th
 
 The constructor parameters, *Tolerance* and *NbIterations*, control how precise the computation is,  and how long it will take. 
 
-@subsubsection occt_modalg_2_5_2 Ruled Surfaces 
+<h4><a id="occt_modalg_2_5_2">Ruled Surfaces </a></h4>
 
 A ruled surface is built by ruling a line along the length of two curves.
 
@@ -541,7 +541,7 @@ The class *GeomFill_BezierCurves* allows producing a Bezier surface from contigu
 
 The class *GeomFill_BSplineCurves* allows producing a BSpline surface from contiguous BSpline curves.  Note that problems may occur with rational BSplines. 
 
-@subsubsection occt_modalg_2_5_3 Pipe Surfaces
+<h4><a id="occt_modalg_2_5_3">Pipe Surfaces</a></h4>
 
 The class *GeomFill_Pipe* allows producing a pipe by sweeping a curve (the section) along another curve  (the path). The result is a BSpline surface. 
 
@@ -551,7 +551,7 @@ The following types of construction are available:
   * pipes with a section evolving between two given curves.
   
   
-@subsubsection occt_modalg_2_5_4 Filling a contour
+<h4><a id="occt_modalg_2_5_4">Filling a contour</a></h4>
 
 It is often convenient to create a surface from some curves, which will form the boundaries that define the new surface.
 This is done by the class *GeomFill_ConstrainedFilling*, which allows filling a contour defined by three or four curves as well as by tangency constraints. The resulting surface is a BSpline. 
@@ -580,7 +580,7 @@ The enumerations *FillingStyle* specify the styles used to build the surface. Th
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image018.png,"Intersecting filleted edges with different radii leave a gap filled by a surface",274}
 
-@subsubsection occt_modalg_2_5_5 Plate surfaces
+<h4><a id="occt_modalg_2_5_5">Plate surfaces</a></h4>
 
 In CAD, it is often necessary to generate a surface which has no exact mathematical definition, but which is defined by respective constraints. These can be of a mathematical, a technical or an aesthetic order.
 
@@ -672,7 +672,7 @@ PSurf->Bounds( Umin, Umax, Vmin, Vmax);
 BRepBuilderAPI_MakeFace MF(Surf,Umin, Umax, Vmin, Vmax); 
 ~~~~
 
-@subsection occt_modalg_2_6 Projections
+<h3><a id="occt_modalg_2_6">Projections</a></h3>
 
 Projections provide for computing the following:
   * the projections of a 2D point onto a 2D curve
@@ -681,7 +681,7 @@ Projections provide for computing the following:
   * the planar curve transposition from the 3D to the 2D parametric space of an underlying plane and v. s.
   * the positioning of a 2D gp object in the 3D geometric space.
 
-@subsubsection occt_modalg_2_6_1 Projection of a 2D Point on a Curve
+<h4><a id="occt_modalg_2_6_1">Projection of a 2D Point on a Curve</a></h4>
 
 *Geom2dAPI_ProjectPointOnCurve*  allows calculation of all normals projected from a point (*gp_Pnt2d*)  onto a geometric curve (*Geom2d_Curve*). The calculation may be restricted  to a given domain. 
 
@@ -803,7 +803,7 @@ If you want to use the  wider range of functionalities available from the *Extre
 Extrema_ExtPC2d& TheExtrema = Projector.Extrema(); 
 ~~~~
 
-@subsubsection occt_modalg_2_6_2 Projection of a 3D Point on a Curve
+<h4><a id="occt_modalg_2_6_2">Projection of a 3D Point on a Curve</a></h4>
 
 The class *GeomAPI_ProjectPointOnCurve* is  instantiated as in the following example: 
 
@@ -915,7 +915,7 @@ If you want to use the  wider range of functionalities available from the *Extre
 Extrema_ExtPC& TheExtrema = Projector.Extrema(); 
 ~~~~
 
-@subsubsection occt_modalg_2_6_3 Projection of a Point on a Surface
+<h4><a id="occt_modalg_2_6_3">Projection of a Point on a Surface</a></h4>
 
 The class *GeomAPI_ProjectPointOnSurf*  allows calculation of all normals  projected from a point from *gp_Pnt* onto a geometric surface from *Geom_Surface*. 
 
@@ -1036,7 +1036,7 @@ If you want to use the  wider range of functionalities available from the *Extre
 Extrema_ExtPS& TheExtrema = Proj.Extrema(); 
 ~~~~
 
-@subsubsection occt_modalg_2_12_8 Switching from 2d and 3d Curves
+<h4><a id="occt_modalg_2_12_8">Switching from 2d and 3d Curves</a></h4>
 
 The *To2d* and *To3d* methods are used to; 
 
@@ -1050,7 +1050,7 @@ Handle(Geom_Curve) C3d = GeomAPI::To3d(C2d, Pln);
 ~~~~
 
 
-@section occt_modalg_3 Standard  Topological Objects
+<h2><a id="occt_modalg_3">Standard  Topological Objects</a></h2>
 
 The following  standard topological objects can be created:
   * Vertices;
@@ -1065,7 +1065,7 @@ There are two root classes for their construction and modification:
 * The deferred class  *BRepBuilderAPI_MakeShape* is the root of all *BRepBuilderAPI* classes,  which build shapes. It inherits from the class *BRepBuilderAPI_Command* and provides a field to store the constructed shape. 
 * The deferred class *BRepBuilderAPI_ModifyShape* is used as a root for the shape  modifications. It inherits *BRepBuilderAPI_MakeShape* and implements the methods  used to trace the history of all sub-shapes. 
 
-@subsection occt_modalg_3_1 Vertex
+<h3><a id="occt_modalg_3_1">Vertex</a></h3>
 
 *BRepBuilderAPI_MakeVertex*  creates a new vertex from a 3D point from gp. 
 ~~~~{.cpp}
@@ -1075,9 +1075,9 @@ TopoDS_Vertex V = BRepBuilderAPI_MakeVertex(P);
 
 This class always creates a new vertex and has no other methods.
 
-@subsection occt_modalg_3_2 Edge
+<h3><a id="occt_modalg_3_2">Edge</a></h3>
 
-@subsubsection occt_modalg_3_2_1 Basic edge construction method
+<h4><a id="occt_modalg_3_2_1">Basic edge construction method</a></h4>
 
 Use *BRepBuilderAPI_MakeEdge* to create from a curve and vertices. The basic method constructs an edge from a curve, two vertices, and two parameters. 
 
@@ -1118,7 +1118,7 @@ The figure below  illustrates two special cases, a semi-infinite edge and an edg
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image023.png,"Infinite and Periodic Edges",220}
 
-@subsubsection occt_modalg_3_2_2 Supplementary edge construction methods
+<h4><a id="occt_modalg_3_2_2">Supplementary edge construction methods</a></h4>
 
 There exist supplementary edge construction methods derived from the basic one. 
 
@@ -1173,7 +1173,7 @@ E = BRepBuilderAPI_MakeEdge(V1,V2);
 E = BRepBuilderAPI_MakeEdge(P1,P2); 
 ~~~~
 
-@subsubsection occt_modalg_3_2_3 Other information and error status
+<h4><a id="occt_modalg_3_2_3">Other information and error status</a></h4>
 
 The class *BRepBuilderAPI_MakeEdge* can provide extra information and return an error status. 
 
@@ -1259,13 +1259,13 @@ return MW.Wire();
 } 
 ~~~~
 
-@subsection occt_modalg_3_3 Edge 2D
+<h3><a id="occt_modalg_3_3">Edge 2D</a></h3>
 
 Use *BRepBuilderAPI_MakeEdge2d* class to make  edges on a working plane from 2d curves. The working plane is a default value  of the *BRepBuilderAPI* package (see the *Plane* methods). 
 
 *BRepBuilderAPI_MakeEdge2d* class is strictly similar to BRepBuilderAPI_MakeEdge, but it uses 2D geometry from gp and Geom2d instead of  3D geometry. 
 
-@subsection occt_modalg_3_4 Polygon
+<h3><a id="occt_modalg_3_4">Polygon</a></h3>
 
 *BRepBuilderAPI_MakePolygon* class is used to build polygonal wires from vertices  or points. Points are automatically changed to vertices as in  *BRepBuilderAPI_MakeEdge*. 
 
@@ -1306,11 +1306,11 @@ TopoDS_Wire W = BRepBuilderAPI_MakePolygon(P1,P2,P3,P4);
 
 When the added point or  vertex has the same location as the previous one it is not added to the current  wire but the most recently created edge becomes Null. The *Added* method  can be used to test this condition. The *MakePolygon* class never raises an  error. If no vertex has been added, the *Wire* is *Null*. If two vertices are at  the same location, no edge is created. 
 
-@subsection occt_modalg_3_5 Face
+<h3><a id="occt_modalg_3_5">Face</a></h3>
 
 Use *BRepBuilderAPI_MakeFace* class to create a face from a surface and wires. An underlying surface is  constructed from a surface and optional parametric values. Wires can be added  to the surface. A planar surface can be constructed from a wire. An error  status can be returned after face construction. 
 
-@subsubsection occt_modalg_3_5_1 Basic face construction method
+<h4><a id="occt_modalg_3_5_1">Basic face construction method</a></h4>
 
 A face can be  constructed from a surface and four parameters to determine a limitation of the  UV space. The parameters are optional, if they are omitted the natural bounds  of the surface are used. Up to four edges and vertices are created with a wire.  No edge is created when the parameter is infinite. 
 
@@ -1334,7 +1334,7 @@ Constraints on the  parameters are similar to the constraints in *BRepBuilderAPI
   * On a *U (V)* periodic surface  *umin* and *umax (vmin,vmax)* are adjusted.
   * *umin, umax, vmin, vmax* can be  infinite. There will be no edge in the corresponding direction.
 
-@subsubsection occt_modalg_3_5_2 Supplementary face construction methods
+<h4><a id="occt_modalg_3_5_2">Supplementary face construction methods</a></h4>
 
 The two basic  constructions (from a surface and from a surface and parameters) are  implemented for all *gp* package surfaces, which are transformed in the corresponding Surface from Geom. 
 
@@ -1398,7 +1398,7 @@ F = BRepBuilderAPI_MakeFace(F,W);
 
 To add more than one  wire an instance of the *BRepBuilderAPI_MakeFace* class can be created with the face and the first wire and the new wires inserted with the *Add* method. 
 
-@subsubsection occt_modalg_3_5_3 Error status
+<h4><a id="occt_modalg_3_5_3">Error status</a></h4>
 
 The *Error* method returns  an error status, which is a term from the *BRepBuilderAPI_FaceError* enumeration. 
 
@@ -1408,7 +1408,7 @@ The *Error* method returns  an error status, which is a term from the *BRepBuild
 * *CurveProjectionFailed* -- no curve was found  in the parametric space of the surface for an edge. 
 * *ParametersOutOfRange* -- the parameters  *umin, umax, vmin, vmax* are out of the surface. 
 
-@subsection occt_modalg_3_6 Wire
+<h3><a id="occt_modalg_3_6">Wire</a></h3>
 The wire is a composite shape built not from a geometry, but by the assembly of edges. *BRepBuilderAPI_MakeWire* class can build a wire from one or more edges or connect new edges to an  existing wire. 
 
 Up to four edges can be used directly, for example: 
@@ -1453,15 +1453,15 @@ The Error method returns  a term of the *BRepBuilderAPI_WireError* enumeration:
 *DisconnectedWire* -- the last added edge was not connected to the wire. 
 *NonManifoldWire* -- the  wire with some singularity. 
 
-@subsection occt_modalg_3_7 Shell
+<h3><a id="occt_modalg_3_7">Shell</a></h3>
 The shell is a composite shape built not from a geometry, but by the assembly of faces.
 Use *BRepBuilderAPI_MakeShell* class  to build a Shell from a set of Faces. What may be important is that each face  should have the required continuity. That is why an initial surface is broken  up into faces. 
 
-@subsection occt_modalg_3_8 Solid
+<h3><a id="occt_modalg_3_8">Solid</a></h3>
 The solid is a composite shape built not from a geometry, but by the assembly of shells. Use  *BRepBuilderAPI_MakeSolid* class  to build a Solid from a set of Shells. Its use is similar to the use of the  MakeWire class: shells are added to the solid in the same way that edges are  added to the wire in MakeWire. 
 
 
-@section occt_modalg_4 Primitives
+<h2><a id="occt_modalg_4">Primitives</a></h2>
 
 The <i> BRepPrimAPI</i> package provides an API (Application Programming Interface) for construction of primitives such as:
     * Boxes;
@@ -1484,8 +1484,8 @@ Sweeps are objects obtained by sweeping a profile along a path. The profile can 
 
 It is not allowed to sweep Solids and Composite Solids. Swept constructions along complex profiles such as BSpline curves also available in the <i> BRepOffsetAPI </i> package. This API provides simple, high level calls for the most common operations.
 
-@subsection occt_modalg_4_1 Making  Primitives
-@subsubsection occt_modalg_4_1_1 Box
+<h3><a id="occt_modalg_4_1">Making  Primitives</a></h3>
+<h4><a id="occt_modalg_4_1_1">Box</a></h4>
 
 The class *BRepPrimAPI_MakeBox* allows building a parallelepiped box. The result is either a **Shell** or a **Solid**. There are  four ways to build a box: 
 
@@ -1503,7 +1503,7 @@ The four methods to build a box are shown in the figure:
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image026.png,"Making Boxes",420}
 
-@subsubsection occt_modalg_4_1_2 Wedge
+<h4><a id="occt_modalg_4_1_2">Wedge</a></h4>
 *BRepPrimAPI_MakeWedge* class allows building a wedge, which is a slanted box, i.e. a  box with angles. The wedge is constructed in much the same way as a box i.e.  from three dimensions dx,dy,dz plus arguments or from an axis system, three  dimensions, and arguments. 
 
 The following figure  shows two ways to build wedges. One is to add a dimension *ltx*, which is the length in *x* of the face at *dy*. The second is to add *xmin, xmax, zmin* and *zmax* to  describe the face at *dy*. 
@@ -1513,7 +1513,7 @@ To make a centered  pyramid you can use *xmin = xmax = dx / 2, zmin = zmax = dz 
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image027.png,"Making Wedges",420}
 
-@subsubsection occt_modalg_4_1_3 Rotation object
+<h4><a id="occt_modalg_4_1_3">Rotation object</a></h4>
 *BRepPrimAPI_MakeOneAxis* is a deferred class used as a root class for all classes constructing rotational primitives. Rotational primitives are  created by rotating a curve around an axis. They cover the cylinder, the cone,  the sphere, the torus, and the revolution, which provides all other curves. 
 
 The particular  constructions of these primitives are described, but they all have some common  arguments, which are: 
@@ -1526,7 +1526,7 @@ The result of the  OneAxis construction is a Solid, a Shell, or a Face. The face
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image028.png,"MakeOneAxis arguments",360}
 
-@subsubsection occt_modalg_4_1_4 Cylinder
+<h4><a id="occt_modalg_4_1_4">Cylinder</a></h4>
 *BRepPrimAPI_MakeCylinder* class allows creating cylindrical primitives. A cylinder is created either in the  default coordinate system or in a given coordinate system *gp_Ax2*. There are  two constructions: 
 
   * Radius and height, to build a  full cylinder.
@@ -1545,7 +1545,7 @@ BRepPrimAPI_MakeCylinder(axes,R,DY,PI/2.);
 ~~~~
 @figure{/user_guides/modeling_algos/images/modeling_algos_image029.png,"Cylinder",360}
 
-@subsubsection occt_modalg_4_1_5 Cone
+<h4><a id="occt_modalg_4_1_5">Cone</a></h4>
 *BRepPrimAPI_MakeCone* class allows creating conical primitives. Like a cylinder, a cone is created either in  the default coordinate system or in a given coordinate system (gp_Ax2). There  are two constructions: 
 
   * Two radii and height, to  build a full cone. One of the radii can be null to make a sharp cone.
@@ -1560,7 +1560,7 @@ TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H);
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image030.png,"Cone",360}
 
-@subsubsection occt_modalg_4_1_6 Sphere
+<h4><a id="occt_modalg_4_1_6">Sphere</a></h4>
 *BRepPrimAPI_MakeSphere* class allows creating spherical primitives. Like a cylinder, a  sphere is created either in the default coordinate system or in a given  coordinate system *gp_Ax2*. There are four constructions: 
 
   * From a radius -- builds a full  sphere. 
@@ -1584,7 +1584,7 @@ Note that we could  equally well choose to create Shells instead of Solids.
 @figure{/user_guides/modeling_algos/images/modeling_algos_image031.png,"Examples of  Spheres",420}
 
 
-@subsubsection occt_modalg_4_1_7 Torus
+<h4><a id="occt_modalg_4_1_7">Torus</a></h4>
 *BRepPrimAPI_MakeTorus* class allows creating toroidal primitives. Like the other  primitives, a torus is created either in the default coordinate system or in a  given coordinate system *gp_Ax2*. There are four constructions similar to the  sphere constructions: 
 
   * Two radii -- builds a full  torus.
@@ -1608,7 +1608,7 @@ TopoDS_Shell S4 =
 
 Note that we could  equally well choose to create Solids instead of Shells. 
 
-@subsubsection occt_modalg_4_1_8 Revolution
+<h4><a id="occt_modalg_4_1_8">Revolution</a></h4>
 *BRepPrimAPI_MakeRevolution* class allows building a uniaxial primitive from a curve. As other uniaxial primitives it can be created in the default coordinate system  or in a given coordinate system. 
 
 The curve can be any  *Geom_Curve*, provided it is planar and lies in the same plane as the Z-axis of  local coordinate system. There are four modes of construction: 
@@ -1619,8 +1619,8 @@ The curve can be any  *Geom_Curve*, provided it is planar and lies in the same p
   * From a curve, two parameters,  and an angle. The two parameters must be growing and within the curve range.
 
 
-@subsection occt_modalg_4_2 Sweeping:  Prism, Revolution and Pipe
-@subsubsection occt_modalg_4_2_1 Sweeping
+<h3><a id="occt_modalg_4_2">Sweeping:  Prism, Revolution and Pipe</a></h3>
+<h4><a id="occt_modalg_4_2_1">Sweeping</a></h4>
 
 Sweeps are the objects  you obtain by sweeping a **profile** along a **path**. The profile can be of any topology. The path is usually a curve or a wire. The profile generates  objects according to the following rules: 
 
@@ -1640,7 +1640,7 @@ It is forbidden to sweep  Solids and Composite Solids. A Compound generates a Co
 * *BRepPrimAPI_MakePipe* -- produces a general sweep. 
 
 
-@subsubsection occt_modalg_4_2_2 Prism
+<h4><a id="occt_modalg_4_2_2">Prism</a></h4>
 *BRepPrimAPI_MakePrism* class allows creating a linear **prism** from a shape and a vector or a direction. 
 * A vector allows creating a finite  prism;
 * A direction allows creating an infinite or semi-infinite prism. The semi-infinite or infinite  prism is toggled by a Boolean argument. All constructors have a boolean argument to copy the original  shape or share it (by default). 
@@ -1664,7 +1664,7 @@ TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,Standard_False);
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image034.png,"Finite, infinite, and semi-infinite prisms",420}
 
-@subsubsection occt_modalg_4_2_3 Rotational Sweep 
+<h4><a id="occt_modalg_4_2_3">Rotational Sweep </a></h4>
 *BRepPrimAPI_MakeRevol* class allows creating a rotational sweep from a shape, an axis  (gp_Ax1), and an angle. The angle has a default value of 2*PI which means a  closed revolution. 
 
 *BRepPrimAPI_MakeRevol* constructors have a last argument to copy or share the original shape.
@@ -1684,7 +1684,7 @@ TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang);
 
 
 
-@section occt_modalg_5 Boolean Operations
+<h2><a id="occt_modalg_5">Boolean Operations</a></h2>
 
 Boolean operations are used to create new shapes from the combinations of two groups of shapes.
 
@@ -1702,7 +1702,7 @@ Topological operations are the most convenient way to create real industrial par
 
 See [Boolean Operations](#specification__boolean_operations) for detailed documentation.
 
-@subsection occt_modalg_5_1 Input and Result Arguments
+<h3><a id="occt_modalg_5_1">Input and Result Arguments</a></h3>
 
 Boolean Operations have the following types of the arguments and produce the following results:
 * For arguments having the same shape type (e.g. SOLID / SOLID) the type of the resulting shape will be a COMPOUND, containing shapes of this type;
@@ -1711,7 +1711,7 @@ Boolean Operations have the following types of the arguments and produce the fol
 * It is possible to perform Boolean Operations on arguments of the COMPOUND shape type. In this case each compound must not be heterogeneous, i.e. it must contain equidimensional shapes (EDGEs or/and WIREs, FACEs or/and SHELLs, SOLIDs). SOLIDs inside the COMPOUND must not contact (intersect or touch) each other. The same condition should be respected for SHELLs or FACEs, WIREs or EDGEs.
 * Boolean Operations for COMPSOLID type of shape are not supported.
 
-@subsection occt_modalg_5_2 Implementation
+<h3><a id="occt_modalg_5_2">Implementation</a></h3>
 
 *BRepAlgoAPI_BooleanOperation* class is the deferred root class for Boolean  operations.
 
@@ -1755,7 +1755,7 @@ TopoDS_Shape S =  BRepAlgoAPI_Section(A,B);
 
 
 
-@section occt_modalg_2_topo_tools Topological Tools
+<h2><a id="occt_modalg_2_topo_tools">Topological Tools</a></h2>
 
 Open CASCADE Technology topological tools provide algorithms to
  * Create wires from edges;
@@ -1769,7 +1769,7 @@ Open CASCADE Technology topological tools provide algorithms to
  * Get the normal direction for the face.
 
 
-@subsection occt_modalg_2_topo_tools_1 Creation of the faces from wireframe model
+<h3><a id="occt_modalg_2_topo_tools_1">Creation of the faces from wireframe model</a></h3>
 
 It is possible to create the planar faces from the arbitrary set of planar edges randomly located in 3D space.
 This feature might be useful if you need for instance to restore the shape from the wireframe model:
@@ -1815,33 +1815,33 @@ The wires located in the same plane and completely included into other wires wil
 
 
 
-@subsection occt_modalg_2_topo_tools_2 Classification of the shapes
+<h3><a id="occt_modalg_2_topo_tools_2">Classification of the shapes</a></h3>
 
 The following methods allow classifying the different shapes relatively other shapes:
  * The variety of the *BOPTools_AlgoTools::ComputState* methods classify the vertex/edge/face relatively solid;
  * *BOPTools_AlgoTools::IsHole* classifies wire relatively face;
  * *IntTools_Tools::ClassifyPointByFace* classifies point relatively face.
 
-@subsection occt_modalg_2_topo_tools_3 Orientation of the shapes in the container
+<h3><a id="occt_modalg_2_topo_tools_3">Orientation of the shapes in the container</a></h3>
 
 The following methods allow reorienting shapes in the containers:
  * *BOPTools_AlgoTools::OrientEdgesOnWire* correctly orients edges on the wire;
  * *BOPTools_AlgoTools::OrientFacesOnShell* correctly orients faces on the shell.
 
-@subsection occt_modalg_2_topo_tools_4 Making new shapes
+<h3><a id="occt_modalg_2_topo_tools_4">Making new shapes</a></h3>
 
 The following methods allow creating new shapes from the existing ones:
  * The variety of the *BOPTools_AlgoTools::MakeNewVertex* creates the new vertices from other vertices and edges;
  * *BOPTools_AlgoTools::MakeSplitEdge* splits the edge by the given parameters.
 
-@subsection occt_modalg_2_topo_tools_5 Building PCurves
+<h3><a id="occt_modalg_2_topo_tools_5">Building PCurves</a></h3>
 
 The following methods allow building PCurves of edges on faces:
  * *BOPTools_AlgoTools::BuildPCurveForEdgeOnFace* computes PCurve for the edge on the face;
  * *BOPTools_AlgoTools::BuildPCurveForEdgeOnPlane* and *BOPTools_AlgoTools::BuildPCurveForEdgesOnPlane* allow building PCurves for edges on the planar face;
  * *BOPTools_AlgoTools::AttachExistingPCurve* takes PCurve on the face from one edge and attach this PCurve to other edge coinciding with the first one.
 
-@subsection occt_modalg_2_topo_tools_6 Checking the validity of the shapes
+<h3><a id="occt_modalg_2_topo_tools_6">Checking the validity of the shapes</a></h3>
 
 The following methods allow checking the validity of the shapes:
  * *BOPTools_AlgoTools::IsMicroEdge* detects the small edges;
@@ -1849,13 +1849,13 @@ The following methods allow checking the validity of the shapes:
  * *BOPTools_AlgoTools::CorrectShapeTolerances* and *BOPTools_AlgoTools::CorrectTolerances* allow correcting the tolerances of the sub-shapes.
  * *BRepLib::FindValidRange* finds a range of 3d curve of the edge not covered by tolerance spheres of vertices.
  
-@subsection occt_modalg_2_topo_tools_7 Taking a point inside the face
+<h3><a id="occt_modalg_2_topo_tools_7">Taking a point inside the face</a></h3>
 
 The following methods allow taking a point located inside the face:
  * The variety of the *BOPTools_AlgoTools3D::PointNearEdge* allows getting a point inside the face located near the edge;
  * *BOPTools_AlgoTools3D::PointInFace* allows getting a point inside the face.
 
-@subsection occt_modalg_2_topo_tools_8 Getting normal for the face
+<h3><a id="occt_modalg_2_topo_tools_8">Getting normal for the face</a></h3>
 
 The following methods allow getting the normal direction for the face/surface:
  * *BOPTools_AlgoTools3D::GetNormalToSurface* computes the normal direction for the surface in the given point defined by UV parameters;
@@ -1864,7 +1864,7 @@ The following methods allow getting the normal direction for the face/surface:
 
 
 
-@section occt_modalg_3a The Topology API
+<h2><a id="occt_modalg_3a">The Topology API</a></h2>
   
 The Topology  API of Open  CASCADE Technology (**OCCT**) includes the following six packages: 
   * *BRepAlgoAPI*
@@ -1942,7 +1942,7 @@ This instruction tells  the C++ compiler that there is an **implicit casting** o
 This feature allows you  to provide classes, which have the simplicity of function calls when required  and the power of classes when advanced processing is necessary. All the  benefits of this approach are explained when describing the topology programming  interface classes. 
 
 
-@subsection occt_modalg_hist History support
+<h3><a id="occt_modalg_hist">History support</a></h3>
 
 All topological API algorithms support the history of shape modifications (or just History) for their arguments.
 Generally, the history is available for the following types of sub-shapes of input shapes:
@@ -1965,7 +1965,7 @@ The history information can be accessed by the API methods:
 * *const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)* - to get the shapes Modified from the given shape;
 * *const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)* - to get the shapes Generated from the given shape.
 
-@subsubsection occt_modalg_hist_del Deleted shapes
+<h4><a id="occt_modalg_hist_del">Deleted shapes</a></h4>
 
 The shape is considered as Deleted during the operation if all of the following conditions are met:
 * The shape is a part of the argument shapes of the operation;
@@ -1974,7 +1974,7 @@ The shape is considered as Deleted during the operation if all of the following 
 
 For example, in the CUT operation between two intersecting solids all vertices/edges/faces located completely inside the Tool solid will be Deleted during the operation.
 
-@subsubsection occt_modalg_hist_mod Modified shapes
+<h4><a id="occt_modalg_hist_mod">Modified shapes</a></h4>
 
 The shape is considered as Modified during the operation if the result shape contains the splits of the shape, not the shape itself. The shape can be modified only into the shapes with the same dimension.
 The splits of the shape contained in the result shape are Modified from the shape.
@@ -1984,7 +1984,7 @@ The list of Modified elements will contain only those contributing to the result
 
 For example, after translation of the shape in any direction all its sub-shapes will be modified into their translated copies.
 
-@subsubsection occt_modalg_hist_gen Generated shapes
+<h4><a id="occt_modalg_hist_gen">Generated shapes</a></h4>
 
 The shapes contained in the result shape are considered as Generated from the input shape if they were produced during the operation and have a different dimension from the shapes from which they were created.
 
@@ -1992,7 +1992,7 @@ The list of Generated elements will contain only those included in the result of
 
 For example, extrusion of the edge in some direction will create a face. This face will be generated from the edge.
 
-@subsubsection occt_modalg_hist_tool BRepTools_History
+<h4><a id="occt_modalg_hist_tool">BRepTools_History</a></h4>
 
 *BRepTools_History* is the general History tool intended for unification of the histories of different algorithms.
 
@@ -2034,7 +2034,7 @@ aResHistory->Merge(aHist2);
 
 The possibilities of Merging histories and history creation from the API algorithms allow providing easy History support for the new algorithms.
 
-@subsubsection occt_modalg_hist_draw DRAW history support
+<h4><a id="occt_modalg_hist_draw">DRAW history support</a></h4>
 
 DRAW History support for the algorithms is provided by three basic commands:
 * *isdeleted*; 
@@ -2043,7 +2043,7 @@ DRAW History support for the algorithms is provided by three basic commands:
 
 For more information on the Draw History mechanism, refer to the corresponding chapter in the Draw users guide - [History commands](#occt_draw_hist).
 
-@subsection occt_modalg_6 Fillets and  Chamfers
+<h3><a id="occt_modalg_6">Fillets and  Chamfers</a></h3>
 
 This library provides algorithms to make fillets and chamfers on shape edges.
 The following cases are addressed:
@@ -2053,8 +2053,8 @@ The following cases are addressed:
 
 If there is a concavity, both surfaces that need to be extended and those, which do not, are processed.
 
-@subsubsection occt_modalg_6_1 Fillets  
-@subsubsection occt_modalg_6_1_1 Fillet on shape
+<h4><a id="occt_modalg_6_1">Fillets  </a></h4>
+<h4><a id="occt_modalg_6_1_1">Fillet on shape</a></h4>
 
 A fillet is a smooth  face replacing a sharp edge.
 
@@ -2128,7 +2128,7 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image040.png,"Fillet with changing radius",360}
  
-@subsubsection occt_modalg_6_1_2 Chamfer
+<h4><a id="occt_modalg_6_1_2">Chamfer</a></h4>
 
 A chamfer is a rectilinear edge  replacing a sharp vertex of the face.
 
@@ -2143,7 +2143,7 @@ Add(d1,  d2, E, F) with d1 on the face F.
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image041.png,"Chamfer",360}
 
-@subsubsection occt_modalg_6_1_3 Fillet on a planar face
+<h4><a id="occt_modalg_6_1_3">Fillet on a planar face</a></h4>
 
 *BRepFilletAPI_MakeFillet2d* class allows constructing fillets and chamfers on planar faces. 
 To create a fillet on planar face: define it, indicate, which vertex is  to be deleted, and give the fillet radius with *AddFillet* method. 
@@ -2192,7 +2192,7 @@ TopoDS_Shape FilletFace(const Standard_Real a,
 } 
 ~~~~
 
-@subsection occt_modalg_7 Offsets, Drafts, Pipes and Evolved shapes
+<h3><a id="occt_modalg_7">Offsets, Drafts, Pipes and Evolved shapes</a></h3>
 
 These classes provide the following services:
 
@@ -2203,7 +2203,7 @@ These classes provide the following services:
   * Creation of tapered shapes using draft angles;
   * Creation of sweeps.
   
-@subsubsection occt_modalg_7_1 Offset computation
+<h4><a id="occt_modalg_7_1">Offset computation</a></h4>
 
 Offset computation can be performed using *BRepOffsetAPI_MakeOffsetShape*. This class provides API to the two different offset algorithms:
 
@@ -2237,7 +2237,7 @@ The snippets below show usage examples:
       NewShape = OffsetMaker2.Shape();
 ~~~~
 
-@subsubsection occt_modalg_7_2 Shelling 
+<h4><a id="occt_modalg_7_2">Shelling </a></h4>
 
 Shelling is used to offset given faces of a solid by a specific value. It rounds or intersects adjacent faces along its edges depending on the convexity of the edge. 
 The MakeThickSolidByJoin method of the *BRepOffsetAPI_MakeThickSolid* takes the solid, the list of faces to remove and an offset value as input.
@@ -2275,7 +2275,7 @@ Also it is possible to create solid between shell, offset shell. This functional
       Solid = SolidMaker.Shape();
 ~~~~
 
-@subsubsection occt_modalg_7_3  Draft Angle
+<h4><a id="occt_modalg_7_3">Draft Angle</a></h4>
 
 *BRepOffsetAPI_DraftAngle* class allows modifying a shape by applying draft angles to its planar, cylindrical and conical faces. 
 
@@ -2327,7 +2327,7 @@ else {
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image043.png,"DraftAngle",420}
 
-@subsubsection occt_modalg_7_4 Pipe  Constructor
+<h4><a id="occt_modalg_7_4">Pipe  Constructor</a></h4>
 
 *BRepOffsetAPI_MakePipe* class allows creating a pipe from a Spine,  which is a Wire and a Profile which is a Shape. This implementation is limited  to spines with smooth transitions, sharp transitions are processed by  *BRepOffsetAPI_MakePipeShell*. To be more precise the continuity must be G1,  which means that the tangent must have the same direction, though not necessarily the same magnitude, at neighboring edges. 
 
@@ -2341,7 +2341,7 @@ TopoDS_Shape Pipe =  BRepOffsetAPI_MakePipe(Spine,Profile);
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image044.png,"Example of a Pipe",320}
 
-@subsubsection occt_modalg_7_5 Evolved Solid
+<h4><a id="occt_modalg_7_5">Evolved Solid</a></h4>
 
 *BRepOffsetAPI_MakeEvolved* class allows creating an evolved solid from a Spine (planar face or wire) and a profile (wire). 
 
@@ -2364,9 +2364,9 @@ TopoDS_Shape Evol =
 BRepOffsetAPI_MakeEvolved(Spine,Profile); 
 ~~~~
 
-@subsection occt_modalg_3b Object Modification
+<h3><a id="occt_modalg_3b">Object Modification</a></h3>
 
-@subsubsection occt_modalg_3b_1 Transformation
+<h4><a id="occt_modalg_3b_1">Transformation</a></h4>
 *BRepBuilderAPI_Transform* class can be used to apply a transformation to a shape (see class  *gp_Trsf*). The methods have a boolean argument to copy or share the  original shape, as long as the transformation allows (it is only possible for  direct isometric transformations). By default, the original shape is shared. 
 
 The following example  deals with the rotation of shapes. 
@@ -2388,7 +2388,7 @@ theTrsf.Perform(myShape2,Standard_True);
 TopoDS_Shape myNewShape2 = theTrsf.Shape() 
 ~~~~
 
-@subsubsection occt_modalg_3b_2 Duplication
+<h4><a id="occt_modalg_3b_2">Duplication</a></h4>
 
 Use the  *BRepBuilderAPI_Copy* class to duplicate a shape. A new shape is thus created. 
 In the following example, a  solid is copied: 
@@ -2400,7 +2400,7 @@ TopoDS Solid MySolid;
 TopoDS_Solid myCopy = BRepBuilderAPI_Copy(mySolid); 
 ~~~~
 
-@subsection occt_modalg_3a_1 Error Handling in the Topology API
+<h3><a id="occt_modalg_3a_1">Error Handling in the Topology API</a></h3>
 
 A method can report an  error in the two following situations: 
   * The data or arguments of the  method are incorrect, i.e. they do not respect the restrictions specified by  the methods in its specifications. Typical example: creating a linear edge from  two identical points is likely to lead to a zero divide when computing the  direction of the line.
@@ -2442,9 +2442,9 @@ TopoDS_Edge E = ME;
 ~~~~
 
 
-@subsection occt_modalg_8 Sewing
+<h3><a id="occt_modalg_8">Sewing</a></h3>
 
-@subsubsection occt_modalg_8_1 Introduction
+<h4><a id="occt_modalg_8_1">Introduction</a></h4>
 
 Sewing allows creation of connected topology (shells and wires) from a set of separate topological elements (faces and edges). For example, Sewing can be used to create of shell from a compound of separate faces. 
 
@@ -2461,7 +2461,7 @@ Let us define several terms:
 * **Sewn faces** should have edges shared with each other.
 * **Sewn edges** should have vertices shared with each other.
 
-@subsubsection occt_modalg_8_2 Sewing Algorithm
+<h4><a id="occt_modalg_8_2">Sewing Algorithm</a></h4>
 
 The sewing algorithm is one of the basic algorithms used for shape processing, therefore its quality is very important.
 
@@ -2500,7 +2500,7 @@ To connect a set of *n* contiguous but independent faces, do the following:
 
 If all faces have been sewn correctly, the result is a shell. Otherwise, it is a compound. After a successful sewing operation all faces have a coherent orientation.
 
-@subsubsection occt_modalg_8_3 Tolerance Management
+<h4><a id="occt_modalg_8_3">Tolerance Management</a></h4>
 
 To produce a closed shell, Sewing allows specifying the value of working tolerance, exceeding the size of small faces belonging to the shape.
 
@@ -2512,7 +2512,7 @@ The following recommendations can be proposed for tuning-up the sewing process:
 - If it is expected to obtain a shell with holes (free boundaries) as a result of sewing, the working tolerance should be set to a value not greater than the size of the smallest element (edge) or smallest distance between elements of such free boundary. Otherwise the free boundary may be sewn only partially.
 - It should  be mentioned that the Sewing algorithm is unable to understand which small (less than working tolerance) free boundary should be kept and which should be sewn.
 
-@subsubsection occt_modalg_8_4 Manifold and Non-manifold Sewing
+<h4><a id="occt_modalg_8_4">Manifold and Non-manifold Sewing</a></h4>
 
 To create one or several shells from a set of faces, sewing merges edges, which belong to different faces or one closed face. 
 
@@ -2524,7 +2524,7 @@ For a complex topology it is advisable to apply first the manifold sewing and th
 
 Giving a large tolerance value to non manifold sewing will cause a lot of incorrectness since all nearby geometry will be sewn.
 
-@subsubsection occt_modalg_8_5 Local Sewing
+<h4><a id="occt_modalg_8_5">Local Sewing</a></h4>
 
 If a shape still has some non-sewn faces or edges after sewing, it is possible to use local sewing with a greater tolerance.
 
@@ -2558,11 +2558,11 @@ TopoDS_Shape aRes = aSewing.SewedShape();
 
 ~~~~
 
-@subsection occt_modalg_9 Features
+<h3><a id="occt_modalg_9">Features</a></h3>
 
 This library contained in *BRepFeat* package is necessary for creation and manipulation of form and mechanical features that go beyond the classical boundary representation of shapes. In that sense, *BRepFeat* is an extension of *BRepBuilderAPI* package. 
 
-@subsubsection occt_modalg_9_1 Form Features
+<h4><a id="occt_modalg_9_1">Form Features</a></h4>
 
 The form features are depressions or protrusions including the following types:
 
@@ -2801,7 +2801,7 @@ TopoDS_Shape res1 = MKPipe.Shape();
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image050.png,"Pipe depression",240}
 
-@subsubsection occt_modalg_9_2 Mechanical Features
+<h4><a id="occt_modalg_9_2">Mechanical Features</a></h4>
 
 Mechanical features include ribs, protrusions and grooves (or slots), depressions along planar (linear) surfaces or revolution surfaces. 
 
@@ -2900,7 +2900,7 @@ TopoDS_Shape  theResult = theGlue;
 } 
 ~~~~
 
-@subsubsection occt_modalg_9_2_4 Split Shape
+<h4><a id="occt_modalg_9_2_4">Split Shape</a></h4>
 
 The class *BRepFeat_SplitShape* is used to split faces of a shape into wires or edges. The shape  containing the new entities is rebuilt, sharing the unmodified ones. 
 
@@ -2922,7 +2922,7 @@ TopoDS_Shape theResult = Spls;
 ...
 ~~~~
 
-@subsection occt_modalg_defeaturing 3D Model Defeaturing
+<h3><a id="occt_modalg_defeaturing">3D Model Defeaturing</a></h3>
 
 The Open CASCADE Technology Defeaturing algorithm is intended for removal of the unwanted parts or features from the model. These parts can be holes, protrusions, gaps, chamfers, fillets, etc.
 
@@ -2983,7 +2983,7 @@ Although, removal of only two faces, keeping one of the transverse faces, will f
 @figure{/user_guides/modeling_algos/images/modeling_algos_rf_im002.png,"Keeping the right transverse face",220}
 @figure{/user_guides/modeling_algos/images/modeling_algos_rf_im003.png,"Keeping the left transverse face",220}
 
-@subsubsection occt_modalg_defeaturing_usage Usage
+<h4><a id="occt_modalg_defeaturing_usage">Usage</a></h4>
 
 Here is the example of usage of the *BRepAlgoAPI_Defeaturing* algorithm on the C++ level:
 ~~~~{.cpp}
@@ -3032,7 +3032,7 @@ The [standard history commands](#occt_draw_hist) can be used to track the histor
 
 For more details on commands above, refer to the [Defeaturing commands](#occt_draw_defeaturing) of the Draw test harness user guide.
 
-@subsubsection occt_modalg_defeaturing_examples Examples
+<h4><a id="occt_modalg_defeaturing_examples">Examples</a></h4>
 
 Here are the examples of defeaturing of the ANC101 model:
 
@@ -3080,7 +3080,7 @@ Here are the few examples of defeaturing of the model containing boxes with blen
 @figure{/user_guides/modeling_algos/images/modeling_algos_rf_im029.png,"Result",220}
 
 
-@subsection occt_modalg_makeperiodic 3D Model Periodicity
+<h3><a id="occt_modalg_makeperiodic">3D Model Periodicity</a></h3>
 
 Open CASCADE Technology provides tools for making an arbitrary 3D model (or just shape) periodic in 3D space in the specified directions.
 
@@ -3114,7 +3114,7 @@ If necessary the algorithm will trim the shape to fit into the requested period 
 E.g. let's make the L-shape periodic only in X direction with the period 2 starting at X parameter 4:
 @figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im005.png,"Periodic trimmed shape",220}
 
-@subsubsection occt_modalg_makeperiodic_how_it_works How the shape is made periodic
+<h4><a id="occt_modalg_makeperiodic_how_it_works">How the shape is made periodic</a></h4>
 
 For making the shape periodic in certain direction the algorithm performs the following steps:
 * Creates the copy of the shape and moves it on the period into negative side of the requested direction;
@@ -3126,12 +3126,12 @@ Repeated copying of the geometry ensures that the corner edges of the periodic s
 
 Thus, in the periodic shape the geometry from positive side of the shape is always copied on the negative side of periodic directions.
 
-@subsubsection occt_modalg_makeperiodic_association Opposite shapes association
+<h4><a id="occt_modalg_makeperiodic_association">Opposite shapes association</a></h4>
 
 The algorithm also associates the identical (or twin) shapes located on the opposite sides of the periodic shape. By the construction, the twin shapes should always have the same geometry and distanced from each other on the period.
 It is possible that the shape does not have any twins. It means that when repeating this shape will not touch the opposite side of the shape. In the example when the periods of the shape are grater than its extensions, non of the sub-shapes has a twin.
 
-@subsubsection occt_modalg_makeperiodic_repetition Periodic shape repetition
+<h4><a id="occt_modalg_makeperiodic_repetition">Periodic shape repetition</a></h4>
 
 The algorithm also provides the methods to repeat the periodic shape in periodic directions. To repeat shape the algorithm makes the requested number of copies of the shape and translates them one by one on the time * period value.
 After all copies are made and translated they are glued to have valid shape.
@@ -3140,7 +3140,7 @@ Single subsequent repetition in any direction will result already in 6 shapes.
 
 The repetitions can be cleared and started over.
 
-@subsubsection occt_modalg_makeperiodic_history History support
+<h4><a id="occt_modalg_makeperiodic_history">History support</a></h4>
 
 The algorithm supports the history of shapes modifications, thus it is possible to track how the shapes have been changed to make it periodic and what new shapes have been created during repetitions.
 Both split history and history of periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
@@ -3148,7 +3148,7 @@ Both split history and history of periodic shape repetition are available here. 
 
 *BRepTools_History* is used for history support.
 
-@subsubsection occt_modalg_makeperiodic_errors Errors/Warnings
+<h4><a id="occt_modalg_makeperiodic_errors">Errors/Warnings</a></h4>
 
 The algorithm supports the Error/Warning reporting system which allows obtaining the extended overview of the errors and warning occurred during the operation.
 As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong.
@@ -3160,7 +3160,7 @@ The algorithm returns the following alerts:
 
 For more information on the error/warning reporting system please see the chapter [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide.
 
-@subsubsection occt_modalg_makeperiodic_usage Usage
+<h4><a id="occt_modalg_makeperiodic_usage">Usage</a></h4>
 
 The algorithm is implemented in the class *BOPAlgo_MakePeriodic*.
 Here is the example of its usage on the API level:
@@ -3224,7 +3224,7 @@ To track the history of a shape modification during MakePeriodic operation the [
 
 To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide).
 
-@subsubsection occt_modalg_makeperiodic_examples Examples
+<h4><a id="occt_modalg_makeperiodic_examples">Examples</a></h4>
 
 Imagine that you need to make the drills in the plate on the same distance from each other. To model this process it is necessary to make a lot of cylinders (simulating the drills) and cut these cylinders from the plate.
 With the periodicity tool, the process looks very simple:
@@ -3245,7 +3245,7 @@ bcut result plate drills
 @figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im006.png,"Plate with drills",220}
 
 
-@section occt_modalg_10 Hidden Line  Removal
+<h2><a id="occt_modalg_10">Hidden Line  Removal</a></h2>
 
 To provide the  precision required in industrial design, drawings need to offer the possibility  of removing lines, which are hidden in a given projection. 
 
@@ -3304,7 +3304,7 @@ For an *HLRBRep_HLRToShape* object built from an *HLRBRepAlgo* object you can al
   * visible isoparameters and
   * hidden isoparameters.
 
-@subsection occt_modalg_10_1 Examples
+<h3><a id="occt_modalg_10_1">Examples</a></h3>
 
 ### HLRBRep_Algo
 
@@ -3397,7 +3397,7 @@ aPolyHLRToShape.OutLineHCompound();
 
 
 
-@section occt_modalg_makeconnected Making touching shapes connected
+<h2><a id="occt_modalg_makeconnected">Making touching shapes connected</a></h2>
 
 Open CASCADE Technology provides tools for making the same-dimensional touching shapes connected (or glued), i.e. for making the coinciding geometries topologically shared among shapes.
 To make the shapes connected they are glued by the means of [General Fuse algorithm](#specification__boolean_7). The option BOPAlgo_GlueShift is used, thus if the input shapes have been interfering the algorithm will be unable to recognize this.
@@ -3406,7 +3406,7 @@ Making the group of shapes connected can be useful e.g. before meshing the group
 
 The algorithm for making the shapes connected is implemented in the class *BOPAlgo_MakeConnected*.
 
-@subsection occt_modalg_makeconnected_materials Material association
+<h3><a id="occt_modalg_makeconnected_materials">Material association</a></h3>
 
 In frames of this tool the input shapes are called materials, and each input shape has a unique material.
 
@@ -3429,14 +3429,14 @@ const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnPositiveSide(const
 const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnNegativeSide(const TopoDS_Shape& theS)
 ~~~~
 
-@subsection occt_modalg_makeconnected_makeperiodic Making connected shape periodic
+<h3><a id="occt_modalg_makeconnected_makeperiodic">Making connected shape periodic</a></h3>
 
 The tool provides possibility to make the connected shape [periodic](#occt_modalg_makeperiodic).
 Since by making the shape periodic it ensures that the geometry of coinciding shapes on the opposite sides will be the same it allows reusing the mesh of the shape for its periodic twins.
 
 After making the shape periodic the material associations are updated to correspond to the actual state of the result shape. Repetition of the periodic shape is also possible from here. Material associations are not going to be lost.
 
-@subsection occt_modalg_makeconnected_history History support
+<h3><a id="occt_modalg_makeconnected_history">History support</a></h3>
 
 The algorithm supports history of shapes modifications during the operation. Additionally to standard history method provided by *BRepTools_History* and used here as a history tool, the algorithm also provides the method to track the back connection - from resulting shapes to the input ones.
 The method is called *GetOrigins()*:
@@ -3447,7 +3447,7 @@ const TopTools_ListOfShape& BOPAlgo_MakeConnected::GetOrigins(const TopoDS_Shape
 
 Both Gluing history and history of making the shape periodic and periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
 
-@subsection occt_modalg_makeconnected_errors Errors/Warnings
+<h3><a id="occt_modalg_makeconnected_errors">Errors/Warnings</a></h3>
 
 The algorithm supports the Error/Warning reporting system which allows obtaining the extended overview of the errors and warning occurred during the operation.
 As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong.
@@ -3460,7 +3460,7 @@ The algorithm returns the following alerts:
 
 For more information on the error/warning reporting system please see the chapter [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide.
 
-@subsection occt_modalg_makeconnected_usage Usage
+<h3><a id="occt_modalg_makeconnected_usage">Usage</a></h3>
 
 Here is the example of usage of the *BOPAlgo_MakePeriodic* algorithm on the API level:
 ~~~~{.cpp}

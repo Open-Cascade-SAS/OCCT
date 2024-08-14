@@ -3,7 +3,7 @@
 
 @tableofcontents
 
-@section  OCCT_DM_SECTION_1 Introduction
+<h2><a id="OCCT_DM_SECTION_1">Introduction</a></h2>
 
 OCCT documentation is provided in several forms:
 
@@ -23,7 +23,7 @@ OCCT documentation is provided in several forms:
 
 This document provides practical guidelines for generation and editing of OCCT user documentation.
 
-@section  OCCT_DM_SECTION_2 Prerequisites
+<h2><a id="OCCT_DM_SECTION_2">Prerequisites</a></h2>
 
 You need to have the following software installed to generate the documentation.
 
@@ -57,7 +57,7 @@ By default MathJAX scripts and fonts work on-line and no installation of MathJAX
 If you need to use OCCT documentation while off-line, you can install a local copy of MatJAX, see https://docs.mathjax.org/en/v2.7-latest/start.html#installing-your-own-copy-of-mathjax.
 See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressions. 
 
-@section OCCT_DM_SECTION_2_1 Documentation Generation
+<h2><a id="OCCT_DM_SECTION_2_1">Documentation Generation</a></h2>
 
 Run command *gendoc* from command prompt (with OCCT directory as current one) to generate OCCT documentation.
 The synopsis is:
@@ -107,16 +107,16 @@ To generate Reference Manual for Foundation Classes and Modeling Data modules on
     > gendoc -refman -m=FoundationClasses,ModelingData,ModelingAlgorithms -s=local
 ~~~~
 
-@section  OCCT_DM_SECTION_3 Documentation Conventions
+<h2><a id="OCCT_DM_SECTION_3">Documentation Conventions</a></h2>
 
 This section contains information about file format conventions, directories structure, etc.
 
-@subsection  OCCT_DM_SECTION_3_1 File Format
+<h3><a id="OCCT_DM_SECTION_3_1">File Format</a></h3>
 
 The format used for documentation is MarkDown with Doxygen extensions. 
 The MarkDown files have a <i>*.md</i> extension and are based on rules described in \ref OCCT_DM_SECTION_A section.
 
-@subsection  OCCT_DM_SECTION_3_2 Directory Structure
+<h3><a id="OCCT_DM_SECTION_3_2">Directory Structure</a></h3>
 
 @figure{/contribution/documentation/images/documentation_folders.png,"",160}
 
@@ -136,7 +136,7 @@ The documentation is generated in subfolder *doc* :
 * *html* -- a directory for generated HTML pages;
 * *pdf* -- a directory for generated PDF files.
 
-@section  OCCT_DM_SECTION_4 Adding a New Document
+<h2><a id="OCCT_DM_SECTION_4">Adding a New Document</a></h2>
 
 Place a new document in the folder taking into account its logical position in the documentation hierarchy. For instance, the document *svn.md* about the use of SVN to work with OCCT source code can be placed into <i>/dox/contribution/</i>. 
 
@@ -154,7 +154,7 @@ contribution/svn/svn.md
 
 **Note** that you should specify a file tag, not the document name. See [Header and hierarchic document structure](#OCCT_DM_SECTION_A_1) section for details.
 
-@section  OCCT_DOC_SECTION_5 Additional Resources
+<h2><a id="OCCT_DOC_SECTION_5">Additional Resources</a></h2>
 
 More information about OCCT can be found at http://www.opencascade.com and <br> http://dev.opencascade.org sites. 
 
@@ -165,7 +165,7 @@ http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 More information on MarkDown and Doxygen syntax can be found at: <br>
 http://www.stack.nl/~dimitri/doxygen/manual
 
-@section  OCCT_DM_SECTION_A Appendix 1: Document Syntax
+<h2><a id="OCCT_DM_SECTION_A">Appendix 1: Document Syntax</a></h2>
 
 A document file in *.md format must start with a proper header defining a caption and a unique tag.
 
@@ -181,7 +181,7 @@ Any specific text elements can be introduced by Markdown language tags or by usu
 
 The table of contents, page numbers (in PDF), and figure numbers (in PDF) are generated automatically.  
 
-@subsection  OCCT_DM_SECTION_A_1 Headers and hierarchic document structure
+<h3><a id="OCCT_DM_SECTION_A_1">Headers and hierarchic document structure</a></h3>
 
 Headers of different levels can be specified with the following tags:
 * <i>\@section</i> -- for the first-level headers; 
@@ -191,9 +191,9 @@ Headers of different levels can be specified with the following tags:
 For example:
 
 @verbatim
-  @section occt_ocaf_1 Basic Concepts
-  @subsection occt_ocaf_1_1 Applications and Documents
-  @subsubsection occt_ocaf_1_1_1 The document and the data framework
+  <h2><a id="occt_ocaf_1">Basic Concepts</a></h2>
+  <h3><a id="occt_ocaf_1_1">Applications and Documents</a></h3>
+  <h4><a id="occt_ocaf_1_1_1">The document and the data framework</a></h4>
 @endverbatim
 
 **Note** that section names can be used for references within the document and in other documents, so it is necessary to use the common prefix indicative of the document name for all section names in the given document. 
@@ -211,7 +211,7 @@ However, the fourth and fifth level headers can be tagged with  <i>####</i> and 
 
 It is also possible to use tags <i>##</i> and <i>###</i> for second and third level headers if you do not wish to show them in the table of contents or make references to them. 
 
-@subsection OCCT_DM_SECTION_A_2 Plain Text
+<h3><a id="OCCT_DM_SECTION_A_2">Plain Text</a></h3>
 
 A plain text is organized in paragraphs, separated by empty lines in MarkDown source.
 The length of lines is not restricted; it is recommended to put each sentence on a separate line -- this is optimal for easier comparison of different versions of the same document.
@@ -222,7 +222,7 @@ To emphasize a word or a group of words, wrap the text with one pair of asterisk
 **Note** that if your emphasized text starts or ends with a special symbol, the asterisks may not work. Use explicit HTML tags \<i\>\</i\>  and \<b\>\</b\>  instead.
 
 
-@subsection OCCT_DM_SECTION_A_3 Lists
+<h3><a id="OCCT_DM_SECTION_A_3">Lists</a></h3>
 
 To create a bulleted list, start each line with a hyphen or an asterisk, 
 followed by a space. List items can be nested. This code:
@@ -299,7 +299,7 @@ Example of a complex nested list:
 2. List item 2
 
 
-@subsection  OCCT_DM_SECTION_A_4 Tables
+<h3><a id="OCCT_DM_SECTION_A_4">Tables</a></h3>
 
 A table consists of a header line, a separator line, and at least one row line. 
 Table columns are separated by the pipe (|) character. The following example: 
@@ -336,7 +336,7 @@ which will looks as follows:
 
 Note that each table row should be contained in one line of text; complex tables can be created using HTML tags.
 
-@subsection  OCCT_DM_SECTION_A_5 Code Blocks
+<h3><a id="OCCT_DM_SECTION_A_5">Code Blocks</a></h3>
 
 Paragraphs indented with 4 or more spaces are considered as code fragments and rendered using Courier font.
 Example:
@@ -368,7 +368,7 @@ Smaller code blocks can be inserted by wrapping with tags <i>\@code</i> and <i>\
 
 Verbatim content (same as code but without syntax highlighting) can be inserted by wrapping with tags <i>\@verbatim</i> and <i>\@endverbatim</i>.
 
-@subsection  OCCT_DM_SECTION_A_5a Quotes
+<h3><a id="OCCT_DM_SECTION_A_5a">Quotes</a></h3>
 
 Text quoted from other sources can be indented using ">" tag. For example:
 
@@ -383,7 +383,7 @@ will produce
 Note that this tag should prefix each line of the quoted text.
 Empty lines in the quoted text, if any, should not have trailing spaces after the ">" (lines with trailing spaces will break the quote block).
 
-@subsection  OCCT_DM_SECTION_A_6 References
+<h3><a id="OCCT_DM_SECTION_A_6">References</a></h3>
 
 To insert a reference to a website, it is sufficient to write an URL.
 For example: http://en.wikipedia.org
@@ -395,7 +395,7 @@ Note that links between documents will not work in PDF output if each document i
 Hence it is recommended to add a name of the referenced section after the tag name in the <i>\@ref</i> command (in quotes): this will guarantee that the reference is recognizable for the reader even if the cross-link is not instantiated. 
 For instance: @code [Geometry Utilities](#occt_modat_1) @endcode will be rendered as [Geometry Utilities](#occt_modat_1).
 
-@subsection  OCCT_DM_SECTION_A_7 Images
+<h3><a id="OCCT_DM_SECTION_A_7">Images</a></h3>
 
 For inserting images into the document use the command <i>\@figure</i>, as follows:
 
@@ -434,14 +434,14 @@ Note that the *figure* command is an alias to the standard Doxygen command *imag
   @image latex /relative/path/to/image/occ_logo_for_pdf.png
 @endverbatim
 
-@subsection  OCCT_DM_SECTION_A_8 Table Of Contents
+<h3><a id="OCCT_DM_SECTION_A_8">Table Of Contents</a></h3>
 
 Use \@tableofcontents tag to get the table of contents at the beginning of the document. 
   
 Actually, it is not strictly necessary now because TreeView option for HTML is used.
 The TOC in the PDF document will be generated automatically.
 
-@subsection  OCCT_DM_SECTION_A_9 Formulas
+<h3><a id="OCCT_DM_SECTION_A_9">Formulas</a></h3>
 
 Formulas within MarkDown documents can be defined using LaTeX syntax.
 

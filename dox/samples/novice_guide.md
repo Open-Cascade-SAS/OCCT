@@ -3,7 +3,7 @@ Novice Guide {#samples__novice_guide}
 
 @tableofcontents
 
-@section diffs Modeling with OCCT: Key differences
+<h2><a id="diffs">Modeling with OCCT: Key differences</a></h2>
 
 Open CASCADE Technology (OCCT) is an object-oriented C++ framework designed for rapid production of sophisticated CAD/CAM/CAE applications.
 In other words, it provides endless possibilities for raw 2D and 3D modeling in C++ environment.
@@ -14,7 +14,7 @@ By using OCCT, users can create the objects of their desire (or edit already exi
 It is a more complicated process than using GUI-based software, but it provides much more flexibility than even script-based manipulations that are available within existing CAD/CAM/CAE applications.
 However, to fully grasp the possibilities of OCCT it is best for the user to have previous experience in C++ at least at a basic level.
 
-@section basics Understanding the principles
+<h2><a id="basics">Understanding the principles</a></h2>
 
 If you don't have any programming skills, grasping the full magnitude of OCCT workflow is still an option.
 The documentation for OCCT contains several entry points for new users.
@@ -102,7 +102,7 @@ Several utility classes that are not presented in the example window may be foun
 The overall classes introduction may be found in the [Foundation Classes](#occt_user_guides__foundation_classes) section of the documentation.
 The "Introduction" section contains short descriptions of the most massive entries in the documentation.
 
-@section helps Additional assistance
+<h2><a id="helps">Additional assistance</a></h2>
 
 There are several places that may be of use for new users.
 The first one is [Training & E-learning](https://dev.opencascade.org/resources/trainings) page that lists available trainings and describes their specifics.

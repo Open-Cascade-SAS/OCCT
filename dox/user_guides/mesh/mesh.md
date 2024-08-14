@@ -3,7 +3,7 @@ Mesh {#occt_user_guides__mesh}
 
 @tableofcontents
 
-@section occt_modalg_11_1 Mesh presentations
+<h2><a id="occt_modalg_11_1">Mesh presentations</a></h2>
 
 In addition to support of exact geometrical representation of 3D objects Open CASCADE Technology provides functionality to work with tessellated  representations of objects in form of meshes.
 
@@ -26,7 +26,7 @@ The projects dealing with numerical simulation can benefit from using SALOME - a
 
 Learn more about SALOME platform on https://www.salome-platform.org
 
-@section occt_modalg_11_2 Meshing algorithm
+<h2><a id="occt_modalg_11_2">Meshing algorithm</a></h2>
 
 The algorithm of shape triangulation is provided by the functionality of *BRepMesh_IncrementalMesh* class, which adds a triangulation of the shape to its topological data structure. This triangulation is used to visualize the shape in shaded mode.
 
@@ -95,8 +95,8 @@ Meshing covers a shape with a triangular mesh. Other than hidden line removal, y
 
 You can obtain information on the shape by first exploring it. To access triangulation of a face in the shape later, use *BRepTool::Triangulation*. To access a polygon, which is the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*.
 
-@section occt_modalg_11_3 BRepMesh Architecture
-@subsection occt_modalg_11_3_1 Goals
+<h2><a id="occt_modalg_11_3">BRepMesh Architecture</a></h2>
+<h3><a id="occt_modalg_11_3_1">Goals</a></h3>
 
 The main goals of the chosen architecture are:
   * Remove tight connections between data structures, auxiliary tools and algorithms to create an extensible solution, easy for maintenance and improvements;
@@ -104,7 +104,7 @@ The main goals of the chosen architecture are:
   * Introduce new data structures enabling the possibility to manipulate a discrete model of a particular entity (edge, wire, face) in order to perform computations locally instead of processing the entire model;
   * Implement a new triangulation algorithm replacing the existing functionality that contains overcomplicated solutions that need to be moved to the upper level. In addition, provide the possibility to change the algorithm depending on surface type (initially to speed up meshing of planes).
 
-@subsection occt_modalg_11_3_2 General workflow
+<h3><a id="occt_modalg_11_3_2">General workflow</a></h3>
 @figure{/user_guides/mesh/images/modeling_algos_mesh_001.svg,"General workflow of BRepMesh component",500}
 
 Generally, the workflow of the component can be divided into six parts:
@@ -115,7 +115,7 @@ Generally, the workflow of the component can be divided into six parts:
   * **Discretize faces**: represents the core part performing mesh generation for a particular face based on 2D discrete data. This operation caches polygonal data associated with face edges in the data model for further processing and stores the generated mesh to *TopoDS_Face*;
   * **Postprocess discrete model**: defines actions specific for the implemented approach to be performed after meshing of faces. By default, this operation stores polygonal data obtained at the previous stage to *TopoDS_Edge* objects of the source model.
 
-@subsection occt_modalg_11_3_3 Common interfaces
+<h3><a id="occt_modalg_11_3_3">Common interfaces</a></h3>
 The component structure contains two units: <i>IMeshData</i> (see Data model interface) and <i>IMeshTools</i>, defining common interfaces for the data model and algorithmic tools correspondingly. Class *IMeshTools_Context* represents a connector between these units. The context class caches the data model as well as the tools corresponding to each of six stages of the workflow mentioned above and provides methods to call the corresponding tool safely (designed similarly to *IntTools_Context* in order to keep consistency with OCCT core tools). All stages, except for the first one, use the data model as input and perform a specific action on the entire structure. Thus, API class *IMeshTools_ModelAlgo* is defined in order to unify the interface of tools manipulating the data model. Each tool supposed to process the data model should inherit this interface enabling the possibility to cache it in context. In contrast to others, the model builder interface is defined by another class *IMeshTools_ModelBuilder* due to a different meaning of the stage. The entry point starting the entire workflow is represented by *IMeshTools_MeshBuilder*.
 
 The default implementation of *IMeshTools_Context* is given in *BRepMesh_Context* class initializing the context by instances of default algorithmic tools.
@@ -131,7 +131,7 @@ Remaining interfaces describe auxiliary tools:
   * *IMeshTools_ShapeExplorer*: the last two interfaces represent visitor design pattern and are intended to separate iteration over elements of topological shape (edges and faces) from the operations performed on a particular element;
   * *IMeshTools_ShapeVisitor*: provides a common interface for operations on edges and faces of the target topological shape. It can be used in couple with *IMeshTools_ShapeExplorer*. The default implementation available in *BRepMesh_ShapeVisitor* performs initialization of the data model. The advantage of such approach is that the implementation of *IMeshTools_ShapeVisitor* can be changed according to the specific data model whereas the shape explorer implementation remains the same.
 
-@subsection occt_modalg_11_3_4 Create model data structure
+<h3><a id="occt_modalg_11_3_4">Create model data structure</a></h3>
 The data structures intended to keep discrete and temporary data required by underlying algorithms are created at the first stage of the meshing procedure. Generally, the model represents dependencies between entities of the source topological shape suitable for the target task.
 
 #### Data model interface
@@ -151,12 +151,12 @@ At this stage the data model is filled by entities according to the topological 
 
 Model filler algorithm is represented by *BRepMesh_ShapeVisitor* class creating the model as a reflection to topological shape with help of *BRepMesh_ShapeExplorer* performing iteration over edges and faces of the target shape. Note that the algorithm operates on a common interface of the data model and creates a structure without any knowledge about the implementation details and underlying data structures. The entry point to collecting functionality is *BRepMesh_ModelBuilder* class.
 
-@subsection occt_modalg_11_3_5 Discretize edges 3D & 2D curves
+<h3><a id="occt_modalg_11_3_5">Discretize edges 3D & 2D curves</a></h3>
 At this stage only the edges of the data model are considered. Each edge is processed separately (with the possibility to run processing in multiple threads). The edge is checked for existing polygonal data. In case if at least one representation exists and suits the meshing parameters, it is recuperated and used as reference data for tessellation of the whole set of pcurves as well as 3D curve assigned to the edge (see *BRepMesh_EdgeTessellationExtractor*). Otherwise, a new tessellation algorithm is created and used to generate the initial polygon (see *BRepMesh_CurveTessellator*) and the edge is marked as outdated. In addition, the model edge is updated by deflection as well as recomputed same range, same parameter and degeneracy parameters. See *BRepMesh_EdgeDiscret* for implementation details.
 
 <i>IMeshData</i> unit defines interface *IMeshData_ParametersListArrayAdaptor*, which is intended to adapt arbitrary data structures to the *NCollection_Array1* container API. This solution is made to use both *NCollection_Array1* and *IMeshData_Curve* as the source for *BRepMesh_EdgeParameterProvider* tool intended to generate a consistent parametrization taking into account the same parameter property.
 
-@subsection occt_modalg_11_3_6 Heal discrete model
+<h3><a id="occt_modalg_11_3_6">Heal discrete model</a></h3>
 In general, this stage represents a set of operations performed on the entire discrete model in order to resolve inconsistencies due to the problems caused by design, translation or rough discretization. A different sequence of operations can be performed depending on the target triangulation algorithm, e.g. there are different approaches to process self-intersections – either to amplify edges discretization by decreasing the target precision or to split links at the intersection points. At this stage the whole set of edges is considered in aggregate and their adjacency is taken into account. A default implementation of the model healer is given in *BRepMesh_ModelHealer* which performs the following actions:
   * Iterates over model faces and checks their wires for consistency, i.e. whether the wires are closed and do not contain self-intersections. The data structures are designed free of collisions, thus it is possible to run processing in a parallel mode;
   * Forcibly connects the ends of adjacent edges in the parametric space, closing gaps between possible disconnected parts. The aim of this operation is to create a correct discrete model defined relatively to the parametric space of the target face taking into account connectivity and tolerances of 3D space only. This means that no specific computations are made to determine U and V tolerance;
@@ -164,10 +164,10 @@ In general, this stage represents a set of operations performed on the entire di
     * Decrease deflection of a particular edge and update its discrete model. After that the workflow "intersection check – amplification" is repeated up to 5 times. As the result, target edges contain a finer tessellation and meshing continues or the face is marked by *IMeshData_SelfIntersectingWire* status and refused from further processing;
     * Split target edges by intersection point and synchronize the updated polygon with curve and remaining pcurves associated to each edge. This operation presents a more robust solution comparing to the amplification procedure with a guaranteed result, but it is more difficult for implementation from the point of view of synchronization functionality.
 
-@subsection occt_modalg_11_3_7 Preprocess discrete model
+<h3><a id="occt_modalg_11_3_7">Preprocess discrete model</a></h3>
 This stage implements actions to be performed before meshing of faces. Depending on target goals it can be changed or omitted. By default, *BRepMesh_ModelPreProcessor* implements the functionality checking topological faces for consistency of existing triangulation, i.e.: consistency with the target deflection parameter; indices of nodes referenced by triangles do not exceed the number of nodes stored in a triangulation. If the face fails some checks, it is cleaned from triangulation and its adjacent edges are cleaned from existing polygons. This does not affect a discrete model and does not require any recomputation as the model keeps tessellations for the whole set of edges despite consistency of their polygons.
 
-@subsection occt_modalg_11_3_8 Discretize faces
+<h3><a id="occt_modalg_11_3_8">Discretize faces</a></h3>
 Discretization of faces is the general part of meshing algorithm. At this stage edges tessellation data obtained and processed on previous steps is used to form contours of target faces and passed as input to the triangulation algorithm. Default implementation is provided by *BRepMesh_FaceDiscret* class which represents a starter for triangulation algorithm. It iterates over faces available in the data model, creates an instance of the triangulation algorithm according to the type of surface associated with each face via *IMeshTools_MeshAlgoFactory* and executes it. Each face is processed separately, thus it is possible to process faces in a parallel mode. The class diagram of face discretization is given in the figure below.
  
 @figure{/user_guides/mesh/images/modeling_algos_mesh_004.svg,"Class diagram of face discrete stage",300}
@@ -225,5 +225,5 @@ Range splitter tools provide functionality to generate internal surface nodes de
 
 *BRepMesh_UVParamRangeSplitter* implements base functionality taking discretization points of face border into account for node generation. Its successors BRepMesh_TorusRangeSplitter and *BRepMesh_NURBSRangeSplitter* extend the base functionality for toroidal and NURBS surfaces correspondingly.
 
-@subsection occt_modalg_11_3_9 Postprocess discrete model
+<h3><a id="occt_modalg_11_3_9">Postprocess discrete model</a></h3>
 This stage implements actions to be performed after meshing of faces. Depending on target goals it can be changed or omitted. By default, *BRepMesh_ModelPostProcessor* commits polygonal data stored in the data model to *TopoDS_Edge*. 

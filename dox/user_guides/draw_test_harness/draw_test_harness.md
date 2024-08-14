@@ -3,12 +3,12 @@ Draw Test Harness  {#occt_user_guides__test_harness}
 
 @tableofcontents
  
-@section occt_draw_1 Introduction
+<h2><a id="occt_draw_1">Introduction</a></h2>
 
 This manual explains how to use Draw, the test harness for Open CASCADE Technology (**OCCT**).
 Draw is a command interpreter based on TCL and a graphical system used to test and demonstrate Open CASCADE Technology modeling libraries. 
 
-@subsection occt_draw_1_1 Overview
+<h3><a id="occt_draw_1_1">Overview</a></h3>
 
 Draw is a test harness for Open CASCADE Technology. It provides a flexible and easy to use means of testing and demonstrating the OCCT modeling libraries. 
 
@@ -35,7 +35,7 @@ There is also a set of commands for each delivery unit in the modeling libraries
   * PRESENTATION. 
 
 
-@subsection occt_draw_1_2 Contents of this documentation
+<h3><a id="occt_draw_1_2">Contents of this documentation</a></h3>
 
 This documentation describes: 
 
@@ -64,7 +64,7 @@ exit
 ~~~~
 
 
-@subsection occt_draw_1_3 Getting started
+<h3><a id="occt_draw_1_3">Getting started</a></h3>
 
 Install Draw and launch Emacs. Get a command line in Emacs using *Esc x* and key in *woksh*. 
 
@@ -72,12 +72,12 @@ All DRAW Test Harness can be activated in the common executable called **DRAWEXE
 
 Declaration of available plug-ins is done through the special resource file(s). The *pload* command loads the plug-in in accordance with the specified resource file and activates the commands implemented in the plug-in. 
 
-@subsubsection occt_draw_1_3_1 Launching DRAW Test Harness
+<h4><a id="occt_draw_1_3_1">Launching DRAW Test Harness</a></h4>
 
 Test Harness executable *DRAWEXE* is located in the <i>$CASROOT/\<platform\>/bin</i> directory (where \<platform\> is Win for Windows and Linux for Linux operating systems). Prior to launching it is important to make sure that the environment is correctly setup (usually this is done automatically after the installation process on Windows or after launching specific scripts on Linux).  
 
 
-@subsubsection occt_draw_1_3_2 Plug-in resource file
+<h4><a id="occt_draw_1_3_2">Plug-in resource file</a></h4>
 
 Open CASCADE Technology is shipped with the DrawPlugin resource file located in the <i>$CASROOT/src/DrawResources</i> directory. 
 
@@ -95,7 +95,7 @@ DCAF               : TKDCAF
 AISV               : TKViewerTest 
 ~~~~
 
-@subsubsection occt_draw_1_3_3 Activation of commands implemented in the plug-in
+<h4><a id="occt_draw_1_3_3">Activation of commands implemented in the plug-in</a></h4>
 
 To load a plug-in declared in the resource file and to activate the commands the following command must be used in Test Harness: 
 
@@ -121,9 +121,9 @@ Draw[]        pload (equivalent to pload -DrawPlugin DEFAULT).
 This command will find the default DrawPlugin file and the DEFAULT key. The latter finally maps to the TKTopTest toolkit which implements basic modeling commands. 
 
 
-@section occt_draw_2 The Command Language
+<h2><a id="occt_draw_2">The Command Language</a></h2>
 
-@subsection occt_draw_2_1 Overview
+<h3><a id="occt_draw_2_1">Overview</a></h3>
 
 The command language used in Draw is Tcl. Tcl documentation such as "TCL and the TK Toolkit" by John K. Ousterhout (Addison-Wesley) will prove useful if you intend to use Draw extensively. 
 
@@ -134,7 +134,7 @@ This chapter is designed to give you a short outline of both the TCL language an
   * Control structures.
   * Procedures.
 
-@subsection occt_draw_2_2 Syntax of TCL
+<h3><a id="occt_draw_2_2">Syntax of TCL</a></h3>
 
 TCL is an interpreted command language, not a structured language like C, Pascal, LISP or Basic. It uses a shell similar to that of csh. TCL is, however, easier to use than csh because control structures and procedures are easier to define. As well, because TCL does not assign a process to each command, it is faster than csh. 
 
@@ -248,7 +248,7 @@ exec rm $files
 # a second evaluation will do it 
 ~~~~
 
-@subsection occt_draw_2_3 Accessing variables in TCL and Draw
+<h3><a id="occt_draw_2_3">Accessing variables in TCL and Draw</a></h3>
 
 TCL variables have only string values. Note that even numeric values are stored as string literals, and computations using the **expr** command start by parsing the strings. Draw, however, requires variables with other kinds of values such as curves, surfaces or topological shapes. 
 
@@ -269,7 +269,7 @@ point p radius*cos(angle) radius*sin(angle) 0
 ~~~~
 It is recommended that you use TCL variables only for strings and Draw for numerals. That way, you will avoid the *expr* command. As a rule, Geometry and Topology require numbers but no strings. 
 
-@subsubsection occt_draw_2_3_1 set, unset
+<h4><a id="occt_draw_2_3_1">set, unset</a></h4>
 
 Syntax:
 
@@ -297,7 +297,7 @@ set a
 **Note**, that the *set* command can set only one variable, unlike the *dset* command. 
 
 
-@subsubsection occt_draw_2_3_2 dset, dval
+<h4><a id="occt_draw_2_3_2">dset, dval</a></h4>
 
 Syntax
 
@@ -327,7 +327,7 @@ puts ;x = [dval x], cos(x/pi) = [dval cos(x/pi)];
 
 **Note,** that in TCL, parentheses are not considered to be special characters. Do not forget to quote an expression if it contains spaces in order to avoid parsing different words. <i>(a + b)</i> is parsed as three words: <i>"(a + b)"</i> or <i>(a+b)</i> are correct.
 
-@subsubsection occt_draw_2_3_3 del, dall
+<h4><a id="occt_draw_2_3_3">del, dall</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -339,7 +339,7 @@ dall
 
 *dall* command deletes all variables in the session.
 
-@subsection occt_draw_2_4 lists
+<h3><a id="occt_draw_2_4">lists</a></h3>
 
 TCL uses lists. A list is a string containing elements separated by spaces or tabs. If the string contains braces, the braced part accounts as one element. 
 
@@ -356,7 +356,7 @@ This allows you to insert lists within lists.
 
 Many TCL commands return lists and **foreach** is a useful way to create loops on list elements. 
 
-@subsubsection occt_draw_2_5 Control Structures
+<h4><a id="occt_draw_2_5">Control Structures</a></h4>
 
 TCL allows looping using control structures. The control structures are implemented by commands and their syntax is very similar to that of their C counterparts (**if**, **while**, **switch**, etc.). In this case, there are two main differences between TCL and C: 
 
@@ -364,7 +364,7 @@ TCL allows looping using control structures. The control structures are implemen
 * You do not start the script on the next line of your command. 
 
 
-@subsubsection occt_draw_2_5_1 if
+<h4><a id="occt_draw_2_5_1">if</a></h4>
 
 Syntax       
 
@@ -387,7 +387,7 @@ puts ;negative;
 } 
 ~~~~
 
-@subsubsection occt_draw_2_5_2 while, for, foreach
+<h4><a id="occt_draw_2_5_2">while, for, foreach</a></h4>
 
 Syntax:
 
@@ -418,7 +418,7 @@ for {set i 0} {$i < 10} {incr i} {
 foreach object {crapo tomson lucas} {display $object} 
 ~~~~
 
-@subsubsection occt_draw_2_5_3 break, continue
+<h4><a id="occt_draw_2_5_3">break, continue</a></h4>
 
 Syntax:
 
@@ -439,7 +439,7 @@ for {set i 1} {$i <= 100} {incr i} {
 } 
 ~~~~
 
-@subsection occt_draw_2_6 Procedures
+<h3><a id="occt_draw_2_6">Procedures</a></h3>
 
 TCL can be extended by defining procedures using the **proc** command, which sets up a context of local variables, binds arguments and executes a TCL script. 
 
@@ -450,7 +450,7 @@ There are two means of accessing a variable outside the scope of the current pro
 As TCL is not a strongly typed language it is very difficult to detect programming errors and debugging can be tedious. TCL procedures are, of course, not designed for large scale software development but for testing and simple command or interactive writing. 
 
 
-@subsubsection occt_draw_2_6_1 proc
+<h4><a id="occt_draw_2_6_1">proc</a></h4>
 
 Syntax:
 
@@ -481,7 +481,7 @@ proc fact n {
 ~~~~
 
 
-@subsubsection occt_draw_2_6_2 global, upvar
+<h4><a id="occt_draw_2_6_2">global, upvar</a></h4>
 
 Syntax:
 
@@ -511,7 +511,7 @@ proc linang {linename x y angle} {
 }
 ~~~~
 
-@section occt_draw_3 Basic Commands
+<h2><a id="occt_draw_3">Basic Commands</a></h2>
 
 This chapter describes all the commands defined in the basic Draw package. Some are TCL commands, but most of them have been formulated in Draw. These commands are found in all Draw applications. The commands are grouped into four sections: 
 
@@ -523,7 +523,7 @@ This chapter describes all the commands defined in the basic Draw package. Some 
 Note that Draw also features a GUI task bar providing an alternative way to give certain general, graphic and display commands 
 
 
-@subsection occt_draw_3_1 General commands
+<h3><a id="occt_draw_3_1">General commands</a></h3>
 
 This section describes several useful commands:
 
@@ -534,7 +534,7 @@ This section describes several useful commands:
   * **wait** to waste some time, 
   * **chrono** to time commands. 
 
-@subsubsection occt_draw_3_1_1 help
+<h4><a id="occt_draw_3_1_1">help</a></h4>
 
 Syntax:
 
@@ -554,7 +554,7 @@ Specifying the command returns its syntax and in some cases, information on the 
 ~~~~
 
 
-@subsubsection occt_draw_3_1_2 source
+<h4><a id="occt_draw_3_1_2">source</a></h4>
 
 Syntax:
 
@@ -565,7 +565,7 @@ Executes a file.
 
 The **exit** command will terminate the file. 
 
-@subsubsection occt_draw_3_1_3 spy
+<h4><a id="occt_draw_3_1_3">spy</a></h4>
 
 Syntax:
 
@@ -589,7 +589,7 @@ spy
 
 
 
-@subsubsection occt_draw_3_1_4 cpulimit
+<h4><a id="occt_draw_3_1_4">cpulimit</a></h4>
 
 Syntax:
 
@@ -605,7 +605,7 @@ cpulimit [nbseconds]
 cpulimit 3600 
 ~~~~
 
-@subsubsection occt_draw_3_1_5 wait
+<h4><a id="occt_draw_3_1_5">wait</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -618,7 +618,7 @@ Suspends execution for the number of seconds specified in *nbseconds*. The defau
 wait 
 ~~~~
 
-@subsubsection occt_draw_3_1_6 chrono
+<h4><a id="occt_draw_3_1_6">chrono</a></h4>
 
 Syntax:
 
@@ -646,9 +646,9 @@ ptorus t 20 5
 ==CPU system time: 0 seconds 
 ~~~~
 
-@subsection occt_draw_3_2  Variable management commands
+<h3><a id="occt_draw_3_2">Variable management commands</a></h3>
 
-@subsubsection occt_draw_3_2_1 isdraw, directory
+<h4><a id="occt_draw_3_2_1">isdraw, directory</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -679,7 +679,7 @@ foreach var [directory *curve*] {unset $var}
 ~~~~
 
 
-@subsubsection occt_draw_3_2_2 whatis, dump
+<h4><a id="occt_draw_3_2_2">whatis, dump</a></h4>
 
 Syntax:
 
@@ -711,7 +711,7 @@ Radius :5
 **Note** The behavior of *whatis* on other variables (not Draw) is not excellent. 
 
 
-@subsubsection occt_draw_3_2_3 renamevar, copy
+<h4><a id="occt_draw_3_2_3">renamevar, copy</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -731,7 +731,7 @@ renamevar c1 c2
 copy c2 c3 
 ~~~~
 
-@subsubsection occt_draw_3_2_4 datadir, save, restore
+<h4><a id="occt_draw_3_2_4">datadir, save, restore</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -772,13 +772,13 @@ restore theBox
 == theBox 
 ~~~~
 
-@subsection occt_draw_3_3 User defined commands
+<h3><a id="occt_draw_3_3">User defined commands</a></h3>
 
 *DrawTrSurf* provides commands to create and display a Draw **geometric** variable from a *Geom_Geometry* object and also get a *Geom_Geometry* object from a Draw geometric variable name. 
 
 *DBRep* provides commands to create and display a Draw **topological** variable from a *TopoDS_Shape* object and also get a *TopoDS_Shape* object from a Draw topological variable name. 
 
-@subsubsection occt_draw_3_3_1 set
+<h4><a id="occt_draw_3_3_1">set</a></h4>
 
 #### In DrawTrSurf package:
 
@@ -820,7 +820,7 @@ B = BRepPrimAPI_MakeBox (10,10,10);
 DBRep::Set(char*,B); 
 ~~~~
 
-@subsubsection occt_draw_3_3_2 get
+<h4><a id="occt_draw_3_3_2">get</a></h4>
 
 #### In DrawTrSurf package:
  
@@ -863,13 +863,13 @@ TopoDS_Solid B = DBRep::Get(argv[1]);
 } 
 ~~~~
 
-@section occt_draw_4 Graphic Commands
+<h2><a id="occt_draw_4">Graphic Commands</a></h2>
 
 Graphic commands are used to manage the Draw graphic system. Draw provides a 2d and a 3d viewer with up to 30 views. Views are numbered and the index of the view is displayed in the window’s title. Objects are displayed in all 2d views or in all 3d views, depending on their type. 2d objects can only be viewed in 2d views while 3d objects -- only in 3d views correspondingly. 
 
-@subsection occt_draw_4_1 Axonometric viewer
+<h3><a id="occt_draw_4_1">Axonometric viewer</a></h3>
 
-@subsubsection occt_draw_4_1_1 view, delete
+<h4><a id="occt_draw_4_1_1">view, delete</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -906,7 +906,7 @@ view 4 AXON 728 450 400 400
 
 See also: **axo, pers, top, bottom, left, right, front, back, mu4, v2d, av2d, smallview** 
 
-@subsubsection occt_draw_4_1_2  axo, pers, top, ...
+<h4><a id="occt_draw_4_1_2">axo, pers, top, ...</a></h4>
 
 Syntax:
 
@@ -929,7 +929,7 @@ All these commands are procedures used to define standard screen layout. They de
 
 See also: **view**, **delete** 
 
-@subsubsection occt_draw_4_1_3 mu, md, 2dmu, 2dmd, zoom, 2dzoom
+<h4><a id="occt_draw_4_1_3">mu, md, 2dmu, 2dmd, zoom, 2dzoom</a></h4>
 
 Syntax:
 
@@ -959,7 +959,7 @@ perform the same on one or all 2d views.
 See also: **fit**, **2dfit** 
 
 
-@subsubsection occt_draw_4_14 pu, pd, pl, pr, 2dpu, 2dpd, 2dpl, 2dpr
+<h4><a id="occt_draw_4_14">pu, pd, pl, pr, 2dpu, 2dpd, 2dpl, 2dpr</a></h4>
 
 Syntax:
 
@@ -981,7 +981,7 @@ pu 3
 See also: **fit**, **2dfit** 
 
 
-@subsubsection occt_draw_4_1_5 fit, 2dfit
+<h4><a id="occt_draw_4_1_5">fit, 2dfit</a></h4>
 
 Syntax:
 
@@ -1004,7 +1004,7 @@ fit 1
 See also: **zoom**, **mu**, **pu** 
 
 
-@subsubsection occt_draw_4_1_6 u, d, l, r
+<h4><a id="occt_draw_4_1_6">u, d, l, r</a></h4>
 
 Syntax:
 
@@ -1023,7 +1023,7 @@ r [index]
 u 
 ~~~~
 
-@subsubsection occt_draw_4_1_7 focal, fu, fd
+<h4><a id="occt_draw_4_1_7">focal, fu, fd</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -1045,7 +1045,7 @@ repeat 10 fd
 
 See also: **pers** 
 
-@subsubsection occt_draw_4_1_8 color
+<h4><a id="occt_draw_4_1_8">color</a></h4>
 
 Syntax:
 
@@ -1066,7 +1066,7 @@ color 3 "navy blue"
 
 **Note** that the color change will be visible on the next redraw of the views, for example, after *fit* or *mu*, etc. 
 
-@subsubsection occt_draw_4_1_9 dtext
+<h4><a id="occt_draw_4_1_9">dtext</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -1084,7 +1084,7 @@ dtext 0 0 bebop
 dtext 0 0 0 bebop 
 ~~~~
 
-@subsubsection occt_draw_4_1_10 hardcopy, hcolor, xwd
+<h4><a id="occt_draw_4_1_10">hardcopy, hcolor, xwd</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -1119,7 +1119,7 @@ Only use a postscript printer to print postscript files.
 See also: **color** 
 
 
-@subsubsection occt_draw_4_1_11 wclick, pick
+<h4><a id="occt_draw_4_1_11">wclick, pick</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -1197,7 +1197,7 @@ renamevar . x
 ~~~~
 
 
-@subsubsection occt_draw_4_1_12 autodisplay
+<h4><a id="occt_draw_4_1_12">autodisplay</a></h4>
 
 Syntax:
 
@@ -1223,7 +1223,7 @@ circle c 0 0 1 0 5
 display c 
 ~~~~
 
-@subsubsection occt_draw_4_1_13 display, donly
+<h4><a id="occt_draw_4_1_13">display, donly</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -1244,7 +1244,7 @@ donly . .
 ~~~~
 
 
-@subsubsection occt_draw_4_1_14 erase, clear, 2dclear
+<h4><a id="occt_draw_4_1_14">erase, clear, 2dclear</a></h4>
 
 Syntax:
 
@@ -1268,7 +1268,7 @@ foreach var [directory c_*] {erase $var}
 2dclear 
 ~~~~
 
-@subsubsection occt_draw_4_1_14_1 disp, don, era
+<h4><a id="occt_draw_4_1_14_1">disp, don, era</a></h4>
 
 These commands have the same meaning as correspondingly display, donly and erase, but with the difference that they evaluate the arguments using glob pattern rules.
 For example, to display all objects with names d_1, d_2, d_3, etc. it is enough to run the command:
@@ -1276,7 +1276,7 @@ For example, to display all objects with names d_1, d_2, d_3, etc. it is enough 
 disp d_*
 ~~~~
 
-@subsubsection occt_draw_4_1_15 repaint, dflush
+<h4><a id="occt_draw_4_1_15">repaint, dflush</a></h4>
 
 
 Syntax:
@@ -1297,19 +1297,19 @@ Graphic operations are buffered by Draw (and also by the X system). Usually the 
 
 See also: [pick](#occt_draw_4_1_11) command.  
 
-@subsection occt_draw_4_2 AIS viewer -- view commands
+<h3><a id="occt_draw_4_2">AIS viewer -- view commands</a></h3>
 
-@subsubsection occt_draw_4_2_1 vinit
+<h4><a id="occt_draw_4_2_1">vinit</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vinit
 
-@subsubsection occt_draw_4_2_2 vhelp
+<h4><a id="occt_draw_4_2_2">vhelp</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vhelp
 
-@subsubsection occt_draw_4_2_3 vtop
+<h4><a id="occt_draw_4_2_3">vtop</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vtop
@@ -1323,7 +1323,7 @@ vfit
 vtop
 ~~~~
 
-@subsubsection occt_draw_4_2_4 vaxo
+<h4><a id="occt_draw_4_2_4">vaxo</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vaxo
@@ -1337,72 +1337,72 @@ vfit
 vaxo
 ~~~~
 
-@subsubsection occt_draw_4_2_5 vbackground
+<h4><a id="occt_draw_4_2_5">vbackground</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vbackground
 
-@subsubsection occt_draw_4_2_6 vclear
+<h4><a id="occt_draw_4_2_6">vclear</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vclear
 
-@subsubsection occt_draw_4_2_7 vrepaint
+<h4><a id="occt_draw_4_2_7">vrepaint</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vrepaint
 
-@subsubsection occt_draw_4_2_8 vfit
+<h4><a id="occt_draw_4_2_8">vfit</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vfit
 
-@subsubsection occt_draw_4_2_9 vzfit
+<h4><a id="occt_draw_4_2_9">vzfit</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vzfit
 
-@subsubsection occt_draw_4_2_10  vreadpixel
+<h4><a id="occt_draw_4_2_10">vreadpixel</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vreadpixel
 
-@subsubsection occt_draw_4_2_11  vselect
+<h4><a id="occt_draw_4_2_11">vselect</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vselect
 
-@subsubsection occt_draw_4_2_12  vmoveto
+<h4><a id="occt_draw_4_2_12">vmoveto</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vmoveto
 
-@subsubsection occt_draw_4_2_13  vviewparams
+<h4><a id="occt_draw_4_2_13">vviewparams</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vviewparams
 
-@subsubsection occt_draw_4_2_14  vchangeselected
+<h4><a id="occt_draw_4_2_14">vchangeselected</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vchangeselected
 
-@subsubsection occt_draw_4_2_16  vnbselected
+<h4><a id="occt_draw_4_2_16">vnbselected</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vnbselected
 
-@subsubsection occt_draw_4_2_19  vhlr
+<h4><a id="occt_draw_4_2_19">vhlr</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vhlr
 
-@subsubsection occt_draw_4_2_20  vhlrtype
+<h4><a id="occt_draw_4_2_20">vhlrtype</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vhlrtype
 
-@subsubsection occt_draw_4_2_21 vcamera
+<h4><a id="occt_draw_4_2_21">vcamera</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vcamera
@@ -1416,7 +1416,7 @@ vfit
 vcamera -persp
 ~~~~
 
-@subsubsection occt_draw_4_2_22 vstereo
+<h4><a id="occt_draw_4_2_22">vstereo</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vstereo
@@ -1433,9 +1433,9 @@ vcamera -lefteye
 vcamera -righteye
 ~~~~
 
-@subsection occt_draw_4_3 AIS viewer -- display commands
+<h3><a id="occt_draw_4_3">AIS viewer -- display commands</a></h3>
 
-@subsubsection occt_draw_4_3_1 vdisplay
+<h4><a id="occt_draw_4_3_1">vdisplay</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vdisplay
@@ -1449,7 +1449,7 @@ vdisplay s b
 vfit
 ~~~~
 
-@subsubsection occt_draw_4_3_2 vdonly
+<h4><a id="occt_draw_4_3_2">vdonly</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vdonly
@@ -1463,7 +1463,7 @@ vdonly b
 vfit
 ~~~~
  
-@subsubsection occt_draw_4_3_3 vdisplayall
+<h4><a id="occt_draw_4_3_3">vdisplayall</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vdisplayall
@@ -1477,7 +1477,7 @@ vdisplayall
 vfit
 ~~~~
 
-@subsubsection occt_draw_4_3_4 verase
+<h4><a id="occt_draw_4_3_4">verase</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx verase
@@ -1496,7 +1496,7 @@ verase b1
 verase
 ~~~~
 
-@subsubsection occt_draw_4_3_5 veraseall
+<h4><a id="occt_draw_4_3_5">veraseall</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx veraseall
@@ -1515,7 +1515,7 @@ verase b1
 verseall
 ~~~~
 
-@subsubsection occt_draw_4_3_6 vsetdispmode
+<h4><a id="occt_draw_4_3_6">vsetdispmode</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vsetdispmode
@@ -1529,22 +1529,22 @@ vsetdispmode 1
 vfit
 ~~~~
  
-@subsubsection occt_draw_4_3_7 vdisplaytype
+<h4><a id="occt_draw_4_3_7">vdisplaytype</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vdisplaytype
 
-@subsubsection occt_draw_4_3_8 verasetype
+<h4><a id="occt_draw_4_3_8">verasetype</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx verasetype
 
-@subsubsection occt_draw_4_3_9 vtypes
+<h4><a id="occt_draw_4_3_9">vtypes</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vtypes
 
-@subsubsection occt_draw_4_3_10 vaspects
+<h4><a id="occt_draw_4_3_10">vaspects</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vaspects
@@ -1632,7 +1632,7 @@ vaspects -setColor red -setTransparency 0.2
 vrotate 10 10 10
 ~~~~
 
-@subsubsection occt_draw_4_3_11 vsetshading
+<h4><a id="occt_draw_4_3_11">vsetshading</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vsetshading
@@ -1647,22 +1647,22 @@ vsetdispmode 1
 vsetshading s 0.005
 ~~~~
  
-@subsubsection occt_draw_4_3_12 vunsetshading
+<h4><a id="occt_draw_4_3_12">vunsetshading</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vunsetshading
 
-@subsubsection occt_draw_4_3_15 vdump
+<h4><a id="occt_draw_4_3_15">vdump</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vdump
 
-@subsubsection occt_draw_4_3_16 vdir
+<h4><a id="occt_draw_4_3_16">vdir</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vdir
 
-@subsubsection occt_draw_4_3_17 vsub
+<h4><a id="occt_draw_4_3_17">vsub</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vsub
@@ -1678,27 +1678,27 @@ vsetdispmode 1
 vsub b 1
 ~~~~
 
-@subsubsection occt_draw_4_3_20 vsensdis
+<h4><a id="occt_draw_4_3_20">vsensdis</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vsensdis
 
-@subsubsection occt_draw_4_3_21 vsensera
+<h4><a id="occt_draw_4_3_21">vsensera</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vsensera
 
-@subsubsection occt_draw_4_3_24 vstate
+<h4><a id="occt_draw_4_3_24">vstate</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vstate
 
-@subsubsection occt_draw_4_3_25 vraytrace
+<h4><a id="occt_draw_4_3_25">vraytrace</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vraytrace
 
-@subsubsection occt_draw_4_3_26 vrenderparams
+<h4><a id="occt_draw_4_3_26">vrenderparams</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vrenderparams
@@ -1712,14 +1712,14 @@ vfit
 vraytrace 1
 vrenderparams -shadows 1 -reflections 1 -fsaa 1
 ~~~~
-@subsubsection occt_draw_4_3_27 vshader
+<h4><a id="occt_draw_4_3_27">vshader</a></h4>
 
 Syntax:
 @snippet ViewerTest_OpenGlCommands.cxx vshader
 
-@subsection occt_draw_4_4 AIS viewer -- object commands
+<h3><a id="occt_draw_4_4">AIS viewer -- object commands</a></h3>
 
-@subsubsection occt_draw_4_4_1 vtrihedron
+<h4><a id="occt_draw_4_4_1">vtrihedron</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vtrihedron
@@ -1735,12 +1735,12 @@ vtrihedron t2 -color YAxis Quantity_NOC_GREEN
 vtrihedron t2 -color ZAxis|Origin Quantity_NOC_BLUE1
 ~~~~
 
-@subsubsection occt_draw_4_4_2 vplanetri
+<h4><a id="occt_draw_4_4_2">vplanetri</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vplanetri
 
-@subsubsection occt_draw_4_4_3 vsize
+<h4><a id="occt_draw_4_4_3">vsize</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vsize
@@ -1753,7 +1753,7 @@ vtrihedron tr2 0 0 0 1 0 0 1 0 0
 vsize tr2 400
 ~~~~
 
-@subsubsection occt_draw_4_4_4 vaxis
+<h4><a id="occt_draw_4_4_4">vaxis</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vaxis
@@ -1765,17 +1765,17 @@ vtrihedron tr
 vaxis axe1 0 0 0 1 0 0 
 ~~~~
 
-@subsubsection occt_draw_4_4_5 vaxispara
+<h4><a id="occt_draw_4_4_5">vaxispara</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vaxispara
 
-@subsubsection occt_draw_4_4_6 vaxisortho
+<h4><a id="occt_draw_4_4_6">vaxisortho</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vaxisortho
 
-@subsubsection occt_draw_4_4_7 vpoint
+<h4><a id="occt_draw_4_4_7">vpoint</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vpoint
@@ -1786,7 +1786,7 @@ vinit
 vpoint p 0 0 0
 ~~~~
 
-@subsubsection occt_draw_4_4_8 vplane
+<h4><a id="occt_draw_4_4_8">vplane</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vplane
@@ -1800,17 +1800,17 @@ vtrihedron tr
 vplane plane1 axe1 p1
 ~~~~
 
-@subsubsection occt_draw_4_4_9 vplanepara
+<h4><a id="occt_draw_4_4_9">vplanepara</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vplanepara
 
-@subsubsection occt_draw_4_4_10 vplaneortho
+<h4><a id="occt_draw_4_4_10">vplaneortho</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vplaneortho
 
-@subsubsection occt_draw_4_4_11 vline
+<h4><a id="occt_draw_4_4_11">vline</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vline
@@ -1825,7 +1825,7 @@ vline line1 p1 p2
 vline line2 0 0 0 50 0 1
 ~~~~
 
-@subsubsection occt_draw_4_4_12 vcircle
+<h4><a id="occt_draw_4_4_12">vcircle</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vcircle
@@ -1840,12 +1840,12 @@ vpoint p3 0 0 0
 vcircle circle1 p1 p2 p3 1
 ~~~~
 
-@subsubsection occt_draw_4_4_13 vtri2d
+<h4><a id="occt_draw_4_4_13">vtri2d</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vtri2d
 
-@subsubsection occt_draw_4_4_14 vselmode
+<h4><a id="occt_draw_4_4_14">vselmode</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vselmode
@@ -1859,7 +1859,7 @@ vpoint p3 25 40 0
 vtriangle triangle1 p1 p2 p3
 ~~~~
 
-@subsubsection occt_draw_4_4_15 vconnect
+<h4><a id="occt_draw_4_4_15">vconnect</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vconnect
@@ -1875,7 +1875,7 @@ vdisplay obj
 vconnect new obj 100100100 1 0 0 0 0 1
 ~~~~
 
-@subsubsection occt_draw_4_4_16 vtriangle
+<h4><a id="occt_draw_4_4_16">vtriangle</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vtriangle
@@ -1889,7 +1889,7 @@ vpoint p3 25 40 0
 vtriangle triangle1 p1 p2 p3
 ~~~~
 
-@subsubsection occt_draw_4_4_17 vsegment
+<h4><a id="occt_draw_4_4_17">vsegment</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vsegment
@@ -1902,7 +1902,7 @@ vpoint p2 50 0 0
 vsegment segment p1 p2
 ~~~~
 
-@subsubsection occt_draw_4_4_18 vpointcloud
+<h4><a id="occt_draw_4_4_18">vpointcloud</a></h4>
 
 Syntax:
 @snippet ViewerTest_ObjectCommands.cxx vpointcloud
@@ -1914,7 +1914,7 @@ vpointcloud pc 0 0 0 100 100000 surface -randColor
 vfit
 ~~~~
 
-@subsubsection occt_draw_4_4_19 vclipplane
+<h4><a id="occt_draw_4_4_19">vclipplane</a></h4>
 
 Syntax:
 @snippet ViewerTest_ViewerCommands.cxx vclipplane
@@ -1931,7 +1931,7 @@ vrotate 10 10 10
 vselect 100 100
 ~~~~
 
-@subsubsection occt_draw_4_4_20 vdimension
+<h4><a id="occt_draw_4_4_20">vdimension</a></h4>
 
 Syntax:
 @snippet ViewerTest_RelationCommands.cxx vdimension
@@ -1953,7 +1953,7 @@ vdimension dim3 -radius -shapes circle
 vfit
 ~~~~
 
-@subsubsection occt_draw_4_4_21 vdimparam
+<h4><a id="occt_draw_4_4_21">vdimparam</a></h4>
 
 Syntax:
 @snippet ViewerTest_RelationCommands.cxx vdimparam
@@ -1970,7 +1970,7 @@ vdimparam dim1 -textvalue "w_1"
 vdimparam dim1 -autovalue
 ~~~~
 
-@subsubsection occt_draw_4_4_22 vangleparam
+<h4><a id="occt_draw_4_4_22">vangleparam</a></h4>
 
 Syntax:
 @snippet ViewerTest_RelationCommands.cxx vangleparam
@@ -1986,7 +1986,7 @@ vfit
 vangleparam dim1 -type exterior -showarrow first
 ~~~~
 
-@subsubsection occt_draw_4_4_23 vlengthparam
+<h4><a id="occt_draw_4_4_23">vlengthparam</a></h4>
 
 Syntax:
 @snippet ViewerTest_RelationCommands.cxx vlengthparam
@@ -2003,7 +2003,7 @@ vzoom 0.5
 vlengthparam dim1 -direction ox
 ~~~~
 
-@subsubsection occt_draw_4_4_24 vmovedim
+<h4><a id="occt_draw_4_4_24">vmovedim</a></h4>
 
 Syntax:
 @snippet ViewerTest_RelationCommands.cxx vmovedim
@@ -2017,7 +2017,7 @@ vdimension dim1 -length -plane xoy -shapes p1 p2
 vmovedim dim1 -10 30 0
 ~~~~
 
-@subsubsection occt_draw_4_4_25  vtexture
+<h4><a id="occt_draw_4_4_25">vtexture</a></h4>
 
 Syntax:
 @snippet ViewerTest.cxx vtexture
@@ -2026,11 +2026,11 @@ Texture mapping allows you to map textures on a shape.
 Textures are texture image files and several are predefined.
 You can control the number of occurrences of the texture on a face, the position of a texture and the scale factor of the texture.
 
-@subsection occt_draw_4_5 AIS viewer -- Mesh Visualization Service
+<h3><a id="occt_draw_4_5">AIS viewer -- Mesh Visualization Service</a></h3>
 
 **MeshVS** (Mesh Visualization Service) component provides flexible means of displaying meshes with associated pre- and post- processor data.
 
-@subsubsection occt_draw_4_5_1 meshfromstl
+<h4><a id="occt_draw_4_5_1">meshfromstl</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2044,7 +2044,7 @@ Creates a *MeshVS_Mesh* object based on STL file data. The object will be displa
 meshfromstl mesh myfile.stl
 ~~~~
 
-@subsubsection occt_draw_4_5_2 vsetdispmode
+<h4><a id="occt_draw_4_5_2">vsetdispmode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2063,7 +2063,7 @@ meshfromstl mesh myfile.stl
 vsetdispmode mesh 2
 ~~~~
 
-@subsubsection occt_draw_4_5_3 vselmode
+<h4><a id="occt_draw_4_5_3">vselmode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2087,7 +2087,7 @@ meshfromstl mesh myfile.stl
 vselmode mesh 1
 ~~~~
 
-@subsubsection occt_draw_4_5_4 meshshadcolor
+<h4><a id="occt_draw_4_5_4">meshshadcolor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2103,7 +2103,7 @@ meshfromstl mesh myfile.stl
 meshshadcolormode mesh 0.5 0.5 0.5
 ~~~~
 
-@subsubsection occt_draw_4_5_5 meshlinkcolor
+<h4><a id="occt_draw_4_5_5">meshlinkcolor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2119,7 +2119,7 @@ meshfromstl mesh myfile.stl
 meshlinkcolormode mesh 0.5 0.5 0.5
 ~~~~
 
-@subsubsection occt_draw_4_5_6 meshmat
+<h4><a id="occt_draw_4_5_6">meshmat</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2156,7 +2156,7 @@ meshfromstl mesh myfile.stl
 meshmat mesh 18
 ~~~~
 
-@subsubsection occt_draw_4_5_7 meshshrcoef
+<h4><a id="occt_draw_4_5_7">meshshrcoef</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2174,7 +2174,7 @@ meshfromstl mesh myfile.stl
 meshshrcoef mesh 0.05
 ~~~~
 
-@subsubsection occt_draw_4_5_8 meshshow
+<h4><a id="occt_draw_4_5_8">meshshow</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2191,7 +2191,7 @@ meshfromstl mesh myfile.stl
 meshshow mesh
 ~~~~
 
-@subsubsection occt_draw_4_5_9 meshhide
+<h4><a id="occt_draw_4_5_9">meshhide</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2208,7 +2208,7 @@ meshfromstl mesh myfile.stl
 meshhide mesh
 ~~~~
 
-@subsubsection occt_draw_4_5_10 meshhidesel
+<h4><a id="occt_draw_4_5_10">meshhidesel</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2217,7 +2217,7 @@ meshhidesel meshname
 
 Hides only selected entities. The other part of **meshname** remains visible.
 
-@subsubsection occt_draw_4_5_11 meshshowsel
+<h4><a id="occt_draw_4_5_11">meshshowsel</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2226,7 +2226,7 @@ meshshowsel meshname
 
 Shows only selected entities. The other part of **meshname** becomes invisible.
 
-@subsubsection occt_draw_4_5_12 meshshowall
+<h4><a id="occt_draw_4_5_12">meshshowall</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2235,7 +2235,7 @@ meshshowall meshname
 
 Changes the state of all entities to visible for **meshname**.
 
-@subsubsection occt_draw_4_5_13 vremove
+<h4><a id="occt_draw_4_5_13">vremove</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2251,7 +2251,7 @@ meshfromstl mesh myfile.stl
 vremove mesh
 ~~~~
 
-@subsection occt_draw_4_6	VIS Viewer commands
+<h3><a id="occt_draw_4_6">VIS Viewer commands</a></h3>
 
 A specific plugin with alias *VIS* should be loaded to have access to VIS functionality in DRAW Test Harness:
 
@@ -2259,7 +2259,7 @@ A specific plugin with alias *VIS* should be loaded to have access to VIS functi
 \> pload VIS
 ~~~~
 
-@subsubsection occt_draw_4_6_1	ivtkinit
+<h4><a id="occt_draw_4_6_1">ivtkinit</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2270,7 +2270,7 @@ Creates a window for VTK viewer.
 
 @figure{/user_guides/draw_test_harness/images/draw_image001.png,"",225}
 
-@subsubsection occt_draw_4_6_2	ivtkdisplay
+<h4><a id="occt_draw_4_6_2">ivtkdisplay</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2290,7 +2290,7 @@ ivtkdisplay c
 @figure{/user_guides/draw_test_harness/images/draw_image002.png,"",261}
 
 
-@subsubsection occt_draw_4_6_3	ivtkerase
+<h4><a id="occt_draw_4_6_3">ivtkerase</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2316,7 +2316,7 @@ ivtkerase cy
 ivtkerase s c
 ~~~~
 
-@subsubsection occt_draw_4_6_4	 ivtkfit
+<h4><a id="occt_draw_4_6_4">ivtkfit</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2325,7 +2325,7 @@ ivtkfit
 
 Automatic zoom/panning.
 
-@subsubsection occt_draw_4_6_5	ivtkdispmode
+<h4><a id="occt_draw_4_6_5">ivtkdispmode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2348,7 +2348,7 @@ ivtksetdispmode c 1
 
 @figure{/user_guides/draw_test_harness/images/draw_image003.png,"",262}
 
-@subsubsection occt_draw_4_6_6	ivtksetselmode
+<h4><a id="occt_draw_4_6_6">ivtksetselmode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2370,7 +2370,7 @@ ivtksetselmode a 4 1
 
 @figure{/user_guides/draw_test_harness/images/draw_image004.png,"",291}
  
-@subsubsection occt_draw_4_6_7	ivtkmoveto
+<h4><a id="occt_draw_4_6_7">ivtkmoveto</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2387,7 +2387,7 @@ ivtkdisplay c
 ivtkmoveto 40 50
 ~~~~
 
-@subsubsection occt_draw_4_6_8	ivtkselect
+<h4><a id="occt_draw_4_6_8">ivtkselect</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2404,7 +2404,7 @@ ivtkdisplay c
 ivtkselect 40 50
 ~~~~
 
-@subsubsection occt_draw_4_6_9	ivtkdump
+<h4><a id="occt_draw_4_6_9">ivtkdump</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2425,7 +2425,7 @@ ivtkdisplay c
 ivtkdump D:/ConeSnapshot.png rgb 768 768
 ~~~~
 
-@subsubsection occt_draw_4_6_10	ivtkbgcolor
+<h4><a id="occt_draw_4_6_10">ivtkbgcolor</a></h4>
 
 
 Syntax:
@@ -2449,15 +2449,15 @@ ivtkbgcolor 10 30 80 255 255 255
 
 @figure{/user_guides/draw_test_harness/images/draw_image006.png,"",190}
 
-@section occt_draw_5 OCAF commands
+<h2><a id="occt_draw_5">OCAF commands</a></h2>
 
 This chapter contains a set of commands for Open CASCADE Technology Application Framework (OCAF). 
 
 
-@subsection occt_draw_5_1 Application commands
+<h3><a id="occt_draw_5_1">Application commands</a></h3>
 
 
-@subsubsection occt_draw_5_1_1 NewDocument
+<h4><a id="occt_draw_5_1_1">NewDocument</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2475,7 +2475,7 @@ NewDocument D
 NewDocument D2 BinOcaf 
 ~~~~
 
-@subsubsection occt_draw_5_1_2 IsInSession
+<h4><a id="occt_draw_5_1_2">IsInSession</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2489,7 +2489,7 @@ Returns *0*, if **path** document is managed by the application session, *1* -- 
 IsInSession /myPath/myFile.std 
 ~~~~
 
-@subsubsection occt_draw_5_1_3 ListDocuments
+<h4><a id="occt_draw_5_1_3">ListDocuments</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2499,7 +2499,7 @@ ListDocuments
 Makes a list of documents handled during the session of the application. 
 
 
-@subsubsection occt_draw_5_1_4 Open
+<h4><a id="occt_draw_5_1_4">Open</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2515,7 +2515,7 @@ option <i>-stream</i> activates usage of alternative interface of OCAF persisten
 Open /myPath/myFile.std D
 ~~~~
 
-@subsubsection occt_draw_5_1_5 Close
+<h4><a id="occt_draw_5_1_5">Close</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2529,7 +2529,7 @@ Closes **docname** document. The document is no longer handled by the applicativ
 Close D 
 ~~~~
 
-@subsubsection occt_draw_5_1_6 Save
+<h4><a id="occt_draw_5_1_6">Save</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2543,7 +2543,7 @@ Saves **docname** active document.
 Save D 
 ~~~~
 
-@subsubsection occt_draw_5_1_7 SaveAs
+<h4><a id="occt_draw_5_1_7">SaveAs</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2559,9 +2559,9 @@ option <i>-stream</i> activates usage of alternative interface of OCAF persisten
 SaveAs D /myPath/myFile.std
 ~~~~
 
-@subsection occt_draw_5_2 Basic commands
+<h3><a id="occt_draw_5_2">Basic commands</a></h3>
 
-@subsubsection occt_draw_5_2_1 Label
+<h4><a id="occt_draw_5_2_1">Label</a></h4>
 
 Syntax:
 
@@ -2576,7 +2576,7 @@ Example
 Label D 0:2
 ~~~~
 
-@subsubsection occt_draw_5_2_2 NewChild
+<h4><a id="occt_draw_5_2_2">NewChild</a></h4>
 
 Syntax:
 
@@ -2595,7 +2595,7 @@ Label D 0:2
 NewChild D 0:2
 ~~~~
 
-@subsubsection occt_draw_5_2_3 Children
+<h4><a id="occt_draw_5_2_3">Children</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2608,7 +2608,7 @@ Example
 Children D 0:2
 ~~~~
 
-@subsubsection occt_draw_5_2_4 ForgetAll
+<h4><a id="occt_draw_5_2_4">ForgetAll</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2622,9 +2622,9 @@ ForgetAll D 0:2
 ~~~~
 
 
-@subsubsection occt_draw_5_3 Application commands
+<h4><a id="occt_draw_5_3">Application commands</a></h4>
 
-@subsubsection occt_draw_5_3_1  Main
+<h4><a id="occt_draw_5_3_1">Main</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2638,7 +2638,7 @@ Returns the main label of the framework.
 Main D 
 ~~~~
 
-@subsubsection occt_draw_5_3_2  UndoLimit
+<h4><a id="occt_draw_5_3_2">UndoLimit</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2653,7 +2653,7 @@ Sets the limit on the number of Undo Delta stored. **0** will disable Undo on th
 UndoLimit D 100 
 ~~~~
 
-@subsubsection occt_draw_5_3_3  Undo
+<h4><a id="occt_draw_5_3_3">Undo</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2667,7 +2667,7 @@ Undoes **value** steps.
 Undo D 
 ~~~~
 
-@subsubsection occt_draw_5_3_4  Redo
+<h4><a id="occt_draw_5_3_4">Redo</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2681,7 +2681,7 @@ Redoes **value** steps.
 Redo D 
 ~~~~
 
-@subsubsection occt_draw_5_3_5  OpenCommand
+<h4><a id="occt_draw_5_3_5">OpenCommand</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2695,7 +2695,7 @@ Opens a new command transaction.
 OpenCommand D
 ~~~~
 
-@subsubsection occt_draw_5_3_6  CommitCommand
+<h4><a id="occt_draw_5_3_6">CommitCommand</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2709,7 +2709,7 @@ Commits the Command transaction.
 CommitCommand D
 ~~~~
 
-@subsubsection occt_draw_5_3_7  NewCommand
+<h4><a id="occt_draw_5_3_7">NewCommand</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2723,7 +2723,7 @@ This is a shortcut for Commit and Open transaction.
 NewCommand D 
 ~~~~
 
-@subsubsection occt_draw_5_3_8  AbortCommand
+<h4><a id="occt_draw_5_3_8">AbortCommand</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2737,7 +2737,7 @@ Aborts the Command transaction.
 AbortCommand D 
 ~~~~
 
-@subsubsection occt_draw_5_3_9  Copy
+<h4><a id="occt_draw_5_3_9">Copy</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2751,7 +2751,7 @@ Copies the contents of *entry* to *Xentry*. No links are registered.
 Copy D1 0:2 D2 0:4 
 ~~~~
 
-@subsubsection occt_draw_5_3_10  UpdateLink
+<h4><a id="occt_draw_5_3_10">UpdateLink</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2765,7 +2765,7 @@ Updates external reference set at *entry*.
 UpdateLink D 
 ~~~~
 
-@subsubsection occt_draw_5_3_11  CopyWithLink
+<h4><a id="occt_draw_5_3_11">CopyWithLink</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2780,7 +2780,7 @@ Copies the content of *entry* to *Xentry*. The link is registered with an *Xlink
 CopyWithLink D1 0:2 D2 0:4
 ~~~~
 
-@subsubsection occt_draw_5_3_12  UpdateXLinks
+<h4><a id="occt_draw_5_3_12">UpdateXLinks</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2794,7 +2794,7 @@ Sets modifications on labels impacted by external references to the *entry*. The
 UpdateXLinks D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_3_13  DumpDocument
+<h4><a id="occt_draw_5_3_13">DumpDocument</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2809,10 +2809,10 @@ DumpDocument D
 ~~~~
 
 
-@subsection occt_draw_5_4  Data Framework commands
+<h3><a id="occt_draw_5_4">Data Framework commands</a></h3>
 
 
-@subsubsection occt_draw_5_4_1  MakeDF
+<h4><a id="occt_draw_5_4_1">MakeDF</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2826,7 +2826,7 @@ Creates a new data framework.
 MakeDF D 
 ~~~~
 
-@subsubsection occt_draw_5_4_2  ClearDF
+<h4><a id="occt_draw_5_4_2">ClearDF</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2840,7 +2840,7 @@ Clears a data framework.
 ClearDF D 
 ~~~~
 
-@subsubsection occt_draw_5_4_3  CopyDF
+<h4><a id="occt_draw_5_4_3">CopyDF</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2854,7 +2854,7 @@ Copies a data framework.
 CopyDF D 0:2 0:4 
 ~~~~
 
-@subsubsection occt_draw_5_4_4  CopyLabel
+<h4><a id="occt_draw_5_4_4">CopyLabel</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2868,7 +2868,7 @@ Copies a label.
 CopyLabel D1 0:2 0:4 
 ~~~~
 
-@subsubsection occt_draw_5_4_5  MiniDumpDF
+<h4><a id="occt_draw_5_4_5">MiniDumpDF</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2882,7 +2882,7 @@ Makes a mini-dump of a data framework.
 MiniDumpDF D 
 ~~~~
 
-@subsubsection occt_draw_5_4_6  XDumpDF
+<h4><a id="occt_draw_5_4_6">XDumpDF</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2896,10 +2896,10 @@ Makes an extended dump of a data framework.
 XDumpDF D
 ~~~~
 
-@subsection occt_draw_5_5  General attributes commands
+<h3><a id="occt_draw_5_5">General attributes commands</a></h3>
 
 
-@subsubsection occt_draw_5_5_1  SetInteger
+<h4><a id="occt_draw_5_5_1">SetInteger</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2913,7 +2913,7 @@ Finds or creates an Integer attribute at *entry* label and sets *value*.
 SetInteger D 0:2 100 
 ~~~~
 
-@subsubsection occt_draw_5_5_2  GetInteger
+<h4><a id="occt_draw_5_5_2">GetInteger</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2927,7 +2927,7 @@ Gets a value of an Integer attribute at *entry* label and sets it to *drawname* 
 GetInteger D 0:2 Int1 
 ~~~~
 
-@subsubsection occt_draw_5_5_3  SetReal
+<h4><a id="occt_draw_5_5_3">SetReal</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2941,7 +2941,7 @@ Finds or creates a Real attribute at *entry* label and sets *value*.
 SetReal D 0:2 100. 
 ~~~~
 
-@subsubsection occt_draw_5_5_4  GetReal
+<h4><a id="occt_draw_5_5_4">GetReal</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2955,7 +2955,7 @@ Gets a value of a Real attribute at *entry* label and sets it to *drawname* vari
 GetReal D 0:2 Real1 
 ~~~~
 
-@subsubsection occt_draw_5_5_5  SetIntArray
+<h4><a id="occt_draw_5_5_5">SetIntArray</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2969,7 +2969,7 @@ Finds or creates an IntegerArray attribute at *entry* label with lower and upper
 SetIntArray D 0:2 1 4 100 200 300 400
 ~~~~
 
-@subsubsection occt_draw_5_5_6  GetIntArray
+<h4><a id="occt_draw_5_5_6">GetIntArray</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2983,7 +2983,7 @@ Gets a value of an *IntegerArray* attribute at *entry* label.
 GetIntArray D 0:2
 ~~~~
 
-@subsubsection occt_draw_5_5_7  SetRealArray
+<h4><a id="occt_draw_5_5_7">SetRealArray</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -2997,7 +2997,7 @@ Finds or creates a RealArray attribute at *entry* label with lower and upper bou
 GetRealArray D 0:2 1 4 100. 200. 300. 400. 
 ~~~~
 
-@subsubsection occt_draw_5_5_8  GetRealArray
+<h4><a id="occt_draw_5_5_8">GetRealArray</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3011,7 +3011,7 @@ Gets a value of a RealArray attribute at *entry* label.
 GetRealArray D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_5_9  SetComment
+<h4><a id="occt_draw_5_5_9">SetComment</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3025,7 +3025,7 @@ Finds or creates a Comment attribute at *entry* label and sets *value*.
 SetComment D 0:2 "My comment"
 ~~~~
 
-@subsubsection occt_draw_5_5_10  GetComment
+<h4><a id="occt_draw_5_5_10">GetComment</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3039,7 +3039,7 @@ Gets a value of a Comment attribute at *entry* label.
 GetComment D 0:2
 ~~~~
 
-@subsubsection occt_draw_5_5_11  SetExtStringArray
+<h4><a id="occt_draw_5_5_11">SetExtStringArray</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3053,7 +3053,7 @@ Finds or creates an *ExtStringArray* attribute at *entry* label with lower and u
 SetExtStringArray D 0:2 1 3 *string1* *string2* *string3*
 ~~~~
 
-@subsubsection occt_draw_5_5_12  GetExtStringArray
+<h4><a id="occt_draw_5_5_12">GetExtStringArray</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3067,7 +3067,7 @@ Gets a value of an ExtStringArray attribute at *entry* label.
 GetExtStringArray D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_5_13  SetName
+<h4><a id="occt_draw_5_5_13">SetName</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3081,7 +3081,7 @@ Finds or creates a Name attribute at *entry* label and sets *value*.
 SetName D 0:2 *My name* 
 ~~~~
 
-@subsubsection occt_draw_5_5_14  GetName
+<h4><a id="occt_draw_5_5_14">GetName</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3095,7 +3095,7 @@ Gets a value of a Name attribute at *entry* label.
 GetName D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_5_15  SetReference
+<h4><a id="occt_draw_5_5_15">SetReference</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3109,7 +3109,7 @@ Creates a Reference attribute at *entry* label and sets *reference*.
 SetReference D 0:2 0:4 
 ~~~~
 
-@subsubsection occt_draw_5_5_16  GetReference
+<h4><a id="occt_draw_5_5_16">GetReference</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3123,7 +3123,7 @@ Gets a value of a Reference attribute at *entry* label.
 GetReference D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_5_17  SetUAttribute
+<h4><a id="occt_draw_5_5_17">SetUAttribute</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3138,7 +3138,7 @@ set localGUID "c73bd076-22ee-11d2-acde-080009dc4422"
 SetUAttribute D 0:2 ${localGUID} 
 ~~~~
 
-@subsubsection occt_draw_5_5_18  GetUAttribute
+<h4><a id="occt_draw_5_5_18">GetUAttribute</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3153,7 +3153,7 @@ set localGUID "c73bd076-22ee-11d2-acde-080009dc4422"
 GetUAttribute D 0:2 ${localGUID} 
 ~~~~
 
-@subsubsection occt_draw_5_5_19  SetFunction
+<h4><a id="occt_draw_5_5_19">SetFunction</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3168,7 +3168,7 @@ set ID "c73bd076-22ee-11d2-acde-080009dc4422"
 SetFunction D 0:2 ${ID} 1 
 ~~~~
 
-@subsubsection occt_draw_5_5_20  GetFunction
+<h4><a id="occt_draw_5_5_20">GetFunction</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3182,7 +3182,7 @@ Finds a Function attribute at *entry* label and sets driver ID to *ID* variable 
 GetFunction D 0:2 ID failure 
 ~~~~
 
-@subsubsection occt_draw_5_5_21  NewShape
+<h4><a id="occt_draw_5_5_21">NewShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3197,7 +3197,7 @@ box b 10 10 10
 NewShape D 0:2 b 
 ~~~~
 
-@subsubsection occt_draw_5_5_22  SetShape
+<h4><a id="occt_draw_5_5_22">SetShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3212,7 +3212,7 @@ box b 10 10 10
 SetShape D 0:2 b 
 ~~~~
 
-@subsubsection occt_draw_5_5_23  GetShape
+<h4><a id="occt_draw_5_5_23">GetShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3226,10 +3226,10 @@ Sets a shape from NamedShape attribute associated with *entry* label to *shape* 
 GetShape2 D 0:2 b 
 ~~~~
 
-@subsection occt_draw_5_6  Geometric attributes commands
+<h3><a id="occt_draw_5_6">Geometric attributes commands</a></h3>
 
 
-@subsubsection occt_draw_5_6_1  SetPoint
+<h4><a id="occt_draw_5_6_1">SetPoint</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3244,7 +3244,7 @@ point p 10 10 10
 SetPoint D 0:2 p 
 ~~~~
 
-@subsubsection occt_draw_5_6_2  GetPoint
+<h4><a id="occt_draw_5_6_2">GetPoint</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3258,7 +3258,7 @@ Gets a vertex from *NamedShape* attribute at *entry* label and sets it to *drawn
 GetPoint D 0:2 p 
 ~~~~
 
-@subsubsection occt_draw_5_6_3  SetAxis
+<h4><a id="occt_draw_5_6_3">SetAxis</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3273,7 +3273,7 @@ line l 10 20 30 100 200 300
 SetAxis D 0:2 l 
 ~~~~
 
-@subsubsection occt_draw_5_6_4  GetAxis
+<h4><a id="occt_draw_5_6_4">GetAxis</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3287,7 +3287,7 @@ Gets a line from *NamedShape* attribute at *entry* label and sets it to *drawnam
 GetAxis D 0:2 l 
 ~~~~
 
-@subsubsection occt_draw_5_6_5  SetPlane
+<h4><a id="occt_draw_5_6_5">SetPlane</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3302,7 +3302,7 @@ plane pl 10 20 30 -1 0 0
 SetPlane D 0:2 pl 
 ~~~~
 
-@subsubsection occt_draw_5_6_6  GetPlane
+<h4><a id="occt_draw_5_6_6">GetPlane</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3316,7 +3316,7 @@ Gets a plane from *NamedShape* attribute at *entry* label and sets it to *drawna
 GetPlane D 0:2 pl 
 ~~~~
 
-@subsubsection occt_draw_5_6_7  SetGeometry
+<h4><a id="occt_draw_5_6_7">SetGeometry</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3331,7 +3331,7 @@ point p 10 10 10
 SetGeometry D 0:2 pnt p 
 ~~~~
 
-@subsubsection occt_draw_5_6_8  GetGeometryType
+<h4><a id="occt_draw_5_6_8">GetGeometryType</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3345,7 +3345,7 @@ Gets a geometry type from Geometry attribute at *entry* label.
 GetGeometryType D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_6_9  SetConstraint
+<h4><a id="occt_draw_5_6_9">SetConstraint</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3365,7 +3365,7 @@ SetConstraint dfname entry "value" value
 SetConstraint D 0:2 "value" 5 
 ~~~~
 
-@subsubsection occt_draw_5_6_10  GetConstraint
+<h4><a id="occt_draw_5_6_10">GetConstraint</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3379,7 +3379,7 @@ Dumps a Constraint attribute at *entry* label
 GetConstraint D 0:2 
 ~~~~
 
-@subsubsection occt_draw_5_6_11  SetVariable
+<h4><a id="occt_draw_5_6_11">SetVariable</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3393,7 +3393,7 @@ Creates a Variable attribute at *entry* label and sets *isconstant* flag and *un
 SetVariable D 0:2 1 "mm" 
 ~~~~
 
-@subsubsection occt_draw_5_6_12  GetVariable
+<h4><a id="occt_draw_5_6_12">GetVariable</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3409,10 +3409,10 @@ puts "IsConstant=${isconstant}"
 puts "Units=${units}" 
 ~~~~
 
-@subsection occt_draw_5_7  Tree attributes commands
+<h3><a id="occt_draw_5_7">Tree attributes commands</a></h3>
 
 
-@subsubsection occt_draw_5_7_1  RootNode
+<h4><a id="occt_draw_5_7_1">RootNode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3422,7 +3422,7 @@ RootNode dfname treenodeentry [ID]
 Returns the ultimate father of *TreeNode* attribute identified by its *treenodeentry* and its *ID* (or default ID, if *ID* is not defined). 
 
 
-@subsubsection occt_draw_5_7_2  SetNode
+<h4><a id="occt_draw_5_7_2">SetNode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3432,7 +3432,7 @@ SetNode dfname treenodeentry [ID]
 Creates a *TreeNode* attribute on the *treenodeentry* label with its tree *ID* (or assigns a default ID, if the *ID* is not defined). 
 
 
-@subsubsection occt_draw_5_7_3  AppendNode
+<h4><a id="occt_draw_5_7_3">AppendNode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3445,7 +3445,7 @@ Inserts a *TreeNode* attribute with its tree *fatherID* (or default ID, if *fath
 
 
 
-@subsubsection occt_draw_5_7_4  PrependNode
+<h4><a id="occt_draw_5_7_4">PrependNode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3456,7 +3456,7 @@ PrependNode dfname fatherentry childentry [fatherID]
 Inserts a *TreeNode* attribute with its tree *fatherID* (or default ID, if *fatherID* is not defined) on *childentry* as first child of *fatherentry*. 
 
 
-@subsubsection occt_draw_5_7_5  InsertNodeBefore
+<h4><a id="occt_draw_5_7_5">InsertNodeBefore</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3466,7 +3466,7 @@ InsertNodeBefore dfname treenodeentry beforetreenode [ID]
 Inserts a *TreeNode* attribute with tree *ID* (or default ID, if *ID* is not defined) *beforetreenode* before *treenodeentry*. 
 
 
-@subsubsection occt_draw_5_7_6  InsertNodeAfter
+<h4><a id="occt_draw_5_7_6">InsertNodeAfter</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3476,7 +3476,7 @@ InsertNodeAfter dfname treenodeentry aftertreenode [ID]
 Inserts a *TreeNode* attribute with tree *ID* (or default ID, if *ID* is not defined) *aftertreenode* after *treenodeentry*. 
 
 
-@subsubsection occt_draw_5_7_7  DetachNode
+<h4><a id="occt_draw_5_7_7">DetachNode</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3486,7 +3486,7 @@ DetachNode dfname treenodeentry [ID]
 Removes a *TreeNode* attribute with tree *ID* (or default ID, if *ID* is not defined) from *treenodeentry*. 
 
 
-@subsubsection occt_draw_5_7_8  ChildNodeIterate
+<h4><a id="occt_draw_5_7_8">ChildNodeIterate</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3542,7 +3542,7 @@ ChildNodeIterate D 0:2 1
 ==0:5 
 ~~~~
 
-@subsubsection occt_draw_5_7_9  InitChildNodeIterator
+<h4><a id="occt_draw_5_7_9">InitChildNodeIterator</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3566,7 +3566,7 @@ for {set i 1} {$i < 100} {incr i} {
 puts "aChildNumber=$aChildNumber"
 ~~~~
 
-@subsubsection occt_draw_5_7_10  ChildNodeMore
+<h4><a id="occt_draw_5_7_10">ChildNodeMore</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3576,7 +3576,7 @@ ChildNodeMore
 Returns TRUE if there is a current item in the iteration. 
 
 
-@subsubsection occt_draw_5_7_11  ChildNodeNext
+<h4><a id="occt_draw_5_7_11">ChildNodeNext</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3586,7 +3586,7 @@ ChildNodeNext
 Moves to the next Item. 
 
 
-@subsubsection occt_draw_5_7_12  ChildNodeValue
+<h4><a id="occt_draw_5_7_12">ChildNodeValue</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3596,7 +3596,7 @@ ChildNodeValue
 Returns the current treenode of *ChildNodeIterator*. 
 
 
-@subsubsection occt_draw_5_7_13  ChildNodeNextBrother
+<h4><a id="occt_draw_5_7_13">ChildNodeNextBrother</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3606,10 +3606,10 @@ ChildNodeNextBrother
 Moves to the next *Brother*. If there is none, goes up. This method is interesting only with *allLevels* behavior. 
 
 
-@subsection occt_draw_5_8   Standard presentation commands
+<h3><a id="occt_draw_5_8">Standard presentation commands</a></h3>
 
 
-@subsubsection occt_draw_5_8_1  AISInitViewer
+<h4><a id="occt_draw_5_8_1">AISInitViewer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3623,7 +3623,7 @@ Creates and sets *AISViewer* attribute at root label, creates AIS viewer window.
 AISInitViewer D 
 ~~~~
 
-@subsubsection occt_draw_5_8_2  AISRepaint
+<h4><a id="occt_draw_5_8_2">AISRepaint</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3637,7 +3637,7 @@ Updates the AIS viewer window.
 AISRepaint D 
 ~~~~
 
-@subsubsection occt_draw_5_8_3  AISDisplay
+<h4><a id="occt_draw_5_8_3">AISDisplay</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3651,7 +3651,7 @@ Displays a presantation of *AISobject* from *entry* label in AIS viewer. If *not
 AISDisplay D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_4  AISUpdate
+<h4><a id="occt_draw_5_8_4">AISUpdate</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3665,7 +3665,7 @@ Recomputes a presentation of *AISobject* from *entry* label and applies the visu
 AISUpdate D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_5  AISErase
+<h4><a id="occt_draw_5_8_5">AISErase</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3679,7 +3679,7 @@ Erases *AISobject* of *entry* label in AIS viewer.
 AISErase D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_6  AISRemove
+<h4><a id="occt_draw_5_8_6">AISRemove</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3693,7 +3693,7 @@ Erases *AISobject* of *entry* label in AIS viewer, then *AISobject* is removed f
 AISRemove D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_7  AISSet
+<h4><a id="occt_draw_5_8_7">AISSet</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3707,7 +3707,7 @@ Creates *AISPresentation* attribute at *entry* label and sets as driver ID. ID m
 AISSet D 0:5 NS 
 ~~~~
 
-@subsubsection occt_draw_5_8_8  AISDriver
+<h4><a id="occt_draw_5_8_8">AISDriver</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3722,7 +3722,7 @@ Returns DriverGUID stored in *AISPresentation* attribute of an *entry* label or 
 AISDriver D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_9  AISUnset
+<h4><a id="occt_draw_5_8_9">AISUnset</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3736,7 +3736,7 @@ Deletes *AISPresentation* attribute (if it exists) of an *entry* label.
 AISUnset D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_10  AISTransparency
+<h4><a id="occt_draw_5_8_10">AISTransparency</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3750,7 +3750,7 @@ Sets (if *transparency* is defined) or gets the value of transparency for *AISPr
 AISTransparency D 0:5 0.5 
 ~~~~
 
-@subsubsection occt_draw_5_8_11  AISHasOwnTransparency
+<h4><a id="occt_draw_5_8_11">AISHasOwnTransparency</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3764,7 +3764,7 @@ Tests *AISPresentation* attribute of an *entry* label by own transparency.
 AISHasOwnTransparency D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_12  AISMaterial
+<h4><a id="occt_draw_5_8_12">AISMaterial</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3778,7 +3778,7 @@ Sets (if *material* is defined) or gets the value of transparency for *AISPresen
 AISMaterial D 0:5 5 
 ~~~~
 
-@subsubsection occt_draw_5_8_13  AISHasOwnMaterial
+<h4><a id="occt_draw_5_8_13">AISHasOwnMaterial</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3792,7 +3792,7 @@ Tests *AISPresentation* attribute of an *entry* label by own material.
 AISHasOwnMaterial D 0:5 
 ~~~~
 
-@subsubsection occt_draw_5_8_14  AISColor
+<h4><a id="occt_draw_5_8_14">AISColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3806,7 +3806,7 @@ Sets (if *color* is defined) or gets value of color for *AISPresentation* attrib
 AISColor D 0:5 25 
 ~~~~
 
-@subsubsection occt_draw_5_8_15  AISHasOwnColor
+<h4><a id="occt_draw_5_8_15">AISHasOwnColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3820,9 +3820,9 @@ Tests *AISPresentation* attribute of an *entry* label by own color.
 AISHasOwnColor D 0:5 
 ~~~~
 
-@section occt_draw_6 Geometry commands
+<h2><a id="occt_draw_6">Geometry commands</a></h2>
 
-@subsection occt_draw_6_1 Overview
+<h3><a id="occt_draw_6_1">Overview</a></h3>
 
 Draw provides a set of commands to test geometry libraries. These commands are found in the TGEOMETRY executable, or in any Draw executable which includes *GeometryTest* commands. 
 
@@ -3850,7 +3850,7 @@ Where possible, the commands have been made broad in application, i.e. they appl
 
 Likewise, the *translate* command will process points, curves or surfaces, depending on argument type. You may not always find the specific command you are looking for in the section where you expect it to be. In that case, look in another section. The *trim* command, for example, is described in the surface section. It can, nonetheless, be used with curves as well. 
 
-@subsection occt_draw_6_2  Curve creation
+<h3><a id="occt_draw_6_2">Curve creation</a></h3>
 
 This section deals with both points and curves. Types of curves are: 
 
@@ -3864,7 +3864,7 @@ This section deals with both points and curves. Types of curves are:
 Curves are displayed with an arrow showing the last parameter. 
 
 
-@subsubsection occt_draw_6_2_1 point
+<h4><a id="occt_draw_6_2_1">point</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3882,7 +3882,7 @@ point p1 1 2
 point p2 10 20 -5 
 ~~~~
   
-@subsubsection occt_draw_6_2_2  line
+<h4><a id="occt_draw_6_2_2">line</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3903,7 +3903,7 @@ line l 2 0 1 1
 line l 10 0 0 0 0 1 
 ~~~~
 
-@subsubsection occt_draw_6_2_3  circle
+<h4><a id="occt_draw_6_2_3">circle</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3938,7 +3938,7 @@ circle c4 10 20 -5 0 1 0 17
 circle c5 10 20 -5 1 0 0 0 0 1 17 
 ~~~~
 
-@subsubsection occt_draw_6_2_4  ellipse
+<h4><a id="occt_draw_6_2_4">ellipse</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -3970,7 +3970,7 @@ ellipse e3 0 0 0 25 5
 ellipse e4 0 0 0 0 1 0 1 0 1 25 5 
 ~~~~
 
-@subsubsection occt_draw_6_2_5  hyperbola
+<h4><a id="occt_draw_6_2_5">hyperbola</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4000,7 +4000,7 @@ hyperbola h2 0 0 1 2 20 20
 hyperbola h3 0 0 0 50 50 
 ~~~~
 
-@subsubsection occt_draw_6_2_6  parabola
+<h4><a id="occt_draw_6_2_6">parabola</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4032,7 +4032,7 @@ parabola p2 0 0 0 1 50
 parabola p3 0 0 0 1 0 0 0 0 1 50 
 ~~~~
 
-@subsubsection occt_draw_6_2_7  beziercurve, 2dbeziercurve
+<h4><a id="occt_draw_6_2_7">beziercurve, 2dbeziercurve</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4051,7 +4051,7 @@ Creates a 3d rational or non-rational Bezier curve. Give the number of poles (co
 beziercurve cc 4 0 0 0 10 0 0 10 0 10 10 10 10 
 ~~~~
 
-@subsubsection occt_draw_6_2_8  bsplinecurve, 2dbsplinecurve, pbsplinecurve, 2dpbsplinecurve
+<h4><a id="occt_draw_6_2_8">bsplinecurve, 2dbsplinecurve, pbsplinecurve, 2dpbsplinecurve</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4095,7 +4095,7 @@ dset h sqrt(3)/2
 **Note** that you can create the **NURBS** subset of bspline curves and surfaces by trimming analytical curves and surfaces and executing the command *convert*. 
 
 
-@subsubsection occt_draw_6_2_9  uiso, viso
+<h4><a id="occt_draw_6_2_9">uiso, viso</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4117,7 +4117,7 @@ viso c2 c
 **Note** that this cannot be done from offset surfaces.
 
 
-@subsubsection occt_draw_6_2_10  to3d, to2d
+<h4><a id="occt_draw_6_2_10">to3d, to2d</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4141,7 +4141,7 @@ circle c -2 1 0 1 2 3 5
 See also: **project** 
 
 
-@subsubsection occt_draw_6_2_11  project
+<h4><a id="occt_draw_6_2_11">project</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4159,7 +4159,7 @@ intersect i c p
 project i2d i c 
 ~~~~
 
-@subsection occt_draw_6_3  Surface creation
+<h3><a id="occt_draw_6_3">Surface creation</a></h3>
 
 The following types of surfaces exist: 
   * Analytical surfaces: plane, cylinder, cone, sphere, torus;
@@ -4170,7 +4170,7 @@ The following types of surfaces exist:
 
 Surfaces are displayed with isoparametric lines. To show the parameterization, a small parametric line with a length 1/10 of V is displayed at 1/10 of U. 
 
-@subsubsection occt_draw_6_3_1  plane
+<h4><a id="occt_draw_6_3_1">plane</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4197,7 +4197,7 @@ plane p1 10 0 0 1 0 0 0 1 0
 plane p2 10 -20 -5 
 ~~~~
 
-@subsubsection occt_draw_6_3_2  cylinder
+<h4><a id="occt_draw_6_3_2">cylinder</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4222,7 +4222,7 @@ cylinder c3 0 0 0 cos(la)*cos(lo) cos(la)*sin(lo)
 sin(la) 10 
 ~~~~
 
-@subsubsection occt_draw_6_3_3  cone
+<h4><a id="occt_draw_6_3_3">cone</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4239,7 +4239,7 @@ cone c1 45 0
 cone c2 0 0 z1 180.*atan2(r2-r1,z2-z1)/pi r1 
 ~~~~
 
-@subsubsection occt_draw_6_3_4  sphere
+<h4><a id="occt_draw_6_3_4">sphere</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4258,7 +4258,7 @@ sphere s1 10
 sphere s2 10 10 10 1 1 1 10 
 ~~~~
 
-@subsubsection occt_draw_6_3_5  torus
+<h4><a id="occt_draw_6_3_5">torus</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4279,7 +4279,7 @@ torus t2 10 5 -2 2 1 0 20 5
 ~~~~
 
 
-@subsubsection occt_draw_6_3_6  beziersurf
+<h4><a id="occt_draw_6_3_6">beziersurf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4302,7 +4302,7 @@ beziersurf s 3 4 \
 0 30 0 10 30 0 20 30 0 
 ~~~~
 
-@subsubsection occt_draw_6_3_7   bsplinesurf, upbsplinesurf, vpbsplinesurf, uvpbsplinesurf
+<h4><a id="occt_draw_6_3_7">bsplinesurf, upbsplinesurf, vpbsplinesurf, uvpbsplinesurf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4336,7 +4336,7 @@ bsplinesurf s \
 ~~~~
 
 
-@subsubsection occt_draw_6_3_8  trim, trimu, trimv
+<h4><a id="occt_draw_6_3_8">trim, trimu, trimv</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4382,7 +4382,7 @@ cylinder cy 10
 trimv cy cy 0 50 
 ~~~~
 
-@subsubsection occt_draw_6_3_9  offset
+<h4><a id="occt_draw_6_3_9">offset</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4408,7 +4408,7 @@ ellipse e 0 0 0 50 50*sin(angle)
 offset l1 e 20 0 0 1 
 ~~~~
 
-@subsubsection occt_draw_6_3_10  revsurf
+<h4><a id="occt_draw_6_3_10">revsurf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4428,7 +4428,7 @@ circle c 50 0 0 20
 revsurf s c 0 0 0 0 1 0 
 ~~~~
 
-@subsubsection occt_draw_6_3_11  extsurf
+<h4><a id="occt_draw_6_3_11">extsurf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4450,7 +4450,7 @@ extsurf s e 0 0 1
 trimv s s 0 10 
 ~~~~
 
-@subsubsection occt_draw_6_3_12  convert
+<h4><a id="occt_draw_6_3_12">convert</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4474,7 +4474,7 @@ convert p1 p
 
 **Note** that offset curves and surfaces are not processed by this command.
 
-@subsection occt_draw_6_4  Curve and surface modifications
+<h3><a id="occt_draw_6_4">Curve and surface modifications</a></h3>
 
 Draw provides commands to modify curves and surfaces, some of them are general, others restricted to bezier curves or bsplines. 
 
@@ -4500,7 +4500,7 @@ Modifications for bspline:
 
 
 
-@subsubsection occt_draw_6_4_1  reverse, ureverse, vreverse
+<h4><a id="occt_draw_6_4_1">reverse, ureverse, vreverse</a></h4>
 
 
 Syntax:
@@ -4527,7 +4527,7 @@ reverse c
 # 3*pi/2 and 7*pi/4 i.e. 2*pi-pi/2 and 2*pi-pi/4 
 ~~~~
 
-@subsubsection occt_draw_6_4_2  exchuv
+<h4><a id="occt_draw_6_4_2">exchuv</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4545,7 +4545,7 @@ convert c1 c
 exchuv c1 
 ~~~~
 
-@subsubsection occt_draw_6_4_3  segment, segsur
+<h4><a id="occt_draw_6_4_3">segment, segsur</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4566,7 +4566,7 @@ beziercurve c 3 0 0 0 10 0 0 10 10 0
 segment c ufirst ulast 
 ~~~~
 
-@subsubsection occt_draw_6_4_4  iincudeg, incvdeg
+<h4><a id="occt_draw_6_4_4">iincudeg, incvdeg</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4589,7 +4589,7 @@ incvdeg p1 3
 **Note** that the geometry is modified.
 
 
-@subsubsection occt_draw_6_4_5  cmovep, movep, movecolp, moverowp
+<h4><a id="occt_draw_6_4_5">cmovep, movep, movecolp, moverowp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4617,7 +4617,7 @@ moverowp p1 2 0 0 5
 movep p1 2 2 0 0 5 
 ~~~~
 
-@subsubsection occt_draw_6_4_6  insertpole, rempole, remcolpole, remrowpole
+<h4><a id="occt_draw_6_4_6">insertpole, rempole, remcolpole, remrowpole</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4642,7 +4642,7 @@ insertpole c 2 10 10 0
 rempole c 2 
 ~~~~
 
-@subsubsection occt_draw_6_4_7  insertknot, insertuknot, insertvknot
+<h4><a id="occt_draw_6_4_7">insertknot, insertuknot, insertvknot</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4664,7 +4664,7 @@ convert c1 c
 insertuknot c1 pi/4 1 
 ~~~~
 
-@subsubsection occt_draw_6_4_8  remknot, remuknot, remvknot
+<h4><a id="occt_draw_6_4_8">remknot, remuknot, remvknot</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4689,7 +4689,7 @@ remknot c1 2
 **Note** that Curves or Surfaces may be modified.
 
 
-@subsubsection occt_draw_6_4_9  setperiodic, setnotperiodic, setuperiodic, setunotperiodic, setvperiodic, setvnotperiodic
+<h4><a id="occt_draw_6_4_9">setperiodic, setnotperiodic, setuperiodic, setunotperiodic, setvperiodic, setvnotperiodic</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4713,7 +4713,7 @@ convert c1 c
 setnotperiodic c1 
 ~~~~
 
-@subsubsection occt_draw_6_4_10  setorigin, setuorigin, setvorigin
+<h4><a id="occt_draw_6_4_10">setorigin, setuorigin, setvorigin</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4734,11 +4734,11 @@ setvorigin t1 2
 ~~~~
 
 
-@subsection occt_draw_6_5  Transformations
+<h3><a id="occt_draw_6_5">Transformations</a></h3>
 
 Draw provides commands to apply linear transformations to geometric objects: they include translation, rotation, mirroring and scaling. 
 
-@subsubsection occt_draw_6_5_1  translate, dtranslate
+<h4><a id="occt_draw_6_5_1">translate, dtranslate</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4762,7 +4762,7 @@ translate p c t 0 0 15
 *NOTE* 
 *Objects are modified by this command.* 
 
-@subsubsection occt_draw_6_5_2  rotate, 2drotate
+<h4><a id="occt_draw_6_5_2">rotate, 2drotate</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4786,7 +4786,7 @@ rotate c$i 0 0 0 0 0 1 36
 } 
 ~~~~
 
-@subsubsection occt_draw_6_5_3  pmirror, lmirror, smirror, dpmirror, dlmirror
+<h4><a id="occt_draw_6_5_3">pmirror, lmirror, smirror, dpmirror, dlmirror</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4817,7 +4817,7 @@ copy t t3
 smirror t3 0 0 0 1 0 0 
 ~~~~
 
-@subsubsection occt_draw_6_5_4  pscale, dpscale
+<h4><a id="occt_draw_6_5_4">pscale, dpscale</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4835,7 +4835,7 @@ sphere s 0 0 0 10
 pscale s 0 0 0 2 
 ~~~~
 
-@subsection occt_draw_6_6  Curve and surface analysis
+<h3><a id="occt_draw_6_6">Curve and surface analysis</a></h3>
 
 **Draw** provides methods to compute information about curves and surfaces: 
 
@@ -4847,7 +4847,7 @@ pscale s 0 0 0 2
   * **proj** and **2dproj** to project a point on a curve or a surface.
   * **surface_radius** to compute the curvature on a surface.
 
-@subsubsection occt_draw_6_6_1  coord
+<h4><a id="occt_draw_6_6_1">coord</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4866,7 +4866,7 @@ coord p x y z
 ~~~~
 
 
-@subsubsection occt_draw_6_6_2   cvalue, 2dcvalue
+<h4><a id="occt_draw_6_6_2">cvalue, 2dcvalue</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4888,7 +4888,7 @@ Let on a bezier curve at parameter 0 the point is the first pole; the first deri
 # are 0 0 3 3 0 -6 
 ~~~~
 
-@subsubsection occt_draw_6_6_3  svalue
+<h4><a id="occt_draw_6_6_3">svalue</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4907,7 +4907,7 @@ point . x y z
 } 
 ~~~~
 
-@subsubsection occt_draw_6_6_4  localprop, minmaxcurandinf
+<h4><a id="occt_draw_6_6_4">localprop, minmaxcurandinf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4926,7 +4926,7 @@ localprop c 0.5
 == Curvature : 0.02 
 ~~~~
 
-@subsubsection occt_draw_6_6_5  parameters
+<h4><a id="occt_draw_6_6_5">parameters</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4943,7 +4943,7 @@ parameters p 5 5 5 u v
 # the values of u and v are : 0 5 
 ~~~~
 
-@subsubsection occt_draw_6_6_6  proj, 2dproj
+<h4><a id="occt_draw_6_6_6">proj, 2dproj</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4965,7 +4965,7 @@ proj t 30 10 7
 == ext_1 ext_2 ext_3 ext_4 
 ~~~~
 
-@subsubsection occt_draw_6_6_7  surface_radius
+<h4><a id="occt_draw_6_6_7">surface_radius</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -4986,13 +4986,13 @@ surface_radius c pi 3 c1 c2
 ~~~~
 
 
-@subsection occt_draw_6_7  Intersections
+<h3><a id="occt_draw_6_7">Intersections</a></h3>
 
 * **intersect** computes intersections of surfaces; 
 * **2dintersect** computes intersections of 2d curves.
 * **intconcon** computes intersections of 2d conic curves.
 
-@subsubsection occt_draw_6_7_1  intersect
+<h4><a id="occt_draw_6_7_1">intersect</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5009,7 +5009,7 @@ plane p 0 0 40 0 1 5
 intersect e c p 
 ~~~~
 
-@subsubsection occt_draw_6_7_2  2dintersect
+<h4><a id="occt_draw_6_7_2">2dintersect</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5029,7 +5029,7 @@ ellipse e2 0 0 0 1 5 2
 2dintersect e1 e2 -tol 1.e-10 -state
 ~~~~
 
-@subsubsection occt_draw_6_7_3 intconcon
+<h4><a id="occt_draw_6_7_3">intconcon</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5048,7 +5048,7 @@ ellipse e2 0 0 0 1 5 2
 intconcon e1 e2 
 ~~~~
 
-@subsection occt_draw_6_8  Approximations
+<h3><a id="occt_draw_6_8">Approximations</a></h3>
 
 Draw provides command to create curves and surfaces by approximation. 
 
@@ -5058,7 +5058,7 @@ Draw provides command to create curves and surfaces by approximation.
 * **surfint** fit a surface through 3d points by interpolation;
 * **2dinterpole** interpolates a curve. 
 
-@subsubsection occt_draw_6_8_1   appro, dapprox
+<h4><a id="occt_draw_6_8_1">appro, dapprox</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5076,7 +5076,7 @@ Let us pick points and they will be fitted
 2dapprox c 10 
 ~~~~
 
-@subsubsection occt_draw_6_8_2  surfapp, grilapp, surfint
+<h4><a id="occt_draw_6_8_2">surfapp, grilapp, surfint</a></h4>
 
 
 Syntax:
@@ -5110,7 +5110,7 @@ surfapp s 3 4 \
 0 30 0 10 30 0 20 30 0 
 ~~~~
 
-@subsection  occt_draw_6_9  Projections
+<h3><a id="occt_draw_6_9">Projections</a></h3>
 
 Draw provides commands to project points/curves on curves/surfaces.
 
@@ -5118,7 +5118,7 @@ Draw provides commands to project points/curves on curves/surfaces.
 * **project** projects 3D curve on the surface (see [project command description](#occt_draw_6_2_11));
 * **projponf** projects point on the face.
 
-@subsubsection  occt_draw_6_9_1 projponf
+<h4><a id="occt_draw_6_9_1">projponf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5147,13 +5147,13 @@ projponf f pnt
 # pproj = 5 5 0
 ~~~~
 
-@subsection occt_draw_6_10  Constraints
+<h3><a id="occt_draw_6_10">Constraints</a></h3>
 
 * **cirtang** constructs 2d circles tangent to curves;
 * **lintan** constructs 2d lines tangent to curves. 
 
 
-@subsubsection occt_draw_6_10_1  cirtang
+<h4><a id="occt_draw_6_10_1">cirtang</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5186,7 +5186,7 @@ cirtang r -p pp -c cc
 == Solution of type C-P is: r_1 r_2 
 ~~~~
 
-@subsubsection occt_draw_6_10_2  lintan
+<h4><a id="occt_draw_6_10_2">lintan</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5209,7 +5209,7 @@ line l 2 0 1 1
 lintan l1 c1 l 15 
 ~~~~
 
-@subsection occt_draw_6_11  Display
+<h3><a id="occt_draw_6_11">Display</a></h3>
 
 Draw provides commands to control the display of geometric objects. Some display parameters are used for all objects, others are valid for surfaces only, some for bezier and bspline only, and others for bspline only. 
 
@@ -5222,7 +5222,7 @@ On bezier and bspline curve and surface you can toggle the display of the contro
 On bspline curves and surfaces you can toggle the display of the knots with the **shknots** and **clknots** commands. 
 
 
-@subsubsection occt_draw_6_11_1  dmod, discr, defle
+<h4><a id="occt_draw_6_11_1">dmod, discr, defle</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5249,7 +5249,7 @@ discr 100
 dmode c u 
 ~~~~
 
-@subsubsection occt_draw_6_11_2   nbiso
+<h4><a id="occt_draw_6_11_2">nbiso</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5266,7 +5266,7 @@ sphere s 20
 nbiso s 35 15 
 ~~~~
 
-@subsubsection occt_draw_6_11_3  clpoles, shpoles
+<h4><a id="occt_draw_6_11_3">clpoles, shpoles</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5285,7 +5285,7 @@ beziercurve c 3 0 0 0 10 0 0 10 10 0
 clpoles c 
 ~~~~
 
-@subsubsection occt_draw_6_11_4  clknots, shknots
+<h4><a id="occt_draw_6_11_4">clknots, shknots</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5304,7 +5304,7 @@ clknots bc
 ~~~~
 
 
-@section occt_draw_7 Topology commands
+<h2><a id="occt_draw_7">Topology commands</a></h2>
 
 Draw provides a set of commands to test OCCT Topology libraries. The Draw commands are found in the DRAWEXE executable or in any executable including the BRepTest commands. 
 
@@ -5338,7 +5338,7 @@ The following topics are covered in the eight sections of this chapter:
   * Analysis of shapes.
 
 
-@subsection occt_draw_7_1  Basic topology
+<h3><a id="occt_draw_7_1">Basic topology</a></h3>
 
 The set of basic commands allows simple operations on shapes, or step-by-step construction of objects. These commands are useful for analysis of shape structure and include: 
 
@@ -5354,7 +5354,7 @@ In Draw, shapes are displayed using isoparametric curves. There is color coding 
   * a yellow edge is a shared edge, which belongs to at least two faces.
 
 
-@subsubsection occt_draw_7_1_1  isos, discretisation
+<h4><a id="occt_draw_7_1_1">isos, discretisation</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5377,7 +5377,7 @@ isos 0
 **Warning**: don’t confuse *isos* and *discretisation* with the geometric commands *nbisos* and *discr*. 
 
 
-@subsubsection occt_draw_7_1_2  orientation, complement, invert, normals, range
+<h4><a id="occt_draw_7_1_2">orientation, complement, invert, normals, range</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5414,7 +5414,7 @@ and finishing at 1
 range e 0 1 
 ~~~~
 
-@subsubsection occt_draw_7_1_3  explode, exwire, nbshapes
+<h4><a id="occt_draw_7_1_3">explode, exwire, nbshapes</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5465,7 +5465,7 @@ COMPOUND : 0
 SHAPE : 34 
 ~~~~
 
-@subsubsection occt_draw_7_1_4  emptycopy, add, compound
+<h4><a id="occt_draw_7_1_4">emptycopy, add, compound</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5500,7 +5500,7 @@ compound b1 b2 b3 c
 ~~~~
 
 
-@subsubsection occt_draw_7_1_5  compare
+<h4><a id="occt_draw_7_1_5">compare</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5526,7 +5526,7 @@ compare b1 b2
 # shapes are not same
 ~~~~
 
-@subsubsection occt_draw_7_1_6  issubshape
+<h4><a id="occt_draw_7_1_6">issubshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5544,7 +5544,7 @@ issubshape b_2 b
 ~~~~
 
 
-@subsection occt_draw_7_2  Curve and surface topology
+<h3><a id="occt_draw_7_2">Curve and surface topology</a></h3>
 
 This group of commands is used to create topology from shapes and to extract shapes from geometry. 
 
@@ -5556,7 +5556,7 @@ This group of commands is used to create topology from shapes and to extract sha
   * To extract the 2d curves from edges or faces, use the **pcurve** command.
 
 
-@subsubsection occt_draw_7_2_1  vertex
+<h4><a id="occt_draw_7_2_1">vertex</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5570,7 +5570,7 @@ Creates a vertex at either a 3d location x,y,z or the point at parameter p on an
 vertex v1 10 20 30 
 ~~~~
 
-@subsubsection occt_draw_7_2_1a  mkpoint
+<h4><a id="occt_draw_7_2_1a">mkpoint</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5584,7 +5584,7 @@ Creates a point from the coordinates of a given vertex.
 mkpoint p v1
 ~~~~
 
-@subsubsection occt_draw_7_2_2  edge, mkedge, uisoedge, visoedge
+<h4><a id="occt_draw_7_2_2">edge, mkedge, uisoedge, visoedge</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5633,7 +5633,7 @@ mkface p p
 uisoedge e p 0.5 0.20 0.8 
 ~~~~
 
-@subsubsection occt_draw_7_2_3  wire, polyline, polyvertex
+<h4><a id="occt_draw_7_2_3">wire, polyline, polyvertex</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5657,7 +5657,7 @@ polyline w2 10 10 0 0 10 0 0 0 0
 wire w w1 w2 
 ~~~~
 
-@subsubsection occt_draw_7_2_4  profile
+<h4><a id="occt_draw_7_2_4">profile</a></h4>
 
 Syntax       
 ~~~~{.php}
@@ -5751,7 +5751,7 @@ profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 r 90 ix -
 profile p F 1 0 x 2 y 1 c 1 45 l 1 tt 1.5 1.5 xx 0.2 yy 2 c 1 290 ix 0 r 90 ix -0.3 
 ~~~~
 
-@subsubsection occt_draw_7_2_5   bsplineprof
+<h4><a id="occt_draw_7_2_5">bsplineprof</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5783,7 +5783,7 @@ bsplineprof res
 # click mb3 to create the face 
 ~~~~
 
-@subsubsection occt_draw_7_2_6  mkoffset
+<h4><a id="occt_draw_7_2_6">mkoffset</a></h4>
 
 **mkoffset** creates a parallel wire in the same plane using a face or an existing continuous set of wires as a reference. The number of occurrences is not limited. 
 The offset distance defines the spacing and the positioning of the occurrences. 
@@ -5832,7 +5832,7 @@ mkoffset r p 1 -0.55
 # r_1 is a compound of two wires
 ~~~~
 
-@subsubsection occt_draw_7_2_7  mkplane, mkface
+<h4><a id="occt_draw_7_2_7">mkplane, mkface</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5856,7 +5856,7 @@ trim g g -pi/3 pi/2 0 15
 mkface g g 
 ~~~~
 
-@subsubsection occt_draw_7_2_8  mkcurve, mksurface
+<h4><a id="occt_draw_7_2_8">mkcurve, mksurface</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5876,7 +5876,7 @@ vertex v2 10 0 0
 edge e v1 v2 
 ~~~~
 
-@subsubsection occt_draw_7_2_9  pcurve
+<h4><a id="occt_draw_7_2_9">pcurve</a></h4>
 
 Syntax:
 
@@ -5897,7 +5897,7 @@ pcurve p
 2dfit 
 ~~~~
 
-@subsubsection occt_draw_7_2_10  chfi2d
+<h4><a id="occt_draw_7_2_10">chfi2d</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5951,7 +5951,7 @@ chfi2d cfr p . . CDA 0.3 75
 #select an edge 
 ~~~~
 
-@subsubsection occt_draw_7_2_11  nproject
+<h4><a id="occt_draw_7_2_11">nproject</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -5990,7 +5990,7 @@ nproject r e p
 ~~~~
 
 
-@subsection occt_draw_7_3  Primitives
+<h3><a id="occt_draw_7_3">Primitives</a></h3>
 
 Primitive commands make it possible to create simple shapes. They include: 
 
@@ -5999,7 +5999,7 @@ Primitive commands make it possible to create simple shapes. They include:
   * **halfspace** command
 
 
-@subsubsection occt_draw_7_3_1  box, wedge
+<h4><a id="occt_draw_7_3_1">box, wedge</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6031,7 +6031,7 @@ wedge w2 10 20 30 0
 wedge w3 20 20 20 10 10 10 10 
 ~~~~
 
-@subsubsection occt_draw_7_3_2  pcylinder, pcone, psphere, ptorus
+<h4><a id="occt_draw_7_3_2">pcylinder, pcone, psphere, ptorus</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6067,7 +6067,7 @@ psphere sp 10 270
 ptorus to 20 5 0 90 
 ~~~~
 
-@subsubsection occt_draw_7_3_3  halfspace
+<h4><a id="occt_draw_7_3_3">halfspace</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6085,7 +6085,7 @@ halfspace hr b_3 0.5 0.5 0.5
 ~~~~
 
 
-@subsection occt_draw_7_4  Sweeping
+<h3><a id="occt_draw_7_4">Sweeping</a></h3>
 
 Sweeping creates shapes by sweeping out a shape along a defined path: 
 
@@ -6096,7 +6096,7 @@ Sweeping creates shapes by sweeping out a shape along a defined path:
   * **thrusections** -- creates a sweep from wire in different planes.
 
 
-@subsubsection occt_draw_7_4_1  prism
+<h4><a id="occt_draw_7_4_1">prism</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6114,7 +6114,7 @@ polyline f 0 0 0 10 0 0 10 5 0 5 5 0 5 15 0 0 15 0 0 0 0
 mkplane f f 
 ~~~~
 
-@subsubsection occt_draw_7_4_2  revol
+<h4><a id="occt_draw_7_4_2">revol</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6131,7 +6131,7 @@ revol s w 20 0 0 0 1 0 90
 ~~~~
 
 
-@subsubsection occt_draw_7_4_3  pipe
+<h4><a id="occt_draw_7_4_3">pipe</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6155,7 +6155,7 @@ mkplane profile profile
 pipe p spine profile 
 ~~~~
 
-@subsubsection occt_draw_7_4_4  mksweep, addsweep, setsweep, deletesweep, buildsweep, simulsweep
+<h4><a id="occt_draw_7_4_4">mksweep, addsweep, setsweep, deletesweep, buildsweep, simulsweep</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6207,7 +6207,7 @@ addsweep w -R
 simulsweep w 3 
 ~~~~
 
-@subsubsection occt_draw_7_4_5  thrusections
+<h4><a id="occt_draw_7_4_5">thrusections</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6231,7 +6231,7 @@ Tolerances obtenues   -- 3d : 0
 ~~~~
 
 
-@subsection occt_draw_7_5  Topological transformation
+<h3><a id="occt_draw_7_5">Topological transformation</a></h3>
 
 Transformations are applications of matrices. When the transformation is nondeforming, such as translation or rotation, the object is not copied. The topology localcoordinate system feature is used. The copy can be enforced with the **tcopy** command. 
 
@@ -6240,7 +6240,7 @@ Transformations are applications of matrices. When the transformation is nondefo
   * **tmirror** and **tscale** -- always modify the shape.
 
 
-@subsubsection occt_draw_7_5_1   tcopy
+<h4><a id="occt_draw_7_5_1">tcopy</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6260,7 +6260,7 @@ ttranslate e2 0 5 0
 # now modify the curve, only e1 and e2 will be modified 
 ~~~~
 
-@subsubsection occt_draw_7_5_2   tmove, treset
+<h4><a id="occt_draw_7_5_2">tmove, treset</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6285,7 +6285,7 @@ tmove b2 b1
 reset b1 b2 
 ~~~~
 
-@subsubsection occt_draw_7_5_3   ttranslate, trotate
+<h4><a id="occt_draw_7_5_3">ttranslate, trotate</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6321,7 +6321,7 @@ ttranslate s 25 0 12.5
 source toto.tcl 
 ~~~~
 
-@subsubsection occt_draw_7_5_4   tmirror, tscale
+<h4><a id="occt_draw_7_5_4">tmirror, tscale</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6344,7 +6344,7 @@ tscale c1 0 0 0 0.5
 ~~~~
 
 
-@subsection occt_draw_7_6 Sewing
+<h3><a id="occt_draw_7_6">Sewing</a></h3>
 
 **sewing** joins two or more shapes.
 Syntax:
@@ -6365,7 +6365,7 @@ sr is a shape COMPOUND FORWARD Free Modified
 ~~~~
 
 
-@subsection occt_draw_7_7 Topological operations
+<h3><a id="occt_draw_7_7">Topological operations</a></h3>
 
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old Boolean operation algorithm.
 It also provides wider range of options and diagnostics.
@@ -6374,7 +6374,7 @@ The algorithms of Boolean component are fully described in the [Boolean Operatio
 For the Draw commands to perform operations in Boolean component, read the dedicated section [Boolean operations commands](#occt_draw_bop)
 
 
-@subsection occt_draw_7_8  Drafting and blending
+<h3><a id="occt_draw_7_8">Drafting and blending</a></h3>
 
 Drafting is creation of a new shape by tilting faces through an angle. 
 
@@ -6388,7 +6388,7 @@ Blending is the creation of a new shape by rounding edges to create a fillet.
   * Use **buildevol**, **mkevol**, **updatevol** to realize varying radius blending.
 
 
-@subsubsection occt_draw_7_8_1  depouille
+<h4><a id="occt_draw_7_8_1">depouille</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6409,7 +6409,7 @@ explode b f
 dep a b 0 0 1 b_2 10 0 10 0 1 0 5 
 ~~~~
 
-@subsubsection occt_draw_7_8_2  chamf
+<h4><a id="occt_draw_7_8_2">chamf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6460,7 +6460,7 @@ chamf ch b . . A 0.4 30
 # select an adjacent face 
 ~~~~
 
-@subsubsection occt_draw_7_8_3  blend
+<h4><a id="occt_draw_7_8_3">blend</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6491,7 +6491,7 @@ blend b b 2 .
 ==- SetRegul 0s 
 ~~~~
 
-@subsubsection occt_draw_7_8_4  bfuseblend
+<h4><a id="occt_draw_7_8_4">bfuseblend</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6510,7 +6510,7 @@ ttranslate b2 -10 10 3
 bfuseblend a b1 b2 1
 ~~~~
 
-@subsubsection occt_draw_7_8_4a  bcutblend
+<h4><a id="occt_draw_7_8_4a">bcutblend</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6529,7 +6529,7 @@ ttranslate b2 -10 10 3
 bcutblend a b1 b2 1
 ~~~~
 
-@subsubsection occt_draw_7_8_5  mkevol, updatevol, buildevol
+<h4><a id="occt_draw_7_8_5">mkevol, updatevol, buildevol</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6576,7 +6576,7 @@ buildevol
 ~~~~
 
 
-@subsection occt_draw_defeaturing Defeaturing
+<h3><a id="occt_draw_defeaturing">Defeaturing</a></h3>
 
 Draw command **removefeatures** is intended for performing [3D Model Defeaturing](#occt_modalg_defeaturing), i.e. it performs the removal of the requested features from the shape.
 
@@ -6595,7 +6595,7 @@ parallel - enables the parallel processing mode.
 
 
 
-@subsection occt_draw_makeperiodic 3D Model Periodicity
+<h3><a id="occt_draw_makeperiodic">3D Model Periodicity</a></h3>
 
 Draw module for [making the shape periodic](#occt_modalg_makeperiodic) includes the following commands:
 * **makeperiodic** - makes the shape periodic in required directions;
@@ -6603,7 +6603,7 @@ Draw module for [making the shape periodic](#occt_modalg_makeperiodic) includes 
 * **periodictwins** - returns the periodic twins for the shape;
 * **clearrepetitions** - clears all previous repetitions of the periodic shape.
 
-@subsubsection occt_draw_makeperiodic_makeperiodic makeperiodic
+<h4><a id="occt_draw_makeperiodic_makeperiodic">makeperiodic</a></h4>
 
 The command makes the shape periodic in the required directions with the required period.
 If trimming is given it trims the shape to fit the requested period.
@@ -6619,7 +6619,7 @@ shape         - input shape to make it periodic:
 -trim first   - option to trim the shape to fit the required period, starting the period in first.
 
 
-@subsubsection occt_draw_makeperiodic_repeatshape repeatshape
+<h4><a id="occt_draw_makeperiodic_repeatshape">repeatshape</a></h4>
 
 The command repeats the periodic shape in periodic direction requested number of time.
 The result contains the all the repeated shapes glued together.
@@ -6634,7 +6634,7 @@ Where:
 result       - resulting shape;
 -x/y/z times - direction for repetition and number of repetitions (negative number of times means the repetition in negative direction).
 
-@subsubsection occt_draw_makeperiodic_periodictwins periodictwins
+<h4><a id="occt_draw_makeperiodic_periodictwins">periodictwins</a></h4>
 
 For the given shape the command returns the identical shapes located on the opposite sides of the periodic direction.
 All periodic twins should have the same geometry.
@@ -6649,13 +6649,13 @@ twins - periodic twins for the given shape
 shape - shape to find the twins for
 
 
-@subsubsection occt_draw_makeperiodic_clearrepetitions clearrepetitions
+<h4><a id="occt_draw_makeperiodic_clearrepetitions">clearrepetitions</a></h4>
 
 The command clears all previous repetitions of the periodic shape allowing to start the repetitions over.
 No arguments are needed for the command.
 
 
-@subsection occt_draw_makeconnected Making the touching shapes connected
+<h3><a id="occt_draw_makeconnected">Making the touching shapes connected</a></h3>
 
 Draw module for [making the touching same-dimensional shapes connected](#occt_modalg_makeconnected) includes the following commands:
 * **makeconnected** - make the input shapes connected or glued, performs material associations;
@@ -6665,7 +6665,7 @@ Draw module for [making the touching same-dimensional shapes connected](#occt_mo
 * **cperiodictwins** - returns all periodic twins for the shape;
 * **cclearrepetitions** - clears all previous repetitions of the periodic shape, keeping the shape periodic.
 
-@subsubsection occt_draw_makeconnected_makeconnected makeconnected
+<h4><a id="occt_draw_makeconnected_makeconnected">makeconnected</a></h4>
 
 The command makes the input touching shapes connected.
 
@@ -6678,7 +6678,7 @@ Where:
 result            - resulting connected shape.
 shape1 shape2 ... - shapes to be made connected.
 
-@subsubsection occt_draw_makeconnected_cmaterialson cmaterialson
+<h4><a id="occt_draw_makeconnected_cmaterialson">cmaterialson</a></h4>
 
 The command returns the materials located on the requested side of the shape.
 The command should be called after the shapes have been made connected, i.e. after the command **makeconnected**.
@@ -6693,7 +6693,7 @@ shape  - shape for which the materials are needed
 +/-    - side of a given shape ('+' for positive side, '-' - for negative).
 
 
-@subsubsection occt_draw_makeconnected_cmakeperiodic cmakeperiodic
+<h4><a id="occt_draw_makeconnected_cmakeperiodic">cmakeperiodic</a></h4>
 
 The command makes the connected shape periodic in the required directions with the required period.
 The command should be called after the shapes have been made connected, i.e. after the command **makeconnected**.
@@ -6709,7 +6709,7 @@ shape         - input shape to make it periodic:
 -trim first   - option to trim the shape to fit the required period, starting the period in first.
 
 
-@subsubsection occt_draw_makeconnected_crepeatshape crepeatshape
+<h4><a id="occt_draw_makeconnected_crepeatshape">crepeatshape</a></h4>
 
 The command repeats the connected periodic shape in the required periodic directions required number of times.
 The command should be called after the shapes have been made connected and periodic, i.e. after the commands **makeconnected** and **cmakeperiodic**.
@@ -6723,7 +6723,7 @@ result       - resulting shape;
 -x/y/z times - direction for repetition and number of repetitions (negative number of times means the repetition in negative direction).
 
 
-@subsubsection occt_draw_makeconnected_cperiodictwins cperiodictwins
+<h4><a id="occt_draw_makeconnected_cperiodictwins">cperiodictwins</a></h4>
 
 The command returns all periodic twins for the shape.
 The command should be called after the shapes have been made connected and periodic, i.e. after the commands **makeconnected** and **cmakeperiodic**.
@@ -6737,7 +6737,7 @@ Where:
 twins - periodic twins of a shape.
 shape - input shape.
 
-@subsubsection occt_draw_makeconnected_cclearrepetitions cclearrepetitions
+<h4><a id="occt_draw_makeconnected_cclearrepetitions">cclearrepetitions</a></h4>
 
 The command clears all previous repetitions of the periodic shape keeping the shape periodic.
 The command should be called after the shapes have been made connected, periodic and the repetitions have been applied to the periodic shape, i.e. after the commands **makeconnected**, **cmakeperiodic** and **crepeatshape**.
@@ -6749,7 +6749,7 @@ cclearrepetitions [result]
 ~~~~
 
 
-@subsection occt_draw_7_9  Analysis of topology and geometry
+<h3><a id="occt_draw_7_9">Analysis of topology and geometry</a></h3>
 
 Analysis of shapes includes commands to compute length, area, volumes and inertial properties, as well as to compute some aspects impacting shape validity.
 
@@ -6763,7 +6763,7 @@ Analysis of shapes includes commands to compute length, area, volumes and inerti
   * Use **validrange** to check range of an edge not covered by vertices.
 
 
-@subsubsection occt_draw_7_9_1  lprops, sprops, vprops
+<h4><a id="occt_draw_7_9_1">lprops, sprops, vprops</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6816,7 +6816,7 @@ I.Z = 314159.265357595
 ~~~~
 
 
-@subsubsection occt_draw_7_9_2   bounding
+<h4><a id="occt_draw_7_9_2">bounding</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6902,7 +6902,7 @@ vprops ro 1.0e-12
 
 As we can see, the volume of OBB is significantly less than the volume of AABB.
 
-@subsubsection occt_draw_7_9_2a   isbbinterf
+<h4><a id="occt_draw_7_9_2a">isbbinterf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6951,7 +6951,7 @@ isbbinterf b1 b2 -o
 ==The shapes are interfered by OBB.
 ~~~~
 
-@subsubsection occt_draw_7_9_3  distmini
+<h4><a id="occt_draw_7_9_3">distmini</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -6989,7 +6989,7 @@ are:
 ==d1_val d1 d12 
 ~~~~
 
-@subsubsection occt_draw_7_9_4 xdistef, xdistcs, xdistcc, xdistc2dc2dss, xdistcc2ds 
+<h4><a id="occt_draw_7_9_4">xdistef, xdistcs, xdistcc, xdistc2dc2dss, xdistcc2ds </a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7019,7 +7019,7 @@ xdistcc2ds c_1 c2d2_1 s2 0 1
 xdistc2dc2dss c2d1_1 c2d2_1 s1 s2 0 1 1000
 ~~~~
 
-@subsubsection occt_draw_7_9_5  checkshape
+<h4><a id="occt_draw_7_9_5">checkshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7045,7 +7045,7 @@ checkshape b1
 this shape seems to be valid 
 ~~~~
 
-@subsubsection occt_draw_7_9_6  tolsphere
+<h4><a id="occt_draw_7_9_6">tolsphere</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7067,7 +7067,7 @@ tolsphere b1
 b1_v1 b1_v2 b1_v3 b1_v4 b1_v5 b1_v6 b1_v7 b1_v8
 ~~~~
 
-@subsubsection occt_draw_7_9_7  validrange
+<h4><a id="occt_draw_7_9_7">validrange</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7096,13 +7096,13 @@ dval u2
 ~~~~
 
 
-@subsection occt_draw_7_10  Surface creation
+<h3><a id="occt_draw_7_10">Surface creation</a></h3>
 
 Surface creation commands include surfaces created from boundaries and from spaces between shapes. 
   * **gplate** creates a surface from a boundary definition.
   * **filling** creates a surface from a group of surfaces.
 
-@subsubsection occt_draw_7_10_1   gplate,
+<h4><a id="occt_draw_7_10_1">gplate,</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7168,7 +7168,7 @@ Approximation error : 0.000422195884750181
 Criterium error : 3.43709808053967e-05 
 ~~~~
 
-@subsubsection occt_draw_7_10_2   filling, fillingparam
+<h4><a id="occt_draw_7_10_2">filling, fillingparam</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7242,12 +7242,12 @@ MaxSegments = 9
 ~~~~
 
 
-@subsection occt_draw_7_11  Complex Topology
+<h3><a id="occt_draw_7_11">Complex Topology</a></h3>
 
 Complex topology is the group of commands that modify the topology of shapes. This includes feature modeling. 
 
 
-@subsubsection occt_draw_7_11_1  offsetshape, offsetcompshape
+<h4><a id="occt_draw_7_11_1">offsetshape, offsetcompshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7271,7 +7271,7 @@ explode b1 f
 offsetcompshape r b1 -1 b1_3 
 ~~~~
 
-@subsubsection occt_draw_7_11_2  featprism, featdprism, featrevol, featlf, featrf
+<h4><a id="occt_draw_7_11_2">featprism, featdprism, featrevol, featlf, featrf</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7380,7 +7380,7 @@ featrf c1 w pl 0 0 0 0 0 1 0.3 0.3 1 1
 featperform rf result 
 ~~~~
 
-@subsubsection occt_draw_7_11_3  draft
+<h4><a id="occt_draw_7_11_3">draft</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7411,7 +7411,7 @@ profile p F 0 0 x 2 y 4 tt 1 1.5 tt 0 4 w
 draft res p 0 0 1 3 1 -Ro 
 ~~~~
 
-@subsubsection occt_draw_7_11_4  deform
+<h4><a id="occt_draw_7_11_4">deform</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -7429,7 +7429,7 @@ deformation
 ~~~~
 
 
-@subsubsection occt_draw_7_11_5 nurbsconvert
+<h4><a id="occt_draw_7_11_5">nurbsconvert</a></h4>
 
 Syntax:
  
@@ -7442,7 +7442,7 @@ This conversion is required for asymmetric deformation and prepares the argument
 The conversion can be necessary when transferring shape data to other applications. 
 
 
-@subsubsection occt_draw_7_11_6 edgestofaces
+<h4><a id="occt_draw_7_11_6">edgestofaces</a></h4>
 
 **edgestofaces** - The command allows building planar faces from the planar edges randomly located in 3D space.
 
@@ -7454,7 +7454,7 @@ Options:
  * -a AngTol - angular tolerance used for distinguishing the planar faces;
  * -s Shared(0/1) - boolean flag which defines whether the input edges are already shared or have to be intersected.
 
-@subsection occt_draw_hist History commands
+<h3><a id="occt_draw_hist">History commands</a></h3>
 
 Draw module for [History Information support](#occt_modalg_hist) includes the command to save history of modifications performed by Boolean operation or sibling commands into a drawable object and the actual history commands:
 
@@ -7464,7 +7464,7 @@ Draw module for [History Information support](#occt_modalg_hist) includes the co
 * **modified**;
 * **generated**.
 
-@subsubsection occt_draw_hist_set setfillhistory
+<h4><a id="occt_draw_hist_set">setfillhistory</a></h4>
 
 *setfillhistory* command controls if the history is needed to be filled in the supported algorithms and saved into the session after the algorithm is done.
 By default it is TRUE, i.e. the history is filled and saved.
@@ -7497,7 +7497,7 @@ dump h
 #  - 0 Generated shapes.
 ~~~~
 
-@subsubsection occt_draw_hist_save savehistory
+<h4><a id="occt_draw_hist_save">savehistory</a></h4>
 
 *savehistory* command saves the history from the session into a drawable object with the given name.
 
@@ -7533,7 +7533,7 @@ dump usd_hist
 # - 0 Generated shapes.
 ~~~~
 
-@subsubsection occt_draw_hist_isdel isdeleted
+<h4><a id="occt_draw_hist_isdel">isdeleted</a></h4>
 
 *isdeleted* command checks if the given shape has been deleted in the given history.
 
@@ -7556,7 +7556,7 @@ foreach s [join [list [explode b2 v] [explode b2 e] [explode b2 f] ] ] {
 }
 ~~~~
 
-@subsubsection occt_draw_hist_mod modified
+<h4><a id="occt_draw_hist_mod">modified</a></h4>
 
 *modified* command returns the shapes Modified from the given shape in the given history. All modified shapes are put into a compound. If the shape has not been modified, the resulting compound will be empty. Note that if the shape has been modified into a single shape only, it will be returned without enclosure into the compound.
 
@@ -7579,7 +7579,7 @@ modified m3 fillet_hist b_3
 modified m5 fillet_hist b_5
 ~~~~
 
-@subsubsection occt_draw_hist_gen generated
+<h4><a id="occt_draw_hist_gen">generated</a></h4>
 
 *generated* command returns the shapes Generated from the given shape in the given history. All generated shapes are put into a compound. If no shapes have been generated from the shape, the resulting compound will be empty. Note that; if the shape has generated a single shape only, it will be returned without enclosure into the compound.
 
@@ -7612,7 +7612,7 @@ compare g12 g22
 # equal shapes
 ~~~~
 
-@subsubsection occt_draw_hist_extension Enabling Draw history support for the algorithms
+<h4><a id="occt_draw_hist_extension">Enabling Draw history support for the algorithms</a></h4>
 
 Draw History mechanism allows fast and easy enabling of the Draw history support for the OCCT algorithms supporting standard history methods.
 To enable History commands for the algorithm it is necessary to save the history of the algorithm into the session.
@@ -7652,16 +7652,16 @@ if (BRepTest_Objects::IsHistoryNeeded())
 
 The method *BRepTest_Objects::IsHistoryNeeded()* controls if the history is needed to be filled in the algorithm and saved into the session after the algorithm is done (*setfillhistory* command controls this option in DRAW).
 
-@section occt_draw_bop Boolean Operations Commands
+<h2><a id="occt_draw_bop">Boolean Operations Commands</a></h2>
 
 This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for performing, analyzing, debugging the algorithm in Boolean Component.
 See [Boolean operations](#specification__boolean_operations) user's guide for the description of these algorithms.
 
-@subsection occt_draw_bop_two Boolean Operations on two operands
+<h3><a id="occt_draw_bop_two">Boolean Operations on two operands</a></h3>
 
 All commands in this section perform Boolean operations on two shapes. One of them is considered as object, and the other as a tool.
 
-@subsubsection occt_draw_bop_two_bop bop, bopfuse, bopcut, boptuc, bopcommon, bopsection
+<h4><a id="occt_draw_bop_two_bop">bop, bopfuse, bopcut, boptuc, bopcommon, bopsection</a></h4>
 
 These commands perform Boolean operations on two shapes:
 * **bop** performs intersection of given shapes and stores the intersection results into internal Data Structure.
@@ -7710,7 +7710,7 @@ bopsection s5
 ~~~~
 
 
-@subsubsection occt_draw_bop_two_bapi bfuse, bcut, btuc, bcommon, bsection
+<h4><a id="occt_draw_bop_two_bapi">bfuse, bcut, btuc, bcommon, bsection</a></h4>
 
 These commands also perform Boolean operations on two shapes. These are the short variants of the bop* commands.
 Each of these commands performs both intersection and building the result and may be useful if you need only the result of a single boolean operation.
@@ -7736,7 +7736,7 @@ shape1, shape2 - arguments of the operation
 -n2d2 - disables PCurve construction on second object
 -na - disables approximation of the section curves
 
-@subsection occt_draw_bop_multi Boolean Operations on multiple arguments
+<h3><a id="occt_draw_bop_multi">Boolean Operations on multiple arguments</a></h3>
 
 The modern Boolean Operations algorithm available in Open CASCADE Technology is capable of performing a Boolean Operations not only on two shapes, but on arbitrary number of shapes.
 In terms of Boolean Operations these arguments are divided on two groups **Objects** and **Tools**. The meaning of these groups is similar to the single object and tool of Boolean Operations on two shapes.
@@ -7744,11 +7744,11 @@ In terms of Boolean Operations these arguments are divided on two groups **Objec
 The Boolean operations are based on the General Fuse operation (see [General Fuse algorithm](#specification__boolean_7)) which splits all input shapes basing on the intersection results.
 Depending on the type of Boolean operation the BOP algorithm choses the necessary splits of the arguments.
 
-@subsection occt_draw_bop_general_com General commands for working with multiple arguments
+<h3><a id="occt_draw_bop_general_com">General commands for working with multiple arguments</a></h3>
 
 The algorithms based on General Fuse operation are using the same commands for adding and clearing the arguments list and for performing intersection of these arguments.
 
-@subsubsection occt_draw_bop_general_com_add Adding arguments of operation
+<h4><a id="occt_draw_bop_general_com_add">Adding arguments of operation</a></h4>
 
 The following commands are used to add the objects and tools for Boolean operations:
 * **baddobjects** *S1 S2...Sn*	-- adds shapes *S1, S2, ... Sn* as Objects;
@@ -7760,14 +7760,14 @@ The following commands are used to clear the objects and tools:
 
 So, when running subsequent operation in one Draw session, make sure you cleared the Objects and Tools from previous operation. Otherwise, the new arguments will be added to the current ones.
 
-@subsubsection occt_draw_bop_general_com_fill Intersection of the arguments
+<h4><a id="occt_draw_bop_general_com_fill">Intersection of the arguments</a></h4>
 
 The command **bfillds** performs intersection of the arguments (**Objects** and **Tools**) and stores the intersection results into internal Data Structure.
 
 
-@subsection occt_draw_bop_build Building the result of operations
+<h3><a id="occt_draw_bop_build">Building the result of operations</a></h3>
 
-@subsubsection occt_draw_bop_build_BOP Boolean operation
+<h4><a id="occt_draw_bop_build_BOP">Boolean operation</a></h4>
 
 The command **bbop** is used for building the result of Boolean Operation. It has to be used after **bfillds** command.
 
@@ -7809,7 +7809,7 @@ bbop rtuc 3
 bbop rsec 4
 ~~~~
 
-@subsubsection occt_draw_bop_build_GF General Fuse operation
+<h4><a id="occt_draw_bop_build_GF">General Fuse operation</a></h4>
 
 The command **bbuild** is used for building the result of General Fuse Operation. It has to be used after **bfillds** command.
 General Fuse operation does not make the difference between Objects and Tools considering both as objects.
@@ -7837,7 +7837,7 @@ bfillds
 bbuild result
 ~~~~
 
-@subsubsection occt_draw_bop_build_Split Split operation
+<h4><a id="occt_draw_bop_build_Split">Split operation</a></h4>
 
 Split operation splits the **Objects** by the **Tools**.
 The command **bsplit** is used for building the result of Split operation. It has to be used after **bfillds** command.
@@ -7861,7 +7861,7 @@ bfillds
 bsplit result
 ~~~~
 
-@subsubsection occt_draw_bop_build_BOP_opensolids Alternative command for BOP
+<h4><a id="occt_draw_bop_build_BOP_opensolids">Alternative command for BOP</a></h4>
 
 There is an alternative way to build the result of Boolean operation using the **buildbop** command, which should be run after any other building command, such as **bbuild** or **bbop** or **bsplit**.
 The command has the following features:
@@ -7918,12 +7918,12 @@ buildbop r10 -o b1 -t b2 b3 -op cut
 buildbop r11 -o b1 -t b2 b3 -op tuc
 ~~~~
 
-@subsubsection occt_draw_bop_build_CB Cells Builder
+<h4><a id="occt_draw_bop_build_CB">Cells Builder</a></h4>
 
 See the [Cells Builder Usage](#specification__boolean_10c_Cells_1) for the Draw usage of Cells Builder algorithm.
 
 
-@subsubsection occt_draw_bop_build_API Building result through API
+<h4><a id="occt_draw_bop_build_API">Building result through API</a></h4>
 
 The following commands are used to perform the operation using API implementation of the algorithms:
 * **bapibuild** -- to perform API general fuse operation.
@@ -7933,7 +7933,7 @@ The following commands are used to perform the operation using API implementatio
 These commands have the same syntax as the analogical commands described above.
 
 
-@subsection occt_draw_bop_options Setting options for the operation
+<h3><a id="occt_draw_bop_options">Setting options for the operation</a></h3>
 
 The algorithms in Boolean component have a wide range of options.
 To see the current state of all option the command **boptions** should be used.
@@ -7946,7 +7946,7 @@ boptions [-default]
 
 To have an effect the options should be set before the operation (before *bfillds* command).
 
-@subsubsection occt_draw_bop_options_par Parallel processing mode
+<h4><a id="occt_draw_bop_options_par">Parallel processing mode</a></h4>
 
 **brunparallel** command enables/disables the parallel processing mode of the operation.
 
@@ -7962,7 +7962,7 @@ flag != 0 - parallel processing mode is on.
 
 The command is applicable for all commands in the component.
 
-@subsubsection occt_draw_bop_options_safe Safe processing mode
+<h4><a id="occt_draw_bop_options_safe">Safe processing mode</a></h4>
 
 **bnondestructive** command enables/disables the safe processing mode in which the input arguments are protected from modification.
 
@@ -7978,7 +7978,7 @@ flag != 0 - safe processing mode is on.
 
 The command is applicable for all commands in the component.
 
-@subsubsection occt_draw_bop_options_fuzzy Fuzzy option
+<h4><a id="occt_draw_bop_options_fuzzy">Fuzzy option</a></h4>
 
 **bfuzzyvalue** command sets the additional tolerance for operations.
 
@@ -7989,7 +7989,7 @@ bfuzzyvalue value
 
 The command is applicable for all commands in the component.
 
-@subsubsection occt_draw_bop_options_glue Gluing option
+<h4><a id="occt_draw_bop_options_glue">Gluing option</a></h4>
 
 **bglue** command sets the gluing mode for the BOP algorithms.
 
@@ -8005,7 +8005,7 @@ Where:
 
 The command is applicable for all commands in the component.
 
-@subsubsection occt_draw_bop_options_checkinv Check inversion of input solids
+<h4><a id="occt_draw_bop_options_checkinv">Check inversion of input solids</a></h4>
 
 **bcheckinverted** command enables/disables the check of the input solids on inverted status in BOP algorithms.
 
@@ -8016,7 +8016,7 @@ bcheckinverted 0 (off) / 1 (on)
 
 The command is applicable for all commands in the component.
 
-@subsubsection occt_draw_bop_options_obb OBB usage
+<h4><a id="occt_draw_bop_options_obb">OBB usage</a></h4>
 
 **buseobb** command enables/disables the usage of OBB in BOP algorithms.
 
@@ -8027,7 +8027,7 @@ buseobb 0 (off) / 1 (on)
 
 The command is applicable for all commands in the component.
 
-@subsubsection occt_draw_bop_options_simplify Result simplification
+<h4><a id="occt_draw_bop_options_simplify">Result simplification</a></h4>
 
 **bsimplify** command enables/disables the result simplification after BOP. The command is applicable only to the API variants of GF, BOP and Split operations.
 
@@ -8041,7 +8041,7 @@ Where:
 -a tol - changes default angular tolerance of unification algo.
 
 
-@subsubsection occt_draw_bop_options_warn Drawing warning shapes
+<h4><a id="occt_draw_bop_options_warn">Drawing warning shapes</a></h4>
 
 **bdrawwarnshapes** command enables/disables drawing of warning shapes of BOP algorithms.
 
@@ -8053,11 +8053,11 @@ bdrawwarnshapes 0 (do not draw) / 1 (draw warning shapes)
 The command is applicable for all commands in the component.
 
 
-@subsection occt_draw_bop_check Check commands
+<h3><a id="occt_draw_bop_check">Check commands</a></h3>
 
 The following commands are analyzing the given shape on the validity of Boolean operation.
 
-@subsubsection occt_draw_bop_check_1 bopcheck
+<h4><a id="occt_draw_bop_check_1">bopcheck</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8088,7 +8088,7 @@ In this example one box is completely included into other box. So the output sho
 **bopcheck** command does not modifies the input shape, thus can be safely used.
 
 
-@subsubsection occt_draw_bop_check_2 bopargcheck
+<h4><a id="occt_draw_bop_check_2">bopargcheck</a></h4>
 
 **bopargcheck** syntax:
 ~~~~{.php}
@@ -8158,7 +8158,7 @@ Invalid Curve on Surface        : NO
 Faulties for SECOND  shape found : 0
 ~~~~
 
-@subsection occt_draw_bop_debug Debug commands
+<h3><a id="occt_draw_bop_debug">Debug commands</a></h3>
 
 The following terms and definitions are used in this chapter:
 * **DS** -- internal data structure used by the algorithm (*BOPDS_DS* object).
@@ -8166,7 +8166,7 @@ The following terms and definitions are used in this chapter:
 * **Builder** -- builder part of the algorithm (*BOPAlgo_Builder* object).
 * **IDS Index** -- the index of the vector *myLines*.
 
-@subsubsection occt_draw_bop_debug_int Intersection Part commands
+<h4><a id="occt_draw_bop_debug_int">Intersection Part commands</a></h4>
 
 All commands listed below  are available when the Intersection Part of the algorithm is done (i.e. after the command *bfillds*).
 
@@ -8409,7 +8409,7 @@ bopnews -v [-e]
 * <i>-v</i> -- displays all new vertices produced during the operation;
 * <i>-e</i> -- displays all new edges produced during the operation.
 
-@subsubsection occt_draw_bop_debug_build Building Part commands
+<h4><a id="occt_draw_bop_debug_build">Building Part commands</a></h4>
 
 The commands listed below are available when the Building Part of the algorithm is done (i.e. after the command *bbuild*).
 
@@ -8422,7 +8422,7 @@ bopim S
 Shows the compound of shapes that are images of shape *S* from the argument.
 
  
-@section occt_draw_8 Data Exchange commands
+<h2><a id="occt_draw_8">Data Exchange commands</a></h2>
 
 This chapter presents some general information about Data Exchange (DE) operations. 
 
@@ -8441,9 +8441,9 @@ Each entity from a file has its own number in the model (num). During the transl
 
 The model and the map are used for working with most of DE commands. 
 
-@subsection occt_draw_8_1  IGES commands 
+<h3><a id="occt_draw_8_1">IGES commands </a></h3>
 
-@subsubsection occt_draw_8_1_1  igesread
+<h4><a id="occt_draw_8_1_1">igesread</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8476,7 +8476,7 @@ See also the detailed description of <a href="user_guides__iges.html#occt_iges_2
 igesread /disk01/files/model.igs a  * 
 ~~~~
 
-@subsubsection occt_draw_8_1_2   tplosttrim
+<h4><a id="occt_draw_8_1_2">tplosttrim</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8492,7 +8492,7 @@ Optional parameter <i>\<IGES_type\></i> can be *0TrimmedSurface, BoundedSurface*
 tplosttrim TrimmedSurface 
 ~~~~
 
-@subsubsection occt_draw_8_1_3  brepiges
+<h4><a id="occt_draw_8_1_3">brepiges</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8514,12 +8514,12 @@ brepiges aa /disk1/tmp/aaa.igs
 ==  Write OK 
 ~~~~
 
-@subsection occt_draw_8_2  STEP commands 
+<h3><a id="occt_draw_8_2">STEP commands </a></h3>
 
 These commands are used during the translation of STEP models. 
 
 
-@subsubsection occt_draw_8_2_1  stepread
+<h4><a id="occt_draw_8_2_1">stepread</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8549,7 +8549,7 @@ See also the detailed description of <a href="user_guides__step.html#occt_step_2
 stepread /disk01/files/model.stp a  * 
 ~~~~
 
-@subsubsection occt_draw_8_2_2   stepwrite
+<h4><a id="occt_draw_8_2_2">stepwrite</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8576,11 +8576,11 @@ stepwrite 0 a /disk1/tmp/aaa.igs
 ~~~~
 
 
-@subsection occt_draw_8_3  General commands 
+<h3><a id="occt_draw_8_3">General commands </a></h3>
 
 These are auxiliary commands used for the analysis of result of translation of IGES and STEP files.
 
-@subsubsection occt_draw_8_3_1  count
+<h4><a id="occt_draw_8_3_1">count</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8601,7 +8601,7 @@ The optional selection argument, if specified, defines a subset of entities, whi
 count xst-types 
 ~~~~
 
-@subsubsection occt_draw_8_3_2 data
+<h4><a id="occt_draw_8_3_2">data</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8628,7 +8628,7 @@ data c
 
 
 
-@subsubsection occt_draw_8_3_3  elabel
+<h4><a id="occt_draw_8_3_3">elabel</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8642,7 +8642,7 @@ Entities in the IGES and STEP files are numbered in the succeeding order. An ent
 elabel 84 
 ~~~~
 
-@subsubsection occt_draw_8_3_4  entity
+<h4><a id="occt_draw_8_3_4">entity</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8659,7 +8659,7 @@ Entity can be determined by its number or label.
 entity #84 6 
 ~~~~
 
-@subsubsection occt_draw_8_3_5  enum
+<h4><a id="occt_draw_8_3_5">enum</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8674,7 +8674,7 @@ Prints a number for the entity with a given label.
 enum D21 
 ~~~~
 
-@subsubsection occt_draw_8_3_6  estatus
+<h4><a id="occt_draw_8_3_6">estatus</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8688,7 +8688,7 @@ The list of entities referenced by a given entity and the list of entities refer
 estatus #315 
 ~~~~
 
-@subsubsection occt_draw_8_3_7  fromshape
+<h4><a id="occt_draw_8_3_7">fromshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8702,7 +8702,7 @@ Gives the number of an IGES or STEP entity corresponding to an OCCT shape. If no
 fromshape a_1_23 
 ~~~~
 
-@subsubsection occt_draw_8_3_8  givecount
+<h4><a id="occt_draw_8_3_8">givecount</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8718,7 +8718,7 @@ Possible values of \<selection_name\> you can find in the “IGES FORMAT Users�
 givecount xst-model-roots 
 ~~~~
 
-@subsubsection occt_draw_8_3_9  givelist
+<h4><a id="occt_draw_8_3_9">givelist</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8741,7 +8741,7 @@ Prints a list of a subset of loaded entities defined by the selection argument:
 givelist xst-model-all 
 ~~~~
 
-@subsubsection occt_draw_8_3_10  listcount
+<h4><a id="occt_draw_8_3_10">listcount</a></h4>
 
 Syntax:listcount \<counter\> [\<selection\> ...]
 
@@ -8759,7 +8759,7 @@ Optional <i>\<selection\></i> argument, if specified, defines a subset of entiti
 listcount xst-types 
 ~~~~
 
-@subsubsection occt_draw_8_3_11  listitems
+<h4><a id="occt_draw_8_3_11">listitems</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8769,7 +8769,7 @@ listitems
 This command prints a list of objects (counters, selections etc.) defined in the current session. 
 
 
-@subsubsection occt_draw_8_3_12  listtypes
+<h4><a id="occt_draw_8_3_12">listtypes</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8779,7 +8779,7 @@ listtypes [<selection_name> ...]
 Gives a list of entity types which were encountered in the last loaded file (with a number of entities of each type). The list can be shown not for all entities but for a subset of them. This subset is defined by an optional selection argument. 
 
 
-@subsubsection occt_draw_8_3_13  newmodel
+<h4><a id="occt_draw_8_3_13">newmodel</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8789,7 +8789,7 @@ newmodel
 Clears the current model. 
 
 
-@subsubsection occt_draw_8_3_14  param
+<h4><a id="occt_draw_8_3_14">param</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8808,7 +8808,7 @@ Let us get the information about possible schemes for writing STEP file :
 param write.step.schema 
 ~~~~
 
-@subsubsection occt_draw_8_3_15  sumcount
+<h4><a id="occt_draw_8_3_15">sumcount</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8822,7 +8822,7 @@ Prints only a number of entities per each type matching the criteria defined by 
 sumcount xst-types 
 ~~~~
 
-@subsubsection occt_draw_8_3_16  tpclear
+<h4><a id="occt_draw_8_3_16">tpclear</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8833,7 +8833,7 @@ Clears the map of correspondences between IGES or STEP entities and OCCT shapes.
 
 
 
-@subsubsection occt_draw_8_3_17  tpdraw
+<h4><a id="occt_draw_8_3_17">tpdraw</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8845,7 +8845,7 @@ tpdraw <#(D)>_or_<num>
 tpdraw 57 
 ~~~~
 
-@subsubsection occt_draw_8_3_18  tpent
+<h4><a id="occt_draw_8_3_18">tpent</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8859,7 +8859,7 @@ Get information about the result of translation of the given IGES or STEP entity
 tpent \#23 
 ~~~~
 
-@subsubsection occt_draw_8_3_19  tpstat
+<h4><a id="occt_draw_8_3_19">tpstat</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8895,7 +8895,7 @@ To get help, run this command without arguments.
 tpstat *l iges-faces 
 ~~~~
 
-@subsubsection occt_draw_8_3_20  xload
+<h4><a id="occt_draw_8_3_20">xload</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8910,7 +8910,7 @@ xload /disk1/tmp/aaa.stp
 ~~~~
 
 
-@subsection occt_draw_8_4  Overview of XDE commands 
+<h3><a id="occt_draw_8_4">Overview of XDE commands </a></h3>
 
 These commands are used for translation of IGES and STEP files into an XCAF document (special document is inherited from CAF document and is intended for Extended Data Exchange (XDE) ) and working with it. XDE translation allows reading and writing of shapes with additional attributes -- colors, layers etc. All commands can be divided into the following groups: 
   * XDE translation commands
@@ -8922,7 +8922,7 @@ These commands are used for translation of IGES and STEP files into an XCAF docu
 
 Reminding: All operations of translation are performed with parameters managed by command [param](#occt_draw_8_3_14).
 
-@subsubsection occt_draw_8_4_1  ReadIges
+<h4><a id="occt_draw_8_4_1">ReadIges</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8937,7 +8937,7 @@ ReadIges D /disk1/tmp/aaa.igs
 ==> Document saved with name D 
 ~~~~
 
-@subsubsection occt_draw_8_4_2  ReadStep
+<h4><a id="occt_draw_8_4_2">ReadStep</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8952,7 +8952,7 @@ ReadStep D /disk1/tmp/aaa.stp
 == Document saved with name D 
 ~~~~
 
-@subsubsection occt_draw_8_4_3  WriteIges
+<h4><a id="occt_draw_8_4_3">WriteIges</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8964,7 +8964,7 @@ WriteIges <document> <file_name>
 WriteIges D /disk1/tmp/aaa.igs 
 ~~~~
 
-@subsubsection occt_draw_8_4_4  WriteStep
+<h4><a id="occt_draw_8_4_4">WriteStep</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8978,7 +8978,7 @@ Writes information from an XCAF document to a STEP file.
 WriteStep D /disk1/tmp/aaa.stp 
 ~~~~
 
-@subsubsection occt_draw_8_4_5  XFileCur
+<h4><a id="occt_draw_8_4_5">XFileCur</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -8993,7 +8993,7 @@ XFileCur
 == *as1-ct-203.stp* 
 ~~~~
 
-@subsubsection occt_draw_8_4_6  XFileList
+<h4><a id="occt_draw_8_4_6">XFileList</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9012,7 +9012,7 @@ XFileList
 ==> … 
 ~~~~
 
-@subsubsection occt_draw_8_4_7  XFileSet
+<h4><a id="occt_draw_8_4_7">XFileSet</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9026,7 +9026,7 @@ Sets the current file taking it from the components list of the assemble file.
 XFileSet as1-ct-NBA.stp 
 ~~~~
 
-@subsubsection occt_draw_8_4_8  XFromShape
+<h4><a id="occt_draw_8_4_8">XFromShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9041,9 +9041,9 @@ XFromShape a
 ==> Shape a: imported from entity 217:#26 in file as1-ct-Nut.stp 
 ~~~~
 
-@subsection occt_draw_8_5  XDE general commands 
+<h3><a id="occt_draw_8_5">XDE general commands </a></h3>
 
-@subsubsection occt_draw_8_5_1  XNewDoc
+<h4><a id="occt_draw_8_5_1">XNewDoc</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9057,7 +9057,7 @@ Creates a new XCAF document.
 XNewDoc D 
 ~~~~
 
-@subsubsection occt_draw_8_5_2  XShow
+<h4><a id="occt_draw_8_5_2">XShow</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9072,7 +9072,7 @@ Shows a shape from a given label in the 3D viewer. If the label is not given -- 
 XShow D 0:1:1:4 
 ~~~~
 
-@subsubsection occt_draw_8_5_3  XStat
+<h4><a id="occt_draw_8_5_3">XStat</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9101,7 +9101,7 @@ XStat D
 ==>Number of layers = 0 
 ~~~~
 
-@subsubsection occt_draw_8_5_4  XWdump
+<h4><a id="occt_draw_8_5_4">XWdump</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9116,7 +9116,7 @@ Saves the contents of the viewer window as an image (XWD, png or BMP file).
 XWdump D /disk1/tmp/image.png 
 ~~~~
 
-@subsubsection occt_draw_8_5_5  Xdump
+<h4><a id="occt_draw_8_5_5">Xdump</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9142,9 +9142,9 @@ Xdump D 1
 etc. 
 ~~~~
 
-@subsection occt_draw_8_6  XDE shape commands 
+<h3><a id="occt_draw_8_6">XDE shape commands </a></h3>
 
-@subsubsection occt_draw_8_6_1  XAddComponent
+<h4><a id="occt_draw_8_6_1">XAddComponent</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9161,7 +9161,7 @@ Let us add shape b as component shape to assembly shape from label *0:1:1:1*
 XAddComponent D 0:1:1:1 b 
 ~~~~
 
-@subsubsection occt_draw_8_6_2  XAddShape
+<h4><a id="occt_draw_8_6_2">XAddShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9180,7 +9180,7 @@ XAddShape D b 0
 # each subshapes new label is created 
 ~~~~
 
-@subsubsection occt_draw_8_6_3  XFindComponent
+<h4><a id="occt_draw_8_6_3">XFindComponent</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9194,7 +9194,7 @@ Prints a sequence of labels of the assembly path.
 XFindComponent D b 
 ~~~~
 
-@subsubsection occt_draw_8_6_4  XFindShape
+<h4><a id="occt_draw_8_6_4">XFindShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9208,7 +9208,7 @@ Finds and prints a label with an indicated top-level shape.
 XFindShape D a 
 ~~~~
 
-@subsubsection occt_draw_8_6_5  XGetFreeShapes
+<h4><a id="occt_draw_8_6_5">XGetFreeShapes</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9230,7 +9230,7 @@ XGetFreeShapes D sh
 == sh_1 sh_2 sh_3 sh_4 
 ~~~~
 
-@subsubsection occt_draw_8_6_6  XGetOneShape
+<h4><a id="occt_draw_8_6_6">XGetOneShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9244,7 +9244,7 @@ Creates one DRAW shape for all free shapes from a document.
 XGetOneShape a D 
 ~~~~
 
-@subsubsection occt_draw_8_6_7  XGetReferredShape
+<h4><a id="occt_draw_8_6_7">XGetReferredShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9258,7 +9258,7 @@ Prints a label that contains a top-level shape that corresponds to a shape at a 
 XGetReferredShape D 0:1:1:1:1 
 ~~~~
 
-@subsubsection occt_draw_8_6_8  XGetShape
+<h4><a id="occt_draw_8_6_8">XGetShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9272,7 +9272,7 @@ Puts a shape from the indicated label in document to result.
 XGetShape b D 0:1:1:3 
 ~~~~
 
-@subsubsection occt_draw_8_6_9  XGetTopLevelShapes
+<h4><a id="occt_draw_8_6_9">XGetTopLevelShapes</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9288,7 +9288,7 @@ XGetTopLevelShapes D
 0:1:1:8 0:1:1:9 
 ~~~~
 
-@subsubsection occt_draw_8_6_10  XLabelInfo
+<h4><a id="occt_draw_8_6_10">XLabelInfo</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9303,7 +9303,7 @@ XLabelInfo D 0:1:1:6
 ==> There are TopLevel shapes. There is an Assembly. This Shape is not used. 
 ~~~~
 
-@subsubsection occt_draw_8_6_11  XNewShape
+<h4><a id="occt_draw_8_6_11">XNewShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9317,7 +9317,7 @@ Creates a new empty top-level shape.
 XNewShape D 
 ~~~~
 
-@subsubsection occt_draw_8_6_12  XRemoveComponent
+<h4><a id="occt_draw_8_6_12">XRemoveComponent</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9331,7 +9331,7 @@ Removes a component from the components label.
 XRemoveComponent D 0:1:1:1:1 
 ~~~~
 
-@subsubsection occt_draw_8_6_13  XRemoveShape
+<h4><a id="occt_draw_8_6_13">XRemoveShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9345,7 +9345,7 @@ Removes a shape from a document (by it’s label).
 XRemoveShape D 0:1:1:2 
 ~~~~
 
-@subsubsection occt_draw_8_6_14  XSetShape
+<h4><a id="occt_draw_8_6_14">XSetShape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9359,7 +9359,7 @@ Sets a shape at the indicated label.
 XSetShape D 0:1:1:3 b 
 ~~~~
 
-@subsubsection occt_draw_8_6_15  XUpdateAssemblies
+<h4><a id="occt_draw_8_6_15">XUpdateAssemblies</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9373,9 +9373,9 @@ Updates all assembly compounds in the XDE document.
 XUpdateAssemblies D
 ~~~~
 
-@subsection occt_draw_8_7_  XDE color commands 
+<h3><a id="occt_draw_8_7_">XDE color commands </a></h3>
 
-@subsubsection occt_draw_8_7_1  XAddColor
+<h4><a id="occt_draw_8_7_1">XAddColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9389,7 +9389,7 @@ Adds color in document to the color table. Parameters R,G,B are real.
 XAddColor D 0.5 0.25 0.25 
 ~~~~
 
-@subsubsection occt_draw_8_7_2  XFindColor
+<h4><a id="occt_draw_8_7_2">XFindColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9404,7 +9404,7 @@ XFindColor D 0.25 0.25 0.5
 ==> 0:1:2:2 
 ~~~~
 
-@subsubsection occt_draw_8_7_3  XGetAllColors
+<h4><a id="occt_draw_8_7_3">XGetAllColors</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9419,7 +9419,7 @@ XGetAllColors D
 ==> RED DARKORANGE BLUE1 GREEN YELLOW3 
 ~~~~
 
-@subsubsection occt_draw_8_7_4  XGetColor
+<h4><a id="occt_draw_8_7_4">XGetColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9434,7 +9434,7 @@ XGetColor D 0:1:2:3
 == BLUE1 
 ~~~~
 
-@subsubsection occt_draw_8_7_5  XGetObjVisibility
+<h4><a id="occt_draw_8_7_5">XGetObjVisibility</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9448,7 +9448,7 @@ Returns the visibility of a shape.
 XGetObjVisibility D 0:1:1:4 
 ~~~~
 
-@subsubsection occt_draw_8_7_6  XGetShapeColor
+<h4><a id="occt_draw_8_7_6">XGetShapeColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9462,7 +9462,7 @@ Returns the color defined by label. If <i>colortype</i>=’s’ -- returns surfa
 XGetShapeColor D 0:1:1:4 c 
 ~~~~
 
-@subsubsection occt_draw_8_7_7  XRemoveColor
+<h4><a id="occt_draw_8_7_7">XRemoveColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9476,7 +9476,7 @@ Removes a color from the color table in a document.
 XRemoveColor D 0:1:2:1 
 ~~~~
 
-@subsubsection occt_draw_8_7_8  XSetColor
+<h4><a id="occt_draw_8_7_8">XSetColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9490,7 +9490,7 @@ Sets an RGB color to a shape given by label.
 XsetColor D 0:1:1:4 0.5 0.5 0. 
 ~~~~
 
-@subsubsection occt_draw_8_7_9  XSetObjVisibility
+<h4><a id="occt_draw_8_7_9">XSetObjVisibility</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9505,7 +9505,7 @@ Sets the visibility of a shape.
 XSetObjVisibility D 0:1:1:4 0 
 ~~~~
 
-@subsubsection occt_draw_8_7_10  XUnsetColor
+<h4><a id="occt_draw_8_7_10">XUnsetColor</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9520,9 +9520,9 @@ XUnsetColor D 0:1:1:4 s
 ~~~~
 
 
-@subsection occt_draw_8_8_  XDE layer commands 
+<h3><a id="occt_draw_8_8_">XDE layer commands </a></h3>
 
-@subsubsection occt_draw_8_8_1  XAddLayer
+<h4><a id="occt_draw_8_8_1">XAddLayer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9536,7 +9536,7 @@ Adds a new layer in an XCAF document.
 XAddLayer D layer2 
 ~~~~
 
-@subsubsection occt_draw_8_8_2  XFindLayer
+<h4><a id="occt_draw_8_8_2">XFindLayer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9551,7 +9551,7 @@ XFindLayer D Bolt
 == 0:1:3:2 
 ~~~~
 
-@subsubsection occt_draw_8_8_3  XGetAllLayers
+<h4><a id="occt_draw_8_8_3">XGetAllLayers</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9566,7 +9566,7 @@ XGetAllLayers D
 == *0:1:1:3* *Bolt* *0:1:1:9* 
 ~~~~
 
-@subsubsection occt_draw_8_8_4  XGetLayers
+<h4><a id="occt_draw_8_8_4">XGetLayers</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9581,7 +9581,7 @@ XGetLayers D 0:1:1:3
 == *bolt* *123* 
 ~~~~
 
-@subsubsection occt_draw_8_8_5  XGetOneLayer
+<h4><a id="occt_draw_8_8_5">XGetOneLayer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9595,7 +9595,7 @@ Prints the name of a layer at a given label.
 XGetOneLayer D 0:1:3:2 
 ~~~~
 
-@subsubsection occt_draw_8_8_6  XIsVisible
+<h4><a id="occt_draw_8_8_6">XIsVisible</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9609,7 +9609,7 @@ Returns 1 if the indicated layer is visible, else returns 0.
 XIsVisible D 0:1:3:1 
 ~~~~
 
-@subsubsection occt_draw_8_8_7  XRemoveAllLayers
+<h4><a id="occt_draw_8_8_7">XRemoveAllLayers</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9623,7 +9623,7 @@ Removes all layers from an XCAF document.
 XRemoveAllLayers D 
 ~~~~
 
-@subsubsection occt_draw_8_8_8  XRemoveLayer
+<h4><a id="occt_draw_8_8_8">XRemoveLayer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9637,7 +9637,7 @@ Removes the indicated layer from an XCAF document.
 XRemoveLayer D layer2 
 ~~~~
 
-@subsubsection occt_draw_8_8_9  XSetLayer
+<h4><a id="occt_draw_8_8_9">XSetLayer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9653,7 +9653,7 @@ Parameter <i>\<shape_in_one_layer\></i> shows whether a shape could be in a numb
 XSetLayer D 0:1:1:2 layer2 
 ~~~~
 
-@subsubsection occt_draw_8_8_10  XSetVisibility
+<h4><a id="occt_draw_8_8_10">XSetVisibility</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9668,7 +9668,7 @@ Sets the visibility of a layer.
 XSetVisibility D 0:1:3:2 0 
 ~~~~
 
-@subsubsection occt_draw_8_8_11  XUnSetAllLayers
+<h4><a id="occt_draw_8_8_11">XUnSetAllLayers</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9682,7 +9682,7 @@ Unsets a shape from all layers.
 XUnSetAllLayers D 0:1:1:2 
 ~~~~
 
-@subsubsection occt_draw_8_8_12  XUnSetLayer
+<h4><a id="occt_draw_8_8_12">XUnSetLayer</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9696,9 +9696,9 @@ Unsets a shape from the indicated layer.
 XUnSetLayer D 0:1:1:2 layer1 
 ~~~~
 
-@subsection occt_draw_8_9  XDE property commands 
+<h3><a id="occt_draw_8_9">XDE property commands </a></h3>
 
-@subsubsection occt_draw_8_9_1  XCheckProps
+<h4><a id="occt_draw_8_9_1">XCheckProps</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9718,7 +9718,7 @@ XCheckProps D 0 0:1:1:1
 ==  CG defect: dX=-0.000, dY=0.000, dZ=0.000 
 ~~~~
 
-@subsubsection occt_draw_8_9_2  XGetArea
+<h4><a id="occt_draw_8_9_2">XGetArea</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9733,7 +9733,7 @@ XGetArea D 0:1:1:1
 == 24628.31815094999 
 ~~~~
 
-@subsubsection occt_draw_8_9_3  XGetCentroid
+<h4><a id="occt_draw_8_9_3">XGetCentroid</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9747,7 +9747,7 @@ Returns the center of gravity coordinates of a given shape.
 XGetCentroid D 0:1:1:1 
 ~~~~
 
-@subsubsection occt_draw_8_9_4  XGetVolume
+<h4><a id="occt_draw_8_9_4">XGetVolume</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9761,7 +9761,7 @@ Returns the volume of a given shape.
 XGetVolume D 0:1:1:1 
 ~~~~
 
-@subsubsection occt_draw_8_9_5  XSetArea
+<h4><a id="occt_draw_8_9_5">XSetArea</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9775,7 +9775,7 @@ Sets new area to attribute list ??? given shape.
 XSetArea D 0:1:1:1 2233.99 
 ~~~~
 
-@subsubsection occt_draw_8_9_6  XSetCentroid
+<h4><a id="occt_draw_8_9_6">XSetCentroid</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9789,7 +9789,7 @@ Sets new center of gravity  to the attribute list given shape.
 XSetCentroid D 0:1:1:1 0. 0. 100. 
 ~~~~
 
-@subsubsection occt_draw_8_9_7  XSetMaterial
+<h4><a id="occt_draw_8_9_7">XSetMaterial</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9803,7 +9803,7 @@ Adds a new label with material into the material table in a document, and adds a
 XSetMaterial D 0:1:1:1 Titanium 8899.77 
 ~~~~
 
-@subsubsection occt_draw_8_9_8  XSetVolume
+<h4><a id="occt_draw_8_9_8">XSetVolume</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9817,7 +9817,7 @@ Sets new volume to the attribute list ??? given shape.
 XSetVolume D 0:1:1:1 444555.33 
 ~~~~
 
-@subsubsection occt_draw_8_9_9  XShapeMassProps
+<h4><a id="occt_draw_8_9_9">XShapeMassProps</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9837,7 +9837,7 @@ XShapeMassProps D
 etc. 
 ~~~~
 
-@subsubsection occt_draw_8_9_10  XShapeVolume
+<h4><a id="occt_draw_8_9_10">XShapeVolume</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9851,13 +9851,13 @@ Calculates the real volume of a pointed shape with a given deflection.
 XShapeVolume a 0 
 ~~~~
 
-@section occt_draw_9 Shape Healing commands
+<h2><a id="occt_draw_9">Shape Healing commands</a></h2>
 
 
 
-@subsection occt_draw_9_1 General commands 
+<h3><a id="occt_draw_9_1">General commands </a></h3>
 
-@subsubsection occt_draw_9_1_1 bsplres
+<h4><a id="occt_draw_9_1_1">bsplres</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9866,7 +9866,7 @@ bsplres <result> <shape> <tol3d> <tol2d< <reqdegree> <reqnbsegments> <continuity
 
 Performs approximations of a given shape (BSpline curves and surfaces or other surfaces) to BSpline with given required parameters. The specified continuity can be reduced if the approximation with a specified continuity was not done successfully. Results are put into the shape, which is given as a parameter result. For a more detailed description see the ShapeHealing User’s Guide (operator: **BSplineRestriction**). 
 
-@subsubsection occt_draw_9_1_2 checkfclass2d
+<h4><a id="occt_draw_9_1_2">checkfclass2d</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9881,7 +9881,7 @@ checkfclass2d f 10.5 1.1
 == Point is OUT 
 ~~~~
 
-@subsubsection occt_draw_9_1_3 checkoverlapedges
+<h4><a id="occt_draw_9_1_3">checkoverlapedges</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9895,7 +9895,7 @@ Checks the overlapping of two given edges. If the distance between two edges is 
 checkoverlapedges e1 e2 
 ~~~~
 
-@subsubsection occt_draw_9_1_4 comtol
+<h4><a id="occt_draw_9_1_4">comtol</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9916,7 +9916,7 @@ comptol h 871 t
 ==> Concerned faces saved to shapes t_1, t_2 
 ~~~~
 
-@subsubsection occt_draw_9_1_5 convtorevol
+<h4><a id="occt_draw_9_1_5">convtorevol</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9931,7 +9931,7 @@ Results are put into the shape, which is given as the <i>\<result\></i> paramete
 convtorevol r a 
 ~~~~
 
-@subsubsection occt_draw_9_1_6 directfaces
+<h4><a id="occt_draw_9_1_6">directfaces</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9945,7 +9945,7 @@ Converts indirect surfaces and returns the results into the shape, which is give
 directfaces r a 
 ~~~~
 
-@subsubsection occt_draw_9_1_7 expshape
+<h4><a id="occt_draw_9_1_7">expshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9961,7 +9961,7 @@ expshape a 10 10
 ==> Number of Rational Bspline pcurves 48 
 ~~~~
 
-@subsubsection occt_draw_9_1_8 fixsmall
+<h4><a id="occt_draw_9_1_8">fixsmall</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9975,7 +9975,7 @@ Fixes small edges in given shape by merging adjacent edges with agiven tolerance
 fixsmall r a 0.1 
 ~~~~
 
-@subsubsection occt_draw_9_1_9 fixsmalledges
+<h4><a id="occt_draw_9_1_9">fixsmalledges</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -9989,7 +9989,7 @@ Searches at least one small edge at a given shape. If such edges have been found
 fixsmalledges r a 0.1 1 
 ~~~~
 
-@subsubsection occt_draw_9_1_10 fixshape
+<h4><a id="occt_draw_9_1_10">fixshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10019,7 +10019,7 @@ For enhanced message output, use switch '+?'
 fixshape r a 0.001 
 ~~~~
 
-@subsubsection occt_draw_9_1_11 fixwgaps
+<h4><a id="occt_draw_9_1_11">fixwgaps</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10033,7 +10033,7 @@ Fixes gaps between ends of curves of adjacent edges (both 3d and pcurves) in wir
 fixwgaps r a 
 ~~~~
 
-@subsubsection occt_draw_9_1_12 offsetcurve, offset2dcurve
+<h4><a id="occt_draw_9_1_12">offsetcurve, offset2dcurve</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10051,7 +10051,7 @@ point pp 10 10 10
 offsetcurve r c 20 pp 
 ~~~~
 
-@subsubsection occt_draw_9_1_13 projcurve
+<h4><a id="occt_draw_9_1_13">projcurve</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10069,7 +10069,7 @@ projcurve k_1 0 1 5
 ==Param = -0.20000000000000001  Gap = 5.0009999000199947 
 ~~~~
 
-@subsubsection occt_draw_9_1_14 projpcurve
+<h4><a id="occt_draw_9_1_14">projpcurve</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10100,7 +10100,7 @@ projpcurve f_1 f 1.e-7 0.877 0 0.479 .6
 ==Dist: 0.0007152557954264938
 ~~~~
 
-@subsubsection occt_draw_9_1_15 projface
+<h4><a id="occt_draw_9_1_15">projface</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10116,7 +10116,7 @@ projface a_1 10.0 0.0
 ==   =   proj  X = -116  Y = -45  Z = 0 
 ~~~~
 
-@subsubsection occt_draw_9_1_16 scaleshape
+<h4><a id="occt_draw_9_1_16">scaleshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10130,7 +10130,7 @@ Returns a new shape, which is the result of scaling of a given shape with a coef
 scaleshape r a_1 0.8 
 ~~~~
 
-@subsubsection occt_draw_9_1_17 settolerance
+<h4><a id="occt_draw_9_1_17">settolerance</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10145,7 +10145,7 @@ Sets new values of tolerance for a given shape. If the second parameter <i>mode<
 settolerance a 0.001 
 ~~~~
 
-@subsubsection occt_draw_9_1_18 splitface
+<h4><a id="occt_draw_9_1_18">splitface</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10163,7 +10163,7 @@ splitface r f u 5
 ==> Status:  DONE1 
 ~~~~
 
-@subsubsection occt_draw_9_1_19 statshape
+<h4><a id="occt_draw_9_1_19">statshape</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10189,7 +10189,7 @@ statshape a
 ==> 34     bspsur: BSplineSurface 
 ~~~~
 
-@subsubsection occt_draw_9_1_20 tolerance
+<h4><a id="occt_draw_9_1_20">tolerance</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10211,9 +10211,9 @@ tolerance a v 0.1 0.001
 ~~~~
 
 
-@subsection occt_draw_9_2 Conversion commands 
+<h3><a id="occt_draw_9_2">Conversion commands </a></h3>
 
-@subsubsection occt_draw_9_2_1 DT_ClosedSplit
+<h4><a id="occt_draw_9_2_1">DT_ClosedSplit</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10228,7 +10228,7 @@ Note: A closed face is a face with one or more seam.
 DT_ClosetSplit r a 
 ~~~~
 
-@subsubsection occt_draw_9_2_2 DT_ShapeConvert, DT_ShapeConvertRev
+<h4><a id="occt_draw_9_2_2">DT_ShapeConvert, DT_ShapeConvertRev</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10244,7 +10244,7 @@ DT_ShapeConvert r a 1 1
 == Status: DONE1 
 ~~~~
 
-@subsubsection occt_draw_9_2_3 DT_ShapeDivide
+<h4><a id="occt_draw_9_2_3">DT_ShapeDivide</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10263,7 +10263,7 @@ DT_ShapeDivide r a 0.001
 == Status: OK 
 ~~~~
 
-@subsubsection occt_draw_9_2_4 DT_SplitAngle
+<h4><a id="occt_draw_9_2_4">DT_SplitAngle</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10279,7 +10279,7 @@ DT_SplitAngle r a
 == Status: DONE2 
 ~~~~
 
-@subsubsection occt_draw_9_2_5 DT_SplitCurve
+<h4><a id="occt_draw_9_2_5">DT_SplitCurve</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10293,7 +10293,7 @@ Divides the 3d curve with C1 criterion and returns the result of splitting of th
 DT_SplitCurve r c 
 ~~~~
 
-@subsubsection occt_draw_9_2_6 DT_SplitCurve2d
+<h4><a id="occt_draw_9_2_6">DT_SplitCurve2d</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10307,7 +10307,7 @@ Works just as **DT_SplitCurve** (see above), only with 2d curve.
 DT_SplitCurve2d r c 
 ~~~~
 
-@subsubsection occt_draw_9_2_7 DT_SplitSurface
+<h4><a id="occt_draw_9_2_7">DT_SplitSurface</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10330,7 +10330,7 @@ DT_SplitSurface res su 0.1 1
 ==> res1_1_1 res1_2_1 res1_3_1 res1_4_1 res1_5_1 res1_6_1 
 ~~~~
 
-@subsubsection occt_draw_9_2_8 DT_ToBspl
+<h4><a id="occt_draw_9_2_8">DT_ToBspl</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10346,10 +10346,10 @@ DT_ToBspl res sh
 ==  Surface is approximated with continuity 2
 ~~~~
 
-@section occt_draw_10 Performance evaluation commands
+<h2><a id="occt_draw_10">Performance evaluation commands</a></h2>
 
 
-@subsection occt_draw_10_1 VDrawSphere
+<h3><a id="occt_draw_10_1">VDrawSphere</a></h3>
 
 Syntax:
 ~~~~{.php}
@@ -10377,11 +10377,11 @@ vdrawsphere s 200 1 1 1 500 1
 ~~~~
 
 
-@section occt_draw_12 Simple vector algebra and measurements
+<h2><a id="occt_draw_12">Simple vector algebra and measurements</a></h2>
 
 This section contains description of auxiliary commands that can be useful for simple calculations and manipulations needed when analyzing complex models.
 
-@subsection occt_draw_12_1 Vector algebra commands
+<h3><a id="occt_draw_12_1">Vector algebra commands</a></h3>
 
 This section describes commands providing simple calculations with 2D and 3D vectors. The vector is represented by a TCL list of double values (coordinates). The commands get input vector coordinates from the command line as distinct values. So, if you have a vector stored in a variable you need to use *eval* command as a prefix, for example, to compute the magnitude of cross products of two vectors given by 3 points the following commands can be used:
 ~~~~{.php}
@@ -10395,7 +10395,7 @@ Draw[15]> eval module $cross
 323.10988842807024
 ~~~~
 
-@subsubsection occt_draw_12_1_1 vec
+<h4><a id="occt_draw_12_1_1">vec</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10409,7 +10409,7 @@ Example:
 vec 1 2 3 6 5 4
 ~~~~
 
-@subsubsection occt_draw_12_1_2 2dvec
+<h4><a id="occt_draw_12_1_2">2dvec</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10423,7 +10423,7 @@ Example:
 2dvec 1 2 4 3
 ~~~~
 
-@subsubsection occt_draw_12_1_3 pln
+<h4><a id="occt_draw_12_1_3">pln</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10437,7 +10437,7 @@ Example:
 pln 1 2 3 6 5 4 9 8 7
 ~~~~
 
-@subsubsection occt_draw_12_1_4 module
+<h4><a id="occt_draw_12_1_4">module</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10451,7 +10451,7 @@ Example:
 module 1 2 3
 ~~~~
 
-@subsubsection occt_draw_12_1_5 2dmodule
+<h4><a id="occt_draw_12_1_5">2dmodule</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10465,7 +10465,7 @@ Example:
 2dmodule 1 2
 ~~~~
 
-@subsubsection occt_draw_12_1_6 norm
+<h4><a id="occt_draw_12_1_6">norm</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10479,7 +10479,7 @@ Example:
 norm 1 2 3
 ~~~~
 
-@subsubsection occt_draw_12_1_7 2dnorm
+<h4><a id="occt_draw_12_1_7">2dnorm</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10493,7 +10493,7 @@ Example:
 2dnorm 1 2
 ~~~~
 
-@subsubsection occt_draw_12_1_8 inverse
+<h4><a id="occt_draw_12_1_8">inverse</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10507,7 +10507,7 @@ Example:
 inverse 1 2 3
 ~~~~
 
-@subsubsection occt_draw_12_1_9 2dinverse
+<h4><a id="occt_draw_12_1_9">2dinverse</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10521,7 +10521,7 @@ Example:
 2dinverse 1 2
 ~~~~
 
-@subsubsection occt_draw_12_1_10 2dort
+<h4><a id="occt_draw_12_1_10">2dort</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10535,7 +10535,7 @@ Example:
 2dort 1 2
 ~~~~
 
-@subsubsection occt_draw_12_1_11 distpp
+<h4><a id="occt_draw_12_1_11">distpp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10549,7 +10549,7 @@ Example:
 distpp 1 2 3 4 5 6
 ~~~~
 
-@subsubsection occt_draw_12_1_12 2ddistpp
+<h4><a id="occt_draw_12_1_12">2ddistpp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10563,7 +10563,7 @@ Example:
 2ddistpp 1 2 3 4
 ~~~~
 
-@subsubsection occt_draw_12_1_13 distplp
+<h4><a id="occt_draw_12_1_13">distplp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10577,7 +10577,7 @@ Example:
 distplp 0 0 0 0 0 1 5 6 7
 ~~~~
 
-@subsubsection occt_draw_12_1_14 distlp
+<h4><a id="occt_draw_12_1_14">distlp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10591,7 +10591,7 @@ Example:
 distlp 0 0 0 1 0 0 5 6 7
 ~~~~
 
-@subsubsection occt_draw_12_1_15 2ddistlp
+<h4><a id="occt_draw_12_1_15">2ddistlp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10605,7 +10605,7 @@ Example:
 2ddistlp 0 0 1 0 5 6
 ~~~~
 
-@subsubsection occt_draw_12_1_16 distppp
+<h4><a id="occt_draw_12_1_16">distppp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10619,7 +10619,7 @@ Example:
 distppp 0 0 0 1 1 0 2 0 0
 ~~~~
 
-@subsubsection occt_draw_12_1_17 2ddistppp
+<h4><a id="occt_draw_12_1_17">2ddistppp</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10633,7 +10633,7 @@ Example:
 2ddistppp 0 0 1 -1 2 0
 ~~~~
 
-@subsubsection occt_draw_12_1_18 barycen
+<h4><a id="occt_draw_12_1_18">barycen</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10647,7 +10647,7 @@ Example:
 barycen 0 0 0 1 1 1 0.3
 ~~~~
 
-@subsubsection occt_draw_12_1_19 2dbarycen
+<h4><a id="occt_draw_12_1_19">2dbarycen</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10661,7 +10661,7 @@ Example:
 2dbarycen 0 0 1 1 0.3
 ~~~~
 
-@subsubsection occt_draw_12_1_20 cross
+<h4><a id="occt_draw_12_1_20">cross</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10675,7 +10675,7 @@ Example:
 cross 1 0 0 0 1 0
 ~~~~
 
-@subsubsection occt_draw_12_1_21 2dcross
+<h4><a id="occt_draw_12_1_21">2dcross</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10689,7 +10689,7 @@ Example:
 2dcross 1 0 0 1
 ~~~~
 
-@subsubsection occt_draw_12_1_22 dot
+<h4><a id="occt_draw_12_1_22">dot</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10703,7 +10703,7 @@ Example:
 dot 1 0 0 0 1 0
 ~~~~
 
-@subsubsection occt_draw_12_1_23 2ddot
+<h4><a id="occt_draw_12_1_23">2ddot</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10717,7 +10717,7 @@ Example:
 2ddot 1 0 0 1
 ~~~~
 
-@subsubsection occt_draw_12_1_24 scale
+<h4><a id="occt_draw_12_1_24">scale</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10731,7 +10731,7 @@ Example:
 scale 1 0 0 5
 ~~~~
 
-@subsubsection occt_draw_12_1_25 2dscale
+<h4><a id="occt_draw_12_1_25">2dscale</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10745,11 +10745,11 @@ Example:
 2dscale 1 0 5
 ~~~~
 
-@subsection occt_draw_12_2 Measurements commands
+<h3><a id="occt_draw_12_2">Measurements commands</a></h3>
 
 This section describes commands that make possible to provide measurements on a model.
 
-@subsubsection occt_draw_12_2_1 pnt
+<h4><a id="occt_draw_12_2_1">pnt</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10764,7 +10764,7 @@ vertex v 0 1 0
 pnt v
 ~~~~
 
-@subsubsection occt_draw_12_2_2 pntc
+<h4><a id="occt_draw_12_2_2">pntc</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10779,7 +10779,7 @@ circle c 0 0 0 10
 pntc c [dval pi/2]
 ~~~~
 
-@subsubsection occt_draw_12_2_3 2dpntc
+<h4><a id="occt_draw_12_2_3">2dpntc</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10794,7 +10794,7 @@ circle c 0 0 10
 2dpntc c [dval pi/2]
 ~~~~
 
-@subsubsection occt_draw_12_2_4 pntsu
+<h4><a id="occt_draw_12_2_4">pntsu</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10809,7 +10809,7 @@ cylinder s 10
 pntsu s [dval pi/2] 5
 ~~~~
 
-@subsubsection occt_draw_12_2_5 pntcons
+<h4><a id="occt_draw_12_2_5">pntcons</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10825,7 +10825,7 @@ cylinder s 10
 pntcons c s [dval pi/2]
 ~~~~
 
-@subsubsection occt_draw_12_2_6 drseg
+<h4><a id="occt_draw_12_2_6">drseg</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10839,7 +10839,7 @@ Example:
 drseg s 0 0 0 1 0 0
 ~~~~
 
-@subsubsection occt_draw_12_2_7 2ddrseg
+<h4><a id="occt_draw_12_2_7">2ddrseg</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10853,7 +10853,7 @@ Example:
 2ddrseg s 0 0 1 0
 ~~~~
 
-@subsubsection occt_draw_12_2_8 mpick
+<h4><a id="occt_draw_12_2_8">mpick</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10867,7 +10867,7 @@ Example:
 mpick
 ~~~~
 
-@subsubsection occt_draw_12_2_9 mdist
+<h4><a id="occt_draw_12_2_9">mdist</a></h4>
 
 Syntax:
 ~~~~{.php}
@@ -10881,12 +10881,12 @@ Example:
 mdist
 ~~~~
 
-@section occt_draw_13 Inspector commands
+<h2><a id="occt_draw_13">Inspector commands</a></h2>
 
 
 This section describes commands that make possible to use Inspector.
 
-@subsection occt_draw_13_1 tinspector
+<h3><a id="occt_draw_13_1">tinspector</a></h3>
 
 Syntax:
 ~~~~{.php}
@@ -10962,13 +10962,13 @@ tinspector -update -select box_1
 ~~~~
 
 
-@section occt_draw_11 Extending Test Harness with custom commands
+<h2><a id="occt_draw_11">Extending Test Harness with custom commands</a></h2>
 
 
 The following chapters explain how to extend Test Harness with custom commands and how to activate them using a plug-in mechanism. 
 
 
-@subsection occt_draw_11_1 Custom command implementation
+<h3><a id="occt_draw_11_1">Custom command implementation</a></h3>
 
 Custom command implementation has not undergone any changes since the introduction of the plug-in mechanism. The syntax of every command should still be like in the following example. 
 
@@ -10983,7 +10983,7 @@ static Standard_Integer myadvcurve(Draw_Interpretor& di, Standard_Integer n, cha
 For examples of existing commands refer to Open CASCADE Technology (e.g. GeomliteTest.cxx). 
 
 
-@subsection occt_draw_11_2 Registration of commands in Test Harness
+<h3><a id="occt_draw_11_2">Registration of commands in Test Harness</a></h3>
 
 To become available in the Test Harness the custom command must be registered in it. This should be done as follows. 
 
@@ -11000,7 +11000,7 @@ theCommands.Add ( "myadvcurve", "myadvcurve name p1 p2 p3 - Creates my advanced 
 } 
 ~~~~
 
-@subsection occt_draw_11_3 Creating a toolkit (library) as a plug-in
+<h3><a id="occt_draw_11_3">Creating a toolkit (library) as a plug-in</a></h3>
 
 All custom commands are compiled and linked into a dynamic library (.dll on Windows, or .so on Unix/Linux). To make Test Harness recognize it as a plug-in it must respect certain conventions. Namely, it must export function *PLUGINFACTORY()* accepting the Test Harness interpreter object (*Draw_Interpretor*). This function will be called when the library is dynamically loaded during the Test Harness session. 
 
@@ -11024,7 +11024,7 @@ MyPack::CurveCommands(theDI);
 DPLUGIN(MyPack)
 ~~~~
 
-@subsection occt_draw_11_4 Creation of the plug-in resource file
+<h3><a id="occt_draw_11_4">Creation of the plug-in resource file</a></h3>
 
 As mentioned above, the plug-in resource file must be compliant with Open CASCADE Technology requirements (see *Resource_Manager.hxx* file for details). In particular, it should contain keys separated from their values by a colon (;:;). 
 For every created plug-in there must be a key. For better readability and comprehension it is recommended to have some meaningful name. 
@@ -11047,7 +11047,7 @@ MESHING            : TKMyMesh
 For other examples of the plug-in resource file refer to the [Plug-in resource file](#occt_draw_1_3_2) chapter above or to the <i>$CASROOT/src/DrawPlugin</i> file shipped with Open CASCADE Technology. 
 
 
-@subsection occt_draw_11_5 Dynamic loading and activation
+<h3><a id="occt_draw_11_5">Dynamic loading and activation</a></h3>
 
 Loading a plug-in and activating its commands is described in the [Activation of the commands implemented in the plug-in](#occt_draw_1_3_3) chapter. 
 

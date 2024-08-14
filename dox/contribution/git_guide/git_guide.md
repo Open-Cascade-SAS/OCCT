@@ -3,9 +3,9 @@ Guide to installing and using Git for OCCT development {#occt_contribution__git_
 
 @tableofcontents 
 
-@section occt_gitguide_1 Overview
+<h2><a id="occt_gitguide_1">Overview</a></h2>
 
-@subsection occt_gitguide_1_1 Purpose
+<h3><a id="occt_gitguide_1_1">Purpose</a></h3>
 
   The purpose of this document is to provide a practical introduction to Git 
   to OCCT developers who are not familiar with this tool 
@@ -23,7 +23,7 @@ Guide to installing and using Git for OCCT development {#occt_contribution__git_
   This and related documents are available at the Resources page 
   of the OCCT development portal at https://dev.opencascade.org/index.php?q=home/resources.
 
-@subsection occt_gitguide_1_2 Git URL
+<h3><a id="occt_gitguide_1_2">Git URL</a></h3>
 
   URL of the official OCCT source code Git repository (accessed by SSH protocol) is:
   
@@ -33,7 +33,7 @@ Guide to installing and using Git for OCCT development {#occt_contribution__git_
   
       ssh://gitolite@dev.opencascade.org/occt.git
 
-@subsection occt_gitguide_1_3 Content
+<h3><a id="occt_gitguide_1_3">Content</a></h3>
 
 The official repository contains:
 
@@ -41,7 +41,7 @@ The official repository contains:
   * Topic branches created by contributors to submit changes for review / testing or for collaborative development.    The topic branches should be named by the pattern "CR12345" where 12345    is the ID of the relevant issue registered in Mantis (without leading zeroes),    and "CR" stands for "Change Request". The name can have an additional postfix used if more than    one branch was created for the same issue.
   * Occasionally topic branches with non-standard names can be created by the Bugmaster for special needs.
 
-@subsection occt_gitguide_1_4 Short rules of use
+<h3><a id="occt_gitguide_1_4">Short rules of use</a></h3>
 
   The name specified in the user.name field in Git configuration should correspond 
   to your login name on the OCCT development portal. 
@@ -79,14 +79,14 @@ The official repository contains:
   The Bugmaster may ask the developer (normally the one who produced the contribution) 
   to rebase a branch on the current master, in the case if merge conflicts appear during integration.
 
-@subsection occt_gitguide_1_5 Version of Git
+<h3><a id="occt_gitguide_1_5">Version of Git</a></h3>
 
   The repository is tested to work with Git 1.7.6 and above. 
   Avoid using versions below 1.7.1 as they are known to cause troubles.
 
-@section occt_gitguide_2 Installing Tools for Work with Git
+<h2><a id="occt_gitguide_2">Installing Tools for Work with Git</a></h2>
 
-@subsection occt_gitguide_2_1 Windows platform
+<h3><a id="occt_gitguide_2_1">Windows platform</a></h3>
 
   Installation of Git for Windows (provided by MSysGit project) is required. 
   
@@ -94,7 +94,7 @@ The official repository contains:
   If you do not install TortoiseGit or any other GUI tool, 
   you can use GitGui and Gitk GUI tools delivered with Git and available on all platforms.
 
-@subsubsection occt_gitguide_2_1_1 Installation of Git for Windows
+<h4><a id="occt_gitguide_2_1_1">Installation of Git for Windows</a></h4>
 
   Download Git for Windows distributive from https://git-for-windows.github.io/
   During the installation:
@@ -111,7 +111,7 @@ The official repository contains:
   
   Before the first commit to the OCCT repository, make sure that your User Name in the Git configuration file (file <i>.gitconfig</i> in the <i>$HOME</i> directory) is equal to your username on the OCCT development portal. 
 
-@subsubsection occt_gitguide_2_1_2 Installation and configuration of TortoiseGit
+<h4><a id="occt_gitguide_2_1_2">Installation and configuration of TortoiseGit</a></h4>
 
   Download TortoiseGit distributive from https://tortoisegit.org/download/.
   Launch the installation.
@@ -145,7 +145,7 @@ The official repository contains:
 
 @figure{OCCT_GitGuide_V2_svgdiff.png,"",320}
 
-@subsection occt_gitguide_2_2 Linux platform
+<h3><a id="occt_gitguide_2_2">Linux platform</a></h3>
 
   We assume that Linux users have Git already installed and available in the *PATH*.
   
@@ -158,9 +158,9 @@ The official repository contains:
     > git config --global your@mail.address
 ~~~~
 
-@section occt_gitguide_3 Getting access to the repository
+<h2><a id="occt_gitguide_3">Getting access to the repository</a></h2>
 
-@subsection occt_gitguide_3_1 Prerequisites
+<h3><a id="occt_gitguide_3_1">Prerequisites</a></h3>
 
   Access to the repository is granted to the users who have signed the Contributor License Agreement.
   
@@ -184,9 +184,9 @@ The official repository contains:
   and TortoiseGit GUI with a default Putty client for connection to server) 
   may lead to authentication problems.
 
-@subsection occt_gitguide_3_2 How to generate a key
+<h3><a id="occt_gitguide_3_2">How to generate a key</a></h3>
 
-@subsubsection occt_gitguide_3_2_1 Generating key with Putty
+<h4><a id="occt_gitguide_3_2_1">Generating key with Putty</a></h4>
 
   Use this option if you have installed TortoiseGit (or other GUI Git client on Windows) 
   and have chosen “TortoisePLink” (or other Putty client) as SSH client during installation.
@@ -204,7 +204,7 @@ The official repository contains:
   Copy the public key as shown by Puttygen to the clipboard to add it in your account. 
   Do not copy the Putty public key file content -- it is formatted in a way not suitable for the web site.
 
-@subsubsection occt_gitguide_3_2_2 Generating key with command-line tools
+<h4><a id="occt_gitguide_3_2_2">Generating key with command-line tools</a></h4>
 
   Use this option if you work on Linux or if you have chosen “OpenSSH” as SSH client 
   during installation of TortoiseGit (or other Windows tool).
@@ -230,13 +230,13 @@ The official repository contains:
   
   The content of the public key file (one text line) is the key to be added to the user account on the site (see below).
 
-@subsubsection occt_gitguide_3_2_3 Generating key with Git GUI
+<h4><a id="occt_gitguide_3_2_3">Generating key with Git GUI</a></h4>
 
   GitGUI (standard GUI interface included with Git) provides the option 
   to either generate the SSH key (if not present yet) or show the existing one. 
   Click Help/Show SSH key and copy the public key content for adding to the user account page (see below).
 
-@subsection occt_gitguide_3_3 Adding public key in your account
+<h3><a id="occt_gitguide_3_3">Adding public key in your account</a></h3>
 
 Log in on the portal https://dev.opencascade.org and click on **My account** link to the right. If you have a Contributor status, you will see **SSH keys** tab to the right.
 
@@ -253,9 +253,9 @@ Click **Save** to input the key to the system.
   to update the configuration after the new key is added. 
   After that time, you can try accessing Git.
 
-@section occt_gitguide_4 Work with repository: developer operations
+<h2><a id="occt_gitguide_4">Work with repository: developer operations</a></h2>
 
-@subsection occt_gitguide_4_1 General workflow
+<h3><a id="occt_gitguide_4_1">General workflow</a></h3>
 
   To start working with OCCT source repository, you need to create its clone in your local system. 
   This cloned repository will manage your working copy of the sources 
@@ -284,7 +284,7 @@ Click **Save** to input the key to the system.
   Note that only the sources that are different between the switched branches will be modified, 
   thus required recompilation should be reasonably small in most cases.
 
-@subsection occt_gitguide_4_2 Cloning official repository
+<h3><a id="occt_gitguide_4_2">Cloning official repository</a></h3>
 
   Clone the official OCCT repository in one of following ways:
 
@@ -304,7 +304,7 @@ Click **Save** to input the key to the system.
   
   Note that on the first connection to the repository server you may be requested to enter a password for your private SSH key; further you can get a message that the authenticity of the host cannot be established and will be asked if you want to continue connecting or not. Choose **Yes** to continue. The host’s key will be stored in <i>$HOME/.ssh/known_hosts</i> file.
 
-@subsection occt_gitguide_4_3 Branch creation
+<h3><a id="occt_gitguide_4_3">Branch creation</a></h3>
 
   You need to create a branch when you are going to start development of a new change, 
   apply a patch, etc. It is recommended to fetch updates from the remote repository 
@@ -327,7 +327,7 @@ In TortoiseGit:
 
   Check option **Switch to new branch** if you are going to start working with the newly created branch immediately.
 
-@subsection occt_gitguide_4_4 Branch switching
+<h3><a id="occt_gitguide_4_4">Branch switching</a></h3>
 
   If you need to switch to another branch, use Git command checkout for that.
   In the console:
@@ -344,7 +344,7 @@ In TortoiseGit:
   **Create new branch** when you checkout the branch from the remote repository for the first time. 
   Option **Track** stores association between the local branch and the original branch in a remote repository.
 
-@subsection occt_gitguide_4_5 Committing branch changes
+<h3><a id="occt_gitguide_4_5">Committing branch changes</a></h3>
 
   Commit your changes locally as soon as a stable status of the work is reached. 
   Make sure to review carefully the committed changes beforehand to avoid unintentional commit of a wrong code. 
@@ -377,7 +377,7 @@ In TortoiseGit:
   Unstaged files will be shown if you check the option ‘Show Unversioned Files’. 
   Double-click on each modified file to see the changes to be committed (as a difference vs. the base version). 
 
-@subsection occt_gitguide_4_6 Pushing branch to the remote repository
+<h3><a id="occt_gitguide_4_6">Pushing branch to the remote repository</a></h3>
 
   When the code developed in your local branch is ready for review, 
   or you need to share it with others, push your local changes to the remote repository.
@@ -403,7 +403,7 @@ Note that Git forbids pushing a branch if the corresponding remote branch alread
 
   * The other developer has committed some changes in the remote branch. In this case, **Pull** changes from the remote repository to have them merged with your version, and push your branch after it is successfully merged.
 
-@subsection occt_gitguide_4_7 Synchronizing with remote repository
+<h3><a id="occt_gitguide_4_7">Synchronizing with remote repository</a></h3>
 
   Maintain your repository synchronized with the remote one and clean unnecessary stuff regularly.
   
@@ -449,7 +449,7 @@ Remove the local branches that you do not need any more. Note that you cannot de
  
 Note that many functions described above can be accessed from the Log View, which is a very convenient tool to visualize and manage branches.
 
-@subsection occt_gitguide_4_8 Applying a fix made on older version of OCCT
+<h3><a id="occt_gitguide_4_8">Applying a fix made on older version of OCCT</a></h3>
 
 If you have a fix made on a previous version of OCCT, perform the following sequence of operations to prepare it  for testing and integration to the current development version:
   * Identify the version of OCCT on which the fix has been made. In most cases, this will be an OCCT release, e.g. OCCT 6.7.0. 
@@ -466,7 +466,7 @@ If you have a fix made on a previous version of OCCT, perform the following sequ
 
 Note that you can get some conflicts during rebase. To resolve them, double-click on each conflicted file   (highlighted by red in the file list) to open visual merge tool.   Switch between conflicting fragments by red arrows, and for each one decide if the code of one or both conflicting versions is to be taken.
 
-@subsection occt_gitguide_4_9 Rebasing with history clean-up
+<h3><a id="occt_gitguide_4_9">Rebasing with history clean-up</a></h3>
 
 At some moments you might need to rebase your branch on the latest version of the master. 
   
@@ -490,9 +490,9 @@ To rebase your branch into a single commit, you need to do the following:
    
 @figure{OCCT_GitGuide_V2_image025.png,"",320}
 
-@section occt_gitguide_5 Work with repository: Reviewer operations
+<h2><a id="occt_gitguide_5">Work with repository: Reviewer operations</a></h2>
 
-@subsection occt_gitguide_5_1 Review branch changes using GitWeb
+<h3><a id="occt_gitguide_5_1">Review branch changes using GitWeb</a></h3>
 
   The changes made in the branch can be reviewed without direct access to Git, using GitWeb interface:
 
@@ -504,7 +504,7 @@ To rebase your branch into a single commit, you need to do the following:
   
   * Click **commitdiff** on each log entry to review the changes (highlighted with color format).
 
-@subsection occt_gitguide_5_2 Review branch changes with TortoiseGit 
+<h3><a id="occt_gitguide_5_2">Review branch changes with TortoiseGit </a></h3>
 
   Use of TortoiseGit is recommended for convenient code review:
 

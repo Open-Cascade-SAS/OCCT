@@ -18,7 +18,7 @@ https://www.opencascade.com
 @figure{/resources/occ_logo.png}
 @htmlonly</center>@endhtmlonly
 
-@section intro_overview Overview
+<h2><a id="intro_overview">Overview</a></h2>
 
 Open CASCADE Technology (OCCT) is an object-oriented C++ class library designed for rapid production of sophisticated domain-specific CAD/CAM/CAE applications. 
 
@@ -48,7 +48,7 @@ This modular structure is illustrated in the diagram below.
 
 In addition, [Open CASCADE Test Harness](#intro_overview_draw), also called Draw, provides an entry point to the library and can be used as a testing tool for its modules.
 
-@subsection intro_overview_fclasses Foundation Classes
+<h3><a id="intro_overview_fclasses">Foundation Classes</a></h3>
 
 **Foundation Classes** module contains data structures and services used by higher-level Open CASCADE Technology classes:
 
@@ -72,7 +72,7 @@ This module also provides a variety of general-purpose services, such as:
 
 See the details in [Foundation Classes User's Guide](#occt_user_guides__foundation_classes)
 
-@subsection intro_overview_moddata Modeling Data
+<h3><a id="intro_overview_moddata">Modeling Data</a></h3>
 
 **Modeling Data** supplies data structures to implement boundary representation (BRep) of objects in 3D.
 In BRep the shape is represented as an aggregation of geometry within topology.
@@ -107,7 +107,7 @@ See the details in [Modeling Data User's Guide](#occt_user_guides__modeling_data
 3D geometric models can be stored in OCCT native BREP format.
 See [BREP Format Description White Paper](#specification__brep_format) for details on the format.
 
-@subsection intro_overview_modalgo Modeling Algorithms
+<h3><a id="intro_overview_modalgo">Modeling Algorithms</a></h3>
 
 **Modeling Algorithms** module groups a wide range of topological and geometric algorithms used in geometric modeling.
 Basically, there are two groups of algorithms in Open CASCADE Technology:
@@ -164,7 +164,7 @@ See [Boolean Operations](#specification__boolean_operations) User's Guide for de
  
 See the details in [Modeling Algorithms User's Guide](#occt_user_guides__modeling_algos).
 
-@subsection intro_overview_mesh Mesh
+<h3><a id="intro_overview_mesh">Mesh</a></h3>
 
 **Mesh** toolkit provides the functionality to work with tessellated representations of objects in form of triangular facets. This toolkit contains:
 - data structures to store surface mesh data associated to shapes and basic algorithms to handle them;
@@ -177,7 +177,7 @@ Open CASCADE SAS also offers Advanced Mesh Products:
 
 @figure{/introduction/images/0003.png}
 
-@subsection intro_overview_visu Visualization
+<h3><a id="intro_overview_visu">Visualization</a></h3>
 
 **Visualization** module provides ready-to-use algorithms to create graphic presentations from various objects: shapes, meshes, etc.
 
@@ -219,7 +219,7 @@ For more details, see [Visualization User's Guide](#occt_user_guides__visualizat
 
 The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate [VTK Integration Services](#occt_user_guides__vis) User's Guide.
 
-@subsection intro_overview_de Data Exchange
+<h3><a id="intro_overview_de">Data Exchange</a></h3>
 
 **Data Exchange** allows developing OCCT-based applications that can interact with other CAD systems by writing and reading CAD models to and from external data.
 
@@ -249,7 +249,7 @@ This module handles various problems of interoperability between CAD systems, ca
 
 These components are based on the same architecture as interfaces with STEP and IGES.
 
-@subsection intro_overview_heal Shape Healing
+<h3><a id="intro_overview_heal">Shape Healing</a></h3>
 
 **Shape Healing** library provides algorithms to correct and adapt the geometry and topology of shapes imported to OCCT from other CAD systems. 
 
@@ -283,7 +283,7 @@ Each sub-domain of Shape Healing has its own scope of functionality:
 
 For more details, refer to [Shape Healing User's guide](#occt_user_guides__shape_healing).
 
-@subsection intro_overview_ocaf Application Framework
+<h3><a id="intro_overview_ocaf">Application Framework</a></h3>
 
 **Open CASCADE Application Framework** (OCAF) handles Application Data basing on the Application/Document paradigm.
 It uses an associativity engine to simplify the development of a CAD application thanks to the following ready-to-use features and services:
@@ -306,7 +306,7 @@ OCAF organizes and embeds these attributes in a document. OCAF documents, in the
 
 For more details, see [OCAF User's Guide](#occt_user_guides__ocaf). 
 
-@subsection intro_overview_draw Draw Test Harness
+<h3><a id="intro_overview_draw">Draw Test Harness</a></h3>
 
 **Test Harness** or **Draw** is a convenient testing tool for OCCT libraries.
 It can be used to test and prototype various algorithms before building an entire application.
@@ -330,14 +330,14 @@ You can add custom commands to test or demonstrate any new functionalities, whic
 
 For more details, see [Draw Test Harness Manual](#occt_user_guides__test_harness).
 
-@section intro_req Requirements
+<h2><a id="intro_req">Requirements</a></h2>
 
 Open CASCADE Technology is designed to be highly portable and is known to work on wide range of platforms.
 Current version is officially certified on Windows (x86-64), Linux (x86-64), OS X / macOS (x86-64, arm64), Android (arm64), and iOS (arm64) platforms.
 
 The tables below describe the recommended software configurations for which OCCT is certified to work.
 
-@subsection intro_req_cpp C++ Compiler / IDE
+<h3><a id="intro_req_cpp">C++ Compiler / IDE</a></h3>
 
 | OS        | Compiler |
 | --------- | ----------- |
@@ -349,7 +349,7 @@ The tables below describe the recommended software configurations for which OCCT
 
 1) VC++ 141 64-bit is used for regular testing and for building binary package of official release of OCCT on Windows.
 
-@subsection intro_req_libs Third-party libraries and tools
+<h3><a id="intro_req_libs">Third-party libraries and tools</a></h3>
 
 The following third-party libraries and tools are not included in OCCT sources but are either required or can be optionally used for the indicated components of OCCT.
 They are not needed if relevant component is not needed - it is possible building core OCCT modules without additional dependencies.
@@ -375,7 +375,7 @@ https://dev.opencascade.org/resources/download/3rd-party-components
 | Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
 | Graphviz 2.38+ | https://graphviz.org/ | Documentation | Generating dependency graphs |
 
-@subsection intro_req_hw Hardware
+<h3><a id="intro_req_hw">Hardware</a></h3>
 
 | Component | Requirement |
 | --------- | ----------- |
@@ -395,7 +395,7 @@ Therefore, if you observe some unexpected visual issues - first check for OpenGL
 but beware that driver update might also come with new bugs.
 Don't forget to report these bugs to vendors.
 
-@section intro_install Download and Installation
+<h2><a id="intro_install">Download and Installation</a></h2>
 
 OCCT can be downloaded from https://dev.opencascade.org/release
 
@@ -405,7 +405,7 @@ See @ref build_upgrade for instructions on building OCCT from sources on support
 
 The following subsections describe how OCCT can be installed from ready-to-use packages on different platforms.
 
-@subsection intro_install_windows Windows
+<h3><a id="intro_install_windows">Windows</a></h3>
 
 On Windows Open CASCADE Technology with binaries precompiled by Visual C++ 2017 
 can be installed using installation procedure available on official download page.
@@ -443,18 +443,18 @@ The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROO
   * **tools**  This folder contains sources of Inspector tool.
   * **win64/vc14**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++ 2015;
 
-@subsection intro_install_linux Linux
+<h3><a id="intro_install_linux">Linux</a></h3>
 
 OCCT is available as package "opencascade" in official repositories of many Linux distributions.
 
 See https://repology.org/project/opencascade/versions for overview of available repositories.
 
-@subsection intro_install_mac macOS
+<h3><a id="intro_install_mac">macOS</a></h3>
 
 On macOS, OCCT is available in Homebrew (https://formulae.brew.sh/formula/opencascade)
 and MacPorts (https://ports.macports.org/port/opencascade/summary) repositories.
 
-@section intro_env Environment Variables
+<h2><a id="intro_env">Environment Variables</a></h2>
 
 To run any Open CASCADE Technology application you need to set the environment variables.
 
@@ -511,7 +511,7 @@ The scripts are located in the OCCT root folder.
   * **CSF_XmlOcafResource** is required in order to set the path to **XSD** resources, which defines XML grammar.
   * **CSF_MIGRATION_TYPES** is required in order to read documents that contain old data types, such as *TDataStd_Shape*;
 
-@section intro_license License
+<h2><a id="intro_license">License</a></h2>
 
 Open CASCADE Technology and all materials, including this documentation, is 
 Copyright (c) 1999-2020 by OPEN CASCADE S.A.S. All rights reserved.
@@ -538,7 +538,7 @@ WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and
 materials is on you. See the [license](#occt_public_license) text for formal 
 disclaimer.
 
-@section intro_acknowledge Acknowledgments
+<h2><a id="intro_acknowledge">Acknowledgments</a></h2>
 
 The following parties are acknowledged for producing tools which are used within 
 Open CASCADE Technology libraries or for release preparation.

@@ -3,11 +3,11 @@ Debugging tools and hints {#occt__debug}
 
 @tableofcontents
 
-@section occt_debug_intro Introduction
+<h2><a id="occt_debug_intro">Introduction</a></h2>
 
 This manual describes facilities included in OCCT to support debugging, and provides some hints for more efficient debug.
 
-@section occt_debug_macro Compiler macro to enable extended debug messages
+<h2><a id="occt_debug_macro">Compiler macro to enable extended debug messages</a></h2>
 
 Many OCCT algorithms can produce extended debug messages, usually printed to cout.
 These include messages on internal errors and special cases encountered, timing etc.
@@ -23,11 +23,11 @@ These messages can be enabled in the same way, by defining corresponding macro.
 
 Note that some header files are modified when *OCCT_DEBUG* is enabled, hence binaries built with it enabled are not compatible with client code built without this option; this is not intended for production use.
 
-@section occt_debug_exceptions Calling JIT debugger on exception
+<h2><a id="occt_debug_exceptions">Calling JIT debugger on exception</a></h2>
 
 On Windows platform when using Visual Studio compiler there is a possibility to start the debugger automatically if an exception is caught in a program running OCCT. For this, set environment variable *CSF_DEBUG* to any value. Note that this feature works only if you enable OCCT exception handler in your application by calling *OSD::SetSignal()*.
 
-@section occt_debug_bop Self-diagnostics in Boolean operations algorithm
+<h2><a id="occt_debug_bop">Self-diagnostics in Boolean operations algorithm</a></h2>
 
 In real-world applications modeling operations are often performed in a long sequence, while the user sees only the final result of the whole sequence. If the final result is wrong, the first debug step is to identify the offending operation to be debugged further. Boolean operation algorithm in OCCT provides a self-diagnostic feature which can help to do that step.
 
@@ -37,13 +37,13 @@ The diagnostic code checks validity of the input arguments and the result of eac
 
 Note that this feature does not applicable for UWP build.
 
-@section occt_debug_call Functions for calling from debugger
+<h2><a id="occt_debug_call">Functions for calling from debugger</a></h2>
 
 Modern interactive debuggers provide the possibility to execute application code at a program break point. This feature can be used to analyse the temporary objects available only in the context of the debugged code. OCCT provides several global functions that can be used in this way.
 
 Note that all these functions accept pointer to variable as <i>void*</i> to allow calling the function even when debugger does not recognize type equivalence or can not perform necessary type cast automatically. It is responsibility of the developer to provide the correct pointer. In general these functions are not guaranteed to work, thus use them with caution and at your own risk.
 
-@subsection occt_debug_call_draw Interacting with DRAW
+<h3><a id="occt_debug_call_draw">Interacting with DRAW</a></h3>
 
 Open CASCADE Test Harness or [DRAW](#occt_user_guides__test_harness) provides an extensive set of tools for inspection and analysis of OCCT shapes and geometric objects and is mostly used as environment for prototyping and debugging OCCT-based algorithms.
 
@@ -86,7 +86,7 @@ Sets the specified geometric object as a value of DRAW interpreter variable with
 
 All these functions are defined in *TKDraw* toolkit and return a string indicating the result of execution.
 
-@subsection occt_debug_call_brep Saving and dumping shapes and geometric objects
+<h3><a id="occt_debug_call_brep">Saving and dumping shapes and geometric objects</a></h3>
 
 The following functions are provided by *TKBRep* toolkit and can be used from debugger prompt:
 
@@ -137,13 +137,13 @@ Dump geometric object to cout.
 - *theHandlePtr* -- a pointer to the geometric variable (<i>Handle</i> to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
 
 
-@section occt_debug_dump_json Dump OCCT objects into Json
+<h2><a id="occt_debug_dump_json">Dump OCCT objects into Json</a></h2>
 
 Many OCCT classes may dump the current state into the stream. This stream contains the information about the class field into the field value/s.
 It is possible to prepare recursive dump using corresponded macro for class fields. The depth of this recursion is defined by parameter of the dump.
 The object defines What parameters should be presented in the Dump. The usual way is to dump all object fields.
 
-@subsection occt_debug_dump_json_object Implementation in object
+<h3><a id="occt_debug_dump_json_object">Implementation in object</a></h3>
 
 Steps to prepare dump of the object into json:
 
@@ -167,7 +167,7 @@ The following macro are defined to cover the object parameters into json format:
 | OCCT_DUMP_FIELD_VALUES_STRING    | "field": ["value_1", ..., "value_n"]
 | OCCT_DUMP_BASE_CLASS   | "kind": { result of kind::DumpJson(...) } |
 
-@subsection occt_debug_dump_json_draw Using in DRAW
+<h3><a id="occt_debug_dump_json_draw">Using in DRAW</a></h3>
 
 In DRAW, key '-dumpJson' is used to dump an object.
 It is implemented in 'vaspect' and 'boundingbox' commands.
@@ -195,9 +195,9 @@ Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
 }
 ~~~~
 
-@section occt_debug_vstudio Using Visual Studio debugger 
+<h2><a id="occt_debug_vstudio">Using Visual Studio debugger </a></h2>
 
-@subsection occt_debug_vstudio_command Command window 
+<h3><a id="occt_debug_vstudio_command">Command window </a></h3>
 
 Visual Studio debugger provides the Command Window (can be activated from menu <b>View / Other Windows / Command Window</b>), which can be used to evaluate variables and expressions interactively in a debug session (see https://msdn.microsoft.com/en-us/library/c785s0kz.aspx). Note that the Immediate Window can also be used but it has some limitations, e.g. does not support aliases.
 
@@ -244,7 +244,7 @@ Note that aliases are stored in the Visual Studio user's preferences and it is s
 
 Note that there is no guarantee that the call will succeed and will not affect the program execution, thus use this feature at your own risk. In particular, the commands interacting with window system (such as *axo*, *vinit*, etc.) are known to cause application crash when the program is built in 64-bit mode. To avoid this, it is recommended to prepare all necessary view windows in advance, and arrange these windows to avoid overlapping with the Visual Studio window, to ensure that they are visible during debug. 
 
-@subsection occt_debug_vstudio_watch Customized display of variables content
+<h3><a id="occt_debug_vstudio_watch">Customized display of variables content</a></h3>
 
 Visual Studio provides a way to customize display of variables of different types in debugger windows (Watch, Autos, Locals, etc.).
 
@@ -346,7 +346,7 @@ Handle_TCollection_HAsciiString {
 
 In Visual Studio 2012 and later, visualizers can be put in a separate file in subdirectory *Visualizers*. See file *occt.natvis* for example.
 
-@section occt_debug_perf Performance measurement tools
+<h2><a id="occt_debug_perf">Performance measurement tools</a></h2>
 
 It is recommended to use specialized performance analysis tools to profile OCCT and application code.
 However, when such tools are not available or cannot be used for some reason, tools provided by OSD package can be used: low-level C functions and macros defined in *OSD_PerfMeter.h* and *OSD_PerfMeter* class.
@@ -364,12 +364,12 @@ In DRAW, use command *dperf* to print all performance statistics.
 
 Note that performance counters are not thread-safe.
 
-@section occt_debug_sanitizers Use of compiler sanitizers
+<h2><a id="occt_debug_sanitizers">Use of compiler sanitizers</a></h2>
 
 GCC and Clang compilers provide options for instrumenting the code with the tools intended for detection of run-time errors, called sanitizers.
 This section provides some hints for using sanitizers for detecting possible errors in OCCT code.
 
-@subsection occt_debug_sanitizers_linux Linux
+<h3><a id="occt_debug_sanitizers_linux">Linux</a></h3>
 
 Example of configuration steps for Ubuntu:
 
@@ -413,6 +413,6 @@ Known problems (as of CLang 6.0) are:
 - Software signals (access violation etc.) are not handled
 - Heap memory usage always reports zero
 
-@subsection occt_debug_sanitizers_windows Windows
+<h3><a id="occt_debug_sanitizers_windows">Windows</a></h3>
 
 Though CLang toolset is available in Visual Studio 2015 and newer, sanitizer do not seem to be available out of the box (last tested with VS 2019 16.2.3).

@@ -2,7 +2,7 @@ PBR math (rasterization) {#specification__pbr_math}
 ========================
 @tableofcontents
 
-@section pbr_preface Preface
+<h2><a id="pbr_preface">Preface</a></h2>
 
 **Empirical** illumination models like **Phong reflection model** have been used in real-time graphics for a long time due to their simplicity, convincing look and affordable performance.
 Before programmable pipeline has been introduced, graphics cards implemented Gouraud shading as part of fixed-function Transformation & Lighting (T&L) hardware blocks.
@@ -25,7 +25,7 @@ OCCT 3D Viewer provides both kinds of PBR renderers, and although they share som
 This article describes the math underneath PBR shading in OCCT 3D Viewer and its GLSL programs.
 However, this article does not clarifies related high-level APIs nor PBR material creation pipelines, as this is another topic.
 
-@section pbr_notation Notation
+<h2><a id="pbr_notation">Notation</a></h2>
 
 |  |  |  |
 |-:|:-|:-|
@@ -46,7 +46,7 @@ However, this article does not clarifies related high-level APIs nor PBR materia
 
 \f$\cos\theta_{vh}=(v \cdot h)\f$
 
-@section pbr_illumination_model Illumination model
+<h2><a id="pbr_illumination_model">Illumination model</a></h2>
 
 The main goal of illumination model is to calculate outgoing light radiance \f$L_o\f$ along the certain direction.
 The starting point of calculation might be the view direction \f$v\f$ aimed from point on surface (or in more general case just in space) to viewer position.
@@ -168,7 +168,7 @@ So that all parts described above can be combined into united diffuse BRDF:
 In this chapter one possible implementation of illumination model reflecting main PBR principles has been defined.
 The next step is using of it in practice.
 
-@section pbr_practical_application Practical application
+<h2><a id="pbr_practical_application">Practical application</a></h2>
 
 It's time to apply deduced illumination model in practice.
 And the first step of it is separation of **direction based light sources** from illumination integral.
@@ -204,7 +204,7 @@ It is enough to get some results in terms of local illumination but without \f$L
 \f$L_{indirect}\f$ is not trivial thing for calculation and that is stumbling block for real time rendering applications.
 But it can be relatively easy implemented in case of environment illumination via some precomputational work about which will be told in details in following chapters.
 
-@section pbr_image_based_lighting Image based lighting
+<h2><a id="pbr_image_based_lighting">Image based lighting</a></h2>
 
 The next goal after \f$L_{direct}\f$ calculation is to find \f$L_{indirect}\f$.
 And it would be easier if \f$L_i^{indirect}(l)\f$ was known for every \f$l\f$.
@@ -233,7 +233,7 @@ Lets write down this separately:
 Next transformations of these expressions require understanding of numerical way to find hemisphere integral and also its performance optimization techniques.
 And that the topic of the next chapter.
 
-@section pbr_monte_carlo_integration Monte-Carlo numeric integration
+<h2><a id="pbr_monte_carlo_integration">Monte-Carlo numeric integration</a></h2>
 
 **Monte-Carlo** is one of numeric methods to **find integral**.
 It is based on idea of mathematical expectation calculation.
@@ -343,7 +343,7 @@ Moreover special \f$p(l)\f$ can be chosen and special pseudo-random sequences ca
 That is why this method is widely used in computer graphics and demonstrates good results.
 Also another one advantage is worth to be mentioned - possibility to iteratively accumulate computations and present intermediate results during rendering which is used in some ray tracing applications.
 
-@section pbr_split_sum Split sum
+<h2><a id="pbr_split_sum">Split sum</a></h2>
 
 Lets go back to the image based lighting and the figure of specular component.
 As was defined before that is hemisphere integral with following expression:
@@ -402,7 +402,7 @@ Current result for \f$L_{indirect}^s\f$ is computing it using 2D image for BRDF 
 There were a lot of words about Monte-Carlo optimizations techniques and about PDF choice which is important not only in terms of numeric integration but in terms of visual results correctness.
 It's time to talk about that.
 
-@section pbr_importance_sampling Importance sampling
+<h2><a id="pbr_importance_sampling">Importance sampling</a></h2>
 
 Current goal is to speed up Monte-Carlo integration of Cook-Torrance like integrals with following expression:
 
@@ -517,7 +517,7 @@ Due to this transformation final form of probability density used in sum is quit
 For isotropic Cook-Torrance BRDF the \f$\cos\theta_v\f$ and roughness \f$r\f$ are enough to start generation so that all integrals of that kind can be precalculated in 2D look-up tables variating these two parameters.
 The same samples generation procedure must be used in specular map baking described in next chapter.
 
-@section pbr_specular_map Specular map
+<h2><a id="pbr_specular_map">Specular map</a></h2>
 
 The situation with BRDF part of \f$L_{indirect}^s\f$ is clear now and \f$L_i^{indirect}(l)\f$ sum is left to be discussed.
 That was called **specular map** and has following form:
@@ -619,7 +619,7 @@ The first one can be got even without any environment.
 It was achieved using some rough approximations and assumptions but despite of that the visual result are still plausible and can be compared even with ray traced images.
 In order to complete whole image based lighting the \f$L_{indirect}^d\f$ component is left to be discussed.
 
-@section pbr_spherical_harmonics Spherical harmonics
+<h2><a id="pbr_spherical_harmonics">Spherical harmonics</a></h2>
 
 Lets go back to diffuse indirect illumination component represented by following formula:
 
@@ -768,15 +768,15 @@ All tables with constants presented below [@ref Ramamoorthi01]:
 Summarizing all mathematics above spherical harmonics decomposition boils down irradiance map to only 9 values which is needed to be precalculated as integrals.
 As practice shows this is very good approximation of diffuse indirect illumination component.
 
-@section pbr_transparency Transparent materials
+<h2><a id="pbr_transparency">Transparent materials</a></h2>
 
 TODO
 
-@section pbr_low_discrepancy Low discrepancy sequence
+<h2><a id="pbr_low_discrepancy">Low discrepancy sequence</a></h2>
 
 TODO
 
-@section pbr_references References
+<h2><a id="pbr_references">References</a></h2>
 
 <table cellpadding="4">
 <tr><td valign="top">

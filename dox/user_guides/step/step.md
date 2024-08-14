@@ -3,7 +3,7 @@ STEP Translator  {#occt_user_guides__step}
 
 @tableofcontents
 
-@section occt_step_1 Introduction
+<h2><a id="occt_step_1">Introduction</a></h2>
 
 STEP is more and more widely used to exchange data between various software, involved in CAD, PDM, Analysis, etc... STEP is far more than an "exchange standard" : it provides a technology and a set of methodologies to describe the data to exchange in a modular and upgradeable way. Regarding OCCT, this mostly applies to CAD data but it is not a limitation, other kinds of data for specific applications can be addressed too.
 
@@ -24,7 +24,7 @@ File translation is performed in the programming mode, via C++ calls.
 
 For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin.
 
-@subsection occt_step_1_1 STEP Exchanges in Open Cascade technology
+<h3><a id="occt_step_1_1">STEP Exchanges in Open Cascade technology</a></h3>
 
 Beyond the upper level API, which is fitted for an easy end-use, the STEP exchange functions enter in the general frame of Exchanges in Open Cascade, adapted for STEP:
 
@@ -44,7 +44,7 @@ In addition, Open Cascade provides tools to process models described using STEP:
 This provides a natural way to deal with non-supported protocols when they share common definitions, as for geometry, which can then be exploited. The common frame, as the already supported data types, give a good foundation to go towards new uses of STEP, either on data definition (protocols from ISO or from industrial consortia) or on mapping with applicative data.
 
 
-@subsection occt_step_1_2 STEP Interface
+<h3><a id="occt_step_1_2">STEP Interface</a></h3>
 
 The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 (Conformance Class 2 both CD and DIS versions of schema) and translates them to Open CASCADE Technology models. STEP Application Protocol 203 and some parts of AP242 are also supported.
 
@@ -65,16 +65,16 @@ There is a set of parameters that concern the translation and can be set before 
 * all references to shapes indicate OCCT shapes unless otherwise explicitly stated;
 * a root entity is the highest level entity of any given type, i.e. an entity that is not referenced by any other one.
 
-@section occt_step_2 Reading STEP
-@subsection occt_step_2_1 Procedure
+<h2><a id="occt_step_2">Reading STEP</a></h2>
+<h3><a id="occt_step_2_1">Procedure</a></h3>
 You can translate a STEP file into an OCCT shape in the following steps: 
 1. load the file, 
 2. check file consistency, 
 3. set the translation parameters, 
 4. perform the translation, 
 5. fetch the results. 
-@subsection occt_step_2_2 Domain covered
-@subsubsection occt_step_2_2_1 Assemblies
+<h3><a id="occt_step_2_2">Domain covered</a></h3>
+<h4><a id="occt_step_2_2_1">Assemblies</a></h4>
 The **ProSTEP Round Table Agreement Log** (version July 1998), item 21, defines two alternatives for the implementation of assembly structure representations: using *mapped_item entities* and using *representation_relationship_with_transformation* entities. Both these alternative representations are recognized and processed at reading. On writing, the second alternative is always employed. 
 
 Handling of assemblies is implemented in two separate levels: firstly STEP assembly structures are translated into OCCT shapes, and secondly the OCCT shape representing the assembly is converted into any data structure intended for representing assemblies (for example, OCAF). 
@@ -84,7 +84,7 @@ The first part of this document describes the basic STEP translator implementing
 The attributive information attached to assembly components in a STEP file (such as names and descriptions of products, colors, layers etc.) can be translatd after the translation of the shape itself by parsing the STEP model (loaded in memory). Several tools from the package STEPConstruct provide functionalities to read styles (colors), validation properties, product information etc. 
 Implementation of the second level of translation (conversion to XDE data structure) is provided by XDE STEP translator. 
 
-@subsubsection occt_step_2_2_2 Shape representations
+<h4><a id="occt_step_2_2_2">Shape representations</a></h4>
 Length units, plane angle units and the uncertainty value are taken from *shape_representation* entities. This data is used in the translation process. 
 
 The types of STEP representation entities that are recognized are: 
@@ -96,7 +96,7 @@ The types of STEP representation entities that are recognized are:
   * hybrid representations (shape_representation containing models of different type) 
   * tessellated_shape_representation
   
-@subsubsection occt_step_2_2_3 Topological entities
+<h4><a id="occt_step_2_2_3">Topological entities</a></h4>
 The types of STEP topological entities that can be translated are: 
   * vertices 
   * edges 
@@ -106,7 +106,7 @@ The types of STEP topological entities that can be translated are:
   * solids
 For further information see [Mapping STEP entities to Open CASCADE Technology shapes](#occt_step_2_4).
 
-@subsubsection occt_step_2_2_4 Geometrical entities
+<h4><a id="occt_step_2_2_4">Geometrical entities</a></h4>
 The types of STEP geometrical entities that can be translated are: 
   * points 
   * vectors 
@@ -117,8 +117,8 @@ The types of STEP geometrical entities that can be translated are:
   
 For further information see 2.4 Mapping STEP entities to Open CASCADE Technology shapes. 
 
-@subsection occt_step_2_3 Description of the process
-@subsubsection occt_step_2_3_1 Loading the STEP file
+<h3><a id="occt_step_2_3">Description of the process</a></h3>
+<h4><a id="occt_step_2_3_1">Loading the STEP file</a></h4>
 
 Before performing any other operation you have to load the file with: 
 ~~~~{.cpp}
@@ -127,7 +127,7 @@ IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp");
 ~~~~
 Loading the file only memorizes the data, it does not translate it. 
 
-@subsubsection occt_step_2_3_2 Checking the STEP file
+<h4><a id="occt_step_2_3_2">Checking the STEP file</a></h4>
 This step is not obligatory. Check the loaded file with: 
 ~~~~{.cpp}
 reader.PrintCheckLoad(failsonly,mode); 
@@ -143,7 +143,7 @@ Where xxx can be one of the following:
 * *CountByItem*   --   gives the number of STEP entities with their types per message 
 * *ListByItem*  -- gives the number of STEP entities with their types and rank numbers per message 
 
-@subsubsection occt_step_2_3_3 Setting the translation parameters
+<h4><a id="occt_step_2_3_3">Setting the translation parameters</a></h4>
 The following parameters can be used to translate a STEP file into an OCCT shape. 
 
 If you give a value that is not within the range of possible values it will simply be ignored. 
@@ -477,7 +477,7 @@ if(!Interface_Static::SetIVal("read.step.tessellated",1))
 ~~~~
 Default value is 1 (On). 
 
-@subsubsection occt_step_2_3_4 Performing the STEP file translation
+<h4><a id="occt_step_2_3_4">Performing the STEP file translation</a></h4>
 
 Perform the translation according to what you want to translate. You can choose either root entities (all or selected by the number of root), or select any entity by its number in the STEP file. There is a limited set of types of entities that can be used as starting entities for translation. Only the following entities are recognized as transferable: 
   * product_definition
@@ -507,7 +507,7 @@ The following methods are used for translation:
 * *Standard_Integer num = reader.TransferList(list)* -- translates a list of entities in one operation (this method returns the number of successful translations);
 * *Standard_Integer NbRoots = reader.NbRootsForTransfer()* and *Standard_Integer num = reader.TransferRoots()* -- translate all transferable roots. 
 
-@subsubsection occt_step_2_3_5 Getting the translation results
+<h4><a id="occt_step_2_3_5">Getting the translation results</a></h4>
 Each successful translation operation outputs one shape. A series of translations gives a set of shapes. 
 
 Each time you invoke *TransferOne(), TransferRoot()* or *TransferList()*, their results are accumulated and the counter of results increases. You can clear the results with: 
@@ -537,7 +537,7 @@ reader.PrintCheckTransfer(failsonly,mode);
 
 This check concerns the last invocation of *Transfer* or *TransferRoots()* only. 
 
-@subsubsection occt_step_2_3_6 Selecting STEP entities for translation
+<h4><a id="occt_step_2_3_6">Selecting STEP entities for translation</a></h4>
 
 <h4>Selection possibilities</h4>
 
@@ -618,10 +618,10 @@ Standard_Boolean ok = reader.Transfer (rank);
 Standard_Boolean ok = reader.TransferEntity (ent); 
 ~~~~
 
-@subsection occt_step_2_4 Mapping STEP entities to Open CASCADE Technology shapes
+<h3><a id="occt_step_2_4">Mapping STEP entities to Open CASCADE Technology shapes</a></h3>
 Tables given in this paragraph show the mapping of STEP entities to OCCT objects. Only topological and geometrical STEP entities and entities defining assembly structures are described in this paragraph. For a full list of STEP entities, refer to Appendix A. 
 
-@subsubsection occt_step_2_4_1 Assembly structure representation entities
+<h4><a id="occt_step_2_4_1">Assembly structure representation entities</a></h4>
 Not all entities defining the assembly structure in the STEP file are translated to OCCT shapes, but they are used to identify the relationships between assemblies and their components. Since the graph of `natural' dependencies of entities based on direct references between them does not include the references from assemblies to their components, these dependencies are introduced in addition to the former ones. This is made basing on the analysis of the following entities describing the structure of the assembly. 
 
 | STEP entity type | CASCADE shape | Comments |
@@ -636,7 +636,7 @@ Not all entities defining the assembly structure in the STEP file are translated
 | item_defined_transformation | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
 | cartesian_transformation_operator | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
 
-@subsubsection occt_step_2_4_2 Models
+<h4><a id="occt_step_2_4_2">Models</a></h4>
 | STEP entity type | CASCADE shape | Comments |
 | :-------------- | :----------- | :---------- |
 | Solid Models | | | 
@@ -649,7 +649,7 @@ Not all entities defining the assembly structure in the STEP file are translated
 | Wireframe Models | | | 
 | geometric_curve_set | TopoDS_Compound | *TopoDS_Compound* contains only *TopoDS_Wires*, *TopoDS_Edges* and/or *TopoDS_Vertices*.
 
-@subsubsection occt_step_2_4_3 Topological entities
+<h4><a id="occt_step_2_4_3">Topological entities</a></h4>
 
 | Topology | STEP entity type | CASCADE shape | Comments |
 | :------- | :--------- | :-------- | :----- |
@@ -668,7 +668,7 @@ Not all entities defining the assembly structure in the STEP file are translated
 | | closed_shell | TopoDS_Shell | |
 | | open_shell | TopoDS_Shell | |
 
-@subsubsection occt_step_2_4_4 Geometrical entities
+<h4><a id="occt_step_2_4_4">Geometrical entities</a></h4>
 3D STEP entities are translated into geometrical objects from the *Geom* package while 2D entities are translated into objects from the *Geom2d* package. 
 | Geometry | STEP entity type | CASCADE object | Comments |
 | :------ | :-------- | :------ | :-------- |
@@ -724,8 +724,8 @@ Not all entities defining the assembly structure in the STEP file are translated
 | | complex_triangulated_face | TopoDS_Face | Contains *Poly_Triangulation* |
 
 
-@subsection occt_step_2_5 Tolerance management
-@subsubsection occt_step_2_5_1 Values used for tolerances during reading STEP 
+<h3><a id="occt_step_2_5">Tolerance management</a></h3>
+<h4><a id="occt_step_2_5_1">Values used for tolerances during reading STEP </a></h4>
 
 During the STEP to OCCT translation several parameters are used as tolerances and precisions for different algorithms. Some of them are computed from other tolerances using specific functions. 
 
@@ -739,14 +739,14 @@ During the STEP to OCCT translation several parameters are used as tolerances an
 * Methods *UResolution* and *VResolution (tolerance3d)* of the class *GeomAdaptor_Surface* or *BRepAdaptor_Surface* return tolerance in parametric space of a surface computed from 3d tolerance. When one tolerance value is to be used for both U and V parametric directions, the maximum or the minimum value of *UResolution* and *VResolution* is used. 
 * Methods *Resolution (tolerance3d)* of the class *GeomAdaptor_Curve* or *BRepAdaptor_Curve* return tolerance in parametric space of a curve computed from 3d tolerance. 
 
-@subsubsection occt_step_2_5_2 Initial setting of tolerances in translating objects
+<h4><a id="occt_step_2_5_2">Initial setting of tolerances in translating objects</a></h4>
 In the STEP processor, the basic value of tolerance is set in method *STEPControl_ActorRead::Transfer()* to either value of uncertainty in shape_representation in STEP file (if parameter *read.precision.mode* is 0), or to a value of parameter *read.precision.val* (if *read.precision.mode* is 1 or if the uncertainty is not attached to the current entity in the STEP file). 
 
 Translation starts from one entity translated as a root. *STEPControl_ActorRead::Transfer()*, function which performs the translation  creates an object of the type *StepToTopoDS_Builder*, which is intended to translate topology. 
 
 This object gets the initial tolerance value that is equal to *read.precision.val* or the uncertainty from shape_representation. During the translation of the entity, new objects of types *StepToTopoDS_Translate*... are created for translating sub-entities. All of them use the same tolerances as a *StepToTopoDS_Builder* object.
  
-@subsubsection occt_step_2_5_3 Transfer process
+<h4><a id="occt_step_2_5_3">Transfer process</a></h4>
 
 <h4>Evolution of shape tolerances during transfer</h4>
 Let us follow the evolution of tolerances during the translation of STEP entities into an OCCT shape. 
@@ -812,13 +812,13 @@ If it is possible to compensate a gap by increasing the tolerance of the vertex 
 ##### ShapeFix_Wire::FixConnected() 
 This method is intended to force two adjacent edges in the wire to share the same vertex. This method can increase the tolerance of the vertex. The maximal value of tolerance is *read.maxprecision.value*. 
 
-@subsection occt_step_2_6 Code architecture
+<h3><a id="occt_step_2_6">Code architecture</a></h3>
 
 The following diagram illustrates the structure of calls in reading STEP. The highlighted classes are intended to translate geometry
 
 @figure{/user_guides/step/images/step_image003.png,"The structure of calls in reading STEP",420}
   
-@subsection occt_step_2_7 Example
+<h3><a id="occt_step_2_7">Example</a></h3>
 ~~~~{.cpp}
 #include <STEPControl_Reader.hxx> 
 #include <TopoDS_Shape.hxx> 
@@ -849,8 +849,8 @@ Standard_Integer main()
 ~~~~
 
 
-@section occt_step_3 Writing STEP
-@subsection occt_step_3_1 Procedure
+<h2><a id="occt_step_3">Writing STEP</a></h2>
+<h3><a id="occt_step_3_1">Procedure</a></h3>
 You can translate OCCT shapes into STEP entities in the following steps: 
    1.initialize the process, 
    2.set the translation parameters, 
@@ -861,13 +861,13 @@ You can translate several shapes before writing a file. All these translations o
 
 The user-defined option (parameter *write.step.schema*) is provided to define which version of schema (AP214 CD or DIS, or AP203) is used for the output STEP file. 
 
-@subsection occt_step_3_2 Domain covered
-@subsubsection occt_step_3_2_1 Writing geometry and topology
+<h3><a id="occt_step_3_2">Domain covered</a></h3>
+<h4><a id="occt_step_3_2_1">Writing geometry and topology</a></h4>
 There are two families of OCCT objects that can be translated: 
   * geometrical objects, 
   * topological shapes. 
 
-@subsubsection occt_step_3_2_2 Writing assembly structures
+<h4><a id="occt_step_3_2_2">Writing assembly structures</a></h4>
 The shapes organized in a structure of nested compounds can be translated either as simple compound shapes, or into the assembly structure, depending on the parameter *write.step.assembly*, which is described below. 
 
 The assembly structure placed in the produced STEP file corresponds to the structure described in the ProSTEP Agreement Log (item 21) as the second alternative (assembly structure through *representation_relationship* / *item_defined_transformation*). To represent an assembly it uses entities of the *representation_relationship_with_transformation* type. Transformation operators used for locating assembly components are represented by *item_defined_transformation* entities. 
@@ -875,13 +875,13 @@ If mode *write.step.assembly* is set to the values *ON* or *Auto* then an OCC sh
 
 See also [Mapping OCCT shapes to STEP entities](#occt_step_3_4).
 
-@subsection occt_step_3_3 Description of the process
-@subsubsection occt_step_3_3_1 Initializing the process
+<h3><a id="occt_step_3_3">Description of the process</a></h3>
+<h4><a id="occt_step_3_3_1">Initializing the process</a></h4>
 Before performing any other operation you have to create a writer object: 
 ~~~~{.cpp}
 STEPControl_Writer writer; 
 ~~~~
-@subsubsection occt_step_3_3_2 Setting the translation parameters
+<h4><a id="occt_step_3_3_2">Setting the translation parameters</a></h4>
 
 The following parameters are used for the OCCT-to-STEP translation. 
 
@@ -1039,7 +1039,7 @@ if(!Interface_Static::SetIVal("write.step.tessellated",1))
 
 Default value is 2 (OnNoBep). 
  
-@subsubsection occt_step_3_3_3 Performing the Open CASCADE Technology shape translation
+<h4><a id="occt_step_3_3_3">Performing the Open CASCADE Technology shape translation</a></h4>
 An OCCT shape can be translated to STEP using one of the following models (shape_representations): 
   * manifold_solid_brep (advanced_brep_shape_representation) 
   * brep_with_voids (advanced_brep_shape_representation) 
@@ -1070,17 +1070,17 @@ STEP214Control_StepModelTope mode = STEP214Control_ManifoldSolidBrep;
 IFSelect_ReturnStatus stat = writer.Transfer(shape,mode); 
 ~~~~
 
-@subsubsection occt_step_3_3_4 Writing the STEP file
+<h4><a id="occt_step_3_3_4">Writing the STEP file</a></h4>
 Write the STEP file with: 
 ~~~~{.cpp}
 IFSelect_ReturnStatus stat = writer.Write("filename.stp"); 
 ~~~~
 to give the file name. 
 
-@subsection occt_step_3_4 Mapping Open CASCADE Technology shapes to STEP entities
+<h3><a id="occt_step_3_4">Mapping Open CASCADE Technology shapes to STEP entities</a></h3>
 Only STEP entities that have a corresponding OCCT object and mapping of assembly structures are described in this paragraph. For a full list of STEP entities, refer to Appendix A. 
 
-@subsubsection occt_step_3_4_1 Assembly structures and product information
+<h4><a id="occt_step_3_4_1">Assembly structures and product information</a></h4>
 The assembly structures are written to the STEP file if parameter *write.step.assembly* is 1 or 2. 
 Each *TopoDS_Compound* is written as an assembly with subshapes of that compound being components of the assembly. The structure of nested compounds is translated to the structure of nested assemblies. Shared subshapes are translated into shared components of assemblies. Shapes that are not compounds are translated into subtypes of shape_representation according to their type (see the next subchapter for details). 
 
@@ -1108,7 +1108,7 @@ The table below describes STEP entities, which are created when the assembly str
 | | product_definition_context | One per *product_definition*.  |
 
   
-@subsubsection occt_step_3_4_2 Topological shapes
+<h4><a id="occt_step_3_4_2">Topological shapes</a></h4>
 
 | CASCADE shape | STEP entity | Comments | 
 | :----- | :---- | :----- | 
@@ -1131,7 +1131,7 @@ The table below describes STEP entities, which are created when the assembly str
 | TopoDS_Edge | oriented_edge | |
 | TopoDS_Vertex | vertex_point | | 
 
-@subsubsection occt_step_3_4_3 Geometrical objects
+<h4><a id="occt_step_3_4_3">Geometrical objects</a></h4>
 | Geometry | CASCADE object | STEP entity | Comments | 
 | :----- | :------ | :----- | :----- | 
 | Points | Geom_CartesianPoint, Geom2d_CartesianPoint |  cartesian_point | |
@@ -1165,7 +1165,7 @@ The table below describes STEP entities, which are created when the assembly str
 | Triangulations | Poly_Triangulation | *triangulated_face* is produced for face active triangulation | |
 
 
-@subsection occt_step_3_5 Tolerance management
+<h3><a id="occt_step_3_5">Tolerance management</a></h3>
 There are four possible values for the uncertainty when writing a STEP file: 
   * user-defined value of the uncertainty 
   * minimal value of sub-shapes tolerances 
@@ -1176,9 +1176,9 @@ The chosen value of the uncertainty is the final value that will be written into
 See parameter *write.precision.mode*. 
 
 
-@subsection occt_step_3_6 Code architecture
+<h3><a id="occt_step_3_6">Code architecture</a></h3>
 
-@subsubsection occt_step_3_6_1 Graph of calls
+<h4><a id="occt_step_3_6_1">Graph of calls</a></h4>
 The following diagram illustrates the structure of calls in writing STEP. 
 The highlighted classes are intended to translate geometry. 
 
@@ -1186,7 +1186,7 @@ The highlighted classes are intended to translate geometry.
 @figure{/user_guides/step/images/step_image004.png,"The structure of calls in writing STEP",420}
 
     
-@subsection occt_step_3_7 Example
+<h3><a id="occt_step_3_7">Example</a></h3>
 ~~~~{.cpp}
 #include <STEPControl.hxx> 
 #include <STEPControl_Writer.hxx> 
@@ -1209,10 +1209,10 @@ writer.Write(;Output.stp;);
 } 
 ~~~~
 
-@section occt_step_4 Physical STEP file reading and writing
+<h2><a id="occt_step_4">Physical STEP file reading and writing</a></h2>
 
-@subsection occt_step_4_1 Architecture of STEP Read and Write classes
-@subsubsection occt_step_4_1_1 General principles
+<h3><a id="occt_step_4_1">Architecture of STEP Read and Write classes</a></h3>
+<h4><a id="occt_step_4_1_1">General principles</a></h4>
 
 To perform data loading from a STEP file and to translate this data it is necessary to create correspondence between the EXPRESS schema and the structure of the classes. There are two possibilities to organize such correspondence: the so-called early binding and late binding. 
 * Late binding means that the processor works with a description of the schema. The processor builds a dictionary of entities and can recognize and read any entity that is described in the schema. To change the behavior and the scope of processor based on late binding it is enough to change the description of the schema. However, this binding has some disadvantages (for example low speed of reading process). 
@@ -1220,10 +1220,10 @@ To perform data loading from a STEP file and to translate this data it is necess
 
 The STEP processor is based on early binding principles. It means that specific classes for each EXPRESS type have been created with the help of an automatic tool from the EXPRESS schema. There are two classes for each EXPRESS type. The first class (named the representing class) represents the STEP entity in memory. The second one (RW-class) is intended to perform the initialization of the representing class and to output data to an intermediate structure to be written in a STEP file. 
 
-@subsubsection occt_step_4_1_2 Complex entities
+<h4><a id="occt_step_4_1_2">Complex entities</a></h4>
 EXPRESS schema allows multiple inheritance. Entities that are built on the basis of multiple inheritance are called complex entities. EXPRESS enables any type of complex entities that can be inherited from any EXPRESS type. In the manner of early binding it is not possible to create a C++ class for any possible complex type. Thus, only widespread complex entities have corresponding representing classes and RW-classes that are created manually beforehand. 
 
-@subsection occt_step_4_2 Physical file reading
+<h3><a id="occt_step_4_2">Physical file reading</a></h3>
 Physical file reading consists of the following steps: 
    1.Loading a STEP file and syntactic analysis of its contents 
    2.Mapping STEP entities to the array of strings 
@@ -1231,22 +1231,22 @@ Physical file reading consists of the following steps:
    4.Initializing OCCT objects 
    5.Building a references graph 
    
-@subsubsection occt_step_4_2_1 Loading a STEP file and syntactic analysis of its contents
+<h4><a id="occt_step_4_2_1">Loading a STEP file and syntactic analysis of its contents</a></h4>
 In the first phase, a STEP file is syntactically checked and loaded in memory as a sequence of strings. 
 
 Syntactic check is performed on the basis of rules defined in *step.lex* and *step.yacc* files. Files *step.lex* and *step.yacc* are located in the StepFile nocdlpack development unit. These files describe text encoding of STEP data structure (for additional information see ISO 10303 Part 21). The *step.lex* file describes the lexical structure of the STEP file. It describes identifiers, numbers, delimiters, etc. The *step.yacc* file describes the syntactic structure of the file, such as entities, parameters, and headers. 
 
 These files have been created only once and need to be updated only when norm ISO 10303-21 is changed. 
 
-@subsubsection occt_step_4_2_2 Mapping STEP entities to arrays of strings
+<h4><a id="occt_step_4_2_2">Mapping STEP entities to arrays of strings</a></h4>
 For each entity specified by its rank number the arrays storing its identifier, STEP type and parameters are filled. 
-@subsubsection occt_step_4_2_3 Creating empty Open CASCADE Technology objects that represent STEP entities
+<h4><a id="occt_step_4_2_3">Creating empty Open CASCADE Technology objects that represent STEP entities</a></h4>
 For each STEP entity an empty OCCT object representing this entity is created. A map of correspondence between entity rank and OCCT object is created and filled out. If a STEP entity is not recognized by the STEP processor then the *StepData_UndefinedEntity* object is created. 
-@subsubsection occt_step_4_2_4 Initializing Open CASCADE Technology objects
+<h4><a id="occt_step_4_2_4">Initializing Open CASCADE Technology objects</a></h4>
 Each OCCT object (including StepData_UndefinedEntity) is initialized by its parameters with the help of the appropriate RW-class. If an entity has another entity as its parameter, the object that represents the latter entity will be initialized immediately. All initialized objects are put into a special map to avoid repeated initialization. 
-@subsubsection occt_step_4_2_5 Building a graph
+<h4><a id="occt_step_4_2_5">Building a graph</a></h4>
 The final phase is building a graph of references between entities. For each entity its RW-class is used to find entities referenced by this entity. Back references are built on the basis of direct references. In addition to explicit references defined in the STEP entities some additional (implicit) references are created for entities representing assembly structures (links from assemblies to their components). 
-@subsection occt_step_4_3 How to add a new entity in scope of the STEP processor
+<h3><a id="occt_step_4_3">How to add a new entity in scope of the STEP processor</a></h3>
 If it is necessary to read and translate a new entity by the STEP processor the Reader and Actor scope should be enhanced. Note that some actions to be made for adding a new type are different for simple and complex types. 
 The following steps should be taken: 
 * Create a class representing a new entity. This can be *Stepxxx_NewEntity* class where xxx can be one of the following: 
@@ -1276,28 +1276,28 @@ Each field of a STEP entity should be represented by a corresponding field of th
 * Update file *RWStepAP214_GeneralModule.cxx*. Add new C++ case operators to functions *NewVoid()* and *FillSharedCase()*, and in the method *CategoryNumber()* add a line defining a category of the new type. 
 * Enhance the *STEPControl_ActorRead class* (methods *Recognize()* and *Transfer()*), or class(es) translating some entities, to translate the new entity into an OCCT shape. 
 
-@subsection occt_step_4_4 Physical file writing
+<h3><a id="occt_step_4_4">Physical file writing</a></h3>
 Physical file writing consists of the following steps: 
    1. Building a references graph. Physical writing starts when STEP model, which was either loaded from a STEP file or created from OCCT shape with the help of translator, is available together with corresponding graph of references. During this step the graph of references can be recomputed. 
    2. Transferring data from a model to a sequence of strings. For each representing entity from the model a corresponding RW-class is called. RW-class writes data that is contained in the representing class into an intermediate data structure. The mentioned structure is a sequence of strings in memory. 
    3. Writing the sequence of strings into the file. The sequence of strings is written into the file. This is the last phase of physical STEP writing.
    
 
-@subsection occt_step_4_5 How to add a new entity to write in the STEP file.
+<h3><a id="occt_step_4_5">How to add a new entity to write in the STEP file.</a></h3>
 
 If it is necessary to write and translate an OCCT shape into a new entity by the STEP processor the Writer and Actor scope should be enhanced. 
 
 For a description of steps, which should be taken for adding a new entity type to the STEP processor, see [Physical file reading](#occt_step_4_2). Then, enhance the *STEPControl_ActorWrite* class i.e. methods *Recognize()* and *Transfer()*, or other classes from *TopoDSToStep*, to translate the OCCT shape into a new STEP entity. 
 
-@section occt_step_6 Using DRAW
-@subsection occt_step_6_1 DRAW STEP Commands Overview
+<h2><a id="occt_step_6">Using DRAW</a></h2>
+<h3><a id="occt_step_6_1">DRAW STEP Commands Overview</a></h3>
 *TKXSDRAW* toolkit provides commands for testing XSTEP interfaces interactively in the DRAW environment. It provides an additional set of DRAW commands specific for data exchange tasks, which allows loading and writing data files and an analysis of the resulting data structures and shapes.  
 
 This section is divided into five parts. Two of them deal with reading and writing a STEP file and are specific for the STEP processor. The first and the forth parts describe some general tools for setting parameters and analyzing the data. Most of them are independent of the norm being tested. Additionally, a table of mentioned DRAW commands is provided. 
 
 In the description of commands, square brackets ([]) are used to indicate optional parameters. Parameters given in the angle brackets (\<\>) and sharps (#) are to be substituted by an appropriate value. When several exclusive variants are possible, a vertical dash (|) is used.
  
-@subsection occt_step_6_2 Setting the interface parameters
+<h3><a id="occt_step_6_2">Setting the interface parameters</a></h3>
 A set of parameters for importing and exporting STEP data is defined in the XSTEP resource file. In XSDRAW, these parameters can be viewed or changed using the command 
 ~~~~{.php}
 Draw:> param [<parameter_name> [<value>]] 
@@ -1314,7 +1314,7 @@ Command xtrace is intended to view and change these parameters:
 * *Draw:> xtrace tracefile.log* -- sets the trace file as *tracefile.log*;
 * *Draw:> xtrace.* -- directs all messages to the standard output. 
 
-@subsection occt_step_6_3 Reading a STEP file
+<h3><a id="occt_step_6_3">Reading a STEP file</a></h3>
 
 For a description of parameters used in reading a STEP file refer to [Setting the translation parameters](#occt_step_2_3_3) section.
 
@@ -1362,13 +1362,13 @@ To get the number of a STEP entity, corresponding to an OCCT shape, use the comm
 
 To clear the map of correspondences between STEP entities and OCCT shapes use the command @code Draw:> tpclear. @endcode
  
-@subsection occt_step_6_4 Analyzing the transferred data 
+<h3><a id="occt_step_6_4">Analyzing the transferred data </a></h3>
 
 The procedure of analysis of data import can be divided into two stages: 
    1. to check the file contents, 
    2. to estimate the translation results (conversion and validated ratios). 
 
-@subsubsection occt_step_6_4_1 Checking file contents
+<h4><a id="occt_step_6_4_1">Checking file contents</a></h4>
 
 General statistics on the loaded data can be obtained by using the command 
 
@@ -1423,7 +1423,7 @@ Entities in the STEP file are numbered in the succeeding order. An entity can be
 
 Information about product names, *next_assembly_usage_occurence, shape_definition_representation, context_dependent_shape_representation* or *mapped_item entities* that are involved into the assembly structure will be printed. 
 
-@subsubsection occt_step_6_4_2 Estimating the results of reading STEP
+<h4><a id="occt_step_6_4_2">Estimating the results of reading STEP</a></h4>
 All the following commands are available only after data is converted into OCCT shapes (i.e. after command 214read). 
 
 Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter <i>\<symbol\></i> defines what information will be printed: 
@@ -1467,7 +1467,7 @@ When specifying min and max arguments this command saves shapes with tolerances 
 * *f* -- for faces, 
 * *c* -- for shells and faces. 
 
-@subsection occt_step_6_5 Writing a STEP file
+<h3><a id="occt_step_6_5">Writing a STEP file</a></h3>
 For writing shapes to a STEP file, the following parameters are defined (see above, [the command *param*](#occt_step_6_2)):
 
 | Description | Name | Values | Meaning | 
@@ -1496,7 +1496,7 @@ Mode (0 end, 1 file) :
 ~~~~
 It is necessary to call command *newmodel* to perform a new translation of the next OCCT shape. 
 
-@section occt_step_7 Reading from and writing to STEP
+<h2><a id="occt_step_7">Reading from and writing to STEP</a></h2>
 
 The *STEPCAFControl* package (TKDESTEP toolkit) provides tools to read and write STEP files (see XDE User's Guide). 
 
@@ -1508,7 +1508,7 @@ In addition to the translation of shapes implemented in basic translator, it pro
   * STEP Geometric Dimensions and Tolerances are translated;
   * STEP Saved Views are translated.
   
-@subsection occt_step_7_1 Reading from STEP
+<h3><a id="occt_step_7_1">Reading from STEP</a></h3>
 
 ### Load a STEP file
 Before performing any other operation, you must load a STEP file with: 
@@ -1546,7 +1546,7 @@ Standard_Boolean ok = reader.Transfer(doc);
 where *doc* is a variable which contains a handle to the output document and should have a type *Handle(TDocStd_Document)*. 
 
 
-@subsection occt_step_7_2 Attributes read from STEP 
+<h3><a id="occt_step_7_2">Attributes read from STEP </a></h3>
 
 ### Colors
 Colors are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices for model styling and organization</a> sections 4 and 5.
@@ -1660,7 +1660,7 @@ Attributes can be read for shapes at levels:
 - Component Instances in an Assembly;
 - Geometry Level.
 
-@subsection occt_step_7_3 Writing to STEP
+<h3><a id="occt_step_7_3">Writing to STEP</a></h3>
 
 The translation from XDE to STEP can be initialized as follows: 
 ~~~~{.cpp}
@@ -1701,7 +1701,7 @@ IFSelect_ReturnStatus statw = writer.WriteFile (S);
 ~~~~
 where *S* is *OStream*. 
 
-@subsection occt_step_7_4 Attributes written to STEP 
+<h3><a id="occt_step_7_4">Attributes written to STEP </a></h3>
 
 ### Colors
 The following attributes are exported to STEP file:

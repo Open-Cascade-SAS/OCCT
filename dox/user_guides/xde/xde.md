@@ -3,7 +3,7 @@ Extended Data Exchange (XDE)  {#occt_user_guides__xde}
 
 @tableofcontents
 
-@section occt_xde_1 Introduction
+<h2><a id="occt_xde_1">Introduction</a></h2>
 
 This manual explains how to use the **eXtended Data Exchange** (XDE).
 It provides basic documentation on setting up and using XDE.
@@ -20,14 +20,14 @@ Finally, the XDE provides reader and writer tools for reading and writing the da
 
 The XDE component requires [Shape Healing](#occt_user_guides__shape_healing) toolkit for operation.
 
-@subsection occt_xde_1_1 Basic terms
+<h3><a id="occt_xde_1_1">Basic terms</a></h3>
 
 For better understanding of XDE, certain key terms are defined:
 * **Shape** -- a standalone shape, which does not belong to the assembly structure.
 * **Instance** -- a replication of another shape with a location that can be the same location or a different one.
 * **Assembly** -- a construction that is either a root or a sub-assembly.
 
-@subsection occt_xde_1_2 XDE Organization
+<h3><a id="occt_xde_1_2">XDE Organization</a></h3>
 
 The basis of XDE, called XCAF, is a framework based on [OCAF](#occt_user_guides__ocaf) (Open CASCADE Technology Application Framework) and is intended to be used with assemblies and with various kinds of attached data (attributes).
 Attributes can be Individual attributes for a shape, specifying some characteristics of a shape, or they can be Grouping attributes, specifying that a shape belongs to a given group whose definition is specified apart from the shapes.
@@ -43,7 +43,7 @@ These elements consist in descriptions of commonly used data structures (apart f
 They are not attached to specific applications and do not bring specific semantics, but are structured according to the use and needs of data exchanges.
 The Document used by XDE usually starts as a `TDocStd_Document`.
 
-@subsection occt_xde_1_3 Assemblies
+<h3><a id="occt_xde_1_3">Assemblies</a></h3>
 
 XDE supports assemblies by separating shape definitions and their locations.
 Shapes are simple OCAF objects without a location definition.
@@ -64,7 +64,7 @@ A shape can be considered to be an Assembly (such as `AS1` under `0:1:1:1` in Fi
 `XCAFDoc_ShapeTool` is a tool that allows managing the Shape section of the XCAF document.
 This tool is implemented as an attribute and located at the root label of the shape section.
 
-@subsection occt_xde_1_4 Validation Properties
+<h3><a id="occt_xde_1_4">Validation Properties</a></h3>
 
 Validation properties are geometric characteristics of Shapes (volume, centroid, surface area) written to STEP files by the sending system.
 These characteristics are read by the receiving system to validate the quality of the translation.
@@ -95,14 +95,14 @@ A typical example appears as follows:
 
 In our example, it can be seen that no errors were detected for either area, volume or positioning data.
 
-@subsection occt_xde_1_5 Names
+<h3><a id="occt_xde_1_5">Names</a></h3>
 
 XDE supports reading and writing the names of shapes to and from IGES and STEP file formats.
 This functionality can be switched off if you do not need this type of data, thereby reducing the size of the document.
 
 @figure{/user_guides/xde/images/614_xde_04_400.png,"Instance Names",360}
 
-@subsection occt_xde_1_6 Colors and Layers
+<h3><a id="occt_xde_1_6">Colors and Layers</a></h3>
 
 XDE can read and write colors and layers assigned to shapes or their subparts (down to the level of faces and edges) to and from both IGES and STEP formats.
 Three types of colors are defined in the enumeration `XCAFDoc_ColorType`:
@@ -112,7 +112,7 @@ Three types of colors are defined in the enumeration `XCAFDoc_ColorType`:
 
 @figure{/user_guides/xde/images/xde_image006.png,"Colors and Layers",240}
 
-@subsection occt_xde_1_7 Geometric Dimensions & Tolerances (GD\&T)
+<h3><a id="occt_xde_1_7">Geometric Dimensions & Tolerances (GD\&T)</a></h3>
 
 GD\&T are a type of **Product and Manufacturing Information** (**PMI**) that can be either computed automatically by a CAD system, or entered manually by the user.
 For detailed information use [CAx-IF Recommended Practices for the Representation and Presentation of Product Manufacturing Information (PMI) (AP242)](https://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf).
@@ -126,14 +126,14 @@ XDE supports two presentations of GD\&T data:
   * semantic presentation, i.e. data is stored in a machine-consumable way and includes all information required to understand the specification without the aid of any presentation elements;
   * tessellated presentation, i.e. data is displayed in a human-readable way.
 
-@subsection occt_xde_1_8 Clipping planes
+<h3><a id="occt_xde_1_8">Clipping planes</a></h3>
 
 XDE supports reading from STEP and storing named planes used for clipping.
 Currently, XDE supports saving of clipping planes in XBF format only.
 
 XDE provides capabilities for adding, editing and removing clipping planes.
 
-@subsection occt_xde_1_9 Saved views
+<h3><a id="occt_xde_1_9">Saved views</a></h3>
 
 XDE supports reading from STEP views.
 Views allow saving information about camera parameters (position, direction, zoom factor, etc.) and visible shapes, PMIs, used clipping planes and notes.
@@ -144,7 +144,7 @@ XDE provides the following view management capabilities:
   * set view camera parameters;
   * set visible shapes, PMIs, used clipping planes and notes.
 
-@subsection occt_xde_1_10 Custom notes
+<h3><a id="occt_xde_1_10">Custom notes</a></h3>
 
 Custom notes is a kind of application-specific data attached to assembly items, their attributes and sub-shapes.
 Basically, there are simple textual comments, binary data and other application-specific data.
@@ -167,7 +167,7 @@ Notes API provides the following functionality:
   * Deletes note(s) and removes them from annotated items;
   * Gets / deletes orphan notes.
 
-@section occt_xde_2_1 Getting started
+<h2><a id="occt_xde_2_1">Getting started</a></h2>
 
 As explained in the last chapter, XDE uses `TDocStd_Documents` as a starting point. The general purpose of XDE is:
   * Checking if an existing document is fit for XDE;
@@ -179,14 +179,14 @@ As explained in the last chapter, XDE uses `TDocStd_Documents` as a starting poi
 
 The Document used by XDE usually starts as a `TDocStd_Document`.
 
-@subsection occt_xde_2_1_1 Environment variables
+<h3><a id="occt_xde_2_1_1">Environment variables</a></h3>
 
 To use XDE you have to set the environment variables properly.
 Make sure that two important environment variables are set as follows:
   * `CSF_PluginDefaults` points to sources of `$CASROOT/src/XCAFResources`.
   * `CSF_XCAFDefaults`   points to sources of `$CASROOT/src/XCAFResources`.
 
-@subsection occt_xde_2_1_2 General Check
+<h3><a id="occt_xde_2_1_2">General Check</a></h3>
 
 Before working with shapes, properties, and other types of information, the global organization of an XDE Document can be queried or completed to determine if an existing Document is actually structured for use with XDE.
 
@@ -198,7 +198,7 @@ if (XCAFDoc_DocumentTool::IsXCAFDocument (theDoc)) { .. yes .. }
 If the Document is suitable for XDE, you can perform operations and queries explained in this guide.
 However, if a Document is not fully structured for XDE, it must be initialized.
 
-@subsection occt_xde_2_1_3 Get an Application or an Initialized Document
+<h3><a id="occt_xde_2_1_3">Get an Application or an Initialized Document</a></h3>
 
 If you want to retrieve an existing application or an existing document (known to be correctly structured for XDE), use:
 ~~~~{.cpp}
@@ -209,9 +209,9 @@ XmlXCAFDrivers::DefineFormat (anApp);
 anApp->NewDocument ("BinXCAF", aDoc);
 ~~~~
 
-@section occt_xde_2_2 Shapes and Assemblies
+<h2><a id="occt_xde_2_2">Shapes and Assemblies</a></h2>
 
-@subsection occt_xde_2_2_1 Initialize an XDE Document (Shapes)
+<h3><a id="occt_xde_2_2_1">Initialize an XDE Document (Shapes)</a></h3>
 
 An XDE Document begins with a `TDocStd_Document`.
 Assuming you have a `TDocStd_Document` already created, you can ensure that it is correctly structured for XDE by initializing the XDE structure as follows:
@@ -224,7 +224,7 @@ TDF_Label aLabel = myAssembly->NewShape();
 The first time this method is used, it creates the `XCAFDoc_ShapeTool`.
 In our example, a handle is used for the `TDocStd_Document`.
 
-@subsection occt_xde_2_2_2 Get a Node considered as an Assembly
+<h3><a id="occt_xde_2_2_2">Get a Node considered as an Assembly</a></h3>
 
 To get a node considered as an Assembly from an XDE structure, you can use the Label of the node.
 Assuming that you have a properly initialized `TDocStd_Document`, use:
@@ -239,7 +239,7 @@ You can then query or edit this Assembly node, the Main Item or another one (`my
 
 **Note** that for the examples in the rest of this guide, `myAssembly` is always presumed to be accessed this way, so this information will not be repeated.
 
-@subsection occt_xde_2_2_3 Updating the Assemblies after Filling or Editing
+<h3><a id="occt_xde_2_2_3">Updating the Assemblies after Filling or Editing</a></h3>
 
 Some actions in this chapter affect the content of the document, considered as an Assembly.
 As a result, you will sometimes need to update various representations (including the compounds).
@@ -252,7 +252,7 @@ This call performs a top-down update of the Assembly compounds stored in the doc
 
 **Note** that you have to run this method manually to actualize your Assemblies after any low-level modifications on shapes.
 
-@subsection occt_xde_2_2_4 Adding or Setting Top Level Shapes
+<h3><a id="occt_xde_2_2_4">Adding or Setting Top Level Shapes</a></h3>
 
 Shapes can be added as top-level shapes.
 Top level means that they can be added to an upper level assembly or added on their own at the highest level as a component or referred by a located instance.
@@ -278,7 +278,7 @@ Each node of the assembly therefore refers to its sub-shapes.
 Concerning located instances of sub-shapes, the corresponding shapes (without location) appear at distinct sub-labels.
 They are referred to by a shape instance, which associates a location.
 
-@subsection occt_xde_2_2_5 Setting a given Shape at a given Label
+<h3><a id="occt_xde_2_2_5">Setting a given Shape at a given Label</a></h3>
 
 A top-level shape can be changed.
 In this example, no interpretation of compound is performed:
@@ -290,7 +290,7 @@ TopoDS_Shape aShape = ...;
 myAssembly->SetShape (aLabel, aShape);
 ~~~~
 
-@subsection occt_xde_2_2_6 Getting a Shape from a Label
+<h3><a id="occt_xde_2_2_6">Getting a Shape from a Label</a></h3>
 
 To get a shape from its Label from the top-level, use:
 ~~~~{.cpp}
@@ -308,7 +308,7 @@ if (aShape.IsNull())
 ~~~~
 **Note** that if the label corresponds to an assembly, the result is a compound.
 
-@subsection occt_xde_2_2_7 Getting a Label from a Shape
+<h3><a id="occt_xde_2_2_7">Getting a Label from a Shape</a></h3>
 
 To get a Label, which is attached to a Shape from the top-level, use:
 ~~~~{.cpp}
@@ -322,7 +322,7 @@ if (aLabel.IsNull())
 If `toFindInstance` is `True`, a search is made for the shape with the same location.
 If it is `False` (default value), a search is made among original, non-located shapes.
 
-@subsection occt_xde_2_2_8 Other Queries on a Label
+<h3><a id="occt_xde_2_2_8">Other Queries on a Label</a></h3>
 
 Various other queries can be made from a Label within the Main Item of XDE:
 
@@ -410,7 +410,7 @@ TDF_LabelSequence aComps;
 bool isassembly = myAssembly->GetComponents (aLabel, aComps [,subchilds]);
 ~~~~
 
-@subsection occt_xde_2_2_9 Instances and References for Components
+<h3><a id="occt_xde_2_2_9">Instances and References for Components</a></h3>
 
 To determine if a label is a simple shape, use:
 ~~~~{.cpp}
@@ -435,7 +435,7 @@ bool isRef = myAssembly->GetReferredShape (aLabel, aRefLabel);
 
 **Note** `isRef` returns `False` if `aLabel` is not for a reference.
 
-@section occt_xde_2_3 Editing Shapes
+<h2><a id="occt_xde_2_3">Editing Shapes</a></h2>
 
 In addition to the previously described `AddShape` and `SetShape`, several shape edits are possible.
 
@@ -465,7 +465,7 @@ To remove a component from the assembly, use:
 myAssembly->RemoveComponent (aLabel);
 ~~~~
 
-@section occt_xde_2_4 Management of Sub-Shapes
+<h2><a id="occt_xde_2_4">Management of Sub-Shapes</a></h2>
 
 In addition to components of a (sub-)assembly, it is possible to have individual identification of some sub-shapes inside any shape.
 Therefore, you can attach specific attributes such as Colors.
@@ -495,7 +495,7 @@ TDF_LabelSequence aSubshapes;
 bool hasSubshapes = myAssembly->GetSubShapes (aLabel, aSubShapes);
 ~~~~
 
-@section occt_xde_2_5 Properties
+<h2><a id="occt_xde_2_5">Properties</a></h2>
 
 Some properties can be attached directly to shapes. These properties are:
   * Name (standard definition from OCAF);
@@ -514,7 +514,7 @@ There are two ways of attaching a color to a shape:
 When the color is added directly, a search is performed in the table of contents to determine if it contains the requested color.
 Once this search and initialize operation is done, the first way of attaching a color to a shape is used.
 
-@subsection occt_xde_2_5_1 Name
+<h3><a id="occt_xde_2_5_1">Name</a></h3>
 
 Name is implemented and used as a `TDataStd_Name`, which can be attached to any label.
 Before proceeding, consider that:
@@ -552,7 +552,7 @@ TCollection_ExtendedString aName = ...;
 TDataStd_Name::Set (aLabel, aName);
 ~~~~
 
-@subsection occt_xde_2_5_2 Centroid
+<h3><a id="occt_xde_2_5_2">Centroid</a></h3>
 
 A Centroid is defined by a Point to fix its position.
 It is handled as a property, item of the class `XCAFDoc_Centroid`, sub-class of `TDF_Attribute`.
@@ -580,7 +580,7 @@ gp_Pnt aPos (X, Y, Z);
 XCAFDoc_Centroid::Set (aLabel, aPos);
 ~~~~
 
-@subsection occt_xde_2_5_3 Area
+<h3><a id="occt_xde_2_5_3">Area</a></h3>
 
 An Area is defined by a Real, it corresponds to the computed Area of a Shape, provided that it contains surfaces.
 It is handled as a property, item of the class `XCAFDoc_Area`, sub-class of `TDF_Attribute`.
@@ -602,7 +602,7 @@ Standard_Real anArea = ...;
 XCAFDoc_Area::Set (aLabel, anArea);
 ~~~~
 
-@subsection occt_xde_2_5_4 Volume
+<h3><a id="occt_xde_2_5_4">Volume</a></h3>
 
 A Volume is defined by a Real and corresponds to the computed volume of a Shape, provided that it contains solids.
 It is handled as a property, an item of the class `XCAFDoc_Volume`, sub-class of `TDF_Attribute`.
@@ -624,7 +624,7 @@ Standard_Real aVolume = ...;
 XCAFDoc_Volume::Set (aLabel, aVolume);
 ~~~~
 
-@section occt_xde_2_6 Colors and Layers
+<h2><a id="occt_xde_2_6">Colors and Layers</a></h2>
 
 XDE can read and write colors and layers assigned to shapes or their subparts (down to level of faces and edges) to and from both IGES and STEP formats.
 
@@ -655,7 +655,7 @@ Colors and Shapes are related to by Tree Nodes.
 
 These definitions are common to various exchange formats, at least for STEP and IGES.
 
-@subsection occt_xde_2_6_1 Initialization
+<h3><a id="occt_xde_2_6_1">Initialization</a></h3>
 
 To query, edit, or initialize a Document to handle Colors of XCAF, use:
 ~~~~{.cpp}
@@ -665,7 +665,7 @@ This call can be used at any time.
 The first time it is used, a relevant structure is added to the document.
 This definition is used for all the following color calls and will not be repeated for these.
 
-@subsection occt_xde_2_6_2 Adding a Color
+<h3><a id="occt_xde_2_6_2">Adding a Color</a></h3>
 
 There are two ways to add a color. You can:
   * add a new Color defined as `Quantity_Color` and then directly set it to a Shape (anonymous Color);
@@ -700,7 +700,7 @@ if (myColors->SetColors (aLabel, aColLabel, aColType)) {.. it is done .. }
 ~~~~
 In this example, `aLabel` can be replaced by `aShape` directly.
 
-@subsection occt_xde_2_6_3 Queries on Colors
+<h3><a id="occt_xde_2_6_3">Queries on Colors</a></h3>
 
 Various queries can be performed on colors.
 However, only specific queries are included in this section, not general queries using names.
@@ -758,7 +758,7 @@ TDF_Label aColLabel = myColors->FindColor (aCol);
 if (!aColLabel.IsNull()) { .. found .. }
 ~~~~
 
-@subsection occt_xde_2_6_4 Editing Colors
+<h3><a id="occt_xde_2_6_4">Editing Colors</a></h3>
 
 Besides adding colors, the following attribute edits can be made:
 
@@ -774,7 +774,7 @@ To remove a Color and all the references to it (so that the related shapes will 
 myColors->RemoveColor (aColLabel);
 ~~~~
 
-@section occt_xde_2_7 Geometric Dimensions & Tolerances (GD\&T)
+<h2><a id="occt_xde_2_7">Geometric Dimensions & Tolerances (GD\&T)</a></h2>
 
 XDE can read and write GD\&T assigned to shapes or their subparts (down to the level of faces and edges) to and from STEP formats.
 
@@ -800,7 +800,7 @@ GD\&Ts and Shapes are related by Graph Nodes.
 
 These definitions are common to various exchange formats, at least for STEP.
 
-@subsection occt_xde_2_7_1 Initialization
+<h3><a id="occt_xde_2_7_1">Initialization</a></h3>
 
 To query, edit, or initialize a Document to handle GD\&Ts of XCAF, use:
 ~~~~{.cpp}
@@ -811,7 +811,7 @@ This call can be used at any time.
 When it is used for the first time, a relevant structure is added to the document.
 This definition is used for all later GD\&T calls and is not repeated for them.
 
-@subsection occt_xde_2_7_2 Adding a GD\&T
+<h3><a id="occt_xde_2_7_2">Adding a GD\&T</a></h3>
 
 `XCAFDoc_DimTolTool` provides methods to create GD\&T 'empty' entities:
   * `XCAFDoc_DimTolTool::AddDimension` - for a new dimension;
@@ -831,7 +831,7 @@ if (!aDimLabel.IsNull())
 
 A similar approach can be used for other GD\&T types.
 
-@subsection occt_xde_2_7_3 Editing a GD\&T
+<h3><a id="occt_xde_2_7_3">Editing a GD\&T</a></h3>
 
 A newly added GD\&T entity is empty.
 To set its data a corresponding access object should be used as it is demonstrated below, where the dimension becomes a linear distance between two points.
@@ -853,7 +853,7 @@ if (!aDimAttr.IsNull())
 
 A similar approach can be used for other GD\&T types.
 
-@subsection occt_xde_2_7_4 Linking GD\&Ts
+<h3><a id="occt_xde_2_7_4">Linking GD\&Ts</a></h3>
 
 To link a GD\&T entity with other OCAF labels (e.g. representing shapes) one should use the following methods:
   * `XCAFDoc_DimTolTool::SetDimension` - for dimensions;
@@ -875,7 +875,7 @@ aDGTTool->SetDimension (aShapes1, aShapes2, aDimLabel);
 
 In addition, a special method `XCAFDoc_DimTolTool::SetDatumToGeomTol` should be used to link a datum with a geometric tolerance.
 
-@subsection occt_xde_2_7_5 Finding GD\&Ts and reference shapes
+<h3><a id="occt_xde_2_7_5">Finding GD\&Ts and reference shapes</a></h3>
 
 `XCAFDimTolObjects_Tool` class provides basic capabilities for searching GD\&Ts linked to shapes.
 The tool provides sequences of dimensions, geometric tolerances and datums linked with a shape.
@@ -885,7 +885,7 @@ To get reference shapes for a GD\&T entity one can use `XCAFDoc_DimTolTool::GetR
 
 `XCAFDoc_DimTolTool` provides methods to get lists of all dimensions, geometric tolerances and datums.
 
-@subsection occt_xde_2_7_6 Storing custom data
+<h3><a id="occt_xde_2_7_6">Storing custom data</a></h3>
 
 Every GD\&T entity in XDE is represented as a label with attached attribute identifying entity type.
 All specific data is stored in sub-labels in standard OCAF attributes, such as `TDataStd_Integer`, `TDataStd_IntegerArray`, `TDataStd_RealArray` and so on.
@@ -897,7 +897,7 @@ The following tag ranges are reserved for GD\&T entities:
 
 Custom data can be stored in labels with tags beyond the ranges listed above.
 
-@section occt_xde_2_8 Clipping planes
+<h2><a id="occt_xde_2_8">Clipping planes</a></h2>
 
 In an XDE document, Clipping planes are managed by the class `XCAFDoc_ClippingPlaneTool`.
 It works basing on the same principles as ShapeTool works with Shapes.
@@ -968,7 +968,7 @@ for (TDF_LabelSequence::Iterator anIt(aClipPlaneLbls); anIt.More(); anIt.Next())
 }
 ~~~~
 
-@section occt_xde_2_9 Saved views
+<h2><a id="occt_xde_2_9">Saved views</a></h2>
 
 In an XDE document, Views are managed by the class `XCAFDoc_ViewTool`.
 It works basing on the same principles as ShapeTool works with Shapes.
@@ -1046,7 +1046,7 @@ And vice versa, to get views that display a particular clipping plane, GD\&T or 
   * `XCAFDoc_ViewTool::GetViewLabelsForNote` - returns a sequence of view labels associated with a note;
   * `XCAFDoc_ViewTool::GetViewLabelsForAnnotation` - returns a sequence of view labels associated with an annotated label.
 
-@section occt_xde_2_10 Custom notes
+<h2><a id="occt_xde_2_10">Custom notes</a></h2>
 
 In an XDE document, custom notes are managed by the class `XCAFDoc_NotesTool`.
 It works basing on the same principles as ShapeTool works with Shapes.
@@ -1061,7 +1061,7 @@ Notes binding is done through `XCAFDoc_GraphNode` attribute.
 
   @figure{/user_guides/xde/images/xde_notes001.png,"Structure of notes part of XCAF document",240}
 
-@subsection occt_xde_2_10_1 Initialization
+<h3><a id="occt_xde_2_10_1">Initialization</a></h3>
 
 To query, edit, or initialize a Document to handle custom notes of XCAF, use:
 ~~~~{.cpp}
@@ -1072,7 +1072,7 @@ This call can be used at any time.
 The first time it is used, a relevant structure is added to the document.
 This definition is used for all later notes calls and will not be repeated for them.
   
-@subsection occt_xde_2_10_2 Creating Notes
+<h3><a id="occt_xde_2_10_2">Creating Notes</a></h3>
 
 Before annotating a Document item a note must be created using one of the following methods of `XCAFDoc_NotesTool` class:
 - `XCAFDoc_NotesTool::CreateComment`: creates a note with a textual comment;
@@ -1086,7 +1086,7 @@ Handle(XCAFDoc_Note) myNote = myNotes->CreateComment ("User", "Timestamp", "Hell
 
 This code adds a child label to label `0.1.9.1` with `XCAFDoc_NoteComment` attribute.
 
-@subsection occt_xde_2_10_3 Editing a Note
+<h3><a id="occt_xde_2_10_3">Editing a Note</a></h3>
 
 An instance of `XCAFDoc_Note` class can be used for note editing.
 One may change common note data.
@@ -1124,7 +1124,7 @@ if (!aNoteObj.IsNull())
 }
 ~~~~
 
-@subsection occt_xde_2_10_4 Adding Notes
+<h3><a id="occt_xde_2_10_4">Adding Notes</a></h3>
 
 Once a note has been created it can be bound to a Document item using the following `XCAFDoc_NotesTool` methods:
 - `XCAFDoc_NotesTool::AddNote`: binds a note to a label;
@@ -1146,7 +1146,7 @@ Handle(XCAFDoc_AssemblyItemRef) myRefSubshape = myNotes->AddNoteToSubshape(myNot
 This code adds three child labels with `XCAFDoc_AssemblyItemRef` attribute to label `0.1.9.2`.
 `XCAFDoc_GraphNode` attributes are added to the child labels and note labels.
 
-@subsection occt_xde_2_10_5 Finding Notes
+<h3><a id="occt_xde_2_10_5">Finding Notes</a></h3>
 
 To find annotation labels under label `0.1.9.2` use the following `XCAFDoc_NotesTool` methods:
 - `XCAFDoc_NotesTool::FindAnnotatedItem`: returns an annotation label for a label;
@@ -1184,7 +1184,7 @@ TDF_LabelSequence theNotesSubshape;
 myNotes->GetAttrSubshape(theLabel, theSubshape, theNotesSubshape);
 ~~~~
 
-@subsection occt_xde_2_10_6 Removing Notes
+<h3><a id="occt_xde_2_10_6">Removing Notes</a></h3>
 
 To remove a note use one of the following `XCAFDoc_NotesTool` methods:
 - `XCAFDoc_NotesTool::RemoveNote`: unbinds a note from a label;
@@ -1203,7 +1203,7 @@ myNotes->RemoveSubshapeNote(myNote->Label(), theSubshape);
 A note will not be deleted automatically.
 Counterpart methods to remove all notes are available, too.
   
-@subsection occt_xde_2_10_7 Deleting Notes
+<h3><a id="occt_xde_2_10_7">Deleting Notes</a></h3>
 
 To delete note(s) use the following `XCAFDoc_NotesTool` methods:
 - `XCAFDoc_NotesTool::DeleteNote`: deletes a single note;
@@ -1213,7 +1213,7 @@ To delete note(s) use the following `XCAFDoc_NotesTool` methods:
 
 All these methods except for the last one break all links with Document items as well.
   
-@section occt_xde_2_11 Reading and Writing STEP or IGES
+<h2><a id="occt_xde_2_11">Reading and Writing STEP or IGES</a></h2>
 
 Note that saving and restoring the document itself are standard OCAF operations.
 As the various previously described definitions enter into this frame, they will not be explained any further.
@@ -1233,7 +1233,7 @@ There are several important points to consider:
 
 The packages to manage this are `IGESCAFControl` for IGES, and `STEPCAFControl` for STEP.
 
-@subsection occt_xde_2_11_1 Reading a STEP file
+<h3><a id="occt_xde_2_11_1">Reading a STEP file</a></h3>
 
 To read a STEP file by itself, use:
 
@@ -1256,7 +1256,7 @@ if (!aReader.Transfer (aDoc))
 
 In addition, the reader provides methods that are applicable to document transfers and for directly querying of the data produced.
 
-@subsection occt_xde_2_11_2 Writing a STEP file
+<h3><a id="occt_xde_2_11_2">Writing a STEP file</a></h3>
 
 To write a STEP file by itself, use:
 
@@ -1282,15 +1282,15 @@ IFSelect_ReturnStatus aStat = aWriter.Write (theFilename);
 if (aStat != IFSelect_RetDone) { .. writing failed .. }
 ~~~~
 
-@subsection occt_xde_2_11_3 Reading an IGES File
+<h3><a id="occt_xde_2_11_3">Reading an IGES File</a></h3>
 
 Use the same procedure as for a STEP file but with `IGESCAFControl` instead of `STEPCAFControl`.
 
-@subsection occt_xde_2_11_4 Writing an IGES File
+<h3><a id="occt_xde_2_11_4">Writing an IGES File</a></h3>
 
 Use the same procedure as for a STEP file but with `IGESCAFControl` instead of `STEPCAFControl`.
  
-@section occt_xde_2_12 Using an XDE Document
+<h2><a id="occt_xde_2_12">Using an XDE Document</a></h2>
 
 There are several ways of exploiting XDE data from an application, you can:
  1. Get the data relevant for the application by mapping XDE/Appli, then discard the XDE data once it has been used.
@@ -1298,7 +1298,7 @@ There are several ways of exploiting XDE data from an application, you can:
  3. Embed XDE data inside the Application Document (see the following section for details).
  4. Directly exploit XDE data such as when using file checkers.
 
-@subsection occt_xde_2_12_1 XDE Data inside an Application Document
+<h3><a id="occt_xde_2_12_1">XDE Data inside an Application Document</a></h3>
 
 To have XCAF data elsewhere than under label `0.1`, you use the DocLabel of XDE.
 The method `XCAFDoc_DocumentTool::DocLabel` determines the relevant Label for XCAF.

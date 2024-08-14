@@ -3,7 +3,7 @@ Boolean Operations {#specification__boolean_operations}
 
 @tableofcontents
 
-@section specification__boolean_1 Introduction
+<h2><a id="specification__boolean_1">Introduction</a></h2>
 
 Boolean operations are used to create new shapes from the combinations of two groups of shapes.
 This document provides a comprehensive description of the algorithms in the Boolean Operations Component as it is implemented in Open CASCADE Technology. The Boolean Component contains:
@@ -18,11 +18,11 @@ GFA is the base algorithm for BOA, SPA, SA.
 GFA has a history-based architecture designed to allow using OCAF naming functionality. The architecture of GFA is expandable, that allows creating new algorithms basing on it.
 
 
-@section specification__boolean_2 Overview 
+<h2><a id="specification__boolean_2">Overview </a></h2>
 
-@subsection specification__boolean_2_1 Operators
+<h3><a id="specification__boolean_2_1">Operators</a></h3>
 
-@subsubsection specification__boolean_2_1_1 Boolean operator
+<h4><a id="specification__boolean_2_1_1">Boolean operator</a></h4>
 
 The Boolean operator provides the following operations between two groups *Objects* and *Tools*:
 * FUSE - Union of two groups;
@@ -48,7 +48,7 @@ where:
 
 For more details see [Boolean Operations Algorithm](#specification__boolean_9) section.
 
-@subsubsection specification__boolean_2_1_2 General Fuse operator
+<h4><a id="specification__boolean_2_1_2">General Fuse operator</a></h4>
 
 The General fuse operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*.
 
@@ -81,7 +81,7 @@ The fact that *R<sub>GF</sub>* contains the components of *R<sub>B</sub>* allows
 
 For more details see [General Fuse Algorithm](#specification__boolean_7) section.
 
-@subsubsection specification__boolean_2_1_3 Splitter operator 
+<h4><a id="specification__boolean_2_1_3">Splitter operator </a></h4>
 
 The Splitter operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*. The arguments are divided into two groups: *Objects* and *Tools*. The result of *SPA* contains all parts that belong to the *Objects* but does not contain the parts that belong to the *Tools*.
 
@@ -111,7 +111,7 @@ The fact that the *R<sub>GF</sub>* contains the components of *R<sub>SPA</sub>* 
 
 For more details see [Splitter Algorithm](#specification__boolean_8) section.
 
-@subsubsection specification__boolean_2_1_4 Section operator
+<h4><a id="specification__boolean_2_1_4">Section operator</a></h4>
 
 The Section operator *SA* can be applied to arbitrary number of arguments in terms of *TopoDS_Shape*. The result of *SA* contains vertices and edges in accordance with interferences between the arguments 
 The SA operator can be represented as follows:
@@ -122,7 +122,7 @@ The SA operator can be represented as follows:
 
 For more details see [Section Algorithm](#specification__boolean_10a) section.
 
-@subsection specification__boolean_2_2 Parts of algorithms 
+<h3><a id="specification__boolean_2_2">Parts of algorithms </a></h3>
 
 GFA, BOA, SPA and SA have the same Data Structure (DS). The main goal of the Data Structure is to store all necessary information for input data and intermediate results.
 
@@ -132,11 +132,11 @@ The operators consist of two main parts:
 
 As it follows from the definition of operator results, the main differences between GFA, BOA, SPA and SA are in the Building Part. The Intersection Part is the same for the algorithms.
 
-@section specification__boolean_3 Terms and Definitions
+<h2><a id="specification__boolean_3">Terms and Definitions</a></h2>
 
 This chapter provides the background terms and definitions that are necessary to understand how the algorithms work. 
 
-@subsection specification__boolean_3_1 Interferences
+<h3><a id="specification__boolean_3_1">Interferences</a></h3>
 
 There are two groups of interferences.
 
@@ -154,7 +154,7 @@ At second, there are interferences that occur between a solid *Z1* and a shape *
 * Face/Solid and 
 * Solid/Solid.
 
-@subsubsection specification__boolean_3_1_1 Vertex/Vertex interference
+<h4><a id="specification__boolean_3_1_1">Vertex/Vertex interference</a></h4>
 
 For two vertices *Vi* and *Vj*, the distance between their corresponding 3D points is less than the sum of their tolerances *Tol(Vi)* and *Tol(Vj)*.
 
@@ -164,7 +164,7 @@ The result is a new vertex *Vn* with 3D point *Pn* and tolerance value <i>Tol(Vn
 
 The coordinates of *Pn* and the value <i>Tol(Vn)</i> are computed as the center and the radius of the sphere enclosing the tolerance spheres of the source vertices <i>(V1, V2)</i>.
 
-@subsubsection specification__boolean_3_1_2	Vertex/Edge interference
+<h4><a id="specification__boolean_3_1_2">Vertex/Edge interference</a></h4>
 
 For a vertex *Vi* and an edge *Ej*, the distance *D* between 3D point of the vertex and its projection on the 3D curve of edge *Ej* is less or equal than sum of tolerances of vertex *Tol(Vi)* and edge *Tol(Ej)*.
 
@@ -174,7 +174,7 @@ The result is vertex *Vi* with the corresponding tolerance value <i>Tol(Vi)=Max(
 
 and parameter *t<sub>i</sub>* of the projected point *PPi* on 3D curve *Cj* of edge *Ej*.
 
-@subsubsection specification__boolean_3_1_3	Vertex/Face interference
+<h4><a id="specification__boolean_3_1_3">Vertex/Face interference</a></h4>
 
 For a vertex *Vi* and a face *Fj* the distance *D* between 3D point of the vertex and its projection on the surface of the face is less or equal than sum of tolerances of the vertex *Tol(Vi)* and the face *Tol(Fj)*. 
 
@@ -184,7 +184,7 @@ The result is vertex *Vi* with the corresponding tolerance value <i>Tol(Vi)=Max(
 
 and parameters <i>u<sub>i</sub>, v<sub>i</sub></i> of the projected point *PPi* on surface *Sj* of face *Fj*.
 
-@subsubsection specification__boolean_3_1_4	Edge/Edge interference
+<h4><a id="specification__boolean_3_1_4">Edge/Edge interference</a></h4>
 
 For two edges *Ei* and *Ej* (with the corresponding 3D curves *Ci* and *Cj*) there are some places where the distance between the curves is less than (or equal to) sum of tolerances of the edges. 
 
@@ -209,7 +209,7 @@ The coordinates of *Pn* and the value *Tol(Vn)* are computed as the center and t
 * Parameter *t<sub>i</sub>* of *Pi* for the 3D curve *Ci*.
 * Parameter *t<sub>j</sub>* of *Pj* for the 3D curve *Cj*.
 
-@subsubsection specification__boolean_3_1_5	Edge/Face interference
+<h4><a id="specification__boolean_3_1_5">Edge/Face interference</a></h4>
 
 For an edge *Ei* (with the corresponding 3D curve *Ci*) and a face *Fj* (with the corresponding 3D surface *Sj*) there are some places in 3D space, where the distance between *Ci* and surface *Sj* is less than (or equal to) the sum of tolerances of edge *Ei* and face *Fj*.
 
@@ -232,7 +232,7 @@ The coordinates of *Pn* and the value *Tol(Vn)* are computed as the center and t
 *	Parameter *t<sub>i</sub>* of *Pi* for the 3D curve *Ci*.
 *	Parameters *u<sub>i</sub>* and *v<sub>i</sub>* of the projected point *PPi* on the surface *Sj* of the face *Fj*.
 
-@subsubsection specification__boolean_3_1_6	Face/Face Interference
+<h4><a id="specification__boolean_3_1_6">Face/Face Interference</a></h4>
 
 For a face *Fi* and a face *Fj* (with the corresponding surfaces *Si* and *Sj*) there are some places in 3D space, where the distance between the surfaces is less than (or equal to) sum of tolerances of the faces.
 
@@ -249,32 +249,32 @@ The coordinates of a 3D point *P<sub>ijm</sub>* and the value *Tol(V<sub>ijm</su
 * Parameters *u<sub>j</sub>*, *v<sub>j</sub>* belong to point *PPj* projected on surface *Sj* of face *Fj*.
 * Parameters *u<sub>i</sub>* and *v<sub>i</sub>* belong to point *PPi* projected on surface *Si* of face *Fi*. 
 
-@subsubsection specification__boolean_3_1_7	Vertex/Solid Interference
+<h4><a id="specification__boolean_3_1_7">Vertex/Solid Interference</a></h4>
 
 For a vertex *Vi* and a solid *Zj* there is Vertex/Solid interference if the vertex *Vi* has no BRep interferences with any sub-shape of *Zj* and *Vi* is completely inside the solid *Zj*.
 
 @figure{/specification/boolean_operations/images/operations_image060.png,"Vertex/Solid Interference",220}
 
-@subsubsection specification__boolean_3_1_8 Edge/Soild Interference
+<h4><a id="specification__boolean_3_1_8">Edge/Soild Interference</a></h4>
 
 For an edge *Ei* and a solid *Zj* there is Edge/Solid interference if the edge *Ei* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Ei* is completely inside the solid *Zj*.
 
 @figure{/specification/boolean_operations/images/operations_image061.png,"Edge/Solid Interference",220}
 
-@subsubsection specification__boolean_3_1_9 Face/Soild Interference
+<h4><a id="specification__boolean_3_1_9">Face/Soild Interference</a></h4>
 
 For a face *Fi* and a solid *Zj* there is Face/Solid interference if the face *Fi* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Fi* is completely inside the solid *Zj*. 
 
 @figure{/specification/boolean_operations/images/operations_image062.png,"Face/Solid Interference",220}
 
-@subsubsection specification__boolean_3_1_10  Solid/Soild Interference
+<h4><a id="specification__boolean_3_1_10">Solid/Soild Interference</a></h4>
 
 For a solid *Zi* and a solid *Zj* there is Solid/Solid interference if the solid *Zi* and its sub-shapes have no BRep interferences with any sub-shape of *Zj* and *Zi* is completely inside the solid *Zj*. 
 
 @figure{/specification/boolean_operations/images/operations_image063.png,"Solid/Solid Interference",220}
 
 
-@subsubsection specification__boolean_3_1_11 Computation Order
+<h4><a id="specification__boolean_3_1_11">Computation Order</a></h4>
 
 The interferences between shapes are computed on the basis of increasing of the dimension value of the shape in the following order: 
 * Vertex/Vertex, 
@@ -290,13 +290,13 @@ The interferences between shapes are computed on the basis of increasing of the 
 
 This order allows avoiding the computation of redundant interferences between upper-level shapes *Si* and  *Sj* when there are interferences between lower sub-shapes *Sik* and *Sjm*.
 
-@subsubsection specification__boolean_3_1_12	Results
+<h4><a id="specification__boolean_3_1_12">Results</a></h4>
 
 * The result of the interference is a shape that can be either interfered shape itself (or its part) or a new shape.
 * The result of the interference is a shape with the dimension value that is less or equal to the minimal dimension value of interfered shapes. For example, the result of Vertex/Edge interference is a vertex, but not an edge.
 * The result of the interference splits the source shapes on the parts each time as it can do that.
 
-@subsection specification__boolean_3_2	Paves
+<h3><a id="specification__boolean_3_2">Paves</a></h3>
 
 The result of interferences of the type Vertex/Edge, Edge/Edge and Edge/Face in most cases is a vertex (new or old) lying on an edge.
 
@@ -312,7 +312,7 @@ Two paves *PV1* and *PV2* on the same curve *C* can be compared using the parame
 The usage of paves allows binding of the vertex to the curve (or any structure that contains a curve: edge, intersection curve).
 
 
-@subsection specification__boolean_3_3	Pave Blocks
+<h3><a id="specification__boolean_3_3">Pave Blocks</a></h3>
 
 A set of paves *PVi (i=1, 2...nPV)*, where *nPV* is the number of paves] of curve *C* can be sorted in the increasing order using the value of parameter *t* on curve *C*.
 
@@ -324,7 +324,7 @@ Any finite source edge *E* has at least one pave block that contains two paves *
 * Pave *PVb* corresponds to the vertex *Vb* with minimal parameter <i>t<sub>b</sub></i> on the curve of the edge.
 * Pave *PVe* corresponds to the vertex *Ve* with maximal parameter <i>t<sub>e</sub></i> on the curve of the edge.
 
-@subsection specification__boolean_3_4 Shrunk Range
+<h3><a id="specification__boolean_3_4">Shrunk Range</a></h3>
 
 Pave block *PV* of curve *C* is bounded by vertices *V1* and *V2* with tolerance values *Tol(V1)* and *Tol(V2)*. Curve *C* has its own tolerance value *Tol(C)*:
 * In case of edge, the tolerance value is the tolerance of the edge.
@@ -343,7 +343,7 @@ The Figure shows that each tolerance sphere of a vertex can reduce the parametri
 
 The shrunk range of the pave block is the part of 3D curve that can interfere with other shapes.
 
-@subsection specification__boolean_3_5 Common Blocks
+<h3><a id="specification__boolean_3_5">Common Blocks</a></h3>
 
 The interferences of the type Edge/Edge, Edge/Face produce results as common parts.
 
@@ -365,7 +365,7 @@ In general case a common block *CB* contains:
 * A set of faces *Fj (j=0,1... NbF), NbF* -- number of faces.
 
 
-@subsection specification__boolean_3_6 FaceInfo
+<h3><a id="specification__boolean_3_6">FaceInfo</a></h3>
 
 The structure *FaceInfo* contains the following information:
 * Pave blocks that have state **In** for the face;
@@ -386,7 +386,7 @@ In the figure, for face *F1*:
 * Vertices built up from intersection points for the face: none
 
 
-@section specification__boolean_4 Data Structure
+<h2><a id="specification__boolean_4">Data Structure</a></h2>
 
 Data Structure (DS) is used to:
 * Store information about input data and intermediate results;
@@ -402,7 +402,7 @@ This information includes:
 
 Data Structure is implemented in the class *BOPDS_DS*.
 
-@subsection specification__boolean_4_1	Arguments
+<h3><a id="specification__boolean_4_1">Arguments</a></h3>
 
 The arguments are shapes (in terms of *TopoDS_Shape*):
 * Number of arguments is unlimited.
@@ -425,7 +425,7 @@ The arguments are shapes (in terms of *TopoDS_Shape*):
 * There are no restrictions on the type of underlying geometry of the shapes. The faces or edges of arguments *S<sub>i</sub>* can have underlying geometry of any type supported by Open CASCADE Technology modeling algorithms (in terms of *GeomAbs_CurveType* and *GeomAbs_SurfaceType*). 
 * The faces or edges of the arguments should have underlying geometry with continuity that is not less than C1.
 
-@subsection specification__boolean_4_2 Shapes
+<h3><a id="specification__boolean_4_2">Shapes</a></h3>
 
 The information about  Shapes is stored in  structure *BOPDS_ShapeInfo*. The objects of type *BOPDS_ShapeInfo* are stored in the container of array type. The array allows getting the access to the information by an index (DS index).
 The structure *BOPDS_ShapeInfo* has the following contents:
@@ -440,7 +440,7 @@ The structure *BOPDS_ShapeInfo* has the following contents:
 | *myReference* | Storage for some auxiliary information |
 | *myFlag* | Storage for some auxiliary information |
 
-@subsection specification__boolean_4_3 Interferences 
+<h3><a id="specification__boolean_4_3">Interferences </a></h3>
 
 The information about interferences is stored in the instances of classes that are inherited from class <i>BOPDS_Interf</i>. 
 
@@ -476,7 +476,7 @@ The Figure shows inheritance diagram for *BOPDS_Interf* classes.
 @figure{/specification/boolean_operations/images/operations_image017.svg,"BOPDS_Interf classes",420}
 
 
-@subsection specification__boolean_4_4	Pave, PaveBlock and CommonBlock
+<h3><a id="specification__boolean_4_4">Pave, PaveBlock and CommonBlock</a></h3>
 
 The information about the pave is stored in objects of type *BOPDS_Pave*.
 
@@ -511,7 +511,7 @@ The information about common block is stored in objects of type *BOPDS_CommonBlo
 | *myFaces* | The list of DS indices of the faces, on which the pave blocks lie. |
 
 
-@subsection specification__boolean_4_5	Points and Curves
+<h3><a id="specification__boolean_4_5">Points and Curves</a></h3>
 The information about intersection point is stored in objects of type *BOPDS_Point*. 
 
 | Name	| Contents |
@@ -530,7 +530,7 @@ The information about intersection curve is stored in objects of type *BOPDS_Cur
 | *myPaveBlocks* | The list of pave blocks that belong to the curve | 
 | *myBox* | The bounding box of the curve (in terms of *Bnd_Box* ) |
 
-@subsection specification__boolean_4_6	FaceInfo
+<h3><a id="specification__boolean_4_6">FaceInfo</a></h3>
 The information about *FaceInfo* is stored in a structure *BOPDS_FaceInfo*. 
 The structure *BOPDS_FaceInfo* has the following contents.
 
@@ -546,9 +546,9 @@ The structure *BOPDS_FaceInfo* has the following contents.
 
 The objects of type *BOPDS_FaceInfo* are stored in one container of array type. The array allows getting the access to the information by index. This index (if exists) is stored in the field *myReference*.
 
-@section specification__boolean_root_classes Root Classes
+<h2><a id="specification__boolean_root_classes">Root Classes</a></h2>
 
-@subsection specification__boolean_root_classes_1 Class BOPAlgo_Options
+<h3><a id="specification__boolean_root_classes_1">Class BOPAlgo_Options</a></h3>
 The class *BOPAlgo_Options* provides the following options for the algorithms:
 * Set the appropriate memory allocator;
 * Check the presence of the Errors and Warnings;
@@ -557,14 +557,14 @@ The class *BOPAlgo_Options* provides the following options for the algorithms:
 * Break the operations by user request;
 * Usage of Oriented Bounding boxes in the operation.
 
-@subsection specification__boolean_root_classes_2 Class BOPAlgo_Algo
+<h3><a id="specification__boolean_root_classes_2">Class BOPAlgo_Algo</a></h3>
 
 The class *BOPAlgo_Algo* provides the base interface for all algorithms:
 * Perform the operation;
 * Check the input data;
 * Check the result.
 
-@section specification__boolean_5	Intersection Part
+<h2><a id="specification__boolean_5">Intersection Part</a></h2>
 
 Intersection Part (IP) is used to
 * Initialize the Data Structure;
@@ -581,7 +581,7 @@ IP is implemented in the class *BOPAlgo_PaveFiller*.
 
 The description provided in the next paragraphs is coherent with the implementation of the method *BOPAlgo_PaveFiller::Perform()*.
 
-@subsection specification__boolean_5_1	Initialization
+<h3><a id="specification__boolean_5_1">Initialization</a></h3>
 The input data for the step is the Arguments. The description of initialization step is shown in the Table.
 
 | No	| Contents |	Implementation |
@@ -592,7 +592,7 @@ The input data for the step is the Arguments. The description of initialization 
 | 4	| Initialization of intersection Context. The intersection Context is an object that contains geometrical and topological toolkit (classifiers, projectors, etc). The intersection Context is used to cache the tools to increase the algorithm performance. | *IntTools_Context* |
 
 
-@subsection specification__boolean_5_2	Compute Vertex/Vertex Interferences
+<h3><a id="specification__boolean_5_2">Compute Vertex/Vertex Interferences</a></h3>
 
 The input data for this step is the DS after the [Initialization](#specification__boolean_5_1). The description of this step is shown in the table :
 
@@ -616,7 +616,7 @@ The example of connexity chains of interfered vertices is given in the image:
 @figure{/specification/boolean_operations/images/operations_image018.svg,"Connexity chains of interfered vertices",394}
 
 
-@subsection specification__boolean_5_3	Compute Vertex/Edge Interferences
+<h3><a id="specification__boolean_5_3">Compute Vertex/Edge Interferences</a></h3>
 
 The input data for this step is the DS after computing Vertex/Vertex interferences.
 
@@ -629,14 +629,14 @@ The input data for this step is the DS after computing Vertex/Vertex interferenc
 | 5	| Append the paves into the pave blocks in terms of [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4) | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 6	| Append Vertex/Edge interferences in DS | *BOPDS_DS::AddInterf()* |
 
-@subsection specification__boolean_5_4 Update Pave Blocks
+<h3><a id="specification__boolean_5_4">Update Pave Blocks</a></h3>
 The input data for this step is the DS after computing Vertex/Edge Interferences.
 
 | No | Contents | Implementation | 
 | :--- | :---- | :--- | 
 | 1	| Each pave block PB containing internal paves is split by internal paves into new pave blocks *PBN1, PBN2… PBNn*. PB is replaced by new pave blocks *PBN1, PBN2… PBNn* in the DS. |	*BOPDS_DS:: UpdatePaveBlocks()* | 
 
-@subsection specification__boolean_5_5	Compute Edge/Edge Interferences
+<h3><a id="specification__boolean_5_5">Compute Edge/Edge Interferences</a></h3>
 
 The input data for this step is the DS after updating Pave Blocks. 
 
@@ -661,7 +661,7 @@ The example of coinciding chains of pave blocks is given in the image:
 * The pairs of coincided pave blocks are: <i>(PB11, PB12), (PB11, PB13), (PB12, PB13), (PB21, PB22), (PB21, PB23), (PB22, PB23).</i>
 * The pairs produce  two chains: <i>(PB11, PB12, PB13)</i> and <i>(PB21, PB22, PB23).</i>
 
-@subsection specification__boolean_5_6	Compute Vertex/Face Interferences
+<h3><a id="specification__boolean_5_6">Compute Vertex/Face Interferences</a></h3>
 
 The input data for this step is the DS after computing Edge/Edge interferences.
 
@@ -673,7 +673,7 @@ The input data for this step is the DS after computing Edge/Edge interferences.
 | 4	| Append Vertex/Face interferences in the DS |	*BOPDS_DS::AddInterf()* |
 | 5	| Repeat steps 2-4 for each new vertex *VNXi (i=1, 2…,NbVNX),* where *NbVNX* is the number of vertices. | *BOPAlgo_PaveFiller::TreatVerticesEE()* |
 
-@subsection specification__boolean_5_7	Compute Edge/Face Interferences
+<h3><a id="specification__boolean_5_7">Compute Edge/Face Interferences</a></h3>
 The input data for this step is the DS after computing Vertex/Face Interferences. 
 
 | No | Contents	| Implementation |
@@ -692,7 +692,7 @@ The input data for this step is the DS after computing Vertex/Face Interferences
 | 11 | Update *FaceInfo*  for all faces having EF common parts. | *BOPDS_DS:: UpdateFaceInfoIn()* |
 
 
-@subsection specification__boolean_5_8	Build Split Edges
+<h3><a id="specification__boolean_5_8">Build Split Edges</a></h3>
 
 The input data for this step is the DS after computing Edge/Face Interferences.
 
@@ -705,7 +705,7 @@ For each pave block *PB* take the following steps:
 | 3	| Compute *BOPDS_ShapeInfo* contents for Esp | *BOPAlgo_PaveFiller::MakeSplitEdges()* |
 | 4	| Append *BOPDS_ShapeInfo* contents to the DS | *BOPDS_DS::Append()* |
 
-@subsection specification__boolean_5_9	Compute Face/Face Interferences
+<h3><a id="specification__boolean_5_9">Compute Face/Face Interferences</a></h3>
 
 The input data for this step is DS after building Split Edges. 
 
@@ -716,7 +716,7 @@ The input data for this step is DS after building Split Edges.
 | 3	| Compute Face/Face interference | *IntTools_FaceFace* |
 | 4	| Append Face/Face interferences in the DS. | *BOPDS_DS::AddInterf()* |
 
-@subsection specification__boolean_5_10	Build Section Edges
+<h3><a id="specification__boolean_5_10">Build Section Edges</a></h3>
 
 The input data for this step is the DS after computing Face/Face interferences.
 
@@ -731,7 +731,7 @@ The input data for this step is the DS after computing Face/Face interferences.
 | 3	| Intersect the draft vertices *VPk (k=1, 2…, NbVP)* and the draft section edges *ESk (k=1, 2…, NbES)*. For this: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use vertices *VPk* and edges *ESk* as arguments (in terms of [Arguments](#specification__boolean_4_1)) of *PFn*; c) invoke	method *Perform()* for *PFn*. Resulting vertices *VPXk (k=1, 2… NbVPX)* and edges *ESXk (k=1, 2… NbESX)* are obtained via mapping between *VPk, ESk* and the results of *PVn*. | *BOPAlgo_PaveFiller::PostTreatFF()* |
 | 4	| Update face info (sections about pave blocks and vertices) | *BOPAlgo_PaveFiller::PerformFF()* |
 
-@subsection specification__boolean_5_11 Build P-Curves
+<h3><a id="specification__boolean_5_11">Build P-Curves</a></h3>
 The input data for this step is the DS after building section edges.
 
 | No | Contents	| Implementation |
@@ -739,7 +739,7 @@ The input data for this step is the DS after building section edges.
 | 1	| For each Face/Face interference *nFi* and *nFj* build p-Curves on *nFi* and *nFj* for each section edge *ESXk*. |	*BOPAlgo_PaveFiller::MakePCurves()* |
 | 2	| For each pave block that is common for faces *nFi* and *nFj* build p-Curves on *nFi* and *nFj*. |	*BOPAlgo_PaveFiller::MakePCurves()* |
 
-@subsection specification__boolean_5_12	Process Degenerated Edges
+<h3><a id="specification__boolean_5_12">Process Degenerated Edges</a></h3>
 The input data for this step is the DS  after building P-curves.
 
 | No | Contents | Implementation |
@@ -749,7 +749,7 @@ The input data for this step is the DS  after building P-curves.
 | 2	| Compute paves for the degenerated edge *ED* using a 2D curve of *ED* and a 2D curve of *PBi*. Form pave blocks *PBDi (i=1,2… NbPBD)*, where *NbPBD* is the number of the pave blocks for the degenerated edge *ED* | *BOPAlgo_PaveFiller::FillPaves()* |
 | 3	| Build split edges *ESDi (i=1,2…NbESD)*, where *ESD* is the number of split edges, using the pave blocks *PBDi* |	*BOPAlgo_PaveFiller:: MakeSplitEdge()* |
 
-@section specification__boolean_6	General description of the Building Part
+<h2><a id="specification__boolean_6">General description of the Building Part</a></h2>
 
 Building Part (BP) is used to 
 * Build the result of the operation 
@@ -769,11 +769,11 @@ The class *BOPAlgo_BuilderShape* provides the interface for algorithms that have
 * A Shape as the result;
 * History information (in terms of <i>\::Generated(), \::Modified()</i> and <i>\::IsDeleted()).</i>
 
-@section specification__boolean_7	General Fuse Algorithm
-@subsection specification__boolean_7_1	Arguments
+<h2><a id="specification__boolean_7">General Fuse Algorithm</a></h2>
+<h3><a id="specification__boolean_7_1">Arguments</a></h3>
 The arguments of the algorithm are shapes (in terms of *TopoDS_Shape*). The main requirements for the arguments are described in [Data Structure](#specification__boolean_4) chapter.
 
-@subsection specification__boolean_7_2	Results
+<h3><a id="specification__boolean_7_2">Results</a></h3>
 
 During the operation argument *Si* can be split into several parts *Si1, Si2… Si1NbSp*, where *NbSp* is the number of parts. The set <i>(Si1, Si2… Si1NbSp)</i> is an image of argument *Si*.
 * The result of the General Fuse operation is a compound. Each sub-shape of the compound corresponds to the certain argument shape S1, S2…Sn and has shared sub-shapes in accordance with interferences between the arguments.
@@ -792,7 +792,7 @@ The types of resulting shapes depend on the type of the corresponding argument p
 | 7	| EDGE	| Set of split EDGEs	| |
 | 8	| VERTEX | VERTEX | |
 
-@subsection specification__boolean_7_3a Options
+<h3><a id="specification__boolean_7_3a">Options</a></h3>
 
 The General Fuse algorithm has a set of options, which allow speeding-up the operation and improving the quality of the result:
 * Parallel processing option allows running the algorithm in parallel mode;
@@ -805,7 +805,7 @@ The General Fuse algorithm has a set of options, which allow speeding-up the ope
 
 For more detailed information on these options, see the [Advanced options](#specification__boolean_11a) section.
 
-@subsection specification__boolean_7_3b Usage
+<h3><a id="specification__boolean_7_3b">Usage</a></h3>
 
 The following example illustrates how to use the GF algorithm:
 
@@ -904,11 +904,11 @@ bfillds
 bbuild result
 ~~~~
 
-@subsection specification__boolean_7_3 Examples
+<h3><a id="specification__boolean_7_3">Examples</a></h3>
 
 Have a look at the examples to better understand the definitions.
 
-@subsubsection specification__boolean_7_3_1	Case 1: Three edges intersecting at a point 
+<h4><a id="specification__boolean_7_3_1">Case 1: Three edges intersecting at a point </a></h4>
 
 Let us consider three edges: *E1, E2* and *E3* that intersect in one 3D point.
 
@@ -921,7 +921,7 @@ In this case:
 * The argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*).
 * The argument edge *E3* has resulting split edges *E31* and *E32* (image of *E3*).
 
-@subsubsection specification__boolean_7_3_2 Case 2: Two wires and an edge
+<h4><a id="specification__boolean_7_3_2">Case 2: Two wires and an edge</a></h4>
 
 Let us consider two wires *W1 (Ew11, Ew12, Ew13)* and *W2 (Ew21, Ew22, Ew23)* and edge *E1*.
 
@@ -935,7 +935,7 @@ In this case :
 * The argument edge *E1* has split edges *E11* and *E12*. (image of *E1*).
 The edges *En1, En2, En3, En4* and vertex *Vn1* are new shapes created during the operation. Edge *Ew12* has split edges *En1, En2* and *En3* and edge *Ew22* has split edges *En2, En3* and *En4*.
 
-@subsubsection specification__boolean_7_3_3 Case 3: An edge intersecting with a face
+<h4><a id="specification__boolean_7_3_3">Case 3: An edge intersecting with a face</a></h4>
 
 Let us consider edge *E1* and face *F2*:
 
@@ -945,7 +945,7 @@ The result of the GF operation is a compound consisting of 3 shapes:
 * Split edge parts *E11* and *E12* (image of *E1*).
 * New face *F21* with internal edge *E12* (image of *F2*).
 
-@subsubsection specification__boolean_7_3_4 Case 4: An edge lying on a face
+<h4><a id="specification__boolean_7_3_4">Case 4: An edge lying on a face</a></h4>
 
 Let us consider edge *E1* and face *F2*:
 
@@ -956,7 +956,7 @@ The result of the GF operation is a compound consisting of 5 shapes:
 * Split face parts  *F21* and *F22* (image of *F2*).
 
 
-@subsubsection specification__boolean_7_3_5 Case 5: An edge and a shell
+<h4><a id="specification__boolean_7_3_5">Case 5: An edge and a shell</a></h4>
 
 Let us consider edge *E1* and shell *Sh2* that consists of 2 faces: *F21* and *F22*
 
@@ -966,7 +966,7 @@ The result of the GF operation is a compound consisting of 5 shapes:
 * Split edge parts *E11, E12 , E13* and *E14* (image of *E1*).
 * Image shell *Sh21* (that contains split face parts  *F211, F212, F221* and *F222*).
 
-@subsubsection specification__boolean_7_3_6 Case 6: A wire and a shell
+<h4><a id="specification__boolean_7_3_6">Case 6: A wire and a shell</a></h4>
 
 Let us consider  wire *W1 (E1, E2, E3, E4)* and  shell *Sh2 (F21, F22)*. 
 @figure{/specification/boolean_operations/images/operations_image026.svg,"A wire and a shell",427}
@@ -976,14 +976,14 @@ The result of the GF operation is a compound consisting of 2 shapes:
 * Image wire *W11* that consists of split edge parts from wire *W1: E11, E12, E13* and *E14*.
 * Image shell *Sh21* that contains split face parts: *F211, F212, F213, F221, F222* and *F223*.
 
-@subsubsection specification__boolean_7_3_7 Case 7: Three faces
+<h4><a id="specification__boolean_7_3_7">Case 7: Three faces</a></h4>
 
 Let us consider 3 faces: *F1, F2* and *F3*. @figure{/specification/boolean_operations/images/operations_image027.png,"Three faces",420}
 
 The result of the GF operation is a compound consisting of 7 shapes:
 * Split face parts: *Fn1, Fn2, Fn3, Fn4, Fn5, Fn6* and *Fn7*.
 
-@subsubsection specification__boolean_7_3_8 Case 8: A face and a shell
+<h4><a id="specification__boolean_7_3_8">Case 8: A face and a shell</a></h4>
 
 Let us consider shell *Sh1 (F11, F12, F13)* and face *F2*.
 @figure{/specification/boolean_operations/images/operations_image028.png,"A face and a shell",420}
@@ -992,7 +992,7 @@ The result of the GF operation is a compound consisting of 4 shapes:
 * Image shell *Sh11* that consists of split face parts from shell *Sh1: Fn1, Fn2, Fn3, Fn4, Fn5* and *Fn6*.
 * Split parts of face *F2: Fn3, Fn6* and *Fn7*.
 
-@subsubsection specification__boolean_7_3_9 Case 9: A shell and a solid
+<h4><a id="specification__boolean_7_3_9">Case 9: A shell and a solid</a></h4>
 
 Let us consider shell *Sh1 (F11, F12…F16)* and solid *So2*. @figure{/specification/boolean_operations/images/operations_image029.png,"A shell and a solid: arguments",220}
 
@@ -1001,7 +1001,7 @@ The result of the GF operation is a compound consisting of 2 shapes:
 * Solid *So21* with internal shell. (image of *So2*).
 @figure{/specification/boolean_operations/images/operations_image030.png,"A shell and a solid: results",420}
 
-@subsubsection specification__boolean_7_3_10 Case 10: A compound and a solid
+<h4><a id="specification__boolean_7_3_10">Case 10: A compound and a solid</a></h4>
 
 Let us consider compound *Cm1* consisting of 2 solids *So11* and *So12*) and solid *So2*.
 @figure{/specification/boolean_operations/images/operations_image031.png,"A compound and a solid: arguments",220}
@@ -1012,11 +1012,11 @@ The result of the GF operation is a compound consisting of 4 shapes:
 
 @figure{/specification/boolean_operations/images/operations_image032.png,"A compound and a solid: results",420}
 
-@subsection specification__boolean_7_4	Class BOPAlgo_Builder
+<h3><a id="specification__boolean_7_4">Class BOPAlgo_Builder</a></h3>
 
 GFA is implemented in the class *BOPAlgo_Builder*.
 
-@subsubsection specification__boolean_7_4_1 Fields
+<h4><a id="specification__boolean_7_4_1">Fields</a></h4>
 
 The main fields of the class are described in the Table: 
 
@@ -1028,7 +1028,7 @@ The main fields of the class are described in the Table:
 | *myImages* | The Map between the source shape and its images | 
 | *myShapesSD* |	The Map between the source shape (or split part of source shape) and the shape (or part of shape) that will be used in result due to same domain property. |
 
-@subsubsection specification__boolean_7_4_2 Initialization
+<h4><a id="specification__boolean_7_4_2">Initialization</a></h4>
 
 The input data for this step is a *BOPAlgo_PaveFiller* object (in terms of [Intersection](#specification__boolean_5)) at the state after [Processing of degenerated edges](#specification__boolean_5_12)  with the corresponding DS.
 
@@ -1037,7 +1037,7 @@ The input data for this step is a *BOPAlgo_PaveFiller* object (in terms of [Inte
 | 1	| Check the readiness of the DS and *BOPAlgo_PaveFiller*. | *BOPAlgo_Builder::CheckData()* | 
 | 2	| Build an empty result of type Compound. | *BOPAlgo_Builder::Prepare()* |
 
-@subsubsection specification__boolean_7_4_3 Build Images for Vertices
+<h4><a id="specification__boolean_7_4_3">Build Images for Vertices</a></h4>
 
 The input data for this step is *BOPAlgo_Builder* object  after Initialization.
 
@@ -1045,7 +1045,7 @@ The input data for this step is *BOPAlgo_Builder* object  after Initialization.
 | :--- | :--- | :--- | 
 | 1	| Fill *myShapesSD*  by SD vertices using the information from the DS. |	*BOPAlgo_Builder::FillImagesVertices()* |
 
-@subsubsection specification__boolean_7_4_4 Build Result of Type Vertex
+<h4><a id="specification__boolean_7_4_4">Build Result of Type Vertex</a></h4>
 
 The input data for this step is *BOPAlgo_Builder* object  after building images for vertices and *Type*, which is the shape type (*TopAbs_VERTEX*).
 
@@ -1053,7 +1053,7 @@ The input data for this step is *BOPAlgo_Builder* object  after building images 
 | :--- | :--- | :----- |
 | 1 | 	For the arguments of type *Type*.	If there is an image for the argument: add the image to the result. If there is no image for the argument: add the argument to the result. | *BOPAlgo_Builder::BuildResult()* |
 
-@subsubsection specification__boolean_7_4_5 Build Images for Edges
+<h4><a id="specification__boolean_7_4_5">Build Images for Edges</a></h4>
 
 The input data for this step is *BOPAlgo_Builder object* after building result of type vertex.
 
@@ -1061,11 +1061,11 @@ The input data for this step is *BOPAlgo_Builder object* after building result o
 | :---- | :---- | :----- | 
 | 1	| For all pave blocks in the DS. Fill *myImages*  for the original edge *E* by split edges *ESPi* from pave blocks. In case of common blocks on edges, use edge *ESPSDj* that corresponds to the leading pave block and fill *myShapesSD* by the pairs *ESPi/ESPSDj*. | *BOPAlgo_Builder::FillImagesEdges()* |
 
-@subsubsection specification__boolean_7_4_6 Build Result of Type Edge
+<h4><a id="specification__boolean_7_4_6">Build Result of Type Edge</a></h4>
 
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type *Edge*.
 
-@subsubsection specification__boolean_7_4_7 Build Images for Wires
+<h4><a id="specification__boolean_7_4_7">Build Images for Wires</a></h4>
 
 The input data for this step is: 
 * *BOPAlgo_Builder* object after building result of type *Edge*;
@@ -1078,11 +1078,11 @@ The input data for this step is:
 | 2	| Add to C the images or non-split parts of the *Original Shape*, taking into account its orientation. | *BOPAlgo_Builder::FillImagesContainers()* *BOPTools_Tools::IsSplitToReverse()* |
 | 3	| Fill *myImages*  for the *Original Shape* by the information above. | *BOPAlgo_Builder::FillImagesContainers()* | 
 
-@subsubsection specification__boolean_7_4_8	Build Result of Type Wire
+<h4><a id="specification__boolean_7_4_8">Build Result of Type Wire</a></h4>
 
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4) but for the type *Wire*.
 
-@subsubsection specification__boolean_7_4_9	Build Images for Faces
+<h4><a id="specification__boolean_7_4_9">Build Images for Faces</a></h4>
 
 The input data for this step is *BOPAlgo_Builder* object after building result of type *Wire*.
  
@@ -1110,10 +1110,10 @@ The example of chains of same domain faces is given in the image:
 * The pairs of same domain faces are: <i>(F11, F21), (F22, F31), (F41, F51) , (F41, F6)</i> and <i>(F51, F6)</i>.
 * The pairs produce the three chains: <i>(F11, F21), (F22, F31)</i> and <i>(F41, F51, F6)</i>.
 
-@subsubsection specification__boolean_7_4_10	Build Result of Type Face
+<h4><a id="specification__boolean_7_4_10">Build Result of Type Face</a></h4>
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4) but for the type *Face*.
 
-@subsubsection specification__boolean_7_4_11	Build Images for Shells
+<h4><a id="specification__boolean_7_4_11">Build Images for Shells</a></h4>
 The input data for this step is:
 * *BOPAlgo_Builder* object  after building result of type face;
 * *Original Shape* -- a Shell;
@@ -1121,10 +1121,10 @@ The input data for this step is:
 
 The procedure is the same as for building images for wires. 
 
-@subsubsection specification__boolean_7_4_12	Build Result of Type Shell
+<h4><a id="specification__boolean_7_4_12">Build Result of Type Shell</a></h4>
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4) but for the type *Shell*.
 
-@subsubsection specification__boolean_7_4_13 Build Images for Solids
+<h4><a id="specification__boolean_7_4_13">Build Images for Solids</a></h4>
 
 The input data for this step is *BOPAlgo_Builder* object after building result of type *Shell*. 
 
@@ -1139,10 +1139,10 @@ The following procedure is executed for all interfered DS shapes *Si* of type *S
 | 5	| Fill the map *myImages* |  *BOPAlgo_Builder::BuildSplitSolids()* |
 | 6	| Add internal vertices to split solids	| *BOPAlgo_Builder::FillInternalShapes()* |
 
-@subsubsection specification__boolean_7_4_14 Build Result of Type Solid
+<h4><a id="specification__boolean_7_4_14">Build Result of Type Solid</a></h4>
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type Solid.
 
-@subsubsection specification__boolean_7_4_15 Build Images for Type CompSolid
+<h4><a id="specification__boolean_7_4_15">Build Images for Type CompSolid</a></h4>
 
 The input data for this step is:
 * *BOPAlgo_Builder* object after building result of type solid;
@@ -1151,10 +1151,10 @@ The input data for this step is:
 
 The procedure is the same as for building images for wires. 
 
-@subsubsection specification__boolean_7_4_16 Build Result of Type Compsolid
+<h4><a id="specification__boolean_7_4_16">Build Result of Type Compsolid</a></h4>
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type Compsolid.
 
-@subsubsection specification__boolean_7_4_17 Build Images for Compounds
+<h4><a id="specification__boolean_7_4_17">Build Images for Compounds</a></h4>
 The input data for this step is as follows:
 * *BOPAlgo_Builder* object after building results of type *compsolid*;
 * *Original Shape* -- a Compound;
@@ -1162,11 +1162,11 @@ The input data for this step is as follows:
 
 The procedure is the same as for building images for wires. 
 
-@subsubsection specification__boolean_7_4_18 Build Result of Type Compound
+<h4><a id="specification__boolean_7_4_18">Build Result of Type Compound</a></h4>
 
 This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type Compound.
 
-@subsubsection specification__boolean_7_4_19 Post-Processing
+<h4><a id="specification__boolean_7_4_19">Post-Processing</a></h4>
 The purpose of the step is to correct tolerances of the result to provide its validity in terms of *BRepCheck_Analyzer.*
 
 The input data for this step is a *BOPAlgo_Builder* object after building result of type compound.
@@ -1177,26 +1177,26 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 | 2	| Correct tolerances of edges on faces | *BOPTools_Tools::CorrectCurveOnSurface()* |
 
 
-@section specification__boolean_8  Splitter Algorithm
+<h2><a id="specification__boolean_8">Splitter Algorithm</a></h2>
 
 The Splitter algorithm allows splitting a group of arbitrary shapes by another group of arbitrary shapes.<br>
 It is based on the General Fuse  algorithm, thus all options of the General Fuse (see [GF Options](#specification__boolean_7_3a)) are also available in this algorithm.
 
-@subsection specification__boolean_8_1 Arguments
+<h3><a id="specification__boolean_8_1">Arguments</a></h3>
 
 * The arguments of the Splitter algorithm are divided into two groups - *Objects* (shapes that will be split) and *Tools* (shapes, by which the *Objects* will be split);
 * The requirements for the arguments (both for *Objects* and *Tools*) are the same as for the General Fuse algorithm - there can be any number of arguments of any type in each group, but each argument should be valid and not self-interfered.
 
-@subsection specification__boolean_8_2 Results
+<h3><a id="specification__boolean_8_2">Results</a></h3>
 
 * The result of Splitter algorithm contains only the split parts of the shapes included into the group of *Objects*;
 * The split parts of the shapes included only into the group of *Tools* are excluded from the result;
 * If there are no shapes in the group of *Tools* the result of the operation will be equivalent to the result of General Fuse operation;
 * The shapes can be split by other shapes from the same group (if these shapes are interfering).
 
-@subsection specification__boolean_8_3 Usage
+<h3><a id="specification__boolean_8_3">Usage</a></h3>
 
-@subsubsection specification__boolean_8_3_1 API
+<h4><a id="specification__boolean_8_3_1">API</a></h4>
 
 On the low level the Splitter algorithm is implemented in class *BOPAlgo_Splitter*. The usage of this algorithm looks as follows:
 ~~~~{.cpp}
@@ -1220,7 +1220,7 @@ if (aSplitter.HasErrors()) { //check error status
 const TopoDS_Shape& aResult = aSplitter.Shape(); // result of the operation
 ~~~~
 
-@subsubsection specification__boolean_8_3_2 DRAW
+<h4><a id="specification__boolean_8_3_2">DRAW</a></h4>
 
 The command *bsplit* implements the Splitter algorithm in DRAW. Similarly to the *bbuild* command for the General Fuse algorithm, the *bsplit* command should be used after the Pave Filler is filled.
 ~~~~{.cpp}
@@ -1234,9 +1234,9 @@ bfillds
 bsplit result
 ~~~~
 
-@subsection specification__boolean_8_4 Examples
+<h3><a id="specification__boolean_8_4">Examples</a></h3>
 
-@subsubsection specification__boolean_8_4_1 Example 1
+<h4><a id="specification__boolean_8_4_1">Example 1</a></h4>
 
 Splitting a face by the set of edges:
 
@@ -1282,7 +1282,7 @@ bsplit result
 </tr>
 </table>
 
-@subsubsection specification__boolean_8_4_2 Example 2
+<h4><a id="specification__boolean_8_4_2">Example 2</a></h4>
 
 Splitting a plate by the set of cylinders:
 
@@ -1316,7 +1316,7 @@ bsplit result
 </tr>
 </table>
 
-@subsubsection specification__boolean_8_4_3 Example 3
+<h4><a id="specification__boolean_8_4_3">Example 3</a></h4>
 
 Splitting shell hull by the planes:
 <table align="center">
@@ -1326,9 +1326,9 @@ Splitting shell hull by the planes:
 </tr>
 </table>
 
-@section specification__boolean_9	Boolean Operations Algorithm
+<h2><a id="specification__boolean_9">Boolean Operations Algorithm</a></h2>
 
-@subsection specification__boolean_9_1	Arguments
+<h3><a id="specification__boolean_9_1">Arguments</a></h3>
 
 * The arguments of BOA are shapes in terms of *TopoDS_Shape*. The main requirements for the arguments are described in the [Data Structure](#specification__boolean_4)
 * There are two groups of arguments in BOA:
@@ -1351,7 +1351,7 @@ Splitting shell hull by the planes:
 * For Boolean operation Cut the minimal dimension of *S2* should not be less than the maximal dimension of *S1*.
 * For Boolean operation Common the arguments can have any dimension.
 
-@subsection specification__boolean_9_3	Results. General Rules
+<h3><a id="specification__boolean_9_3">Results. General Rules</a></h3>
 
 * The result of the Boolean operation is a compound (if defined). Each sub-shape of the compound has shared sub-shapes in accordance with interferences between the arguments. 
 * The content of the result depends on the type of the operation (Common, Fuse, Cut12, Cut21) and the dimensions of the arguments. 
@@ -1370,9 +1370,9 @@ Splitting shell hull by the planes:
 * The result of the operation Fuse for the arguments of type COMPSOLID will consist of the compound containing COMPSOLIDs created from connexity blocks of fused solids.
 * The result of the operation Common for the arguments of collection type (WIRE, SHELL, COMPSOLID) will consist of the unique containers containing the overlapping parts. For example, the result of Common operation between two fully overlapping wires will be one wire containing all splits of edges. The number of wires in the result of Common operation between two partially overlapping wires will be equal to the number of connexity blocks of overlapping edges.
 
-@subsection specification__boolean_9_4 Examples
+<h3><a id="specification__boolean_9_4">Examples</a></h3>
 
-@subsubsection specification__boolean_9_4_1	Case 1: Two Vertices
+<h4><a id="specification__boolean_9_4_1">Case 1: Two Vertices</a></h4>
 
 Let us consider two interfering vertices *V1* and *V2*:
 
@@ -1387,7 +1387,7 @@ Let us consider two interfering vertices *V1* and *V2*:
 * The result of *Cut12* operation is an empty compound.
 * The result of *Cut21* operation is an empty compound.
 
-@subsubsection specification__boolean_9_4_2	Case 2: A Vertex and an Edge
+<h4><a id="specification__boolean_9_4_2">Case 2: A Vertex and an Edge</a></h4>
 
 Let us consider vertex *V1* and the edge *E2*, that intersect in a 3D point:
 
@@ -1402,7 +1402,7 @@ Let us consider vertex *V1* and the edge *E2*, that intersect in a 3D point:
 * The result of *Cut12* operation is an empty compound.
 * The result of *Cut21* operation is not defined because the dimension of the vertex (0) is less than the dimension of the edge (1).
 
-@subsubsection specification__boolean_9_4_3	Case 3: A Vertex and a Face
+<h4><a id="specification__boolean_9_4_3">Case 3: A Vertex and a Face</a></h4>
 
 Let us consider  vertex *V1* and face *F2*, that intersect in a 3D point:
 
@@ -1417,7 +1417,7 @@ Let us consider  vertex *V1* and face *F2*, that intersect in a 3D point:
 * The result of *Cut12* operation is an empty compound.
 * The result of *Cut21* operation is not defined because the dimension of the vertex (0) is less than the dimension of the face (2).
 
-@subsubsection specification__boolean_9_4_4	Case 4: A Vertex and a Solid
+<h4><a id="specification__boolean_9_4_4">Case 4: A Vertex and a Solid</a></h4>
 
 Let us consider  vertex *V1* and solid *S2*, that intersect in a 3D point:
 
@@ -1432,7 +1432,7 @@ Let us consider  vertex *V1* and solid *S2*, that intersect in a 3D point:
 * The result of *Cut12* operation is an empty compound.
 * The result of *Cut21* operation is not defined because the dimension of the vertex (0) is less than the dimension of the solid (3).
 
-@subsubsection specification__boolean_9_4_5	Case 5: Two edges intersecting at one point
+<h4><a id="specification__boolean_9_4_5">Case 5: Two edges intersecting at one point</a></h4>
 
 Let us consider edges *E1* and *E2* that intersect in a 3D point:
 
@@ -1459,7 +1459,7 @@ In this case the argument edge *E2* has resulting split edges *E21* and *E22* (i
 
 @figure{/specification/boolean_operations/images/boolean_image013.svg,"",70}
 
-@subsubsection specification__boolean_9_4_6	Case 6: Two edges having a common block
+<h4><a id="specification__boolean_9_4_6">Case 6: Two edges having a common block</a></h4>
 
 Let us consider edges *E1* and *E2* that have a common block:
 
@@ -1487,7 +1487,7 @@ The common part between the edges (edge) has the same dimension (1) as the dimen
 @figure{/specification/boolean_operations/images/boolean_image018.svg,"",230}
 
 
-@subsubsection specification__boolean_9_4_7	Case 7: An Edge and a Face intersecting at a point
+<h4><a id="specification__boolean_9_4_7">Case 7: An Edge and a Face intersecting at a point</a></h4>
 
 Let us consider edge *E1* and face *F2* that intersect at a 3D point:
 
@@ -1505,7 +1505,7 @@ In this case the argument edge *E1* has no common parts with the face *F2* so th
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the face (2).
 
-@subsubsection specification__boolean_9_4_8	Case 8: A Face and an Edge that have a common block
+<h4><a id="specification__boolean_9_4_8">Case 8: A Face and an Edge that have a common block</a></h4>
 
 Let us consider edge *E1* and face *F2* that have a common block:
 
@@ -1527,7 +1527,7 @@ In this case the argument edge *E1* has a common part with face *F2* so the corr
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the face (2).
 
-@subsubsection specification__boolean_9_4_9	Case 9: An Edge and a Solid intersecting at a point 
+<h4><a id="specification__boolean_9_4_9">Case 9: An Edge and a Solid intersecting at a point </a></h4>
 
 Let us consider edge *E1* and solid *S2* that intersect at a point:
 
@@ -1549,7 +1549,7 @@ In this case the argument edge *E1* has a common part with solid *S2* so the cor
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the solid (3).
 
-@subsubsection specification__boolean_9_4_10 Case 10: An Edge and a Solid that have a common block 
+<h4><a id="specification__boolean_9_4_10">Case 10: An Edge and a Solid that have a common block </a></h4>
 
 Let us consider edge *E1* and solid *S2* that have a common block:
 
@@ -1571,7 +1571,7 @@ In this case the argument edge *E1* has a common part with solid *S2* so the cor
 
 * The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the solid (3).
 
-@subsubsection specification__boolean_9_4_11	Case 11: Two intersecting faces 
+<h4><a id="specification__boolean_9_4_11">Case 11: Two intersecting faces </a></h4>
 
 Let us consider two intersecting faces *F1* and *F2*:
 
@@ -1592,7 +1592,7 @@ Let us consider two intersecting faces *F1* and *F2*:
 
 @figure{/specification/boolean_operations/images/boolean_image030.png,"",127}
 	
-@subsubsection specification__boolean_9_4_12	Case 12: Two faces that have a common part
+<h4><a id="specification__boolean_9_4_12">Case 12: Two faces that have a common part</a></h4>
 
 Let us consider two faces *F1* and *F2* that have a common part:
 
@@ -1620,7 +1620,7 @@ The common part between the faces (face) has the same dimension (2) as the dimen
 
 @figure{/specification/boolean_operations/images/boolean_image035.png,"",230}
 
-@subsubsection specification__boolean_9_4_13	Case 13: Two faces that have a common edge
+<h4><a id="specification__boolean_9_4_13">Case 13: Two faces that have a common edge</a></h4>
 
 Let us consider two faces *F1* and *F2* that have a common edge:
 
@@ -1640,7 +1640,7 @@ Let us consider two faces *F1* and *F2* that have a common edge:
 
 @figure{/specification/boolean_operations/images/boolean_image039.png,"",230}
 
-@subsubsection specification__boolean_9_4_14	Case 14: Two faces that have a common vertex
+<h4><a id="specification__boolean_9_4_14">Case 14: Two faces that have a common vertex</a></h4>
 
 Let us consider two faces *F1* and *F2* that have a common vertex:
 
@@ -1661,7 +1661,7 @@ Let us consider two faces *F1* and *F2* that have a common vertex:
 @figure{/specification/boolean_operations/images/boolean_image043.png,"",230}
 
 
-@subsubsection specification__boolean_9_4_15	Case 15: A Face and a Solid that have an intersection curve.
+<h4><a id="specification__boolean_9_4_15">Case 15: A Face and a Solid that have an intersection curve.</a></h4>
 
 Let us consider face *F1* and solid *S2* that have an intersection curve:
 
@@ -1679,7 +1679,7 @@ Let us consider face *F1* and solid *S2* that have an intersection curve:
 	
 * The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
-@subsubsection specification__boolean_9_4_16	Case 16: A Face and a Solid that have overlapping faces.
+<h4><a id="specification__boolean_9_4_16">Case 16: A Face and a Solid that have overlapping faces.</a></h4>
 
 Let us consider face *F1* and solid *S2* that have overlapping faces:
 
@@ -1698,7 +1698,7 @@ Let us consider face *F1* and solid *S2* that have overlapping faces:
 * The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
 
-@subsubsection specification__boolean_9_4_17	Case 17: A Face and a Solid that have overlapping edges.
+<h4><a id="specification__boolean_9_4_17">Case 17: A Face and a Solid that have overlapping edges.</a></h4>
 
 Let us consider face *F1* and solid *S2* that have overlapping edges:
 
@@ -1714,7 +1714,7 @@ Let us consider face *F1* and solid *S2* that have overlapping edges:
 	
 * The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
-@subsubsection specification__boolean_9_4_18	Case 18: A Face and a Solid that have overlapping vertices.
+<h4><a id="specification__boolean_9_4_18">Case 18: A Face and a Solid that have overlapping vertices.</a></h4>
 
 Let us consider face *F1* and solid *S2* that have overlapping vertices:
 
@@ -1730,7 +1730,7 @@ Let us consider face *F1* and solid *S2* that have overlapping vertices:
 	
 * The result of *Cut21* operation is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
 
-@subsubsection specification__boolean_9_4_19	Case 19: Two intersecting Solids.
+<h4><a id="specification__boolean_9_4_19">Case 19: Two intersecting Solids.</a></h4>
 
 Let us consider two intersecting solids *S1* and *S2*:
 
@@ -1752,7 +1752,7 @@ Let us consider two intersecting solids *S1* and *S2*:
 
 @figure{/specification/boolean_operations/images/boolean_image058.png,"",230}
 
-@subsubsection specification__boolean_9_4_20	Case 20: Two Solids that have overlapping faces.
+<h4><a id="specification__boolean_9_4_20">Case 20: Two Solids that have overlapping faces.</a></h4>
 
 Let us consider two solids *S1* and *S2* that have a common part on face:
 
@@ -1772,7 +1772,7 @@ Let us consider two solids *S1* and *S2* that have a common part on face:
 @figure{/specification/boolean_operations/images/boolean_image062.png,"",230}
 
 
-@subsubsection specification__boolean_9_4_21	Case 21: Two Solids that have overlapping edges.
+<h4><a id="specification__boolean_9_4_21">Case 21: Two Solids that have overlapping edges.</a></h4>
 
 Let us consider two solids *S1* and *S2* that have overlapping edges:
 
@@ -1794,7 +1794,7 @@ argument *S2* has a common part with solid *S1* so the corresponding part is not
 
 @figure{/specification/boolean_operations/images/boolean_image066.png,"",230}
 
-@subsubsection specification__boolean_9_4_22	Case 22: Two Solids that have overlapping vertices.
+<h4><a id="specification__boolean_9_4_22">Case 22: Two Solids that have overlapping vertices.</a></h4>
 
 Let us consider two solids *S1* and *S2* that have overlapping vertices:
 
@@ -1814,7 +1814,7 @@ Let us consider two solids *S1* and *S2* that have overlapping vertices:
 
 @figure{/specification/boolean_operations/images/boolean_image070.png,"",230}
 
-@subsubsection specification__boolean_9_4_23	Case 23: A Shell and a Wire cut by a Solid.
+<h4><a id="specification__boolean_9_4_23">Case 23: A Shell and a Wire cut by a Solid.</a></h4>
 
 Let us consider Shell *Sh* and Wire *W* as the objects and Solid *S* as the tool:
 
@@ -1832,7 +1832,7 @@ Let us consider Shell *Sh* and Wire *W* as the objects and Solid *S* as the tool
 	
 * The result of *Cut21* operation is not defined as the objects have a lower dimension than the tool. 
 
-@subsubsection specification__boolean_9_4_24	Case 24: Two Wires that have overlapping edges.
+<h4><a id="specification__boolean_9_4_24">Case 24: Two Wires that have overlapping edges.</a></h4>
 
 Let us consider two Wires that have overlapping edges, *W1* is the object and *W2* is the tool:
 
@@ -1855,7 +1855,7 @@ Let us consider two Wires that have overlapping edges, *W1* is the object and *W
 @figure{/specification/boolean_operations/images/boolean_image143.png,"",230}
 
 
-@subsection specification__boolean_9_5 Class BOPAlgo_BOP
+<h3><a id="specification__boolean_9_5">Class BOPAlgo_BOP</a></h3>
 
 BOA is implemented in the class *BOPAlgo_BOP*. The main fields of this class are described in the Table:
 
@@ -1868,7 +1868,7 @@ BOA is implemented in the class *BOPAlgo_BOP*. The main fields of this class are
 
 The main steps of the *BOPAlgo_BOP* are the same as of [BOPAlgo_Builder](#specification__boolean_7_4) except for some aspects described in the next paragraphs.
 
-@subsection specification__boolean_9_6	Building Draft Result
+<h3><a id="specification__boolean_9_6">Building Draft Result</a></h3>
 
 The input data for this step is as follows:
 * *BOPAlgo_BOP* object after building result of type *Compound*;
@@ -1879,7 +1879,7 @@ The input data for this step is as follows:
 | 1 | 	For the Boolean operation *Fuse* add to *myRC* all images of arguments. | *BOPAlgo_BOP::BuildRC()* |
 | 2 |	For the Boolean operation *Common* or *Cut* add to *myRC* all images of argument *S1* that are *Common* for the Common operation and are *Not Common* for the Cut operation |	*BOPAlgo_BOP::BuildRC()* |
  
-@subsection specification__boolean_9_7	Building the Result
+<h3><a id="specification__boolean_9_7">Building the Result</a></h3>
 
 The input data for this step is as follows:
 * *BOPAlgo_BOP* object the state after building draft result. 
@@ -1897,7 +1897,7 @@ The input data for this step is as follows:
 | 2.3 |	Build solids <i>(SDi)</i> from *SFS*. |	*BOPAlgo_BuilderSolid* |
 | 2.4 |	Add the solids <i>(SDi)</i> to the result	| |
 
-@subsection specification__boolean_bop_on_opensolids Boolean operations on open solids
+<h3><a id="specification__boolean_bop_on_opensolids">Boolean operations on open solids</a></h3>
 
 The Boolean operations on open solids are tricky enough that the standard approach of Boolean operations for building the result, based on the splits of solids does not work.
 It happens because the algorithm for splitting solids (*BOPAlgo_BuilderSolid*) always tries to create the closed loops (shells) and make solids from them. But if the input solid is not closed, what can be expected from its splits?
@@ -1912,13 +1912,13 @@ From the selected faces the result solids are built. Please note, that the resul
 Even with this approach, the correct result of Boolean operation on open solids cannot be always guaranteed.
 This is explained by non-manifold nature of open solids: in some cases classification of a face depends on the point of the face chosen for classification.
 
-@section specification__boolean_10a Section Algorithm 
+<h2><a id="specification__boolean_10a">Section Algorithm </a></h2>
 
-@subsection specification__boolean_10a_1 Arguments
+<h3><a id="specification__boolean_10a_1">Arguments</a></h3>
 
 The arguments of BOA are shapes in terms of *TopoDS_Shape*. The main requirements for the arguments are described in the Algorithms.
 
-@subsection specification__boolean_10a_2 Results and general rules
+<h3><a id="specification__boolean_10a_2">Results and general rules</a></h3>
 * The result of Section operation is a compound. Each sub-shape of the compound has shared sub-shapes in accordance with interferences between the arguments. 
 * The result of Section operation contains shapes that have dimension that is  less then 2 i.e. vertices and edges. 
 * The result of Section operation contains standalone vertices if these vertices do not belong to the edges of the result.
@@ -1927,9 +1927,9 @@ The arguments of BOA are shapes in terms of *TopoDS_Shape*. The main requirement
 * The result of Section operation contains vertices that are the result of interferences between vertices and faces.
 * The result of Section operation contains edges that are the result of interferences between edges and faces (Common Blocks),
 
-@subsection specification__boolean_10a_3  Examples
+<h3><a id="specification__boolean_10a_3">Examples</a></h3>
 
-@subsubsection specification__boolean_10a_3_1 Case 1: Two Vertices
+<h4><a id="specification__boolean_10a_3_1">Case 1: Two Vertices</a></h4>
 
 Let us consider two interfering vertices: *V1* and *V2*.
 
@@ -1939,7 +1939,7 @@ The result of *Section* operation is the compound that contains a new vertex *V*
 
 @figure{/specification/boolean_operations/images/boolean_image081.png,"",128}
 
-@subsubsection specification__boolean_10a_3_2 Case 1: Case 2: A Vertex and an Edge
+<h4><a id="specification__boolean_10a_3_2">Case 1: Case 2: A Vertex and an Edge</a></h4>
 
 Let us consider vertex *V1* and the edge *E2*, that intersect in a 3D point:
 
@@ -1949,7 +1949,7 @@ The result of *Section* operation is the compound that contains vertex *V1*.
 
 @figure{/specification/boolean_operations/images/boolean_image083.png,"",230}
 
-@subsubsection specification__boolean_10a_3_3 Case 1: Case 2: A Vertex and a Face
+<h4><a id="specification__boolean_10a_3_3">Case 1: Case 2: A Vertex and a Face</a></h4>
  
 Let us consider vertex *V1* and face *F2*, that intersect in a 3D point:
 
@@ -1959,7 +1959,7 @@ The result of *Section* operation is the compound that contains vertex *V1*.
 
 @figure{/specification/boolean_operations/images/boolean_image085.png,"",230}
 
-@subsubsection specification__boolean_10a_3_4 Case 4: A Vertex and a Solid
+<h4><a id="specification__boolean_10a_3_4">Case 4: A Vertex and a Solid</a></h4>
 
 Let us consider vertex *V1* and solid *Z2*. The vertex *V1* is inside the solid *Z2*.
 
@@ -1967,7 +1967,7 @@ Let us consider vertex *V1* and solid *Z2*. The vertex *V1* is inside the solid 
  
 The result of *Section* operation is an empty compound.
 
-@subsubsection specification__boolean_10a_3_5 Case 5: Two edges intersecting at one point
+<h4><a id="specification__boolean_10a_3_5">Case 5: Two edges intersecting at one point</a></h4>
 
 Let us consider edges *E1* and *E2*, that intersect in a 3D point:
 
@@ -1977,7 +1977,7 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
 
 @figure{/specification/boolean_operations/images/boolean_image088.png,"",230}
 
-@subsubsection specification__boolean_10a_3_6 Case 6: Two edges having a common block
+<h4><a id="specification__boolean_10a_3_6">Case 6: Two edges having a common block</a></h4>
 
 Let us consider edges *E1* and *E2*, that have a common block:
 
@@ -1987,7 +1987,7 @@ The result of *Section* operation is the compound that contains a new edge *Enew
 
 @figure{/specification/boolean_operations/images/boolean_image090.png,"",230}
 
-@subsubsection specification__boolean_10a_3_7 Case 7: An Edge and a Face intersecting at a point
+<h4><a id="specification__boolean_10a_3_7">Case 7: An Edge and a Face intersecting at a point</a></h4>
 
 Let us consider edge *E1* and face *F2*, that intersect at a 3D point:
  
@@ -1997,7 +1997,7 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
 
 @figure{/specification/boolean_operations/images/boolean_image092.png,"",230}
  
-@subsubsection specification__boolean_10a_3_8 Case 8: A Face and an Edge that have a common block
+<h4><a id="specification__boolean_10a_3_8">Case 8: A Face and an Edge that have a common block</a></h4>
 
 Let us consider edge *E1* and face *F2*, that have a common block:
 
@@ -2008,7 +2008,7 @@ The result of *Section* operation is the compound that contains new edge *Enew*.
 @figure{/specification/boolean_operations/images/boolean_image094.png,"",230}
  
  
-@subsubsection specification__boolean_10a_3_9 Case 9: An Edge and a Solid intersecting at a point
+<h4><a id="specification__boolean_10a_3_9">Case 9: An Edge and a Solid intersecting at a point</a></h4>
 
 Let us consider edge *E1* and solid *Z2*, that intersect at a point:
 
@@ -2018,7 +2018,7 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
 
 @figure{/specification/boolean_operations/images/boolean_image096.png,"",230}
 
-@subsubsection specification__boolean_10a_3_10 Case 10: An Edge and a Solid that have a common block
+<h4><a id="specification__boolean_10a_3_10">Case 10: An Edge and a Solid that have a common block</a></h4>
 
 Let us consider edge *E1* and solid *Z2*, that have a common block at a face:
 
@@ -2028,7 +2028,7 @@ The result of *Section* operation is the compound that contains a new edge *Enew
 
 @figure{/specification/boolean_operations/images/boolean_image098.png,"",230}
  
-@subsubsection specification__boolean_10a_3_11 Case 11: Two intersecting faces
+<h4><a id="specification__boolean_10a_3_11">Case 11: Two intersecting faces</a></h4>
 
 Let us consider two intersecting faces *F1* and *F2*:
  
@@ -2038,7 +2038,7 @@ The result of *Section* operation is the compound that contains a new edge *Enew
 
 @figure{/specification/boolean_operations/images/boolean_image100.png,"",230}
  
-@subsubsection specification__boolean_10a_3_12 Case 12: Two faces that have a common part
+<h4><a id="specification__boolean_10a_3_12">Case 12: Two faces that have a common part</a></h4>
 
 Let us consider two faces *F1* and *F2* that have a common part:
 
@@ -2048,7 +2048,7 @@ The result of *Section* operation is the compound that contains 4 new edges.
 
 @figure{/specification/boolean_operations/images/boolean_image134.png,"",230}
 
-@subsubsection specification__boolean_10a_3_13 Case 13: Two faces that have overlapping edges
+<h4><a id="specification__boolean_10a_3_13">Case 13: Two faces that have overlapping edges</a></h4>
 
 Let us consider two faces *F1* and *F2* that have a overlapping edges:
 
@@ -2058,7 +2058,7 @@ The result of *Section* operation is the compound that contains a new edge *Enew
 
 @figure{/specification/boolean_operations/images/boolean_image102.png,"",230}
  
-@subsubsection specification__boolean_10a_3_14 Case 14: Two faces that have overlapping vertices
+<h4><a id="specification__boolean_10a_3_14">Case 14: Two faces that have overlapping vertices</a></h4>
 
 Let us consider two faces *F1* and *F2* that have overlapping vertices:
 
@@ -2068,7 +2068,7 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
  
 @figure{/specification/boolean_operations/images/boolean_image104.png,"",230}
  
-@subsubsection specification__boolean_10a_3_15 Case 15: A Face and a Solid that have an intersection curve
+<h4><a id="specification__boolean_10a_3_15">Case 15: A Face and a Solid that have an intersection curve</a></h4>
 
 Let us consider face *F1* and solid *Z2* that have an intersection curve:
  
@@ -2078,7 +2078,7 @@ The result of *Section* operation is the compound that contains new edges.
 
 @figure{/specification/boolean_operations/images/boolean_image106.png,"",230}
  
-@subsubsection specification__boolean_10a_3_16 Case 16: A Face and a Solid that have overlapping faces.
+<h4><a id="specification__boolean_10a_3_16">Case 16: A Face and a Solid that have overlapping faces.</a></h4>
 
 Let us consider face *F1* and solid *Z2* that have overlapping faces:
 
@@ -2088,7 +2088,7 @@ The result of *Section* operation is the compound that contains new edges
  
 @figure{/specification/boolean_operations/images/boolean_image108.png,"",230}
  
-@subsubsection specification__boolean_10a_3_17 Case 17: A Face and a Solid that have overlapping edges.
+<h4><a id="specification__boolean_10a_3_17">Case 17: A Face and a Solid that have overlapping edges.</a></h4>
 
 Let us consider face *F1* and solid *Z2* that have a common part on edge:
 
@@ -2098,7 +2098,7 @@ The result of *Section* operation is the compound that contains a new edge *Enew
 
 @figure{/specification/boolean_operations/images/boolean_image110.png,"",230}
  
-@subsubsection specification__boolean_10a_3_18 Case 18: A Face and a Solid that have overlapping vertices.
+<h4><a id="specification__boolean_10a_3_18">Case 18: A Face and a Solid that have overlapping vertices.</a></h4>
 
 Let us consider face *F1* and solid *Z2* that have overlapping vertices:
 
@@ -2108,7 +2108,7 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
  
 @figure{/specification/boolean_operations/images/boolean_image112.png,"",230}
 
-@subsubsection specification__boolean_10a_3_19 Case 19: Two intersecting Solids
+<h4><a id="specification__boolean_10a_3_19">Case 19: Two intersecting Solids</a></h4>
 
 Let us consider two intersecting solids *Z1* and *Z2*:
 @figure{/specification/boolean_operations/images/boolean_image113.png,"",230}
@@ -2116,7 +2116,7 @@ Let us consider two intersecting solids *Z1* and *Z2*:
 The result of *Section* operation is the compound that contains new edges.
 @figure{/specification/boolean_operations/images/boolean_image114.png,"",230}
 
-@subsubsection specification__boolean_10a_3_20 Case 20: Two Solids that have overlapping faces
+<h4><a id="specification__boolean_10a_3_20">Case 20: Two Solids that have overlapping faces</a></h4>
 
 Let us consider two solids *Z1* and *Z2* that have a common part on face:
 @figure{/specification/boolean_operations/images/boolean_image115.png,"",230}
@@ -2124,7 +2124,7 @@ Let us consider two solids *Z1* and *Z2* that have a common part on face:
 The result of *Section* operation is the compound that contains new edges.
 @figure{/specification/boolean_operations/images/boolean_image116.png,"",230}
  
-@subsubsection specification__boolean_10a_3_21 Case 21: Two Solids that have overlapping edges
+<h4><a id="specification__boolean_10a_3_21">Case 21: Two Solids that have overlapping edges</a></h4>
 
 Let us consider two solids *Z1* and *Z2* that have overlapping edges:
 @figure{/specification/boolean_operations/images/boolean_image117.png,"",230}
@@ -2132,7 +2132,7 @@ Let us consider two solids *Z1* and *Z2* that have overlapping edges:
 The result of *Section* operation is the compound that contains a new edge *Enew*.
 @figure{/specification/boolean_operations/images/boolean_image118.png,"",230}
 
-@subsubsection specification__boolean_10a_3_22 Case 22: Two Solids that have overlapping vertices
+<h4><a id="specification__boolean_10a_3_22">Case 22: Two Solids that have overlapping vertices</a></h4>
 
 Let us consider two solids *Z1* and *Z2* that have overlapping vertices: 
 @figure{/specification/boolean_operations/images/boolean_image119.png,"",230}
@@ -2140,7 +2140,7 @@ Let us consider two solids *Z1* and *Z2* that have overlapping vertices:
 The result of *Section* operation is the compound that contains a new vertex *Vnew*.
 @figure{/specification/boolean_operations/images/boolean_image120.png,"",230}
 
-@subsection specification__boolean_10a_4 Class BOPAlgo_Section
+<h3><a id="specification__boolean_10a_4">Class BOPAlgo_Section</a></h3>
 
 SA is implemented in the class *BOPAlgo_Section*. The class has no specific fields.
 The main steps of the *BOPAlgo_Section*  are the same as of *BOPAlgo_Builder* except for the following steps:
@@ -2158,13 +2158,13 @@ The main steps of the *BOPAlgo_Section*  are the same as of *BOPAlgo_Builder* ex
 * Build Images for Compounds;
 Some aspects of building the result are described in the next paragraph
 
-@subsection specification__boolean_10a_5 Building the Result
+<h3><a id="specification__boolean_10a_5">Building the Result</a></h3>
 
 | No | Contents	| Implementation |
 | :---- | :---- | :------ |
 | 1 | Build the result of the operation using all information contained in *FaceInfo*, Common Block, Shared entities of the arguments, etc. | *BOPAlgo_Section:: BuildSection()* |
 
-@section specification__boolean_10b Volume Maker Algorithm
+<h2><a id="specification__boolean_10b">Volume Maker Algorithm</a></h2>
 
 The Volume Maker algorithm has been designed for building the elementary volumes (solids) from a set of connected, intersecting, or nested shapes. The algorithm can also be useful for splitting solids into parts, or constructing new solid(s) from set of intersecting or connected faces or shells.
 The algorithm creates only closed solids. In general case the result solids are non-manifold: fragments of the input shapes (wires, faces) located inside the solids are added as internal sub-shapes to these solids.
@@ -2178,7 +2178,7 @@ The requirements for the arguments are the same as for the arguments of GF algor
 The algorithm allows disabling the calculation of intersections among the arguments. In this case the algorithm will run much faster, but the user should guarantee that the arguments do not interfere with each other, otherwise the result will be invalid (e.g. contain unexpected parts) or empty.
 This option is useful e.g. for building a solid from the faces of one shell or from the shapes that have already been intersected.
 
-@subsection specification__boolean_10b_1 Usage
+<h3><a id="specification__boolean_10b_1">Usage</a></h3>
 
 #### C++ Level
 The usage of the algorithm on the API level:
@@ -2214,7 +2214,7 @@ Options:
 -ai - use this option to avoid internal for solids shapes in the result.
 ~~~~
 
-@subsection specification__boolean_10b_2 Examples
+<h3><a id="specification__boolean_10b_2">Examples</a></h3>
 
 #### Example 1
 Creation of 9832 solids from sphere and set of 63 planes:
@@ -2236,7 +2236,7 @@ Creating compartments on a ship defined by hull shell and a set of planes. The s
 </tr>
 </table>
 
-@section specification__boolean_10c_Cells Cells Builder algorithm
+<h2><a id="specification__boolean_10c_Cells">Cells Builder algorithm</a></h2>
 
 The Cells Builder algorithm is an extension of the General Fuse algorithm. The result of General Fuse algorithm contains all split parts of the arguments. The Cells Builder algorithm provides means to specify if any given split part of the arguments (referred to as Cell) can be taken or avoided in the result.
 
@@ -2250,7 +2250,7 @@ The Cells Builder algorithm also provides the possibility to remove any internal
 
 The algorithm can also create containers from the connected Cells added into result - WIRES from Edges, SHELLS from Faces and COMPSOLIDS from Solids.
 
-@subsection specification__boolean_10c_Cells_1 Usage
+<h3><a id="specification__boolean_10c_Cells_1">Usage</a></h3>
 
 The algorithm has been implemented in the *BOPAlgo_CellsBuilder* class.
 
@@ -2340,7 +2340,7 @@ bcadd res s1 1 s2 0 s3 1 -m 1
 bcremoveint res
 ~~~~
 
-@subsection specification__boolean_10c_Cells_2 Examples
+<h3><a id="specification__boolean_10c_Cells_2">Examples</a></h3>
 
 The following simple example illustrates the possibilities of the algorithm working on a cylinder and a sphere intersected by a plane:
 ~~~~{.php}
@@ -2440,7 +2440,7 @@ bcremoveint res
 These examples may last forever. To define any new operation, it is just necessary to define, which Cells should be taken and which should be avoided.
 
 
-@section specification__boolean_10	Algorithm Limitations 
+<h2><a id="specification__boolean_10">Algorithm Limitations </a></h2>
 
 The chapter describes the problems that are considered as Algorithm limitations. In most cases an Algorithm failure is caused by a combination of various factors, such as self-interfered arguments, inappropriate or ungrounded values of the argument tolerances, adverse mutual position of the arguments, tangency, etc.
 
@@ -2452,9 +2452,9 @@ A lot of failures of GFA algorithm can be caused by bugs in low-level algorithms
 The description below illustrates some known GFA limitations. It does not enumerate exhaustively all problems that can arise in practice. Please address cases of Algorithm failure to the OCCT Maintenance Service.
 
 
-@subsection specification__boolean_10_1	Arguments
+<h3><a id="specification__boolean_10_1">Arguments</a></h3>
 
-@subsubsection specification__boolean_10_1_1	Common requirements 
+<h4><a id="specification__boolean_10_1_1">Common requirements </a></h4>
 
 Each argument should be valid (in terms of *BRepCheck_Analyzer*), or conversely, if the argument is considered as non-valid (in terms of *BRepCheck_Analyzer*), it cannot be used as an argument of the algorithm.
 
@@ -2476,7 +2476,7 @@ Thus, if *E1* is recognized by the Analyzer as non-valid, edge *E*  should also 
 
 The fact that the argument is a valid shape (in terms of *BRepCheck_Analyzer*) is a necessary but insufficient requirement to produce a valid result of the Algorithms.
 
-@subsubsection specification__boolean_10_1_3	Pure self-interference
+<h4><a id="specification__boolean_10_1_3">Pure self-interference</a></h4>
 
 The argument should not be self-interfered, i.e. all sub-shapes of the argument that have geometrical coincidence through any topological entities (vertices, edges, faces) should share these entities.
 
@@ -2503,7 +2503,7 @@ The face *F* has been obtained by revolution of edge *E* around line *L*.
 
 In spite of the fact that face *F* is valid (in terms of *BRepCheck_Analyzer*) it is a self-interfered shape and cannot be used as the argument of the Algorithms.
 
-@subsubsection specification__boolean_10_1_4	Self-interferences due to tolerances
+<h4><a id="specification__boolean_10_1_4">Self-interferences due to tolerances</a></h4>
 #### Example 1: Non-closed Edge
 
 Let us consider edge *E* based on a non-closed circle. @figure{/specification/boolean_operations/images/operations_image040.png,"Edge based on a non-closed circle",230}
@@ -2523,7 +2523,7 @@ The value of  tolerance Tol(V)= 50.000075982061.
 
 In spite of the fact that solid *S* is valid in terms of *BRepCheck_Analyzer* it is a self-interfered shape because vertex *V* is interfered with a lot of sub-shapes from *S* without any topological connection with them. Thus solid *S* cannot be used as an argument of the Algorithms.
 
-@subsubsection specification__boolean_10_1_5 Parametric representation
+<h4><a id="specification__boolean_10_1_5">Parametric representation</a></h4>
 The parameterization of some surfaces (cylinder, cone, surface of revolution) can be the cause of limitation.
 
 ####	Example 1: Cylindrical surface
@@ -2550,7 +2550,7 @@ Pay attention to the Zoom value of the Figures.
 It is obvious that starting with some value of *ScF*, e.g. *ScF>1000000*, all sloped p-Curves on *Face 2*  will be almost vertical. At least, there will be no difference between the values of angles computed by standard C Run-Time Library functions, such as *double acos(double x)*. The loss of accuracy in computation of angles can cause failure of some BP sub-algorithms, such as building faces from a set of edges or building solids from a set of faces.
 
 
-@subsubsection specification__boolean_10_1_6 Using tolerances of vertices to fix gaps
+<h4><a id="specification__boolean_10_1_6">Using tolerances of vertices to fix gaps</a></h4>
 
 It is possible to create shapes that use sub-shapes of lower order to avoid gaps in the tolerance-based data model.
 
@@ -2568,8 +2568,8 @@ Let us consider the following example:
 The values of tolerances *Tol(V1)* and *Tol(V2)* are big enough to fix the gaps between the ends of the edges, but the vertices *V1* and *V2* do not contain any information about the trajectories connecting the corresponding ends of the edges. Thus, the trajectories are undefined. This will cause failure of some sub-algorithms of BP. For example, the sub-algorithms for building faces from a set of edges use the information about all edges connected in a vertex. The situation when a vertex has several pairs of edges such as above will not be solved in a right way. 
 
 
-@subsection specification__boolean_11_1	Intersection problems
-@subsubsection specification__boolean_11_1_1 Pure intersections and common zones 
+<h3><a id="specification__boolean_11_1">Intersection problems</a></h3>
+<h4><a id="specification__boolean_11_1_1">Pure intersections and common zones </a></h4>
 
 #### Example: Intersecting Edges
 
@@ -2587,7 +2587,7 @@ The Intersection Part of Algorithms uses the result of pure intersection *Vx* in
 * The Algorithms do not produce Common Blocks between edges based on underlying curves of explicitly different type (e.g. Line / Circle). If the curves have different types, the rule of thumb is that the produced result is of type **vertex**. This rule does not work for non-analytic curves (Bezier, B-Spline) and their combinations with analytic curves.
 * The algorithm of intersection between two surfaces *IntPatch_Intersection* does not compute *CZ* of the intersection between curves and points. So even if *CZ* were computed by Edge/Edge intersection algorithm, its result could not be treated by Face/Face intersection algorithm.
 
-@subsubsection specification__boolean_11_2_2 Tolerances and inaccuracies
+<h4><a id="specification__boolean_11_2_2">Tolerances and inaccuracies</a></h4>
 
 The following limitations result from modeling errors or inaccuracies.
 
@@ -2633,7 +2633,7 @@ The example can be extended from 1D (edges) to 2D (faces).
 The comments and recommendations are the same as for 1D case above.
 
 
-@subsubsection specification__boolean_11_2_3 Acquired Self-interferences
+<h4><a id="specification__boolean_11_2_3">Acquired Self-interferences</a></h4>
 ####	Example 1: Vertex and edge
 
 Let us consider vertex *V1* and edge *E2*. 
@@ -2658,13 +2658,13 @@ Vertex *V2* interferes with edges *E11* and *E12*. Thus, edge *E11* should inter
  
 The cases when a non-self-interfered argument (or its sub-shapes) become interfered due to the intersections with other arguments (or their sub-shapes) are considered as limitations for the Algorithms.
 
-@section specification__boolean_11a Advanced Options
+<h2><a id="specification__boolean_11a">Advanced Options</a></h2>
 
 The previous chapters describe so called Basic Operations. Most of tasks can be solved using Basic Operations. Nonetheless, there are cases that can not be solved straightforwardly by Basic Operations. The tasks are considered as limitations of Basic Operations. 
 
 The chapter is devoted to Advanced Options. In some cases the usage of Advanced Options allows overcoming the limitations, improving the quality of the result of operations, robustness and performance of the operators themselves.
 
-@subsection specification__boolean_11a_1  Fuzzy Boolean Operation
+<h3><a id="specification__boolean_11a_1">Fuzzy Boolean Operation</a></h3>
 
 Fuzzy Boolean operation is the option of Basic Operations such as General Fuse, Splitting, Boolean, Section, Maker Volume and Cells building operations, in which additional user-specified tolerance is used. This option allows operators to handle robustly cases of touching and near-coincident, misaligned entities of the arguments.
 
@@ -2676,7 +2676,7 @@ With the Fuzzy option it is possible to get the expected result -- it is just ne
 
 Fuzzy option is included in interface of Intersection Part (class *BOPAlgo_PaveFiller*) and application programming interface (class  *BRepAlgoAPI_BooleanOperation*)
 
-@subsubsection specification__boolean_11a_1_1 Examples
+<h4><a id="specification__boolean_11a_1_1">Examples</a></h4>
 The following examples demonstrate the advantages of usage Fuzzy option operations over the Basic Operations in typical situations.
 
 #### Case 1
@@ -2735,7 +2735,7 @@ The following results are obtained using Basic Operations and the Fuzzy ones wit
 
 This example stresses not only the validity, but also the performance issue. The usage of Fuzzy option with the appropriate value allows processing the case much faster than with the pure Basic operation. The performance gain for the case is 45 (Processor: Intel(R) Core(TM) i5-3450 CPU @ 3.10 GHz).
 
-@subsection specification__boolean_11a_2 Gluing Operation
+<h3><a id="specification__boolean_11a_2">Gluing Operation</a></h3>
 
 The Gluing operation is the option of the Basic Operations such as General Fuse, Splitting, Boolean, Section, Maker Volume and Cells building operations.
 It has been designed to speed up the computation of the interferences among arguments of the operations on special cases, in which the arguments may be overlapping but do not have real intersections between their sub-shapes.
@@ -2763,7 +2763,7 @@ The performance improvement in gluing mode is achieved by excluding the most tim
 
 By setting the Gluing option for the operation user should guarantee that the arguments are really coinciding. The algorithm does not check this itself. Setting inappropriate option for the operation is likely to lead to incorrect result.
 
-@subsubsection specification__boolean_11a_2_1 Usage
+<h4><a id="specification__boolean_11a_2_1">Usage</a></h4>
 
 The Gluing option is an enumeration implemented in BOPAlgo_GlueEnum.hxx:
 * BOPAlgo_GlueOff - default value for the algorithms, Gluing is switched off;
@@ -2792,7 +2792,7 @@ For setting the Gluing options in DRAW it is necessary to call the <i>bglue</i> 
 bglue 1
 ~~~~
 
-@subsubsection specification__boolean_11a_2_2 Examples
+<h4><a id="specification__boolean_11a_2_2">Examples</a></h4>
 #### Case1 - Fusing the 64 bspline boxes into one solid
 
 @figure{/specification/boolean_operations/images/glue_options_image004.png,"BSpline Boxes with partial coincidence",240}
@@ -2805,7 +2805,7 @@ Performance improvement from using the GlueShift option in this case is about 70
 
 Performance improvement in this case is also about 70 percent.
 
-@subsection specification__boolean_11a_3 Safe processing mode
+<h3><a id="specification__boolean_11a_3">Safe processing mode</a></h3>
 
 The safe processing mode is the advanced option in Boolean Operation component. This mode can be applied to all Basic operations such as General Fuse, Splitting, Boolean, Section, Maker Volume, Cells building.
 This option allows keeping the input arguments untouched. In other words, switching this option on prevents the input arguments from any modification such as tolerance increase, addition of the P-Curves on edges, etc.
@@ -2816,7 +2816,7 @@ By default the safe processing option is switched off for the algorithms. Enabli
 
 The option is also available in the Intersection algorithm - *BOPAlgo_PaveFiller*. To perform several different operations on the same arguments, the safe processing mode can be enabled in PaveFiller, prepared only once and then used in operations. It is enough to set this option to PaveFiller only and all algorithms taking this PaveFiller will also work in the safe mode.
 
-@subsubsection specification__boolean_11a_3_1 Usage
+<h4><a id="specification__boolean_11a_3_1">Usage</a></h4>
 
 #### API level
 
@@ -2840,14 +2840,14 @@ To enable the safe processing mode for the operation in DRAW, it is necessary to
 bnondestructive 1
 ~~~~
 
-@subsection specification__boolean_11a_4 How to disable check of input solids for inverted status
+<h3><a id="specification__boolean_11a_4">How to disable check of input solids for inverted status</a></h3>
 
 By default, all input solids are checked for inverted status, i.e. the solids are classified to understand if they are holes in the space (negative volumes) or normal solids (positive volumes). The possibility to disable the check of the input solids for inverted status is the advanced option in Boolean Operation component. This option can be applied to all Basic operations, such as General Fuse, Splitting, Boolean, Section, Maker Volume and Cells building.
 This option allows avoiding time-consuming classification of the input solids and processing them in the same way as positive volumes, saving up to 10 percent of time on the cases with a big number of input solids.
 
 The classification should be disabled only if the user is sure that there are no negative volumes among the input solids, otherwise the result may be invalid.
 
-@subsubsection specification__boolean_11a_4_1 Usage
+<h4><a id="specification__boolean_11a_4_1">Usage</a></h4>
 
 #### API level
 
@@ -2871,11 +2871,11 @@ To enable/disable the classification of the solids in DRAW, it is necessary to c
 bcheckinverted 0
 ~~~~
 
-@subsection specification__boolean_11a_5_obb Usage of Oriented Bounding Boxes
+<h3><a id="specification__boolean_11a_5_obb">Usage of Oriented Bounding Boxes</a></h3>
 
 Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB see the [Bounding boxes](#occt_modat_6) chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
 
-@subsubsection specification__boolean_11a_5_obb_1 Usage
+<h4><a id="specification__boolean_11a_5_obb_1">Usage</a></h4>
 
 #### API level
 To enable/disable the usage of OBB in the operation it is necessary to call the *SetUseOBB()* method with the appropriate value:
@@ -2897,7 +2897,7 @@ To enable/disable the usage of OBB in the operation in DRAW it is necessary to c
 buseobb 1
 ~~~~
 
-@section specification__boolean_ers Errors and warnings reporting system
+<h2><a id="specification__boolean_ers">Errors and warnings reporting system</a></h2>
 
 The chapter describes the Error/Warning reporting system of the algorithms in the Boolean Component.
 
@@ -2950,7 +2950,7 @@ Warning: The positioning of the shapes leads to creation of small edges without 
 ~~~~
 
 
-@section specification__boolean_history History Information
+<h2><a id="specification__boolean_history">History Information</a></h2>
 
 All operations in Boolean Component support [History information](#occt_modalg_hist). This chapter describes how the History is filled for these operations.
 
@@ -2966,11 +2966,11 @@ have been obtained as a result of pure intersection (not overlapping) of this sh
 
 So, only EDGES and FACES could have information about Generated shapes. For all other types of shapes the list of Generated shapes will be empty.
 
-@subsection specification__boolean_history_ex Examples
+<h3><a id="specification__boolean_history_ex">Examples</a></h3>
 
 Here are some examples illustrating the History information.
 
-@subsubsection specification__boolean_history_ex_del Deleted shapes
+<h4><a id="specification__boolean_history_ex_del">Deleted shapes</a></h4>
 
 The result of CUT operation of two overlapping planar faces (see the example below) does not contain any parts from the tool face. Thus, the tool face is considered as Deleted.
 If the faces are not fully coinciding, the result must contain some parts of the object face. In this case object face will be considered as not deleted.
@@ -2998,7 +2998,7 @@ isdeleted cut_hist f2
 # Deleted
 ~~~~
 
-@subsubsection specification__boolean_history_ex_modif Modified shapes
+<h4><a id="specification__boolean_history_ex_modif">Modified shapes</a></h4>
 
 In the FUSE operation of two edges intersecting in one point (see the example below), both edges will be split by the intersection point. All these splits will be contained in the result.
 Thus, each of the input edges will be Modified into its two splits.
@@ -3045,7 +3045,7 @@ modified m2 cut_hist e2
 ~~~~
 
 
-@subsubsection specification__boolean_history_gen Generated shapes
+<h4><a id="specification__boolean_history_gen">Generated shapes</a></h4>
 
 Two intersecting edges will both have the intersection vertices Generated from them.
 
@@ -3091,7 +3091,7 @@ generated gf2 com_hist f2
 
 ~~~~
 
-@section specification__boolean_simplification BOP result simplification
+<h2><a id="specification__boolean_simplification">BOP result simplification</a></h2>
 
 The API algorithms implementing Boolean Operations provide possibility to simplify the result shape by unification of the connected tangential edges and faces.
 This simplification is performed by the method *SimplifyResult* which is implemented in the class *BRepAlgoAPI_BuilderAlgo* (General Fuse operation).
@@ -3111,7 +3111,7 @@ Some options of the main operation are passed into the Unifier:
 For controlling this possibility in DRAW the command **bsimplify** has been implemented. See the [Boolean Operations options](#occt_draw_bop_options) chapter in draw user guide.
 
 
-@subsection specification__boolean_simplification_examples Examples
+<h3><a id="specification__boolean_simplification_examples">Examples</a></h3>
 
 Here is the simple example of simplification of the result of Fuse operation of two boxes:
 
@@ -3136,11 +3136,11 @@ bapibop r 1
 </table>
 
 
-@section specification__boolean_11b Usage 
+<h2><a id="specification__boolean_11b">Usage </a></h2>
 
 The chapter contains some examples of the OCCT Boolean Component usage. The usage is possible on two levels: C++ and Tcl. 
 
-@subsection specification__boolean_11b_1 Package BRepAlgoAPI
+<h3><a id="specification__boolean_11b_1">Package BRepAlgoAPI</a></h3>
 
 The package *BRepAlgoAPI* provides the Application Programming Interface of the Boolean Component.
 
@@ -3158,7 +3158,7 @@ The package consists of the following classes:
 
 The detailed description of the classes can be found in the corresponding .hxx files. The examples are below in this chapter.
 
-@subsection specification__boolean_11b_2 Package BOPTest
+<h3><a id="specification__boolean_11b_2">Package BOPTest</a></h3>
 The package *BOPTest* provides the usage of the Boolean Component on Tcl level. The method *BOPTest::APICommands* contains corresponding Tcl commands: 
 
 * *bapibuild* -- for General Fuse Operator;
@@ -3167,7 +3167,7 @@ The package *BOPTest* provides the usage of the Boolean Component on Tcl level. 
 
 The examples of how to use the commands are below in this chapter.
 
-@subsubsection specification__boolean_11b_2_1 Case 1. General Fuse operation
+<h4><a id="specification__boolean_11b_2_1">Case 1. General Fuse operation</a></h4>
 
 The following example illustrates how to use General Fuse operator:
 
@@ -3225,7 +3225,7 @@ baddobjects b1 b2 b3
 bapibuild r 
 ~~~~
 
-@subsubsection specification__boolean_11b_2_2 Case 2. Splitting operation
+<h4><a id="specification__boolean_11b_2_2">Case 2. Splitting operation</a></h4>
 
 The following example illustrates how to use the Splitter operator:
 
@@ -3291,7 +3291,7 @@ baddtools f
 bapisplit r 
 ~~~~
 
-@subsubsection specification__boolean_11b_2_3 Case 3. Common operation
+<h4><a id="specification__boolean_11b_2_3">Case 3. Common operation</a></h4>
 
 The following example illustrates how to use Common operation:
 
@@ -3358,7 +3358,7 @@ baddtools b2
 bapibop r 0
 ~~~~
 
-@subsubsection specification__boolean_11b_2_4 Case 4. Fuse operation
+<h4><a id="specification__boolean_11b_2_4">Case 4. Fuse operation</a></h4>
 
 The following example illustrates how to use Fuse operation:
 
@@ -3425,7 +3425,7 @@ baddtools b2
 bapibop r 1
 ~~~~
 
-@subsubsection specification__boolean_11b_2_5 Case 5. Cut operation
+<h4><a id="specification__boolean_11b_2_5">Case 5. Cut operation</a></h4>
 
 The following example illustrates how to use Cut operation:
 
@@ -3493,7 +3493,7 @@ bapibop r 2
 ~~~~
 
 
-@subsubsection specification__boolean_11b_2_6 Case 6. Section operation
+<h4><a id="specification__boolean_11b_2_6">Case 6. Section operation</a></h4>
 
 The following example illustrates how to use Section operation:
 

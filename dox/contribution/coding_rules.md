@@ -3,7 +3,7 @@ Coding Rules {#occt_contribution__coding_rules}
 
 @tableofcontents
 
-@section occt_coding_rules_1 Introduction
+<h2><a id="occt_coding_rules_1">Introduction</a></h2>
 
 The purpose of this document is to define a common programming style for Open CASCADE Technology.
 
@@ -13,7 +13,7 @@ OCCT programming style follows common and appropriate best practices, so some gu
 
 The guide can be improved in the future as new ideas and enhancements are added.
 
-@subsection occt_coding_rules_1_1 Scope of the document
+<h3><a id="occt_coding_rules_1_1">Scope of the document</a></h3>
 
 Rules in this document refer to C++ code. However, with minor exceptions due to language restrictions, they are applicable to any sources in Open CASCADE Technology framework, including:
 - C/C++
@@ -21,9 +21,9 @@ Rules in this document refer to C++ code. However, with minor exceptions due to 
 - OpenCL kernels
 - TCL scripts and test cases
 
-@section occt_coding_rules_2 Naming Conventions
+<h2><a id="occt_coding_rules_2">Naming Conventions</a></h2>
 
-@subsection occt_coding_rules_2_1 General naming rules
+<h3><a id="occt_coding_rules_2_1">General naming rules</a></h3>
 
 The names considered in this section mainly refer to the interface of Open CASCADE Technology libraries or source code itself.
 
@@ -54,7 +54,7 @@ Standard_Integer width_of_box; // this is bad
 Standard_Integer aWidthOfBox;  // this is OK
 ~~~~
 
-@subsection occt_coding_rules_2_2 Names of development units
+<h3><a id="occt_coding_rules_2_2">Names of development units</a></h3>
 
 Usually a unit (e.g. a package) is a set of classes, methods, enumerations or any other sources implementing a common functionality, which is self-contained and independent from other parts of the library.
 
@@ -125,7 +125,7 @@ private:
 };
 ~~~~
 
-@subsection occt_coding_rules_2_3 Names of variables
+<h3><a id="occt_coding_rules_2_3">Names of variables</a></h3>
 
 There are several rules that describe currently accepted practices for naming variables.
 
@@ -229,7 +229,7 @@ void Average (const Standard_Real** theArray,
 }
 ~~~~
 
-@section occt_coding_rules_3 Formatting rules
+<h2><a id="occt_coding_rules_3">Formatting rules</a></h2>
 
 To improve the open source readability and, consequently, maintainability, the following set of rules is applied.
 
@@ -508,7 +508,7 @@ The source or header file should include only minimal set of headers necessary f
 #include <windows.h>
 ~~~~
 
-@section occt_coding_rules_4 Documentation rules
+<h2><a id="occt_coding_rules_4">Documentation rules</a></h2>
 
 The source code is one of the most important references for documentation.
 The comments in the source code should be complete enough to allow understanding the corresponding code and to serve as basis for other documents.
@@ -552,7 +552,7 @@ There are also some rules that define how comments should be formatted, see [For
 
 Following these rules is important for good comprehension of the comments. Moreover, this approach  allows automatically generating user-oriented documentation directly from the commented sources.
 
-@section occt_coding_rules_5 Application design
+<h2><a id="occt_coding_rules_5">Application design</a></h2>
 
 The following rules define the common style, which should be applied by any developer contributing to the open source.
 
@@ -588,7 +588,7 @@ When compiling the source pay attention to and try to minimize compiler warnings
 
 Try to minimize compilation dependencies by removing unnecessary inclusions.
 
-@section occt_coding_rules_6 General C/C++ rules
+<h2><a id="occt_coding_rules_6">General C/C++ rules</a></h2>
 
 This section defines the rules for writing a portable and maintainable C/C++ source code.
 
@@ -701,7 +701,7 @@ void Function (Standard_Integer theValue,
 }
 ~~~~
 
-@section occt_coding_rules_7 Portability issues
+<h2><a id="occt_coding_rules_7">Portability issues</a></h2>
 
 This chapter contains rules that are critical for cross-platform portability.
 
@@ -734,7 +734,7 @@ Do not assume sizes of types. Use *sizeof()* instead to calculate sizes.
 In accordance with C++03 standard source files should be trailed by an empty line.
 It is recommended to follow this rule for any plain text files for consistency and for correct work of git difference tools.
 
-@section occt_coding_rules_8 Stability issues
+<h2><a id="occt_coding_rules_8">Stability issues</a></h2>
 
 The rules listed in this chapter are important for stability of the programs that use Open CASCADE Technology libraries.
 
@@ -859,7 +859,7 @@ Do not throw from within a destructor.
 
 Avoid the assignment of a temporary object to a reference. This results in a different behavior for different compilers on different platforms.
 
-@section occt_coding_rules_9 Performance issues
+<h2><a id="occt_coding_rules_9">Performance issues</a></h2>
 
 These rules define the ways of avoiding possible loss of performance caused by ineffective programming.
 
@@ -932,7 +932,7 @@ for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
 
 since linear access does not invalidate cache too often.
 
-@section occt_coding_rules_10 Draw Harness command
+<h2><a id="occt_coding_rules_10">Draw Harness command</a></h2>
 
 Draw Harness provides TCL interface for OCCT algorithms.
 
@@ -1022,7 +1022,7 @@ Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values 
   }
 ~~~~
 
-@section occt_coding_rules_11 Examples
+<h2><a id="occt_coding_rules_11">Examples</a></h2>
 
 ### Sample documented class
 

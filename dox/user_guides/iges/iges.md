@@ -3,7 +3,7 @@ IGES Translator  {#occt_user_guides__iges}
 
 @tableofcontents
 
-@section occt_iges_1 Introduction
+<h2><a id="occt_iges_1">Introduction</a></h2>
 
 The IGES interface reads IGES files and translates them to Open CASCADE Technology models. The interface is able to translate one entity, a group of entities or a whole file. Before beginning a translation, you can set a range of parameters to manage the translation process. If you like, you can also check file consistency before translation. The IGES interface also translates OCCT models to IGES files. 
 
@@ -29,16 +29,16 @@ All definitions in IGES  version 5.3 are recognized but only 3D geometric entiti
 
 [Shape Healing](#occt_user_guides__shape_healing) toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
 
-@section occt_iges_2 Reading IGES
-@subsection occt_iges_2_1 Procedure
+<h2><a id="occt_iges_2">Reading IGES</a></h2>
+<h3><a id="occt_iges_2_1">Procedure</a></h3>
 You can translate an  IGES file to an OCCT shape by following the steps below: 
   -# Load the file,
   -# Check file consistency,
   -# Set the translation parameters,
   -# Perform the file translation,
   -# Fetch the results.
-@subsection occt_iges_2_2 Domain covered
-@subsubsection occt_iges_2_2_1 Translatable entities
+<h3><a id="occt_iges_2_2">Domain covered</a></h3>
+<h4><a id="occt_iges_2_2_1">Translatable entities</a></h4>
 The types of IGES  entities, which can be translated, are: 
   * Points
   * Lines
@@ -51,14 +51,14 @@ The types of IGES  entities, which can be translated, are:
   
 **Note** that all non-millimeter  length unit values in the IGES file are converted to millimeters.
  
-@subsubsection occt_iges_2_2_2 Attributes
+<h4><a id="occt_iges_2_2_2">Attributes</a></h4>
 Entity attributes in the Directory Entry Section of the  IGES file (such as layers, colors and thickness) are translated to Open CASCADE  Technology using XDE. 
-@subsubsection occt_iges_2_2_3 Administrative data
+<h4><a id="occt_iges_2_2_3">Administrative data</a></h4>
 Administrative data, in the Global Section of the IGES  file (such as the file name, the name of the author, the date and time a model  was created or last modified) is not translated to Open CASCADE Technology.  Administrative data can, however, be consulted in the IGES file. 
 
 
-@subsection occt_iges_2_3 Description of the process
-@subsubsection occt_iges_2_3_1 Loading the IGES file
+<h3><a id="occt_iges_2_3">Description of the process</a></h3>
+<h4><a id="occt_iges_2_3_1">Loading the IGES file</a></h4>
 Before performing any  other operation, you have to load the file using the syntax below. 
 ~~~~{.cpp}
 IGESControl_Reader reader; 
@@ -66,7 +66,7 @@ IFSelect_ReturnStatus stat  = reader.ReadFile(“filename.igs”);
 ~~~~
 The loading operation  only loads the IGES file into computer memory; it does not translate it. 
 
-@subsubsection occt_iges_2_3_2 Checking the IGES file
+<h4><a id="occt_iges_2_3_2">Checking the IGES file</a></h4>
 This step is not obligatory.  Check the loaded file with:  
 ~~~~{.cpp}
 Standard_Boolean ok =  reader.Check(Standard_True); 
@@ -88,7 +88,7 @@ Your analysis of the  file can be either message-oriented or entity-oriented. Ch
 * *ListByItem*        gives the number of IGES entities with their type  and rank numbers per message. 
 * *EntitiesByItem*    gives the number of IGES entities with their  types, rank numbers and Directory Entry numbers per message. 
 
-@subsubsection occt_iges_2_3_3  Setting translation parameters
+<h4><a id="occt_iges_2_3_3">Setting translation parameters</a></h4>
 The following parameters can be used to translate an IGES  file to an OCCT shape. If you give a value that is not within the range of  possible values, it will be ignored. 
 
 <h4>read.iges.bspline.continuity</h4>
@@ -281,7 +281,7 @@ This parameter defines units to which a shape should be  converted when translat
   
 Default value is MM. 
 
-@subsubsection occt_iges_2_3_4 Selecting entities
+<h4><a id="occt_iges_2_3_4">Selecting entities</a></h4>
 
 A list of entities can  be formed by invoking the method *IGESControl_Reader::GiveList*.
 ~~~~{.cpp}
@@ -341,7 +341,7 @@ faces =  Reader.GiveList(“xst-type(!=SurfaceOfRevolution)”);
   * *iges-surfaces* -- selects surfaces not supporting faces (i.e. with natural  bounds). 
   * *iges-basic-curves-3d* -- selects the same entities as iges-curves-3d.  Composite Curves are broken down into their components and the components are  selected. 
   
-@subsubsection occt_iges_2_3_5 Performing the  IGES file translation
+<h4><a id="occt_iges_2_3_5">Performing the  IGES file translation</a></h4>
 Perform translation  according to what you want to translate:  
 1.  Translate an entity identified  by its rank with:  
 ~~~~{.cpp}
@@ -371,7 +371,7 @@ Standard_Boolean  onlyvisible = Standard_True or Standard_False;
 reader.TransferRoots(onlyvisible) 
 ~~~~
 
-@subsubsection occt_iges_2_3_6 Getting the  translation results
+<h4><a id="occt_iges_2_3_6">Getting the  translation results</a></h4>
 Each successful  translation operation outputs one shape. A series of translations gives a  series of shapes.  
 Each time you invoke  *TransferEntity, Transfer* or *Transferlist*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
 ~~~~{.cpp}
@@ -409,17 +409,17 @@ If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it
   * *ResultCount*  -- gives the number of  resulting OCCT shapes per type.  
   * *Mapping* -- gives mapping between  roots of the IGES file and the resulting OCCT shape per IGES and OCCT type.
  
-@subsection occt_iges_2_4 Mapping of IGES  entities to Open CASCADE Technology shapes
+<h3><a id="occt_iges_2_4">Mapping of IGES  entities to Open CASCADE Technology shapes</a></h3>
 
 *NOTE* that IGES entity types  that are not given in the following tables are not translatable. 
 
-@subsubsection occt_iges_2_4_1 Points
+<h4><a id="occt_iges_2_4_1">Points</a></h4>
 
 | IGES entity type | CASCADE shape  | Comments |
 | :---------------- | :------------- | --------- |
 | 116: Point     | TopoDS_Vertex  | |
 
-@subsubsection occt_iges_2_4_2 Curves
+<h4><a id="occt_iges_2_4_2">Curves</a></h4>
 Curves, which form the 2D of face boundaries, are translated  as *Geom2D_Curves* (Geom2D circles, etc.). 
 
 | IGES entity type | CASCADE shape | Comments |
@@ -437,7 +437,7 @@ Curves, which form the 2D of face boundaries, are translated  as *Geom2D_Curves*
 
 The type of OCCT shapes (either *TopDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter. 
 
-@subsubsection occt_iges_2_4_3 Surfaces
+<h4><a id="occt_iges_2_4_3">Surfaces</a></h4>
 Translation of a surface outputs either a *TopoDS_Face* or a  *TopoDS_Shell*.  
 If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and its outer and inner boundaries (if it has any) are  *TopoDS_Wires*. 
 
@@ -455,7 +455,7 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 | 190: Plane Surface | TopoDS_Face | This type of IGES entity can only be used in BRep entities in place of an IGES 108 type entity. The geometrical support of the face is a *Geom_Plane*. | 
 
 
-@subsubsection occt_iges_2_4_4 Boundary Representation  Solid Entities
+<h4><a id="occt_iges_2_4_4">Boundary Representation  Solid Entities</a></h4>
 
 | IGES entity type | CASCADE shape | Comments |
 | :---------------- | :------------ | :------- |
@@ -467,7 +467,7 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 | 502: Vertex List | | | 
 
 
-@subsubsection occt_iges_2_4_5 Structure Entities
+<h4><a id="occt_iges_2_4_5">Structure Entities</a></h4>
 
 | IGES entity type | CASCADE shape | Comments | 
 | :---------------- | :------------ | :------- |
@@ -475,21 +475,21 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 | 402/7: Associativity Instance: Group without back pointers | TopoDS_Compound | |
 | 402/9: Associativity Instance: Single Parent | TopoDS_Face | The translation of a *SingleParent* entity is only performed for 402 form 9 with entities 108/1 and 108/-1. The geometrical support for the *TopoDS_Face* is a *Geom_Plane* with boundaries: the parent plane defines the outer boundary; the child planes define the inner boundaries. |
 
-@subsubsection occt_iges_2_4_6 Subfigures
+<h4><a id="occt_iges_2_4_6">Subfigures</a></h4>
 
 | IGES entity type | CASCADE shape | Comments |
 | :---------------- | :------------ | :------- |
 | 308: Subfigure Definition | TopoDS_Compound | This IGES entity is only translated when there are no Singular Subfigure Instance entities. |
 | 408: Singular Subfigure Instance | TopoDS_Compound | This shape has the Subfigure Definition Compound as its origin and is positioned in space by its translation vector and its scale factor. |
 
-@subsubsection occt_iges_2_4_7 Transformation Matrix  
+<h4><a id="occt_iges_2_4_7">Transformation Matrix  </a></h4>
 
 | IGES entity type | CASCADE shape | Comments |
 | :---------------  | :------------ | :------- |
 | 124: Transformation Matrix | Geom_Transformation | This entity is never translated alone. It must be included in the definition of another entity. |
 
 
-@subsection occt_iges_2_5 Messages
+<h3><a id="occt_iges_2_5">Messages</a></h3>
 Messages are displayed concerning the normal functioning of  the processor (transfer, loading, etc.).  
 You must declare an include file: 
 ~~~~{.cpp}
@@ -513,8 +513,8 @@ IDT_SetStandard();
 ~~~~
 restores screen output. 
 
-@subsection occt_iges_2_6 Tolerance management
-@subsubsection occt_iges_2_6_1 Values used for tolerances during reading IGES
+<h3><a id="occt_iges_2_6">Tolerance management</a></h3>
+<h4><a id="occt_iges_2_6_1">Values used for tolerances during reading IGES</a></h4>
 
 During the transfer of IGES to Open CASCADE Technology  several parameters are used as tolerances and precisions for different  algorithms. Some of them are computed from other using specific functions. 
 
@@ -536,7 +536,7 @@ During the transfer of IGES to Open CASCADE Technology  several parameters are u
 <h4>Zero-dimensional tolerances</h4>
 * Field *Epsilon* of the  class *IGESToBRep_CurveAndSurface* is set for each object of class *IGESToBRep_CurveAndSurface* and returned by call to method *GetEpsilon*. It is used in comparing angles  and converting transformation matrices. In most cases, it is reset to a fixed  value (10<sup>-5</sup> - 10<sup>-3</sup>) right before use. The default value is 10<sup>-4</sup>.
  
-@subsubsection occt_iges_2_6_2 Initial setting of tolerances in translating  objects
+<h4><a id="occt_iges_2_6_2">Initial setting of tolerances in translating  objects</a></h4>
 
 Transfer starts from one entity treated as a root (either  the actual root in the IGES file or an entity selected by the user). The  function which performs the transfer (that is *IGESToBRep_Actor::Transfer* or *IGESToBRep_Reader::Transfer*) creates an object of the type  *IGESToBRep_CurveAndSurface*, which is intended for translating geometry. 
 
@@ -550,7 +550,7 @@ Parameter *EpsCoeff* is set by default to 10<sup>-6</sup> and  is not changed.
 
 During the transfer of a shape, new objects of type  *IGESToBRep_CurveAndSurface* are created for translating subshapes. All of them  have the same tolerances as the root object. 
 
-@subsubsection occt_iges_2_6_3 Transfer process
+<h4><a id="occt_iges_2_6_3">Transfer process</a></h4>
 <h4>Translating into Geometry</h4>
 Geometrical entities are translated by classes  *IGESToBRep_BasicCurve* and *IGESToBRep_BasicSurface*. Methods of these classes  convert curves and surfaces of an IGES file to Open CASCADE Technology geometry  objects: *Geom_Curve,  Geom_Surface,*  and *Geom_Transformation*.
  
@@ -598,14 +598,14 @@ All faces created by this class have tolerance  *Precision::Confusion*.
 After performing a simple mapping, shape-healing algorithms  are called (class *ShapeFix_Shape*) by *IGESToBRep_Actor::Transfer()*. Shape-healing algorithm performs the correction of the resulting OCCT shape.  
 Class *ShapeFix_Wire* can increase the tolerance of a shape.  This class is used in *IGESToBRep_BRepEntity::TransferLoop*, *IGESToBRep_TopoCurve::TransferBoundaryOnFace*  and *IGESToBRep_TopoCurve::TransferCurveOnFace* for correcting a wire. The  maximum possible tolerance applied to the edges or vertices after invoking the  methods of this class is *MaxTolerance* (set by method *ShapeFix_Wire::MaxTolerance()* ). 
 
-@subsection occt_iges_2_7 Code architecture
+<h3><a id="occt_iges_2_7">Code architecture</a></h3>
 
 The following diagram illustrates the structure of calls in  reading IGES. 
 The highlighted classes produce OCCT geometry. 
 
 @figure{/user_guides/iges/images/iges_image003.png,"The structure of calls in reading IGES",420}
 
-@subsection occt_iges_2_8 Example
+<h3><a id="occt_iges_2_8">Example</a></h3>
 
 ~~~~{.cpp}
 #include “IGESControl_Reader.hxx” 
@@ -631,8 +631,8 @@ TopoDS_Shape sh = myIgesReader.OneShape();
 } 
 ~~~~
 
-@section occt_iges_3 Writing IGES
-@subsection occt_iges_3_1 Procedure
+<h2><a id="occt_iges_3">Writing IGES</a></h2>
+<h3><a id="occt_iges_3_1">Procedure</a></h3>
 
 You can translate OCCT shapes to IGES entities in the  following steps: 
 1. Initialize  the process. 
@@ -642,13 +642,13 @@ You can translate OCCT shapes to IGES entities in the  following steps:
 
 You can translate several shapes before writing a file. Each  shape will be a root entity in the IGES model. 
 
-@subsection occt_iges_3_2 Domain covered
+<h3><a id="occt_iges_3_2">Domain covered</a></h3>
 There are two families of OCCT objects that can be  translated: 
   * geometrical,
   * topological.
   
-@subsection occt_iges_3_3 Description of the process
-@subsubsection occt_iges_3_3_1 Initializing the process
+<h3><a id="occt_iges_3_3">Description of the process</a></h3>
+<h4><a id="occt_iges_3_3_1">Initializing the process</a></h4>
 
 Choose the unit and the mode you want to use to write the  output file as follows: 
 * *IGESControl_Controller::Init* performs standard initialization. Returns False if an error  occurred. 
@@ -659,7 +659,7 @@ Choose the unit and the mode you want to use to write the  output file as follow
   *  1: BRep
 The result is an *IGESControl_Writer* object. 
 
-@subsubsection occt_iges_3_3_2 Setting the translation parameters 
+<h4><a id="occt_iges_3_3_2">Setting the translation parameters </a></h4>
 
 The following parameters are used for the OCCT-to-IGES  translation. 
 
@@ -720,7 +720,7 @@ write.iges.resource.name - IGES,
 write.iges.sequence - ToIGES. 
 ~~~~
 
-@subsubsection occt_iges_3_3_3 Performing the Open  CASCADE Technology shape translation
+<h4><a id="occt_iges_3_3_3">Performing the Open  CASCADE Technology shape translation</a></h4>
 
 You can perform the  translation in one or several operations. Here is how you translate topological  and geometrical objects:  
 ~~~~{.cpp}
@@ -733,7 +733,7 @@ Standard_Boolean ok =  writer.AddGeom (geom);
 where *geom* is *Handle(Geom_Curve)* or *Handle(Geom_Surface)*;  
 *ok* is True if the  translation was correctly performed and False if there was at least one entity  whose geometry was not among the allowed types. 
 
-@subsubsection occt_iges_3_3_4 Writing the IGES  file
+<h4><a id="occt_iges_3_3_4">Writing the IGES  file</a></h4>
 Write the IGES file  with:  
 ~~~~{.cpp}
 Standard_Boolean ok =  writer.Write ("filename.igs"); 
@@ -745,11 +745,11 @@ Standard_Boolean ok =  writer.Write (S);
 where *S* is *Standard_OStream*  
 *ok* is True if the  operation was correctly performed and False if an error occurred (for instance,  if the processor could not create the file). 
 
-@subsection occt_iges_3_4 Mapping Open CASCADE  Technology shapes to IGES entities
+<h3><a id="occt_iges_3_4">Mapping Open CASCADE  Technology shapes to IGES entities</a></h3>
 
 Translated objects depend on the write mode that you chose.  If you chose the Face mode, all of the shapes are translated, but the level of  topological entities becomes lower (geometrical one). If you chose the BRep  mode, topological OCCT shapes become topological IGES entities. 
 
-@subsubsection occt_iges_3_4_1 Curves
+<h4><a id="occt_iges_3_4_1">Curves</a></h4>
 
 | CASCADE shape | IGES entity type | Comments |
 | :------------ | :---------------- | :------- | 
@@ -763,7 +763,7 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 | Geom_Line | 110: Line | |
 | Geom_OffsetCurve | 130: Offset Curve | |
 
-@subsubsection occt_iges_3_4_2 Surfaces
+<h4><a id="occt_iges_3_4_2">Surfaces</a></h4>
 
 | CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
@@ -779,7 +779,7 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 | Geom_SurfaceOfRevolution | 120: Surface Of Revolution | |
 | Geom_OffsetSurface | 140: Offset Surface | |
 
-@subsubsection occt_iges_3_4_3 Topological entities -- Translation in Face mode
+<h4><a id="occt_iges_3_4_3">Topological entities -- Translation in Face mode</a></h4>
 
 | CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
@@ -794,7 +794,7 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 | TopoDS_CompSolid | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_CompSolid* contains more than one *TopoDS_Solid*. One IGES entity is created per *TopoDS_Solid*. |
 | TopoDS_Compound | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound*, it is not mapped. |
 
-@subsubsection occt_iges_3_4_4 Topological entities -- Translation in BRep mode
+<h4><a id="occt_iges_3_4_4">Topological entities -- Translation in BRep mode</a></h4>
 
 | CASCADE shapes | IGES entity type | Comments |
 | :------------- | :--------------- | :------- |
@@ -809,21 +809,21 @@ Translated objects depend on the write mode that you chose.  If you chose the Fa
 | TopoDS_CompSolid | 402 Form1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES Manifold Solid is created for each *TopoDS_Solid* in the *TopoDS_CompSolid*. |
 | TopoDS_Compound | 402 Form1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound* it is not mapped. | 
 
-@subsection occt_iges_3_5 Tolerance  management
-@subsubsection occt_iges_3_5_1 Setting  resolution in an IGES file
+<h3><a id="occt_iges_3_5">Tolerance  management</a></h3>
+<h4><a id="occt_iges_3_5_1">Setting  resolution in an IGES file</a></h4>
 
 There are several  possibilities to set resolution in an IGES file. They are controlled by  write.precision.mode parameter; the dependence between the value of this  parameter and the set resolution is described in paragraph [Setting the translation parameters](#occt_iges_3_3_2). 
 
 If the value of  parameter *write.precision.mode* is -1, 0 or 1, resolution is computed from  tolerances of sub-shapes inside the shape to be translated. In this  computation, only tolerances of *TopoDS_Edges* and *TopoDS_Vertices* participate  since they reflect the accuracy of the shape. *TopoDS_Faces* are ignored in  computations since their tolerances may have influence on resulting computed  resolution while IGES resolution mainly concerns points and curves but not  surfaces.  
 
-@subsection occt_iges_3_6 Code architecture
-@subsubsection occt_iges_3_6_1 Graph of calls
+<h3><a id="occt_iges_3_6">Code architecture</a></h3>
+<h4><a id="occt_iges_3_6_1">Graph of calls</a></h4>
 The following diagram illustrates the class structure in  writing IGES. 
 The highlighted classes are intended to translate geometry. 
 
 @figure{/user_guides/iges/images/iges_image004.png,"The class structure in writing IGES",420}
       
-@subsection occt_iges_3_7 Example
+<h3><a id="occt_iges_3_7">Example</a></h3>
 
 ~~~~{.cpp}
 #include <IGESControl_Controller.hxx> 
@@ -844,13 +844,13 @@ Standard_Integer main()
 ~~~~
 
 
-@section occt_iges_4 Using XSTEPDRAW
+<h2><a id="occt_iges_4">Using XSTEPDRAW</a></h2>
 
 XSTEPDRAW UL is intended  for creating executables for testing XSTEP interfaces interactively in the DRAW  environment. It provides an additional set of DRAW commands specific for the  data exchange tasks, which allow loading and writing data files and analysis of  resulting data structures and shapes.  
 
 In the description of  commands, square brackets ([]) are used to indicate optional parameters.  Parameters given in the angle brackets (<>) and sharps (#) are to be  substituted by an appropriate value. When several exclusive variants are  possible, vertical dash (|) is used.  
 
-@subsection occt_iges_4_2 Setting interface  parameters
+<h3><a id="occt_iges_4_2">Setting interface  parameters</a></h3>
 
 A set of parameters for  importing and exporting IGES files is defined in the XSTEP resource file. In  XSTEPDRAW, these parameters can be viewed or changed using command  
 
@@ -870,7 +870,7 @@ Command *xtrace* is  intended to view and change these parameters:
 * *Draw> xtrace  tracefile.log* -- sets the trace file as *tracefile.log*;  
 * *Draw xtrace* -- directs all messages to the standard output.  
 
-@subsection occt_iges_4_3 Reading IGES files
+<h3><a id="occt_iges_4_3">Reading IGES files</a></h3>
 For a description of  parameters used in reading an IGES file refer to [Setting the translation parameters](#occt_iges_2_3_3).  
 
 These parameters are set  by command *param* :  
@@ -933,13 +933,13 @@ The following commands are available:
 * *Draw> fromshape \<shape_name\>* -- provides the number of an IGES entity corresponding to an OCCT  shape;
 * *Draw> tpclear* -- clears the map of correspondences between IGES entities  and OCCT shapes. 
 
-@subsection occt_iges_4_4  Analyzing the transferred data
+<h3><a id="occt_iges_4_4">Analyzing the transferred data</a></h3>
 
 The procedure of analysis of the data import can be divided  into two stages: 
 1. Checking the file contents;
 2. Estimation of translation results (conversion and validated  ratios). 
 
-@subsubsection occt_iges_4_4_1 Checking file contents
+<h4><a id="occt_iges_4_4_1">Checking file contents</a></h4>
 
 General statistics on the loaded data can be obtained by  using command  
 ~~~~{.php}
@@ -1005,7 +1005,7 @@ Entities in the IGES file are numbered in the succeeding  order. An entity can b
 * *Draw> entity \# \<level_of_information\>*  -- gives the content of an IGES entity;
 * *Draw> estat \#* -- provides the list of entities referenced by a given entity and the list of entities referencing to it.
 
-@subsubsection occt_iges_4_4_2 Estimating the results of reading IGES
+<h4><a id="occt_iges_4_4_2">Estimating the results of reading IGES</a></h4>
 All of the following commands are available only after the  data are converted into OCCT shapes (i.e. after command **igesbrep**). 
 
 ~~~~{.php}
@@ -1088,7 +1088,7 @@ When specifying *min* and *max* arguments this  command outputs shapes with name
 * f -- for faces,
 * c -- for shells and faces. 
 
-@subsection occt_iges_4_5 Writing an IGES file
+<h3><a id="occt_iges_4_5">Writing an IGES file</a></h3>
 
 Refer to [Setting the translation parameters](#occt_iges_3_3_2) for a description of parameters used in reading an IGES file. The parameters are set by command *param*: 
 
@@ -1116,9 +1116,9 @@ Draw> writeall <filename.igs>
 ~~~~
 Allows writing the prepared model to a file with name *filename.igs*.
 
-@section occt_iges_5 Reading from and writing to IGES
+<h2><a id="occt_iges_5">Reading from and writing to IGES</a></h2>
 
-@subsection occt_iges_5_1 Reading from IGES
+<h3><a id="occt_iges_5_1">Reading from IGES</a></h3>
 
 ### Load an IGES file
 
@@ -1158,7 +1158,7 @@ Standard_Boolean ok = reader.Transfer(doc);
 where *doc* is a variable which contains a handle to the output document and should have a  type *Handle(TDocStd_Document)*. 
 
 
-@subsection occt_iges_5_2 Writing to IGES
+<h3><a id="occt_iges_5_2">Writing to IGES</a></h3>
 
 The translation from XDE to IGES can be initialized as follows: 
 ~~~~{.cpp}

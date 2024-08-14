@@ -3,9 +3,9 @@ Shape Healing  {#occt_user_guides__shape_healing}
 
 @tableofcontents
 
-@section occt_shg_1 Overview
+<h2><a id="occt_shg_1">Overview</a></h2>
 
-@subsection occt_shg_1_1 Introduction
+<h3><a id="occt_shg_1_1">Introduction</a></h3>
 
 This manual explains how to use Shape Healing. It provides basic documentation on its operation.
 For advanced information on Shape Healing and its applications, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
@@ -13,7 +13,7 @@ For advanced information on Shape Healing and its applications, see our <a href=
 The **Shape Healing** toolkit provides a set of tools to work on the geometry and topology of Open CASCADE Technology (**OCCT**) shapes.
 Shape Healing adapts shapes so as to make them as appropriate for use by Open CASCADE Technology as possible.
 
-@subsection occt_shg_1_2 Examples of use
+<h3><a id="occt_shg_1_2">Examples of use</a></h3>
 
 Here are a few examples of typical problems with illustrations of how Shape Healing deals with them:
 
@@ -40,7 +40,7 @@ Here are a few examples of typical problems with illustrations of how Shape Heal
   + **solution:**
     Shape Healing closes a gap by inserting lacking edge.
 
-@subsection occt_shg_1_3 Toolkit Structure
+<h3><a id="occt_shg_1_3">Toolkit Structure</a></h3>
 
 **Shape Healing** currently includes several packages that are designed to help you to:
   * analyze shape characteristics and, in particular, identify shapes that do not comply with Open CASCADE Technology validity rules;
@@ -66,7 +66,7 @@ For more detailed information, see the corresponding header files.
 Tools responsible for analysis, fixing and upgrading of shapes can give the information about how these operations were performed.
 This information can be obtained by the user with the help of mechanism of status querying.
 
-@subsection occt_shg_1_4 Querying the statuses
+<h3><a id="occt_shg_1_4">Querying the statuses</a></h3>
 
 Each fixing and upgrading tool has its own status, which is reset when their methods are called.
 The status can contain several flags, which give the information about how the method was performed.
@@ -96,7 +96,7 @@ There are also three enumerative values used for testing several flags at a time
 * *ShapeExtend_DONE* -- if at least one ShapeExtend_DONEi has been set;
 * *ShapeExtend_FAIL* -- if at least one ShapeExtend_FAILi has been set.
 
-@section occt_shg_2 Repair
+<h2><a id="occt_shg_2">Repair</a></h2>
 
 Algorithms for fixing problematic (violating the OCCT requirements) shapes are placed in package *ShapeFix*.
 
@@ -117,7 +117,7 @@ The *ShapeFix* package currently includes functions that:
   * merge and remove small edges,
   * correct orientation of shells and solids.
 
-@subsection occt_shg_2_1 Basic Shape Repair
+<h3><a id="occt_shg_2_1">Basic Shape Repair</a></h3>
 
 The simplest way for fixing shapes is to use classes *ShapeFix_Shape* and *ShapeFix_Wireframe* on a whole shape with default parameters.
 A combination of these tools can fix most of the problems that shapes may have.
@@ -189,14 +189,14 @@ See the description for *thePrec* and *theMaxTol* above.
   TopoDS_Shape aResult = aFixWire->Shape();
 ~~~~
 
-@subsection occt_shg_2_2 Shape Correction
+<h3><a id="occt_shg_2_2">Shape Correction</a></h3>
 
 If you do not want to make fixes on the whole shape or make a definite set of fixes you can set flags for separate fix cases (marking them ON or OFF)
 and you can also use classes for fixing specific types of sub-shapes such as solids, shells, faces, wires, etc.
 
 For each type of sub-shapes there are specific types of fixing tools such as *ShapeFix_Solid, ShapeFix_Shell, ShapeFix_Face, ShapeFix_Wire,* etc.
 
-@subsubsection occt_shg_2_2_1 Fixing sub-shapes
+<h4><a id="occt_shg_2_2_1">Fixing sub-shapes</a></h4>
 If you want to make a fix on one sub-shape of a certain shape it is possible to take the following steps:
   * create a tool for a specified sub-shape type and initialize this tool by the sub-shape;
   * create a tool for rebuilding the shape and initialize it by the whole shape (section 5.1);
@@ -229,13 +229,13 @@ TopoDS_Shape aNewShape = aReshapeContext->Apply (theShape1);
 
 A set of required fixes and invalid sub-shapes can be obtained with the help of tools responsible for the analysis of shape validity (section 3.2).
 
-@subsection occt_shg_2_3 Repairing tools
+<h3><a id="occt_shg_2_3">Repairing tools</a></h3>
 
 Each class of package ShapeFix deals with one certain type of shapes or with a family of problems.
 Each repairing tool makes fixes for the specified shape and its sub-shapes with the help of method *Perform()* containing an optimal set of fixes.
 The execution of these fixes in the method Perform can be managed with help of a set of control flags (fixes can be either forced or forbidden).
 
-@subsubsection occt_shg_2_3_1 General Workflow
+<h4><a id="occt_shg_2_3_1">General Workflow</a></h4>
 
 The following sequence of actions should be applied to perform fixes:
 1. Create a tool.
@@ -262,7 +262,7 @@ Modification history for the shape and its sub-shapes can be obtained from the t
     TopoDS_Shape aModifSubshape = aFixTool->Context()->Apply (theInitSubShape);
 ~~~~
  
-@subsubsection occt_shg_2_3_2 Flags Management
+<h4><a id="occt_shg_2_3_2">Flags Management</a></h4>
  
 The flags *Fix...Mode()* are used to control the execution of fixing procedures from the API fixing methods.
 By default, these flags have values equal to -1, this means that the corresponding procedure will either be called or not called, depending on the situation.
@@ -280,7 +280,7 @@ if (aFixShape->Perform())
 }
 ~~~~
 
-@subsubsection occt_shg_2_3_3 Repairing tool for shapes
+<h4><a id="occt_shg_2_3_3">Repairing tool for shapes</a></h4>
 
 Class *ShapeFix_Shape* allows using repairing tools for all sub-shapes of a shape.
 It provides access to all repairing tools for fixing sub-shapes of the specified shape and to all control flags from these tools.
@@ -313,7 +313,7 @@ else if (aFixShape->Status (ShapeExtent_OK))
 }
 ~~~~
 
-@subsubsection occt_shg_2_3_4 Repairing tool for solids
+<h4><a id="occt_shg_2_3_4">Repairing tool for solids</a></h4>
 
 Class *ShapeFix_Solid* allows fixing solids and building a solid from a shell to obtain a valid solid with a finite volume.
 The tool *ShapeFix_Shell* is used for correction of shells belonging to a solid.
@@ -322,7 +322,7 @@ This tool has the following control flags:
 * *FixShellMode* -- Mode for applying fixes of ShapeFix_Shell, True by default.
 * *CreateOpenShellMode* -- If it is equal to true solids are created from open shells, else solids are created from closed shells only, False by default.
 
-@subsubsection occt_shg_2_3_5 Repairing tool for shells
+<h4><a id="occt_shg_2_3_5">Repairing tool for shells</a></h4>
 
 Class *ShapeFix_Shell* allows fixing wrong orientation of faces in a shell.
 It changes the orientation of faces in the shell so that all faces in the shell have coherent orientations.
@@ -332,7 +332,7 @@ This tool has the following control flags:
 * *FixFaceMode* -- mode for applying the fixes of  *ShapeFix_Face*, *True* by default.
 * *FixOrientationMode*  -- mode for applying a fix for the orientation of faces in the shell.
 
-@subsubsection occt_shg_2_3_6 Repairing tool for faces
+<h4><a id="occt_shg_2_3_6">Repairing tool for faces</a></h4>
 
 Class *ShapeFix_Face* allows fixing the problems connected with wires of a face.
 It allows controlling the creation of a face (adding wires), and fixing wires by means of tool *ShapeFix_Wire*.
@@ -373,7 +373,7 @@ aFixShape.FixOrientation();
 TopoDS_Face aNewFace = aFixShape.Face();
 ~~~~
 
-@subsubsection occt_shg_2_3_7 Repairing tool for wires
+<h4><a id="occt_shg_2_3_7">Repairing tool for wires</a></h4>
 
 Class *ShapeFix_Wire* allows fixing a wire. Its method *Perform()* performs all the available fixes in addition to the geometric filling of gaps.
 The geometric filling of gaps can be made with the help of the tool for fixing the wireframe of shape *ShapeFix_Wireframe*.
@@ -570,7 +570,7 @@ As the result all failures have been fixed.
 
 @figure{/user_guides/shape_healing/images/shape_healing_image014.png,"Resulting shape",420}
 
-@subsubsection occt_shg_2_3_8 Repairing tool for edges
+<h4><a id="occt_shg_2_3_8">Repairing tool for edges</a></h4>
 
 Class *ShapeFix_Edge* provides tools for fixing invalid edges.
 The following geometric and/or topological inconsistencies are detected and fixed:
@@ -607,7 +607,7 @@ if (aCheckEdge.CheckSameParameter (theEdge, aMaxDev))
 
 As the result, the edge tolerance has been increased.
 
-@subsubsection occt_shg_2_3_9 Repairing tool for the wireframe of a shape
+<h4><a id="occt_shg_2_3_9">Repairing tool for the wireframe of a shape</a></h4>
 
 Class *ShapeFix_Wireframe* provides methods for geometric fixing of gaps and merging small edges in a shape.
 This class performs the following operations:
@@ -643,7 +643,7 @@ TopoDS_Shape aResShape = aFixWireframe->Shape();
 
 It is desirable that a shape is topologically correct before applying the methods of this class.
 
-@subsubsection occt_shg_2_3_10 Tool for removing small faces from a shape
+<h4><a id="occt_shg_2_3_10">Tool for removing small faces from a shape</a></h4>
 
 Class ShapeFix_FixSmallFaceThis tool is intended for dropping small faces from the shape. The following cases are processed:
 * Spot face: if the size of the face is less than the given precision;
@@ -662,7 +662,7 @@ aFixSmallFace.Perform();
 TopoDS_Shape aResShape = aFixSmallFace.FixShape();
 ~~~~
 
-@subsubsection occt_shg_2_3_11 Tool to modify tolerances of shapes (Class ShapeFix_ShapeTolerance)
+<h4><a id="occt_shg_2_3_11">Tool to modify tolerances of shapes (Class ShapeFix_ShapeTolerance)</a></h4>
 
 This tool provides a functionality to set tolerances of a shape and its sub-shapes.
 In Open CASCADE Technology only vertices, edges and faces have tolerances.
@@ -683,9 +683,9 @@ aFixToler.SetTolerance (theShape, theToler, TopAbs_VERTEX);
 aFixToler.LimitTolerance (theShape, theTolerMin, theTolerMax);
 ~~~~
 
-@section occt_shg_3 Analysis
+<h2><a id="occt_shg_3">Analysis</a></h2>
 
-@subsection occt_shg_3_1 Analysis of shape validity
+<h3><a id="occt_shg_3_1">Analysis of shape validity</a></h3>
 
 The *ShapeAnalysis* package provides tools for the analysis of topological shapes.
 It is not necessary to check a shape by these tools before the execution of repairing tools because these tools are used for the analysis before performing fixes inside the repairing tools.
@@ -710,7 +710,7 @@ for (TopExp_Explorer anExp (theFace, TopAbs_EDGE); anExp.More(); anExp.Next())
 }
 ~~~~
 
-@subsubsection occt_shg_3_1_1 Analysis of orientation of wires on a face
+<h4><a id="occt_shg_3_1_1">Analysis of orientation of wires on a face</a></h4>
 
 It is possible to check whether a face has an outer boundary with the help of method *ShapeAnalysis::IsOuterBound*.
 
@@ -722,7 +722,7 @@ if (!ShapeAnalysis::IsOuterBound (theFace))
 } 
 ~~~~
 
-@subsubsection occt_shg_3_1_2 Analysis of wire validity
+<h4><a id="occt_shg_3_1_2">Analysis of wire validity</a></h4>
 
 Class *ShapeAnalysis_Wire* is intended to analyze a wire.
 It provides functionalities both to explore wire properties and to check its conformance to Open CASCADE Technology requirements.
@@ -784,7 +784,7 @@ if (aCheckWire.CheckSelfIntersection())
 } 
 ~~~~
 
-@subsubsection occt_shg_3_1_3 Analysis of edge validity
+<h4><a id="occt_shg_3_1_3">Analysis of edge validity</a></h4>
 
 Class *ShapeAnalysis_Edge* is intended to analyze edges. It provides the following functionalities to work with an edge:
   * querying geometric representations (3D curve and pcurve(s) on a given face or surface),
@@ -840,7 +840,7 @@ if (aCheckEdge.CheckOverlapping (theEdge1, theEdge2, aTolOverlap, theDomainDist)
 }
 ~~~~
 
-@subsubsection occt_shg_3_1_4 Analysis of presence of small faces
+<h4><a id="occt_shg_3_1_4">Analysis of presence of small faces</a></h4>
 
 Class *ShapeAnalysis_CheckSmallFace* class is intended for analyzing small faces from the shape using the following methods:
 * *CheckSpotFace()* checks if the size of the face is less than the given precision;
@@ -868,7 +868,7 @@ if (aNbSmallfaces != 0)
 }
 ~~~~
 
-@subsubsection occt_shg_3_1_5 Analysis of shell validity and closure
+<h4><a id="occt_shg_3_1_5">Analysis of shell validity and closure</a></h4>
 
 Class *ShapeAnalysis_Shell* allows checking the orientation of edges in a manifold shell.
 With the help of this tool, free edges (edges entered into one face) and bad edges (edges entered into the shell twice with the same orientation) can be found.
@@ -892,8 +892,8 @@ if (aCheckShell.HasFreeEdges())
 }
 ~~~~
 
-@subsection occt_shg_3_2 Analysis of shape properties
-@subsubsection occt_shg_3_2_1 Analysis of tolerance on shape
+<h3><a id="occt_shg_3_2">Analysis of shape properties</a></h3>
+<h4><a id="occt_shg_3_2_1">Analysis of tolerance on shape</a></h4>
 
 Class *ShapeAnalysis_ShapeTolerance* allows computing tolerances of the shape and its sub-shapes.
 In Open CASCADE Technology only vertices, edges and faces have tolerances:
@@ -920,7 +920,7 @@ if (aMaxOnVertex > theMaxAllowed)
 } 
 ~~~~
 
-@subsubsection occt_shg_3_2_2 Analysis of free boundaries
+<h4><a id="occt_shg_3_2_2">Analysis of free boundaries</a></h4>
 
 Class ShapeAnalysis_FreeBounds is intended to analyze and output the free bounds of a shape.
 Free bounds are wires consisting of edges referenced only once by only one face in the shape.
@@ -966,7 +966,7 @@ TopoDS_Compound anOpenWires  = aCheckFreeBnd.GetClosedWires();
 // return a compound of open free bounds
 ~~~~
 
-@subsubsection occt_shg_3_2_3 Analysis of shape contents
+<h4><a id="occt_shg_3_2_3">Analysis of shape contents</a></h4>
 
 Class *ShapeAnalysis_ShapeContents* provides tools counting the number of sub-shapes and selecting a sub-shape by the following criteria:
 
@@ -1007,7 +1007,7 @@ Standard_Integer aNbOffsetSurfaces = aCheckContents.NbOffsetSurf();
 Handle(TopTools_HSequenceOfShape) aSeqFaces = aCheckContents.OffsetSurfaceSec();
 ~~~~
 
-@subsubsection occt_shg_3_2_4 Analysis of shape underlined geometry
+<h4><a id="occt_shg_3_2_4">Analysis of shape underlined geometry</a></h4>
 
 Class *ShapeAnalysis_CanonicalRecognition* provides tools that analyze geometry of shape and explore the possibility of converting geometry into a canonical form.
 Canonical forms for curves are lines, circles and ellipses.
@@ -1026,16 +1026,16 @@ Analysis of surfaces is allowed for following shapes:
   * wire - the same as for edge, but algorithm checks all edges of wire in order to find analytical surface, which most close to the input sample surface.
 
 
-@section occt_shg_4 Upgrading
+<h2><a id="occt_shg_4">Upgrading</a></h2>
 
 Upgrading tools are intended for adaptation of shapes for better use by Open CASCADE Technology or for customization to particular needs, i.e. for export to another system.
 This means that not only it corrects and upgrades but also changes the definition of a shape with regard to its geometry, size and other aspects.
 Convenient API allows you to create your own tools to perform specific upgrading.
 Additional tools for particular cases provide an ability to divide shapes and surfaces according to certain criteria.
 
-@subsection occt_shg_4_1 Tools for splitting a shape according to a specified criterion
+<h3><a id="occt_shg_4_1">Tools for splitting a shape according to a specified criterion</a></h3>
 
-@subsubsection occt_shg_4_1_1 Overview
+<h4><a id="occt_shg_4_1_1">Overview</a></h4>
 
 These tools provide such modifications when one topological object can be divided or converted to several ones according to specified criteria.
 Besides, there are high level API tools for particular cases which:
@@ -1057,7 +1057,7 @@ Tools for shape splitting use tools for geometry splitting:
   * tool for splitting 3D curves,
   * tool for splitting 2D curves.
 
-@subsubsection occt_shg_4_1_2 Using tools available for shape splitting
+<h4><a id="occt_shg_4_1_2">Using tools available for shape splitting</a></h4>
 
 If it is necessary to split a shape by a specified continuity, split closed faces in the shape, split surfaces of revolution in the shape by angle or to convert all surfaces,
 all 3D curves, all 2D curves in the shape to Bezier, it is possible to use the existing/available tools.
@@ -1101,7 +1101,7 @@ for (TopExp_Explorer anExp (theInitShape, TopAbs_FACE); anExp.More(); anExp.Next
 }
 ~~~~
 
-@subsubsection occt_shg_4_1_3 Creation of a new tool for splitting a shape
+<h4><a id="occt_shg_4_1_3">Creation of a new tool for splitting a shape</a></h4>
 
 To create a new splitting tool it is necessary to create tools for geometry splitting according to a desirable criterion.
 The new tools should be inherited from basic tools for geometry splitting.
@@ -1150,16 +1150,16 @@ for (TopExp_Explorer anExp (theInitShape, TopAbs_FACE); anExp.More(0; anExp.Next
 } 
 ~~~~
 
-@subsection occt_shg_4_2 General splitting tools
+<h3><a id="occt_shg_4_2">General splitting tools</a></h3>
 
-@subsubsection occt_shg_4_2_1 General tool for shape splitting
+<h4><a id="occt_shg_4_2_1">General tool for shape splitting</a></h4>
 
 Class *ShapeUpgrade_ShapeDivide* provides shape splitting and converting according to the given criteria.
 It performs these operations for each face with the given tool for face splitting (*ShapeUpgrade_FaceDivide* by default).
 
 This tool provides access to the tool for dividing faces with the help of the methods *SetSplitFaceTool* and *GetSpliFaceTool.*
 
-@subsubsection occt_shg_4_2_2 General tool for face splitting
+<h4><a id="occt_shg_4_2_2">General tool for face splitting</a></h4>
 
 Class *ShapeUpgrade_FaceDivide* divides a Face (edges in the wires, by splitting 3D and 2D curves, as well as the face itself, by splitting the supporting surface) according to the given criteria.
 
@@ -1174,7 +1174,7 @@ This tool provides access to the tool for wire division and surface splitting by
 * *SetSurfaceSplitTool*,
 * *GetSurfaceSplitTool*.
 
-@subsubsection occt_shg_4_2_3 General tool for wire splitting
+<h4><a id="occt_shg_4_2_3">General tool for wire splitting</a></h4>
 
 Class *ShapeUpgrade_WireDivide* divides edges in the wire lying on the face or free wires or free edges with a given criterion.
 It splits the 3D curve and 2D curve(s) of the edge on the face.
@@ -1194,7 +1194,7 @@ and it also provides access to the mode for splitting edges by methods *SetEdgeM
 
 This mode sets whether only free edges, only shared edges or all edges are split.
 
-@subsubsection occt_shg_4_2_4 General tool for edge splitting
+<h4><a id="occt_shg_4_2_4">General tool for edge splitting</a></h4>
 
 Class *ShapeUpgrade_EdgeDivide* divides edges and their geometry according to the specified criteria.
 It is used in the wire-dividing tool.
@@ -1205,7 +1205,7 @@ This tool provides access to the tool for dividing and splitting 3D and 2D curve
 * *SetSplitCurve2dTool*,
 * *GetSplitCurve2dTool*. 
 
-@subsubsection occt_shg_4_2_5 General tools for geometry splitting
+<h4><a id="occt_shg_4_2_5">General tools for geometry splitting</a></h4>
 
 There are three general tools for geometry splitting.
   * General tool for surface splitting (*ShapeUpgrade_SplitSurface*).
@@ -1248,9 +1248,9 @@ private:
 }; 
 ~~~~
 
-@subsection occt_shg_4_3 Specific splitting tools
+<h3><a id="occt_shg_4_3">Specific splitting tools</a></h3>
 
-@subsubsection occt_shg_4_3_1 Conversion of shape geometry to the target continuity
+<h4><a id="occt_shg_4_3_1">Conversion of shape geometry to the target continuity</a></h4>
 
 Class *ShapeUpgrade_ShapeDivideContinuity* allows converting geometry with continuity less than the specified continuity to geometry with target continuity.
 If converting is not possible than geometric object is split into several ones, which satisfy the given criteria.
@@ -1276,12 +1276,12 @@ if (aCtx.IsRecorded (theSh))
 }
 ~~~~
 
-@subsubsection occt_shg_4_3_2 Splitting by angle
+<h4><a id="occt_shg_4_3_2">Splitting by angle</a></h4>
 
 Class *ShapeUpgrade_ShapeDivideAngle* allows splitting all surfaces of revolution, cylindrical, toroidal, conical, spherical surfaces in the given shape
 so that each resulting segment covers not more than the defined angle (in radians).
 
-@subsubsection occt_shg_4_3_3 Conversion of 2D, 3D curves and surfaces to Bezier
+<h4><a id="occt_shg_4_3_3">Conversion of 2D, 3D curves and surfaces to Bezier</a></h4>
 
 Class *ShapeUpgrade_ShapeConvertToBezier* is an API tool for performing a conversion of 3D, 2D curves to Bezier curves and surfaces to Bezier based surfaces
 (Bezier surface, surface of revolution based on Bezier curve, offset surface based on any of previous types).
@@ -1326,7 +1326,7 @@ if (aConvToBez.Status(ShapeExtend_DONE)
 }
 ~~~~
 
-@subsubsection occt_shg_4_3_4 Tool for splitting closed faces
+<h4><a id="occt_shg_4_3_4">Tool for splitting closed faces</a></h4>
 
 Class *ShapeUpgrade_ShapeDivideClosed* provides splitting of closed faces in the shape to a defined number of components by the U and V parameters.
 It topologically and (partially) geometrically processes closed faces and performs splitting with the help of class *ShapeUpgrade_ClosedFaceDivide*.
@@ -1348,13 +1348,13 @@ if (!aTool.Perform() && aTool.Status (ShapeExtend_FAIL))
 TopoDS_Shape aResult = aTool.Result();
 ~~~~
 
-@subsubsection occt_shg_4_3_5 Tool for splitting a C0 BSpline 2D or 3D curve to a sequence C1 BSpline curves
+<h4><a id="occt_shg_4_3_5">Tool for splitting a C0 BSpline 2D or 3D curve to a sequence C1 BSpline curves</a></h4>
 
 The API methods for this tool is a package of methods *ShapeUpgrade::C0BSplineToSequenceOfC1BsplineCurve*, which converts a C0 B-Spline curve into a sequence of C1 B-Spline curves.
 This method splits a B-Spline at the knots with multiplicities equal to degree, it does not use any tolerance and therefore does not change the geometry of the B-Spline.
 The method returns True if C0 B-Spline was successfully split, otherwise returns False (if BS is C1 B-Spline).
 
-@subsubsection occt_shg_4_3_6 Tool for splitting faces
+<h4><a id="occt_shg_4_3_6">Tool for splitting faces</a></h4>
 
 *ShapeUpgrade_ShapeDivideArea* can work with compounds, solids, shells and faces.
 During the work this tool examines each face of a specified shape and if the face area exceeds the specified maximal area, this face is divided.
@@ -1396,7 +1396,7 @@ if (aTool.Status (ShapeExtend_DONE))
 * Class *ShapeUpgrade_FaceDivideArea* inherited from *ShapeUpgrade_FaceDivide* is intended for splitting a face by the maximal area criterion.
 * Class *ShapeUpgrade_SplitSurfaceArea* inherited from *ShapeUpgrade_SplitSurface* calculates the parameters of face splitting in the parametric space.
 
-@subsection occt_shg_4_4 Customization of shapes
+<h3><a id="occt_shg_4_4">Customization of shapes</a></h3>
 
 Customization tools are intended for adaptation of shape geometry in compliance with the customer needs.
 They modify a geometric object to another one in the shape.
@@ -1409,7 +1409,7 @@ TopoDS_Shape theInitialShape = ...;
 TopoDS_Shape aResultShape = ShapeCustom::DirectFaces (theInitialShape);
 ~~~~
 
-@subsubsection occt_shg_4_4_1 Conversion of indirect surfaces
+<h4><a id="occt_shg_4_4_1">Conversion of indirect surfaces</a></h4>
 
 ~~~~{.cpp}
 ShapeCustom::DirectFaces()
@@ -1419,7 +1419,7 @@ ShapeCustom::DirectFaces()
 This method provides conversion of indirect elementary surfaces (elementary surfaces with left-handed coordinate systems) in the shape into direct ones.
 New 2d curves (recomputed for converted surfaces) are added to the same edges being shared by both the resulting shape and the original shape *S*.
 
-@subsubsection occt_shg_4_4_2 Shape Scaling
+<h4><a id="occt_shg_4_4_2">Shape Scaling</a></h4>
 
 ~~~~{.cpp}
 ShapeCustom::ScaleShape()
@@ -1429,7 +1429,7 @@ ShapeCustom::ScaleShape()
 This method returns a new shape, which is a scaled original shape with a coefficient equal to the specified value of scale.
 It uses the tool *ShapeCustom_TrsfModification*.
 
-@subsubsection occt_shg_4_4_3 Conversion of curves and surfaces to BSpline
+<h4><a id="occt_shg_4_4_3">Conversion of curves and surfaces to BSpline</a></h4>
 
 *ShapeCustom_BSplineRestriction* allows approximation of surfaces, curves and 2D curves with a specified degree, maximum number of segments, 2d tolerance and 3d tolerance.
 If the approximation result cannot be achieved with the specified continuity, the latter can be reduced.
@@ -1474,7 +1474,7 @@ The following flags define whether a specified-type geometry has been converted 
 * *ConvertOffsetCurv2d* -- for conversion of offset 2D curves,
 * *SegmentSurfaceMode* -- defines whether the surface would be approximated within the boundaries of the face lying on this surface.
 
-@subsubsection occt_shg_4_4_4 Conversion of elementary surfaces into surfaces of revolution
+<h4><a id="occt_shg_4_4_4">Conversion of elementary surfaces into surfaces of revolution</a></h4>
 
 ~~~~{.cpp}
 ShapeCustom::ConvertToRevolution()
@@ -1483,7 +1483,7 @@ ShapeCustom::ConvertToRevolution()
 
 This method returns a new shape with all elementary periodic surfaces converted to *Geom_SurfaceOfRevolution*. It uses the tool *ShapeCustom_ConvertToRevolution*.
 
-@subsubsection occt_shg_4_4_5 Conversion of elementary surfaces into Bspline surfaces
+<h4><a id="occt_shg_4_4_5">Conversion of elementary surfaces into Bspline surfaces</a></h4>
 
 ~~~~{.cpp}
 ShapeCustom::ConvertToBSpline()
@@ -1496,7 +1496,7 @@ ShapeCustom::ConvertToBSpline()
 This method returns a new shape with all surfaces of linear extrusion, revolution and offset surfaces converted according to flags to *Geom_BSplineSurface* (with the same parameterization).
 It uses the tool *ShapeCustom_ConvertToBSpline*.
 
-@subsubsection occt_shg_4_4_6 Getting the history of modification of sub-shapes.
+<h4><a id="occt_shg_4_4_6">Getting the history of modification of sub-shapes.</a></h4>
 If, in addition to the resulting shape, you want to get the history of modification of sub-shapes you should not use the package methods described above and should use your own code instead:
 1. Create a tool that is responsible for the necessary modification.
 2. Create the tool *BRepTools_Modifier* that performs a specified modification in the shape.
@@ -1540,7 +1540,7 @@ for (TopTools_DataMapOfShapeShape::Iterator anIter (aContext); anIter.More(); an
 }
 ~~~~
 
-@subsubsection occt_shg_4_4_7 Remove internal wires
+<h4><a id="occt_shg_4_4_7">Remove internal wires</a></h4>
 
 *ShapeUpgrade_RemoveInternalWires* tool removes internal wires with contour area less than the specified minimal area.
 It can work with compounds, solids, shells and faces.
@@ -1614,7 +1614,7 @@ if (aTool->Status (ShapeExtend_DONE2))
 TopoDS_Shape aRes = aTool->GetResult();
 ~~~~
 
-@subsubsection occt_shg_4_4_8 Conversion of surfaces
+<h4><a id="occt_shg_4_4_8">Conversion of surfaces</a></h4>
 
 Class ShapeCustom_Surface allows:
   * converting BSpline and Bezier surfaces to the analytical form (using method *ConvertToAnalytical())*;
@@ -1640,7 +1640,7 @@ Handle(Geom_Surface) aNewSurf = aConvSurf.ConvertToPeriodic (false);
 Standard_Real aMaxDist = aConvSurf.Gap();
 ~~~~
 
-@subsubsection occt_shg_4_4_9 Unify Same Domain
+<h4><a id="occt_shg_4_4_9">Unify Same Domain</a></h4>
 
 *ShapeUpgrade_UnifySameDomain* tool allows unifying all possible faces and edges of a shape, which lie on the same geometry.
 Faces/edges are considered as 'same-domain' if the neighboring faces/edges lie on coincident surfaces/curves.
@@ -1675,9 +1675,9 @@ The example of the usage is given below:
  TopoDS_Shape aResSh1 = aTool.Generated (theSh1);
 ~~~~
 
-@section occt_shg_5_ Auxiliary tools for repairing, analysis and upgrading
+<h2><a id="occt_shg_5_">Auxiliary tools for repairing, analysis and upgrading</a></h2>
 
-@subsection occt_shg_5_1 Tool for rebuilding shapes
+<h3><a id="occt_shg_5_1">Tool for rebuilding shapes</a></h3>
 
 Class *ShapeBuild_ReShape* rebuilds a shape by making predefined substitutions on some of its components.
 During the first phase, it records requests to replace or remove some individual shapes.
@@ -1738,7 +1738,7 @@ TopoDS_Shape aResultShape = aContext->Apply (theInitialShape);
 TopoDS_Shape aResultSubshape1 = aContext->Apply (theSubshape1);
 ~~~~
 
-@subsection occt_shg_5_2 Status definition
+<h3><a id="occt_shg_5_2">Status definition</a></h3>
 
 *ShapExtend_Status* is used to report the status after executing some methods that can either fail, do something, or do nothing.
 The status is a set of flags *DONEi* and *FAILi*.
@@ -1756,7 +1756,7 @@ The values have the following meaning:
 | *FAIL8*,  |  The method failed, case 8 |
 | *FAIL*    |  The method failed (any of FAIL# occurred) |
 
-@subsection occt_shg_5_3 Tool representing a wire
+<h3><a id="occt_shg_5_3">Tool representing a wire</a></h3>
 
 Class *ShapeExtend_WireData* provides a data structure necessary to work with the wire as with an ordered list of edges, and that is required for many algorithms.
 The advantage of this class is that it allows to work with incorrect wires.
@@ -1781,7 +1781,7 @@ Standard_Integer anEdge2Index = anExtendWire->Index (theEdge2);
 anExtendWire->IsSeam (anEdge2Index);
 ~~~~
 
-@subsection occt_shg_5_4 Tool for exploring shapes
+<h3><a id="occt_shg_5_4">Tool for exploring shapes</a></h3>
 
 Class *ShapeExtend_Explorer* is intended to explore shapes and convert different representations (list, sequence, compound) of complex shapes.
 It provides tools for:
@@ -1789,7 +1789,7 @@ It provides tools for:
   * exploring shapes in the context of *TopoDS_Compound*,
   * converting different representations of shapes (list, sequence, compound).
 
-@subsection occt_shg_5_5 Tool for attaching messages to objects
+<h3><a id="occt_shg_5_5">Tool for attaching messages to objects</a></h3>
 
 Class *ShapeExtend_MsgRegistrator* attaches messages to objects (generic Transient or shape).
 The objects of this class are transmitted to the Shape Healing algorithms so that they could collect messages occurred during shape processing.
@@ -1818,7 +1818,7 @@ if (aMsgMap.IsBound (theShape1))
 }
 ~~~~
 
-@subsection occt_shg_5_6 Tools for performance measurement
+<h3><a id="occt_shg_5_6">Tools for performance measurement</a></h3>
 
 Classes *MoniTool_Timer* and *MoniTool_TimerSentry* are used for measuring the performance of a current operation or any part of code, and provide the necessary API.
 Timers are used for debugging and performance optimizing purposes.
@@ -1866,9 +1866,9 @@ The result of *DumpTimer()* after file translation is as follows:
 | *IGES_LoadFile* | 1.0 sec |  0.9 sec | 0.0 sec | 1 |
 | *IGESToBRep_Transfer* | 14.5 sec | 4.4 sec | 0.1 sec | 1311 |
 
-@section occt_shg_6 Shape Processing
+<h2><a id="occt_shg_6">Shape Processing</a></h2>
 
-@subsection occt_shg_6_1 Usage Workflow
+<h3><a id="occt_shg_6_1">Usage Workflow</a></h3>
 
 The Shape Processing module allows defining and applying the general Shape Processing as a customizable sequence of Shape Healing operators.
 The customization is implemented via the user-editable resource file, which defines the sequence of operators to be executed and their parameters.
@@ -1932,7 +1932,7 @@ means that the corresponding functions from *ShapeProcess_OperLibrary* will be p
 
 It is necessary to note that these operations will be performed step by step and the result obtained after performing the first operation will be used as the initial shape for the second operation.
 
-@subsection occt_shg_6_2 Operators
+<h3><a id="occt_shg_6_2">Operators</a></h3>
 
 ### DirectFaces
 This operator sets all faces based on indirect surfaces, defined with left-handed coordinate systems as direct faces.
@@ -2157,13 +2157,13 @@ Such edges are not supported in some receiving systems.
 This operator splits topologically closed edges (i.e. edges having one vertex) into two edges.
 Degenerated edges and edges with a size of less than Tolerance are not processed.
 
-@section occt_shg_7 Messaging mechanism
+<h2><a id="occt_shg_7">Messaging mechanism</a></h2>
 
 Various messages about modification, warnings and fails can be generated in the process of shape fixing or upgrade.
 The messaging mechanism allows generating messages, which will be sent to the chosen target medium  a file or the screen.
 The messages may report failures and/or warnings or provide information on events such as analysis, fixing or upgrade of shapes.
 
-@subsection occt_shg_7_1  Message Gravity
+<h3><a id="occt_shg_7_1">Message Gravity</a></h3>
 
 Enumeration *Message_Gravity* is used for defining message gravity.
 It provides the following message statuses:
@@ -2171,7 +2171,7 @@ It provides the following message statuses:
 * *Message_WARNING* -- the message reports a warning;
 * *Message_INFO* -- the message supplies information.
 
-@subsection occt_shg_7_2 Tool for loading a message file into memory
+<h3><a id="occt_shg_7_2">Tool for loading a message file into memory</a></h3>
 
 Class *Message_MsgFile* allows defining messages by loading a custom message file into memory.
 It is necessary to create a custom message file before loading it into memory, as its path will be used as the argument to load it.
@@ -2212,7 +2212,7 @@ Standard_CString aMsgFilePath = "(path)/sample.file";
 Message_MsgFile::LoadFile (aMsgFilePath);
 ~~~~
 
-@subsection occt_shg_7_3 Tool for managing filling messages
+<h3><a id="occt_shg_7_3">Tool for managing filling messages</a></h3>
 
 The class *Message_Msg* allows using the message file loaded as a template.
 This class provides a tool for preparing the message, filling it with parameters, storing and outputting to the default trace file.

@@ -5,7 +5,7 @@
 On Windows, the easiest way to install third-party libraries is to download archive with pre-built binaries from https://dev.opencascade.org/resources/download/3rd-party-components.
 On Linux and macOS, it is recommended to use the version installed in the system natively.
 
-@section dev_guides__building_3rdparty_win_1 Windows
+<h2><a id="dev_guides__building_3rdparty_win_1">Windows</a></h2>
 
 This section presents guidelines for building third-party products used by Open CASCADE Technology (OCCT) and samples on Windows platform.
 It is assumed that you are already familiar with MS Visual Studio / Visual C++.
@@ -15,7 +15,7 @@ You need to use the same version of MS Visual Studio for building all third-part
 It is recommended to create a separate new folder on your workstation, where you will unpack the downloaded archives of the third-party products, and where you will build these products (for example, `c:/occ3rdparty`).
 Further in this document, this folder is referred to as `3rdparty`.
 
-@subsection dev_guides__building_3rdparty_win_2 Tcl/Tk
+<h3><a id="dev_guides__building_3rdparty_win_2">Tcl/Tk</a></h3>
 
 Tcl/Tk is required for DRAW test harness.
 
@@ -77,7 +77,7 @@ Note that Tk produces its own executable, called `wish`.
 
 You might need to edit default value of `TCLDIR` variable defined in `buildall.vc.bat` (should be not necessary if you unpack both Tcl and Tk sources in the same folder).
 
-@subsection dev_guides__building_3rdparty_win_2_2 FreeType
+<h3><a id="dev_guides__building_3rdparty_win_2_2">FreeType</a></h3>
 
 FreeType is required for text display in a 3D viewer.
 You can download its sources from https://freetype.org/
@@ -126,7 +126,7 @@ You can download its sources from https://freetype.org/
    The `include` subfolder should be copied as is, while libraries should be renamed to `freetype.lib` and `freetype.dll` (suffixes removed) and placed to subdirectories `lib` and `bin`, respectively.
    If the `Debug` configuration is built, the Debug libraries should be put into subdirectories `libd` and `bind`.
 
-@subsection dev_guides__building_3rdparty_win_3_1 TBB
+<h3><a id="dev_guides__building_3rdparty_win_3_1">TBB</a></h3>
 
 This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
 Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Windows platform.
@@ -136,7 +136,7 @@ Unpack the downloaded archive of TBB product into the `3rdparty` folder.
 
 Further in this document, this folder is referred to as `tbb`.
 
-@subsection dev_guides__building_3rdparty_win_3_3 FreeImage
+<h3><a id="dev_guides__building_3rdparty_win_3_3">FreeImage</a></h3>
 
 This third-party product should be built as a dynamically loadable library (`.dll` file).
 You can download its sources from
@@ -194,7 +194,7 @@ https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
 5. Start the building process.<br>
    As a result, you should have the library files of FreeImage product in `freeimage/Dist` folder (`FreeImage.dll` and `FreeImage.lib`).
 
-@subsection dev_guides__building_3rdparty_win_3_4 VTK
+<h3><a id="dev_guides__building_3rdparty_win_3_4">VTK</a></h3>
 
 VTK Integration Services component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library.
 
@@ -210,11 +210,11 @@ VTK Integration Services component provides adaptation functionality for visuali
 
 3. Build project VTK in Release mode.
 
-@section build_3rdparty_linux Linux
+<h2><a id="build_3rdparty_linux">Linux</a></h2>
 
 This section presents additional guidelines for building third-party products used by Open CASCADE Technology and samples on Linux platform.
 
-@subsection dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
+<h3><a id="dev_guides__building_3rdparty_linux_4">Installation From Official Repositories</a></h3>
 
 **Debian-based distributives**
 
@@ -228,7 +228,7 @@ Building is possible with C++ compliant compiler:
 
     sudo apt-get install g++
 
-@subsection dev_guides__building_3rdparty_linux_2_1 Tcl/Tk
+<h3><a id="dev_guides__building_3rdparty_linux_2_1">Tcl/Tk</a></h3>
 
 Tcl/Tk is required for DRAW test harness.
 
@@ -279,7 +279,7 @@ Download the necessary archive from https://www.tcl.tk/software/tcltk/download.h
 
        make install
 
-@subsection dev_guides__building_3rdparty_linux_2_2 FreeType
+<h3><a id="dev_guides__building_3rdparty_linux_2_2">FreeType</a></h3>
 
 FreeType is required for text display in the 3D viewer.
 Download the necessary archive from https://freetype.org/ and unpack it.
@@ -303,13 +303,13 @@ Download the necessary archive from https://freetype.org/ and unpack it.
 
        make install
 
-@subsection dev_guides__building_3rdparty_linux_3_1 TBB
+<h3><a id="dev_guides__building_3rdparty_linux_3_1">TBB</a></h3>
 
 This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
 Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Linux platform.
 To install, unpack the downloaded archive of TBB product (`oneapi-tbb-2021.5.0-lin.tgz`).
 
-@subsection dev_guides__building_3rdparty_linux_3_3 FreeImage
+<h3><a id="dev_guides__building_3rdparty_linux_3_3">FreeImage</a></h3>
 
 Download the necessary archive from https://sourceforge.net/projects/freeimage/files/Source%20Distribution/ and unpack it.
 The directory with unpacked sources is  further referred to as `FREEIMAGE_SRC_DIR`.
@@ -375,7 +375,7 @@ The directory with unpacked sources is  further referred to as `FREEIMAGE_SRC_DI
 
         make clean
 
-@subsection dev_guides__building_3rdparty_linux_3_4 VTK
+<h3><a id="dev_guides__building_3rdparty_linux_3_4">VTK</a></h3>
 
 Download the necessary archive from https://www.vtk.org/VTK/resources/software.html and unpack it.
 
@@ -397,12 +397,12 @@ Download the necessary archive from https://www.vtk.org/VTK/resources/software.h
 
        make install
 
-@section build_3rdparty_macos Mac OS X
+<h2><a id="build_3rdparty_macos">Mac OS X</a></h2>
 
 This section presents additional guidelines for building third-party products
 used by Open CASCADE Technology and samples on Mac OS X platform (10.6.4 and later).
 
-@subsection dev_guides__building_3rdparty_osx_2_1 Tcl/Tk
+<h3><a id="dev_guides__building_3rdparty_osx_2_1">Tcl/Tk</a></h3>
 
 Tcl/Tk is required for DRAW test harness.
 
@@ -452,7 +452,7 @@ Download the necessary archive from https://www.tcl.tk/software/tcltk/download.h
 
        make install
 
-@subsection dev_guides__building_3rdparty_osx_2_2 FreeType
+<h3><a id="dev_guides__building_3rdparty_osx_2_2">FreeType</a></h3>
 
 FreeType is required for text display in the 3D viewer.
 Download the necessary archive from https://freetype.org/ and unpack it.
@@ -476,13 +476,13 @@ Download the necessary archive from https://freetype.org/ and unpack it.
 
        make install
 
-@subsection dev_guides__building_3rdparty_osx_3_1 TBB
+<h3><a id="dev_guides__building_3rdparty_osx_3_1">TBB</a></h3>
 
 This third-party product is installed with binaries from the archive that can be downloaded from https://github.com/oneapi-src/oneTBB/releases/tag/v2021.5.0.
 Go to the **Download** page, find the release version you need (e.g. `oneTBB 2021.5.0`) and pick the archive for Mac OS X platform.
 To install, unpack the downloaded archive of TBB product (`oneapi-tbb-2021.5.0-mac.tgz`).
 
-@subsection dev_guides__building_3rdparty_osx_3_3 FreeImage
+<h3><a id="dev_guides__building_3rdparty_osx_3_3">FreeImage</a></h3>
 
 Download the necessary archive from
 https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
