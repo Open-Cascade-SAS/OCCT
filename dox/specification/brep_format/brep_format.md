@@ -127,8 +127,7 @@ which describes transformation of 3 dimensional space and satisfies the followin
     q_{2,1} &q_{2,2} &q_{2,3} &q_{2,4}\\
     q_{3,1} &q_{3,2} &q_{3,3} &q_{3,4}
     \end{pmatrix}; $  
-  * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3} 
-$$
+  * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3} $
  
 The transformation transforms a point (x, y, z) to another point (u, v, w) by the rule:
 $$
