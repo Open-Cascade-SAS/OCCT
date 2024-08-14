@@ -45,7 +45,7 @@ Note that all these functions accept pointer to variable as <i>void*</i> to allo
 
 @subsection occt_debug_call_draw Interacting with DRAW
 
-Open CASCADE Test Harness or @ref occt_user_guides__test_harness "DRAW" provides an extensive set of tools for inspection and analysis of OCCT shapes and geometric objects and is mostly used as environment for prototyping and debugging OCCT-based algorithms.
+Open CASCADE Test Harness or [DRAW](#occt_user_guides__test_harness) provides an extensive set of tools for inspection and analysis of OCCT shapes and geometric objects and is mostly used as environment for prototyping and debugging OCCT-based algorithms.
 
 In some cases the objects to be inspected are available in DRAW as results of DRAW commands. In other cases, however, it is necessary to inspect intermediate objects created by the debugged algorithm. To support this, DRAW provides a set of commands allowing the developer to store intermediate objects directly from the debugger stopped at some point during the program execution (usually at a breakpoint).
 

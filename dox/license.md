@@ -4,7 +4,7 @@ License {#occt_public_license}
 Open CASCADE Technology is available under GNU Lesser General Public License 
 (LGPL) version 2.1 with additional exception.
 
-@section license_lgpl_21 GNU LESSER GENERAL PUBLIC LICENSE
+<h1><a id="license_lgpl_21">GNU LESSER GENERAL PUBLIC LICENSE</a></h1>
 
     Version 2.1, February 1999
 
@@ -507,7 +507,7 @@ necessary.  Here is a sample; alter the names:
 
 That's all there is to it!
 
-@section occt_lgpl_exception OPEN CASCADE EXCEPTION
+<h1><a id="occt_lgpl_exception">OPEN CASCADE EXCEPTION</a></h1>
 
 ### Open CASCADE Exception (version 1.0) to GNU LGPL version 2.1.
 

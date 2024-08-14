@@ -38,15 +38,15 @@ This modular structure is illustrated in the diagram below.
 
 @figure{/introduction/images/technical_overview_schema.png}
 
-* @ref intro_overview_fclasses  "Foundation Classes" module underlies all other OCCT classes; 
-* @ref intro_overview_moddata   "Modeling Data" module supplies data structures to represent 2D and 3D geometric primitives and their compositions into CAD models; 
-* @ref intro_overview_modalgo   "Modeling Algorithms" module contains a vast range of geometrical and topological algorithms;
-  * @ref intro_overview_mesh    "Mesh" toolkit from "Modeling Algorithms" module implements tessellated representations of objects;
-* @ref intro_overview_visu      "Visualization" module provides complex mechanisms for graphical data representation;
-* @ref intro_overview_de        "Data Exchange" module inter-operates with popular data formats and relies on @ref intro_overview_heal "Shape Healing" to improve compatibility between CAD software of different vendors;
-* @ref intro_overview_ocaf      "Application Framework" module offers ready-to-use solutions for handling application-specific data (user attributes) and commonly used functionality (save/restore, undo/redo, copy/paste, tracking CAD modifications, etc). 
+* [Foundation Classes](#intro_overview_fclasses) module underlies all other OCCT classes; 
+* [Modeling Data](#intro_overview_moddata) module supplies data structures to represent 2D and 3D geometric primitives and their compositions into CAD models; 
+* [Modeling Algorithms](#intro_overview_modalgo) module contains a vast range of geometrical and topological algorithms;
+  * [Mesh](#intro_overview_mesh) toolkit from "Modeling Algorithms" module implements tessellated representations of objects;
+* [Visualization](#intro_overview_visu) module provides complex mechanisms for graphical data representation;
+* [Data Exchange](#intro_overview_de) module inter-operates with popular data formats and relies on [Shape Healing](#intro_overview_heal) to improve compatibility between CAD software of different vendors;
+* [Application Framework](#intro_overview_ocaf) module offers ready-to-use solutions for handling application-specific data (user attributes) and commonly used functionality (save/restore, undo/redo, copy/paste, tracking CAD modifications, etc). 
 
-In addition, @ref intro_overview_draw "Open CASCADE Test Harness", also called Draw, provides an entry point to the library and can be used as a testing tool for its modules.
+In addition, [Open CASCADE Test Harness](#intro_overview_draw), also called Draw, provides an entry point to the library and can be used as a testing tool for its modules.
 
 @subsection intro_overview_fclasses Foundation Classes
 
@@ -70,7 +70,7 @@ This module also provides a variety of general-purpose services, such as:
   * Progress indication and user break interfaces, giving a possibility even for low-level algorithms to communicate with the user in a universal and convenient way;
   * and many others...
 
-See the details in @ref occt_user_guides__foundation_classes "Foundation Classes User's Guide"
+See the details in [Foundation Classes User's Guide](#occt_user_guides__foundation_classes)
 
 @subsection intro_overview_moddata Modeling Data
 
@@ -102,10 +102,10 @@ A shape, which is a basic topological entity, can be divided into components (su
 
 Complex shapes can be defined as assemblies (compounds) of simpler entities.
 
-See the details in @ref occt_user_guides__modeling_data "Modeling Data User's Guide"
+See the details in [Modeling Data User's Guide](#occt_user_guides__modeling_data)
 
 3D geometric models can be stored in OCCT native BREP format.
-See @ref specification__brep_format "BREP Format Description White Paper" for details on the format.
+See [BREP Format Description White Paper](#specification__brep_format) for details on the format.
 
 @subsection intro_overview_modalgo Modeling Algorithms
 
@@ -150,7 +150,7 @@ Top-level API provides the following functionality:
    * *Fuse* contains all points that are in *S1* or *S2*;
    * *Cut* contains all points in that are in *S1* and not in *S2*.
 
-See @ref specification__boolean_operations "Boolean Operations" User's Guide for detailed documentation.
+See [Boolean Operations](#specification__boolean_operations) User's Guide for detailed documentation.
 
  * Algorithms for local modifications such as:
    * Hollowing;
@@ -162,7 +162,7 @@ See @ref specification__boolean_operations "Boolean Operations" User's Guide for
 
 @figure{/introduction/images/0004.png}
  
-See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
+See the details in [Modeling Algorithms User's Guide](#occt_user_guides__modeling_algos).
 
 @subsection intro_overview_mesh Mesh
 
@@ -215,9 +215,9 @@ Here are a few examples of OCCT Visualization features:
 @figure{introduction/images/0002.png, "Real time visualization by ray tracing method"}
 @figure{introduction/images/0012.png, "Simulation of a glass cover"}
 
-For more details, see @ref occt_user_guides__visualization "Visualization User's Guide".
+For more details, see [Visualization User's Guide](#occt_user_guides__visualization).
 
-The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate @ref occt_user_guides__vis "VTK Integration Services" User's Guide.
+The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate [VTK Integration Services](#occt_user_guides__vis) User's Guide.
 
 @subsection intro_overview_de Data Exchange
 
@@ -231,16 +231,16 @@ This module handles various problems of interoperability between CAD systems, ca
 
 * **Standardized Data Exchange** interfaces allow querying and examining the input file, converting its contents to a CAD model and running validity checks on a fully translated shape.
   The following formats are currently supported:
-  * @ref occt_user_guides__step "STEP" (AP203: Mechanical Design, this covers General 3D CAD; AP214: Automotive Design; AP242).
-  * @ref occt_iges_1 "IGES" (up to 5.3).
+  * [STEP](#occt_user_guides__step) (AP203: Mechanical Design, this covers General 3D CAD; AP214: Automotive Design; AP242).
+  * [IGES](#occt_iges_1) (up to 5.3).
   * **glTF** 2.0 reader and writer.
   * **OBJ** mesh file reader and writer.
   * **VRML** converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language).
   * **STL** converter translates Open CASCADE shapes to STL files.
     STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
-* @ref occt_user_guides__xde "Extended data exchange" (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
+* [Extended data exchange](#occt_user_guides__xde) (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
 * <a href="https://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a>
-  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref intro_overview_heal "Shape Healing") with CAD software using the following proprietary formats:
+  are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using [Shape Healing](#intro_overview_heal)) with CAD software using the following proprietary formats:
 	* <a href="https://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
 	* <a href="https://www.opencascade.com/content/parasolid-import">Parasolid</a>
 	* <a href="https://www.opencascade.com/content/dxf-import-export">DXF</a>
@@ -281,7 +281,7 @@ Each sub-domain of Shape Healing has its own scope of functionality:
 | Customization | Modifies the shape representation to fit specific needs. | The shape is not modified, only the mathematical form of its internal representation is changed. |
 | Processing | Mechanism of shape modification via a user-editable resource file. | |
 
-For more details, refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
+For more details, refer to [Shape Healing User's guide](#occt_user_guides__shape_healing).
 
 @subsection intro_overview_ocaf Application Framework
 
@@ -304,7 +304,7 @@ A shape object becomes the value of *Shape* attribute, in the same way as an int
 
 OCAF organizes and embeds these attributes in a document. OCAF documents, in their turn, are managed by an OCAF application.
 
-For more details, see @ref occt_user_guides__ocaf "OCAF User's Guide". 
+For more details, see [OCAF User's Guide](#occt_user_guides__ocaf). 
 
 @subsection intro_overview_draw Draw Test Harness
 
@@ -328,7 +328,7 @@ In addition, **Test Harness** provides commands to create and manipulate curves 
 
 You can add custom commands to test or demonstrate any new functionalities, which you develop.
 
-For more details, see @ref occt_user_guides__test_harness "Draw Test Harness Manual".
+For more details, see [Draw Test Harness Manual](#occt_user_guides__test_harness).
 
 @section intro_req Requirements
 
@@ -517,7 +517,7 @@ Open CASCADE Technology and all materials, including this documentation, is
 Copyright (c) 1999-2020 by OPEN CASCADE S.A.S. All rights reserved.
 
 Open CASCADE Technology is free software; you can redistribute it and / or modify it under the terms of the 
-@ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", with additional @ref occt_lgpl_exception "exception".
+[GNU Lesser General Public License (LGPL) version 2.1](#license_lgpl_21), with additional [exception](#occt_lgpl_exception).
 
 Note that LGPL imposes some obligations on the application linked with Open CASCADE Technology.
 If you wish to use OCCT in a proprietary application, please pay a special attention to address the requirements of LGPL section 6.
@@ -535,7 +535,7 @@ please <a href="https://dev.opencascade.org/webform/contact_us">contact Open CAS
 
 Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
 WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
-materials is on you. See the @ref occt_public_license "license" text for formal 
+materials is on you. See the [license](#occt_public_license) text for formal 
 disclaimer.
 
 @section intro_acknowledge Acknowledgments

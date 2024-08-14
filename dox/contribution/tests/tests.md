@@ -11,7 +11,7 @@ Reading the Introduction should be sufficient for developers to use the test sys
 
 @subsection testmanual_intro_basic Basic Information
 
-OCCT automatic testing system is organized around @ref occt_user_guides__test_harness "DRAW Test Harness", a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
+OCCT automatic testing system is organized around [DRAW Test Harness](#occt_user_guides__test_harness), a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
 
 Standard OCCT tests are included with OCCT sources and are located in subdirectory *tests* of the OCCT root folder. Other test folders can be included in the test system, e.g. for testing applications based on OCCT.
 
@@ -21,7 +21,7 @@ The tests are organized in three levels:
   * Grid: a set of test cases within a group, usually aimed at testing some particular aspect or mode of execution of the relevant functionality (e.g. buildevol);
   * Test case: a script implementing an individual test (e.g. K4).
   
-See @ref testmanual_5_1 "Test Groups" chapter for the current list of available test groups and grids.
+See [Test Groups](#testmanual_5_1) chapter for the current list of available test groups and grids.
 
 @note Many tests involve data files (typically CAD models) which are located separately and (except a few) are not included with OCCT code. 
 These tests will be skipped if data files are not available.
@@ -99,7 +99,7 @@ Example:
     Detailed logs are saved in D:/occt/results_2012-06-04T0919
 ~~~~
 
-The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See @ref testmanual_details_results "Interpretation of test results" for details.
+The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See [Interpretation of test results](#testmanual_details_results) for details.
 
 The results and detailed logs of the tests are saved by default to a new subdirectory of the subdirectory *results* in the current folder, whose name is generated automatically using the current date and time, prefixed by Git branch name (if Git is available and current sources are managed by Git).
 If necessary, a non-default output directory can be specified using option <i> -outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>-overwrite</i> to allow writing results in the existing non-empty directory. 
@@ -178,19 +178,19 @@ test: Run specified test case
 
 @subsubsection testmanual_intro_quick_create Creating a New Test
 
-The detailed rules of creation of new tests are given in @ref testmanual_3 "Creation and modification of tests" chapter. The following short description covers the most typical situations:
+The detailed rules of creation of new tests are given in [Creation and modification of tests](#testmanual_3) chapter. The following short description covers the most typical situations:
 
 Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script, data files, and DRAW commands specific for this test case.
 
 1.  If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. 
-2.  Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See @ref testmanual_5_2 "the correspondence map".
+2.  Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See [the correspondence map](#testmanual_5_2).
 3.  In the test script:
   * Load all necessary DRAW modules by command *pload*.
   * Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
   * Use DRAW commands to reproduce the tested situation.
   * Make sure that in case of failure the test produces a message containing word "Error" or other recognized by the test system as error (add new error patterns in file parse.rules if necessary).
-  * If the test case reports error due to an existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
-  * To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
+  * If the test case reports error due to an existing problem and the fix is not available, add [TODO](#testmanual_3_6) statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
+  * To check expected output which should be obtained as the test result, add [REQUIRED](#testmanual_3_7) statement for each line of output to mark it as required.
   * If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
 4.  To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
     If the data file is already present, use it for a new test instead of adding a duplicate.
@@ -329,7 +329,7 @@ This file is a TCL script. It is executed after every test in the current group.
 
 Note: *TEST COMPLETED* string should be present in the output to indicate that the test is finished without crash. 
 
-See @ref testmanual_3 "Creation and modification of tests" chapter for more information.
+See [Creation and modification of tests](#testmanual_3) chapter for more information.
 
 Example:
 ~~~~{.php}
@@ -362,7 +362,7 @@ Example:
 
 Lines starting with a *#* character and blank lines are ignored to allow comments and spacing.
 
-See @ref testmanual_details_results "Interpretation of test results" chapter for details.
+See [Interpretation of test results](#testmanual_details_results) chapter for details.
 
 If a line matches several rules, the first one applies. Rules defined in the grid are checked first, then rules in the group, then rules in the test root directory. This allows defining some rules on the grid level with status *IGNORE* to ignore messages that would otherwise be treated as errors due to the group level rules.
 
@@ -375,7 +375,7 @@ Example:
 ~~~~
 
 @subsubsection testmanual_2_2_6  Directory "data"
-The test group may contain subdirectory *data*, where test scripts shared by different test grids can be put. See also @ref testmanual_2_3_5 "Directory data".
+The test group may contain subdirectory *data*, where test scripts shared by different test grids can be put. See also [Directory data](#testmanual_2_3_5).
 
 @subsection testmanual_2_3 Test Grids
 
@@ -481,7 +481,7 @@ This section describes how to add new tests and update existing ones.
 
 The new tests are usually added in the frame of processing issues in OCCT Mantis tracker. 
 Such tests in general should be added to group bugs, in the grid 
-corresponding to the affected OCCT functionality. See @ref testmanual_5_2 "Mapping of OCCT functionality to grid names in group bugs".
+corresponding to the affected OCCT functionality. See [Mapping of OCCT functionality to grid names in group bugs](#testmanual_5_2).
 
 New grids can be added as necessary to contain tests for the functionality not yet covered by existing test grids. 
 The test case name in the bugs group should be prefixed by the ID of the corresponding issue in Mantis (without leading zeroes) with prefix *bug*. It is recommended to add a suffix providing a hint on the tested situation. If more than one test is added for a bug, they should be distinguished by suffixes; either meaningful or just ordinal numbers.
@@ -859,7 +859,7 @@ Grids names are based on name of the command used, with suffixes:
 This group allows testing cases coming from Mantis issues.
 
 The grids are organized following OCCT module and category set for the issue in the Mantis tracker. 
-See @ref testmanual_5_2 "Mapping of OCCT functionality to grid names in group bugs" chapter for details.
+See [Mapping of OCCT functionality to grid names in group bugs](#testmanual_5_2) chapter for details.
 
 @subsubsection testmanual_5_1_5 caf
 

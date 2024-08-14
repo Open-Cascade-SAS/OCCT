@@ -1602,7 +1602,7 @@ Geometric sense of curve *C* described above is determined by the direction  of
  
 @section specification__brep_format_7 Shapes
  
-An example of section shapes and a whole  *.brep file are given in chapter 7 @ref specification__brep_format_8 "Appendix".  
+An example of section shapes and a whole  *.brep file are given in chapter 7 [Appendix](#specification__brep_format_8).  
  
  
 **BNF-like Definition**

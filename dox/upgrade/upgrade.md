@@ -7,7 +7,7 @@ Upgrade from older OCCT versions  {#occt__upgrade}
 
 This document provides technical details on changes made in particular versions of OCCT. It can help to upgrade user applications based on previous versions of OCCT to newer ones.
 
-@ref upgrade_occt780 "SEEK TO THE LAST CHAPTER (UPGRADE TO 7.8.0)"
+[SEEK TO THE LAST CHAPTER (UPGRADE TO 7.8.0)](#upgrade_occt780)
 
 @subsection upgrade_intro_precautions Precautions
 
@@ -532,7 +532,7 @@ Handle(Geom_TrimmedCurve) aCurve = new Geom_TrimmedCurve (...);
 func (aCurve); // ambiguity error in VC++ 10
 ~~~~
 
-Note that this problem can be avoided in many cases if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
+Note that this problem can be avoided in many cases if macro *OCCT_HANDLE_NOCAST* is used, see [below](#upgrade_occt700_cdl_nocast).
 
 To resolve this ambiguity, change your code so that argument type should correspond exactly to the function signature. 
 In some cases this can be done by using the relevant type for the corresponding variable, like in the example above:
@@ -585,7 +585,7 @@ A similar problem appears with GCC compiler, when *const* handle to derived type
   Handle(Geom_Curve) c2 (aLine); // ok
 ~~~~
 
-This problem is specific to GCC and it does not appear if macro *OCCT_HANDLE_NOCAST* is used, see @ref upgrade_occt700_cdl_nocast "below".
+This problem is specific to GCC and it does not appear if macro *OCCT_HANDLE_NOCAST* is used, see [below](#upgrade_occt700_cdl_nocast).
 
 #### Incorrect use of STANDARD_TYPE and Handle macros
 
@@ -1553,7 +1553,7 @@ Since the new version, the method *BRepAdaptor_CompCurve::IsPeriodic()* will alw
 @subsection upgrade_730_BuilderSolid Boolean Operations - Solid Builder algorithm
 
 Previously, the unclassified faces of *BOPAlgo_BuilderSolid* algorithm (i.e. the faces not used for solids creation and located outside of all created solids) were used to form an additional (not closed) solid with INTERNAL orientation.
-Since the new version, these unclassified faces are no longer added into the resulting solids. Instead, the @ref specification__boolean_ers "warning" with a list of these faces appears.
+Since the new version, these unclassified faces are no longer added into the resulting solids. Instead, the [warning](#specification__boolean_ers) with a list of these faces appears.
 
 The following public methods of the *BOPAlgo_BuilderSolid* class have been removed as redundant:
 * *void SetSolid(const TopoDS_Solid& theSolid);*

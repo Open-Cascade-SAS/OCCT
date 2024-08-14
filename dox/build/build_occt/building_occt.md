@@ -6,7 +6,7 @@ Build OCCT {#build_upgrade__building_occt}
 Before building OCCT, make sure to have all required third-party libraries installed.
 The list of required libraries depends on what OCCT modules will be used, and your preferences.
 The typical minimum is **FreeType** (necessary for Visualization) and **Tcl/Tk** (for DRAW).
-See @ref intro_req "requirements on 3rdparty libraries" for a full list.
+See [requirements on 3rdparty libraries](#intro_req) for a full list.
 
 The easiest way to install third-party libraries is to download archive with pre-built binaries, corresponding to your target configuration,
 from [Development Portal](https://dev.opencascade.org/resources/download/3rd-party-components).
@@ -262,7 +262,7 @@ If on Windows the message is appeared:
 specify `CMAKE_MAKE_PROGRAM` to mingw32-make executable.
 @figure{/build/build_occt/images/android_image005.png}
 
-How to configure OCCT, see @ref build_cmake_conf "Configure" section taking into account the specific configuration variables for Android:
+How to configure OCCT, see [Configure](#build_cmake_conf) section taking into account the specific configuration variables for Android:
   - `ANDROID_ABI` = `armeabi-v7a`
   - `ANDROID_NATIVE_API_LEVEL` = `15`
   - `ANDROID_NDK_LAYOUT` is equal to `CMAKE_BUILD_TYPE` variable

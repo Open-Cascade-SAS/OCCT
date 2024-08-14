@@ -18,7 +18,7 @@ Finally, the XDE provides reader and writer tools for reading and writing the da
 
 @figure{/user_guides/xde/images/646_xde_11_400.png,"Shape imported using XDE",240}
 
-The XDE component requires @ref occt_user_guides__shape_healing "Shape Healing" toolkit for operation.
+The XDE component requires [Shape Healing](#occt_user_guides__shape_healing) toolkit for operation.
 
 @subsection occt_xde_1_1 Basic terms
 
@@ -29,7 +29,7 @@ For better understanding of XDE, certain key terms are defined:
 
 @subsection occt_xde_1_2 XDE Organization
 
-The basis of XDE, called XCAF, is a framework based on @ref occt_user_guides__ocaf "OCAF" (Open CASCADE Technology Application Framework) and is intended to be used with assemblies and with various kinds of attached data (attributes).
+The basis of XDE, called XCAF, is a framework based on [OCAF](#occt_user_guides__ocaf) (Open CASCADE Technology Application Framework) and is intended to be used with assemblies and with various kinds of attached data (attributes).
 Attributes can be Individual attributes for a shape, specifying some characteristics of a shape, or they can be Grouping attributes, specifying that a shape belongs to a given group whose definition is specified apart from the shapes.
 
 XDE works in an OCAF document with a specific organization defined in a dedicated XCAF module.

@@ -46,7 +46,7 @@ where:
 
 **Note** There is an operation *Cut21*, which is an extension for forward Cut operation, i.e <i>Cut21=Cut(G2, G1)</i>.
 
-For more details see @ref specification__boolean_9 "Boolean Operations Algorithm" section.
+For more details see [Boolean Operations Algorithm](#specification__boolean_9) section.
 
 @subsubsection specification__boolean_2_1_2 General Fuse operator
 
@@ -79,7 +79,7 @@ This Figure shows that
 
 The fact that *R<sub>GF</sub>* contains the components of *R<sub>B</sub>* allows considering GFA as the general case of BOA. So it is possible to implement BOA as a subclass of GFA.
 
-For more details see @ref specification__boolean_7 "General Fuse Algorithm" section.
+For more details see [General Fuse Algorithm](#specification__boolean_7) section.
 
 @subsubsection specification__boolean_2_1_3 Splitter operator 
 
@@ -109,7 +109,7 @@ For example, when *G<sub>1</sub>* consists of shapes *S<sub>1</sub>* and *S<sub>
 
 The fact that the *R<sub>GF</sub>* contains the components of *R<sub>SPA</sub>* allows considering *GFA* as the general case of *SPA*. Thus, it is possible to implement *SPA* as a subclass of *GFA*.
 
-For more details see @ref specification__boolean_8 "Splitter Algorithm" section.
+For more details see [Splitter Algorithm](#specification__boolean_8) section.
 
 @subsubsection specification__boolean_2_1_4 Section operator
 
@@ -120,7 +120,7 @@ The SA operator can be represented as follows:
 * <i>S1, S2 ... Sn</i> -- the operation arguments;
 * *n* -- the number of arguments.
 
-For more details see @ref specification__boolean_10a "Section Algorithm" section.
+For more details see [Section Algorithm](#specification__boolean_10a) section.
 
 @subsection specification__boolean_2_2 Parts of algorithms 
 
@@ -507,7 +507,7 @@ The information about common block is stored in objects of type *BOPDS_CommonBlo
 | Name	| Contents |
 | :---- | :------ |
 | *BOPDS_CommonBlock* | | 	
-| *myPaveBlocks* | The list of pave blocks that are common in terms of @ref specification__boolean_3_5 "Common Blocks" |
+| *myPaveBlocks* | The list of pave blocks that are common in terms of [Common Blocks](#specification__boolean_3_5) |
 | *myFaces* | The list of DS indices of the faces, on which the pave blocks lie. |
 
 
@@ -586,15 +586,15 @@ The input data for the step is the Arguments. The description of initialization 
 
 | No	| Contents |	Implementation |
 | :--- | :----- | :----- |
-| 1	| Initialization the array of shapes (in terms of @ref specification__boolean_4_2 "Shapes"). Filling the array of shapes. | *BOPDS_DS::Init()* |
-| 2	| Initialization the array pave blocks (in terms of @ref specification__boolean_4_4 "Pave, PaveBlock, CommonBlock") | *BOPDS_DS::Init()* |
-| 3	| Initialization of intersection Iterator. The intersection Iterator is the object that computes intersections between sub-shapes of the arguments in terms of bounding boxes. The intersection Iterator provides approximate number of the interferences for given type (in terms of @ref specification__boolean_3_1 "Interferences") | *BOPDS_Iterator* |
+| 1	| Initialization the array of shapes (in terms of [Shapes](#specification__boolean_4_2)). Filling the array of shapes. | *BOPDS_DS::Init()* |
+| 2	| Initialization the array pave blocks (in terms of [Pave, PaveBlock, CommonBlock](#specification__boolean_4_4)) | *BOPDS_DS::Init()* |
+| 3	| Initialization of intersection Iterator. The intersection Iterator is the object that computes intersections between sub-shapes of the arguments in terms of bounding boxes. The intersection Iterator provides approximate number of the interferences for given type (in terms of [Interferences](#specification__boolean_3_1)) | *BOPDS_Iterator* |
 | 4	| Initialization of intersection Context. The intersection Context is an object that contains geometrical and topological toolkit (classifiers, projectors, etc). The intersection Context is used to cache the tools to increase the algorithm performance. | *IntTools_Context* |
 
 
 @subsection specification__boolean_5_2	Compute Vertex/Vertex Interferences
 
-The input data for this step is the DS after the @ref specification__boolean_5_1 "Initialization". The description of this step is shown in the table :
+The input data for this step is the DS after the [Initialization](#specification__boolean_5_1). The description of this step is shown in the table :
 
 
 | No | Contents	| Implementation |
@@ -624,9 +624,9 @@ The input data for this step is the DS after computing Vertex/Vertex interferenc
 | :--- | :--- | :--- |
 | 1	| Initialize array of Vertex/Edge interferences | *BOPAlgo_PaveFiller::PerformVE()* |
 | 2	| Access to the pairs of interfered shapes <i>(nVi, nEj)k k=0, 1…nk,</i> where *nVi* is DS index of vertex *Vi*, *nEj* is DS index of edge *Ej* and *nk* is the number of pairs. |	*BOPDS_Iterator* |
-| 3	| Compute paves. See  @ref specification__boolean_3_1_2 "Vertex/Edge Interference" | *BOPInt_Context::ComputeVE()* | 
+| 3	| Compute paves. See  [Vertex/Edge Interference](#specification__boolean_3_1_2) | *BOPInt_Context::ComputeVE()* | 
 | 4	| Initialize pave blocks for the edges *Ej* involved in the interference | *BOPDS_DS:: ChangePaveBlocks()* |
-| 5	| Append the paves into the pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock" | *BOPDS_PaveBlock:: AppendExtPave()* |
+| 5	| Append the paves into the pave blocks in terms of [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4) | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 6	| Append Vertex/Edge interferences in DS | *BOPDS_DS::AddInterf()* |
 
 @subsection specification__boolean_5_4 Update Pave Blocks
@@ -646,11 +646,11 @@ The input data for this step is the DS after updating Pave Blocks.
 | 2	| Access to the pairs of interfered shapes <i>(nEi, nEj)k, k=0, 1…nk,</i> where *nEi* is DS index of the edge *Ei*, *nEj* is  DS index of the edge *Ej* and *nk* is the number of pairs. | *BOPDS_Iterator* |
 | 3	| Initialize pave blocks for the edges involved in the interference, if it is necessary. |	*BOPDS_DS:: ChangePaveBlocks()* |
 | 4	| Access to the pave blocks of interfered shapes: <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei* and <i>(PBj1, PBj2…PBjNj)</i> for  edge *Ej* | *BOPAlgo_PaveFiller::PerformEE()* |
-| 5	| Compute shrunk data for pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock", if it is necessary. | *BOPAlgo_PaveFiller::FillShrunkData()* |
+| 5	| Compute shrunk data for pave blocks in terms of [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4), if it is necessary. | *BOPAlgo_PaveFiller::FillShrunkData()* |
 | 6	| Compute Edge/Edge interference for pave blocks *PBix* and *PBiy*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeEdge* |
 | 7.1 | For each *CommonPart* of type *VERTEX:*	Create new vertices *VNi (i =1, 2…,NbVN),* where *NbVN* is the number of new vertices. Intersect the vertices *VNi* using the steps Initialization and compute Vertex/Vertex interferences as follows: a) create a new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDs_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* |
 | 7.2 |	For each *CommonPart* of type *EDGE:*	Compute the coinciding connexity chains of  pave blocks <i>(PB1C, PB2C… PNnC)k, C=0, 1…nCs,</i> where *nCs* is the number of the connexity chains. Create common blocks <i>(CBc. C=0, 1…nCs)</i> from the chains. Attach the common blocks to the pave blocks. |	*BOPAlgo_Tools::PerformCommonBlocks()* |
-| 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock" | *BOPDS_PaveBlock:: AppendExtPave()* |
+| 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4) | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 9	| Split common blocks CBc by the paves. | *BOPDS_DS:: UpdateCommonBlock()* |
 | 10 | Append Edge/Edge interferences in the DS. |	*BOPDS_DS::AddInterf()* |
 
@@ -669,7 +669,7 @@ The input data for this step is the DS after computing Edge/Edge interferences.
 | :---- | :--- | :---- |
 | 1	| Initialize array of Vertex/Face interferences | *BOPAlgo_PaveFiller::PerformVF()* |
 | 2	| Access to the pairs of interfered shapes <i>(nVi, nFj)k, k=0, 1…nk,</i> where *nVi* is DS index of the vertex *Vi*, *nFj* is DS index of the edge *Fj* and *nk* is the number of  pairs. |	*BOPDS_Iterator* |
-| 3	| Compute interference  See  @ref specification__boolean_3_1_3 "Vertex/Face Interference" | *BOPInt_Context::ComputeVF()* |
+| 3	| Compute interference  See  [Vertex/Face Interference](#specification__boolean_3_1_3) | *BOPInt_Context::ComputeVF()* |
 | 4	| Append Vertex/Face interferences in the DS |	*BOPDS_DS::AddInterf()* |
 | 5	| Repeat steps 2-4 for each new vertex *VNXi (i=1, 2…,NbVNX),* where *NbVNX* is the number of vertices. | *BOPAlgo_PaveFiller::TreatVerticesEE()* |
 
@@ -682,11 +682,11 @@ The input data for this step is the DS after computing Vertex/Face Interferences
 | 2	| Access to the pairs of interfered shapes <i>(nEi, nFj)k, k=0, 1…nk,</i> where *nEi* is DS index of edge *Ei*, *nFj* is DS index of face *Fj* and *nk* is the number of pairs. |	*BOPDS_Iterator* |
 | 3	| Initialize pave blocks for the edges involved in the interference, if it is necessary. | *BOPDS_DS::ChangePaveBlocks()* |
 | 4	| Access to the pave blocks of interfered edge <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei*	| *BOPAlgo_PaveFiller::PerformEF()* |
-| 5	| Compute shrunk data for pave blocks (in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock") if it is necessary. |	*BOPAlgo_PaveFiller::FillShrunkData()* |
+| 5	| Compute shrunk data for pave blocks (in terms of [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4)) if it is necessary. |	*BOPAlgo_PaveFiller::FillShrunkData()* |
 | 6	| Compute Edge/Face interference for pave block *PBix*, and face *nFj*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeFace* |
 | 7.1 |	For each *CommonPart* of type *VERTEX:* Create new vertices *VNi (i=1, 2…,NbVN),* where *NbVN* is the number of new vertices. Merge vertices *VNi* as follows: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDs_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* and *BOPAlgo_PaveFiller::PerformVertices1()* |
 | 7.2 | For each *CommonPart* of type *EDGE:* Create common blocks <i>(CBc. C=0, 1…nCs)</i> from pave blocks that lie on the faces. Attach the common blocks to the pave blocks. | *BOPAlgo_Tools::PerformCommonBlocks()* |
-| 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock". | *BOPDS_PaveBlock:: AppendExtPave()* |
+| 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4). | *BOPDS_PaveBlock:: AppendExtPave()* |
 | 9	| Split pave blocks and common blocks *CBc* by the paves. |	*BOPAlgo_PaveFiller::PerformVertices1()*, *BOPDS_DS:: UpdatePaveBlock()* and *BOPDS_DS:: UpdateCommonBlock()* |
 | 10 | Append Edge/Face interferences in the DS	| *BOPDS_DS::AddInterf()* |
 | 11 | Update *FaceInfo*  for all faces having EF common parts. | *BOPDS_DS:: UpdateFaceInfoIn()* |
@@ -700,7 +700,7 @@ For each pave block *PB* take the following steps:
 	
 | No | Contents | Implementation |
 | :--- | :--- | :--- | 
-| 1	| Get the real pave block *PBR*, which is equal to *PB* if *PB* is not a common block and to *PB<sub>1</sub>* if *PB* is a common block. *PB<sub>1</sub>* is the first pave block in the pave blocks list of the common block.  See  @ref specification__boolean_4_4 "Pave, PaveBlock and CommonBlock". | *BOPAlgo_PaveFiller::MakeSplitEdges()* | 
+| 1	| Get the real pave block *PBR*, which is equal to *PB* if *PB* is not a common block and to *PB<sub>1</sub>* if *PB* is a common block. *PB<sub>1</sub>* is the first pave block in the pave blocks list of the common block.  See  [Pave, PaveBlock and CommonBlock](#specification__boolean_4_4). | *BOPAlgo_PaveFiller::MakeSplitEdges()* | 
 | 2	| Build the split edge *Esp* using the information from *DS* and *PBR*.	| *BOPTools_Tools::MakeSplitEdge()* |
 | 3	| Compute *BOPDS_ShapeInfo* contents for Esp | *BOPAlgo_PaveFiller::MakeSplitEdges()* |
 | 4	| Append *BOPDS_ShapeInfo* contents to the DS | *BOPDS_DS::Append()* |
@@ -722,13 +722,13 @@ The input data for this step is the DS after computing Face/Face interferences.
 
 | No | Contents	| Implementation  |
 | :---- | :---- | :---- |
-| 1 | For each Face/Face interference *nFi, nFj*, retrieve @ref specification__boolean_4_6 "FaceInfo". Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDs_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ -- means non-coincidence in terms of @ref specification__boolean_3_1_1 "Vertex/Vertex interference". | *BOPAlgo_PaveFiller::MakeBlocks()* |
+| 1 | For each Face/Face interference *nFi, nFj*, retrieve [FaceInfo](#specification__boolean_4_6). Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDs_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ -- means non-coincidence in terms of [Vertex/Vertex interference](#specification__boolean_3_1_1). | *BOPAlgo_PaveFiller::MakeBlocks()* |
 | 2	| For each intersection curve *Cijk* | |	
 | 2.1 | Create paves PVc for the curve using existing vertices, i.e. vertices On or In (in terms of *FaceInfo*) for faces *nFi* and *nFj*. Append the paves *PVc* | *BOPAlgo_PaveFiller::PutPaveOnCurve()* and *BOPDS_PaveBlock::AppendExtPave()* |
 | 2.2 |	Create technological vertices *Vt*, which are the bounding points of an intersection curve (with the value of tolerance *Tol(Cijk)*). Each vertex *Vt* with parameter *Tt* on curve *Cijk* forms pave *PVt* on curve *Cijk*. Append technological paves. | *BOPAlgo_PaveFiller::PutBoundPaveOnCurve()* |
 | 2.3 |	Create pave blocks *PBk* for the curve using paves <i>(k=1, 2…, NbPB)</i>, where *NbPB* is the number of pave blocks |	*BOPAlgo_PaveFiller::MakeBlocks()* |
-| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ -- means non-coincidence (in terms of @ref specification__boolean_3_1_3 "Vertex/Face interference"). | *BOPTools_Tools::MakeEdge()* |
-| 3	| Intersect the draft vertices *VPk (k=1, 2…, NbVP)* and the draft section edges *ESk (k=1, 2…, NbES)*. For this: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use vertices *VPk* and edges *ESk* as arguments (in terms of @ref specification__boolean_4_1 "Arguments") of *PFn*; c) invoke	method *Perform()* for *PFn*. Resulting vertices *VPXk (k=1, 2… NbVPX)* and edges *ESXk (k=1, 2… NbESX)* are obtained via mapping between *VPk, ESk* and the results of *PVn*. | *BOPAlgo_PaveFiller::PostTreatFF()* |
+| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ -- means non-coincidence (in terms of [Vertex/Face interference](#specification__boolean_3_1_3)). | *BOPTools_Tools::MakeEdge()* |
+| 3	| Intersect the draft vertices *VPk (k=1, 2…, NbVP)* and the draft section edges *ESk (k=1, 2…, NbES)*. For this: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use vertices *VPk* and edges *ESk* as arguments (in terms of [Arguments](#specification__boolean_4_1)) of *PFn*; c) invoke	method *Perform()* for *PFn*. Resulting vertices *VPXk (k=1, 2… NbVPX)* and edges *ESXk (k=1, 2… NbESX)* are obtained via mapping between *VPk, ESk* and the results of *PVn*. | *BOPAlgo_PaveFiller::PostTreatFF()* |
 | 4	| Update face info (sections about pave blocks and vertices) | *BOPAlgo_PaveFiller::PerformFF()* |
 
 @subsection specification__boolean_5_11 Build P-Curves
@@ -771,7 +771,7 @@ The class *BOPAlgo_BuilderShape* provides the interface for algorithms that have
 
 @section specification__boolean_7	General Fuse Algorithm
 @subsection specification__boolean_7_1	Arguments
-The arguments of the algorithm are shapes (in terms of *TopoDS_Shape*). The main requirements for the arguments are described in @ref specification__boolean_4 "Data Structure" chapter.
+The arguments of the algorithm are shapes (in terms of *TopoDS_Shape*). The main requirements for the arguments are described in [Data Structure](#specification__boolean_4) chapter.
 
 @subsection specification__boolean_7_2	Results
 
@@ -803,7 +803,7 @@ The General Fuse algorithm has a set of options, which allow speeding-up the ope
 * Usage of Oriented Bounding Boxes in the operation;
 * History support.
 
-For more detailed information on these options, see the @ref specification__boolean_11a "Advanced options" section.
+For more detailed information on these options, see the [Advanced options](#specification__boolean_11a) section.
 
 @subsection specification__boolean_7_3b Usage
 
@@ -1030,7 +1030,7 @@ The main fields of the class are described in the Table:
 
 @subsubsection specification__boolean_7_4_2 Initialization
 
-The input data for this step is a *BOPAlgo_PaveFiller* object (in terms of @ref  specification__boolean_5 "Intersection") at the state after @ref specification__boolean_5_12 "Processing of degenerated edges"  with the corresponding DS.
+The input data for this step is a *BOPAlgo_PaveFiller* object (in terms of [Intersection](#specification__boolean_5)) at the state after [Processing of degenerated edges](#specification__boolean_5_12)  with the corresponding DS.
 
 | No | Contents	| Implementation |
 | :---- | :---- | :---- |
@@ -1063,7 +1063,7 @@ The input data for this step is *BOPAlgo_Builder object* after building result o
 
 @subsubsection specification__boolean_7_4_6 Build Result of Type Edge
 
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex", but for the type *Edge*.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type *Edge*.
 
 @subsubsection specification__boolean_7_4_7 Build Images for Wires
 
@@ -1080,7 +1080,7 @@ The input data for this step is:
 
 @subsubsection specification__boolean_7_4_8	Build Result of Type Wire
 
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex" but for the type *Wire*.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4) but for the type *Wire*.
 
 @subsubsection specification__boolean_7_4_9	Build Images for Faces
 
@@ -1092,7 +1092,7 @@ The input data for this step is *BOPAlgo_Builder* object after building result o
 | 1.1 | Collect all edges or their images of *Fi(ESPij)*. |	*BOPAlgo_Builder::BuildSplitFaces()* |
 | 1.2 |	Impart to ESPij the orientation to be coherent with the original one. |	*BOPAlgo_Builder::BuildSplitFaces()* |
 | 1.3 | Collect all section edges *SEk* for *Fi*. | *BOPAlgo_Builder::BuildSplitFaces()* |
-| 1.4 |	Build split faces for *Fi (Fi1, Fi2…FiNbSp)*, where *NbSp* is the number of split parts (see @ref specification__boolean_7_2 "Building faces from a set of edges" for more details). | *BOPAlgo_BuilderFace* | 
+| 1.4 |	Build split faces for *Fi (Fi1, Fi2…FiNbSp)*, where *NbSp* is the number of split parts (see [Building faces from a set of edges](#specification__boolean_7_2) for more details). | *BOPAlgo_BuilderFace* | 
 | 1.5 |	Impart to <i>(Fi1, Fi2…FiNbSp)</i> the orientation coherent with the original face *Fi*. | *BOPAlgo_Builder::BuildSplitFaces()* | 
 | 1.6 |	Fill the map mySplits with *Fi/(Fi1, Fi2…FiNbSp)* | *BOPAlgo_Builder::BuildSplitFaces()* |
 | 2 | Fill Same Domain faces | *BOPAlgo_Builder::FillSameDomainFaces* | 
@@ -1111,7 +1111,7 @@ The example of chains of same domain faces is given in the image:
 * The pairs produce the three chains: <i>(F11, F21), (F22, F31)</i> and <i>(F41, F51, F6)</i>.
 
 @subsubsection specification__boolean_7_4_10	Build Result of Type Face
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex" but for the type *Face*.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4) but for the type *Face*.
 
 @subsubsection specification__boolean_7_4_11	Build Images for Shells
 The input data for this step is:
@@ -1122,7 +1122,7 @@ The input data for this step is:
 The procedure is the same as for building images for wires. 
 
 @subsubsection specification__boolean_7_4_12	Build Result of Type Shell
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex" but for the type *Shell*.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4) but for the type *Shell*.
 
 @subsubsection specification__boolean_7_4_13 Build Images for Solids
 
@@ -1134,13 +1134,13 @@ The following procedure is executed for all interfered DS shapes *Si* of type *S
 | :--- | :--- | :--- | 
 | 1	| Collect all images or non-split parts for all faces <i>(FSPij)</i> that have 3D state *In Si*. | *BOPAlgo_Builder::FillIn3DParts ()* | 
 | 2	| Collect all images or non-split parts for all faces of *Si* |	*BOPAlgo_Builder::BuildSplitSolids()* |
-| 3	| Build split solids for *Si -> (Si1, Si2…SiNbSp)*, where *NbSp* is the number of split parts (see @ref specification__boolean_7_2 "Building faces from a set of edges" for more details) | *BOPAlgo_BuilderSolid* |
+| 3	| Build split solids for *Si -> (Si1, Si2…SiNbSp)*, where *NbSp* is the number of split parts (see [Building faces from a set of edges](#specification__boolean_7_2) for more details) | *BOPAlgo_BuilderSolid* |
 | 4	| Fill the map Same Domain solids *myShapesSD* | *BOPAlgo_Builder::BuildSplitSolids()* |
 | 5	| Fill the map *myImages* |  *BOPAlgo_Builder::BuildSplitSolids()* |
 | 6	| Add internal vertices to split solids	| *BOPAlgo_Builder::FillInternalShapes()* |
 
 @subsubsection specification__boolean_7_4_14 Build Result of Type Solid
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex", but for the type Solid.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type Solid.
 
 @subsubsection specification__boolean_7_4_15 Build Images for Type CompSolid
 
@@ -1152,7 +1152,7 @@ The input data for this step is:
 The procedure is the same as for building images for wires. 
 
 @subsubsection specification__boolean_7_4_16 Build Result of Type Compsolid
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex", but for the type Compsolid.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type Compsolid.
 
 @subsubsection specification__boolean_7_4_17 Build Images for Compounds
 The input data for this step is as follows:
@@ -1164,7 +1164,7 @@ The procedure is the same as for building images for wires.
 
 @subsubsection specification__boolean_7_4_18 Build Result of Type Compound
 
-This step is the same as @ref specification__boolean_7_4_4 "Building Result of Type Vertex", but for the type Compound.
+This step is the same as [Building Result of Type Vertex](#specification__boolean_7_4_4), but for the type Compound.
 
 @subsubsection specification__boolean_7_4_19 Post-Processing
 The purpose of the step is to correct tolerances of the result to provide its validity in terms of *BRepCheck_Analyzer.*
@@ -1180,7 +1180,7 @@ The input data for this step is a *BOPAlgo_Builder* object after building result
 @section specification__boolean_8  Splitter Algorithm
 
 The Splitter algorithm allows splitting a group of arbitrary shapes by another group of arbitrary shapes.<br>
-It is based on the General Fuse  algorithm, thus all options of the General Fuse (see @ref specification__boolean_7_3a "GF Options") are also available in this algorithm.
+It is based on the General Fuse  algorithm, thus all options of the General Fuse (see [GF Options](#specification__boolean_7_3a)) are also available in this algorithm.
 
 @subsection specification__boolean_8_1 Arguments
 
@@ -1330,7 +1330,7 @@ Splitting shell hull by the planes:
 
 @subsection specification__boolean_9_1	Arguments
 
-* The arguments of BOA are shapes in terms of *TopoDS_Shape*. The main requirements for the arguments are described in the @ref specification__boolean_4 "Data Structure"
+* The arguments of BOA are shapes in terms of *TopoDS_Shape*. The main requirements for the arguments are described in the [Data Structure](#specification__boolean_4)
 * There are two groups of arguments in BOA:
 	* Objects <i>(S1=S11, S12, ...)</i>;
 	* Tools <i>(S2=S21, S22, ...)</i>.
@@ -1866,7 +1866,7 @@ BOA is implemented in the class *BOPAlgo_BOP*. The main fields of this class are
 | *myDims[2]* | The values of the dimensions of the arguments |
 | *myRC* | The draft result (shape) |
 
-The main steps of the *BOPAlgo_BOP* are the same as of @ref specification__boolean_7_4 "BOPAlgo_Builder" except for some aspects described in the next paragraphs.
+The main steps of the *BOPAlgo_BOP* are the same as of [BOPAlgo_Builder](#specification__boolean_7_4) except for some aspects described in the next paragraphs.
 
 @subsection specification__boolean_9_6	Building Draft Result
 
@@ -2171,7 +2171,7 @@ The algorithm creates only closed solids. In general case the result solids are 
 But the algorithm allows preventing the addition of the internal for solids parts into result. In this case the result solids will be manifold and not contain any internal parts. However, this option does not prevent from the occurrence of the internal edges or vertices in the faces.<br>
 Non-closed faces, free wires etc. located outside of any solid are always excluded from the result.
 
-The Volume Maker algorithm is implemented in the class BOPAlgo_MakerVolume. It is based on the General Fuse (GF) algorithm. All the options of the GF algorithm (see @ref specification__boolean_7_3a "GF Options") are also available in this algorithm.
+The Volume Maker algorithm is implemented in the class BOPAlgo_MakerVolume. It is based on the General Fuse (GF) algorithm. All the options of the GF algorithm (see [GF Options](#specification__boolean_7_3a)) are also available in this algorithm.
 
 The requirements for the arguments are the same as for the arguments of GF algorithm - they could be of any type, but each argument should be valid and not self-interfered.
 
@@ -2254,7 +2254,7 @@ The algorithm can also create containers from the connected Cells added into res
 
 The algorithm has been implemented in the *BOPAlgo_CellsBuilder* class.
 
-Cells Builder is based on the General Fuse algorithm. Thus all options of the General Fuse algorithm (see @ref specification__boolean_7_3a "GF Options") are also available in this algorithm.
+Cells Builder is based on the General Fuse algorithm. Thus all options of the General Fuse algorithm (see [GF Options](#specification__boolean_7_3a)) are also available in this algorithm.
 
 The requirements for the input shapes are the same as for General Fuse - each argument should be valid in terms of *BRepCheck_Analyzer* and *BOPAlgo_ArgumentAnalyzer*.
 
@@ -2873,7 +2873,7 @@ bcheckinverted 0
 
 @subsection specification__boolean_11a_5_obb Usage of Oriented Bounding Boxes
 
-Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB see the @ref occt_modat_6 "Bounding boxes" chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
+Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB see the [Bounding boxes](#occt_modat_6) chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
 
 @subsubsection specification__boolean_11a_5_obb_1 Usage
 
@@ -2952,7 +2952,7 @@ Warning: The positioning of the shapes leads to creation of small edges without 
 
 @section specification__boolean_history History Information
 
-All operations in Boolean Component support @ref occt_modalg_hist "History information". This chapter describes how the History is filled for these operations.
+All operations in Boolean Component support [History information](#occt_modalg_hist). This chapter describes how the History is filled for these operations.
 
 Additionally to Vertices, Edges and Faces the history is also available for the Solids.
 
@@ -3108,7 +3108,7 @@ Some options of the main operation are passed into the Unifier:
 - Fuzzy tolerance of the operation is given to the Unifier as the linear tolerance.
 - Non destructive mode here controls the safe input mode in Unifier.
 
-For controlling this possibility in DRAW the command **bsimplify** has been implemented. See the @ref occt_draw_bop_options "Boolean Operations options" chapter in draw user guide.
+For controlling this possibility in DRAW the command **bsimplify** has been implemented. See the [Boolean Operations options](#occt_draw_bop_options) chapter in draw user guide.
 
 
 @subsection specification__boolean_simplification_examples Examples

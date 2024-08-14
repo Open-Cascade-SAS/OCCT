@@ -92,14 +92,14 @@ The *Application* is an abstract class in charge of handling documents during th
 
   Application data is described by **Attributes**, which are instances of  classes derived from the *Attribute* abstract class, organized according to the OCAF Data  Framework. 
   
-  The @ref occt_ocaf_3 "OCAF Data Framework" references aggregations of attributes using  persistent identifiers in a single hierarchy. A wide range of  attributes come with OCAF, including:    
+  The [OCAF Data Framework](#occt_ocaf_3) references aggregations of attributes using  persistent identifiers in a single hierarchy. A wide range of  attributes come with OCAF, including:    
   
-  * @ref occt_ocaf_6 "Standard attributes" allow operating with simple common data in the data framework (for example: integer, real, string, array kinds of data), realize auxiliary functions (for example: tag sources attribute for the children of the label counter), create dependencies (for example: reference, tree node)....;
-  * @ref occt_ocaf_5 "Shape attributes" contain the geometry of the whole model or its elements including reference to the shapes and tracking of shape evolution;
+  * [Standard attributes](#occt_ocaf_6) allow operating with simple common data in the data framework (for example: integer, real, string, array kinds of data), realize auxiliary functions (for example: tag sources attribute for the children of the label counter), create dependencies (for example: reference, tree node)....;
+  * [Shape attributes](#occt_ocaf_5) contain the geometry of the whole model or its elements including reference to the shapes and tracking of shape evolution;
   * Other  geometric attributes such as **Datums** (points, axis and plane) and **Constraints** (*tangent-to, at-a-given-distance, from-a-given-angle, concentric,* etc.)
   * User  attributes, that is, attributes typed by the application  
-  * @ref occt_ocaf_7 "Visualization attributes" allow placing viewer information to the data framework, visual representation of objects and other auxiliary visual information, which is needed for graphical data representation.
-  * @ref occt_ocaf_8 "Function services" — the purpose of these attributes is to rebuild  objects after they have been modified (parameterization of models). While the document manages the notification of changes, a function manages propagation of these changes. The function mechanism provides links between functions and calls to various algorithms. 
+  * [Visualization attributes](#occt_ocaf_7) allow placing viewer information to the data framework, visual representation of objects and other auxiliary visual information, which is needed for graphical data representation.
+  * [Function services](#occt_ocaf_8) — the purpose of these attributes is to rebuild  objects after they have been modified (parameterization of models). While the document manages the notification of changes, a function manages propagation of these changes. The function mechanism provides links between functions and calls to various algorithms. 
   
 In addition,  application-specific data can be added by defining new attribute classes; naturally, this changes the standard file format. The only functions that have to be implemented are:
     * Copying the  attribute
@@ -500,7 +500,7 @@ To enable possibility to save / restore the new attribute in binary format, do t
 	  * Factory, which loads the document storage and retrieval drivers; and 
 	  * AttributeDrivers, which calls the methods AddDrivers for all packages responsible for persistence of the document.
   3. Create a plug-in implemented as an executable (see example *BinPlugin*). It calls a macro PLUGIN with the package name where you implemented the method Factory.
-See @ref occt_ocaf_4_3_3 "Saving the document" and @ref occt_ocaf_4_3_4 "Opening the document from a file" for the description of document save/open mechanisms. 
+See [Saving the document](#occt_ocaf_4_3_3) and [Opening the document from a file](#occt_ocaf_4_3_4) for the description of document save/open mechanisms. 
 
 If you decided to use the alternative way (create a new attribute by means of *UAttribute* and a combination of other standard attributes), do the following: 
   1. Set a *TDataStd_UAttribute* with a unique GUID attached to a label. This attribute defines the semantics of the data type (identifies the data type).
@@ -511,7 +511,7 @@ Choosing the alternative way of implementation of new data types allows to forge
 
 Let’s study the implementation of the same data type in both ways by the example of transformation represented by *gp_Trsf* class. The class *gp_Trsf* defines the transformation according to the type (*gp_TrsfForm*) and a set of parameters of the particular type of transformation (two points or a vector for translation, an axis and an angle for rotation, and so on). 
 
-1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the @ref samples__ocaf "Samples". 
+1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the [Samples](#samples__ocaf). 
 
 2. The second way: creation of a new data type by means of combination of standard attributes. Depending on the type of transformation it may be kept in data framework by different standard attributes. For example, a translation is defined by two points. Therefore the data tree for translation looks like this: 
   * Type of transformation <i>(gp_Translation)</i> as *TDataStd_Integer*;
@@ -1342,7 +1342,7 @@ aLabel.FindAttribute (DENSITY, anAtt);
 
 @subsection occt_ocaf_7_1 Overview
 
-Standard visualization attributes implement the Application Interactive Services (see @ref occt_user_guides__visualization "Visualization User's Guide"). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
+Standard visualization attributes implement the Application Interactive Services (see [Visualization User's Guide](#occt_user_guides__visualization)). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
 
 @subsection occt_ocaf_7_2 Services provided
 

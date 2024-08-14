@@ -13,7 +13,7 @@ The samples are organized in several categories according to relevant module of 
  * Viewer 3d
 
 Each sample presents geometry view, C++ code fragment and sample output window.
-This sample is described in the @ref samples__novice_guide "Novice guide" for new users.
+This sample is described in the [Novice guide](#samples__novice_guide) for new users.
 
 @figure{sample_overview_qt.png}
 

@@ -6,16 +6,16 @@
     <br>A document providing an introductory information to newcomers.
   * @ref samples__draw_scripts
     <br>A set of demo scripts demonstrating OCCT functionality from DRAW.
-    These scripts can be also considered as a tutorials on **Tcl** usage within @ref occt_user_guides__test_harness "Draw Harness".
+    These scripts can be also considered as a tutorials on **Tcl** usage within [Draw Harness](#occt_user_guides__test_harness).
   * @ref occt__tutorial
     <br>A programming tutorial teaching how to use OCCT services to model a 3D object.
     See also @ref samples_qt_tutorial
   * @ref samples__ocaf
-    <br>A set of code snippets performing typical actions with @ref occt_user_guides__ocaf "OCAF" services for newcomers.
+    <br>A set of code snippets performing typical actions with [OCAF](#occt_user_guides__ocaf) services for newcomers.
   * @ref samples__ocaf_func
-    <br>A simple example dedicated to the usage of "Function Mechanism" of @ref occt_user_guides__ocaf "OCCT Application Framework".
+    <br>A simple example dedicated to the usage of "Function Mechanism" of [OCCT Application Framework](#occt_user_guides__ocaf).
   * @ref tutorials__ais_object
-    <br>A programming tutorial teaching how to compute presentation within AIS_InteractiveObject subclass for displaying in @ref occt_user_guides__visualization "OCCT 3D Viewer".
+    <br>A programming tutorial teaching how to compute presentation within AIS_InteractiveObject subclass for displaying in [OCCT 3D Viewer](#occt_user_guides__visualization).
 - @subpage samples__projects
   * @ref samples_qt_iesample
     <br>A cross-platform multi-document 3D Viewer sample with CAD import / export functionality based on **Qt Widgets** framework.

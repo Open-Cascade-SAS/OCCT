@@ -17,7 +17,7 @@ Guide to installing and using Git for OCCT development {#occt_contribution__git_
   For the experienced Git users it can be enough to read sections 1 and 3
    of this document to start working with the repository.
    
-  Familiarize yourselves with the @ref occt_contribution__contribution_workflow "Contribution Workflow document"  
+  Familiarize yourselves with the [Contribution Workflow document](#occt_contribution__contribution_workflow)  
   that describes how Git is used for processing contributions to OCCT.
   
   This and related documents are available at the Resources page 
@@ -508,7 +508,7 @@ To rebase your branch into a single commit, you need to do the following:
 
   Use of TortoiseGit is recommended for convenient code review:
 
-  * Fetch the changes from the remote repository as described in @ref occt_gitguide_4_7 "Synchronizing with remote repository" section.   
+  * Fetch the changes from the remote repository as described in [Synchronizing with remote repository](#occt_gitguide_4_7) section.   
   * Right-click on the repository, choose **TortoiseGit** -> **Show** log;
   * Locate the remote branch you need to review;
   * To review commits one-by-one, select each commit in the log. The list of changed files is shown at the bottom of the window; double-click on the file will open visual compare tool.

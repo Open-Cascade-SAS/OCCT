@@ -1295,7 +1295,7 @@ When an object is modified or erased, the whole view must be repainted. To avoid
 
 Graphic operations are buffered by Draw (and also by the X system). Usually the buffer is flushed at the end of a command and before graphic selection. If you want to flush the buffer from inside a script, use the **dflush** command. 
 
-See also: @ref occt_draw_4_1_11 "pick" command.  
+See also: [pick](#occt_draw_4_1_11) command.  
 
 @subsection occt_draw_4_2 AIS viewer -- view commands
 
@@ -3771,7 +3771,7 @@ Syntax:
 AISMaterial docname entry [material] 
 ~~~~
 
-Sets (if *material* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see @ref occt_draw_4_5_6 "meshmat" command). 
+Sets (if *material* is defined) or gets the value of transparency for *AISPresentation* attribute of an *entry* label. *material* is integer from 0 to 20 (see [meshmat](#occt_draw_4_5_6) command). 
 
 **Example:** 
 ~~~~{.php}
@@ -5114,8 +5114,8 @@ surfapp s 3 4 \
 
 Draw provides commands to project points/curves on curves/surfaces.
 
-* **proj** projects point on the curve/surface (see @ref occt_draw_6_6_6 "proj command description");
-* **project** projects 3D curve on the surface (see @ref occt_draw_6_2_11 "project command description");
+* **proj** projects point on the curve/surface (see [proj command description](#occt_draw_6_6_6));
+* **project** projects 3D curve on the surface (see [project command description](#occt_draw_6_2_11));
 * **projponf** projects point on the face.
 
 @subsubsection  occt_draw_6_9_1 projponf
@@ -6369,9 +6369,9 @@ sr is a shape COMPOUND FORWARD Free Modified
 
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old Boolean operation algorithm.
 It also provides wider range of options and diagnostics.
-The algorithms of Boolean component are fully described in the @ref specification__boolean_operations "Boolean Operations" of boolean operation user guide.
+The algorithms of Boolean component are fully described in the [Boolean Operations](#specification__boolean_operations) of boolean operation user guide.
 
-For the Draw commands to perform operations in Boolean component, read the dedicated section @ref occt_draw_bop "Boolean operations commands"
+For the Draw commands to perform operations in Boolean component, read the dedicated section [Boolean operations commands](#occt_draw_bop)
 
 
 @subsection occt_draw_7_8  Drafting and blending
@@ -6578,7 +6578,7 @@ buildevol
 
 @subsection occt_draw_defeaturing Defeaturing
 
-Draw command **removefeatures** is intended for performing @ref occt_modalg_defeaturing "3D Model Defeaturing", i.e. it performs the removal of the requested features from the shape.
+Draw command **removefeatures** is intended for performing [3D Model Defeaturing](#occt_modalg_defeaturing), i.e. it performs the removal of the requested features from the shape.
 
 Syntax:
 ~~~~{.php}
@@ -6597,7 +6597,7 @@ parallel - enables the parallel processing mode.
 
 @subsection occt_draw_makeperiodic 3D Model Periodicity
 
-Draw module for @ref occt_modalg_makeperiodic "making the shape periodic" includes the following commands:
+Draw module for [making the shape periodic](#occt_modalg_makeperiodic) includes the following commands:
 * **makeperiodic** - makes the shape periodic in required directions;
 * **repeatshape** - repeats the periodic shape in requested periodic direction;
 * **periodictwins** - returns the periodic twins for the shape;
@@ -6657,7 +6657,7 @@ No arguments are needed for the command.
 
 @subsection occt_draw_makeconnected Making the touching shapes connected
 
-Draw module for @ref occt_modalg_makeconnected "making the touching same-dimensional shapes connected" includes the following commands:
+Draw module for [making the touching same-dimensional shapes connected](#occt_modalg_makeconnected) includes the following commands:
 * **makeconnected** - make the input shapes connected or glued, performs material associations;
 * **cmaterialson** - returns the materials located on the requested side of a shape;
 * **cmakeperiodic** - makes the connected shape periodic in requested directions;
@@ -7456,7 +7456,7 @@ Options:
 
 @subsection occt_draw_hist History commands
 
-Draw module for @ref occt_modalg_hist "History Information support" includes the command to save history of modifications performed by Boolean operation or sibling commands into a drawable object and the actual history commands:
+Draw module for [History Information support](#occt_modalg_hist) includes the command to save history of modifications performed by Boolean operation or sibling commands into a drawable object and the actual history commands:
 
 * **setfillhistory**;
 * **savehistory**;
@@ -7655,7 +7655,7 @@ The method *BRepTest_Objects::IsHistoryNeeded()* controls if the history is need
 @section occt_draw_bop Boolean Operations Commands
 
 This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for performing, analyzing, debugging the algorithm in Boolean Component.
-See @ref specification__boolean_operations "Boolean operations" user's guide for the description of these algorithms.
+See [Boolean operations](#specification__boolean_operations) user's guide for the description of these algorithms.
 
 @subsection occt_draw_bop_two Boolean Operations on two operands
 
@@ -7741,7 +7741,7 @@ shape1, shape2 - arguments of the operation
 The modern Boolean Operations algorithm available in Open CASCADE Technology is capable of performing a Boolean Operations not only on two shapes, but on arbitrary number of shapes.
 In terms of Boolean Operations these arguments are divided on two groups **Objects** and **Tools**. The meaning of these groups is similar to the single object and tool of Boolean Operations on two shapes.
 
-The Boolean operations are based on the General Fuse operation (see @ref specification__boolean_7 "General Fuse algorithm") which splits all input shapes basing on the intersection results.
+The Boolean operations are based on the General Fuse operation (see [General Fuse algorithm](#specification__boolean_7)) which splits all input shapes basing on the intersection results.
 Depending on the type of Boolean operation the BOP algorithm choses the necessary splits of the arguments.
 
 @subsection occt_draw_bop_general_com General commands for working with multiple arguments
@@ -7865,7 +7865,7 @@ bsplit result
 
 There is an alternative way to build the result of Boolean operation using the **buildbop** command, which should be run after any other building command, such as **bbuild** or **bbop** or **bsplit**.
 The command has the following features:
-* It is designed to work on open solids and thus uses the alternative approach for building the results (see @ref specification__boolean_bop_on_opensolids "BOP on open solids" chapter of Boolean operations user guide).
+* It is designed to work on open solids and thus uses the alternative approach for building the results (see [BOP on open solids](#specification__boolean_bop_on_opensolids) chapter of Boolean operations user guide).
 * It allows changing the groups of Objects and Tools of the operation (even excluding some of the arguments is possible).
 * History information for solids will be lost.
 
@@ -7920,7 +7920,7 @@ buildbop r11 -o b1 -t b2 b3 -op tuc
 
 @subsubsection occt_draw_bop_build_CB Cells Builder
 
-See the @ref specification__boolean_10c_Cells_1 "Cells Builder Usage" for the Draw usage of Cells Builder algorithm.
+See the [Cells Builder Usage](#specification__boolean_10c_Cells_1) for the Draw usage of Cells Builder algorithm.
 
 
 @subsubsection occt_draw_bop_build_API Building result through API
@@ -8920,7 +8920,7 @@ These commands are used for translation of IGES and STEP files into an XCAF docu
   * XDE layer’s commands
   * XDE property’s commands
 
-Reminding: All operations of translation are performed with parameters managed by command @ref occt_draw_8_3_14 "param".
+Reminding: All operations of translation are performed with parameters managed by command [param](#occt_draw_8_3_14).
 
 @subsubsection occt_draw_8_4_1  ReadIges
 
@@ -9033,7 +9033,7 @@ Syntax:
 XFromShape <shape>
 ~~~~
 
-This command is similar to the command @ref occt_draw_8_3_7 "fromshape", but gives additional information about the file name. It is useful if a shape was translated from several files. 
+This command is similar to the command [fromshape](#occt_draw_8_3_7), but gives additional information about the file name. It is useful if a shape was translated from several files. 
 
 **Example:**
 ~~~~{.php}
@@ -10756,7 +10756,7 @@ Syntax:
 pnt <object>
 ~~~~
 
-Returns coordinates of point in the given Draw variable. Object can be of type point or vertex. Actually this command is built up from the commands @ref occt_draw_7_2_1a "mkpoint" and @ref occt_draw_6_6_1 "coord".
+Returns coordinates of point in the given Draw variable. Object can be of type point or vertex. Actually this command is built up from the commands [mkpoint](#occt_draw_7_2_1a) and [coord](#occt_draw_6_6_1).
 
 Example: 
 ~~~~{.php}
@@ -10771,7 +10771,7 @@ Syntax:
 pntc <curv> <par>
 ~~~~
 
-Returns coordinates of point on 3D curve with given parameter. Actually this command is based on the command @ref occt_draw_6_6_2 "cvalue".
+Returns coordinates of point on 3D curve with given parameter. Actually this command is based on the command [cvalue](#occt_draw_6_6_2).
 
 Example: 
 ~~~~{.php}
@@ -10786,7 +10786,7 @@ Syntax:
 2dpntc <curv2d> <par>
 ~~~~
 
-Returns coordinates of point on 2D curve with given parameter. Actually this command is based on the command @ref occt_draw_6_6_2 "2dcvalue".
+Returns coordinates of point on 2D curve with given parameter. Actually this command is based on the command [2dcvalue](#occt_draw_6_6_2).
 
 Example: 
 ~~~~{.php}
@@ -10801,7 +10801,7 @@ Syntax:
 pntsu <surf> <u> <v>
 ~~~~
 
-Returns coordinates of point on surface with given parameters. Actually this command is based on the command @ref occt_draw_6_6_3 "svalue".
+Returns coordinates of point on surface with given parameters. Actually this command is based on the command [svalue](#occt_draw_6_6_3).
 
 Example: 
 ~~~~{.php}
@@ -10816,7 +10816,7 @@ Syntax:
 pntcons <curv2d> <surf> <par>
 ~~~~
 
-Returns coordinates of point on surface defined by point on 2D curve with given parameter. Actually this command is based on the commands @ref occt_draw_6_6_2 "2dcvalue" and @ref occt_draw_6_6_3 "svalue".
+Returns coordinates of point on surface defined by point on 2D curve with given parameter. Actually this command is based on the commands [2dcvalue](#occt_draw_6_6_2) and [svalue](#occt_draw_6_6_3).
 
 Example: 
 ~~~~{.php}
@@ -11044,12 +11044,12 @@ ADVCURV            : TKMyAdvCurv
 MESHING            : TKMyMesh 
 ~~~~
 
-For other examples of the plug-in resource file refer to the @ref occt_draw_1_3_2 "Plug-in resource file" chapter above or to the <i>$CASROOT/src/DrawPlugin</i> file shipped with Open CASCADE Technology. 
+For other examples of the plug-in resource file refer to the [Plug-in resource file](#occt_draw_1_3_2) chapter above or to the <i>$CASROOT/src/DrawPlugin</i> file shipped with Open CASCADE Technology. 
 
 
 @subsection occt_draw_11_5 Dynamic loading and activation
 
-Loading a plug-in and activating its commands is described in the @ref occt_draw_1_3_3 "Activation of the commands implemented in the plug-in" chapter. 
+Loading a plug-in and activating its commands is described in the [Activation of the commands implemented in the plug-in](#occt_draw_1_3_3) chapter. 
 
 The procedure consists in defining the system variables and using the *pload* commands in the Test Harness session. 
 

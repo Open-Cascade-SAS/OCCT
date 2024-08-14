@@ -152,7 +152,7 @@ contribution/svn/svn.md
 
 **Note** that the order of paths to documents in *FILES.txt* is reproduced in the Table of Contents in the HTML output, thus they need to be placed logically.
 
-**Note** that you should specify a file tag, not the document name. See @ref OCCT_DM_SECTION_A_1 "Header and hierarchic document structure" section for details.
+**Note** that you should specify a file tag, not the document name. See [Header and hierarchic document structure](#OCCT_DM_SECTION_A_1) section for details.
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 
@@ -393,7 +393,7 @@ For instance, @code @ref OCCT_DM_SECTION_A @endcode will be rendered as @ref OCC
 
 Note that links between documents will not work in PDF output if each document is generated independently.
 Hence it is recommended to add a name of the referenced section after the tag name in the <i>\@ref</i> command (in quotes): this will guarantee that the reference is recognizable for the reader even if the cross-link is not instantiated. 
-For instance: @code @ref occt_modat_1 "Geometry Utilities" @endcode will be rendered as @ref occt_modat_1 "Geometry Utilities".
+For instance: @code [Geometry Utilities](#occt_modat_1) @endcode will be rendered as [Geometry Utilities](#occt_modat_1).
 
 @subsection  OCCT_DM_SECTION_A_7 Images
 

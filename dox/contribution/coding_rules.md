@@ -548,7 +548,7 @@ They should be detailed enough to allow any person to understand what each part 
 
 It is recommended to comment all static functions (like methods in headers), and to insert at least one comment per each 10-100 lines in the function body.
 
-There are also some rules that define how comments should be formatted, see @ref occt_coding_rules_3 "Formatting Rules".
+There are also some rules that define how comments should be formatted, see [Formatting Rules](#occt_coding_rules_3).
 
 Following these rules is important for good comprehension of the comments. Moreover, this approach  allows automatically generating user-oriented documentation directly from the commented sources.
 

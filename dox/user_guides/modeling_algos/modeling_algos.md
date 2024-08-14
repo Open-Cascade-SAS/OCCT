@@ -1700,7 +1700,7 @@ From the viewpoint of Topology these are topological operations followed by blen
 
 Topological operations are the most convenient way to create real industrial parts. As most industrial parts consist of several simple elements such as gear wheels, arms, holes, ribs, tubes and pipes. It is usually easy to create those elements separately and then to combine them by Boolean operations in the whole final part.
 
-See @ref specification__boolean_operations "Boolean Operations" for detailed documentation.
+See [Boolean Operations](#specification__boolean_operations) for detailed documentation.
 
 @subsection occt_modalg_5_1 Input and Result Arguments
 
@@ -2041,7 +2041,7 @@ DRAW History support for the algorithms is provided by three basic commands:
 * *modified*;
 * *generated*.
 
-For more information on the Draw History mechanism, refer to the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
+For more information on the Draw History mechanism, refer to the corresponding chapter in the Draw users guide - [History commands](#occt_draw_hist).
 
 @subsection occt_modalg_6 Fillets and  Chamfers
 
@@ -2964,7 +2964,7 @@ On the low-level the history information is collected by the history tool *BRepT
 * *BOPAlgo_AlertUnableToRemoveTheFeature* - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
 * *BOPAlgo_AlertRemoveFeaturesFailed* - the error alert is given in case if the operation was aborted by the unknown reason.
 
-For more information on the error/warning reporting system, see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
+For more information on the error/warning reporting system, see the chapter [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide.
 
 <b>Parallel processing mode</b> - allows running the algorithm in parallel mode obtaining the result faster.
 
@@ -3028,9 +3028,9 @@ Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
 
 The command <b>removefeatures</b> allows using the Defeaturing algorithm on the Draw level.
 
-The @ref occt_draw_hist "standard history commands" can be used to track the history of shape modification during Defeaturing. 
+The [standard history commands](#occt_draw_hist) can be used to track the history of shape modification during Defeaturing. 
 
-For more details on commands above, refer to the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
+For more details on commands above, refer to the [Defeaturing commands](#occt_draw_defeaturing) of the Draw test harness user guide.
 
 @subsubsection occt_modalg_defeaturing_examples Examples
 
@@ -3158,7 +3158,7 @@ The algorithm returns the following alerts:
 * *BOPAlgo_AlertUnableToMakeIdentical* - Error alert is given if splitting of the shape by its moved copies has failed;
 * *BOPAlgo_AlertUnableToRepeat* - Warning alert is given if the gluing of the repeated shapes has failed.
 
-For more information on the error/warning reporting system please see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
+For more information on the error/warning reporting system please see the chapter [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide.
 
 @subsubsection occt_modalg_makeperiodic_usage Usage
 
@@ -3218,11 +3218,11 @@ For the usage of the MakePeriodic algorithm on the Draw level the following comm
 * **periodictwins**
 * **clearrepetitions**
 
-For more details on the periodicity commands please refer the @ref occt_draw_makeperiodic "Periodicity commands" of the Draw test harness user guide.
+For more details on the periodicity commands please refer the [Periodicity commands](#occt_draw_makeperiodic) of the Draw test harness user guide.
 
-To track the history of a shape modification during MakePeriodic operation the @ref occt_draw_hist "standard history commands" can be used.
+To track the history of a shape modification during MakePeriodic operation the [standard history commands](#occt_draw_hist) can be used.
 
-To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide).
+To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide).
 
 @subsubsection occt_modalg_makeperiodic_examples Examples
 
@@ -3400,7 +3400,7 @@ aPolyHLRToShape.OutLineHCompound();
 @section occt_modalg_makeconnected Making touching shapes connected
 
 Open CASCADE Technology provides tools for making the same-dimensional touching shapes connected (or glued), i.e. for making the coinciding geometries topologically shared among shapes.
-To make the shapes connected they are glued by the means of @ref specification__boolean_7 "General Fuse algorithm". The option BOPAlgo_GlueShift is used, thus if the input shapes have been interfering the algorithm will be unable to recognize this.
+To make the shapes connected they are glued by the means of [General Fuse algorithm](#specification__boolean_7). The option BOPAlgo_GlueShift is used, thus if the input shapes have been interfering the algorithm will be unable to recognize this.
 
 Making the group of shapes connected can be useful e.g. before meshing the group. It will allow making the resulting mesh conformal.
 
@@ -3431,7 +3431,7 @@ const TopTools_ListOfShape& BOPAlgo_MakeConnected::MaterialsOnNegativeSide(const
 
 @subsection occt_modalg_makeconnected_makeperiodic Making connected shape periodic
 
-The tool provides possibility to make the connected shape @ref occt_modalg_makeperiodic "periodic".
+The tool provides possibility to make the connected shape [periodic](#occt_modalg_makeperiodic).
 Since by making the shape periodic it ensures that the geometry of coinciding shapes on the opposite sides will be the same it allows reusing the mesh of the shape for its periodic twins.
 
 After making the shape periodic the material associations are updated to correspond to the actual state of the result shape. Repetition of the periodic shape is also possible from here. Material associations are not going to be lost.
@@ -3458,7 +3458,7 @@ The algorithm returns the following alerts:
 * *BOPAlgo_AlertUnableToMakePeriodic* - warning alert is given if the periodicity maker is unable to make the connected shape periodic with given options;
 * *BOPAlgo_AlertShapeIsNotPeriodic* - warning alert is given on the attempt to repeat the shape before making it periodic.
 
-For more information on the error/warning reporting system please see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
+For more information on the error/warning reporting system please see the chapter [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide.
 
 @subsection occt_modalg_makeconnected_usage Usage
 
@@ -3534,8 +3534,8 @@ For the usage of the MakeConnected algorithm on the Draw level the following com
 * **cperiodictwins**
 * **cclearrepetitions**
 
-For more details on the connexity commands please refer the @ref occt_draw_makeconnected "MakeConnected commands" of the Draw test harness user guide.
+For more details on the connexity commands please refer the [MakeConnected commands](#occt_draw_makeconnected) of the Draw test harness user guide.
 
-To track the history of a shape modification during MakeConnected operation the @ref occt_draw_hist "standard history commands" can be used.
+To track the history of a shape modification during MakeConnected operation the [standard history commands](#occt_draw_hist) can be used.
 
-To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide).
+To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the [Errors and warnings reporting system](#specification__boolean_ers) of Boolean operations user guide).

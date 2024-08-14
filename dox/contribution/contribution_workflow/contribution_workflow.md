@@ -100,7 +100,7 @@ When the number sign or the tilde followed by digits are a part of a normal text
 **Steps To Reproduce** -- allows describing in detail how to reproduce the issue. 
 
 This information is crucial for the developer to investigate the cause of the problem and to create the test case.
-The optimal approach is to give a sequence of @ref occt_user_guides__test_harness "DRAW Test Harness" commands to reproduce the problem in DRAW.
+The optimal approach is to give a sequence of [DRAW Test Harness](#occt_user_guides__test_harness) commands to reproduce the problem in DRAW.
 This information can also be provided as a DRAW Tcl script attached to the issue (in **Upload File** field).
 
 **Additional information and documentation updates** -- any additional information, remarks to be taken into account in Release Notes, etc.. 
@@ -144,17 +144,17 @@ Change of layout or re-formatting of the existing code is allowed only in the pa
 
 @note If deemed useful, re-formatting or cosmetic changes affecting considerable parts of the code can be made within a dedicated issue.
 
-The changes should comply with the OCCT @ref occt_contribution__coding_rules "Codng Rules". 
+The changes should comply with the OCCT [Codng Rules](#occt_contribution__coding_rules). 
 It is especially important to comment the code properly so that other people can understand it easier.
 
 The modification should be tested by running OCCT tests (on the platform and scope available to **Developer**) and ensuring absence of regressions.
 In case if modification affects results of some existing test case and the new result is correct,
-such test case should be updated to report OK (or BAD), as described in @ref testmanual_details_results "Automated Test System / Interpretation of Test Results".
+such test case should be updated to report OK (or BAD), as described in [Automated Test System / Interpretation of Test Results](#testmanual_details_results).
       
 @subsubsection occt_contribution_workflow_fix_test Providing a test case
 
 For modifications affecting OCCT functionality, a test case should be created (unless already exists) and included in the commit or patch.
-See @ref testmanual_intro_quick_create "Automated Test System / Creating a New Test" for relevant instructions.
+See [Automated Test System / Creating a New Test](#testmanual_intro_quick_create) for relevant instructions.
 
 The data files required for a test case should be attached to the corresponding issue in Mantis (i.e. not included in the commit).
 
@@ -162,11 +162,11 @@ When the test case cannot be provided for any reason, the maximum possible infor
 
 @subsubsection  occt_contribution_workflow_fix_doc Updating user and developer guides
 
-If the change affects a functionality described in @ref user_guides "User Guides", the corresponding user guide should be updated to reflect the change.
+If the change affects a functionality described in [User Guides](#user_guides), the corresponding user guide should be updated to reflect the change.
 
-If the change affects OCCT test system, build environment, or development tools described in @ref build_upgrade "Build, Debug and Upgrade" or @ref contribution "Contribution", the corresponding guide should be updated.
+If the change affects OCCT test system, build environment, or development tools described in [Build, Debug and Upgrade](#build_upgrade) or [Contribution](#contribution), the corresponding guide should be updated.
  
-The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document @ref occt__upgrade "Upgrade from previous OCCT versions".
+The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document [Upgrade from previous OCCT versions](#occt__upgrade).
 It is recommended to add a sub-section for each change described.
 The description should provide the explanation of the incompatibility introduced by the change, and describe how it can be resolved (at least, in known situations).
 When feasible, the automatic upgrade procedure (adm/upgrade.tcl) can be extended by a new option to perform the required upgrade of the dependent code automatically. 
@@ -175,7 +175,7 @@ When feasible, the automatic upgrade procedure (adm/upgrade.tcl) can be extended
   
 The modification of sources should be provided in the dedicated branch of the official OCCT Git repository.
 
-The branch should contain a single commit, with the appropriate commit message (see @ref occt_contribution_workflow_fix_commit "Requirements to the commit message" below).
+The branch should contain a single commit, with the appropriate commit message (see [Requirements to the commit message](#occt_contribution_workflow_fix_commit) below).
 
 In general, this branch should be based on the recent version of the master branch.
 It is highly preferable to submit changes basing on the current master.
@@ -184,7 +184,7 @@ In case if the fix is implemented on the previous release of OCCT, the branch ca
 The branch name should be composed of letters **CR** (abbreviation of "Change Request") followed by the issue ID number (without leading zeros). 
 It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix (see @ref occt_contribution_nonstd_rebase).
 
-See @ref occt_contribution__git_guide "Guide to using GIT" for help.
+See [Guide to using GIT](#occt_contribution__git_guide) for help.
 
 @note When a branch with the name given according to the above rule is pushed to Git, a note is automatically added to the corresponding issue in Mantis, indicating the person who has made the push, the commit hash, and (for new commits) the description.
   
@@ -227,7 +227,7 @@ The possible variants are:
 
 @subsection occt_contribution_workflow_review Code review
 
-The **Reviewer** analyzes the proposed solution for applicability in accordance with OCCT @ref occt_contribution__coding_rules "Coding Rules" and examines all changes in the sources, test case(s), and documentation to detect obvious and possible errors, misprints, or violations of the coding style. 
+The **Reviewer** analyzes the proposed solution for applicability in accordance with OCCT [Coding Rules](#occt_contribution__coding_rules) and examines all changes in the sources, test case(s), and documentation to detect obvious and possible errors, misprints, or violations of the coding style. 
 
 If the Reviewer detects some problems, he can either:
 
@@ -247,7 +247,7 @@ The issue gets assigned to the **Bugmaster**.
   The issues that are in **REVIEWED** state are subject of certification (non-regression) testing. 
   The issue is assigned to an OCCT **Tester** when he starts processing it.
 
-  If the branch submitted for testing is based on obsolete status of the master branch, **Tester** @ref occt_contribution_nonstd_rebase "rebases" it on master HEAD.
+  If the branch submitted for testing is based on obsolete status of the master branch, **Tester** [rebases](#occt_contribution_nonstd_rebase) it on master HEAD.
   In case of conflicts, the issue is assigned back to **Developer** in **FEEDBACK** status, requesting for a rebase.
 
   Certification testing includes:
@@ -294,7 +294,7 @@ The branches corresponding to the integrated fixes are removed from the reposito
 When possible, the **Reporter** should check whether the problem is actually resolved in the environment where it has been discovered, after the fix is integrated to master.
 If the fix does not actually resolve the original problem, the issue in **VERIFIED** status can be reopened and assigned back to the **Developer** for rework.
 The details on how to check that the issue is still reproducible should be provided.
-However, if the issue does resolve the problem as described in the original report, but a similar problem is discovered for another input data or configuration, or the fix has caused a regression, that problem should be registered as a separate (@ref occt_contribution_nonstd_relate "related") issue.
+However, if the issue does resolve the problem as described in the original report, but a similar problem is discovered for another input data or configuration, or the fix has caused a regression, that problem should be registered as a separate ([related](#occt_contribution_nonstd_relate)) issue.
 
 If the fix integrated to master causes regressions, **Bugmaster** can revert it and reopen the issue.
 
@@ -355,7 +355,7 @@ To avoid confusions, the branch corresponding to the latest version of the chang
 In some cases review remarks or results of testing require only minor corrections to be done in the branch containing a change.
 "Minor" implies that the correction does not impact the functionality and does not affect the description of the previously committed change.
 
-As an exception to general @ref occt_contribution_workflow_fix_git "single-commit rule", it is allowed to put such minor corrections on top of the existing branch as a separate commit, and re-submit it for further processing in the same branch, without squashing.
+As an exception to general [single-commit rule](#occt_contribution_workflow_fix_git), it is allowed to put such minor corrections on top of the existing branch as a separate commit, and re-submit it for further processing in the same branch, without squashing.
 
 Minor commits should have a single-line message starting with #.
 These messages will be ignored when the branch is squashed at integration.

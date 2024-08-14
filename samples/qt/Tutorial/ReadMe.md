@@ -8,4 +8,4 @@ This tutorial assumes that  the user has experience in using and setting up C++.
 From the viewpoint of programming, Open CASCADE Technology is designed to enhance user's C++ tools with high performance modeling classes, methods and functions.
 The combination of these resources allows creating substantial applications.
 
-**See also:** @ref occt__tutorial "OCCT Tutorial"
+**See also:** [OCCT Tutorial](#occt__tutorial)

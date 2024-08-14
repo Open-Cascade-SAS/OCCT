@@ -15,10 +15,10 @@ Inspector has a plugin-oriented architecture. The current release contains the f
 
 | Plugin | OCCT component | Root class of OCCT investigated component |
 | :----- | :----- | :----- |
-| @ref occt_inspector_2_2 "DFBrowser"| OCAF | *TDocStd_Application* |
-| @ref occt_inspector_2_3 "VInspector"| Visualization | *AIS_InteractiveContext* |
-| @ref occt_inspector_2_4 "ShapeView"| Modeling Data | *TopoDS_Shape* |
-| @ref occt_inspector_2_5 "MessageView"| Modeling Data | *Message_Report* |
+| [DFBrowser](#occt_inspector_2_2)| OCAF | *TDocStd_Application* |
+| [VInspector](#occt_inspector_2_3)| Visualization | *AIS_InteractiveContext* |
+| [ShapeView](#occt_inspector_2_4)| Modeling Data | *TopoDS_Shape* |
+| [MessageView](#occt_inspector_2_5)| Modeling Data | *Message_Report* |
 
 
 Each plugin implements logic of a corresponding OCCT component.
@@ -29,13 +29,13 @@ Each of the listed plugins is embedded in the common framework, thus it is possi
 @subsection occt_inspector_1_3 Getting started
 
 There are two launch modes:
-1. Launch **TInspectorEXE** executable sample. For more details see @ref occt_inspector_4_1 "TInspectorEXE" section;
+1. Launch **TInspectorEXE** executable sample. For more details see [TInspectorEXE](#occt_inspector_4_1) section;
 2. Launch DRAW, load plugin INSPECTOR, and use *tinspector* command.
-   For more details, see @ref occt_inspector_4_2 "Launch in DRAW Test Harness" section.
+   For more details, see [Launch in DRAW Test Harness](#occt_inspector_4_2) section.
 
 
 **Note**. If you have no Inspector library in your build directory, make sure that OCCT is compiled with *BUILD_Inspector* 
-option ON. For more details see @ref occt_inspector_5 "Build procedure".
+option ON. For more details see [Build procedure](#occt_inspector_5).
 
 
 @section occt_inspector_2 Inspector Plugins
@@ -138,7 +138,7 @@ The information is usually shown in one or several tables.
     <td>a table of all shapes handled by the framework</td>
     <td>@figure{property_panel_custom_tnaming_used_shapes.png, "",140}</td></tr>
 <tr><td><i>TNaming_NamedShape</i></td>
-    <td>2 controls: <br> - a table of [method name, value] including CurrentShape/OriginalShape methods result of <i>TNaming_Tools</i>, <br> - an evolution table. <br> Tables contain buttons for @ref occt_shape_export "TopoDS_Shape export".</td>
+    <td>2 controls: <br> - a table of [method name, value] including CurrentShape/OriginalShape methods result of <i>TNaming_Tools</i>, <br> - an evolution table. <br> Tables contain buttons for [TopoDS_Shape export](#occt_shape_export).</td>
     <td>@figure{property_panel_custom_tnaming_named_shape.png, "",140}</td></tr>
 <tr><td><i>TNaming_Naming</i></td>
     <td>2 controls: <br> - a table of <i>TNaming_Name</i> values,<br> - a table of [method name, value]</td>
@@ -237,7 +237,7 @@ Attributes having references:
 
 Property panel of *TNaming_NamedShape* attribute has controls to export *TopoDS_Shape* to:
   * BREP. **Save file** dialog is open to enter the result file name,
-  * @ref occt_inspector_2_4 "ShapeView" plugin. The dialog for exporting element to ShapeView allows activating this plugin immediately.
+  * [ShapeView](#occt_inspector_2_4) plugin. The dialog for exporting element to ShapeView allows activating this plugin immediately.
 
 
 @subsection occt_inspector_2_3 VInspector Plugin
@@ -406,7 +406,7 @@ Shows the table for WallClock Metric statistic option.
 
 @subsection occt_inspector_3_1 Tree View
 
-This control shows presentation hierarchy of the investigated OCCT element, e.g. *TDocStd_Application* for DFBrowser, see @ref occt_inspector_1_1 "Overview".
+This control shows presentation hierarchy of the investigated OCCT element, e.g. *TDocStd_Application* for DFBrowser, see [Overview](#occt_inspector_1_1).
 The first column contains the name, other columns are informative.
 
 The tree view has a context menu with plugin-specific actions.
@@ -415,8 +415,8 @@ The tree view has a context menu with plugin-specific actions.
 
 It is possible to define visibility and width of columns.
 This option is available in a view that contains more than one column,
- e.g. @ref occt_inspector_2_3_4 "VInspector tree view columns"
- and @ref occt_inspector_2_4_4 "ShapeView tree view columns".
+ e.g. [VInspector tree view columns](#occt_inspector_2_3_4)
+ and [ShapeView tree view columns](#occt_inspector_2_4_4).
 
 @figure{treeview_preferences.svg, "Preferences schema",360}
 
@@ -438,7 +438,7 @@ This control for OCCT 3D viewer creates visualization view components and allows
 | Element | Functionality |
 | :----- | :----- |
 | 3D view | V3d viewer with mouse events processing. |
-| Context | Allows choosing another context that should be used in the plugin. The following contexts are available:<br> **Own** - the context of this view, <br> **External** - the context of the @ref occt_inspector_4_3 "external application", which initializes the plugin, <br> **None** - the visualization is not performed at all (useful if the presentation is too complex). |
+| Context | Allows choosing another context that should be used in the plugin. The following contexts are available:<br> **Own** - the context of this view, <br> **External** - the context of the [external application](#occt_inspector_4_3), which initializes the plugin, <br> **None** - the visualization is not performed at all (useful if the presentation is too complex). |
 | Multi/Single | The buttons define what to do with the previously displayed objects: <br> **Multi** displays new presentations together with already displayed ones, <br> **Single** removes all previously displayed presentations. |
 | Clean | Removes all displayed presentations. |
 | Trihedron display | Shows the trihedron. |
@@ -472,8 +472,8 @@ The following controls have store/restore preferences:
 | Element | Preferences |
 | :----- | :----- |
 | Geometry| Inspector window size and position. <br>State of dockable widgets : visibility, position, size.|
-| @ref occt_inspector_3_1_1 "Tree View preferences"| Columns visible in the tree view and their width. |
-| @ref occt_inspector_3_2_3 "3D View preferences"| 3D view camera direction. |
+| [Tree View preferences](#occt_inspector_3_1_1)| Columns visible in the tree view and their width. |
+| [3D View preferences](#occt_inspector_3_2_3)| 3D view camera direction. |
 
 @section occt_inspector_4 Getting Started
 
@@ -512,13 +512,13 @@ The application stores recently loaded files. On the application start, the last
 **Open file** dialog contains recently loaded files.
 Selection of a new file updates the container of recently loaded files and rewrites preferences.
 
-Source code of *TIspectorEXE* is a good sample for @ref occt_inspector_4_3 "using the Inspector in a custom application".
+Source code of *TIspectorEXE* is a good sample for [using the Inspector in a custom application](#occt_inspector_4_3).
 
 @subsection occt_inspector_4_2 How to launch the Inspector in DRAW Test Harness
 
-*TKToolsDraw* plugin provides DRAW commands for Qt tools. Use *INSPECTOR* parameter of @ref occt_draw_1_3_3 "pload" 
+*TKToolsDraw* plugin provides DRAW commands for Qt tools. Use *INSPECTOR* parameter of [pload](#occt_draw_1_3_3) 
 command to download the commands of this library. It contains *tinspector* command to start Inspector under DRAW.
-See more detailed description of the @ref occt_draw_13_1 "tinspector" command.
+See more detailed description of the [tinspector](#occt_draw_13_1) command.
 
 The simple code to start Inspector with all plugins loaded:
 
@@ -530,7 +530,7 @@ tinspector
 @figure{drawexe_tinspector.png,"tinspector",360}
 
 This command does the following:
-- all available Plugins are presented in the Inspector. These are @ref occt_inspector_2_2 "DFBrowser", @ref occt_inspector_2_3 "VInspector", @ref occt_inspector_2_4 "ShapeView" and  @ref occt_inspector_2_5 "MessageView";
+- all available Plugins are presented in the Inspector. These are [DFBrowser](#occt_inspector_2_2), [VInspector](#occt_inspector_2_3), [ShapeView](#occt_inspector_2_4) and  [MessageView](#occt_inspector_2_5);
 - DFBrowser is the active plugin;
 - OCAF tree is empty.
 
@@ -540,7 +540,7 @@ The examples of using Inspector in DRAW can be found in OCCT source directory /t
 @subsection occt_inspector_4_3 How to use the Inspector in a custom application
 
 The example of using the Inspector in a custom application is presented in OCCT qt sample - <b>FuncDemo</b>.
-For building qt samples, switch on *BUILD_SAMPLES_QT* variable in @ref build_cmake_conf "Configuration process".
+For building qt samples, switch on *BUILD_SAMPLES_QT* variable in [Configuration process](#build_cmake_conf).
 
 In general, the following steps should be taken:
 * Set dependencies to OCCT and Qt in the application (Header and Link);
@@ -595,7 +595,7 @@ Give one the following objects for a plugin using a container of parameters:
 @subsection occt_inspector_5_1 Building with CMake within OCCT
 
 By default the Inspector compilation is off.
-To compile it, set the *BUILD_Inspector* flag to "ON". See @ref build_cmake_conf "Configuration process".
+To compile it, set the *BUILD_Inspector* flag to "ON". See [Configuration process](#build_cmake_conf).
 
 When this option is switched ON, MS Visual Studio project has an additional tree of folders:
 

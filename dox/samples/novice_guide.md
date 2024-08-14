@@ -20,12 +20,12 @@ If you don't have any programming skills, grasping the full magnitude of OCCT wo
 The documentation for OCCT contains several entry points for new users.
 It will not explain all OCCT classes but will help to comprehend the workflow and help start thinking in terms of Open CASCADE Technology.
 
-The most basic workflow is described in the @ref occt__tutorial "OCCT Tutorial" - this is an excellent starting point for new users.
+The most basic workflow is described in the [OCCT Tutorial](#occt__tutorial) - this is an excellent starting point for new users.
 In this tutorial you will create a solid model step-by-step using different classes and methods.
 Each step of the tutorial contains code snippets and images.
 
 The basics involved in the modeling process are explained.
-When the basics of OCCT are clear, the next logical step is to check out @ref samples "sample applications" and examine those that suit your needs.
+When the basics of OCCT are clear, the next logical step is to check out [sample applications](#samples) and examine those that suit your needs.
 For these, the best starting point is **OCCTOverview** located in /samples/qt subfolder of OCCT installation.
 
 This sample provides code examples for several actions as well as visualization of these code snippets output.
@@ -57,12 +57,12 @@ This section will demonstrate these entities both in 2D and 3D view mode and pro
 
 @figure{sample_overview_qt_geometry.png,"",240} height=440px
 
-The usage of the functions shown in the Overview is described more thoroughly at the @ref occt_user_guides__modeling_data "Modeling data" section of the documentation.
-Additionally, @ref occt_user_guides__modeling_algos "Modeling Algorithms" are used in more complex cases.
+The usage of the functions shown in the Overview is described more thoroughly at the [Modeling data](#occt_user_guides__modeling_data) section of the documentation.
+Additionally, [Modeling Algorithms](#occt_user_guides__modeling_algos) are used in more complex cases.
 
 The **Topology** section of the Overview demonstrates the functions used in 3D operations.
 Multiple use cases are provided, including different object intersections, modifying and calculations.
-Some of these use cases are described in the documentation, such as @ref occt_user_guides__inspector "Inspector" usage.
+Some of these use cases are described in the documentation, such as [Inspector](#occt_user_guides__inspector) usage.
 
 @figure{sample_overview_qt_topology.png,"",240} height=440px
 
@@ -77,20 +77,20 @@ an overall Open CASCADE code guide that may be used to inspect the key points in
 
 @figure{sample_overview_qt_triangulation.png,"",240} height=440px
 
-The triangulation uses some of Mesh-related classes - see full description at @ref occt_user_guides__mesh "Mesh" documentation section.
+The triangulation uses some of Mesh-related classes - see full description at [Mesh](#occt_user_guides__mesh) documentation section.
 
 The **Data exchange** section provides examples of how to export and import files of several different formats.
 
 @figure{sample_overview_qt_xde.png,"",240} height=440px
 
-The **OCAF** section gives an introduction for the @ref intro_overview_ocaf "Open CASCADE Application Framework" functionality.
+The **OCAF** section gives an introduction for the [Open CASCADE Application Framework](#intro_overview_ocaf) functionality.
 To test these functions, create an object first (box or cylinder).
 After that, the object may be modified and saved. Actions are recorded and may be undone or redone.
 
 @figure{sample_overview_qt_ocaf.png,"",240} height=440px
 
 **Viewers** section demonstrates examples of the 2D and 3D visualization outputs.
-Check @ref occt_user_guides__visualization "Visualization" section of the documentation for a detailed description.
+Check [Visualization](#occt_user_guides__visualization) section of the documentation for a detailed description.
 In addition to these two samples, there are much more that might be of use to a new user based on their particular use case.
 
 Check Readme files in the sample directories to learn more about samples compilation.
@@ -99,7 +99,7 @@ Check Readme files in the sample directories to learn more about samples compila
 and the source code files for examples presented in subsections are stored at 'samples/OCCTOverview/code folder'.
 Several utility classes that are not presented in the example window may be found in example source code files.
 
-The overall classes introduction may be found in the @ref occt_user_guides__foundation_classes "Foundation Classes" section of the documentation.
+The overall classes introduction may be found in the [Foundation Classes](#occt_user_guides__foundation_classes) section of the documentation.
 The "Introduction" section contains short descriptions of the most massive entries in the documentation.
 
 @section helps Additional assistance

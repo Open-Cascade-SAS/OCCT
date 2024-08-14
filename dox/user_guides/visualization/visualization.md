@@ -37,9 +37,9 @@ Naturally, "Geometry & Topology" is just an example of application data that can
 
 To answer different needs of CASCADE users, this User's Guide offers the following three paths in reading it.
 
-  * If the 3D services proposed in AIS meet your requirements, you need only read chapter 3  @ref occt_visu_3 "AIS: Application Interactive Services".
+  * If the 3D services proposed in AIS meet your requirements, you need only read chapter 3  [AIS: Application Interactive Services](#occt_visu_3).
   * If you need more detail, for example, a selection filter on another type of entity -- you should read
-    chapter 2 @ref occt_visu_2 "Fundamental Concepts", chapter 3 @ref occt_visu_3 "AIS: Application Interactive Services", and 4 @ref occt_visu_4 "3D Presentations".
+    chapter 2 [Fundamental Concepts](#occt_visu_2), chapter 3 [AIS: Application Interactive Services](#occt_visu_3), and 4 [3D Presentations](#occt_visu_4).
     You may want to begin with the chapter presenting AIS.
 
 @section occt_visu_2 Fundamental Concepts
@@ -608,7 +608,7 @@ If you want to give a particular type and signature to your interactive object, 
   * *AIS_InteractiveObject::Type*
   * *AIS_InteractiveObject::Signature*.
 
-**Note** that some signatures are already used by "standard" objects provided in AIS (see the @ref occt_visu_3_5 "List of Standard Interactive Object Classes").
+**Note** that some signatures are already used by "standard" objects provided in AIS (see the [List of Standard Interactive Object Classes](#occt_visu_3_5)).
 
 The interactive context can have a default mode of representation for the set of interactive objects.
 This mode may not be accepted by a given class of objects.
@@ -674,7 +674,7 @@ void myPk_IShape::Compute (const Handle(Prs3d_Projector)& theProjector,
 @subsubsection occt_visu_3_2_4 Selection
 
 An interactive object can have an indefinite number of selection modes, each representing a "decomposition" into sensitive primitives.
-Each primitive has an **Owner** (*SelectMgr_EntityOwner*) which allows identifying the exact interactive object or shape which has been detected (see @ref occt_visu_2_2 "Selection" chapter).
+Each primitive has an **Owner** (*SelectMgr_EntityOwner*) which allows identifying the exact interactive object or shape which has been detected (see [Selection](#occt_visu_2_2) chapter).
 
 The set of sensitive primitives, which correspond to a given mode, is stocked in a **Selection** (*SelectMgr_Selection*).
 
@@ -684,7 +684,7 @@ However, it can be modified in the custom interactive objects using method *Sele
 
 The calculation of selection primitives (or sensitive entities) is done in a virtual function *ComputeSelection*.
 It should be implemented for each type of interactive object that is assumed to have different selection modes using the function *AIS_InteractiveObject::ComputeSelection*.
-A detailed explanation of the mechanism and the manner of implementing this function has been given in @ref occt_visu_2_2 "Selection" chapter.
+A detailed explanation of the mechanism and the manner of implementing this function has been given in [Selection](#occt_visu_2_2) chapter.
 
 There are some examples of selection mode calculation for the most widely used interactive object in OCCT -- *AIS_Shape* (selection by vertex, by edges, etc).
 To create new classes of interactive objects with the same selection behavior as *AIS_Shape* -- such as vertices and edges -- you must redefine the virtual function *AIS_InteractiveObject::AcceptShapeDecomposition*.
@@ -1283,7 +1283,7 @@ The dynamic selection represents the topological shape, which you want to select
 by decomposition of *sensitive primitives* -- the sub-parts of the shape that will be detected and highlighted.
 The sets of these primitives are handled by the powerful three-level BVH tree selection algorithm.
 
-For more details on the algorithm and examples of usage, refer to @ref occt_visu_2_2 "Selection" chapter.
+For more details on the algorithm and examples of usage, refer to [Selection](#occt_visu_2_2) chapter.
 
 @section occt_visu_4 3D Presentations
 
@@ -2087,7 +2087,7 @@ myAISContext->Display (anAISShape, true);
 
 Follow the procedure below to compute the presentable object:
 
-1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on @ref occt_visu_2_1 "Presentable Objects").
+1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on [Presentable Objects](#occt_visu_2_1)).
 2. Reuse the *Graphic3d_Structure* provided as an argument of the compute methods.
 
 **Note** that there are two compute methods: one for a standard representation, and the other for a degenerated representation,

@@ -523,7 +523,7 @@ Let us correct the following wire:
 
 @figure{/user_guides/shape_healing/images/shape_healing_image013.png,"Initial shape",420}
 
-It is necessary to apply the @ref occt_shg_3_1_2 "tools for the analysis of wire validity" to check that:
+It is necessary to apply the [tools for the analysis of wire validity](#occt_shg_3_1_2) to check that:
 * the edges are correctly oriented;
 * there are no edges that are too short;
 * there are no intersecting adjacent edges;
@@ -586,7 +586,7 @@ To see how this tool works, it is possible to take an edge, where the maximum de
 
 @figure{/user_guides/shape_healing/images/shape_healing_image011.png,"Initial shape",420}
 
-First it is necessary to apply the @ref occt_shg_3_1_3 "tool for checking the edge validity" to find that the maximum deviation between pcurve and 3D curve is greater than tolerance.
+First it is necessary to apply the [tool for checking the edge validity](#occt_shg_3_1_3) to find that the maximum deviation between pcurve and 3D curve is greater than tolerance.
 Then we can use the repairing tool to increase the tolerance and make the deviation acceptable.
 
 ~~~~{.cpp}

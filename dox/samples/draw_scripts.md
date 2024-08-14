@@ -58,7 +58,7 @@ the specified resource file and activates the commands implemented in the plug-i
 The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref occt_user_guides__test_harness.
 
 Draw Test Harness provides an environment for OCCT automated testing system. 
-Check its @ref occt_contribution__tests "Automated Testing System" for details.
+Check its [Automated Testing System](#occt_contribution__tests) for details.
 
 Remarks:
 
