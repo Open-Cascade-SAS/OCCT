@@ -235,7 +235,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
 \<3D curve record 1\> describes a line. The line data consist of a 3D point *P* and a 3D direction *D*. The line passes through the  point *P*, has  the direction *D* and  is defined by the following parametric equation:  
  
 $$ C(u)=P+u \cdot D, \; u \in (-\infty,\; \infty). $$
- 
+
 The example record is interpreted as a line which  passes through a point *P*=(1, 0, 3), has a direction *D*=(0, 1, 0) and is defined by the  following parametric equation: $ C(u)=(1,0,3)+u \cdot (0,1,0) $.  
  
  
@@ -303,10 +303,11 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
 \<3D curve record 3\> describes an ellipse. The  ellipse data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* so that *r<sub>min</sub>* $ \leq $ *r<sub>maj</sub>*. The ellipse has its  center *P*, is  located in plane with the normal *N*, has major and minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by the following parametric equation:  
  
 $$ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj} + r_{min} \cdot sin(u) \cdot D_{min}, u \in [0, 2 \cdot \pi). $$
- 
-The  example record is interpreted as an ellipse which has its center *P*=(1, 2, 3), is located in plane with a normal *N*=(0, 0, 1), has major and minor axis directions *D<sub>maj</sub>*=(1, 0, 0) and *D<sub>min</sub>*=(0, 1, 0), major and minor radii *r<sub>maj</sub>*=5 and *r<sub>min</sub>*=4 and is defined by  the following parametric equation: $ C(u) = (1,2,3) + 5 \cdot cos(u) \cdot(1,0,0) + 4 \cdot sin(u) \cdot (0,1,0) $.  
- 
- 
+
+The  example record is interpreted as an ellipse which has its center *P*=(1, 2, 3), is located in plane with a normal *N*=(0, 0, 1), has major and minor axis directions *D<sub>maj</sub>*=(1, 0, 0) and *D<sub>min</sub>*=(0, 1, 0), major and minor radii *r<sub>maj</sub>*=5 and *r<sub>min</sub>*=4 and is defined by  the following parametric equation:
+
+$$ C(u) = (1,2,3) + 5 \cdot cos(u) \cdot(1,0,0) + 4 \cdot sin(u) \cdot (0,1,0) $$
+
 <h4><a id="specification__brep_format_5_1_4">Parabola - \<3D curve record 4\> </a></h4>
  
 **Example**  
@@ -336,6 +337,7 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
 \<3D curve record 4\> describes a parabola. The  parabola data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative real *f*. The parabola is located in plane which passes through the point *P* and has the normal *N*. The parabola has a focus length *f* and is defined by the following parametric equation:  
  
 $$ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x} + u \cdot D_{y}, u \in (-\infty,\; \infty) \Leftarrow f \neq 0; $$
+
 $$ C(u)=P+u \cdot D_{x}, u \in (-\infty,\; \infty) \Leftarrow f = 0\;(degenerated\;case). $$ 
  
 The  example record is interpreted as a parabola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Directions for the parabola are *D<sub>x</sub>*=(1, 0, 0) and *D<sub>y</sub>*=(0, 1, 0). The parabola has a focus length *f*=16 and is defined by the following parametric equation: $ C(u) = (1,2,3) + \frac{u^{2}}{64} \cdot (1,0,0) + u \cdot (0,1,0) $.  
@@ -408,7 +410,7 @@ The weight poles are *m*+1 3D points *B<sub>0</sub> ... B<sub>m</sub>* if the 
 The Bezier curve is defined by the following  parametric equation:  
  
 $$ C(u) = \frac{\sum_{i=0}^{m}B_{i} \cdot h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}}{\sum_{i=0}^{m}h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}},\;u \in [0,\; 1] $$
- 
+
 where $ 0^{0} \equiv 1 $.  
  
 The example record is interpreted as a Bezier curve with a rational flag *r*=1, degree *m*=2 and weight poles *B<sub>0</sub>*=(0, 1, 0), *h<sub>0</sub>*=4, *B<sub>1</sub>*=(1, -2, 0), *h<sub>1</sub>*=5 and *B<sub>2</sub>*=(2, 3, 0), *h<sub>2</sub>*=6. The Bezier curve is defined  by the following parametric equation:  
@@ -458,8 +460,9 @@ The weight poles are *n* 3D points *B<sub>1</sub> ... B<sub>n</sub>* if the fla
 The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with a multiplicity $ q_{i} \geq 1 \; (1 \leq i \leq k) $ so that  
  
 $$ u_{i} < u_{i+1} (1 \leq i \leq k-1),$$
-$$ q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1. $$  
- 
+
+$$ q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1. $$
+
 The B-spline curve is defined by the following  parametric equation:  
  
 $$ C(u) = \frac{\sum_{i=1}^{n}B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n}h_{i} \cdot N_{i,m+1}(u)},\;u \in [u_{1},\; u_{k}] $$ 
@@ -805,8 +808,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
 10 \cdot (1-u)^{2} \cdot v+ 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v)+ 11 \cdot 2 \cdot u \cdot (1-u) \cdot v+ 9 \cdot u^{2} \cdot (1-v)+12 \cdot u^{2} \cdot v ]
 \end{align}
 $$
- 
- 
+
 <h4><a id="specification__brep_format_5_2_9">B-spline Surface - \< surface record 9 \> </a></h4>
  
 **Example**  
@@ -894,7 +896,7 @@ The B-spline surface is defined by the following  parametric equation:
 $$ S(u,v)=\frac{\sum_{i=1}^{n_{u}} \sum_{j=1}^{n_{v}} B_{i,j} \cdot h_{i,j} \cdot N_{i,m_{u}+1}(u) \cdot M_{j,m_{v}+1}(v)}{\sum_{i=1}^{n_{u}} \sum_{j=1}^{n_{v}} h_{i,j} \cdot N_{i,m_{u}+1}(u) \cdot M_{j,m_{v}+1}(v)}, (u,v) \in [u_{1},u_{k_{u}}] \times [v_{1},v_{k_{v}}] $$     
  
 where functions *N<sub>i,j</sub>* and *M<sub>i,j</sub>* have the following recursion definition by *j*:  
- 
+
 $$
 \begin{align}
 N_{i,1}(u)= \left\{\begin{matrix}
@@ -907,7 +909,7 @@ M_{i,1}(v)=\left\{\begin{matrix}
 0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix} \right.,\; \\
 M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},\;(2 \leq j \leq m_{v}+1); 
 \end{align}
-$$  
+$$
 
 where   
 $$ \bar{u}_{i}=u_{j}\; (1 \leq j \leq k_{u},\; \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
@@ -924,7 +926,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+12 \cdot N_{3,2}(u) \cdot M_{2,2}(v) ] 
 \end{align} 
 $$
- 
+
 <h4><a id="specification__brep_format_5_2_10">Rectangular Trim Surface - < surface  record 10 ></a></h4>
  
 **Example**  
@@ -1281,7 +1283,7 @@ q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1),\; \sum_{
 The B-spline curve is defined by the following  parametric equation:  
  
 $$ C(u)= \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u) }{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)},\; u \in [u_{1},\; u_{k}] $$
- 
+
 where functions *N<sub>i,j</sub>* have the following recursion definition  by *j*
  
 $$ N_{i,1}(u)=\left\{\begin{matrix}

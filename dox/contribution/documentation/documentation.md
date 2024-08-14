@@ -462,6 +462,7 @@ $$
 ```
 
 gives the following result:
+
 $$
        |I_2|=\left| \int_{0}^T \psi(t)
                \left\{ 
@@ -472,6 +473,7 @@ $$
                \right\} dt
            \right|
 $$
+
 2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. 
 
   For example: 
