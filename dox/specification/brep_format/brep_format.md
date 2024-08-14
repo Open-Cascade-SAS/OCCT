@@ -123,8 +123,8 @@ $$
 which describes transformation of 3 dimensional space and satisfies the following constraints:  
   * $ d \neq 0$ where $d = |Q_{2}|$ where
     $ Q_{2} = \begin{pmatrix}
-    q_{1,1} &q_{1,2} &q_{1,3} &q_{1,4}\\
-    q_{2,1} &q_{2,2} &q_{2,3} &q_{2,4}\\
+    q_{1,1} &q_{1,2} &q_{1,3} &q_{1,4} \\
+    q_{2,1} &q_{2,2} &q_{2,3} &q_{2,4} \\
     q_{3,1} &q_{3,2} &q_{3,3} &q_{3,4}
     \end{pmatrix}; $  
   * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3} $
@@ -136,8 +136,8 @@ u \\ v \\ w
 \end{pmatrix} = 
 Q\cdot(x\;y\;z\;1)^{T} =
 \begin{pmatrix}
-q_{1,1}\cdot x +q_{1,2}\cdot y +q_{1,3}\cdot z +q_{1,4}\\
-q_{2,1}\cdot x +q_{2,2}\cdot y +q_{2,3}\cdot z +q_{2,4}\\
+q_{1,1}\cdot x +q_{1,2}\cdot y +q_{1,3}\cdot z +q_{1,4} \\
+q_{2,1}\cdot x +q_{2,2}\cdot y +q_{2,3}\cdot z +q_{2,4} \\
 q_{3,1}\cdot x +q_{3,2}\cdot y +q_{3,3}\cdot z +q_{3,4}
 \end{pmatrix}
 $$
