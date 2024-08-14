@@ -110,7 +110,8 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 **Description**
 
 \<location data 1\> is interpreted as a 3 x 4 matrix
-$Q =
+$$
+Q =
 \begin{pmatrix}
 {q}_{1,1} &{q}_{1,2} &{q}_{1,3} &{q}_{1,4}\\
 {q}_{2,1} &{q}_{2,2} &{q}_{2,3} &{q}_{2,4}\\
@@ -123,10 +124,12 @@ which describes transformation of 3 dimensional space and satisfies the followin
     {q}_{2,1} &{q}_{2,2} &{q}_{2,3} &{q}_{2,4}\\
     {q}_{3,1} &{q}_{3,2} &{q}_{3,3} &{q}_{3,4}
     \end{pmatrix}; $  
-  * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3}. $  
+  * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3} 
+$$
  
 The transformation transforms a point (x, y, z) to another point (u, v, w) by the rule:
-$$ \begin{pmatrix}
+$$
+\begin{pmatrix}
 u \\ v \\ w
 \end{pmatrix} = 
 Q\cdot(x\;y\;z\;1)^{T} =
@@ -134,23 +137,26 @@ Q\cdot(x\;y\;z\;1)^{T} =
 {q}_{1,1}\cdot x +{q}_{1,2}\cdot y +{q}_{1,3}\cdot z +{q}_{1,4}\\
 {q}_{2,1}\cdot x +{q}_{2,2}\cdot y +{q}_{2,3}\cdot z +{q}_{2,4}\\
 {q}_{3,1}\cdot x +{q}_{3,2}\cdot y +{q}_{3,3}\cdot z +{q}_{3,4}
-\end{pmatrix} . $$
+\end{pmatrix}
+$$
 
 *Q* may be a composition of matrices for the following elementary transformations:  
  
   *  parallel translation --
-     $ \begin{pmatrix}
+     $\begin{pmatrix}
      1 &0 &0 &{q}_{1,4}\\ 
 	 0 &1 &0 &{q}_{2,4}\\ 
 	 0 &0 &1 &{q}_{3,4}
-	 \end{pmatrix}; $  
-  *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle $ \varphi $ --  
+	 \end{pmatrix};$
+  *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle $\varphi$ --  
 
-	$$ \begin{pmatrix}
+	$$
+    \begin{pmatrix}
 	D_{x}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) - D_{z} \cdot sin(\varphi) &D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{y} \cdot sin(\varphi) &0\\
 	D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) + D_{z} \cdot sin(\varphi) &D_{y}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{x} \cdot sin(\varphi) &0\\
 	D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{y} \cdot sin(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{x} \cdot sin(\varphi) &D_{z}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &0
-	\end{pmatrix}; $$  
+	\end{pmatrix};
+    $$
  
   *  scaling -- $ \begin{pmatrix} s &0 &0 &0\\ 0 &s &0 &0\\ 0 &0 &s &0 \end{pmatrix} $ where $ S \in (-\infty,\; \infty)/\left \{ 0 \right \}; $ 
   *  central symmetry -- $ \begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}; $  
