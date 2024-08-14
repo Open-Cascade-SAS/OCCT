@@ -130,6 +130,7 @@ which describes transformation of 3 dimensional space and satisfies the followin
   * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3} $
  
 The transformation transforms a point (x, y, z) to another point (u, v, w) by the rule:
+
 $$
 \begin{pmatrix}
 u \\ v \\ w
