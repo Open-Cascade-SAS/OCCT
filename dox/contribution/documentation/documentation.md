@@ -512,7 +512,7 @@ $$
 $$
 ```
 that leads to the following result:
+
 $$
 \sqrt{3x-1} + (1+x)^2
 $$
-
