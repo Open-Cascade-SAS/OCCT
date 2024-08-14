@@ -532,12 +532,12 @@ Each class or package method should be documented in the header file (.hxx).
 The comment should explain the purpose of the method, its parameters, and returned value(s).
 Accepted style is:
 
-@verbatim
+```cpp
 //! Method computes the square value.
 //! @param theValue the input value
 //! @return squared value
 Standard_Export Standard_Real Square (Standard_Real theValue);
-@endverbatim
+```
 
 ### Documenting C/C++ sources
 
@@ -1025,7 +1025,7 @@ Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values 
 
 ### Sample documented class
 
-@verbatim
+```cpp
 class Package_Class
 {
 
@@ -1046,11 +1046,9 @@ private: //! \@name private fields
   Standard_Integer myCounter; //!< usage counter
 
 };
+```
 
-
-@endverbatim
-
-~~~~{.cpp}
+```cpp
 #include <Package_Class.hxx>
 // ==========================================================
 // function : Square
@@ -1070,7 +1068,7 @@ void Package_Class::increment()
 {
   ++myCounter;
 }
-~~~~
+```
 
 ### TCL script for Draw Harness
 

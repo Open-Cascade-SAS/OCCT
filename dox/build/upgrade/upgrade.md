@@ -1419,7 +1419,7 @@ In case of a closed wire, the inner region will always be inside the wire (at th
 <h3><a id="upgrade_720_Change_In_GeomAdaptor_Curve">Change in Geom(2d)Adaptor_Curve::IsPeriodic</a></h3>
 
 Since 7.2.0 version, method *IsPeriodic()* returns the corresponding status of periodicity of the basis curve regardless of closure status of the adaptor curve (see method *IsClosed()*).
-Method *IsClosed()* for adaptor can return false even on periodic curve, in the case if its parametric range is not full period, e.g. for adaptor on circle in range [0, @f$ \pi @f$].
+Method *IsClosed()* for adaptor can return false even on periodic curve, in the case if its parametric range is not full period, e.g. for adaptor on circle in range [0, $\pi$].
 In previous versions, *IsPeriodic()* always returned false if *IsClosed()* returned false.
 
 <h3><a id="upgrade_720_UnifySameDomain">Change in algorithm ShapeUpgrade_UnifySameDomain</a></h3>

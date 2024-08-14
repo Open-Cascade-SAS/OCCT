@@ -126,9 +126,9 @@ If you want to use the same image for several documents, you can place it in *do
 **Note**: To avoid incorrect image display, use a relative path to the image (starting from *dox* folder). For instance:
 
 
-@verbatim
+```
 <img src="images/documentation_test_image.svg" alt="" width="420">
-@endverbatim
+```
 
 
 The documentation is generated in subfolder *doc* :
@@ -145,9 +145,9 @@ If there are images in the document, it should be placed in its own folder conta
 
 Add a relative path to *svn.md* in file <i>dox/FILES.txt</i>. For instance
 
-@verbatim
+```
 contribution/svn/svn.md
-@endverbatim
+```
 
 **Note** that the order of paths to documents in *FILES.txt* is reproduced in the Table of Contents in the HTML output, thus they need to be placed logically.
 
@@ -168,9 +168,9 @@ http://www.stack.nl/~dimitri/doxygen/manual
 
 A document file in *.md format must start with a proper header defining a caption and a unique tag.
 
-@verbatim
+```
 <h1><a id="contribution__documentation" class="anchor">Documentation System</a></h1>
-@endverbatim
+```
 
 The document structure is formed by sections that must be defined consistently.
 
@@ -188,11 +188,11 @@ Headers of different levels can be specified with the following tags:
 
 For example:
 
-@verbatim
+```
   <h2><a id="occt_ocaf_1">Basic Concepts</a></h2>
   <h3><a id="occt_ocaf_1_1">Applications and Documents</a></h3>
   <h4><a id="occt_ocaf_1_1_1">The document and the data framework</a></h4>
-@endverbatim
+```
 
 **Note** that section names can be used for references within the document and in other documents, so it is necessary to use the common prefix indicative of the document name for all section names in the given document. 
 For example,  *occt_ocaf* for sections in Open CASCADE Application Framework manual.
@@ -225,13 +225,13 @@ To emphasize a word or a group of words, wrap the text with one pair of asterisk
 To create a bulleted list, start each line with a hyphen or an asterisk, 
 followed by a space. List items can be nested. This code:
 
-@verbatim
+```
 * Bullet 1
 * Bullet 2
   - Bullet 2a
   - Bullet 2b
 * Bullet 3
-@endverbatim
+```
 
 produces this list:
 
@@ -244,13 +244,13 @@ produces this list:
 To create a numbered list, start each line with number and a period, 
 then a space. Numbered lists can also be nested. Thus this code 
 
-@verbatim
+```
 1. List item 1
    1. Sub-item 1
    2. Sub-item 2
 2. List item 2
 4. List item 3
-@endverbatim
+```
 
 produces this list:
 
@@ -302,12 +302,12 @@ Example of a complex nested list:
 A table consists of a header line, a separator line, and at least one row line. 
 Table columns are separated by the pipe (|) character. The following example: 
 
-@verbatim
+```
 First Header  | Second Header
 ------------- | -------------
 Content Cell  | Content Cell 
 Content Cell  | Content Cell 
-@endverbatim
+```
 
   will produce the following table:
 
@@ -318,12 +318,12 @@ Content Cell | Content Cell
 
 Column alignment can be controlled via one or two colons at the header separator line: 
 
-@verbatim
+```
 | Right | Center | Left  |
 | ----: | :----: | :---- |
 | 10    | 10     | 10    |
 | 1000  | 1000   | 1000  |
-@endverbatim
+```
 
 which will looks as follows:
 
@@ -351,11 +351,11 @@ To highlight the code, the developer has to indicate the typical file extension,
 which corresponds to the programming language, after the opening fence. 
 For highlighting according to the C++ language, for instance,  write the following code (the curly braces and dot are optional): 
 
-@verbatim
+```
 ~~~{.cpp}
 int func(int a,int b) { return a*b; }
 ~~~
-@endverbatim
+```
 
 which will produce:
 ~~~{.cpp} 
@@ -370,9 +370,9 @@ Verbatim content (same as code but without syntax highlighting) can be inserted 
 
 Text quoted from other sources can be indented using ">" tag. For example:
 
-@verbatim
+```
 > [Regression in 6.9.0] *IGES - Export of a reversed face leads to wrong data*
-@endverbatim
+```
 
 will produce 
 
@@ -395,11 +395,11 @@ For instance: @code [Geometry Utilities](#occt_modat_1) @endcode will be rendere
 
 <h3><a id="OCCT_DM_SECTION_A_7">Images</a></h3>
 
-For inserting images into the document use the command <i>\@figure</i>, as follows:
+For inserting images into the document use the HTML command <i>img</i>, as follows:
 
-@verbatim
+```
   <img src="/relative/path/to/image/image_file_name.png" alt="Image caption">
-@endverbatim
+```
 
 The first argument is a path to the image file, relative to the *dox* folder.
 The supported formats for images are PNG, JPG, and SVG.
@@ -412,9 +412,9 @@ Captions are included below the image; in PDF output the images with caption are
 
 Example:
 
-@verbatim
+```
   <img src="images/documentation_test_image.svg" alt="Test SVG image">
-@endverbatim
+```
 
 is rendered as:
 
@@ -427,10 +427,10 @@ Note that the image that will be included in documentation is the whole page of 
 
 Note that the *figure* command is an alias to the standard Doxygen command *image* repeated twice: once for HTML and then for Latex output (used for PDF generation). Thus if HTML and PDF outputs should include different images or captions, command "image" can be used:
 
-@verbatim
+```
   @image html /relative/path/to/image/occ_logo_for_html.png
   @image latex /relative/path/to/image/occ_logo_for_pdf.png
-@endverbatim
+```
 
 <h3><a id="OCCT_DM_SECTION_A_8">Table Of Contents</a></h3>
 
@@ -448,8 +448,8 @@ Equations can be written by several ways:
 1.Unnumbered displayed formulas that are centered on a separate line. 
 These formulas should be put between \@f\[ and \@f\] tags. An example: 
 
-@verbatim
-@f[
+```
+$$
     |I_2|=\left| \int_{0}^T \psi(t)
             \left\{ 
                 u(a,t)-
@@ -458,12 +458,11 @@ These formulas should be put between \@f\[ and \@f\] tags. An example:
                 \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
             \right\} dt
         \right|
-@f]
-@endverbatim
+$$
+```
 
 gives the following result:
-
-   @f$
+$$
        |I_2|=\left| \int_{0}^T \psi(t)
                \left\{ 
                    u(a,t)-
@@ -472,42 +471,33 @@ gives the following result:
                    \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
                \right\} dt
            \right|
-   @f$
-   
+$$
 2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. 
 
   For example: 
-  
-@verbatim
+```
+$$
   \begin{align}
   \dot{x} & = \sigma(y-x) \\
   \dot{y} & = \rho x - y - xz \\
   \dot{z} & = -\beta z + xy
   \end{align}
-@endverbatim
-
+$$
+```
   gives the following result:
-@latexonly
+$$
   \begin{align}
   \dot{x} & = \sigma(y-x) \\
   \dot{y} & = \rho x - y - xz \\
   \dot{z} & = -\beta z + xy
   \end{align}
-@endlatexonly
-
-@htmlonly
-  \begin{align}
-  \dot{x} & = \sigma(y-x) \\
-  \dot{y} & = \rho x - y - xz \\
-  \dot{z} & = -\beta z + xy
-  \end{align}
-@endhtmlonly
+$$
 
 3.Inline formulas can be specified using this syntax:
 
-@verbatim
-  @f$ \sqrt{3x-1}+(1+x)^2 @f$
-@endverbatim
-
-  that leads to the following result: @f$ \sqrt{3x-1}+(1+x)^2 @f$
+```
+  \sqrt{3x-1}+(1+x)^2
+```
+that leads to the following result:
+$$\sqrt{3x-1}+(1+x)^2$$
   

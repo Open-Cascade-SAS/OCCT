@@ -80,7 +80,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
  
 **Example**  
 
-@verbatim 
+```
     Locations  3  
     1  
                    0               0               1               0   
@@ -91,11 +91,11 @@ The following sample code reads a shape from ASCII file and writes it to a binar
                    0               1               0               5   
                    0               0               1               6   
     2   1 1 2 1 0  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <locations> = <location header> <_\n> <location records>;  
     <location header> = "Locations" <_> <location record count>;  
     <location record count> = <int>;  
@@ -105,7 +105,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
     <location record 2> = "2" <_> <location  data 2>;  
     <location data 1> = ((<_> <real>) ^ 4 <_\n>) ^ 3;  
     <location data 2> = (<int> <_> <int> <_>)* "0" <_\n>;  
-@endverbatim
+```
 
 **Description**
 
@@ -162,7 +162,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
  
 <h2><a id="specification__brep_format_5">Geometry</a></h2>
 
-@verbatim
+```
     <geometry> =  
     <2D curves>  
     <3D curves>  
@@ -170,13 +170,13 @@ Q\cdot(x\;y\;z\;1)^{T} =
     <polygons on triangulations>  
     <surfaces>  
     <triangulations>;  
-@endverbatim 
+```
  
 <h3><a id="specification__brep_format_5_1">3D curves</a></h3>
  
 **Example**
 
-@verbatim
+```
     Curves 13  
     1 0 0 0 0 0 1   
     1 0 0 3 -0 1 0   
@@ -191,11 +191,11 @@ Q\cdot(x\;y\;z\;1)^{T} =
     1 0 2 0 1 0 -0   
     1 0 2 3 1 0 -0   
     1 1 0 0 1 0 0   
-@endverbatim 
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <3D curves> = <3D curve header> <_\n> <3D curve records>;  
      
     <3D curve header> = "Curves" <_> <3D curve count>;  
@@ -214,21 +214,21 @@ Q\cdot(x\;y\;z\;1)^{T} =
     <3D curve record 7> |  
     <3D curve record 8> |  
     <3D curve record 9>;  
- @endverbatim
+```
  
 <h4><a id="specification__brep_format_5_1_1">Line - \<3D curve record 1\></a></h4>
  
 **Example**  
 
-@verbatim
+```
     1 1 0 3 0 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <3D curve record 1> = "1" <_> <3D point> <_> <3D direction> <_\n>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -243,9 +243,9 @@ The example record is interpreted as a line which  passes through a point *P*=(1
  
 **Example**  
 
-@verbatim 
+```
     2 1 2 3 0 0 1 1 0 -0 -0 1 0 4  
-@endverbatim 
+```
  
 **BNF-like Definition**
  
@@ -276,9 +276,9 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
  
 **Example**  
 
-@verbatim
+```
     3 1 2 3 0 0 1 1 0 -0 -0 1 0 5  4  
-@endverbatim
+```
  
 **BNF-like Definition**
 
@@ -311,9 +311,9 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
  
 **Example**  
 
-@verbatim 
+```
     4 1 2 3 0 0 1 1 0 -0 -0 1 0  16  
-@endverbatim 
+```
  
 **BNF-like Definition**  
 
@@ -345,9 +345,9 @@ The  example record is interpreted as a parabola in plane which passes through a
  
 **Example**  
 
-@verbatim
+```
     5 1 2 3 0 0 1 1 0 -0 -0 1 0 5  4  
-@endverbatim
+```
  
 **BNF-like Definition**  
 
@@ -380,13 +380,13 @@ The  example record is interpreted as a hyperbola in plane which passes through 
  
 **Example**  
 
-@verbatim
+```
     6 1 2 0 1 0  4 1 -2 0  5 2 3  0  6   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<3D curve record 6> = "6" <_> <3D Bezier rational flag> <_> <3D Bezier degree> 
 	<3D Bezier weight poles> <_\n>;
 		
@@ -397,7 +397,7 @@ The  example record is interpreted as a hyperbola in plane which passes through 
 	3D Bezier weight poles> = (<_> <3D Bezier weight pole>) ^ (<3D Bezier degree> <+> "1");
 
 	<3D Bezier weight pole> = <3D point> [<_> <real>];
-@endverbatim
+```
  
 **Description**  
  
@@ -420,10 +420,10 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
  
 **Example**  
 
-@verbatim
+```
     7 1 0  1 3 5  0 1 0  4 1 -2  0  5 2 3 0  6  
      0 1 0.25 1 0.5 1 0.75 1 1 1  
-@endverbatim
+```
  
 **BNF-like Definition**
 
@@ -484,10 +484,10 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
  
 **Example**  
 
-@verbatim
+```
     8  -4 5  
     1 1 2 3 1 0 0   
-@endverbatim
+```
  
 **BNF-like Definition**  
 
@@ -512,15 +512,15 @@ The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4�
  
 **Example**  
 
-@verbatim
+```
     9 2  
     0 1 0   
     1 1 2 3 1 0 0   
-@endverbatim
+```
  
 **BNF-like Definition**  
 
-@verbatim
+```
 	<3D curve record 9> = "9" <_> <3D offset curve distance> <_\n>;
 	<3D offset curve direction> <_\n>;
 	<3D curve record>;
@@ -528,7 +528,7 @@ The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4�
 	<3D offset curve distance> = <real>;
 
 	<3D offset curve direction> = <3D direction>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -542,7 +542,7 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
  
 **Example**  
 
-@verbatim
+```
     Surfaces 6  
     1 0 0 0 1 0 -0 0 0 1 0 -1 0   
     1 0 0 0 -0 1 0 0 0 1 1 0 -0   
@@ -550,11 +550,11 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
     1 0 2 0 -0 1 0 0 0 1 1 0 -0   
     1 0 0 0 0 0 1 1 0 -0 -0 1 0   
     1 1 0 0 1 0 -0 0 0 1 0 -1 0   
-@endverbatim
+```
  
 **BNF-like Definition**  
 
-@verbatim
+```
 	<surfaces> = <surface header> <_\n> <surface records>;
 
 	<surface header> = “Surfaces” <_> <surface count>;
@@ -573,21 +573,21 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
 	<surface record 9> |
 	<surface record 10> |
 	<surface record 11>;  
-@endverbatim
+```
  
 <h4><a id="specification__brep_format_5_2_1">Plane - \< surface record 1 \></a></h4>
 
 **Example**  
 
-@verbatim
+```
     1 0 0 3 0 0 1 1 0 -0 -0 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<surface record 1> = "1" <_> <3D point> (<_> <3D direction>) ^ 3 <_\n>;
-@endverbatim
+```
  
 **Description**  
  
@@ -602,15 +602,15 @@ The example record is interpreted as a plane which  passes through a point *P*=(
  
 **Example**  
 
-@verbatim
+```
     2 1 2 3 0 0 1 1 0 -0 -0 1 0 4  
-@endverbatim
+```
  
 **BNF-like Definition**  
 
-@verbatim
+```
     <surface record 2> = "2" <_> <3D point> (<_> <3D direction>) ^ 3 <_> <real> <_\n>;
-@endverbatim
+```
  
 **Description**  
  
@@ -625,17 +625,17 @@ The  example record is interpreted as a cylinder which axis passes through a poi
  
 **Example**  
 
-@verbatim
+```
     3 1 2 3 0 0 1 1 0 -0 -0 1 0 4  
     0.75
-@endverbatim
+```
  
  
 **BNF-like Definition**
 
-@verbatim
+```
     <surface record 3> = "3" <_> <3D point> (<_> <3D direction>) ^ 3 (<_> <real>) ^ 2 <_\n>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -651,15 +651,15 @@ The example record is interpreted as a cone with an axis  which passes through a
  
 **Example**  
 
-@verbatim
+```
     4 1 2 3 0 0 1 1 0 -0 -0 1 0 4  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <surface record 4> = "4" <_> <3D point> (<_> <3D direction>) ^ 3 <_> <real> <_\n>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -675,15 +675,15 @@ The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Di
  
 **Example**  
 
-@verbatim
+```
     5 1 2 3 0 0 1 1 0 -0 -0 1 0 8  4  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <surface record 5> = "5" <_> <3D point> (<_> <3D direction>) ^ 3 (<_> <real>) ^ 2 <_\n>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -699,16 +699,16 @@ The example record is interpreted as a torus with an axis which passes through a
  
 **Example**  
 
-@verbatim
+```
     6 0 0.6 0.8   
     2 1 2 3 0 0 1 1 0 -0 -0 1 0 4  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <surface record 6> = "6" <_> <3D direction> <_\n> <3D curve record>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -725,16 +725,16 @@ The example record is interpreted as a linear  extrusion surface with a directio
  
 **Example**  
 
-@verbatim
+```
     7 -4 0 3 0 1 0   
     2 1 2 3 0 0 1 1 0 -0 -0 1 0 4  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <surface record 7> = "7" <_> <3D point> <_> <3D direction> <_\n> <3D curve record>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -755,11 +755,11 @@ where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D
  
 **Example**  
 
-@verbatim
+```
     8 1 1 2 1 0 0 1  7 1 0 -4  10    
     0 1 -2  8 1 1 5  11   
     0 2 3  9 1 2 6  12   
-@endverbatim
+```
  
 **BNF-like Definition**
 
@@ -811,7 +811,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
  
 **Example**  
 
-@verbatim
+```
     9  1 1 0 0 1 1 3 2 5 4 0 0 1  7 1 0 -4  10   
     0  1 -2  8 1 1 5  11   
     0  2 3  9 1 2 6  12   
@@ -826,11 +826,11 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
     0.3  1  
     0.7  1  
     1 1  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<surface record 9> = "9" <_> <B-spline surface u rational flag> <_> 
 	<B-spline surface v rational flag> <_> "0" <_> "0" <_> <B-spline surface u degree> <_> 
 	<B-spline surface v degree> <_> <B-spline surface u pole count> <_> 
@@ -871,7 +871,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
 	(<B-spline surface v multiplicity knot> <_\n>) ^ <B-spline surface v multiplicity knot count>;
 
 	<B-spline surface v multiplicity knot> = <real> <_> <int>;
-@endverbatim
+```
  
 **Description**  
  
@@ -929,14 +929,14 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
  
 **Example**  
 
-@verbatim
+```
     10 -1 2 -3 4  
     1 1 2 3 0 0 1 1 0 -0 -0 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<surface record 10> = "10" <_> <trim surface u min> <_> <trim surface u max> <_> 
 	<trim surface v min> <_> <trim surface v max> <_\n> <surface record>;
 
@@ -947,7 +947,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
 	<trim surface v min> = <real>;
 
 	<trim surface v max> = <real>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -962,18 +962,18 @@ The example record is interpreted as a rectangular  trim surface to the set [-1,
  
 **Example**  
  
-@verbatim
+```
     11 -2  
     1 1 2 3 0 0 1 1 0 -0 -0 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<surface record 11> = "11" <_> <surface record distance> <_\n> <surface record>;
 
 	<surface record distance> = <real>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -991,7 +991,7 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
  
 **Example**  
 
-@verbatim
+```
     Curve2ds 24  
     1 0 0 1 0   
     1 0 0 1 0   
@@ -1017,11 +1017,11 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
     1 0 2 1 0   
     1 3 0 0 1   
     1 0 2 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<2D curves> = <2D curve header> <_\n> <2D curve records>;
 
 	<2D curve header> = "Curve2ds" <_> <2D curve count>;
@@ -1040,21 +1040,21 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
 	<2D curve record 7> |
 	<2D curve record 8> |
 	<2D curve record 9>;  
-@endverbatim
+```
  
 <h4><a id="specification__brep_format_5_3_1">Line - \<2D curve record 1\> </a></h4>
  
 **Example**  
 
-@verbatim
+```
     1 3 0 0 -1   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
     <2D curve record 1> = "1" <_> <2D point> <_> <2D direction> <_\n>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -1069,9 +1069,9 @@ The example record is interpreted as a line which  passes through a point *P*=(3
  
 **Example**  
 
-@verbatim
+```
     2 1 2 1 0 -0 1 3  
-@endverbatim
+```
  
 **BNF-like Definition**
 
@@ -1100,13 +1100,13 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
  
 **Example**  
 
-@verbatim
+```
     3 1 2 1 0 -0 1 4 3  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<2D curve record 3> = "3" <_> <2D ellipse center> <_> <2D ellipse Dmaj> <_> 
 	<2D ellipse Dmin> <_> <2D ellipse Rmaj> <_> <2D ellipse Rmin> <_\n>;
 
@@ -1119,7 +1119,7 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
 	<2D ellipse Rmaj> = <real>;
 
 	<2D ellipse Rmin> = <real>; 
-@endverbatim
+```
  
 **Description**  
  
@@ -1134,13 +1134,13 @@ The example record is interpreted as an ellipse which  has a center *P*=(1,2),  
  
 **Example**  
 
-@verbatim
+```
     4 1 2 1 0 -0 1 16  
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<2D curve record 4> = "4" <_> <2D parabola origin> <_> <2D parabola Dx> <_> 
 	<2D parabola Dy> <_> <2D parabola focal length> <_\n>;
 
@@ -1151,7 +1151,7 @@ The example record is interpreted as an ellipse which  has a center *P*=(1,2),  
 	<2D parabola Dy> = <2D direction>;
 
 	<2D parabola focal length> = <real>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -1171,7 +1171,7 @@ The example record is interpreted as a parabola in plane which passes through a 
 
 **BNF-like Definition**
 
-@verbatim
+```
 	<2D curve record 5> = "5" <_> <2D hyperbola origin> <_> <2D hyperbola Dx> <_> 
 	<2D hyperbola Dy> <_> <2D hyperbola Kx> <_> <2D hyperbola Ky> <_\n>;
 
@@ -1184,7 +1184,7 @@ The example record is interpreted as a parabola in plane which passes through a 
 	<2D hyperbola Kx> = <real>;
 
 	<2D hyperbola Ky> = <real>;  
-@endverbatim
+```
  
 **Description**  
  
@@ -1199,13 +1199,13 @@ The example record is interpreted as a hyperbola with  coordinate system which h
  
 **Example**  
 
-@verbatim
+```
 6 1 2 0 1  4 1 -2  5 2 3  6   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<2D curve record 6> = "6" <_> <2D Bezier rational flag> <_> <2D Bezier degree> 
 	<2D Bezier weight poles> <_\n>;
 
@@ -1216,7 +1216,7 @@ The example record is interpreted as a hyperbola with  coordinate system which h
 	<2D Bezier weight poles> = (<_> <2D Bezier weight pole>) ^ (<2D Bezier degree> <+> “1”);
 
 	<2D Bezier weight pole> = <2D point> [<_> <real>];
-@endverbatim
+```
  
 **Description**  
  
@@ -1239,10 +1239,10 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
  
 **Example**  
 
-@verbatim
+```
 7 1 0  1 3 5  0 1  4 1 -2  5  2 3  6  
  0 1 0.25 1 0.5 1 0.75 1 1 1  
-@endverbatim
+```
  
 **BNF-like Definition**
 
@@ -1302,21 +1302,21 @@ The example record is interpreted as a B-spline curve with a rational flag *r*=1
  
 **Example**  
 
-@verbatim
+```
     8 -4 5  
     1 1 2 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<2D curve record 8> = "8" <_> <2D trimmed curve u min> <_> <2D trimmed curve u max> <_\n> 
 	<2D curve record>;
 
 	<2D trimmed curve u min> = <real>;
 
 	<2D trimmed curve u max> = <real>;
-@endverbatim
+```
  
 **Description**
  
@@ -1331,18 +1331,18 @@ The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, 
  
 **Example**  
 
-@verbatim
+```
     9 2  
     1 1 2 1 0   
-@endverbatim
+```
  
 **BNF-like Definition**
  
-@verbatim
+```
 <2D curve record 9> = "9" <_> <2D offset curve distance> <_\n> <2D curve record>;
 
 <2D offset curve distance> = <real>;
-@endverbatim
+```
  
 **Description**  
  
@@ -1356,17 +1356,17 @@ The example record is interpreted as an offset curve  with a distance *d*=2 and
  
 **Example**  
 
-@verbatim
+```
     Polygon3D 1  
     2 1  
     0.1  
     1 0 0 2 0 0   
     0 1   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<3D polygons> = <3D polygon header> <_\n> <3D polygon records>;
 
 	<3D polygon header> = "Polygon3D" <_> <3D polygon record count>;
@@ -1392,7 +1392,7 @@ The example record is interpreted as an offset curve  with a distance *d*=2 and
 	<3D polygon u parameters> = (<3D polygon u parameter> <_>) ^ <3D polygon node count>;
 
 	<3D polygon u parameter> = <real>;
-@endverbatim
+```
  
 **Description**  
  
@@ -1411,7 +1411,7 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
  
 **Example**  
 
-@verbatim
+```
     Triangulations 6  
     4 2 1 0  
     0 0 0 0 0 3 0 2 3 0 2 0 0 0 3  0 3 -2 0 -2 2 4 3 2 1 4   
@@ -1425,7 +1425,7 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
     0 0 0 0 2 0 1 2 0 1 0 0 0 0 0  2 1 2 1 0 3 2 1 3 1 4   
     4 2 1 0  
     1 0 0 1 0 3 1 2 3 1 2 0 0 0 3  0 3 -2 0 -2 2 4 3 2 1 4   
-@endverbatim
+```
  
 **BNF-like Definition**
 
@@ -1484,10 +1484,10 @@ The triangle @f$ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k) @f$ is interpret
  
 Triangulation record  
 
-@verbatim 
+``` 
     4 2 1 0  
     0 0 0 0 0 3 0 2 3 0 2 0 0 0 3  0 3 -2 0 -2 2 4 3 2 1 4   
-@endverbatim
+```
 
 describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presence flag *p*=1, deflection *d*=0, nodes *N<sub>1</sub>*=(0,0,0), *N<sub>2</sub>*=(0,0,3), *N<sub>3</sub>*=(0,2,3) and *N<sub>4</sub>*=(0,2,0), parameters (*u<sub>1</sub>*, *v<sub>1</sub>*)=(0,0), (*u<sub>2</sub>*, *v<sub>2</sub>*)=(3,0), (*u<sub>3</sub>*, *v<sub>3</sub>*)=(3,-2) and (*u<sub>4</sub>*, *v<sub>4</sub>*)=(0,-2), and triangles (*n<sub>1,1</sub>*, *n<sub>1,2</sub>*, *n<sub>1,3</sub>*)=(2,4,3) and (*n<sub>2,1</sub>*, *n<sub>2,2</sub>*, *n<sub>2,3</sub>*)=(2,1,4). From the point (1,0,0) ((-1,0,0)) the triangles have clockwise (counterclockwise) direction of the node circular traversal.  
  
@@ -1496,7 +1496,7 @@ describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presenc
  
 **Example**  
 
-@verbatim
+```
     PolygonOnTriangulations 24  
     2 1 2   
     p 0.1 1 0 3   
@@ -1546,11 +1546,11 @@ describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presenc
     p 0.1 1 0 1   
     2 2 3   
     p 0.1 1 0 1   
-@endverbatim
+```
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<polygons on triangulations> = <polygons on triangulations header> <_\n>
 	<polygons on triangulations records>;
 
@@ -1583,7 +1583,7 @@ describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presenc
 	(<polygons on triangulations u parameter> <_>) ^ <polygons on triangulations node count>;
 
 	<polygons on triangulations u parameter> = <real>;
-@endverbatim
+```
  
 **Description**  
  
@@ -1606,7 +1606,7 @@ An example of section shapes and a whole  *.brep file are given in chapter 7 [Ap
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<shapes> = <shape header> <_\n> <shape records> <_\n> <shape final record>;
 
 	<shape header> = "TShapes" <_> <shape count>;
@@ -1641,7 +1641,7 @@ An example of section shapes and a whole  *.brep file are given in chapter 7 [Ap
 	("So" <_\n> <_\n>) |
 	("CS" <_\n> <_\n>) |
 	("Co" <_\n> <_\n>);
-@endverbatim
+```
  
 **Description**  
  
@@ -1688,7 +1688,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<location number> = <int>;
 
 	<3D curve number> = <int>;
@@ -1707,7 +1707,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
 
 	<curve values for parameter minimal and maximal values> =
 	real> <_> <real> <_> <real> <_> <real>;
-@endverbatim
+```
  
 **Description**  
  
@@ -1735,7 +1735,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
  
 **BNF-like Definition**
 
-@verbatim
+```
 	<vertex data> = <vertex data tolerance> <_\n> <vertex data 3D representation> <_\n> 
 	<vertex data representations>;
 
@@ -1763,7 +1763,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
 	<vertex data representation v parameter> <_> <surface number>;
 
 	<vertex data representation v parameter> = <real>;
-@endverbatim
+```
  
 **Description**  
  
@@ -1877,7 +1877,7 @@ Flag \<face data natural restriction flag\> is  used in a special way [1].
  
   This chapter contains a *.brep file example.  
  
-@verbatim
+```
     DBRep_DrawableShape  
      
     CASCADE Topology V1, (c)  Matra-Datavision  
@@ -2289,4 +2289,4 @@ Flag \<face data natural restriction flag\> is  used in a special way [1].
      
     +1 0   
     0  
-@endverbatim
+```
