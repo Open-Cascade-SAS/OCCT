@@ -120,7 +120,8 @@ q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4}
 \end{pmatrix}
 $$
 
-which describes transformation of 3 dimensional space and satisfies the following constraints:  
+which describes transformation of 3 dimensional space and satisfies the following constraints:
+
 $$
 d \neq 0 \text{ where } d = |Q_{2}| \text{ where } Q_{2} = \begin{pmatrix}
 q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\
