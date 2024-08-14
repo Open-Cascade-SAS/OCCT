@@ -68,7 +68,7 @@ Handle(MyAisObject) aPrs = new MyAisObject();
 theCtx->Display (aPrs, true);
 ~~~~
 
-@figure{ais_object_step1_shaded.png,"@c StdPrs_ShadedShape presentation builder.",409} height=409px
+<img src="images/ais_object_step1_shaded.png" alt="@c StdPrs_ShadedShape presentation builder." width="409"> height=409px
 
 @c PrsMgr_PresentableObject::Compute() method takes three arguments:
 - **Presentation Manager** (@c PrsMgr_PresentationManager).
@@ -128,7 +128,7 @@ void MyAisObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
 }
 ~~~~
 
-@figure{ais_object_step1_shaded_wf.png,"Result of @c StdPrs_ShadedShape + @c StdPrs_WFShape presentation builders.",409} height=409px
+<img src="images/ais_object_step1_shaded_wf.png" alt="Result of @c StdPrs_ShadedShape + @c StdPrs_WFShape presentation builders." width="409"> height=409px
 
 Presentation builders take the @c Prs3d_Drawer object defining various attributes - material of shaded shape, number of isolines in wireframe mode, tessellation quality, line colors and many others.
 @c PrsMgr_PresentableObject defines @c myDrawer property with default attributes.
@@ -168,7 +168,7 @@ Handle(MyAisObject) aPrs = new MyAisObject();
 theCtx->Display (aPrs, 1, 0, true);
 ~~~~
 
-@figure{ais_object_step1_bndbox.png,"@c Prs3d_BndBox presentation builder.",409} height=409px
+<img src="images/ais_object_step1_bndbox.png" alt="@c Prs3d_BndBox presentation builder." width="409"> height=409px
 
 @c AIS disallows activating multiple display modes at the same time, so that these presentation modes should be alternatives to each other.
 But @c AIS may use non-active display mode for highlighting purposes - like wireframe (@c AIS_Wireframe) presentation displayed on top of shaded (@c AIS_Shaded) presentation for selected @c AIS_Shape objects.
@@ -198,7 +198,7 @@ theCtx->HilightWithColor (aPrs, aPrs->HilightAttributes(), false);
 theCtx->CurrentViewer()->Redraw();
 ~~~~
 
-@figure{ais_object_step1_highlight.png,"Highlighting by color (left) and highlighting by another display mode (right).",818} height=409px
+<img src="images/ais_object_step1_highlight.png" alt="Highlighting by color (left) and highlighting by another display mode (right)." width="818"> height=409px
 
 In this particular use case we've used the method @c AIS_InteractiveContext::HilightWithColor() instead of @c @::SetSelected() - just because our object is not selectable yet and @c @::SetSelected() wouldn't work.
 Highlighted presentation appears on the screen with modulated color (see left screenshot above).
@@ -257,7 +257,7 @@ void MyAisObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
 }
 ~~~~
 
-@figure{ais_object_step2_segments.png,"Displaying @c Graphic3d_ArrayOfSegments.",409} height=409px
+<img src="images/ais_object_step2_segments.png" alt="Displaying @c Graphic3d_ArrayOfSegments." width="409"> height=409px
 
 The process is quite straightforward:
 - Create a new @c Graphic3d_Group using @c Prs3d_Presentation::NewGroup();
@@ -353,7 +353,7 @@ void MyAisObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
 }
 ~~~~
 
-@figure{ais_object_step3_quadrics_10.png,"@c Prs3d_ToolCylinder (10 slices).",409} height=409px
+<img src="images/ais_object_step3_quadrics_10.png" alt="@c Prs3d_ToolCylinder (10 slices)." width="409"> height=409px
 
 Well... that looks a little bit edgy.
 Quadric builder creates a triangulation taking the following parameters:
@@ -370,7 +370,7 @@ Handle(Graphic3d_ArrayOfTriangles) aTris =
   Prs3d_ToolCylinder::Create (aRadius, aRadius, aHeight, 25, 25, gp_Trsf());
 ~~~~
 
-@figure{ais_object_step3_quadrics_25.png,"@c Prs3d_ToolCylinder (25 slices).",409} height=409px
+<img src="images/ais_object_step3_quadrics_25.png" alt="@c Prs3d_ToolCylinder (25 slices)." width="409"> height=409px
 
 It looks much better now! Note that @c Prs3d_ToolCylinder could be used for building both cones and cylinders depending on top/bottom radius definition.
 
@@ -413,7 +413,7 @@ Now our cylinder looks solid! The sample above merges two triangulations into a 
 This looks like a minor difference, but it might have a _dramatic impact on performance_ in case of a large scene,
 as each `Graphic3d_ArrayOfPrimitives` is mapped into a dedicated draw call at graphic driver (OpenGL) level.
 
-@figure{ais_object_step3_quadrics_fin.png,"@c Prs3d_ToolCylinder + @c Prs3d_ToolDisk.",409} height=409px
+<img src="images/ais_object_step3_quadrics_fin.png" alt="@c Prs3d_ToolCylinder + @c Prs3d_ToolDisk." width="409"> height=409px
 
 As an exercise, let's try computing a triangulation for cylinder disk without help of @c Prs3d_ToolDisk builder:
 
@@ -455,7 +455,7 @@ void MyAisObject::Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
 }
 ~~~~
 
-@figure{ais_object_step3_quadrics_disk.png,"Manually triangulated disk.",409} height=409px
+<img src="images/ais_object_step3_quadrics_disk.png" alt="Manually triangulated disk." width="409"> height=409px
 
 The disk is here, but it has a strange color - like it is not affected by lighting.
 This happens when vertex normals are defined incorrectly.
@@ -632,7 +632,7 @@ void SelectMgr_EntityOwner::HilightWithColor (
 }
 ~~~~
 
-@figure{ais_object_step4_highlight1.png,"Default behavior of @c SelectMgr_EntityOwner::HilightWithColor().",409} height=409px
+<img src="images/ais_object_step4_highlight1.png" alt="Default behavior of @c SelectMgr_EntityOwner::HilightWithColor()." width="409"> height=409px
 
 Now, let's override the @c SelectMgr_EntityOwner::HilightWithColor() method and display a bounding box presentation:
 
@@ -657,7 +657,7 @@ void MyAisOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager)& the
 @c SelectMgr_EntityOwner::HilightWithColor() doesn't receive a presentation to fill in as an argument; highlight presentation should be manually created and even explicitly displayed on the screen.
 To avoid code duplication, the code above reuses @c MyAisObject::Compute() already implementing computation of highlight presentation.
 
-@figure{ais_object_step4_highlight2.png,"Result of custom implementation @c MyAisOwner::HilightWithColor().",409} height=409px
+<img src="images/ais_object_step4_highlight2.png" alt="Result of custom implementation @c MyAisOwner::HilightWithColor()." width="409"> height=409px
 
 The visual result of the selected object looks exactly the same as when we've used a dedicated highlight mode.
 One thing became broken, though - highlighting remains displayed even after clearing selection.
@@ -754,7 +754,7 @@ normally our Owner should be the very first one in this list when no selection f
 @c SelectMgr_SortCriterion provides us useful information like 3D point on detected object lying on the picking ray, and surface normal direction at this point (actually, it would be a normal to a picked triangle),
 which we display as an arrow with help of @c Prs3d_Arrow presentation builder.
 
-@figure{ais_object_step4_highlight3.png,"Surface normal on mouse over.",409} height=409px
+<img src="images/ais_object_step4_highlight3.png" alt="Surface normal on mouse over." width="409"> height=409px
 
 Result looks pretty nice on the screenshot, but has interaction problems - once displayed, an arrow is no longer updated with further mouse movements.
 But this behavior is not a bug - @c AIS calls @c MyAisOwner::HilightWithColor() only when picking Owner changes to avoid unnecessary Viewer updates.

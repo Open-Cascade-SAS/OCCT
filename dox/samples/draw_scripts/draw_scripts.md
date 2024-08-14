@@ -25,7 +25,7 @@ Draw is a command interpreter based on TCL and a graphical system used for testi
 
 Draw can be used interactively to create, display and modify objects such as curves, surfaces and topological shapes.
 
-@figure{/introduction/images/overview_draw.png}
+<img src="images/overview_draw.png" alt="">
 
 Scripts can be written to customize Draw and perform tests. 
 New types of objects and new commands can be added using C++ programming language.

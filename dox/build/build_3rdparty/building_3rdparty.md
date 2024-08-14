@@ -95,12 +95,11 @@ You can download its sources from https://freetype.org/
 
 5. If you build FreeType for a 64 bit platform, select in the main menu `Build - Configuration Manager`
    and add `x64` platform to the solution configuration by copying the settings from `Win32` platform:
-
-   @figure{/build/build_3rdparty/images/3rdparty_image001.png}
+   <img src="images/3rdparty_image001.png" alt="">
 
    Update the value of the Output File for `x64` configuration:
 
-   @figure{/build/build_3rdparty/images/3rdparty_image003.png}
+   <img src="images/3rdparty_image003.png" alt="">
 
    Build the `freetype` project.<br>
    As a result, you will obtain a 64 bit import library (`.lib`) file in the `freetype/x64/vc20xx` folder.

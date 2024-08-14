@@ -76,11 +76,11 @@ At the first step all edges from a face are discretized according to the specifi
 
 At the second step, the faces are tessellated. Linear deflection limits the distance between a curve and its tessellation, whereas angular deflection limits the angle between subsequent segments in a polyline.
 
-@figure{/user_guides/mesh/images/modeling_algos_image056.png,"Deflection parameters of BRepMesh_IncrementalMesh algorithm",420}
+<img src="imagesmodeling_algos_image056.png" alt="Deflection parameters of BRepMesh_IncrementalMesh algorithm" width="420">
 
 There are additional options to control behavior of the meshing of face interior: *DeflectionInterior* and *AngleInterior*. *DeflectionInterior* limits the distance between triangles and the face interior. *AngleInterior* (used for tessellation of B-spline faces only) limits the angle between normals (N1, N2 and N3 in the picture) in the nodes of every link of the triangle. There is an exception for the links along the face boundary edges, "Angular Deflection" is used for them during edges discretization.
 
-@figure{/user_guides/mesh/images/modeling_algos_image057.png,"Linear and angular interior deflections",420}
+<img src="imagesmodeling_algos_image057.png" alt="Linear and angular interior deflections" width="420">
 
 Note that if a given value of linear deflection is less than shape tolerance then the algorithm will skip this value and will take into account the shape tolerance.
 
@@ -104,7 +104,7 @@ The main goals of the chosen architecture are:
   * Implement a new triangulation algorithm replacing the existing functionality that contains overcomplicated solutions that need to be moved to the upper level. In addition, provide the possibility to change the algorithm depending on surface type (initially to speed up meshing of planes).
 
 <h3><a id="occt_modalg_11_3_2">General workflow</a></h3>
-@figure{/user_guides/mesh/images/modeling_algos_mesh_001.svg,"General workflow of BRepMesh component",500}
+<img src="imagesmodeling_algos_mesh_001.svg" alt="General workflow of BRepMesh component" width="500">
 
 Generally, the workflow of the component can be divided into six parts:
   * **Creation of model data structure**: source *TopoDS_Shape* passed to algorithm is analyzed and exploded into faces and edges. The reflection corresponding to each topological entity is created in the data model. Note that underlying algorithms use the data model as input and access it via a common interface which allows creating a custom data model with necessary dependencies between particular entities (see the paragraph "Data model interface");
@@ -123,7 +123,7 @@ The factory interface *IMeshTools_MeshAlgoFactory* gives the possibility to chan
 
 The default implementation of AlgoFactory is given in *BRepMesh_MeshAlgoFactory* returning algorithms of different complexity chosen according to the passed surface type. In its turn, it is used as the initializer of *BRepMesh_FaceDiscret* algorithm representing the starter of face discretization stage.
 
-@figure{/user_guides/mesh/images/modeling_algos_mesh_002.svg,"Interface describing entry point to meshing workflow",500}
+<img src="imagesmodeling_algos_mesh_002.svg" alt="Interface describing entry point to meshing workflow" width="500">
 
 Remaining interfaces describe auxiliary tools:
   * *IMeshTools_CurveTessellator*: provides a common interface to the algorithms responsible for creation of discrete polygons on 3D and 2D curves as well as tools for extraction of existing polygons from *TopoDS_Edge* allowing to obtain discrete points and the corresponding parameters on curve regardless of the implementation details (see examples of usage of derived classes *BRepMesh_CurveTessellator*, *BRepMesh_EdgeTessellationExtractor* in *BRepMesh_EdgeDiscret*);
@@ -143,7 +143,7 @@ In case of necessity, the data model (probably with algorithms for its processin
 
 An additional example of a different data model is the case when it is not required to create a mesh with discrete polygons synchronized between adjacent faces, i.e. in case of necessity to speed up creation of a rough per-face tessellation used for visualization or quick computation only (the approach used in *XDEDRAW_Props*).
 
-@figure{/user_guides/mesh/images/modeling_algos_mesh_003.svg,"Common API of data model",500}
+<img src="imagesmodeling_algos_mesh_003.svg" alt="Common API of data model" width="500">
 
 #### Collecting data model
 At this stage the data model is filled by entities according to the topological structure of the source shape. A default implementation of the data model is given in <i>BRepMeshData</i> unit and represents the model as two sets: a set of edges and a set of faces. Each face consists of one or several wires, the first of which always represents the outer wire, while others are internal. In its turn, each wire depicts the ordered sequence of oriented edges. Each edge is characterized by a single 3D curve and zero (in case of free edge) or more 2D curves associated with faces adjacent to this edge. Both 3D and 2D curves represent a set of pairs point-parameter defined in 3D and 2D space of the reference face correspondingly. An additional difference between a curve and a pcurve is that the latter has a reference to the face it is defined for.
@@ -169,7 +169,7 @@ This stage implements actions to be performed before meshing of faces. Depending
 <h3><a id="occt_modalg_11_3_8">Discretize faces</a></h3>
 Discretization of faces is the general part of meshing algorithm. At this stage edges tessellation data obtained and processed on previous steps is used to form contours of target faces and passed as input to the triangulation algorithm. Default implementation is provided by *BRepMesh_FaceDiscret* class which represents a starter for triangulation algorithm. It iterates over faces available in the data model, creates an instance of the triangulation algorithm according to the type of surface associated with each face via *IMeshTools_MeshAlgoFactory* and executes it. Each face is processed separately, thus it is possible to process faces in a parallel mode. The class diagram of face discretization is given in the figure below.
  
-@figure{/user_guides/mesh/images/modeling_algos_mesh_004.svg,"Class diagram of face discrete stage",300}
+<img src="imagesmodeling_algos_mesh_004.svg" alt="Class diagram of face discrete stage" width="300">
 
 In general, face meshing algorithms have the following structure:
   * *BRepMesh_BaseMeshAlgo* implements *IMeshTools_MeshAlgo* interface and the base functionality for inherited algorithms. The main goal of this class is to initialize an instance of *BRepMesh_DataStructureOfDelaun* as well as auxiliary data structures suitable for nested algorithms using face model data passed as input parameter. Despite implementation of triangulation algorithm this structure is currently supposed as common for OCCT. However, the user is free to implement a custom algorithm and supporting data structure accessible via *IMeshTools_MeshAlgo* interface, e.g. to connect a 3-rd party meshing tool that does not support *TopoDS_Shape* out of box. For this, such structure provides the possibility to distribute connectors to various algorithms in the form of plugins;

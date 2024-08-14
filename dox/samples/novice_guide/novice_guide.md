@@ -32,7 +32,7 @@ The Overview interface is dynamically changing based on selected **Category** at
 Additional menu buttons will appear, providing users with subcategories and relevant commands to select one of the actions.
 The result will appear in the viewer window, the code will appear at the top right, and in several cases the output will be produced at the bottom right window.
 
-@figure{sample_overview_qt_viewers.png,"Comparison of 3D and 2D viewer windows",240} height=420px
+<img src="images/sample_overview_qt_viewers.png" alt="Comparison of 3D and 2D viewer windows" width="240"> height=420px
 
 The 3D viewer window has a row of preset interface buttons to customize the visual output.
 
@@ -54,7 +54,7 @@ The **Geometry** category of the Overview focuses on primitive objects like dots
 These objects will appear in the viewer after the subcategory is selected.
 This section will demonstrate these entities both in 2D and 3D view mode and provide basic examples of parametric creation and data analysis.
 
-@figure{sample_overview_qt_geometry.png,"",240} height=440px
+<img src="images/sample_overview_qt_geometry.png" alt="" width="240"> height=440px
 
 The usage of the functions shown in the Overview is described more thoroughly at the [Modeling data](#occt_user_guides__modeling_data) section of the documentation.
 Additionally, [Modeling Algorithms](#occt_user_guides__modeling_algos) are used in more complex cases.
@@ -63,7 +63,7 @@ The **Topology** section of the Overview demonstrates the functions used in 3D o
 Multiple use cases are provided, including different object intersections, modifying and calculations.
 Some of these use cases are described in the documentation, such as [Inspector](#occt_user_guides__inspector) usage.
 
-@figure{sample_overview_qt_topology.png,"",240} height=440px
+<img src="images/sample_overview_qt_topology.png" alt="" width="240"> height=440px
 
 The subsections are grouped as shown on the screenshot before.
 Most shapes and primitive objects are introduced and then followed by a set of operations and interactions.
@@ -74,19 +74,19 @@ This may be inspected via [Poly_Triangulation Class Reference](https://dev.openc
 a part of the [Reference manual](https://dev.opencascade.org/doc/refman/html/index.html),
 an overall Open CASCADE code guide that may be used to inspect the key points in classes and their connections.
 
-@figure{sample_overview_qt_triangulation.png,"",240} height=440px
+<img src="images/sample_overview_qt_triangulation.png" alt="" width="240"> height=440px
 
 The triangulation uses some of Mesh-related classes - see full description at [Mesh](#occt_user_guides__mesh) documentation section.
 
 The **Data exchange** section provides examples of how to export and import files of several different formats.
 
-@figure{sample_overview_qt_xde.png,"",240} height=440px
+<img src="images/sample_overview_qt_xde.png" alt="" width="240"> height=440px
 
 The **OCAF** section gives an introduction for the [Open CASCADE Application Framework](#intro_overview_ocaf) functionality.
 To test these functions, create an object first (box or cylinder).
 After that, the object may be modified and saved. Actions are recorded and may be undone or redone.
 
-@figure{sample_overview_qt_ocaf.png,"",240} height=440px
+<img src="images/sample_overview_qt_ocaf.png" alt="" width="240"> height=440px
 
 **Viewers** section demonstrates examples of the 2D and 3D visualization outputs.
 Check [Visualization](#occt_user_guides__visualization) section of the documentation for a detailed description.

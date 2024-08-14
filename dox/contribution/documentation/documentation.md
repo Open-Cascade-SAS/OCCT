@@ -45,7 +45,7 @@ You can use *custom.bat* file to add necessary paths to the *PATH* variable.
 Note that in the process of PDF generation MiKTeX may need some packages not installed by default.
 We recommend setting option "Install missing packages on-the-fly" to "Ask me first" (default) during MiKTeX installation:
 
-@figure{/contribution/documentation/images/documentation_miktex.png,"",320}
+<img src="images
 
 On the first run of **pdflatex** it will open a dialog window prompting for installation of missing packages.
 Follow the instructions to proceed (define proxy settings if needed, select a mirror site to download from, etc.).
@@ -117,7 +117,7 @@ The MarkDown files have a <i>*.md</i> extension and are based on rules described
 
 <h3><a id="OCCT_DM_SECTION_3_2">Directory Structure</a></h3>
 
-@figure{/contribution/documentation/images/documentation_folders.png,"",160}
+<img src="imagesdth="160">
 
 Each document has its own folder if there are any images used in it. These images are stored in *images* subfolder.
 
@@ -127,7 +127,7 @@ If you want to use the same image for several documents, you can place it in *do
 
 
 @verbatim
-@figure{/contribution/documentation/images/documentation_test_image.svg,"",420}
+<img src="imagesdocumentation_test_image.svg" alt="" width="420">
 @endverbatim
 
 
@@ -398,7 +398,7 @@ For instance: @code [Geometry Utilities](#occt_modat_1) @endcode will be rendere
 For inserting images into the document use the command <i>\@figure</i>, as follows:
 
 @verbatim
-  @figure{/relative/path/to/image/image_file_name.png,"Image caption"}
+  <img src="/relative/path/to/image/image_file_name.png" alt="Image caption">
 @endverbatim
 
 The first argument is a path to the image file, relative to the *dox* folder.
@@ -413,12 +413,12 @@ Captions are included below the image; in PDF output the images with caption are
 Example:
 
 @verbatim
-  @figure{/contribution/documentation/images/documentation_test_image.svg,"Test SVG image"}
+  <img src="images/documentation_test_image.svg" alt="Test SVG image">
 @endverbatim
 
 is rendered as:
 
-@figure{/contribution/documentation/images/documentation_test_image.svg,"Test SVG image",320}
+<img src="imagesdocumentation_test_image.svg" alt="Test SVG image" width="320">
 
 We recommend using **Inkscape** for creation and edition of vector graphics.
 The graphics created in MS Word Draw and some other vector editors can be copy-pasted to Inkscape and saved as SVG images.

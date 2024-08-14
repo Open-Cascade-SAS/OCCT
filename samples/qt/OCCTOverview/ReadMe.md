@@ -14,7 +14,7 @@ The samples are organized in several categories according to relevant module of 
 Each sample presents geometry view, C++ code fragment and sample output window.
 This sample is described in the [Novice guide](#samples__novice_guide) for new users.
 
-@figure{sample_overview_qt.png}
+<img src="image/sample_overview_qt.png" alt="">
 
 1. Contents
 -----------------------

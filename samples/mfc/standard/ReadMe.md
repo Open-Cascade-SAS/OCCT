@@ -7,7 +7,7 @@ Visual C++ programming samples for Windows platform containing illustrating how 
   * ImportExport
   * HLR
 
-@figure{samples_mvc.png}
+<img src="image/samples_mvc.png" alt="">
 
 1. Contents 
 -----------------------

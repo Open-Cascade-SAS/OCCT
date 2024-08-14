@@ -122,7 +122,7 @@ The official repository contains:
   
   TortoiseGit integrates into Windows Explorer, thus it is possible to use context menu in Windows Explorer to access its functionality:  
   
-@figure{OCCT_GitGuide_V2_image005.png,"",100}
+<img src="images/OCCT_GitGuide_V2_image005.png" alt="" width="100">
   
 
  
@@ -135,14 +135,14 @@ The official repository contains:
   
   Select Git->Config to add your user name and Email address to the local <i>.gitconfig</i> file
   
-  @figure{OCCT_GitGuide_V2_image006.png,"",320}
+  <img src="images/OCCT_GitGuide_V2_image006.png" alt="" width="320">
 
   Optionally, you can set up TortoiseGit to use visual diff utility for SVG images used in OCCT documentation.
   For that, click on item "Diff Viewer" in the Settings dialog, then click button "Advanced..." in the right tab to add a new record with the following parameters:
   - Extension: <code>.svg</code>
   - External program: <code>&lt;path_to_OCCT&gt;\\adm\\svgdiff.bat %%base %%mine %%bname %%yname</code>
 
-@figure{OCCT_GitGuide_V2_svgdiff.png,"",320}
+<img src="images/OCCT_GitGuide_V2_svgdiff.png" alt="" width="320">
 
 <h3><a id="occt_gitguide_2_2">Linux platform</a></h3>
 
@@ -193,7 +193,7 @@ The official repository contains:
   To generate the key with this client, run **Puttygen** (e.g. from Start menu -> TortoiseGit -> Puttygen), 
   then click **Generate** and move mouse cursor over the blank area until the key is generated. 
   
-@figure{OCCT_GitGuide_V2_image007.png,"Putty key generator",320}
+<img src="images/OCCT_GitGuide_V2_image007.png" alt="Putty key generator" width="320">
 
   After the key is generated, you will see GUI controls to define the public key comment 
   and / or specify the password for the private key protection. 
@@ -297,7 +297,7 @@ Click **Save** to input the key to the system.
     
   * In TortoiseGit: create a new folder, open it and right-click in the Explorer window, then choose **Git Clone** in the context menu:
  
-@figure{OCCT_GitGuide_V2_image009.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image009.png" alt="" width="320">
 
   If you have chosen Putty as SSH client during TortoiseGit installation, check the **Load Putty Key** option and specify the location of the private key file saved by PuttyGen (see 3.2.1). This shall be done for the first time only.   
   
@@ -322,7 +322,7 @@ In TortoiseGit:
   * Right-click in the Explorer window, then choose **Git Create Branch**.
   * Select **Base On** Branch *remotes/origin/master*.  
 
-@figure{OCCT_GitGuide_V2_image012.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image012.png" alt="" width="320">
 
   Check option **Switch to new branch** if you are going to start working with the newly created branch immediately.
 
@@ -337,7 +337,7 @@ In TortoiseGit:
   
   In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Switch/Checkout**.
  
-@figure{OCCT_GitGuide_V2_image013.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image013.png" alt="" width="320">
 
   Note that in order to work with the branch locally you need to set option 
   **Create new branch** when you checkout the branch from the remote repository for the first time. 
@@ -371,7 +371,7 @@ In TortoiseGit:
 
   * In TortoiseGit: right-click in the explorer window and select in the context menu <b>Git Commit -> CR…</b>:
  
-@figure{OCCT_GitGuide_V2_image014.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image014.png" alt="" width="320">
 
   Unstaged files will be shown if you check the option ‘Show Unversioned Files’. 
   Double-click on each modified file to see the changes to be committed (as a difference vs. the base version). 
@@ -389,13 +389,13 @@ In TortoiseGit:
 
   * In TortoiseGit: right-click in the explorer window and select in the context menu, TortoiseGit -> **Push**
 
-@figure{OCCT_GitGuide_V2_image015.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image015.png" alt="" width="320">
 
 Note that Git forbids pushing a branch if the corresponding remote branch already exists and has some changes, which are not in the history of your local branch. This may happen in different situations:
   * You have amended the last commit which is already in the remote repository. If you are sure that nobody else uses your branch, push again with **Force** option. 
   * You have rebased your branch, so that now it is completely different from the branch in the remote repository. In this case, push it under a different name (add a suffix): 
  
-@figure{OCCT_GitGuide_V2_image016.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image016.png" alt="" width="320">
 
   Then remove the original remote branch so that other people recognize that it has been replaced by the new one. For that, select TortoiseGit -> **Push** again, select an empty line for your local branch name, 
   and enter the name of the branch to be removed in **Remote** field:
@@ -415,7 +415,7 @@ Note that Git forbids pushing a branch if the corresponding remote branch alread
     
   * In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Fetch**. Check in **Prune** check-box.  
   
-@figure{OCCT_GitGuide_V2_image018.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image018.png" alt="" width="320">
 
   If the branch you are working with has been changed in the remote repository,  use Git command *pull* to get the remote changes and merge them with your local branch. 
   
@@ -428,7 +428,7 @@ Note that Git forbids pushing a branch if the corresponding remote branch alread
 
   * In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Pull**.
 
-@figure{OCCT_GitGuide_V2_image019.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image019.png" alt="" width="320">
 
 Note that the local branches of your repository are the primary place, where your changes are stored until they get integrated to the official version of OCCT (master branch). The branches submitted to official repository are for collaborative work, review, and integration -- that repository should not be used for long-term storage of incomplete changes. 
   
@@ -441,7 +441,7 @@ Remove the local branches that you do not need any more. Note that you cannot de
     
   * In TortoiseGit: right-click in the explorer window and select in the context menu **TortoiseGit** -> **Git Show Log**.
 
-@figure{OCCT_GitGuide_V2_image020.png,"",420}
+<img src="images/OCCT_GitGuide_V2_image020.png" alt="" width="420">
 
   Select **All branches** check-box to view all branches.
   Right-click on the branch you want to delete and select **Delete** item in the context menu. 
@@ -455,13 +455,13 @@ If you have a fix made on a previous version of OCCT, perform the following sequ
   * Find a tag or a commit corresponding to this version in the Git history log of the master branch.
   * Create a branch basing on this tag or commit. In TortoiseGit history log: right-click on the base commit, then select **Create branch at this version**.
   
-@figure{OCCT_GitGuide_V2_image021.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image021.png" alt="" width="320">
 
   * Check option **Switch to the new branch** to start working within the new branch immediately, or switch to it separately afterwards.
   * Put your fix in the working copy, build and check that it works, then commit to the branch.
   * Rebase the branch on the current master. In TortoiseGit: right-click on the working directory, choose **TortoiseGit** -> **Rebase**, select *remotes/origin/master* as UpStream revision, and click **Start**:
  
-@figure{OCCT_GitGuide_V2_image022.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image022.png" alt="" width="320">
 
 Note that you can get some conflicts during rebase. To resolve them, double-click on each conflicted file   (highlighted by red in the file list) to open visual merge tool.   Switch between conflicting fragments by red arrows, and for each one decide if the code of one or both conflicting versions is to be taken.
 
@@ -478,16 +478,16 @@ To rebase your branch into a single commit, you need to do the following:
   * In TortoiseGit history log, select a branch to rebase on <i>(remotes/origin/master)</i> and in the context menu choose **Rebase “CR12345” onto this**.
   * In the **Rebase** dialog, check **Squash All**.  You can also change the order of commits and define for each commit whether it should be kept (**Pick**), edited, or just skipped.
   
-@figure{OCCT_GitGuide_V2_image023.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image023.png" alt="" width="320">
 
   * Click **Start**.
   * The process will stop if a conflict is detected. In that case, find files with status **Conflicted** in the list (marked by red), and double-click on them to resolve the conflict. When all conflicts are resolved, click **Continue**.
    
-@figure{OCCT_GitGuide_V2_image024.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image024.png" alt="" width="320">
  
   * At the end of the process, edit the final commit message (it should start from the issue ID and  a description from Mantis in the first line, followed by a summary of actual changes), and click **Commit**.
    
-@figure{OCCT_GitGuide_V2_image025.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image025.png" alt="" width="320">
 
 <h2><a id="occt_gitguide_5">Work with repository: Reviewer operations</a></h2>
 
@@ -513,6 +513,6 @@ To rebase your branch into a single commit, you need to do the following:
   * To review commits one-by-one, select each commit in the log. The list of changed files is shown at the bottom of the window; double-click on the file will open visual compare tool.
   * To review all changes made in the branch at once, or to compare two arbitrary revisions, select the corresponding commits in the log (e.g. the last commit in the branch and the branching point), ight-click for the context menu, and choose **Compare revisions**.
 
-@figure{OCCT_GitGuide_V2_image026.png,"",320}
+<img src="images/OCCT_GitGuide_V2_image026.png" alt="" width="320">
 
 

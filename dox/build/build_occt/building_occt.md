@@ -48,11 +48,11 @@ If the command-line tool is used, run the tool from the build directory with a s
     cd d:/tmp/occt-build-vc10-x64
     ccmake d:/occt
 
-@figure{/build/build_occt/images/cmake_image000.png}
+<img src="images/cmake_image000.png" alt="">
 
 If the GUI tool is used, run this tool without additional arguments and after that specify the source directory by clicking **Browse Source** and the build (binary) one by clicking **Browse Build**:
 
-@figure{/build/build_occt/images/cmake_image001.png}
+<img src="images/cmake_image001.png" alt="">
 
 @note Each configuration of the project should be built in its own directory.
 When building multiple configurations it is suggested to indicate in the name of build directories the system, bitness and compiler (e.g., <i>d:/occt/build/win32-vc10</i>).
@@ -60,7 +60,7 @@ When building multiple configurations it is suggested to indicate in the name of
 Once the source and build directories are selected, "Configure" button should be pressed in order to start manual configuration process.
 It begins with selection of a target configurator. It is "Visual Studio 10 2010 Win64" in our example.
 
-@figure{/build/build_occt/images/cmake_image002.png}
+<img src="images/cmake_image002.png" alt="">
 
 @note To build OCCT for **Universal Windows Platform (UWP)** specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
 Alternatively, if you are using CMake from the command line add options `-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0`.
@@ -70,7 +70,7 @@ File `CASROOT/samples/xaml/ReadMe.md` describes the building procedure of XAML (
 Once "Finish" button is pressed, the first pass of the configuration process is executed.
 At the end of the process, CMake outputs the list of environment variables, which have to be properly specified for successful configuration.
 
-@figure{/build/build_occt/images/cmake_image003.png}
+<img src="images/cmake_image003.png" alt="">
 
 The error message provides some information about these variables.
 This message will appear after each pass of the process until all required variables are specified correctly.
@@ -187,7 +187,7 @@ In our exercise the Visual Studio solution will be automatically created in the 
 
 Go to the build folder, start the Visual Studio solution *OCCT.sln* and build it by clicking **Build -> Build Solution**.
 
-@figure{/build/build_occt/images/cmake_image004.png}
+<img src="images/cmake_image004.png" alt="">
 
 By default, the build solution process skips the building of the INSTALL and Overview projects.
 When the building process is finished build:
@@ -243,23 +243,23 @@ Run GUI tool provided by CMake and:
   - Specify the root folder of OCCT (`$CASROOT`, which contains *CMakelists.txt* file) by clicking **Browse Source**.
   - Specify the location (build folder) for CMake generated project files by clicking **Browse Build**.
 
-@figure{/build/build_occt/images/android_image001.png}
+<img src="images/android_image001.png" alt="">
 
 Click **Configure** button. It opens the window with a drop-down list of generators supported by CMake project.
 Select "MinGW MakeFiles" item from the list
   - Choose "Specify toolchain file for cross-compiling", and click "Next".
-@figure{/build/build_occt/images/android_image002.png}
+<img src="images/android_image002.png" alt="">
 
   - Specify a toolchain file at the next dialog to `android.toolchain.cmake`, and click "Finish".
-@figure{/build/build_occt/images/android_image003.png}
+<img src="images/android_image003.png" alt="">
 
 If `ANDROID_NDK` environment variable is not defined in current OS, add cache entry `ANDROID_NDK` (entry type is `PATH`) -- path to the NDK folder ("Add Entry" button):
-@figure{/build/build_occt/images/android_image004.png}
+<img src="images/android_image004.png" alt="">
 
 If on Windows the message is appeared:
   "CMake Error: CMake was unable to find a build program corresponding to "MinGW Makefiles" CMAKE_MAKE_PROGRAM is not set. You probably need to select a different build tool.",
 specify `CMAKE_MAKE_PROGRAM` to mingw32-make executable.
-@figure{/build/build_occt/images/android_image005.png}
+<img src="images/android_image005.png" alt="">
 
 How to configure OCCT, see [Configure](#build_cmake_conf) section taking into account the specific configuration variables for Android:
   - `ANDROID_ABI` = `armeabi-v7a`
@@ -267,7 +267,7 @@ How to configure OCCT, see [Configure](#build_cmake_conf) section taking into ac
   - `ANDROID_NDK_LAYOUT` is equal to `CMAKE_BUILD_TYPE` variable
   - `BUILD_MODULE_Draw` = `OFF`
 
-@figure{/build/build_occt/images/android_image006.png}
+<img src="images/android_image006.png" alt="">
 
 Click **Generate** button and wait until the generation process is finished.
 Then makefiles will appear in the build folder (e.g. <i> D:/tmp/occt-android </i>).
@@ -337,8 +337,8 @@ That tool will analyze your environment and propose you to choose available opti
 * Generation of PDB files within Release build ("Release with Debug info", false by default).
 
 Below are screenshots of **genconf** tool on various platforms (Windows and Linux):
-@figure{/build/build_occt/images/genconf_windows.png}
-@figure{/build/build_occt/images/genconf_linux.png}
+<img src="images/genconf_windows.png" alt="">
+<img src="images/genconf_linux.png" alt="">
 
 Click "Save" to store the specified configuration in *custom.bat* (Windows) or *custom.sh* (other systems) file.
 

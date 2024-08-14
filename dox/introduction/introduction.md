@@ -3,7 +3,7 @@
 @tableofcontents
 
 @htmlonly<center>@endhtmlonly 
-@figure{/resources/occt_logo.png}
+<img src="../resources/occt_logo.png" alt="">
 @htmlonly</center>@endhtmlonly
 
 Welcome to Open CASCADE Technology (OCCT), a software development platform 
@@ -14,7 +14,7 @@ modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 
 @htmlonly<center>@endhtmlonly
 https://www.opencascade.com
-@figure{/resources/occ_logo.png}
+<img src="../resources/occ_logo.png" alt="">
 @htmlonly</center>@endhtmlonly
 
 <h2><a id="intro_overview">Overview</a></h2>
@@ -35,7 +35,7 @@ The C++ classes and other types are grouped into packages. Packages are organize
 
 This modular structure is illustrated in the diagram below.
 
-@figure{/introduction/images/technical_overview_schema.png}
+<img src="images/technical_overview_schema.png" alt="">
 
 * [Foundation Classes](#intro_overview_fclasses) module underlies all other OCCT classes; 
 * [Modeling Data](#intro_overview_moddata) module supplies data structures to represent 2D and 3D geometric primitives and their compositions into CAD models; 
@@ -142,7 +142,7 @@ Top-level API provides the following functionality:
    * Pipes -- general-form sweeps;
    * Lofting.
 
-@figure{/introduction/images/0001.png "Shapes containing pipes with variable radius produced by sweeping"}
+<img src="images/0001.png" alt="Shapes containing pipes with variable radius produced by sweeping">
 
  * Boolean Operations, which allow creating new shapes from the combinations of source shapes. For two shapes *S1* and *S2*:
    * *Common* contains all points that are in *S1* and *S2*;
@@ -159,7 +159,7 @@ See [Boolean Operations](#specification__boolean_operations) User's Guide for de
 
  * Algorithms for creation of mechanical features, i.e. depressions, protrusions, ribs and grooves or slots along planar or revolution surfaces.
 
-@figure{/introduction/images/0004.png}
+<img src="images/0004.png" alt="">
  
 See the details in [Modeling Algorithms User's Guide](#occt_user_guides__modeling_algos).
 
@@ -174,7 +174,7 @@ Open CASCADE SAS also offers Advanced Mesh Products:
 - <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
 - <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
 
-@figure{/introduction/images/0003.png}
+<img src="images/0003.png" alt="">
 
 <h3><a id="intro_overview_visu">Visualization</a></h3>
 
@@ -202,17 +202,17 @@ Here are a few examples of OCCT Visualization features:
 * Definition of clipping planes through the plane equation coefficients.
   Ability to define visual attributes for cross-section at the level or individual clipping planes.
   In the image below different parts of the rocket are clipped with different planes and hatched.
-@figure{/introduction/images/0008.png, "Display of shape cross-section and dimensions"}
+<img src="images/0008.png" alt="Display of shape cross-section and dimensions">
 
 * Support of built-in and application-specific GLSL shaders.
-@figure{/introduction/images/0013.png, "Fragment shader implementing custom clipping surface"}
+<img src="images/0013.png" alt="Fragment shader implementing custom clipping surface">
 
 * Optimization of rendering performance through the algorithms of:
   * View frustum culling, which skips the presentation outside camera at the rendering stage;
   * Back face culling, which reduces the rendered number of triangles and eliminates artifacts at shape boundaries.
 * Real-time ray tracing technique using recursive Whitted's algorithm and Bounded Volume Hierarchy effective optimization structure.
-@figure{introduction/images/0002.png, "Real time visualization by ray tracing method"}
-@figure{introduction/images/0012.png, "Simulation of a glass cover"}
+<img src="images/0002.png" alt="Real time visualization by ray tracing method">
+<img src="images/0012.png" alt="Simulation of a glass cover">
 
 For more details, see [Visualization User's Guide](#occt_user_guides__visualization).
 
@@ -222,7 +222,7 @@ The visualization of OCCT topological shapes by means of VTK library provided by
 
 **Data Exchange** allows developing OCCT-based applications that can interact with other CAD systems by writing and reading CAD models to and from external data.
 
-@figure{/introduction/images/0014.png,"Shape imported from STEP"}
+<img src="images/0014.png" alt="Shape imported from STEP">
 
 **Data Exchange** is organized in a modular way as a set of interfaces that comply with various CAD formats: IGES, STEP, STL, VRML, etc.
 The interfaces allow software based on OCCT to exchange data with various CAD/PDM software packages, maintaining a good level of interoperability.
@@ -422,11 +422,11 @@ Full OCCT installation with reference documentation requires 1.8 Gb on disk.
 When the installation is complete, you will find the directories for 3rd party products 
 (some might be absent in case of custom installation) and the main **OCCT** directory:
 
-@figure{/introduction/images/overview_3rdparty.png}
+<img src="images/overview_3rdparty.png" alt="">
 
 The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROOT) are as follows:
 
-@figure{/introduction/images/overview_installation.png, "The directory tree"}
+<img src="images/overview_installation.png" alt="The directory tree">
 
   * **adm**   This folder contains administration files, which allow rebuilding OCCT;
   * **adm/cmake**  This folder contains files of CMake building procedure;

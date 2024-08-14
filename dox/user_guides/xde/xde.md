@@ -15,7 +15,7 @@ It is also possible to add a new types of data taking the existing tools as prot
 
 Finally, the XDE provides reader and writer tools for reading and writing the data supported by XCAF to and from IGES and STEP files.
 
-@figure{/user_guides/xde/images/646_xde_11_400.png,"Shape imported using XDE",240}
+<img src="images646_xde_11_400.png" alt="Shape imported using XDE" width="240">
 
 The XDE component requires [Shape Healing](#occt_user_guides__shape_healing) toolkit for operation.
 
@@ -51,9 +51,9 @@ Each of these components references one and the same specified shape with differ
 All this provides an increased flexibility in working on multi-level assemblies.
 
 For example, a mechanical assembly can be defined as follows:
-@figure{/user_guides/xde/images/xde_image003.png,"Assembly Description",240}
+<img src="imagesxde_image003.png" alt="Assembly Description" width="240">
 
-@figure{/user_guides/xde/images/xde_image004.png,"Assembly View",240}
+<img src="imagesxde_image004.png" alt="Assembly View" width="240">
 
 XDE defines the specific organization of the assembly content.
 Shapes are stored on sub-labels of label `0:1:1`.
@@ -71,7 +71,7 @@ This is done by comparing the values computed by the original system with the sa
 
 Advanced Data Exchange supports both reading and writing of validation properties, and provides a tool to check them.
 
-@figure{/user_guides/xde/images/xde_image005.png,"Validation Property Descriptions",240}
+<img src="imagesxde_image005.png" alt="Validation Property Descriptions" width="240">
 
 Check logs contain deviations of computed values from the values stored in a STEP file.
 A typical example appears as follows:
@@ -99,7 +99,7 @@ In our example, it can be seen that no errors were detected for either area, vol
 XDE supports reading and writing the names of shapes to and from IGES and STEP file formats.
 This functionality can be switched off if you do not need this type of data, thereby reducing the size of the document.
 
-@figure{/user_guides/xde/images/614_xde_04_400.png,"Instance Names",360}
+<img src="images614_xde_04_400.png" alt="Instance Names" width="360">
 
 <h3><a id="occt_xde_1_6">Colors and Layers</a></h3>
 
@@ -109,7 +109,7 @@ Three types of colors are defined in the enumeration `XCAFDoc_ColorType`:
   * surface color (`XCAFDoc_ColorSurf`)
   * curve   color (`XCAFDoc_ColorCurv`)
 
-@figure{/user_guides/xde/images/xde_image006.png,"Colors and Layers",240}
+<img src="imagesxde_image006.png" alt="Colors and Layers" width="240">
 
 <h3><a id="occt_xde_1_7">Geometric Dimensions & Tolerances (GD\&T)</a></h3>
 
@@ -627,7 +627,7 @@ XCAFDoc_Volume::Set (aLabel, aVolume);
 
 XDE can read and write colors and layers assigned to shapes or their subparts (down to level of faces and edges) to and from both IGES and STEP formats.
 
-@figure{/user_guides/xde/images/239_xde_12_400.png,"Motor Head",240}
+<img src="images239_xde_12_400.png" alt="Motor Head" width="240">
 
 In an XDE document, colors are managed by the class `XCAFDoc_ColorTool`.
 It works basing on the same principles as ShapeTool works with Shapes.
@@ -1058,7 +1058,7 @@ A note may be attached to a document item identified by a label, a sub-shape ide
 Annotations are stored in a child of the `XCAFDoc_NotesTool` label, at label `0.1.9.2`.
 Notes binding is done through `XCAFDoc_GraphNode` attribute.
 
-  @figure{/user_guides/xde/images/xde_notes001.png,"Structure of notes part of XCAF document",240}
+  <img src="imagesxde_notes001.png" alt="Structure of notes part of XCAF document" width="240">
 
 <h3><a id="occt_xde_2_10_1">Initialization</a></h3>
 

@@ -6,4 +6,4 @@ These samples are available on all supported desktop platforms.
 This Import Export programming sample contains 3D Viewer and Import / Export functionality.
 The sample could be found within OCCT repository in folder `/samples/qt/IESample/`.
 
-@figure{samples_qt.png}
+<img src="image/samples_qt.png" alt="">

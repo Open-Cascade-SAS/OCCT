@@ -27,11 +27,11 @@ The Intersections component is used to compute intersections between 2D or 3D ge
 
 The *Geom2dAPI_InterCurveCurve* class  allows the evaluation of the intersection points (*gp_Pnt2d*) between two  geometric curves (*Geom2d_Curve*) and the evaluation of the points  of self-intersection of a curve. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image003.png,"Intersection and self-intersection of curves",300}
+<img src="imagesmodeling_algos_image003.png" alt="Intersection and self-intersection of curves" width="300">
 
 In both cases, the  algorithm requires a value for the tolerance (Standard_Real) for the confusion  between two points. The default tolerance value used in all constructors is *1.0e-6.* 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image004.png,"Intersection and tangent intersection",420}
+<img src="imagesmodeling_algos_image004.png" alt="Intersection and tangent intersection" width="420">
 
 The algorithm returns a  point in the case of an intersection and a segment in the case of tangent  intersection. 
 
@@ -210,7 +210,7 @@ The implemented algorithms are more complex than those provided by the Direct Co
 The expression of a tangency problem generally leads to several results, according to the relative positions of the solution and the circles or straight lines in relation to which the tangency constraints are expressed. For example, consider the following
 case of a circle of a given radius (a small one) which is tangential to two secant circles C1 and C2:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image058.png,"Example of a Tangency Constraint",360}
+<img src="imagesmodeling_algos_image058.png" alt="Example of a Tangency Constraint" width="360">
 
 This diagram clearly shows that there are 8 possible solutions.
 
@@ -263,18 +263,18 @@ The following analytic algorithms using value-handled entities for creation of 2
 #### Exterior/Interior
 It is not hard to define  the interior and exterior of a circle. As is shown in the following diagram,  the exterior is indicated by the sense of the binormal, that is to say the  right side according to the sense of traversing the circle. The left side is  therefore the interior (or &quot;material&quot;). 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image006.png,"Exterior/Interior of a Circle",220}
+<img src="imagesmodeling_algos_image006.png" alt="Exterior/Interior of a Circle" width="220">
 
 By extension, the  interior of a line or any open curve is defined as the left side according to  the passing direction, as shown in the following diagram: 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image007.png,"Exterior/Interior of a Line and a Curve",220}
+<img src="imagesmodeling_algos_image007.png" alt="Exterior/Interior of a Line and a Curve" width="220">
 
 #### Orientation of a Line
 It is sometimes  necessary to define in advance the sense of travel along a line to be created.  This sense will be from first to second argument. 
 
 The following figure shows a line, which is  first tangent to circle C1 which is interior to the line, and then passes  through point P1. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image008.png,"An Oriented Line",220}
+<img src="imagesmodeling_algos_image008.png" alt="An Oriented Line" width="220">
 
 
 #### Line tangent to two circles
@@ -283,7 +283,7 @@ The following four  diagrams illustrate four cases of using qualifiers in the cr
 
 **Example 1 Case 1** 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image009.png,"Both circles outside",220}
+<img src="imagesmodeling_algos_image009.png" alt="Both circles outside" width="220">
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -300,7 +300,7 @@ GccAna_Lin2d2Tan
 
 **Example 1 Case 2** 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image010.png,"Both circles enclosed",220}
+<img src="imagesmodeling_algos_image010.png" alt="Both circles enclosed" width="220">
 
 Constraints: 
 Tangent and Including  C1. 
@@ -317,7 +317,7 @@ GccAna_Lin2d2Tan
 
 **Example  1 Case 3**
  
-@figure{/user_guides/modeling_algos/images/modeling_algos_image011.png,"C1 enclosed and C2 outside",220}
+<img src="imagesmodeling_algos_image011.png" alt="C1 enclosed and C2 outside" width="220">
 
 Constraints: 
 Tangent and Including C1. 
@@ -333,7 +333,7 @@ GccAna_Lin2d2Tan
 
 **Example 1 Case 4** 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image012.png,"C1 outside and C2 enclosed",220}
+<img src="imagesmodeling_algos_image012.png" alt="C1 outside and C2 enclosed" width="220">
 Constraints: 
 Tangent and Exterior to  C1. 
 Tangent and Including  C2. 
@@ -348,7 +348,7 @@ GccAna_Lin2d2Tan
 
 **Example 1 Case 5** 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image013.png,"Without qualifiers",220}
+<img src="imagesmodeling_algos_image013.png" alt="Without qualifiers" width="220">
 
 Constraints: 
 Tangent and Undefined  with respect to C1. 
@@ -366,7 +366,7 @@ GccAna_Lin2d2Tan
 The following four  diagrams show the four cases in using qualifiers in the creation of a circle. 
 
 **Example 2 Case 1** 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image014.png,"Both solutions outside",220}
+<img src="imagesmodeling_algos_image014.png" alt="Both solutions outside" width="220">
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -381,7 +381,7 @@ GccAna_Circ2d2TanRad
 
 **Example 2 Case 2** 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image015.png,"C2 encompasses C1",220}
+<img src="imagesmodeling_algos_image015.png" alt="C2 encompasses C1" width="220">
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -395,7 +395,7 @@ GccAna_Circ2d2TanRad
 ~~~~
 
 **Example  2 Case 3**
-@figure{/user_guides/modeling_algos/images/modeling_algos_image016.png,"Solutions enclose C2",220}
+<img src="imagesmodeling_algos_image016.png" alt="Solutions enclose C2" width="220">
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -409,7 +409,7 @@ GccAna_Circ2d2TanRad
 ~~~~
 		
 **Example 2 Case 4**
-@figure{/user_guides/modeling_algos/images/modeling_algos_image017.png,"Solutions enclose C1",220}
+<img src="imagesmodeling_algos_image017.png" alt="Solutions enclose C1" width="220">
 
 Constraints: 
 Tangent and Enclosing  C1. 
@@ -557,7 +557,7 @@ This is done by the class *GeomFill_ConstrainedFilling*, which allows filling a 
 
 A case in point is the intersection of two fillets at a corner. If the radius of the fillet on one edge is different from that of the fillet on another, it becomes impossible to sew together all the edges of the resulting surfaces. This leaves a gap in the overall surface of the object which you are constructing.
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image059.png,"Intersecting filleted edges with differing radiuses",220}
+<img src="imagesmodeling_algos_image059.png" alt="Intersecting filleted edges with differing radiuses" width="220">
 
 These algorithms allow you to fill this gap from two, three or four curves. This can be done with or without constraints, and the resulting surface will be either a Bezier or a BSpline surface in one of a range of filling styles.
 
@@ -577,7 +577,7 @@ The enumerations *FillingStyle* specify the styles used to build the surface. Th
   * *Coons* -- a rounded style with less depth than *Curved*
   * *Curved* -- the style with the most rounded patches.
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image018.png,"Intersecting filleted edges with different radii leave a gap filled by a surface",274}
+<img src="imagesmodeling_algos_image018.png" alt="Intersecting filleted edges with different radii leave a gap filled by a surface" width="274">
 
 <h4><a id="occt_modalg_2_5_5">Plate surfaces</a></h4>
 
@@ -589,7 +589,7 @@ curve constraints and the point constraint respectively. The resulting surface c
 The surface is built using a variational spline algorithm. It uses the principle of deformation of a thin plate by localised mechanical forces. If not already given in the input, an initial surface is calculated. This corresponds to the plate prior
 to deformation. Then, the algorithm is called to calculate the final surface. It looks for a solution satisfying constraints and minimizing energy input.
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image061.png,"Surface generated from two curves and a point",360}
+<img src="imagesmodeling_algos_image061.png" alt="Surface generated from two curves and a point" width="360">
 
 The package *GeomPlate*   provides the following services for creating surfaces respecting curve and  point constraints: 
 
@@ -615,7 +615,7 @@ The class *Surface* allows describing the characteristics of plate surface objec
 
 The class *MakeApprox* allows converting a *GeomPlate* surface into a *Geom_BSplineSurface*. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image060.png,"Surface generated from four curves and a point",360}
+<img src="imagesmodeling_algos_image060.png" alt="Surface generated from four curves and a point" width="360">
 
 Let us create a Plate surface  and approximate it from a polyline as a curve constraint and a point constraint 
 
@@ -684,7 +684,7 @@ Projections provide for computing the following:
 
 *Geom2dAPI_ProjectPointOnCurve*  allows calculation of all normals projected from a point (*gp_Pnt2d*)  onto a geometric curve (*Geom2d_Curve*). The calculation may be restricted  to a given domain. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image020.png,"Normals from a point to a curve",320}
+<img src="imagesmodeling_algos_image020.png" alt="Normals from a point to a curve" width="320">
 
 The  curve does not have to be a *Geom2d_TrimmedCurve*. The algorithm will function with any class inheriting *Geom2d_Curve*. 
 
@@ -918,7 +918,7 @@ Extrema_ExtPC& TheExtrema = Projector.Extrema();
 
 The class *GeomAPI_ProjectPointOnSurf*  allows calculation of all normals  projected from a point from *gp_Pnt* onto a geometric surface from *Geom_Surface*. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image021.png,"Projection of normals from a point to a surface",360}
+<img src="imagesmodeling_algos_image021.png" alt="Projection of normals from a point to a surface" width="360">
 
 Note that the  surface does not have to be of *Geom_RectangularTrimmedSurface* type.  
 The algorithm  will function with any class inheriting *Geom_Surface*.
@@ -1089,7 +1089,7 @@ TopoDS_Edge E = BRepBuilderAPI_MakeEdge(C,V1,V2,p1,p2);
 
 where C is the domain of the edge; V1 is the first vertex oriented FORWARD; V2 is the second vertex oriented REVERSED; p1  and p2 are the parameters for the vertices V1 and V2 on the curve. The default  tolerance is associated with this edge. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image022.png,"Basic Edge Construction",220}
+<img src="imagesmodeling_algos_image022.png" alt="Basic Edge Construction" width="220">
 
 The following rules  apply to the arguments: 
 
@@ -1115,7 +1115,7 @@ The following rules  apply to the arguments:
 
 The figure below  illustrates two special cases, a semi-infinite edge and an edge on a periodic  curve. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image023.png,"Infinite and Periodic Edges",220}
+<img src="imagesmodeling_algos_image023.png" alt="Infinite and Periodic Edges" width="220">
 
 <h4><a id="occt_modalg_3_2_2">Supplementary edge construction methods</a></h4>
 
@@ -1190,7 +1190,7 @@ The *Error* method  returns a term of the *BRepBuilderAPI_EdgeError* enumeration
 
 The following example  creates a rectangle centered on the origin of dimensions H, L with fillets of radius R. The edges and the vertices are stored in the arrays *theEdges* and *theVertices*. We use class *Array1OfShape* (i.e. not arrays of edges or vertices).  See the image below. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image024.png,"Creating a Wire",360}
+<img src="imagesmodeling_algos_image024.png" alt="Creating a Wire" width="360">
 
 ~~~~{.cpp}
 #include <BRepBuilderAPI_MakeEdge.hxx> 
@@ -1319,7 +1319,7 @@ Standard_Real umin,umax,vmin,vmax; // parameters
 TopoDS_Face F =  BRepBuilderAPI_MakeFace(S,umin,umax,vmin,vmax); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image025.png,"Basic Face Construction",360}
+<img src="imagesmodeling_algos_image025.png" alt="Basic Face Construction" width="360">
 
 To make a face from the  natural boundary of a surface, the parameters are not required: 
 
@@ -1500,7 +1500,7 @@ TopoDS_Solid theBox = BRepPrimAPI_MakeBox(10.,20.,30.);
 
 The four methods to build a box are shown in the figure: 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image026.png,"Making Boxes",420}
+<img src="imagesmodeling_algos_image026.png" alt="Making Boxes" width="420">
 
 <h4><a id="occt_modalg_4_1_2">Wedge</a></h4>
 *BRepPrimAPI_MakeWedge* class allows building a wedge, which is a slanted box, i.e. a  box with angles. The wedge is constructed in much the same way as a box i.e.  from three dimensions dx,dy,dz plus arguments or from an axis system, three  dimensions, and arguments. 
@@ -1510,7 +1510,7 @@ The following figure  shows two ways to build wedges. One is to add a dimension 
 The first method is a  particular case of the second with *xmin = 0, xmax = ltx, zmin = 0, zmax = dz*. 
 To make a centered  pyramid you can use *xmin = xmax = dx / 2, zmin = zmax = dz / 2*. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image027.png,"Making Wedges",420}
+<img src="imagesmodeling_algos_image027.png" alt="Making Wedges" width="420">
 
 <h4><a id="occt_modalg_4_1_3">Rotation object</a></h4>
 *BRepPrimAPI_MakeOneAxis* is a deferred class used as a root class for all classes constructing rotational primitives. Rotational primitives are  created by rotating a curve around an axis. They cover the cylinder, the cone,  the sphere, the torus, and the revolution, which provides all other curves. 
@@ -1523,7 +1523,7 @@ The particular  constructions of these primitives are described, but they all ha
 
 The result of the  OneAxis construction is a Solid, a Shell, or a Face. The face is the face  covering the rotational surface. Remember that you will not use the OneAxis  directly but one of the derived classes, which provide improved constructions.  The following figure illustrates the OneAxis arguments. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image028.png,"MakeOneAxis arguments",360}
+<img src="imagesmodeling_algos_image028.png" alt="MakeOneAxis arguments" width="360">
 
 <h4><a id="occt_modalg_4_1_4">Cylinder</a></h4>
 *BRepPrimAPI_MakeCylinder* class allows creating cylindrical primitives. A cylinder is created either in the  default coordinate system or in a given coordinate system *gp_Ax2*. There are  two constructions: 
@@ -1542,7 +1542,7 @@ axes.Translate(gp_Vec(X,Y,Z));
 TopoDS_Face F = 
 BRepPrimAPI_MakeCylinder(axes,R,DY,PI/2.); 
 ~~~~
-@figure{/user_guides/modeling_algos/images/modeling_algos_image029.png,"Cylinder",360}
+<img src="imagesmodeling_algos_image029.png" alt="Cylinder" width="360">
 
 <h4><a id="occt_modalg_4_1_5">Cone</a></h4>
 *BRepPrimAPI_MakeCone* class allows creating conical primitives. Like a cylinder, a cone is created either in  the default coordinate system or in a given coordinate system (gp_Ax2). There  are two constructions: 
@@ -1557,7 +1557,7 @@ Standard_Real R1 = 30, R2 = 10, H = 15;
 TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image030.png,"Cone",360}
+<img src="imagesmodeling_algos_image030.png" alt="Cone" width="360">
 
 <h4><a id="occt_modalg_4_1_6">Sphere</a></h4>
 *BRepPrimAPI_MakeSphere* class allows creating spherical primitives. Like a cylinder, a  sphere is created either in the default coordinate system or in a given  coordinate system *gp_Ax2*. There are four constructions: 
@@ -1580,7 +1580,7 @@ TopoDS_Solid S4 = BRepPrimAPI_MakeSphere(R,a1,a2,ang);
 
 Note that we could  equally well choose to create Shells instead of Solids. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image031.png,"Examples of  Spheres",420}
+<img src="imagesmodeling_algos_image031.png" alt="Examples of  Spheres" width="420">
 
 
 <h4><a id="occt_modalg_4_1_7">Torus</a></h4>
@@ -1591,7 +1591,7 @@ Note that we could  equally well choose to create Shells instead of Solids.
   * Two radii and two angles --  builds a wraparound torus segment between two radial planes. The angles a1, a2 must follow  the relation 0 < a2 - a1 < 2*PI. 
   * Two radii and three angles -- a combination of two previous methods builds a portion of torus segment.
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image032.png,"Examples of Tori",420}
+<img src="imagesmodeling_algos_image032.png" alt="Examples of Tori" width="420">
 
 The following code  builds four toroidal shells from two radii and three angles. 
 
@@ -1631,7 +1631,7 @@ Sweeps are the objects  you obtain by sweeping a **profile** along a **path**. T
 
 It is forbidden to sweep  Solids and Composite Solids. A Compound generates a Compound with the sweep of  all its elements. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image033.png,"Generating a  sweep",360}
+<img src="imagesmodeling_algos_image033.png" alt="Generating a  sweep" width="360">
 
 *BRepPrimAPI_MakeSweep class* is a deferred class used as a root of the following sweep classes:
 * *BRepPrimAPI_MakePrism* -- produces a linear sweep
@@ -1661,7 +1661,7 @@ TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,Standard_False);
 // semi-infinite 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image034.png,"Finite, infinite, and semi-infinite prisms",420}
+<img src="images/modeling_algos_image034.png" alt="Finite, infinite, and semi-infinite prisms" width="420">
 
 <h4><a id="occt_modalg_4_2_3">Rotational Sweep </a></h4>
 *BRepPrimAPI_MakeRevol* class allows creating a rotational sweep from a shape, an axis  (gp_Ax1), and an angle. The angle has a default value of 2*PI which means a  closed revolution. 
@@ -1678,7 +1678,7 @@ TopoDS_Solid R1 = BRepPrimAPI_MakeRevol(F,axis);
 TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image035.png,"Full and partial  rotation",420}
+<img src="imagesmodeling_algos_image035.png" alt="Full and partial  rotation" width="420">
 
 
 
@@ -1693,7 +1693,7 @@ Boolean operations are used to create new shapes from the combinations of two gr
 | Common |  all points in S1 and S2 |
 | Cut S1 by S2| all points in S1 and not in S2 | 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image036.png,"Boolean Operations",420}
+<img src="imagesmodeling_algos_image036.png" alt="Boolean Operations" width="420">
 
 From the viewpoint of Topology these are topological operations followed by blending (putting fillets onto edges created after the topological operation).
 
@@ -1744,7 +1744,7 @@ TopoDS_Shape S = BRepAlgoAPI_Cut(A,B);
 
 *BRepAlgoAPI_Section* performs the section, described as a *TopoDS_Compound* made of *TopoDS_Edge*. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image037.png,"Section operation",220}
+<img src="imagesmodeling_algos_image037.png" alt="Section operation" width="220">
 
 ~~~~{.cpp}
 TopoDS_Shape A = ...,  TopoDS_ShapeB = ...; 
@@ -1773,8 +1773,8 @@ Open CASCADE Technology topological tools provide algorithms to
 It is possible to create the planar faces from the arbitrary set of planar edges randomly located in 3D space.
 This feature might be useful if you need for instance to restore the shape from the wireframe model:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image062.png,"Wireframe model",160}
-@figure{/user_guides/modeling_algos/images/modeling_algos_image063.png,"Faces of the model",160}
+<img src="imagesmodeling_algos_image062.png" alt="Wireframe model" width="160">
+<img src="imagesmodeling_algos_image063.png" alt="Faces of the model" width="160">
 
 
 To make the faces from edges it is, firstly, necessary to create planar wires from the given edges and than create planar faces from each wire.
@@ -1809,8 +1809,8 @@ In general, the output wires are non-manifold and may contain free vertices, as 
 In general, the input wires are non-manifold and may be not closed, but should share the coinciding parts.
 The wires located in the same plane and completely included into other wires will create holes in the faces built from outer wires:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image064.png,"Wireframe model",160}
-@figure{/user_guides/modeling_algos/images/modeling_algos_image065.png,"Two faces (red face has a hole)",160}
+<img src="imagesmodeling_algos_image064.png" alt="Wireframe model" width="160">
+<img src="imagesmodeling_algos_image065.png" alt="Two faces (red face has a hole)" width="160">
 
 
 
@@ -2063,7 +2063,7 @@ To produce a fillet, it is necessary to define the filleted shape at the constru
 
 A fillet description contains an edge and a  radius. The edge must be shared by two faces. The fillet is automatically extended to all edges in a smooth continuity with the original  edge. It is not an error to add a fillet twice,  the last description holds. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image038.png,"Filleting two edges using radii r1 and  r2.",360}
+<img src="imagesmodeling_algos_image038.png" alt="Filleting two edges using radii r1 and  r2." width="360">
 
 In the following example  a filleted box with dimensions a,b,c and radius r is created. 
 
@@ -2097,7 +2097,7 @@ TopoDS_Shape FilletedBox(const Standard_Real a,
 	} 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image039.png,"Fillet with constant radius",360}
+<img src="imagesmodeling_algos_image039.png" alt="Fillet with constant radius" width="360">
 
 #### Changing radius
 
@@ -2125,7 +2125,7 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 } 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image040.png,"Fillet with changing radius",360}
+<img src="imagesmodeling_algos_image040.png" alt="Fillet with changing radius" width="360">
  
 <h4><a id="occt_modalg_6_1_2">Chamfer</a></h4>
 
@@ -2140,7 +2140,7 @@ Add(dist,  E, F)
 Add(d1,  d2, E, F) with d1 on the face F. 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image041.png,"Chamfer",360}
+<img src="imagesmodeling_algos_image041.png" alt="Chamfer" width="360">
 
 <h4><a id="occt_modalg_6_1_3">Fillet on a planar face</a></h4>
 
@@ -2263,7 +2263,7 @@ if (SolidMaker.IsDone())
   Result = SolidMaker.Shape();
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image042.png,"Shelling",420}
+<img src="imagesmodeling_algos_image042.png" alt="Shelling" width="420">
 
 Also it is possible to create solid between shell, offset shell. This functionality can be called using *BRepOffsetAPI_MakeThickSolid::MakeThickSolidBySimple* method. The code below shows usage example:
 
@@ -2324,7 +2324,7 @@ else {
 } 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image043.png,"DraftAngle",420}
+<img src="imagesmodeling_algos_image043.png" alt="DraftAngle" width="420">
 
 <h4><a id="occt_modalg_7_4">Pipe  Constructor</a></h4>
 
@@ -2338,7 +2338,7 @@ TopoDS_Shape Profile = ...;
 TopoDS_Shape Pipe =  BRepOffsetAPI_MakePipe(Spine,Profile); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image044.png,"Example of a Pipe",320}
+<img src="imagesmodeling_algos_image044.png" alt="Example of a Pipe" width="320">
 
 <h4><a id="occt_modalg_7_5">Evolved Solid</a></h4>
 
@@ -2447,7 +2447,7 @@ TopoDS_Edge E = ME;
 
 Sewing allows creation of connected topology (shells and wires) from a set of separate topological elements (faces and edges). For example, Sewing can be used to create of shell from a compound of separate faces. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image045.png,"Shapes with partially shared edges",320}
+<img src="imagesmodeling_algos_image045.png" alt="Shapes with partially shared edges" width="320">
 
 It is important to distinguish between sewing and other procedures, which modify the geometry, such as filling holes or gaps, gluing, bending curves and surfaces, etc.
 
@@ -2633,9 +2633,9 @@ if (thePrism.IsDone()) {
 } 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image047.png,"Fusion with MakePrism",320}
+<img src="imagesmodeling_algos_image047.png" alt="Fusion with MakePrism" width="320">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image048.png,"Creating a prism between two faces with Perform()",320}
+<img src="imagesmodeling_algos_image048.png" alt="Creating a prism between two faces with Perform()" width="320">
 
 **Draft Prism**
 
@@ -2688,7 +2688,7 @@ MKDP.Perform(200);
 TopoDS_Shape res1 = MKDP.Shape(); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image049.png,"A tapered prism",320}
+<img src="imagesmodeling_algos_image049.png" alt="A tapered prism" width="320">
 
 **Revolution**
 
@@ -2798,7 +2798,7 @@ MKPipe.Perform();
 TopoDS_Shape res1 = MKPipe.Shape(); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image050.png,"Pipe depression",240}
+<img src="imagesmodeling_algos_image050.png" alt="Pipe depression" width="240">
 
 <h4><a id="occt_modalg_9_2">Mechanical Features</a></h4>
 
@@ -2858,7 +2858,7 @@ aform.Perform();
 TopoDS_Shape res = aform.Shape(); 
 ~~~~
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image051.png,"Creating a rib",240}
+<img src="imagesmodeling_algos_image051.png" alt="Creating a rib" width="240">
 
 **Gluer**
 
@@ -2974,13 +2974,13 @@ If the intersection of the adjacent faces will be empty, the algorithm will be u
 
 Note, that for successful removal of the feature, the extended faces adjacent to the feature should cover the feature completely, otherwise the solids will not be rebuild. 
 Take a look at the simple shape on the image below:
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im001.png,"",220}
+<img src="imagesmodeling_algos_rf_im001.png" alt="" width="220">
 
 Removal of all three faces of the gap is not going to work, because there will be no face to fill the transverse part of the step.
 Although, removal of only two faces, keeping one of the transverse faces, will fill the gap with the kept face:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im002.png,"Keeping the right transverse face",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im003.png,"Keeping the left transverse face",220}
+<img src="imagesmodeling_algos_rf_im002.png" alt="Keeping the right transverse face" width="220">
+<img src="imagesmodeling_algos_rf_im003.png" alt="Keeping the left transverse face" width="220">
 
 <h4><a id="occt_modalg_defeaturing_usage">Usage</a></h4>
 
@@ -3035,48 +3035,48 @@ For more details on commands above, refer to the [Defeaturing commands](#occt_dr
 
 Here are the examples of defeaturing of the ANC101 model:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}</td>
+<img src="imagesmodeling_algos_rf_im004.png" alt="ANC101 model" width="220"></td>
 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im005.png,"Removing the cylindrical protrusion",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im006.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im005.png" alt="Removing the cylindrical protrusion" width="220">
+<img src="imagesmodeling_algos_rf_im006.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im007.png,"Removing the cylindrical holes",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im008.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im007.png" alt="Removing the cylindrical holes" width="220">
+<img src="imagesmodeling_algos_rf_im008.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im009.png,"Removing the cylindrical holes",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im010.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im009.png" alt="Removing the cylindrical holes" width="220">
+<img src="imagesmodeling_algos_rf_im010.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im011.png,"Removing the small gaps in the front",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im012.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im011.png" alt="Removing the small gaps in the front" width="220">
+<img src="imagesmodeling_algos_rf_im012.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im013.png,"Removing the gaps in the front completely",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im014.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im013.png" alt="Removing the gaps in the front completely" width="220">
+<img src="imagesmodeling_algos_rf_im014.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im015.png,"Removing the cylindrical protrusion",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im016.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im015.png" alt="Removing the cylindrical protrusion" width="220">
+<img src="imagesmodeling_algos_rf_im016.png" alt="Result" width="220">
 
 Here are the few examples of defeaturing of the model containing boxes with blends:
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im017.png,"Box blend model",220}
+<img src="imagesmodeling_algos_rf_im017.png" alt="Box blend model" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im018.png,"Removing the blend",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im019.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im018.png" alt="Removing the blend" width="220">
+<img src="imagesmodeling_algos_rf_im019.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im020.png,"Removing the blend",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im021.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im020.png" alt="Removing the blend" width="220">
+<img src="imagesmodeling_algos_rf_im021.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im022.png,"Removing the blend",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im023.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im022.png" alt="Removing the blend" width="220">
+<img src="imagesmodeling_algos_rf_im023.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im024.png,"Removing the blend",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im025.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im024.png" alt="Removing the blend" width="220">
+<img src="imagesmodeling_algos_rf_im025.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im026.png,"Removing the blend",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im027.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im026.png" alt="Removing the blend" width="220">
+<img src="imagesmodeling_algos_rf_im027.png" alt="Result" width="220">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im028.png,"Removing the blend",220}
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im029.png,"Result",220}
+<img src="imagesmodeling_algos_rf_im028.png" alt="Removing the blend" width="220">
+<img src="imagesmodeling_algos_rf_im029.png" alt="Result" width="220">
 
 
 <h3><a id="occt_modalg_makeperiodic">3D Model Periodicity</a></h3>
@@ -3095,23 +3095,23 @@ polyline p 0 0 0 0 0 10 5 0 10 5 0 5 10 0 5 10 0 0 0 0 0
 mkplane f p
 prism s f 0 5 0
 ~~~~
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im001.png,"Shape to make periodic",220}
+<img src="imagesmodeling_algos_mkperiodic_im001.png" alt="Shape to make periodic" width="220">
 
 Making this shape periodic in X, Y and Z directions with the periods matching the shape's extensions should make the splits of negative X and Z sides of the shape. The shape is already similar on opposite sides of Y directions, thus no new splits is expected.
 Here is the shape after making it periodic:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im002.png,"Periodic shape",220}
+<img src="imagesmodeling_algos_mkperiodic_im002.png" alt="Periodic shape" width="220">
 And here is the repetition of the shape once in X and Z directions:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im003.png,"Repeated shape",220}
+<img src="imagesmodeling_algos_mkperiodic_im003.png" alt="Repeated shape" width="220">
 
 The OCCT Shape Periodicity tools also allows making the shape periodic with the period not matching the shape's extensions. Let's make the shape periodic with 11, 6 and 11 for X, Y, Z periods accordingly.
 Such values of periods mean that there will be a gap between repeated shapes, and since during repetition the opposite sides do not touch the shape will not be split at all.
 Here is the repetition of the shape once in X and Z directions:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im004.png,"Repeated shape",220}
+<img src="imagesmodeling_algos_mkperiodic_im004.png" alt="Repeated shape" width="220">
 As expected, the shape is not split and the repeated elements do not touch.
 
 If necessary the algorithm will trim the shape to fit into the requested period by splitting it with the planes limiting the shape's requested periods.
 E.g. let's make the L-shape periodic only in X direction with the period 2 starting at X parameter 4:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im005.png,"Periodic trimmed shape",220}
+<img src="imagesmodeling_algos_mkperiodic_im005.png" alt="Periodic trimmed shape" width="220">
 
 <h4><a id="occt_modalg_makeperiodic_how_it_works">How the shape is made periodic</a></h4>
 
@@ -3241,7 +3241,7 @@ repeatshape drills -x 24 -y 24
 # cut the drills from the plate
 bcut result plate drills
 ~~~~
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im006.png,"Plate with drills",220}
+<img src="imagesmodeling_algos_mkperiodic_im006.png" alt="Plate with drills" width="220">
 
 
 <h2><a id="occt_modalg_10">Hidden Line  Removal</a></h2>
@@ -3264,13 +3264,13 @@ However, there some restrictions in HLR use:
   * Infinite faces or lines are not processed.
 
   
-@figure{/user_guides/modeling_algos/images/modeling_algos_image052.png,"Sharp, smooth and sewn edges  in a simple screw shape",320}
+<img src="images/modeling_algos_image052.png" alt="Sharp, smooth and sewn edges  in a simple screw shape" width="320">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image053.png,"Outline edges  and isoparameters in the same shape",320}
+<img src="imagesmodeling_algos_image053.png" alt="Outline edges  and isoparameters in the same shape" width="320">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image054.png,"A simple screw shape seen with shading",320}
+<img src="imagesmodeling_algos_image054.png" alt="A simple screw shape seen with shading" width="320">
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image055.png,"An extraction  showing hidden sharp edges",320}
+<img src="imagesmodeling_algos_image055.png" alt="An extraction  showing hidden sharp edges" width="320">
 
 
 The following services are related to Hidden Lines Removal : 

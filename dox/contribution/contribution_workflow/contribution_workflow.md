@@ -34,7 +34,7 @@ According to his access level, the user can participate in the issue handling pr
 <h3><a id="occt_contribution_workflow_general">General scheme</a></h3>
 
 <center>
-@figure{OCCT_ContributionWorkflow_V3_image001.svg,"Standard life cycle of an issue",360}
+<img src="images/OCCT_ContributionWorkflow_V3_image001.svg" alt="Standard life cycle of an issue" width="360">
 </center>
   
 <h3><a id="occt_contribution_workflow_issue">Issue registration</a></h3>
@@ -280,7 +280,7 @@ Each change is integrated as a single commit without preserving the history of c
 This is done to have the master branch history plain and clean.
 The following picture illustrates the process:
   
-@figure{OCCT_ContributionWorkflow_V3_image002.png,"Integration of several branches",420}
+<img src="images/OCCT_ContributionWorkflow_V3_image002.png" alt="Integration of several branches" width="420">
   
 The new integration branch is tested against possible regressions that might appear due to interference between separate changes.
 When the tests are OK, the integration branch is pushed as the new master to the official repository.

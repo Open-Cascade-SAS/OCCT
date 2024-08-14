@@ -53,7 +53,7 @@ OCAF uses other modules of Open CASCADE Technology — the Shape  is implemented
 
 The relationship between OCAF and the Open CASCADE Technology (**OCCT**) Object Libraries can be seen in the image below. 
 
-@figure{/user_guides/ocaf/images/ocaf_image003.svg,"OCCT Architecture",360}
+<img src="imagesocaf_image003.svg" alt="OCCT Architecture" width="360">
 
 In the image, the OCAF (Open CASCADE Application Framework) is shown with black rectangles and OCCT Object Libraries required by OCAF are shown with white rectangles. 
  
@@ -63,7 +63,7 @@ The subsequent chapters of this document explain the concepts and show how to us
 
 OCAF provides you with an object-oriented Application-Document-Attribute model consisting of C++ class libraries. 
 
-@figure{ocaf_wp_image003.png,"The Application-Document-Attribute model",420}
+<img src="images/ocaf_wp_image003.png" alt="The Application-Document-Attribute model" width="420">
 
 <h4><a id="occt_ocaf_1_2_1">Application</a></h4>
 
@@ -131,7 +131,7 @@ In addition,  application-specific data can be added by defining new attribute c
   For example, to associate a texture to a face in a geometric model, 
   both the face and the texture are attached to the same reference-key.  
  
-@figure{ocaf_image004.png,"Topology driven versus reference-key driven approaches",360}
+<img src="images/ocaf_image004.png" alt="Topology driven versus reference-key driven approaches" width="360">
 
  Reference-keys can be created in two ways:   
  
@@ -211,7 +211,7 @@ The sub-labels of a label are called its children. Conversely, each label, which
 
 The most important property is that a label’s entry is its persistent address in the data framework. 
   
-@figure{/user_guides/ocaf/images/ocaf_image005.png,"A simple framework model",216}
+<img src="imagesocaf_image005.png" alt="A simple framework model" width="216">
 
 In this image the circles contain tags of the corresponding labels.  The lists of tags are located under the circles. The root label always has a zero tag. 
 
@@ -223,7 +223,7 @@ List of tags of the right-bottom label is "0:3:4": this label has tag 4, its fat
 
 Let's have a look at the example:
   
-@figure{ocaf_wp_image007.png,"The coffee machine",200}
+<img src="images/ocaf_wp_image007.png" alt="The coffee machine" width="200">
   
    In the image the application for designing coffee  machines first allocates 
   a label for the machine unit. It then adds sub-labels  for the main features 
@@ -235,7 +235,7 @@ Let's have a look at the example:
   Later on, you can  modify the handle's geometry without changing its color — 
   both remain attached  to the same label.  
   
-@figure{ocaf_wp_image005.png,"The data structure of the coffee machine",361}
+<img src="images/ocaf_wp_image005.png" alt="The data structure of the coffee machine" width="361">
  
   The nesting of labels is key to OCAF. This allows a  label to have its own structure 
   with its local addressing scheme which can be  reused in a more complex structure. 
@@ -249,7 +249,7 @@ Let's have a look at the example:
 
 Another example is the application for designing table lamps. The first label is allocated to the lamp unit. 
 
-@figure{/user_guides/ocaf/images/ocaf_image006.png,"",200}
+<img src="imagesocaf_image006.png" alt="" width="200">
 
 The root label cannot have brother labels. Consequently, various lamps in the framework allocation correspond to the sub-labels of the root label. This allows avoiding any confusion between table lamps in the data framework. Different lamp parts have different material, color and other attributes, so a child label of the lamp with the specified tags is allocated for each sub-unit of the lamp: 
 
@@ -263,7 +263,7 @@ Remember that tags are private addresses without any meaning outside the data fr
 
 So, after the user changes the lamp design, only corresponding attributes are changed, but the label structure is maintained. The lamp shape must be recreated by new attribute values and attributes of the lamp shape must refer to a new shape. 
 
-@figure{/user_guides/ocaf/images/ocaf_image007.png,"",360}
+<img src="imagesocaf_image007.png" alt="" width="360">
 
 
 The previous figure shows the table-lamps document structure: each child of the root label contains a lamp shape attribute and refers to the sub-labels, which contain some design information about corresponding sub-units. 
@@ -517,7 +517,7 @@ Let’s study the implementation of the same data type in both ways by the examp
   * First point as *TDataStd_RealArray* (three values: X1, Y1 and Z1);
   * Second point as *TDataStd_RealArray* (three values: X2, Y2 and Z2).
 
-@figure{/user_guides/ocaf/images/ocaf_image010.png,"Data tree for translation",240}
+<img src="imagesocaf_image010.png" alt="Data tree for translation" width="240">
 
 If the type of transformation is changed to rotation, the data tree looks like this: 
   * Type of transformation <i>(gp_Rotation)</i> as *TDataStd_Integer*;
@@ -525,7 +525,7 @@ If the type of transformation is changed to rotation, the data tree looks like t
   * Axis of rotation as *TDataStd_RealArray* (three values: DX, DY and DZ);
   * Angle of rotation as *TDataStd_Real*.
 
-@figure{/user_guides/ocaf/images/ocaf_image011.png,"Data tree for rotation",240}
+<img src="imagesocaf_image011.png" alt="Data tree for rotation" width="240">
 
 The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the data type. The interface class initialized by the label of this attribute allows access to the data container (type of transformation and the data of transformation according to the type). 
   
@@ -540,7 +540,7 @@ The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the d
   which references the coffee pot of the first document 
   (the XLink contains the relative path of the coffee pot document and the entry of the coffee pot data [0:1] ).  
 
-@figure{ocaf_wp_image006.png,"The coffee machine compound document",360}
+<img src="images/ocaf_wp_image006.png" alt="The coffee machine compound document" width="360">
  
   In this context, the end-user of the coffee machine application can open the coffee pot document, 
   modify the geometry of, for  example, the reservoir, and overwrite the document without worrying 
@@ -811,7 +811,7 @@ You can also have a look at the class *TDF_Closure*, which can be useful to dete
 
 External links refer from one document to another. They allow you to update the copy of data  framework later on. 
 
-@figure{/user_guides/ocaf/images/ocaf_image012.png,"External links between documents",360}
+<img src="imagesocaf_image012.png" alt="External links between documents" width="360">
 
 Note that documents can be copied with or without a possibility of updating an external link. 
 
@@ -861,7 +861,7 @@ The user can add the *TNaming_NamedShape* attribute to other labels. This attrib
 
 If a shape is newly created, then the old shape of a corresponding named shape is an empty shape. If a shape is deleted, then the new shape in this named shape is empty. 
 
-@figure{/user_guides/ocaf/images/ocaf_image013.png,"",455}
+<img src="imagesocaf_image013.png" alt="" width="455">
 
 <h3><a id="occt_ocaf_5_2">Shape attributes in data framework. </a></h3>
 
@@ -874,7 +874,7 @@ Different algorithms may dispose sub-shapes of the result shape at the individua
 
 Consider the following example. Two boxes (solids) are fused into one solid (the result one). Initially each box was placed to the result label as a named shape, which has evolution PRIMITIVE and refers to the corresponding shape of the *TNaming_UsedShapes* map. The box result label has a material attribute and six child labels containing named shapes of Box faces. 
 
-@figure{/user_guides/ocaf/images/ocaf_image014.png,"Resulting box",200}
+<img src="imagesocaf_image014.png" alt="Resulting box" width="200">
 
 After the fuse operation a modified result is placed to a separate label as a named shape, which refers to the old shape (one of the boxes) and to the new shape resulting from the fuse operation, and has evolution MODIFY (see the following figure). 
 
@@ -882,7 +882,7 @@ Named shapes, which contain information about modified faces, belong to the fuse
 * sub-label with tag 1 -- modified faces from box 1, 
 * sub-label with tag 2 -- modified faces from box 2. 
 
-@figure{/user_guides/ocaf/images/ocaf_image015.png,"",360}
+<img src="imagesocaf_image015.png" alt="" width="360">
 
 This is necessary and sufficient information for the functionality of the right naming mechanism: any sub-shape of the result can be identified unambiguously by name type and set of labels, which contain named shapes: 
 
@@ -1025,7 +1025,7 @@ Standard_Boolean CafTest_MyClass::SameEdge (const Handle(CafTest_Line)& L1, cons
 
 Let us consider an example: imagine a wooden plate. The job is to drive several nails in it:
 
-@figure{/user_guides/ocaf/images/ocaf_image020.png,"A nail driven in a wooden plate",360}
+<img src="imagesocaf_image020.png" alt="A nail driven in a wooden plate" width="360">
 
 There may be several nails with different size and position. A **Hammer** should push each **Nail** exactly in the center point of the top surface. For this the user does the following:
 *	Makes several Nails of different height and diameter (according to the need),
@@ -1047,11 +1047,11 @@ The application contains 3 functions:
 Each function gives the topological naming some hints how to “re-solve” the selected sub-shapes:
 * The Nail constructs a solid shape and puts each face of the shape into sub-labels: 
 
-@figure{/user_guides/ocaf/images/ocaf_image021.png,"Distribution of faces through sub-labels of the Nail",185}
+<img src="imagesocaf_image021.png" alt="Distribution of faces through sub-labels of the Nail" width="185">
 
 * The **Translator** moves a shape and registers modification for each face: it puts a pair: “old” shape -- “new” shape at a sub-label of each moving Nail. The “old” shape represents a face of the Nail at the initial position. The “new” shape -- is the same face, but at a new position:
 
-@figure{/user_guides/ocaf/images/ocaf_image022.png,"Registration of relocation of faces of a Nail",240}
+<img src="imagesocaf_image022.png" alt="Registration of relocation of faces of a Nail" width="240">
 
 How does it work?
 * The Hammer selects a face of a Nail calling *TNaming_Selector::Select()*. This call makes a unique name for the selected shape. In our example, it will be a direct reference to the label of the top face of the Nail (Face 1).
@@ -1219,7 +1219,7 @@ It is possible to describe any model by means of standard OCAF attributes.
 
   Certainly, other variants are also possible.
 
-@figure{ocaf_tree_wp_image003.png,"Allocation of all data as one  array of double values",350}
+<img src="images/ocaf_tree_wp_image003.png" alt="Allocation of all data as one  array of double values" width="350">
  
   The first approach to allocation of all  data represented as one array of double values 
   saves initial memory and is easy to implement. 
@@ -1236,7 +1236,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   In this case we create 100  000 labels -- one label for each measurement point 
   and attach an array of double  values to these labels:  
  
-@figure{ocaf_tree_wp_image004.png,"Allocation of data of each  measurement point as arrays of double values",288}
+<img src="images/ocaf_tree_wp_image004.png" alt="Allocation of data of each  measurement point as arrays of double values" width="288">
  
   Now edition of data is safer as far as  memory usage is concerned. 
   Change of value for one measurement point (any  value: point coordinates, load, and so on) backs-up only one small array of double values.
@@ -1247,7 +1247,7 @@ It is possible to describe any model by means of standard OCAF attributes.
    
   The third case of allocation of data  through OCAF tree is represented below:  
 
-@figure{ocaf_tree_wp_image005.png,"Allocation of data into separate arrays of double values",354}
+<img src="images/ocaf_tree_wp_image005.png" alt="Allocation of data into separate arrays of double values" width="354">
 
   In this case sub-labels are involved and we  can easily access the values of each measurement point, 
   load or matrix. We don’t need an interface class with methods of access to the data 
@@ -1264,7 +1264,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   In this case we  implement the third variant of using the standard attributes (see picture 3), 
   but we use less memory (because we use only one attribute instead of three):  
  
-@figure{ocaf_tree_wp_image006.png,"Allocation of data into newly  created OCAF attribute",383}
+<img src="images/ocaf_tree_wp_image006.png" alt="Allocation of data into newly  created OCAF attribute" width="383">
 
   The second variant of using standard OCAF attributes still has drawbacks: 
   when data is edited, OCAF backs-up all values  of the measurement point.   
@@ -1365,7 +1365,7 @@ The class *TPrsStd_AISPresentation* allows you to define the visual presentation
 The abstract class TPrsStd_Driver allows you to define your own driver classes. Simply redefine the Update method in your new class, which will rebuild the presentation. 
 
 If your driver is placed to the driver table with the unique driver GUID, then every time the viewer updates presentations with a GUID identical to your driver’s GUID, the *Update* method of your driver for these presentations must be called: 
-@figure{/user_guides/ocaf/images/ocaf_image016.png,"",420}
+<img src="imagesocaf_image016.png" alt="" width="420">
 
 As usual, the GUID of a driver and the GUID of a displayed attribute are the same. 
 
@@ -1390,7 +1390,7 @@ Function services aggregate data necessary for regeneration of a model. The func
 
 When you edit any application model, you have to regenerate the model by propagating the modifications. Each propagation step calls various algorithms. To make these algorithms independent of your application model, you need to use function services. 
 
-@figure{/user_guides/ocaf/images/ocaf_image008.png,"Document structure",360}
+<img src="imagesocaf_image008.png" alt="Document structure" width="360">
 
 Take, for example, the case of a modeling sequence made up of a box with the application of a fillet on one of its edges. If you change the height of the box, the fillet will need to be regenerated as well. 
 
@@ -1410,7 +1410,7 @@ For updating algorithm optimization, each function driver has access to the *TFu
 
 An application must implement its functions, function drivers and the common solver for parametric model creation. For example, check the following model: 
 
-@figure{/user_guides/ocaf/images/ocaf_image017.png,"",360}
+<img src="imagesocaf_image017.png" alt="" width="360">
 
 The procedure of its creation is as follows:
   * create a rectangular planar face *F* with height 100 and width 200;
@@ -1436,7 +1436,7 @@ The procedure of its creation is as follows:
   Let us describe the usage of the Function Mechanism of Open CASCADE Application Framework on a simple example.  
   This example represents a "nail" composed by a cone and two cylinders of different radius and height:  
 
-@figure{ocaf_functionmechanism_wp_image003.png,"A nail",160}
+<img src="images/ocaf_functionmechanism_wp_image003.png" alt="A nail" width="160">
 
   These three objects (a cone and two cylinders) are  independent, 
   but the Function Mechanism makes them connected to each other and representing one object -- a nail.  
@@ -1545,7 +1545,7 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   The function of the cone is independent. The functions of the cylinders depend on the cone function. 
   The nail function depends on the  results of all functions:  
 
-@figure{ocaf_functionmechanism_wp_image005.png,"A graph of dependencies between functions",232}
+<img src="images/ocaf_functionmechanism_wp_image005.png" alt="A graph of dependencies between functions" width="232">
 
   Computation of the model starts with the cone function, then the long cylinder, 
   after that the header cylinder and, finally, the result is generated  by the nail function at the end of function chain.  
@@ -1896,7 +1896,7 @@ It should be emphasized that *TObj* package defines only the interfaces and the 
 
 Logically the *TObj* data model is represented as a tree of model objects, with upper-level objects typically being collections of other objects (called *partitions*, represented by the class *TObj_Partition*). The root object of the model is called the *Main partition* and is maintained by the model itself. This partition contains a list of sub-objects called its *children* each sub-object may contain its own children (according to its type), etc. 
 
-@figure{/user_guides/ocaf/images/tobj_image003.png,"TObj Data Model",240}
+<img src="imagestobj_image003.png" alt="TObj Data Model" width="240">
 
 As the *TObj* Data Model is based on OCAF (Open CASCADE Application Framework) technology, 
 it stores its data in the underlying OCAF document. The OCAF document consists of a tree of 
@@ -1909,7 +1909,7 @@ of the label, which uniquely identifies its position in the document.
 Generally the structure of the OCAF tree of the *TObj* data 
 model corresponds to the logical structure of the model and can be presented as in the following picture: 
 
-@figure{/user_guides/ocaf/images/tobj_image004.png,"TObj Data Model mapped on OCAF document",360}
+<img src="imagestobj_image004.png" alt="TObj Data Model mapped on OCAF document" width="360">
 
 All data of the model are stored in the root label (0:1) of the OCAF document. 
 An attribute *TObj_TModel* is located in this root label. It 
@@ -2276,7 +2276,7 @@ of important features of *TObj* model objects. This implementation defines
 basic approaches that are recommended for all descendants, 
 and provides tools to facilitate their usage. 
 
-@figure{/user_guides/ocaf/images/tobj_image005.png,"TObj objects hierarchy",170}
+<img src="imagestobj_image005.png" alt="TObj objects hierarchy" width="170">
 
 <h4><a id="occt_tobj_3_1">Separation of data and interface</a></h4>
 
@@ -2297,7 +2297,7 @@ The special type of attribute *TObj_TObject* is used for storing instances of ob
 in the OCAF tree. *TObj_TObject* is a simple container for the object of type *TObj_Object*. 
 All objects (interfaces) of the data model  inherit this class. 
 
-@figure{/user_guides/ocaf/images/tobj_image006.png,"TObj object stored on OCAF label",360}
+<img src="imagestobj_image006.png" alt="TObj object stored on OCAF label" width="360">
 
 
 <h4><a id="occt_tobj_3_2">Basic features</a></h4>
@@ -2487,7 +2487,7 @@ This attribute is located in the sub-label of the referring object (called *mast
 and keeps reference to the main label of the referred object. 
 At the same time the referred object can maintain the back reference to the master object. 
 
-@figure{/user_guides/ocaf/images/tobj_image007.png,"Objects relationship",360}
+<img src="imagestobj_image007.png" alt="Objects relationship" width="360">
 
 
 
@@ -2741,7 +2741,7 @@ Apart from the model and the object, package *TObj* provides a set of auxiliary 
 
 The structure of *TObj* iterators hierarchy is presented below: 
 
-@figure{/user_guides/ocaf/images/tobj_image008.png,"Hierarchy of iterators",420}
+<img src="imagestobj_image008.png" alt="Hierarchy of iterators" width="420">
 
 
 <h3><a id="occt_tobj_5">Packaging</a></h3>
