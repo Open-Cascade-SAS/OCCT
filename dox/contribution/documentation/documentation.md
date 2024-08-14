@@ -485,9 +485,9 @@ $$
 $$
 ```
   gives the following result:
-$$ \dot{x} = \sigma(y - x) $$
-$$ \dot{y} = \rho x - y - xz $$
-$$ \dot{z} = -\beta z + xy $$
+$ \dot{x} = \sigma(y - x) $
+$ \dot{y} = \rho x - y - xz $
+$ \dot{z} = -\beta z + xy $
 
 3.Inline formulas can be specified using this syntax:
 
@@ -495,5 +495,5 @@ $$ \dot{z} = -\beta z + xy $$
   \sqrt{3x-1}+(1+x)^2
 ```
 that leads to the following result:
-$$ \sqrt{3x-1}+(1+x)^2 $$
+$ \sqrt{3x-1}+(1+x)^2 $
   
