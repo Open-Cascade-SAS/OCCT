@@ -2267,7 +2267,7 @@ ivtkinit
 
 Creates a window for VTK viewer.
 
-<img src="imagesdraw_image001.png" alt="" width="225">
+<img src="images/draw_image001.png" alt="" width="225">
 
 <h4><a id="occt_draw_4_6_2">ivtkdisplay</a></h4>
 
@@ -2286,7 +2286,7 @@ pcone c 5 0 10
 ivtkdisplay c
 ~~~~
 
-<img src="imagesdraw_image002.png" alt="" width="261">
+<img src="images/draw_image002.png" alt="" width="261">
 
 
 <h4><a id="occt_draw_4_6_3">ivtkerase</a></h4>
@@ -2345,7 +2345,7 @@ ivtkdisplay c
 ivtksetdispmode c 1
 ~~~~
 
-<img src="imagesdraw_image003.png" alt="" width="262">
+<img src="images/draw_image003.png" alt="" width="262">
 
 <h4><a id="occt_draw_4_6_6">ivtksetselmode</a></h4>
 
@@ -2367,7 +2367,7 @@ ivtkdisplay a
 ivtksetselmode a 4 1
 ~~~~
 
-<img src="imagesdraw_image004.png" alt="" width="291">
+<img src="images/draw_image004.png" alt="" width="291">
  
 <h4><a id="occt_draw_4_6_7">ivtkmoveto</a></h4>
 
@@ -2440,13 +2440,13 @@ ivtkinit
 ivtkbgcolor 200 220 250
 ~~~~
  
-<img src="imagesdraw_image005.png" alt="" width="196">
+<img src="images/draw_image005.png" alt="" width="196">
 
 ~~~~{.php}
 ivtkbgcolor 10 30 80 255 255 255
 ~~~~
 
-<img src="imagesdraw_image006.png" alt="" width="190">
+<img src="images/draw_image006.png" alt="" width="190">
 
 <h2><a id="occt_draw_5">OCAF commands</a></h2>
 

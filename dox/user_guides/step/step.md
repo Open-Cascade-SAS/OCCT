@@ -6,7 +6,7 @@
 
 STEP is more and more widely used to exchange data between various software, involved in CAD, PDM, Analysis, etc... STEP is far more than an "exchange standard" : it provides a technology and a set of methodologies to describe the data to exchange in a modular and upgradeable way. Regarding OCCT, this mostly applies to CAD data but it is not a limitation, other kinds of data for specific applications can be addressed too.
 
-<img src="imagesstep_image002.png" alt="Image imported from STEP" width="240">
+<img src="images/step_image002.png" alt="Image imported from STEP" width="240">
 
 Open Cascade allows its users to employ STEP in the following domains:
 * Exchange of data for technical applications, following the state-of-the-art definitions and rules;
@@ -815,7 +815,7 @@ This method is intended to force two adjacent edges in the wire to share the sam
 
 The following diagram illustrates the structure of calls in reading STEP. The highlighted classes are intended to translate geometry
 
-<img src="imagesstep_image003.png" alt="The structure of calls in reading STEP" width="420">
+<img src="images/step_image003.png" alt="The structure of calls in reading STEP" width="420">
   
 <h3><a id="occt_step_2_7">Example</a></h3>
 ~~~~{.cpp}
@@ -1182,7 +1182,7 @@ The following diagram illustrates the structure of calls in writing STEP.
 The highlighted classes are intended to translate geometry. 
 
 
-<img src="imagesstep_image004.png" alt="The structure of calls in writing STEP" width="420">
+<img src="images/step_image004.png" alt="The structure of calls in writing STEP" width="420">
 
     
 <h3><a id="occt_step_3_7">Example</a></h3>

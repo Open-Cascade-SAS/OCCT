@@ -814,7 +814,7 @@ vfit
 
 See how proxy *OpenGl_Structure* is used to represent instance:
 
-<img src="imagesvisualization_image029.png" alt="" width="240">
+<img src="images/visualization_image029.png" alt="" width="240">
 
 The original object does not have to be displayed in order to make instance.
 Also selection handles transformations of instances correctly:
@@ -830,7 +830,7 @@ vconnect x 3 0 0 s p   # make assembly
 vfit
 ~~~~
 
-<img src="imagesvisualization_image030.png" alt="" width="420">
+<img src="images/visualization_image030.png" alt="" width="420">
 
 Here is the example of a more complex hierarchy involving sub-assemblies:
 

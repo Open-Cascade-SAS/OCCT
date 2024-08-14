@@ -119,7 +119,7 @@ Data types described in a package may include one or more of the following data 
   * Pointers to other object classes
 Inside a package, two data types cannot bear the same name.
 
-<img src="imagesfoundation_classes_image003.png" alt="Contents of a package" width="420">
+<img src="images/foundation_classes_image003.png" alt="Contents of a package" width="420">
 
 **Methods** are either **functions** or **procedures**.
 Functions return an object, whereas procedures only communicate by passing arguments.
@@ -170,7 +170,7 @@ The data types in Open CASCADE Technology fall into two categories:
   * Data types manipulated by handle (or reference)
   * Data types manipulated by value
 
-<img src="imagesfoundation_classes_image004.png" alt="Manipulation of data types" width="420">
+<img src="images/foundation_classes_image004.png" alt="Manipulation of data types" width="420">
 
 A data type is implemented as a class.
 The class not only defines its data representation and the methods available on instances, but it also suggests how the instance will be manipulated.
@@ -260,13 +260,13 @@ There are three categories of types which are manipulated by value:
   * Types defined by classes not inheriting from *Standard_Transient*, whether directly or not.
 Types which are manipulated by value behave in a more direct fashion than those manipulated by handle and thus can be expected to perform operations faster, but they cannot be stored independently in a file.
 
-<img src="imagesfoundation_classes_image005.png" alt="Manipulation of a data type by value" width="420">
+<img src="images/foundation_classes_image005.png" alt="Manipulation of a data type by value" width="420">
 
 <h4><a id="occt_fcug_2_1_3">Types manipulated by reference (handle)</a></h4>
 
 These are types defined by classes inheriting from the *Standard_Transient* class.
 
-<img src="imagesfoundation_classes_image006.png" alt="Manipulation of a data type by reference" width="420">
+<img src="images/foundation_classes_image006.png" alt="Manipulation of a data type by reference" width="420">
   
 <h4><a id="occt_fcug_2_1_4">When is it necessary to use a handle?</a></h4>
 

@@ -48,7 +48,7 @@ Here are a few examples of typical problems with illustrations of how Shape Heal
 
 The following diagram shows dependencies of API packages:
 
-<img src="imagesshape_healing_image009.svg" alt="Shape Healing packages" width="420">
+<img src="images/shape_healing_image009.svg" alt="Shape Healing packages" width="420">
 
 Each sub-domain has its own scope of functionality:
 * analysis -- exploring shape properties, computing shape features, detecting violation of OCCT requirements (shape itself is not modified);
@@ -520,7 +520,7 @@ TopoDS_Wire aNewWire = aFixWire.Wire();
 
 Let us correct the following wire:
 
-<img src="imagesshape_healing_image013.png" alt="Initial shape" width="420">
+<img src="images/shape_healing_image013.png" alt="Initial shape" width="420">
 
 It is necessary to apply the [tools for the analysis of wire validity](#occt_shg_3_1_2) to check that:
 * the edges are correctly oriented;
@@ -567,7 +567,7 @@ if (aCheckWire.CheckSelfIntersection())
 
 As the result all failures have been fixed.
 
-<img src="imagesshape_healing_image014.png" alt="Resulting shape" width="420">
+<img src="images/shape_healing_image014.png" alt="Resulting shape" width="420">
 
 <h4><a id="occt_shg_2_3_8">Repairing tool for edges</a></h4>
 
@@ -583,7 +583,7 @@ This tool does not have the method *Perform()*.
 
 To see how this tool works, it is possible to take an edge, where the maximum deviation between the 3D curve and 2D curve P1 is greater than the edge tolerance.
 
-<img src="imagesshape_healing_image011.png" alt="Initial shape" width="420">
+<img src="images/shape_healing_image011.png" alt="Initial shape" width="420">
 
 First it is necessary to apply the [tool for checking the edge validity](#occt_shg_3_1_3) to find that the maximum deviation between pcurve and 3D curve is greater than tolerance.
 Then we can use the repairing tool to increase the tolerance and make the deviation acceptable.
@@ -602,7 +602,7 @@ if (aCheckEdge.CheckSameParameter (theEdge, aMaxDev))
 }
 ~~~~
 
-<img src="imagesshape_healing_image012.png" alt="Resulting shape" width="420">
+<img src="images/shape_healing_image012.png" alt="Resulting shape" width="420">
 
 As the result, the edge tolerance has been increased.
 
@@ -1367,9 +1367,9 @@ Sharing between faces in the shape is preserved and the resulting shape is of th
 
 An example of using this tool is presented in the figures below:
 
-<img src="imagesshape_healing_image003.png" alt="Source Face" width="240">
+<img src="images/shape_healing_image003.png" alt="Source Face" width="240">
 
-<img src="imagesshape_healing_image004.png" alt="Resulting shape" width="240">
+<img src="images/shape_healing_image004.png" alt="Resulting shape" width="240">
 
 *ShapeUpgrade_ShapeDivideArea* is inherited from the base class *ShapeUpgrade_ShapeDivide* and should be used in the following way:
 * This class should be initialized on a shape with the help of the constructor or  method *Init()* from the base class.
@@ -1562,16 +1562,16 @@ If the sequence of shapes contains faces, only the internal wires from these fac
 
 An example of using this tool is presented in the figures below:
 
-<img src="imagesshape_healing_image005.png" alt="Source Face" width="240">
-<img src="imagesshape_healing_image006.png" alt="Resulting shape" width="240">
+<img src="images/shape_healing_image005.png" alt="Source Face" width="240">
+<img src="images/shape_healing_image006.png" alt="Resulting shape" width="240">
 
 After the processing three internal wires with contour area less than the specified minimal area have been removed.
 One internal face has been removed. The outer wire of this face consists of the edges belonging to the removed internal wires and a seam edge.
 Two other internal faces have not been removed because their outer wires consist not only of edges belonging to the removed wires.
 
-<img src="imagesshape_healing_image007.png" alt="Source Face" width="240">
+<img src="images/shape_healing_image007.png" alt="Source Face" width="240">
 
-<img src="imagesshape_healing_image008.png" alt="Resulting shape" width="240">
+<img src="images/shape_healing_image008.png" alt="Resulting shape" width="240">
 
 After the processing six internal wires with contour area less than the specified minimal area have been removed.
 Six internal faces have been removed. These faces can be united into groups of faces.

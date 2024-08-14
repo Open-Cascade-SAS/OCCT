@@ -5,7 +5,7 @@
 <h2><a id="occt_vis_1">Introduction</a></h2>
 VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. This User’s Guide describes how to apply VIS classes in application dealing with 3D visualization based on VTK library.
 
-<img src="imagesvis_image001.png" alt="3D visualization based on VTK library" width="421">
+<img src="images/vis_image001.png" alt="3D visualization based on VTK library" width="421">
 
 There are two ways to use VIS in the application:
 * Use a **high-level API**. It is a simple scenario to use VTK viewer with displayed OCCT shapes. It considers usage of tools provided with VIS component such as a specific VTK data source, a picker class and specific VTK filters. Basically, in this scenario you enrich your custom VTK pipeline with extensions coming from VIS.
@@ -20,14 +20,14 @@ VIS component consists of the following packages:
 * **IVtkVTK** -- implementation of interfaces related to VTK visualization toolkit;
 * **IVtkTools** -- high-level tools designed for integration into VTK visualization pipelines.
 
-<img src="imagesvis_image002.png" alt="Dependencies of VIS packages" width="200">
+<img src="images/vis_image002.png" alt="Dependencies of VIS packages" width="200">
 
 The idea behind the mentioned organization of packages is separation of interfaces from their actual implementations by their dependencies from a particular library (OCCT, VTK). Besides providing of semantic separation, such splitting helps to avoid excessive dependencies on other OCCT toolkits and VTK.
 * **IVtk** package does not depend on VTK libraries at all and needs OCCT libraries only because of collections usage (*TKernel* library);
 * Implementation classes from **IVtkOCC** package depend on OCCT libraries only and do not need VTK;
 * **IVtkVTK** package depends on VTK libraries only and does not need any OCCT functionality except collections.
 
-<img src="imagesvis_image003.png" alt="Dependencies of VIS packages" width="240">
+<img src="images/vis_image003.png" alt="Dependencies of VIS packages" width="240">
 
 Basically, it is enough to use the first three packages in the end user’s application  (*IVtk, IVtkOCC* and *IVtkVTK*) to be able to work with OCCT shapes in VTK viewer. However, *IVtkTools* package is also provided as a part of the component to make the work more comfortable.
 
@@ -155,7 +155,7 @@ For example, the scalar-based coloring can be disabled to bind a single color to
 <h3><a id="occt_vis_3_3">Display modes</a></h3>
 The output of the shape data source can be presented in wireframe or shading display mode.  A specific filter from class *IVtkTools_DisplayModeFilter* can be applied to select the display mode. The filter passes only the cells corresponding to the given mode. The set of available modes is defined by *IVtk_DisplayMode* enumeration.
 
-<img src="imagesvis_image004.png" alt="" width="360">
+<img src="images/vis_image004.png" alt="" width="360">
 
 For example, the shading representation can be obtained in the following way:
 
@@ -175,7 +175,7 @@ By default, the display mode filter works in a wireframe mode.
 
 TIP: to make the shading representation smooth, use additional *vtkPolyDataNormals* filter. This filter must be applied after the display mode filter.
 
-<img src="imagesvis_image005.png" alt="" width="360">
+<img src="images/vis_image005.png" alt="" width="360">
 
 <h3><a id="occt_vis_3_4">Interactive selection</a></h3>
 *IVtkTools* package provides *IVtkTools_ShapePicker* class to perform selection of OCCT shapes and sub-shapes in VTK viewer and access the picking results. The typical usage of *IVtkTools_ShapePicker* tool consists in the following sequence of actions:
@@ -240,7 +240,7 @@ OCCT picking algorithm *IVtkTools_ShapePicker* calculates a new transformation m
 
 WARNING: VIS picker essentially works on the initial topological data structures rather than on the actually visualized actors. This peculiarity allows VIS to take advantage of standard OCCT selection mechanism, but puts strict limitations on the corresponding visualization pipelines. Once constructed, the faceted shape representation should not be morphed or translated anyhow. Otherwise, the picking results will lose their associativity with the source geometry. E.g. you should never use *vtkTransform* filter, but rather apply OCCT isometric transformation on the initial model in order to work on already relocated facet. These limitations are often acceptable for CAD visualization. If not, consider usage of a custom VTK-style picker working on the actually visualized actors.
 
-<img src="imagesvis_image006.png" alt="" width="420">
+<img src="images/vis_image006.png" alt="" width="420">
 
 <h4><a id="occt_vis_3_5">Selection of sub-shapes</a></h4>
 

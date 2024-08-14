@@ -117,7 +117,7 @@ The MarkDown files have a <i>*.md</i> extension and are based on rules described
 
 <h3><a id="OCCT_DM_SECTION_3_2">Directory Structure</a></h3>
 
-<img src="imagesdth="160">
+<img src="/images/documentation_folders.png" alt="" witdth="160">
 
 Each document has its own folder if there are any images used in it. These images are stored in *images* subfolder.
 
@@ -127,7 +127,7 @@ If you want to use the same image for several documents, you can place it in *do
 
 
 @verbatim
-<img src="imagesdocumentation_test_image.svg" alt="" width="420">
+<img src="images/documentation_test_image.svg" alt="" width="420">
 @endverbatim
 
 
@@ -418,7 +418,7 @@ Example:
 
 is rendered as:
 
-<img src="imagesdocumentation_test_image.svg" alt="Test SVG image" width="320">
+<img src="images/documentation_test_image.svg" alt="Test SVG image" width="320">
 
 We recommend using **Inkscape** for creation and edition of vector graphics.
 The graphics created in MS Word Draw and some other vector editors can be copy-pasted to Inkscape and saved as SVG images.

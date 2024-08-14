@@ -51,9 +51,9 @@ Each of these components references one and the same specified shape with differ
 All this provides an increased flexibility in working on multi-level assemblies.
 
 For example, a mechanical assembly can be defined as follows:
-<img src="imagesxde_image003.png" alt="Assembly Description" width="240">
+<img src="images/xde_image003.png" alt="Assembly Description" width="240">
 
-<img src="imagesxde_image004.png" alt="Assembly View" width="240">
+<img src="images/xde_image004.png" alt="Assembly View" width="240">
 
 XDE defines the specific organization of the assembly content.
 Shapes are stored on sub-labels of label `0:1:1`.
@@ -71,7 +71,7 @@ This is done by comparing the values computed by the original system with the sa
 
 Advanced Data Exchange supports both reading and writing of validation properties, and provides a tool to check them.
 
-<img src="imagesxde_image005.png" alt="Validation Property Descriptions" width="240">
+<img src="images/xde_image005.png" alt="Validation Property Descriptions" width="240">
 
 Check logs contain deviations of computed values from the values stored in a STEP file.
 A typical example appears as follows:
@@ -109,7 +109,7 @@ Three types of colors are defined in the enumeration `XCAFDoc_ColorType`:
   * surface color (`XCAFDoc_ColorSurf`)
   * curve   color (`XCAFDoc_ColorCurv`)
 
-<img src="imagesxde_image006.png" alt="Colors and Layers" width="240">
+<img src="images/xde_image006.png" alt="Colors and Layers" width="240">
 
 <h3><a id="occt_xde_1_7">Geometric Dimensions & Tolerances (GD\&T)</a></h3>
 
@@ -1058,7 +1058,7 @@ A note may be attached to a document item identified by a label, a sub-shape ide
 Annotations are stored in a child of the `XCAFDoc_NotesTool` label, at label `0.1.9.2`.
 Notes binding is done through `XCAFDoc_GraphNode` attribute.
 
-  <img src="imagesxde_notes001.png" alt="Structure of notes part of XCAF document" width="240">
+  <img src="images/xde_notes001.png" alt="Structure of notes part of XCAF document" width="240">
 
 <h3><a id="occt_xde_2_10_1">Initialization</a></h3>
 
