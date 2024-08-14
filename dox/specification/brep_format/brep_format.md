@@ -457,23 +457,31 @@ $$ C(u)=\frac{(0,1,0) \cdot 4 \cdot (1-u)^{2}+(1,-2,0) \cdot 5 \cdot 2 \cdot u \
  
 The weight poles are *n* 3D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight poles are *n* pairs *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag *r* is 1. Here *B<sub>i</sub>* is a 3D point and *h<sub>i</sub>* is a positive real $ (1 \leq i \leq n) $.  $ h_{i}=1\; (1 \leq i \leq n) $ if the flag *r* is 0.  
  
-The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with a multiplicity $ q_{i} \geq 1 \; (1 \leq i \leq k) $ so that  
+The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with a multiplicity $q_{i} \geq 1 \; (1 \leq i \leq k)$ so that
  
-$$ u_{i} < u_{i+1} (1 \leq i \leq k-1),$$
+$$
+u_{i} < u_{i+1} (1 \leq i \leq k-1)
+$$
 
-$$ q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1. $$
+$$
+q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1
+$$
 
-The B-spline curve is defined by the following  parametric equation:  
- 
-$$ C(u) = \frac{\sum_{i=1}^{n}B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n}h_{i} \cdot N_{i,m+1}(u)},\;u \in [u_{1},\; u_{k}] $$ 
+The B-spline curve is defined by the following  parametric equation:
+
+$$
+C(u) = \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)}, \; u \in [u_{1}, \; u_{k}]
+$$
  
 where functions $ N_{i,j} $ have the following recursion definition  by *j*:  
 
-$$ N_{i,1}(u)=\left\{\begin{matrix}
+$$
+N_{i,1}(u)=\left\{\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) $$ 
- 
+N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1)
+$$
+
 where 
  
 $$ \bar{u}_{i} = u_{j},\; (1 \leq j \leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l} ). $$  
