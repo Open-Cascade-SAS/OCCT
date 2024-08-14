@@ -216,7 +216,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
     <3D curve record 9>;  
 ```
  
-<h4><a id="specification__brep_format_5_1_1">Line - \<3D curve record 1\></a></h4>
+<h4><a id="specification__brep_format_5_1_1">Line - <3D curve record 1></a></h4>
  
 **Example**  
 
@@ -239,7 +239,7 @@ $$ C(u)=P+u \cdot D, \; u \in (-\infty,\; \infty). $$
 The example record is interpreted as a line which  passes through a point *P*=(1, 0, 3), has a direction *D*=(0, 1, 0) and is defined by the  following parametric equation: $ C(u)=(1,0,3)+u \cdot (0,1,0) $.  
  
  
-<h4><a id="specification__brep_format_5_1_2">Circle - \<3D curve record 2\></a></h4>
+<h4><a id="specification__brep_format_5_1_2">Circle - <3D curve record 2></a></h4>
  
 **Example**  
 
@@ -416,7 +416,7 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
 $$ C(u)=\frac{(0,1,0) \cdot 4 \cdot (1-u)^{2}+(1,-2,0) \cdot 5 \cdot 2 \cdot u \cdot (1-u) + (2,3,0) \cdot 6 \cdot u^{2} )}{4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}}. $$  
  
  
-<h4><a id="specification__brep_format_5_1_7">B-Spline Curve - \<3D curve record 7\></a></h4>
+<h4><a id="specification__brep_format_5_1_7">B-Spline Curve - <3D curve record 7></a></h4>
  
 **Example**  
 
@@ -480,7 +480,7 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
 $$ C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(u)+(2,3,0) \cdot 6 \cdot N_{3,2}(u)}{4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)}. $$  
  
  
-<h4><a id="specification__brep_format_5_1_8">Trimmed Curve - \<3D curve record 8\></a></h4>
+<h4><a id="specification__brep_format_5_1_8">Trimmed Curve - <3D curve record 8></a></h4>
  
 **Example**  
 
@@ -575,7 +575,7 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
 	<surface record 11>;  
 ```
  
-<h4><a id="specification__brep_format_5_2_1">Plane - \< surface record 1 \></a></h4>
+<h4><a id="specification__brep_format_5_2_1">Plane - < surface record 1 ></a></h4>
 
 **Example**  
 
@@ -925,7 +925,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
 \end{align} 
 $$
  
-<h4><a id="specification__brep_format_5_2_10">Rectangular Trim Surface - \< surface  record 10 \></a></h4>
+<h4><a id="specification__brep_format_5_2_10">Rectangular Trim Surface - < surface  record 10 ></a></h4>
  
 **Example**  
 
@@ -1195,7 +1195,7 @@ $$ C(u)=P+k_{x} \cdot cosh(u) D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\
 The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: $ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) $.  
  
  
-<h4><a id="specification__brep_format_5_3_6">Bezier Curve - \<2D curve record 6\></a></h4>
+<h4><a id="specification__brep_format_5_3_6">Bezier Curve - <2D curve record 6></a></h4>
  
 **Example**  
 
@@ -1235,7 +1235,7 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
 $$ C(u)= \frac{(0,1) \cdot 4 \cdot (1-u)^{2}+(1,-2) \cdot 5 \cdot 2 \cdot u \cdot (1-u)+(2,3) \cdot 6 \cdot u^{2}}{ 4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}} . $$  
  
  
-<h4><a id="specification__brep_format_5_3_7">B-spline Curve -  \<2D curve record 7\></a></h4>
+<h4><a id="specification__brep_format_5_3_7">B-spline Curve -  <2D curve record 7></a></h4>
  
 **Example**  
 
