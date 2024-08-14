@@ -400,7 +400,7 @@ To start *DRAWEXE*, which has been built with XCode on Mac OS X, perform the fol
 1.Open Terminal application
 2.Enter `<OCCT_ROOT_DIR>`:
 ~~~~
-   cd \<OCCT_ROOT_DIR\>
+   cd <OCCT_ROOT_DIR>
 ~~~~
 3.Run the script
 ~~~~

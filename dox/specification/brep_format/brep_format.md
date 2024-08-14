@@ -52,8 +52,8 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   * \<_\>: = " "+; It is a not empty sequence of space characters  with ASCII code 21h;
   * \<flag\>: = "0" | "1";
   * \<int\>: It is an integer number from -2<sup>31</sup> to 2<sup>31</sup>-1 which is written in  denary system;  
-  * \<real\>: It is a real from -1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> to 1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
-  * \<short real\>: It is a real from -3.402823 @f$\cdot@f$ 10<sup>38</sup> to 3.402823 @f$\cdot@f$ 10<sup>38</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
+  * \<real\>: It is a real from -1.7976931348623158 $\cdot$ 10<sup>308</sup> to 1.7976931348623158 $\cdot$ 10<sup>308</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
+  * \<short real\>: It is a real from -3.402823 $\cdot$ 10<sup>38</sup> to 3.402823 $\cdot$ 10<sup>38</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
   * \<2D point\>: = \<real\>\<_\>\<real\>;  
   * \<3D point\>: = \<real\>(\<_\>\<real)\><sup>2</sup>;  
   * \<2D direction\>: It is a \<2D point\> *x y* so that *x<sup>2</sup> + y<sup>2</sup>* = 1;  
@@ -110,23 +110,23 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 **Description**
 
 \<location data 1\> is interpreted as a 3 x 4 matrix
-@f$Q =
+$Q =
 \begin{pmatrix}
 {q}_{1,1} &{q}_{1,2} &{q}_{1,3} &{q}_{1,4}\\
 {q}_{2,1} &{q}_{2,2} &{q}_{2,3} &{q}_{2,4}\\
 {q}_{3,1} &{q}_{3,2} &{q}_{3,3} &{q}_{3,4}
-\end{pmatrix}@f$ 
+\end{pmatrix}$ 
 which describes transformation of 3 dimensional space and satisfies the following constraints:  
-  * @f$ d \neq 0@f$ where @f$d = |Q_{2}|@f$ where
-    @f$ Q_{2} = \begin{pmatrix}
+  * $ d \neq 0$ where $d = |Q_{2}|$ where
+    $ Q_{2} = \begin{pmatrix}
     {q}_{1,1} &{q}_{1,2} &{q}_{1,3} &{q}_{1,4}\\
     {q}_{2,1} &{q}_{2,2} &{q}_{2,3} &{q}_{2,4}\\
     {q}_{3,1} &{q}_{3,2} &{q}_{3,3} &{q}_{3,4}
-    \end{pmatrix}; @f$  
-  * @f$ Q_{3}^{T} = Q_{3}^{-1}@f$ where @f$Q_{3} = Q_{2}/d^{1/3}. @f$  
+    \end{pmatrix}; $  
+  * $ Q_{3}^{T} = Q_{3}^{-1}$ where $Q_{3} = Q_{2}/d^{1/3}. $  
  
 The transformation transforms a point (x, y, z) to another point (u, v, w) by the rule:
-@f[ \begin{pmatrix}
+$$ \begin{pmatrix}
 u \\ v \\ w
 \end{pmatrix} = 
 Q\cdot(x\;y\;z\;1)^{T} =
@@ -134,30 +134,30 @@ Q\cdot(x\;y\;z\;1)^{T} =
 {q}_{1,1}\cdot x +{q}_{1,2}\cdot y +{q}_{1,3}\cdot z +{q}_{1,4}\\
 {q}_{2,1}\cdot x +{q}_{2,2}\cdot y +{q}_{2,3}\cdot z +{q}_{2,4}\\
 {q}_{3,1}\cdot x +{q}_{3,2}\cdot y +{q}_{3,3}\cdot z +{q}_{3,4}
-\end{pmatrix} . @f]
+\end{pmatrix} . $$
 
 *Q* may be a composition of matrices for the following elementary transformations:  
  
   *  parallel translation --
-     @f$ \begin{pmatrix}
+     $ \begin{pmatrix}
      1 &0 &0 &{q}_{1,4}\\ 
 	 0 &1 &0 &{q}_{2,4}\\ 
 	 0 &0 &1 &{q}_{3,4}
-	 \end{pmatrix}; @f$  
-  *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle @f$ \varphi @f$ --  
+	 \end{pmatrix}; $  
+  *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle $ \varphi $ --  
 
-	@f[ \begin{pmatrix}
+	$$ \begin{pmatrix}
 	D_{x}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) - D_{z} \cdot sin(\varphi) &D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{y} \cdot sin(\varphi) &0\\
 	D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) + D_{z} \cdot sin(\varphi) &D_{y}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{x} \cdot sin(\varphi) &0\\
 	D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{y} \cdot sin(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{x} \cdot sin(\varphi) &D_{z}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &0
-	\end{pmatrix}; @f]  
+	\end{pmatrix}; $$  
  
-  *  scaling -- @f$ \begin{pmatrix} s &0 &0 &0\\ 0 &s &0 &0\\ 0 &0 &s &0 \end{pmatrix} @f$ where @f$ S \in (-\infty,\; \infty)/\left \{ 0 \right \}; @f$ 
-  *  central symmetry -- @f$ \begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}; @f$  
-  *  axis symmetry -- @f$ \begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &1 &0 \end{pmatrix}; @f$  
-  *  plane symmetry -- @f$ \begin{pmatrix} 1 &0 &0 &0\\ 0 &1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}. @f$ 
+  *  scaling -- $ \begin{pmatrix} s &0 &0 &0\\ 0 &s &0 &0\\ 0 &0 &s &0 \end{pmatrix} $ where $ S \in (-\infty,\; \infty)/\left \{ 0 \right \}; $ 
+  *  central symmetry -- $ \begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}; $  
+  *  axis symmetry -- $ \begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &1 &0 \end{pmatrix}; $  
+  *  plane symmetry -- $ \begin{pmatrix} 1 &0 &0 &0\\ 0 &1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}. $ 
  
-\<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence @f$l_{1}p_{1} ... l_{n}p_{n}@f$ of @f$ n \geq 0 @f$ integer pairs @f$ l_{i}p_{i} \; (1 \leq i \leq n) @f$. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition @f$ L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}} @f$ where @f$ L_{l_{i}} @f$ is a location from @f$ l_{i} @f$-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
+\<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence $l_{1}p_{1} ... l_{n}p_{n}$ of $ n \geq 0 $ integer pairs $ l_{i}p_{i} \; (1 \leq i \leq n) $. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition $ L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}} $ where $ L_{l_{i}} $ is a location from $ l_{i} $-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
  
  
 <h2><a id="specification__brep_format_5">Geometry</a></h2>
@@ -234,9 +234,9 @@ Q\cdot(x\;y\;z\;1)^{T} =
  
 \<3D curve record 1\> describes a line. The line data consist of a 3D point *P* and a 3D direction *D*. The line passes through the  point *P*, has  the direction *D* and  is defined by the following parametric equation:  
  
-@f[ C(u)=P+u \cdot D, \; u \in (-\infty,\; \infty). @f]
+$$ C(u)=P+u \cdot D, \; u \in (-\infty,\; \infty). $$
  
-The example record is interpreted as a line which  passes through a point *P*=(1, 0, 3), has a direction *D*=(0, 1, 0) and is defined by the  following parametric equation: @f$ C(u)=(1,0,3)+u \cdot (0,1,0) @f$.  
+The example record is interpreted as a line which  passes through a point *P*=(1, 0, 3), has a direction *D*=(0, 1, 0) and is defined by the  following parametric equation: $ C(u)=(1,0,3)+u \cdot (0,1,0) $.  
  
  
 <h4><a id="specification__brep_format_5_1_2">Circle - \<3D curve record 2\></a></h4>
@@ -267,9 +267,9 @@ The example record is interpreted as a line which  passes through a point *P*=(1
  
 \<3D curve record 2\> describes a circle. The  circle data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative real *r*. The circle has a center *P* and is located in a plane with a normal *N*. The circle has a radius *r* and is defined by the following parametric equation:  
  
-@f[ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}), \; u \in [o,\;2 \cdot \pi). @f]  
+$$ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}), \; u \in [o,\;2 \cdot \pi). $$  
  
-The  example record is interpreted as a circle which has its center *P*=(1, 2, 3), is located in plane  with a normal *N*=(0, 0 ,1).  Directions for the circle are *D<sub>x</sub>*=(1, 0 ,0) and *D<sub>y</sub>*=(0, 1 ,0). The circle has a radius *r*=4 and is defined by  the following parametric equation: @f$ C(u) = (1,2,3) + 4 \cdot ( cos(u) \cdot(1,0,0) + sin(u) \cdot (0,1,0) ) @f$.  
+The  example record is interpreted as a circle which has its center *P*=(1, 2, 3), is located in plane  with a normal *N*=(0, 0 ,1).  Directions for the circle are *D<sub>x</sub>*=(1, 0 ,0) and *D<sub>y</sub>*=(0, 1 ,0). The circle has a radius *r*=4 and is defined by  the following parametric equation: $ C(u) = (1,2,3) + 4 \cdot ( cos(u) \cdot(1,0,0) + sin(u) \cdot (0,1,0) ) $.  
  
  
 <h4><a id="specification__brep_format_5_1_3">Ellipse - \<3D curve record 3\> </a></h4>
@@ -300,11 +300,11 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
  
 **Description**  
  
-\<3D curve record 3\> describes an ellipse. The  ellipse data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* so that *r<sub>min</sub>* @f$ \leq @f$ *r<sub>maj</sub>*. The ellipse has its  center *P*, is  located in plane with the normal *N*, has major and minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by the following parametric equation:  
+\<3D curve record 3\> describes an ellipse. The  ellipse data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* so that *r<sub>min</sub>* $ \leq $ *r<sub>maj</sub>*. The ellipse has its  center *P*, is  located in plane with the normal *N*, has major and minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by the following parametric equation:  
  
-@f[ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj} + r_{min} \cdot sin(u) \cdot D_{min}, u \in [0, 2 \cdot \pi). @f]
+$$ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj} + r_{min} \cdot sin(u) \cdot D_{min}, u \in [0, 2 \cdot \pi). $$
  
-The  example record is interpreted as an ellipse which has its center *P*=(1, 2, 3), is located in plane with a normal *N*=(0, 0, 1), has major and minor axis directions *D<sub>maj</sub>*=(1, 0, 0) and *D<sub>min</sub>*=(0, 1, 0), major and minor radii *r<sub>maj</sub>*=5 and *r<sub>min</sub>*=4 and is defined by  the following parametric equation: @f$ C(u) = (1,2,3) + 5 \cdot cos(u) \cdot(1,0,0) + 4 \cdot sin(u) \cdot (0,1,0) @f$.  
+The  example record is interpreted as an ellipse which has its center *P*=(1, 2, 3), is located in plane with a normal *N*=(0, 0, 1), has major and minor axis directions *D<sub>maj</sub>*=(1, 0, 0) and *D<sub>min</sub>*=(0, 1, 0), major and minor radii *r<sub>maj</sub>*=5 and *r<sub>min</sub>*=4 and is defined by  the following parametric equation: $ C(u) = (1,2,3) + 5 \cdot cos(u) \cdot(1,0,0) + 4 \cdot sin(u) \cdot (0,1,0) $.  
  
  
 <h4><a id="specification__brep_format_5_1_4">Parabola - \<3D curve record 4\> </a></h4>
@@ -335,10 +335,10 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
  
 \<3D curve record 4\> describes a parabola. The  parabola data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative real *f*. The parabola is located in plane which passes through the point *P* and has the normal *N*. The parabola has a focus length *f* and is defined by the following parametric equation:  
  
-@f[ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x} + u \cdot D_{y}, u \in (-\infty,\; \infty) \Leftarrow f \neq 0; @f]
-@f[ C(u)=P+u \cdot D_{x}, u \in (-\infty,\; \infty) \Leftarrow f = 0\;(degenerated\;case). @f] 
+$$ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x} + u \cdot D_{y}, u \in (-\infty,\; \infty) \Leftarrow f \neq 0; $$
+$$ C(u)=P+u \cdot D_{x}, u \in (-\infty,\; \infty) \Leftarrow f = 0\;(degenerated\;case). $$ 
  
-The  example record is interpreted as a parabola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Directions for the parabola are *D<sub>x</sub>*=(1, 0, 0) and *D<sub>y</sub>*=(0, 1, 0). The parabola has a focus length *f*=16 and is defined by the following parametric equation: @f$ C(u) = (1,2,3) + \frac{u^{2}}{64} \cdot (1,0,0) + u \cdot (0,1,0) @f$.  
+The  example record is interpreted as a parabola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Directions for the parabola are *D<sub>x</sub>*=(1, 0, 0) and *D<sub>y</sub>*=(0, 1, 0). The parabola has a focus length *f*=16 and is defined by the following parametric equation: $ C(u) = (1,2,3) + \frac{u^{2}}{64} \cdot (1,0,0) + u \cdot (0,1,0) $.  
  
  
 <h4><a id="specification__brep_format_5_1_5">Hyperbola - \<3D curve record 5\> </a></h4>
@@ -371,9 +371,9 @@ The  example record is interpreted as a parabola in plane which passes through a
  
 \<3D curve record 5\> describes a hyperbola. The  hyperbola data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>x</sub>* and *D<sub>y</sub>* and non-negative reals *k<sub>x</sub>* and *k<sub>y</sub>*. The hyperbola is  located in plane which passes through the point *P* and has the normal *N*. The hyperbola is defined by  the following parametric equation:  
  
-@f[ C(u)=P+k_{x} \cdot cosh(u) \cdot D_{x}+k_{y} \cdot sinh(u) \cdot D_{y} , u \in (-\infty,\; \infty). @f]  
+$$ C(u)=P+k_{x} \cdot cosh(u) \cdot D_{x}+k_{y} \cdot sinh(u) \cdot D_{y} , u \in (-\infty,\; \infty). $$  
  
-The  example record is interpreted as a hyperbola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Other hyperbola data are *D<sub>x</sub>*=(1, 0, 0), *D<sub>y</sub>*=(0, 1, 0), *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined by the following parametric equation: @f$ C(u) = (1,2,3) + 5 \cdot cosh(u) \cdot (1,0,0) +4 \cdot sinh(u) \cdot (0,1,0) @f$.  
+The  example record is interpreted as a hyperbola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Other hyperbola data are *D<sub>x</sub>*=(1, 0, 0), *D<sub>y</sub>*=(0, 1, 0), *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined by the following parametric equation: $ C(u) = (1,2,3) + 5 \cdot cosh(u) \cdot (1,0,0) +4 \cdot sinh(u) \cdot (0,1,0) $.  
  
  
 <h4><a id="specification__brep_format_5_1_6">Bezier Curve - \<3D curve record 6\> </a></h4>
@@ -401,19 +401,19 @@ The  example record is interpreted as a hyperbola in plane which passes through 
  
 **Description**  
  
-\<3D curve record 6\> describes a Bezier curve. The curve data consist of a rational *r*, a degree @f$ m \leq 25 @f$ and weight poles.  
+\<3D curve record 6\> describes a Bezier curve. The curve data consist of a rational *r*, a degree $ m \leq 25 $ and weight poles.  
  
-The weight poles are *m*+1 3D points *B<sub>0</sub> ... B<sub>m</sub>* if the flag *r* is 0. The weight poles are *m*+1 pairs *B<sub>0</sub>h<sub>0</sub> ... B<sub>m</sub>h<sub>m</sub>* if flag *r* is 1. Here *B<sub>i</sub>* is a 3D point and *h<sub>i</sub>* is a positive real @f$ (0 \leq i \leq m) @f$. @f$ h_{i}=1\; (0 \leq i \leq m) @f$ if the flag *r* is 0.  
+The weight poles are *m*+1 3D points *B<sub>0</sub> ... B<sub>m</sub>* if the flag *r* is 0. The weight poles are *m*+1 pairs *B<sub>0</sub>h<sub>0</sub> ... B<sub>m</sub>h<sub>m</sub>* if flag *r* is 1. Here *B<sub>i</sub>* is a 3D point and *h<sub>i</sub>* is a positive real $ (0 \leq i \leq m) $. $ h_{i}=1\; (0 \leq i \leq m) $ if the flag *r* is 0.  
  
 The Bezier curve is defined by the following  parametric equation:  
  
-@f[ C(u) = \frac{\sum_{i=0}^{m}B_{i} \cdot h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}}{\sum_{i=0}^{m}h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}},\;u \in [0,\; 1] @f]
+$$ C(u) = \frac{\sum_{i=0}^{m}B_{i} \cdot h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}}{\sum_{i=0}^{m}h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}},\;u \in [0,\; 1] $$
  
-where @f$ 0^{0} \equiv 1 @f$.  
+where $ 0^{0} \equiv 1 $.  
  
 The example record is interpreted as a Bezier curve with a rational flag *r*=1, degree *m*=2 and weight poles *B<sub>0</sub>*=(0, 1, 0), *h<sub>0</sub>*=4, *B<sub>1</sub>*=(1, -2, 0), *h<sub>1</sub>*=5 and *B<sub>2</sub>*=(2, 3, 0), *h<sub>2</sub>*=6. The Bezier curve is defined  by the following parametric equation:  
  
-@f[ C(u)=\frac{(0,1,0) \cdot 4 \cdot (1-u)^{2}+(1,-2,0) \cdot 5 \cdot 2 \cdot u \cdot (1-u) + (2,3,0) \cdot 6 \cdot u^{2} )}{4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}}. @f]  
+$$ C(u)=\frac{(0,1,0) \cdot 4 \cdot (1-u)^{2}+(1,-2,0) \cdot 5 \cdot 2 \cdot u \cdot (1-u) + (2,3,0) \cdot 6 \cdot u^{2} )}{4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}}. $$  
  
  
 <h4><a id="specification__brep_format_5_1_7">B-Spline Curve - \<3D curve record 7\></a></h4>
@@ -451,33 +451,33 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
  
 **Description**  
  
-\<3D curve record 7\> describes a B-spline curve.  The curve data consist of a rational flag *r*, a degree @f$ m \leq 25 @f$, pole count @f$ n \geq 2 @f$, multiplicity knot count *k*, weight poles and  multiplicity knots.  
+\<3D curve record 7\> describes a B-spline curve.  The curve data consist of a rational flag *r*, a degree $ m \leq 25 $, pole count $ n \geq 2 $, multiplicity knot count *k*, weight poles and  multiplicity knots.  
  
-The weight poles are *n* 3D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight poles are *n* pairs *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag *r* is 1. Here *B<sub>i</sub>* is a 3D point and *h<sub>i</sub>* is a positive real @f$ (1 \leq i \leq n) @f$.  @f$ h_{i}=1\; (1 \leq i \leq n) @f$ if the flag *r* is 0.  
+The weight poles are *n* 3D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight poles are *n* pairs *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag *r* is 1. Here *B<sub>i</sub>* is a 3D point and *h<sub>i</sub>* is a positive real $ (1 \leq i \leq n) $.  $ h_{i}=1\; (1 \leq i \leq n) $ if the flag *r* is 0.  
  
-The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with a multiplicity @f$ q_{i} \geq 1 \; (1 \leq i \leq k) @f$ so that  
+The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with a multiplicity $ q_{i} \geq 1 \; (1 \leq i \leq k) $ so that  
  
-@f[ u_{i} < u_{i+1} (1 \leq i \leq k-1),@f]
-@f[ q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1. @f]  
+$$ u_{i} < u_{i+1} (1 \leq i \leq k-1),$$
+$$ q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1. $$  
  
 The B-spline curve is defined by the following  parametric equation:  
  
-@f[ C(u) = \frac{\sum_{i=1}^{n}B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n}h_{i} \cdot N_{i,m+1}(u)},\;u \in [u_{1},\; u_{k}] @f] 
+$$ C(u) = \frac{\sum_{i=1}^{n}B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n}h_{i} \cdot N_{i,m+1}(u)},\;u \in [u_{1},\; u_{k}] $$ 
  
-where functions @f$ N_{i,j} @f$ have the following recursion definition  by *j*:  
+where functions $ N_{i,j} $ have the following recursion definition  by *j*:  
 
-@f[ N_{i,1}(u)=\left\{\begin{matrix}
+$$ N_{i,1}(u)=\left\{\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) @f] 
+N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) $$ 
  
 where 
  
-@f[ \bar{u}_{i} = u_{j},\; (1 \leq j \leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l} ). @f]  
+$$ \bar{u}_{i} = u_{j},\; (1 \leq j \leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l} ). $$  
  
 The example record is interpreted as a B-spline curve  with a rational flag *r*=1, a degree *m*=1, pole count *n*=3, multiplicity knot count *k*=5, weight poles *B<sub>1</sub>*=(0,1,0), *h<sub>1</sub>*=4, *B<sub>2</sub>*=(1,-2,0), *h<sub>2</sub>*=5 and *B<sub>3</sub>*=(2,3,0), *h<sub>3</sub>*=6, multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1. The B-spline curve is defined  by the following parametric equation:  
  
-@f[ C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(u)+(2,3,0) \cdot 6 \cdot N_{3,2}(u)}{4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)}. @f]  
+$$ C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(u)+(2,3,0) \cdot 6 \cdot N_{3,2}(u)}{4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)}. $$  
  
  
 <h4><a id="specification__brep_format_5_1_8">Trimmed Curve - \<3D curve record 8\></a></h4>
@@ -501,11 +501,11 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
  
 **Description**  
  
-\<3D curve record 8\> describes a trimmed curve.  The trimmed curve data consist of reals *u<sub>min</sub>* and *u<sub>max</sub>* and \<3D curve record\> so that *u<sub>min</sub>* < *u<sub>max</sub>*. The trimmed curve is a restriction of the base curve *B* described in the record to the segment @f$ [u_{min},\;u_{max}]\subseteq domain(B) @f$. The trimmed curve is  defined by the following parametric equation:  
+\<3D curve record 8\> describes a trimmed curve.  The trimmed curve data consist of reals *u<sub>min</sub>* and *u<sub>max</sub>* and \<3D curve record\> so that *u<sub>min</sub>* < *u<sub>max</sub>*. The trimmed curve is a restriction of the base curve *B* described in the record to the segment $ [u_{min},\;u_{max}]\subseteq domain(B) $. The trimmed curve is  defined by the following parametric equation:  
  
-@f[ C(u)=B(u),\; u \in [u_{min},\;u_{max}]. @f]  
+$$ C(u)=B(u),\; u \in [u_{min},\;u_{max}]. $$  
  
-The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve @f$ B(u)=(1,2,3)+u \cdot (1,0,0) @f$. The trimmed curve is  defined by the following parametric equation: @f$ C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5] @f$.  
+The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve $ B(u)=(1,2,3)+u \cdot (1,0,0) $. The trimmed curve is  defined by the following parametric equation: $ C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5] $.  
  
  
 <h4><a id="specification__brep_format_5_1_9">Offset Curve - \<3D curve record 9\> </a></h4>
@@ -532,11 +532,11 @@ The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4�
  
 **Description**  
  
-\<3D curve record 9\> describes an offset curve. The offset curve data consist of a distance *d*, a 3D direction *D* and a \<3D curve record\>. The offset curve is the result of offsetting the base curve *B* described in the record to the distance *d* along the vector @f$ [B'(u),\; D] \neq \vec{0} @f$. The offset curve is defined  by the following parametric equation:  
+\<3D curve record 9\> describes an offset curve. The offset curve data consist of a distance *d*, a 3D direction *D* and a \<3D curve record\>. The offset curve is the result of offsetting the base curve *B* described in the record to the distance *d* along the vector $ [B'(u),\; D] \neq \vec{0} $. The offset curve is defined  by the following parametric equation:  
  
-@f[ C(u)=B(u)+d \cdot \frac{[B'(u),\; D]}{|[B'(u),\; D]|},\; u \in domain(B) . @f]   
+$$ C(u)=B(u)+d \cdot \frac{[B'(u),\; D]}{|[B'(u),\; D]|},\; u \in domain(B) . $$   
  
-The example record is interpreted as an offset curve with a distance *d*=2, direction *D*=(0, 1, 0), base curve @f$ B(u)=(1,2,3)+u \cdot (1,0,0) @f$ and defined by the  following parametric equation: @f$ C(u)=(1,2,3)+u \cdot (1,0,0)+2 \cdot (0,0,1) @f$.  
+The example record is interpreted as an offset curve with a distance *d*=2, direction *D*=(0, 1, 0), base curve $ B(u)=(1,2,3)+u \cdot (1,0,0) $ and defined by the  following parametric equation: $ C(u)=(1,2,3)+u \cdot (1,0,0)+2 \cdot (0,0,1) $.  
  
 <h3><a id="specification__brep_format_5_2">Surfaces</a></h3>
  
@@ -593,9 +593,9 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
  
 \<surface record 1\> describes a plane. The plane  data consist of a 3D point *P* and pairwise orthogonal 3D directions *N*, *D<sub>u</sub>* and *D<sub>v</sub>*. The plane passes through the  point *P*, has  the normal *N* and  is defined by the following parametric equation:  
  
-@f[ S(u,v)=P+u \cdot D_{u}+v \cdot D_{v},\; (u,\;v) \in (-\infty,\; \infty) \times (-\infty,\; \infty). @f]  
+$$ S(u,v)=P+u \cdot D_{u}+v \cdot D_{v},\; (u,\;v) \in (-\infty,\; \infty) \times (-\infty,\; \infty). $$  
  
-The example record is interpreted as a plane which  passes through a point *P*=(0, 0, 3), has a normal *N*=(0, 0, 1) and is defined by the  following parametric equation: @f$ S(u,v)=(0,0,3)+u \cdot (1,0,0) + v \cdot (0,1,0) @f$.  
+The example record is interpreted as a plane which  passes through a point *P*=(0, 0, 3), has a normal *N*=(0, 0, 1) and is defined by the  following parametric equation: $ S(u,v)=(0,0,3)+u \cdot (1,0,0) + v \cdot (0,1,0) $.  
  
  
 <h4><a id="specification__brep_format_5_2_2">Cylinder - \< surface record 2 \> </a></h4>
@@ -616,9 +616,9 @@ The example record is interpreted as a plane which  passes through a point *P*=(
  
 \<surface record 2\> describes a cylinder. The  cylinder data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>v</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>* and a non-negative real *r*. The cylinder axis  passes through the point *P* and has the direction *D<sub>v</sub>*. The cylinder has  the radius *r* and  is defined by the following parametric equation:  
  
-@f[ S(u,v)=P+r \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} )+v \cdot D_{v},\; (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty) . @f]  
+$$ S(u,v)=P+r \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} )+v \cdot D_{v},\; (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty) . $$  
  
-The  example record is interpreted as a cylinder which axis passes through a point *P*=(1, 2, 3) and has a direction *D<sub>v</sub>*=(0, 0, 1). Directions for the  cylinder are *D<sub>X</sub>*=(1,0,0) and *D<sub>Y</sub>*=(0,1,0). The cylinder has a radius *r*=4 and is defined by the following  parametric equation: @f$ S(u,v)=(1,2,3)+4 \cdot ( cos(u) \cdot D_{X} + sin(u) \cdot D_{Y} ) + v \cdot D_{v}. @f$  
+The  example record is interpreted as a cylinder which axis passes through a point *P*=(1, 2, 3) and has a direction *D<sub>v</sub>*=(0, 0, 1). Directions for the  cylinder are *D<sub>X</sub>*=(1,0,0) and *D<sub>Y</sub>*=(0,1,0). The cylinder has a radius *r*=4 and is defined by the following  parametric equation: $ S(u,v)=(1,2,3)+4 \cdot ( cos(u) \cdot D_{X} + sin(u) \cdot D_{Y} ) + v \cdot D_{v}. $  
  
  
 <h4><a id="specification__brep_format_5_2_3">Cone - \< surface record 3 \> </a></h4>
@@ -639,12 +639,12 @@ The  example record is interpreted as a cylinder which axis passes through a poi
  
 **Description**  
  
-\<surface record 3\> describes a cone. The cone  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>*, a non-negative real *r* and a real @f$ \varphi \in (-\pi /2,\; \pi/2)/\left \{ 0 \right \} @f$. The cone axis passes  through the point *P* and  has the direction *D<sub>Z</sub>*. The plane which passes through the point *P* and is parallel to directions *D<sub>X</sub>* and *D<sub>Y</sub>* is the cone referenced  plane. The cone section by the plane is a circle with the radius *r*. The direction from  the point *P* to  the cone apex is @f$ -sgn(\varphi) \cdot D_{Z} @f$.  The cone has a half-angle @f$| \varphi | @f$ and is defined by the following  parametric equation:  
+\<surface record 3\> describes a cone. The cone  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>*, a non-negative real *r* and a real $ \varphi \in (-\pi /2,\; \pi/2)/\left \{ 0 \right \} $. The cone axis passes  through the point *P* and  has the direction *D<sub>Z</sub>*. The plane which passes through the point *P* and is parallel to directions *D<sub>X</sub>* and *D<sub>Y</sub>* is the cone referenced  plane. The cone section by the plane is a circle with the radius *r*. The direction from  the point *P* to  the cone apex is $ -sgn(\varphi) \cdot D_{Z} $.  The cone has a half-angle $| \varphi | $ and is defined by the following  parametric equation:  
  
-@f[ S(u,v)=P+(r+v \cdot sin(\varphi)) \cdot (cos(u) \cdot D_{X}+sin(u) \cdot D_{Y})+v \cdot cos(\varphi) \cdot D_{Z}, (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty) . @f]  
+$$ S(u,v)=P+(r+v \cdot sin(\varphi)) \cdot (cos(u) \cdot D_{X}+sin(u) \cdot D_{Y})+v \cdot cos(\varphi) \cdot D_{Z}, (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty) . $$  
  
-The example record is interpreted as a cone with an axis  which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). Other cone data are *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r*=4 and @f$ \varphi = 0.75 @f$. The cone is defined by the  following parametric equation:  
-@f[ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + v \cdot cos(0.75) \cdot (0,0,1) . @f]  
+The example record is interpreted as a cone with an axis  which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). Other cone data are *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r*=4 and $ \varphi = 0.75 $. The cone is defined by the  following parametric equation:  
+$$ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + v \cdot cos(0.75) \cdot (0,0,1) . $$  
  
 
 <h4><a id="specification__brep_format_5_2_4">Sphere - \< surface record 4 \> </a></h4>
@@ -665,10 +665,10 @@ The example record is interpreted as a cone with an axis  which passes through a
  
 \<surface record 4\> describes a sphere. The  sphere data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>* and a non-negative real *r*. The sphere has the center *P*, radius *r* and  is defined by the following parametric equation:  
  
-@f[ S(u,v)=P+r \cdot cos(v) \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} ) +r \cdot sin(v) \cdot D_{Z},\; (u,v) \in [0,\;2 \cdot \pi) \times [-\pi /2,\; \pi /2] . @f]  
+$$ S(u,v)=P+r \cdot cos(v) \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} ) +r \cdot sin(v) \cdot D_{Z},\; (u,v) \in [0,\;2 \cdot \pi) \times [-\pi /2,\; \pi /2] . $$  
  
 The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Directions for the sphere are  *D<sub>Z</sub>*=(0, 0, 1), *D<sub>X</sub>*=(1, 0, 0) and *D<sub>Y</sub>*=(0, 1, 0). The sphere has a radius  *r*=4 and is  defined by the following parametric equation:  
-@f[ S(u,v)=(1,2,3)+ 4 \cdot cos(v) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . @f]   
+$$ S(u,v)=(1,2,3)+ 4 \cdot cos(v) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . $$   
  
  
 <h4><a id="specification__brep_format_5_2_5">Torus - \< surface record 5 \> </a></h4>
@@ -689,10 +689,10 @@ The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Di
  
 \<surface record 5\> describes a torus. The torus  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>* and non-negative reals *r<sub>1</sub>* and *r<sub>2</sub>*. The torus axis  passes through the point *P* and has the direction *D<sub>Z</sub>*. *r<sub>1</sub>* is the distance from the  torus circle center to the axis. The torus circle has the radius *r<sub>2</sub>*. The torus is defined  by the following parametric equation:  
  
-@f[ S(u,v)=P+(r_{1}+r_{2} \cdot cos(v)) \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} ) +r_{2} \cdot sin(v) \cdot D_{Z},\; (u,v) \in [0,\;2 \cdot \pi) \times [0,\; 2 \cdot \pi) . @f]    
+$$ S(u,v)=P+(r_{1}+r_{2} \cdot cos(v)) \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} ) +r_{2} \cdot sin(v) \cdot D_{Z},\; (u,v) \in [0,\;2 \cdot \pi) \times [0,\; 2 \cdot \pi) . $$    
  
 The example record is interpreted as a torus with an axis which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r<sub>1</sub>*=8 and *r<sub>2</sub>*=4 for the torus. The torus is defined  by the following parametric equation:  
-@f[ S(u,v)=(1,2,3)+ (8+4 \cdot cos(v)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . @f]   
+$$ S(u,v)=(1,2,3)+ (8+4 \cdot cos(v)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . $$   
  
  
 <h4><a id="specification__brep_format_5_2_6">Linear Extrusion - \< surface record 6 \> </a></h4>
@@ -714,11 +714,11 @@ The example record is interpreted as a torus with an axis which passes through a
  
 \<surface record 6\> describes a linear extrusion  surface. The surface data consist of a 3D direction *D<sub>v</sub>* and a \<3D curve  record\>. The linear extrusion surface has the direction *D<sub>v</sub>*, the base curve *C* described in the  record and is defined by the following parametric equation:  
  
-@f[ S(u,v)=C(u)+v \cdot D_{v},\; (u,v) \in domain(C) \times (-\infty,\; \infty) . @f]     
+$$ S(u,v)=C(u)+v \cdot D_{v},\; (u,v) \in domain(C) \times (-\infty,\; \infty) . $$     
  
 The example record is interpreted as a linear  extrusion surface with a direction *D<sub>v</sub>*=(0, 0.6, 0.8). The base curve is a circle for the  surface. The surface is defined by the following parametric equation:
 
-@f[ S(u,v)=(1,2,3)+4 \cdot (cos(u) \cdot (1,0,0)+sin(u) \cdot (0,1,0))+v \cdot (0, 0.6, 0.8),\; (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty). @f]  
+$$ S(u,v)=(1,2,3)+4 \cdot (cos(u) \cdot (1,0,0)+sin(u) \cdot (0,1,0))+v \cdot (0, 0.6, 0.8),\; (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty). $$  
  
  
 <h4><a id="specification__brep_format_5_2_7">Revolution Surface - \< surface record 7 \> </a></h4>
@@ -740,15 +740,15 @@ The example record is interpreted as a linear  extrusion surface with a directio
  
 \<surface record 7\> describes a revolution  surface. The surface data consist of a 3D point *P*, a 3D direction *D* and a \<3D curve  record\>. The surface axis passes through the point *P* and has the direction *D*. The base curve *C* described by the  record and the axis are coplanar. The surface is defined by the following  parametric equation:  
  
-@f[ S(u,v)= P+V_{D}(v)+cos(u) \cdot (V(v)-V_{D}(v))+sin(u) \cdot [D,V(v)],\;(u,v) \in [0,\; 2 \cdot \pi)\times domain(C) @f] 
+$$ S(u,v)= P+V_{D}(v)+cos(u) \cdot (V(v)-V_{D}(v))+sin(u) \cdot [D,V(v)],\;(u,v) \in [0,\; 2 \cdot \pi)\times domain(C) $$ 
  
-where @f$ V(v)=C(v)-P, V_{D}(v)=(D,V(v)) \cdot D @f$.  
+where $ V(v)=C(v)-P, V_{D}(v)=(D,V(v)) \cdot D $.  
  
 The example record is interpreted as a revolution surface with an axis which passes through a point *P*=(-4, 0, 3) and has a direction *D*=(0, 1, 0). The base curve is a circle  for the surface. The surface is defined by the following parametric equation:  
 
-@f[ S(u,v)= (-4,0,3)+V_{D}(v)+cos(u) \cdot (V(v)-V_{D}(v))+sin(u) \cdot [(0,1,0),V(v)],\;(u,v) \in [0,\; 2 \cdot \pi)\times [0,\; 2 \cdot \pi) @f] 
+$$ S(u,v)= (-4,0,3)+V_{D}(v)+cos(u) \cdot (V(v)-V_{D}(v))+sin(u) \cdot [(0,1,0),V(v)],\;(u,v) \in [0,\; 2 \cdot \pi)\times [0,\; 2 \cdot \pi) $$ 
  
-where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D}(v)=((0,1,0),V(v)) \cdot (0,1,0) @f$.  
+where $ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D}(v)=((0,1,0),V(v)) \cdot (0,1,0) $.  
  
  
 <h4><a id="specification__brep_format_5_2_8">Bezier Surface - \< surface record 8 \> </a></h4>
@@ -786,25 +786,25 @@ where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D
  
 **Description**  
  
-\<surface record 8\> describes a Bezier surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree @f$ m_{u} \leq 25 @f$, v degree @f$ m_{v} \leq 25 @f$ and weight poles.  
+\<surface record 8\> describes a Bezier surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree $ m_{u} \leq 25 $, v degree $ m_{v} \leq 25 $ and weight poles.  
  
-The weight poles are @f$ (m_{u}+1) \cdot (m_{v}+1) @f$ 3D points @f$ B_{i,j}\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) @f$ if @f$ r_{u}+r_{v}=0 @f$. The weight poles are @f$ (m_{u}+1) \cdot (m_{v}+1) @f$ pairs @f$ B_{i,j}h_{i,j}\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) @f$ if @f$ r_{u}+r_{v} \neq 0 @f$. Here @f$ B_{i,j} @f$ is a 3D point and @f$ h_{i,j} @f$ is a positive real @f$ ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) @f$. @f$ h_{i,j}=1\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) @f$ if @f$ r_{u}+r_{v} = 0 @f$.  
+The weight poles are $ (m_{u}+1) \cdot (m_{v}+1) $ 3D points $ B_{i,j}\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $ if $ r_{u}+r_{v}=0 $. The weight poles are $ (m_{u}+1) \cdot (m_{v}+1) $ pairs $ B_{i,j}h_{i,j}\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $ if $ r_{u}+r_{v} \neq 0 $. Here $ B_{i,j} $ is a 3D point and $ h_{i,j} $ is a positive real $ ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $. $ h_{i,j}=1\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $ if $ r_{u}+r_{v} = 0 $.  
  
 The Bezier surface is defined by the following  parametric equation:  
  
-@f[ S(u,v)=\frac{\sum_{i=0}^{m_{u}} \sum_{j=0}^{m_{v}} B_{i,j} \cdot h_{i,j} \cdot C_{m_{u}}^{i} \cdot u^{i} \cdot (1-u)^{m_{u}-i} \cdot C_{m_{v}}^{j} \cdot v^{j} \cdot (1-v)^{m_{v}-j}}{\sum_{i=0}^{m_{u}} \sum_{j=0}^{m_{v}} h_{i,j} \cdot C_{m_{u}}^{i} \cdot u^{i} \cdot (1-u)^{m_{u}-i} \cdot C_{m_{v}}^{j} \cdot v^{j} \cdot (1-v)^{m_{v}-j}}, (u,v) \in [0,1] \times [0,1] @f]   
+$$ S(u,v)=\frac{\sum_{i=0}^{m_{u}} \sum_{j=0}^{m_{v}} B_{i,j} \cdot h_{i,j} \cdot C_{m_{u}}^{i} \cdot u^{i} \cdot (1-u)^{m_{u}-i} \cdot C_{m_{v}}^{j} \cdot v^{j} \cdot (1-v)^{m_{v}-j}}{\sum_{i=0}^{m_{u}} \sum_{j=0}^{m_{v}} h_{i,j} \cdot C_{m_{u}}^{i} \cdot u^{i} \cdot (1-u)^{m_{u}-i} \cdot C_{m_{v}}^{j} \cdot v^{j} \cdot (1-v)^{m_{v}-j}}, (u,v) \in [0,1] \times [0,1] $$   
  
-where @f$ 0^{0} \equiv 1 @f$.  
+where $ 0^{0} \equiv 1 $.  
  
 The example record is interpreted as a Bezier surface  with a u rational flag *r<sub>u</sub>*=1, v rational flag *r<sub>v</sub>*=1, u degree *m<sub>u</sub>*=2, v degree *m<sub>v</sub>*=1, weight poles *B<sub>0,0</sub>*=(0, 0, 1), *h<sub>0,0</sub>*=7, *B<sub>0,1</sub>*=(1, 0, -4), *h<sub>0,1</sub>*=10, *B<sub>1,0</sub>*=(0, 1, -2), *h<sub>1,0</sub>*=8, *B<sub>1,1</sub>*=(1, 1, 5), *h<sub>1,1</sub>*=11, *B<sub>2,0</sub>*=(0, 2, 3), *h<sub>2,0</sub>*=9 and *B<sub>2,1</sub>*=(1, 2, 6), *h<sub>2,1</sub>*=12. The surface is defined by  the following parametric equation:  
  
-@f[
+$$
 \begin{align}
 S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1-u)^{2} \cdot v+ (0,1,-2) \cdot 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v) + \\
 (1,1,5) \cdot 11 \cdot 2 \cdot u \cdot (1-u)  \cdot v+ (0,2,3) \cdot 9 \cdot u^{2} \cdot (1-v)+(1,2,6) \cdot 12 \cdot u^{2} \cdot v] \div [7 \cdot (1-u)^{2} \cdot (1-v)+ \\
 10 \cdot (1-u)^{2} \cdot v+ 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v)+ 11 \cdot 2 \cdot u \cdot (1-u) \cdot v+ 9 \cdot u^{2} \cdot (1-v)+12 \cdot u^{2} \cdot v ]
 \end{align}
-@f]
+$$
  
  
 <h4><a id="specification__brep_format_5_2_9">B-spline Surface - \< surface record 9 \> </a></h4>
@@ -875,27 +875,27 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
  
 **Description**  
  
-\<surface record 9\> describes a B-spline surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree @f$ m_{u} \leq 25 @f$, v degree @f$ m_{v} \leq 25 @f$, u pole count @f$ n_{u} \geq 2 @f$, v pole count @f$ n_{v} \geq 2 @f$, u multiplicity knot count *k<sub>u</sub>*, v multiplicity knot count *k<sub>v</sub>*, weight poles, u multiplicity  knots, v multiplicity knots.  
+\<surface record 9\> describes a B-spline surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree $ m_{u} \leq 25 $, v degree $ m_{v} \leq 25 $, u pole count $ n_{u} \geq 2 $, v pole count $ n_{v} \geq 2 $, u multiplicity knot count *k<sub>u</sub>*, v multiplicity knot count *k<sub>v</sub>*, weight poles, u multiplicity  knots, v multiplicity knots.  
  
-The weight poles are @f$ n_{u} \cdot n_{v} @f$ 3D points @f$ B_{i,j}\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) @f$ if @f$ r_{u}+r_{v}=0 @f$. The weight poles are @f$ n_{u} \cdot n_{v} @f$ pairs @f$ B_{i,j}h_{i,j}\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) @f$ if @f$ r_{u}+r_{v} \neq 0 @f$. Here @f$ B_{i,j} @f$ is a 3D point and @f$ h_{i,j} @f$ is a positive real @f$ ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) @f$. @f$ h_{i,j}=1\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) @f$ if @f$ r_{u}+r_{v} = 0 @f$.  
+The weight poles are $ n_{u} \cdot n_{v} $ 3D points $ B_{i,j}\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $ if $ r_{u}+r_{v}=0 $. The weight poles are $ n_{u} \cdot n_{v} $ pairs $ B_{i,j}h_{i,j}\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $ if $ r_{u}+r_{v} \neq 0 $. Here $ B_{i,j} $ is a 3D point and $ h_{i,j} $ is a positive real $ ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $. $ h_{i,j}=1\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $ if $ r_{u}+r_{v} = 0 $.  
  
-The u multiplicity knots are *k<sub>u</sub>* pairs @f$ u_{1}q_{1} ... u_{k_{u}}q_{k_{u}} @f$. Here @f$ u_{i} @f$ is a knot with multiplicity @f$ q_{i} \geq 1 \;(1\leq i\leq k_{u}) @f$ so that  
+The u multiplicity knots are *k<sub>u</sub>* pairs $ u_{1}q_{1} ... u_{k_{u}}q_{k_{u}} $. Here $ u_{i} $ is a knot with multiplicity $ q_{i} \geq 1 \;(1\leq i\leq k_{u}) $ so that  
  
-@f[ u_{i} < u_{i+1} \; (1\leq i\leq k_{u}-1), \\
-q_{1} \leq m_{u}+1,\; q_{k_{u}} \leq m_{u}+1,\; q_{i} \leq m_{u}\; (2\leq i\leq k_{u}-1),\; \sum_{i=1}^{k_{u}}q_{i}=m_{u}+n_{u}+1. @f]  
+$$ u_{i} < u_{i+1} \; (1\leq i\leq k_{u}-1), \\
+q_{1} \leq m_{u}+1,\; q_{k_{u}} \leq m_{u}+1,\; q_{i} \leq m_{u}\; (2\leq i\leq k_{u}-1),\; \sum_{i=1}^{k_{u}}q_{i}=m_{u}+n_{u}+1. $$  
  
-The v multiplicity knots are *k<sub>v</sub>* pairs @f$ v_{1}t_{1} ... v_{k_{v}}t_{k_{v}} @f$. Here @f$ v_{j} @f$ is a knot with multiplicity @f$ t_{i} \geq  1\;(1\leq i\leq k_{v}) @f$ so that  
+The v multiplicity knots are *k<sub>v</sub>* pairs $ v_{1}t_{1} ... v_{k_{v}}t_{k_{v}} $. Here $ v_{j} $ is a knot with multiplicity $ t_{i} \geq  1\;(1\leq i\leq k_{v}) $ so that  
  
-@f[ v_{j} < v_{j+1} \; (1\leq j\leq k_{v}-1), \\
-t_{1} \leq m_{v}+1,\; t_{k_{v}} \leq m_{v}+1,\; t_{j} \leq m_{v}\; (2\leq j\leq k_{v}-1),\; \sum_{j=1}^{k_{v}}t_{j}=m_{v}+n_{v}+1. @f] 
+$$ v_{j} < v_{j+1} \; (1\leq j\leq k_{v}-1), \\
+t_{1} \leq m_{v}+1,\; t_{k_{v}} \leq m_{v}+1,\; t_{j} \leq m_{v}\; (2\leq j\leq k_{v}-1),\; \sum_{j=1}^{k_{v}}t_{j}=m_{v}+n_{v}+1. $$ 
  
 The B-spline surface is defined by the following  parametric equation:  
  
-@f[ S(u,v)=\frac{\sum_{i=1}^{n_{u}} \sum_{j=1}^{n_{v}} B_{i,j} \cdot h_{i,j} \cdot N_{i,m_{u}+1}(u) \cdot M_{j,m_{v}+1}(v)}{\sum_{i=1}^{n_{u}} \sum_{j=1}^{n_{v}} h_{i,j} \cdot N_{i,m_{u}+1}(u) \cdot M_{j,m_{v}+1}(v)}, (u,v) \in [u_{1},u_{k_{u}}] \times [v_{1},v_{k_{v}}] @f]     
+$$ S(u,v)=\frac{\sum_{i=1}^{n_{u}} \sum_{j=1}^{n_{v}} B_{i,j} \cdot h_{i,j} \cdot N_{i,m_{u}+1}(u) \cdot M_{j,m_{v}+1}(v)}{\sum_{i=1}^{n_{u}} \sum_{j=1}^{n_{v}} h_{i,j} \cdot N_{i,m_{u}+1}(u) \cdot M_{j,m_{v}+1}(v)}, (u,v) \in [u_{1},u_{k_{u}}] \times [v_{1},v_{k_{v}}] $$     
  
 where functions *N<sub>i,j</sub>* and *M<sub>i,j</sub>* have the following recursion definition by *j*:  
  
-@f[
+$$
 \begin{align}
 N_{i,1}(u)= \left\{\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}
@@ -907,15 +907,15 @@ M_{i,1}(v)=\left\{\begin{matrix}
 0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix} \right.,\; \\
 M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},\;(2 \leq j \leq m_{v}+1); 
 \end{align}
-@f]  
+$$  
 
 where   
-@f[ \bar{u}_{i}=u_{j}\; (1 \leq j \leq k_{u},\; \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
- \bar{v}_{i}=v_{j}\; (1 \leq j \leq k_{v},\; \sum_{l=1}^{j-1}t_{l} \leq i \leq \sum_{l=1}^{j}t_{l}); @f]  
+$$ \bar{u}_{i}=u_{j}\; (1 \leq j \leq k_{u},\; \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
+ \bar{v}_{i}=v_{j}\; (1 \leq j \leq k_{v},\; \sum_{l=1}^{j-1}t_{l} \leq i \leq \sum_{l=1}^{j}t_{l}); $$  
  
 The example record is interpreted as a B-spline  surface with a u rational flag *r<sub>u</sub>*=1, v rational flag *r<sub>v</sub>*=1, u degree *m<sub>u</sub>*=1, v degree *m<sub>v</sub>*=1, u pole count *n<sub>u</sub>*=3, v pole count *n<sub>v</sub>*=2, u multiplicity knot count *k<sub>u</sub>*=5, v multiplicity knot count *k<sub>v</sub>*=4, weight poles *B<sub>1,1</sub>*=(0, 0, 1), *h<sub>1,1</sub>*=7, *B<sub>1,2</sub>*=(1, 0, -4), *h<sub>1,2</sub>*=10, *B<sub>2,1</sub>*=(0, 1, -2), *h<sub>2,1</sub>*=8, *B<sub>2,2</sub>*=(1, 1, 5), *h<sub>2,2</sub>*=11, *B<sub>3,1</sub>*=(0, 2, 3), *h<sub>3,1</sub>*=9 and *B<sub>3,2</sub>*=(1, 2, 6), *h<sub>3,2</sub>*=12, u multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1, v multiplicity  knots *v<sub>1</sub>*=0, *r<sub>1</sub>*=1, *v<sub>2</sub>*=0.3, *r<sub>2</sub>*=1, *v<sub>3</sub>*=0.7, *r<sub>3</sub>*=1 and *v<sub>4</sub>*=1, *r<sub>4</sub>*=1. The B-spline surface is defined  by the following parametric equation:  
  
-@f[ 
+$$ 
 \begin{align} 
 S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ \\
 (0,1,-2) \cdot 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+(1,1,5) \cdot 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ \\
@@ -923,7 +923,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
 [7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+ \\ 
 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+12 \cdot N_{3,2}(u) \cdot M_{2,2}(v) ] 
 \end{align} 
-@f]
+$$
  
 <h4><a id="specification__brep_format_5_2_10">Rectangular Trim Surface - \< surface  record 10 \></a></h4>
  
@@ -951,11 +951,11 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
  
 **Description**  
  
-\<surface  record 10\> describes a rectangular trim  surface. The surface data consist of reals *u<sub>min</sub>*, *u<sub>max</sub>*, *v<sub>min</sub>* and *v<sub>max</sub>* and a \<surface record\> so that *u<sub>min</sub>* < *u<sub>max</sub>* and *v<sub>min</sub>* < *v<sub>max</sub>*. The rectangular  trim surface is a restriction of the base surface *B* described in the record to the set @f$ [u_{min},u_{max}] \times [v_{min},v_{max}] \subseteq domain(B) @f$. The rectangular  trim surface is defined by the following parametric equation:  
+\<surface  record 10\> describes a rectangular trim  surface. The surface data consist of reals *u<sub>min</sub>*, *u<sub>max</sub>*, *v<sub>min</sub>* and *v<sub>max</sub>* and a \<surface record\> so that *u<sub>min</sub>* < *u<sub>max</sub>* and *v<sub>min</sub>* < *v<sub>max</sub>*. The rectangular  trim surface is a restriction of the base surface *B* described in the record to the set $ [u_{min},u_{max}] \times [v_{min},v_{max}] \subseteq domain(B) $. The rectangular  trim surface is defined by the following parametric equation:  
  
-@f[ S(u,v)=B(u,v),\; (u,v) \in [u_{min},u_{max}] \times [v_{min},v_{max}] . @f]  
+$$ S(u,v)=B(u,v),\; (u,v) \in [u_{min},u_{max}] \times [v_{min},v_{max}] . $$  
  
-The example record is interpreted as a rectangular  trim surface to the set [-1, 2]x[-3, 4] for the base surface @f$ B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0) @f$. The rectangular  trim surface is defined by the following parametric equation: @f$ B(u,v)=(1,2,3)+u \cdot (1,0,0)+ v \cdot (0,1,0),\; (u,v) \in [-1,2] \times [-3,4] @f$. 
+The example record is interpreted as a rectangular  trim surface to the set [-1, 2]x[-3, 4] for the base surface $ B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0) $. The rectangular  trim surface is defined by the following parametric equation: $ B(u,v)=(1,2,3)+u \cdot (1,0,0)+ v \cdot (0,1,0),\; (u,v) \in [-1,2] \times [-3,4] $. 
  
  
 <h4><a id="specification__brep_format_5_2_11">Offset Surface - \< surface record 11 \> </a></h4>
@@ -980,11 +980,11 @@ The example record is interpreted as a rectangular  trim surface to the set [-1,
 \<surface record 11\> describes an offset surface.  
 The offset surface data consist of a distance *d* and a \<surface record\>. The  offset surface is the result of offsetting the base surface *B* described in the record to the distance *d* along the normal *N* of  surface *B*.  The offset surface is defined by the following parametric equation:  
  
-@f[ S(u,v)=B(u,v)+d \cdot N(u,v),\; (u,v) \in domain(B) . \\
-N(u,v) = [S'_{u}(u,v),S'_{v}(u,v)] @f]  
-if @f$ [S'_{u}(u,v),S'_{v}(u,v)] \neq \vec{0} @f$.  
+$$ S(u,v)=B(u,v)+d \cdot N(u,v),\; (u,v) \in domain(B) . \\
+N(u,v) = [S'_{u}(u,v),S'_{v}(u,v)] $$  
+if $ [S'_{u}(u,v),S'_{v}(u,v)] \neq \vec{0} $.  
  
-The example record is interpreted as an offset surface  with a distance *d*=-2 and  base surface @f$ B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)  @f$.  The offset surface is defined by the following parametric equation: @f$ S(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)-2 \cdot (0,0,1) @f$.  
+The example record is interpreted as an offset surface  with a distance *d*=-2 and  base surface $ B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)  $.  The offset surface is defined by the following parametric equation: $ S(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)-2 \cdot (0,0,1) $.  
  
  
 <h3><a id="specification__brep_format_5_3">2D curves</a></h3>
@@ -1060,9 +1060,9 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
  
 \<2D curve record 1\> describes a line. The line  data consist of a 2D point *P* and a 2D direction *D*. The line passes through the point  *P*, has the  direction *D* and  is defined by the following parametric equation:  
  
-@f[ C(u)=P+u \cdot D, \; u \in (-\infty,\; \infty). @f]  
+$$ C(u)=P+u \cdot D, \; u \in (-\infty,\; \infty). $$  
  
-The example record is interpreted as a line which  passes through a point *P*=(3,0), has a direction *D*=(0,-1) and is defined by the  following parametric equation: @f$ C(u)=(3,0)+ u \cdot (0,-1) @f$.  
+The example record is interpreted as a line which  passes through a point *P*=(3,0), has a direction *D*=(0,-1) and is defined by the  following parametric equation: $ C(u)=(3,0)+ u \cdot (0,-1) $.  
  
  
 <h4><a id="specification__brep_format_5_3_2">Circle - \<2D curve record 2\> </a></h4>
@@ -1091,9 +1091,9 @@ The example record is interpreted as a line which  passes through a point *P*=(3
  
 \<2D curve record 2\> describes a circle. The  circle data consist of a 2D point *P*, orthogonal 2D directions *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative  real *r*. The circle has a center *P*. The circle plane is parallel to directions *D<sub>x</sub>* and *D<sub>y</sub>*. The  circle has a radius *r* and is defined by the following  parametric equation:  
  
-@f[ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}),\; u \in [0,\; 2 \cdot \pi) . @f] 
+$$ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}),\; u \in [0,\; 2 \cdot \pi) . $$ 
  
-The example record is interpreted as a circle which  has a center *P*=(1,2).  The circle plane is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The circle has a radius *r*=3 and is defined by  the following parametric equation: @f$ C(u)=(1,2)+3 \cdot (cos(u) \cdot (1,0) + sin(u) \cdot (0,1)) @f$.  
+The example record is interpreted as a circle which  has a center *P*=(1,2).  The circle plane is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The circle has a radius *r*=3 and is defined by  the following parametric equation: $ C(u)=(1,2)+3 \cdot (cos(u) \cdot (1,0) + sin(u) \cdot (0,1)) $.  
  
  
 <h4><a id="specification__brep_format_5_3_3">Ellipse - \<2D curve record 3\> </a></h4>
@@ -1123,11 +1123,11 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
  
 **Description**  
  
-\<2D curve record 3\> describes an ellipse. The  ellipse data are 2D point *P*, orthogonal 2D directions *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* that *r<sub>maj</sub>* @f$ \leq @f$ *r<sub>min</sub>*. The ellipse has a center *P*, major and  minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by  the following parametric equation:  
+\<2D curve record 3\> describes an ellipse. The  ellipse data are 2D point *P*, orthogonal 2D directions *D<sub>maj</sub>* and *D<sub>min</sub>* and non-negative reals *r<sub>maj</sub>* and *r<sub>min</sub>* that *r<sub>maj</sub>* $ \leq $ *r<sub>min</sub>*. The ellipse has a center *P*, major and  minor axis directions *D<sub>maj</sub>* and *D<sub>min</sub>*, major and minor radii *r<sub>maj</sub>* and *r<sub>min</sub>* and is defined by  the following parametric equation:  
  
-@f[ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj}+r_{min} \cdot sin(u) \cdot D_{min},\; u \in [0,\; 2 \cdot \pi) . @f]  
+$$ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj}+r_{min} \cdot sin(u) \cdot D_{min},\; u \in [0,\; 2 \cdot \pi) . $$  
  
-The example record is interpreted as an ellipse which  has a center *P*=(1,2),  major and minor axis directions *D<sub>maj</sub>*=(1,0) and *D<sub>min</sub>*=(0,1), major and minor radii *r<sub>maj</sub>*=4 and *r<sub>min</sub>*=3 and is defined by  the following parametric equation: @f$ C(u)=(1,2)+4 \cdot cos(u) \cdot (1,0)+3 \cdot sin(u) \cdot (0,1) @f$.  
+The example record is interpreted as an ellipse which  has a center *P*=(1,2),  major and minor axis directions *D<sub>maj</sub>*=(1,0) and *D<sub>min</sub>*=(0,1), major and minor radii *r<sub>maj</sub>*=4 and *r<sub>min</sub>*=3 and is defined by  the following parametric equation: $ C(u)=(1,2)+4 \cdot cos(u) \cdot (1,0)+3 \cdot sin(u) \cdot (0,1) $.  
  
  
 <h4><a id="specification__brep_format_5_3_4">Parabola - \<2D curve record 4\> </a></h4>
@@ -1157,10 +1157,10 @@ The example record is interpreted as an ellipse which  has a center *P*=(1,2),  
  
 \<2D curve record 4\> describes a parabola. The  parabola data consist of a 2D point *P*, orthogonal 2D directions *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative  real *f*. The parabola coordinate system has its origin *P* and axis directions *D<sub>x</sub>* and *D<sub>y</sub>*. The parabola has a focus  length *f* and  is defined by the following parametric equation:  
  
-@f[ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x}+u \cdot D_{y},\; u \in (-\infty,\; \infty) \Leftarrow f \neq 0;\\
-C(u)=P+u \cdot D_{x},\; u \in (-\infty,\; \infty) \Leftarrow f = 0\; (degenerated\;case). @f] 
+$$ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x}+u \cdot D_{y},\; u \in (-\infty,\; \infty) \Leftarrow f \neq 0;\\
+C(u)=P+u \cdot D_{x},\; u \in (-\infty,\; \infty) \Leftarrow f = 0\; (degenerated\;case). $$ 
  
-The example record is interpreted as a parabola in plane which passes through a point *P*=(1,2) and is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The parabola has a focus length *f*=16 and  is defined by the following parametric equation: @f$ C(u)=(1,2)+ \frac{u^{2}}{64} \cdot (1,0)+u \cdot (0,1) @f$.  
+The example record is interpreted as a parabola in plane which passes through a point *P*=(1,2) and is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The parabola has a focus length *f*=16 and  is defined by the following parametric equation: $ C(u)=(1,2)+ \frac{u^{2}}{64} \cdot (1,0)+u \cdot (0,1) $.  
  
  
 <h4><a id="specification__brep_format_5_3_5">Hyperbola - \<2D curve record 5\> </a></h4>
@@ -1190,9 +1190,9 @@ The example record is interpreted as a parabola in plane which passes through a 
  
 \<2D curve record 5\> describes a hyperbola. The  hyperbola data consist of a 2D point *P*, orthogonal 2D directions *D<sub>x</sub>* and *D<sub>y</sub>* and non-negative reals *k<sub>x</sub>* and *k<sub>y</sub>*. The hyperbola coordinate system has origin *P* and axis directions *D<sub>x</sub>* and *D<sub>y</sub>*. The hyperbola is defined by  the following parametric equation:  
  
-@f[ C(u)=P+k_{x} \cdot cosh(u) D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). @f]  
+$$ C(u)=P+k_{x} \cdot cosh(u) D_{x}+k_{y} \cdot sinh(u) \cdot D_{y},\; u \in (-\infty,\; \infty). $$  
  
-The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
+The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: $ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) $.  
  
  
 <h4><a id="specification__brep_format_5_3_6">Bezier Curve - \<2D curve record 6\></a></h4>
@@ -1220,19 +1220,19 @@ The example record is interpreted as a hyperbola with  coordinate system which h
  
 **Description**  
  
-\<2D curve record 6\> describes a Bezier curve.  The curve data consist of a rational flag *r*, a degree @f$ m \leq 25 @f$ and weight poles.  
+\<2D curve record 6\> describes a Bezier curve.  The curve data consist of a rational flag *r*, a degree $ m \leq 25 $ and weight poles.  
  
-The weight poles are *m*+1 2D points *B<sub>0</sub> ... B<sub>m</sub>* if the flag *r* is 0. The weight poles are *m*+1 pairs *B<sub>0</sub>h<sub>0</sub> ... B<sub>m</sub>h<sub>m</sub>* if the flag *r* is 1. Here *B<sub>i</sub>* is a 2D point and *h<sub>i</sub>* is a positive real @f$ (0\leq i\leq m) @f$. *h<sub>i</sub>*=1 @f$(0\leq i\leq m) @f$ if the flag *r* is 0.  
+The weight poles are *m*+1 2D points *B<sub>0</sub> ... B<sub>m</sub>* if the flag *r* is 0. The weight poles are *m*+1 pairs *B<sub>0</sub>h<sub>0</sub> ... B<sub>m</sub>h<sub>m</sub>* if the flag *r* is 1. Here *B<sub>i</sub>* is a 2D point and *h<sub>i</sub>* is a positive real $ (0\leq i\leq m) $. *h<sub>i</sub>*=1 $(0\leq i\leq m) $ if the flag *r* is 0.  
  
 The Bezier curve is defined by the following  parametric equation:  
  
-@f[ C(u)= \frac{\sum_{i=0}^{m} B_{i} \cdot h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}}{\sum_{i=0}^{m} h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}},\; u \in [0,1] @f]  
+$$ C(u)= \frac{\sum_{i=0}^{m} B_{i} \cdot h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}}{\sum_{i=0}^{m} h_{i} \cdot C_{m}^{i} \cdot u^{i} \cdot (1-u)^{m-i}},\; u \in [0,1] $$  
  
-where @f$ 0^{0} \equiv 1 @f$.  
+where $ 0^{0} \equiv 1 $.  
  
 The example record is interpreted as a Bezier curve  with a rational flag *r*=1, a degree *m*=2 and weight poles *B<sub>0</sub>*=(0,1), *h<sub>0</sub>*=4, *B<sub>1</sub>*=(1,-2), *h<sub>1</sub>*=5 and *B<sub>2</sub>*=(2,3), *h<sub>2</sub>*=6. The Bezier curve is defined  by the following parametric equation:  
  
-@f[ C(u)= \frac{(0,1) \cdot 4 \cdot (1-u)^{2}+(1,-2) \cdot 5 \cdot 2 \cdot u \cdot (1-u)+(2,3) \cdot 6 \cdot u^{2}}{ 4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}} . @f]  
+$$ C(u)= \frac{(0,1) \cdot 4 \cdot (1-u)^{2}+(1,-2) \cdot 5 \cdot 2 \cdot u \cdot (1-u)+(2,3) \cdot 6 \cdot u^{2}}{ 4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}} . $$  
  
  
 <h4><a id="specification__brep_format_5_3_7">B-spline Curve -  \<2D curve record 7\></a></h4>
@@ -1269,33 +1269,33 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
  
 **Description**  
  
-\<2D curve record 7\> describes a B-spline curve.  The curve data consist of a rational flag *r*, a degree @f$ m \leq 25 @f$, a pole count @f$ n \geq 2 @f$, a multiplicity knot count *k*, weight poles and  multiplicity knots.  
+\<2D curve record 7\> describes a B-spline curve.  The curve data consist of a rational flag *r*, a degree $ m \leq 25 $, a pole count $ n \geq 2 $, a multiplicity knot count *k*, weight poles and  multiplicity knots.  
  
-The weight poles are *n* 2D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight  poles are *n* pairs  *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag  *r* is 1. Here *B<sub>i</sub>* is a 2D point and *h<sub>i</sub>* is a positive real @f$ (1\leq i\leq n) @f$. *h<sub>i</sub>*=1 @f$(1\leq i\leq n) @f$ if the flag *r* is 0.  
+The weight poles are *n* 2D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight  poles are *n* pairs  *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag  *r* is 1. Here *B<sub>i</sub>* is a 2D point and *h<sub>i</sub>* is a positive real $ (1\leq i\leq n) $. *h<sub>i</sub>*=1 $(1\leq i\leq n) $ if the flag *r* is 0.  
  
-The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with multiplicity @f$ q_{i} \geq 1\; (1 \leq i \leq k) @f$ so that  
+The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with multiplicity $ q_{i} \geq 1\; (1 \leq i \leq k) $ so that  
  
-@f[ u_{i} < u_{i+1}\; (1 \leq i \leq k-1), \\
-q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1),\; \sum_{i=1}^{k}q_{i}=m+n+1 . @f]  
+$$ u_{i} < u_{i+1}\; (1 \leq i \leq k-1), \\
+q_{1} \leq m+1,\; q_{k} \leq m+1,\; q_{i} \leq m\; (2 \leq i \leq k-1),\; \sum_{i=1}^{k}q_{i}=m+n+1 . $$  
  
 The B-spline curve is defined by the following  parametric equation:  
  
-@f[ C(u)= \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u) }{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)},\; u \in [u_{1},\; u_{k}] @f]
+$$ C(u)= \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u) }{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)},\; u \in [u_{1},\; u_{k}] $$
  
 where functions *N<sub>i,j</sub>* have the following recursion definition  by *j*
  
-@f[ N_{i,1}(u)=\left\{\begin{matrix}
+$$ N_{i,1}(u)=\left\{\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) @f] 
+N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) $$ 
  
 where  
  
-@f[ \bar{u}_{i}=u_{j}\; (1\leq j\leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l}) . @f] 
+$$ \bar{u}_{i}=u_{j}\; (1\leq j\leq k,\; \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l}) . $$ 
  
 The example record is interpreted as a B-spline curve with a rational flag *r*=1, a degree *m*=1, a pole count *n*=3, a multiplicity knot count *k*=5, weight poles *B<sub>1</sub>*=(0,1), *h<sub>1</sub>*=4, *B<sub>2</sub>*=(1,-2), *h<sub>2</sub>*=5 and *B<sub>3</sub>*=(2,3), *h<sub>3</sub>*=6 and multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1. The B-spline curve is defined  by the following parametric equation:  
  
-@f[ C(u)= \frac{(0,1) \cdot 4 \cdot N_{1,2}(u)+(1,-2) \cdot 5 \cdot N_{2,2}(u)+(2,3) \cdot 6 \cdot N_{3,2}(u)}{ 4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)} . @f] 
+$$ C(u)= \frac{(0,1) \cdot 4 \cdot N_{1,2}(u)+(1,-2) \cdot 5 \cdot N_{2,2}(u)+(2,3) \cdot 6 \cdot N_{3,2}(u)}{ 4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)} . $$ 
  
  
 <h4><a id="specification__brep_format_5_3_8">Trimmed Curve - \<2D curve record 8\> </a></h4>
@@ -1320,11 +1320,11 @@ The example record is interpreted as a B-spline curve with a rational flag *r*=1
  
 **Description**
  
-\<2D curve record 8\> describes a trimmed curve. The trimmed curve data consist of reals *u<sub>min</sub>* and *u<sub>max</sub>* and a \<2D curve record\> so that *u<sub>min</sub>* < *u<sub>max</sub>*. The trimmed curve  is a restriction of the base curve *B* described in the record to the segment @f$ [u_{min},\;u_{max}]\subseteq domain(B) @f$. The trimmed curve is  defined by the following parametric equation:  
+\<2D curve record 8\> describes a trimmed curve. The trimmed curve data consist of reals *u<sub>min</sub>* and *u<sub>max</sub>* and a \<2D curve record\> so that *u<sub>min</sub>* < *u<sub>max</sub>*. The trimmed curve  is a restriction of the base curve *B* described in the record to the segment $ [u_{min},\;u_{max}]\subseteq domain(B) $. The trimmed curve is  defined by the following parametric equation:  
  
-@f[ C(u)=B(u),\; u \in [u_{min},\;u_{max}] . @f] 
+$$ C(u)=B(u),\; u \in [u_{min},\;u_{max}] . $$ 
  
-The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, *u<sub>max</sub>*=5 and base curve @f$ B(u)=(1,2)+u \cdot (1,0) @f$. The trimmed curve is defined by the following parametric equation: @f$ C(u)=(1,2)+u \cdot (1,0),\; u \in [-4,5] @f$.  
+The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, *u<sub>max</sub>*=5 and base curve $ B(u)=(1,2)+u \cdot (1,0) $. The trimmed curve is defined by the following parametric equation: $ C(u)=(1,2)+u \cdot (1,0),\; u \in [-4,5] $.  
  
  
 <h4><a id="specification__brep_format_5_3_9">Offset Curve - \<2D curve record 9\> </a></h4>
@@ -1346,11 +1346,11 @@ The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, 
  
 **Description**  
  
-\<2D curve record 9\> describes an offset curve. The offset curve data consist of a distance *d* and a \<2D curve record\>. The offset curve is the result of offsetting the base curve *B* described in the record to the distance *d* along  the vector @f$ (B'_{Y}(u),\; -B'_{X}(u)) \neq \vec{0} @f$ where @f$ B(u)=(B'_{X}(u),\; B'_{Y}(u)) @f$. The offset curve is defined by the following parametric equation:  
+\<2D curve record 9\> describes an offset curve. The offset curve data consist of a distance *d* and a \<2D curve record\>. The offset curve is the result of offsetting the base curve *B* described in the record to the distance *d* along  the vector $ (B'_{Y}(u),\; -B'_{X}(u)) \neq \vec{0} $ where $ B(u)=(B'_{X}(u),\; B'_{Y}(u)) $. The offset curve is defined by the following parametric equation:  
  
-@f[ C(u)=B(u)+d \cdot (B'_{Y}(u),\; -B'_{X}(u)),\; u \in domain(B) . @f]  
+$$ C(u)=B(u)+d \cdot (B'_{Y}(u),\; -B'_{X}(u)),\; u \in domain(B) . $$  
  
-The example record is interpreted as an offset curve  with a distance *d*=2 and  base curve @f$ B(u)=(1,2)+u \cdot (1,0) @f$ and is defined by the following parametric equation: @f$ C(u)=(1,2)+u \cdot (1,0)+2 \cdot (0,-1) @f$.  
+The example record is interpreted as an offset curve  with a distance *d*=2 and  base curve $ B(u)=(1,2)+u \cdot (1,0) $ and is defined by the following parametric equation: $ C(u)=(1,2)+u \cdot (1,0)+2 \cdot (0,-1) $.  
  
 <h3><a id="specification__brep_format_5_4">3D polygons</a></h3>
  
@@ -1396,13 +1396,13 @@ The example record is interpreted as an offset curve  with a distance *d*=2 and
  
 **Description**  
  
-\<3D polygons\> record describes a 3D polyline *L* which approximates a 3D curve *C*.  The polyline data consist of a node count @f$ m \geq 2 @f$, a parameter presence flag *p*, a deflection @f$ d \geq 0 @f$, nodes @f$ N_{i}\; (1\leq i \leq m) @f$ and parameters @f$ u_{i}\; (1\leq i \leq m) @f$. The parameters are present only if *p*=1. The polyline *L* passes  through the nodes. The deflection *d* describes the deflection of polyline *L* from the curve *C*:  
+\<3D polygons\> record describes a 3D polyline *L* which approximates a 3D curve *C*.  The polyline data consist of a node count $ m \geq 2 $, a parameter presence flag *p*, a deflection $ d \geq 0 $, nodes $ N_{i}\; (1\leq i \leq m) $ and parameters $ u_{i}\; (1\leq i \leq m) $. The parameters are present only if *p*=1. The polyline *L* passes  through the nodes. The deflection *d* describes the deflection of polyline *L* from the curve *C*:  
  
-@f[ \underset{P \in C}{max}\; \underset{Q \in L}{min}|Q-P| \leq d . @f]  
+$$ \underset{P \in C}{max}\; \underset{Q \in L}{min}|Q-P| \leq d . $$  
  
-The parameter @f$ u_{i}\; (1\leq i \leq m) @f$ is the parameter of the node *N<sub>i</sub>* on the curve *C*:  
+The parameter $ u_{i}\; (1\leq i \leq m) $ is the parameter of the node *N<sub>i</sub>* on the curve *C*:  
  
-@f[ C(u_{i})=N_{i} . @f]  
+$$ C(u_{i})=N_{i} . $$  
  
 The example record describes a polyline from *m*=2 nodes with a parameter presence flag *p*=1, a deflection *d*=0.1, nodes *N<sub>1</sub>*=(1,0,0) and *N<sub>2</sub>*=(2,0,0) and parameters *u<sub>1</sub>*=0 and *u<sub>2</sub>*=1.  
  
@@ -1472,15 +1472,15 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
 \<triangulation u v parameters\> are used in version 2 or later.
 \<need to write normals flag\> and \<triangulation normals\> are used in version 3.
  
-\<triangulation record\> describes a triangulation  *T* which  approximates a surface *S*. The triangulation data consist of a node  count @f$ m \geq 3 @f$, a triangle count @f$ k \geq 1 @f$, a parameter  presence flag *p*, a deflection @f$ d \geq 0 @f$, nodes @f$ N_{i}\; (1\leq i \leq m) @f$, parameter pairs @f$ u_{i}\; v_{i}\; (1\leq i \leq m) @f$, triangles @f$ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k,\; n_{j,l} \in \left \{1,...,m \right \}\; (1\leq l\leq 3)) @f$. The parameters are present  only if *p*=1. The deflection describes the triangulation deflection from the surface:  
+\<triangulation record\> describes a triangulation  *T* which  approximates a surface *S*. The triangulation data consist of a node  count $ m \geq 3 $, a triangle count $ k \geq 1 $, a parameter  presence flag *p*, a deflection $ d \geq 0 $, nodes $ N_{i}\; (1\leq i \leq m) $, parameter pairs $ u_{i}\; v_{i}\; (1\leq i \leq m) $, triangles $ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k,\; n_{j,l} \in \left \{1,...,m \right \}\; (1\leq l\leq 3)) $. The parameters are present  only if *p*=1. The deflection describes the triangulation deflection from the surface:  
  
-@f[ \underset{P \in S}{max}\; \underset{Q \in T}{min}|Q-P| \leq d . @f]  
+$$ \underset{P \in S}{max}\; \underset{Q \in T}{min}|Q-P| \leq d . $$  
  
-The parameter pair @f$ u_{i}\; v_{i}\; (1\leq i \leq m) @f$ describes the parameters of node *N<sub>i</sub>* on the surface:  
+The parameter pair $ u_{i}\; v_{i}\; (1\leq i \leq m) $ describes the parameters of node *N<sub>i</sub>* on the surface:  
  
-@f[ S(u_{i},v_{i})=N_{i} . @f]  
+$$ S(u_{i},v_{i})=N_{i} . $$  
  
-The triangle @f$ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k) @f$ is interpreted as a triangle of nodes @f$ N_{n_{j},1}\; N_{n_{j},2}@f$ and @f$ N_{n_{j},3} @f$ with circular traversal of the nodes in the order @f$ N_{n_{j},1}\;  N_{n_{j},2}@f$ and @f$ N_{n_{j},3} @f$. From any side of the triangulation *T* all its triangles  have the same direction of the node circular traversal: either clockwise or  counterclockwise.  
+The triangle $ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k) $ is interpreted as a triangle of nodes $ N_{n_{j},1}\; N_{n_{j},2}$ and $ N_{n_{j},3} $ with circular traversal of the nodes in the order $ N_{n_{j},1}\;  N_{n_{j},2}$ and $ N_{n_{j},3} $. From any side of the triangulation *T* all its triangles  have the same direction of the node circular traversal: either clockwise or  counterclockwise.  
  
 Triangulation record  
 
@@ -1587,11 +1587,11 @@ describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presenc
  
 **Description**  
  
-\<polygons on triangulations\> describes a polyline  *L* on a triangulation  which approximates a curve *C*. The polyline data consist of a node  count @f$ m \geq 2 @f$,  node numbers @f$ n_{i} \geq 1 @f$,  deflection @f$ d \geq 0 @f$, a parameter presence flag *p* and parameters @f$ u_{i}\; (1\leq i\leq m) @f$. The parameters are present only if *p*=1. The  deflection *d* describes  the deflection of polyline *L* from the curve *C*:  
+\<polygons on triangulations\> describes a polyline  *L* on a triangulation  which approximates a curve *C*. The polyline data consist of a node  count $ m \geq 2 $,  node numbers $ n_{i} \geq 1 $,  deflection $ d \geq 0 $, a parameter presence flag *p* and parameters $ u_{i}\; (1\leq i\leq m) $. The parameters are present only if *p*=1. The  deflection *d* describes  the deflection of polyline *L* from the curve *C*:  
  
-@f[ \underset{P \in C}{max}\; \underset{Q \in L}{min}|Q-P| \leq d . @f]  
+$$ \underset{P \in C}{max}\; \underset{Q \in L}{min}|Q-P| \leq d . $$  
  
-Parameter @f$ u_{i}\; (1\leq i\leq m) @f$ is *n<sub>i</sub>*-th node *C(u<sub>i</sub>)* parameter on curve *C*.  
+Parameter $ u_{i}\; (1\leq i\leq m) $ is *n<sub>i</sub>*-th node *C(u<sub>i</sub>)* parameter on curve *C*.  
  
  
 <h3><a id="specification__brep_format_6_6">Geometric Sense of a Curve</a></h3>
@@ -1645,15 +1645,15 @@ An example of section shapes and a whole  *.brep file are given in chapter 7 [Ap
  
 **Description**  
  
-\<shape flag word\> @f$ f_{1}\; f_{2}\; f_{3}\; f_{4}\; f_{5}\; f_{6}\; f_{7} @f$ \<flag\>s @f$ f_{i}\;(1\leq i \leq 7) @f$ are interpreted as shape  flags in the following way:  
+\<shape flag word\> $ f_{1}\; f_{2}\; f_{3}\; f_{4}\; f_{5}\; f_{6}\; f_{7} $ \<flag\>s $ f_{i}\;(1\leq i \leq 7) $ are interpreted as shape  flags in the following way:  
 
-  *  @f$ f_{1} @f$ -- free;  
-  *  @f$ f_{2} @f$ -- modified;  
-  *  @f$ f_{3} @f$ -- IGNORED(version 1 only) \\ checked (version 2 or later);  
-  *  @f$ f_{4} @f$ -- orientable;  
-  *  @f$ f_{5} @f$ -- closed;  
-  *  @f$ f_{6} @f$ -- infinite;  
-  *  @f$ f_{7} @f$ -- convex.  
+  *  $ f_{1} $ -- free;  
+  *  $ f_{2} $ -- modified;  
+  *  $ f_{3} $ -- IGNORED(version 1 only) \\ checked (version 2 or later);  
+  *  $ f_{4} $ -- orientable;  
+  *  $ f_{5} $ -- closed;  
+  *  $ f_{6} $ -- infinite;  
+  *  $ f_{7} $ -- convex.  
   
 The flags are used in a special way [1].  
  
@@ -1726,7 +1726,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
 \<polygon on triangulation\> number is the number of a \<polygons on triangulations record\> from subsection \<polygons on  triangulations\> of section \<geometry\>.  
 \<polygons on triangulations record\> numbering  starts from 1.  
  
-\<curve parameter minimal and maximal values\> *u<sub>min</sub>* and *u<sub>max</sub>* are the curve parameter *u* bounds: *u<sub>min</sub>* @f$ \leq @f$ *u* @f$ \leq @f$ *u<sub>max</sub>*.  
+\<curve parameter minimal and maximal values\> *u<sub>min</sub>* and *u<sub>max</sub>* are the curve parameter *u* bounds: *u<sub>min</sub>* $ \leq $ *u* $ \leq $ *u<sub>max</sub>*.  
  
 \<curve  values for parameter minimal and maximal values\> *u<sub>min</sub>* and *u<sub>max</sub>* are real pairs *x<sub>min</sub> y<sub>min</sub>* and *x<sub>max</sub> y<sub>max</sub>* that (*x<sub>min</sub>*, *y<sub>min</sub>*)= *C* (*u<sub>min</sub>*) and (*x<sub>max</sub>*, *y<sub>max</sub>*)= *C* (*u<sub>max</sub>*) where *C* is a parametric  equation of the curve.  
  
@@ -1777,7 +1777,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
  
 \<vertex data tolerance\> *t* describes the maximum distance  from the vertex *V* to the set *R* of vertex *V* representations:  
  
-@f[ \underset{P \in R }{max} |P-V| \leq t . @f]  
+$$ \underset{P \in R }{max} |P-V| \leq t . $$  
  
  
 <h3><a id="specification__brep_format_7_3">Edge data</a></h3>
@@ -1847,7 +1847,7 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
  
 \<edge data tolerance\> *t* describes the maximum distance from the edge *E* to  the set *R* of  edge *E* representations:  
  
-@f[ \underset{C \in R}{max}\;\underset{P \in E}{max}\;\underset{Q \in C}{min}|Q-P| \leq t @f]  
+$$ \underset{C \in R}{max}\;\underset{P \in E}{max}\;\underset{Q \in C}{min}|Q-P| \leq t $$  
  
  
 <h3><a id="specification__brep_format_7_4">Face data</a></h3>
@@ -1868,7 +1868,7 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
  
 \<face data tolerance\> *t* describes the maximum distance  from the face *F* to  the surface *S*:  
  
-@f[ \underset{P \in F}{max}\;\underset{Q \in S}{min}|Q-P| \leq t @f] 
+$$ \underset{P \in F}{max}\;\underset{Q \in S}{min}|Q-P| \leq t $$ 
 
 Flag \<face data natural restriction flag\> is  used in a special way [1].  
 
