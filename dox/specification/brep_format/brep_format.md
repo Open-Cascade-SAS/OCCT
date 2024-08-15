@@ -965,21 +965,21 @@ where functions *N<sub>i,j</sub>* and *M<sub>i,j</sub>* have the following rec
 $$
 \begin{align}
 N_{i,1}(u)= \lbrace\begin{matrix}
-1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix}, \\
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+  
-\frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},(2 \leq j \leq m_{u}+1), \\
+1\Leftarrow \bar u_{i} \leq u \leq \bar u_{i+1}
+0\Leftarrow u < \bar u_{i} \vee  \bar u_{i+1} \leq u \end{matrix}, \\
+N_{i,j}(u)=\frac{(u-\bar u_{i}) \cdot N_{i,j-1}(u) }{\bar u_{i+j-1}-\bar u_{i}}+  
+\frac{(\bar u_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar u_{i+j}-\bar u_{i+1}},(2 \leq j \leq m_{u}+1), \\
 M_{i,1}(v)=\lbrace\begin{matrix}
-1\Leftarrow \bar{v}_{i} \leq v \leq \bar{v}_{i+1}\\ 
-0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix}, \\
-M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},(2 \leq j \leq m_{v}+1); 
+1\Leftarrow \bar v_{i} \leq v \leq \bar v_{i+1}\\ 
+0\Leftarrow v < \bar v_{i} \vee  \bar v_{i+1} \leq v \end{matrix}, \\
+M_{i,j}(v)=\frac{(v-\bar v_{i}) \cdot M_{i,j-1}(v) }{\bar v_{i+j-1}-\bar v_{i}}+ \frac{(\bar v_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar v_{i+j}-\bar v_{i+1}},(2 \leq j \leq m_{v}+1); 
 \end{align}
 $$
 
 where
 
-$$ \bar{u}_{i}=u_{j}\; (1 \leq j \leq k_{u}, \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
- \bar{v}_{i}=v_{j}\; (1 \leq j \leq k_{v}, \sum_{l=1}^{j-1}t_{l} \leq i \leq \sum_{l=1}^{j}t_{l}); $$  
+$$ \bar u_{i}=u_{j}\; (1 \leq j \leq k_{u}, \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
+ \bar v_{i}=v_{j}\; (1 \leq j \leq k_{v}, \sum_{l=1}^{j-1}t_{l} \leq i \leq \sum_{l=1}^{j}t_{l}); $$  
  
 The example record is interpreted as a B-spline  surface with a u rational flag *r<sub>u</sub>*=1, v rational flag *r<sub>v</sub>*=1, u degree *m<sub>u</sub>*=1, v degree *m<sub>v</sub>*=1, u pole count *n<sub>u</sub>*=3, v pole count *n<sub>v</sub>*=2, u multiplicity knot count *k<sub>u</sub>*=5, v multiplicity knot count *k<sub>v</sub>*=4, weight poles *B<sub>1,1</sub>*=(0, 0, 1), *h<sub>1,1</sub>*=7, *B<sub>1,2</sub>*=(1, 0, -4), *h<sub>1,2</sub>*=10, *B<sub>2,1</sub>*=(0, 1, -2), *h<sub>2,1</sub>*=8, *B<sub>2,2</sub>*=(1, 1, 5), *h<sub>2,2</sub>*=11, *B<sub>3,1</sub>*=(0, 2, 3), *h<sub>3,1</sub>*=9 and *B<sub>3,2</sub>*=(1, 2, 6), *h<sub>3,2</sub>*=12, u multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1, v multiplicity  knots *v<sub>1</sub>*=0, *r<sub>1</sub>*=1, *v<sub>2</sub>*=0.3, *r<sub>2</sub>*=1, *v<sub>3</sub>*=0.7, *r<sub>3</sub>*=1 and *v<sub>4</sub>*=1, *r<sub>4</sub>*=1. The B-spline surface is defined  by the following parametric equation:  
  
@@ -1354,13 +1354,13 @@ $$ C(u)= \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u) }{\sum_{i=1}^
 where functions *N<sub>i,j</sub>* have the following recursion definition  by *j*
  
 $$ N_{i,1}(u)=\lbrace\begin{matrix}
-1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix},
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},(2 \leq j \leq m+1) $$ 
+1\Leftarrow \bar u_{i} \leq u \leq \bar u_{i+1}\\ 
+0\Leftarrow u < \bar u_{i} \vee  \bar u_{i+1} \leq u \end{matrix},
+N_{i,j}(u)=\frac{(u-\bar u_{i}) \cdot N_{i,j-1}(u) }{\bar u_{i+j-1}-\bar u_{i}}+ \frac{(\bar u_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar u_{i+j}-\bar u_{i+1}},(2 \leq j \leq m+1) $$ 
  
 where  
  
-$$\bar{u}_{i}=u_{j}\; (1\leq j\leq k, \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l})$$
+$$\bar u_{i}=u_{j}\; (1\leq j\leq k, \sum_{l=1}^{j-1}q_{l}+1 \leq i \leq \sum_{l=1}^{j}q_{l})$$
  
 The example record is interpreted as a B-spline curve with a rational flag *r*=1, a degree *m*=1, a pole count *n*=3, a multiplicity knot count *k*=5, weight poles *B<sub>1</sub>*=(0,1), *h<sub>1</sub>*=4, *B<sub>2</sub>*=(1,-2), *h<sub>2</sub>*=5 and *B<sub>3</sub>*=(2,3), *h<sub>3</sub>*=6 and multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1. The B-spline curve is defined  by the following parametric equation:  
  
