@@ -114,8 +114,8 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 $$
 Q =
 \begin{pmatrix}
-q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\
-q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4} \\
+q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4}\newline
+q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4}\newline
 q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4}
 \end{pmatrix}
 $$
@@ -124,8 +124,8 @@ which describes transformation of 3 dimensional space and satisfies the followin
 
 $$
 d \neq 0 \text{ where } d = |Q_{2}| \text{ where } Q_{2} = \begin{pmatrix}
-q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\
-q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4} \\
+q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \newline
+q_{2,1} & q_{2,2} & q_{2,3} & q_{2,4} \newline
 q_{3,1} & q_{3,2} & q_{3,3} & q_{3,4}
 \end{pmatrix}
 $$
@@ -136,12 +136,12 @@ The transformation transforms a point (x, y, z) to another point (u, v, w) by th
 
 $$
 \begin{pmatrix}
-u \\ v \\ w
+u \newline v \newline w
 \end{pmatrix} = 
 Q\cdot(x\;y\;z\;1)^{T} =
 \begin{pmatrix}
-q_{1,1}\cdot x +q_{1,2}\cdot y +q_{1,3}\cdot z +q_{1,4} \\
-q_{2,1}\cdot x +q_{2,2}\cdot y +q_{2,3}\cdot z +q_{2,4} \\
+q_{1,1}\cdot x +q_{1,2}\cdot y +q_{1,3}\cdot z +q_{1,4} \newline
+q_{2,1}\cdot x +q_{2,2}\cdot y +q_{2,3}\cdot z +q_{2,4} \newline
 q_{3,1}\cdot x +q_{3,2}\cdot y +q_{3,3}\cdot z +q_{3,4}
 \end{pmatrix}
 $$
@@ -151,8 +151,8 @@ $$
   *  parallel translation --
 
 $$\begin{pmatrix}
-1 & 0 & 0 & q_{1,4} \\
-0 & 1 & 0 & q_{2,4} \\
+1 & 0 & 0 & q_{1,4} \newline
+0 & 1 & 0 & q_{2,4} \newline
 0 & 0 & 1 & q_{3,4}
 \end{pmatrix}$$
 
@@ -160,8 +160,8 @@ $$\begin{pmatrix}
 
 $$
 \begin{pmatrix}
-D_{x}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) - D_{z} \cdot sin(\varphi) &D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{y} \cdot sin(\varphi) &0\\
-D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) + D_{z} \cdot sin(\varphi) &D_{y}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{x} \cdot sin(\varphi) &0\\
+D_{x}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) - D_{z} \cdot sin(\varphi) &D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{y} \cdot sin(\varphi) &0 \newline
+D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) + D_{z} \cdot sin(\varphi) &D_{y}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{x} \cdot sin(\varphi) &0 \newline
 D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{y} \cdot sin(\varphi) &D_{y} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{x} \cdot sin(\varphi) &D_{z}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &0
 \end{pmatrix};
 $$
@@ -170,8 +170,8 @@ $$
 
 $$
 \begin{pmatrix} 
-s & 0 & 0 & 0 \\
-0 & s & 0 & 0 \\ 
+s & 0 & 0 & 0 \newline
+0 & s & 0 & 0 \newline 
 0 & 0 & s & 0 
 \end{pmatrix} \text{ where } 
 s \in (-\infty, \infty) \setminus \lbrace 0 \rbrace
@@ -180,16 +180,16 @@ $$
   *  central symmetry --
 
 $$
-\begin{pmatrix} -1 &0 &0 &0 \\
-0 &-1 &0 &0 \\
+\begin{pmatrix} -1 &0 &0 &0 \newline
+0 &-1 &0 &0 \newline
 0 &0 &-1 &0 \end{pmatrix}
 $$
 
   *  axis symmetry --
 
 $$
-\begin{pmatrix} -1 &0 &0 &0 \\
-0 &-1 &0 &0 \\
+\begin{pmatrix} -1 &0 &0 &0 \newline
+0 &-1 &0 &0 \newline
 0 &0 &1 &0 \end{pmatrix}
 $$
 
@@ -197,8 +197,8 @@ $$
 
 $$
 \begin{pmatrix} 
-1 & 0 & 0 & 0 \\ 
-0 & 1 & 0 & 0 \\ 
+1 & 0 & 0 & 0 \newline 
+0 & 1 & 0 & 0 \newline 
 0 & 0 & -1 & 0 
 \end{pmatrix}
 $$
@@ -526,7 +526,7 @@ where functions $N_{i,j}$ have the following recursion definition  by *j*:
 $$
 N_{i,1}(u) =
 \begin{cases} 
-1 & \text {if } \bar u_i \leq u \leq \bar u_{i+1} \\ 
+1 & \text {if } \bar u_i \leq u \leq \bar u_{i+1} \newline 
 0 & \text {if } u < \bar u_{i} \text { or } u \geq \bar u_{i+1} 
 \end{cases}, 
 N_{i,j}(u) = \frac {(u - \bar u_{i}) \cdot N_{i,j-1}(u)}{\bar u_{i+j-1} - \bar u_{i}} + \frac {(\bar u_{i+j} - u) \cdot N_{i+1,j-1}(u)}{\bar u_{i+j} - \bar u_{i+1}}, 
@@ -868,8 +868,8 @@ The example record is interpreted as a Bezier surface  with a u rational flag *r
  
 $$
 \begin{align}
-S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1-u)^{2} \cdot v+ (0,1,-2) \cdot 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v) + \\
-(1,1,5) \cdot 11 \cdot 2 \cdot u \cdot (1-u)  \cdot v+ (0,2,3) \cdot 9 \cdot u^{2} \cdot (1-v)+(1,2,6) \cdot 12 \cdot u^{2} \cdot v] \div [7 \cdot (1-u)^{2} \cdot (1-v)+ \\
+S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1-u)^{2} \cdot v+ (0,1,-2) \cdot 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v) + \newline
+(1,1,5) \cdot 11 \cdot 2 \cdot u \cdot (1-u)  \cdot v+ (0,2,3) \cdot 9 \cdot u^{2} \cdot (1-v)+(1,2,6) \cdot 12 \cdot u^{2} \cdot v] \div [7 \cdot (1-u)^{2} \cdot (1-v)+ \newline
 10 \cdot (1-u)^{2} \cdot v+ 8 \cdot 2 \cdot u \cdot (1-u) \cdot (1-v)+ 11 \cdot 2 \cdot u \cdot (1-u) \cdot v+ 9 \cdot u^{2} \cdot (1-v)+12 \cdot u^{2} \cdot v ]
 \end{align}
 $$
@@ -948,12 +948,12 @@ The weight poles are $n_{u} \cdot n_{v}$ 3D points $B_{i,j}\; ((i,j) \in \lbrace
  
 The u multiplicity knots are *k<sub>u</sub>* pairs $u_{1}q_{1} ... u_{k_{u}}q_{k_{u}}$. Here $u_{i}$ is a knot with multiplicity $q_{i} \geq 1 \;(1\leq i\leq k_{u})$ so that  
  
-$$ u_{i} < u_{i+1} \; (1\leq i\leq k_{u}-1), \\
+$$ u_{i} < u_{i+1} \; (1\leq i\leq k_{u}-1), \newline
 q_{1} \leq m_{u}+1, q_{k_{u}} \leq m_{u}+1, q_{i} \leq m_{u}\; (2\leq i\leq k_{u}-1), \sum_{i=1}^{k_{u}}q_{i}=m_{u}+n_{u}+1. $$  
  
 The v multiplicity knots are *k<sub>v</sub>* pairs $v_{1}t_{1} ... v_{k_{v}}t_{k_{v}}$. Here $v_{j}$ is a knot with multiplicity $t_{i} \geq  1\;(1\leq i\leq k_{v})$ so that  
  
-$$ v_{j} < v_{j+1} \; (1\leq j\leq k_{v}-1), \\
+$$ v_{j} < v_{j+1} \; (1\leq j\leq k_{v}-1), \newline
 t_{1} \leq m_{v}+1, t_{k_{v}} \leq m_{v}+1, t_{j} \leq m_{v}\; (2\leq j\leq k_{v}-1), \sum_{j=1}^{k_{v}}t_{j}=m_{v}+n_{v}+1. $$ 
  
 The B-spline surface is defined by the following  parametric equation:  
@@ -966,29 +966,29 @@ $$
 \begin{align}
 N_{i,1}(u)= \lbrace\begin{matrix}
 1\Leftarrow \bar u_{i} \leq u \leq \bar u_{i+1}
-0\Leftarrow u < \bar u_{i} \vee  \bar u_{i+1} \leq u \end{matrix}, \\
+0\Leftarrow u < \bar u_{i} \vee  \bar u_{i+1} \leq u \end{matrix}, \newline
 N_{i,j}(u)=\frac{(u-\bar u_{i}) \cdot N_{i,j-1}(u) }{\bar u_{i+j-1}-\bar u_{i}}+  
-\frac{(\bar u_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar u_{i+j}-\bar u_{i+1}},(2 \leq j \leq m_{u}+1), \\
+\frac{(\bar u_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar u_{i+j}-\bar u_{i+1}},(2 \leq j \leq m_{u}+1), \newline
 M_{i,1}(v)=\lbrace\begin{matrix}
-1\Leftarrow \bar v_{i} \leq v \leq \bar v_{i+1}\\ 
-0\Leftarrow v < \bar v_{i} \vee  \bar v_{i+1} \leq v \end{matrix}, \\
+1\Leftarrow \bar v_{i} \leq v \leq \bar v_{i+1} \newline 
+0\Leftarrow v < \bar v_{i} \vee  \bar v_{i+1} \leq v \end{matrix}, \newline
 M_{i,j}(v)=\frac{(v-\bar v_{i}) \cdot M_{i,j-1}(v) }{\bar v_{i+j-1}-\bar v_{i}}+ \frac{(\bar v_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar v_{i+j}-\bar v_{i+1}},(2 \leq j \leq m_{v}+1); 
 \end{align}
 $$
 
 where
 
-$$ \bar u_{i}=u_{j}\; (1 \leq j \leq k_{u}, \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
+$$ \bar u_{i}=u_{j}\; (1 \leq j \leq k_{u}, \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \newline
  \bar v_{i}=v_{j}\; (1 \leq j \leq k_{v}, \sum_{l=1}^{j-1}t_{l} \leq i \leq \sum_{l=1}^{j}t_{l}); $$  
  
 The example record is interpreted as a B-spline  surface with a u rational flag *r<sub>u</sub>*=1, v rational flag *r<sub>v</sub>*=1, u degree *m<sub>u</sub>*=1, v degree *m<sub>v</sub>*=1, u pole count *n<sub>u</sub>*=3, v pole count *n<sub>v</sub>*=2, u multiplicity knot count *k<sub>u</sub>*=5, v multiplicity knot count *k<sub>v</sub>*=4, weight poles *B<sub>1,1</sub>*=(0, 0, 1), *h<sub>1,1</sub>*=7, *B<sub>1,2</sub>*=(1, 0, -4), *h<sub>1,2</sub>*=10, *B<sub>2,1</sub>*=(0, 1, -2), *h<sub>2,1</sub>*=8, *B<sub>2,2</sub>*=(1, 1, 5), *h<sub>2,2</sub>*=11, *B<sub>3,1</sub>*=(0, 2, 3), *h<sub>3,1</sub>*=9 and *B<sub>3,2</sub>*=(1, 2, 6), *h<sub>3,2</sub>*=12, u multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1, v multiplicity  knots *v<sub>1</sub>*=0, *r<sub>1</sub>*=1, *v<sub>2</sub>*=0.3, *r<sub>2</sub>*=1, *v<sub>3</sub>*=0.7, *r<sub>3</sub>*=1 and *v<sub>4</sub>*=1, *r<sub>4</sub>*=1. The B-spline surface is defined  by the following parametric equation:  
  
 $$ 
 \begin{align} 
-S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ \\
-(0,1,-2) \cdot 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+(1,1,5) \cdot 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ \\
-(0,2,3) \cdot 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+(1,2,6) \cdot 12 \cdot N_{3,2}(u) \cdot M_{2,2}(v)] \div \\
-[7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+ \\ 
+S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ \newline
+(0,1,-2) \cdot 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+(1,1,5) \cdot 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ \newline
+(0,2,3) \cdot 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+(1,2,6) \cdot 12 \cdot N_{3,2}(u) \cdot M_{2,2}(v)] \div \newline
+[7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+10 \cdot N_{1,2}(u) \cdot M_{2,2}(v)+ 8 \cdot N_{2,2}(u) \cdot M_{1,2}(v)+ \newline 
 11 \cdot N_{2,2}(u) \cdot M_{2,2}(v)+ 9 \cdot N_{3,2}(u) \cdot M_{1,2}(v)+12 \cdot N_{3,2}(u) \cdot M_{2,2}(v) ] 
 \end{align} 
 $$
@@ -1233,7 +1233,7 @@ The example record is interpreted as an ellipse which  has a center *P*=(1,2),  
  
 \<2D curve record 4\> describes a parabola. The  parabola data consist of a 2D point *P*, orthogonal 2D directions *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative  real *f*. The parabola coordinate system has its origin *P* and axis directions *D<sub>x</sub>* and *D<sub>y</sub>*. The parabola has a focus  length *f* and  is defined by the following parametric equation:  
  
-$$ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x}+u \cdot D_{y}, u \in (-\infty, \infty) \Leftarrow f \neq 0;\\
+$$ C(u)=P+\frac{u^{2}}{4 \cdot f} \cdot D_{x}+u \cdot D_{y}, u \in (-\infty, \infty) \Leftarrow f \neq 0; \newline
 C(u)=P+u \cdot D_{x}, u \in (-\infty, \infty) \Leftarrow f = 0\; (degenerated\;case). $$ 
  
 The example record is interpreted as a parabola in plane which passes through a point *P*=(1,2) and is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The parabola has a focus length *f*=16 and  is defined by the following parametric equation: $C(u)=(1,2)+ \frac{u^{2}}{64} \cdot (1,0)+u \cdot (0,1)$.  
@@ -1351,7 +1351,7 @@ The weight poles are *n* 2D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag
  
 The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with multiplicity $q_{i} \geq 1\; (1 \leq i \leq k)$ so that  
  
-$$ u_{i} < u_{i+1}\; (1 \leq i \leq k-1), \\
+$$ u_{i} < u_{i+1}\; (1 \leq i \leq k-1), \newline
 q_{1} \leq m+1, q_{k} \leq m+1, q_{i} \leq m\; (2 \leq i \leq k-1), \sum_{i=1}^{k}q_{i}=m+n+1 . $$  
  
 The B-spline curve is defined by the following  parametric equation:  
@@ -1361,7 +1361,7 @@ $$ C(u)= \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u) }{\sum_{i=1}^
 where functions *N<sub>i,j</sub>* have the following recursion definition  by *j*
  
 $$ N_{i,1}(u)=\lbrace\begin{matrix}
-1\Leftarrow \bar u_{i} \leq u \leq \bar u_{i+1}\\ 
+1\Leftarrow \bar u_{i} \leq u \leq \bar u_{i+1} \newline 
 0\Leftarrow u < \bar u_{i} \vee  \bar u_{i+1} \leq u \end{matrix},
 N_{i,j}(u)=\frac{(u-\bar u_{i}) \cdot N_{i,j-1}(u) }{\bar u_{i+j-1}-\bar u_{i}}+ \frac{(\bar u_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar u_{i+j}-\bar u_{i+1}},(2 \leq j \leq m+1) $$ 
  

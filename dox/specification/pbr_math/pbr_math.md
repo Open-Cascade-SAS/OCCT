@@ -281,7 +281,7 @@ $$p(\theta,\phi) = p(l)|J_T|$$
 
 Where:
 
-$$|J_T| = \begin{vmatrix} \frac{\partial x}{\partial r} & \frac{\partial x}{\partial \theta} & \frac{\partial x}{\partial \phi} \\ \frac{\partial y}{\partial r} & \frac{\partial y}{\partial \theta} & \frac{\partial y}{\partial \phi} \\ \frac{\partial z}{\partial r} & \frac{\partial z}{\partial \theta} & \frac{\partial z}{\partial \phi} \end{vmatrix} = r^2\sin\theta$$
+$$|J_T| = \begin{vmatrix} \frac{\partial x}{\partial r} & \frac{\partial x}{\partial \theta} & \frac{\partial x}{\partial \phi} \newline \frac{\partial y}{\partial r} & \frac{\partial y}{\partial \theta} & \frac{\partial y}{\partial \phi} \newline \frac{\partial z}{\partial r} & \frac{\partial z}{\partial \theta} & \frac{\partial z}{\partial \phi} \end{vmatrix} = r^2\sin\theta$$
 
 So that joint probability density in new variables looks like:
 
@@ -655,7 +655,7 @@ Where $y_i^j(l)$ are spherical functions forming orthonormalized basis called sp
 Orthonormality means that dot product of two basis elements is equal to 1 if this is the same functions and is equal to zero otherwise.
 Dot product on a sphere is defined as integral of functions multiplication. In other words:
 
-$$\int\limits_S y_i^j(l)\, y_{i'}^{j'}(l)\, \mathrm{d}l = \begin{cases} 1 & \quad i,j = i',j' \\ 0 & \quad \mathrm{otherwise}\end{cases}$$
+$$\int\limits_S y_i^j(l)\, y_{i'}^{j'}(l)\, \mathrm{d}l = \begin{cases} 1 & \quad i,j = i',j' \newline 0 & \quad \mathrm{otherwise}\end{cases}$$
 
 Function basis with such traits is known and is described by following formulas [Link](#Guy18):
 
