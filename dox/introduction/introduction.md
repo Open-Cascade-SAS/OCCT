@@ -400,7 +400,7 @@ OCCT can be downloaded from https://dev.opencascade.org/release
 
 In most cases you would want to rebuild OCCT from sources on your platform (OS, compiler) before
 using it in your project, to ensure binary compatibility and appropriate configuration of the library.
-See [Link](#build_upgrade) for instructions on building OCCT from sources on supported platforms.
+See [Link](../build/build_upgrade.md#build_upgrade) for instructions on building OCCT from sources on supported platforms.
 
 The following subsections describe how OCCT can be installed from ready-to-use packages on different platforms.
 
@@ -516,7 +516,7 @@ Open CASCADE Technology and all materials, including this documentation, is
 Copyright (c) 1999-2020 by OPEN CASCADE S.A.S. All rights reserved.
 
 Open CASCADE Technology is free software; you can redistribute it and / or modify it under the terms of the 
-[GNU Lesser General Public License (LGPL) version 2.1](#license_lgpl_21), with additional [exception](#occt_lgpl_exception).
+[GNU Lesser General Public License (LGPL) version 2.1](../license.md#license_lgpl_21), with additional [exception](../license.md#occt_lgpl_exception).
 
 Note that LGPL imposes some obligations on the application linked with Open CASCADE Technology.
 If you wish to use OCCT in a proprietary application, please pay a special attention to address the requirements of LGPL section 6.
@@ -534,7 +534,7 @@ please <a href="https://dev.opencascade.org/webform/contact_us">contact Open CAS
 
 Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
 WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
-materials is on you. See the [license](#occt_public_license) text for formal 
+materials is on you. See the [license](../license.md#occt_public_license) text for formal 
 disclaimer.
 
 <h2><a id="intro_acknowledge">Acknowledgments</a></h2>
