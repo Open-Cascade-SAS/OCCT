@@ -174,7 +174,7 @@ s & 0 & 0 & 0 \\
 0 & s & 0 & 0 \\ 
 0 & 0 & s & 0 
 \end{pmatrix} \text{ where } 
-s \in (-\infty, \infty) \setminus \{ 0 \};
+s \in (-\infty, \infty) \setminus \left\{ \{ 0 \} \right\};
 $$
 
   *  central symmetry --
@@ -188,7 +188,9 @@ $$
   *  axis symmetry --
 
 $$
-\begin{pmatrix} -1 &0 &0 &0 \\ 0 &-1 &0 &0 \\ 0 &0 &1 &0 \end{pmatrix}
+\begin{pmatrix} -1 &0 &0 &0 \\
+0 &-1 &0 &0 \\
+0 &0 &1 &0 \end{pmatrix}
 $$
 
   *  plane symmetry --
