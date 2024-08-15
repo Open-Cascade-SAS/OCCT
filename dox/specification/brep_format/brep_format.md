@@ -318,7 +318,7 @@ $$ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}), u \in [o,2 \cdot \p
 The  example record is interpreted as a circle which has its center *P*=(1, 2, 3), is located in plane  with a normal *N*=(0, 0 ,1).  Directions for the circle are *D<sub>x</sub>*=(1, 0 ,0) and *D<sub>y</sub>*=(0, 1 ,0). The circle has a radius *r*=4 and is defined by  the following parametric equation: $C(u) = (1,2,3) + 4 \cdot ( cos(u) \cdot(1,0,0) + sin(u) \cdot (0,1,0) )$.  
  
  
-<h4><a id="specification__brep_format_5_1_3">Ellipse - \<3D curve record 3\> </a></h4>
+<h4><a id="specification__brep_format_5_1_3">Ellipse - <3D curve record 3></a></h4>
  
 **Example**  
 
@@ -356,7 +356,7 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
 
 $$ C(u) = (1,2,3) + 5 \cdot cos(u) \cdot(1,0,0) + 4 \cdot sin(u) \cdot (0,1,0) $$
 
-<h4><a id="specification__brep_format_5_1_4">Parabola - \<3D curve record 4\> </a></h4>
+<h4><a id="specification__brep_format_5_1_4">Parabola - <3D curve record 4></a></h4>
  
 **Example**  
 
@@ -391,7 +391,7 @@ $$ C(u)=P+u \cdot D_{x}, u \in (-\infty, \infty) \Leftarrow f = 0\;(degenerated\
 The  example record is interpreted as a parabola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Directions for the parabola are *D<sub>x</sub>*=(1, 0, 0) and *D<sub>y</sub>*=(0, 1, 0). The parabola has a focus length *f*=16 and is defined by the following parametric equation: $C(u) = (1,2,3) + \frac{u^{2}}{64} \cdot (1,0,0) + u \cdot (0,1,0)$.
  
  
-<h4><a id="specification__brep_format_5_1_5">Hyperbola - \<3D curve record 5\> </a></h4>
+<h4><a id="specification__brep_format_5_1_5">Hyperbola - <3D curve record 5></a></h4>
  
 **Example**  
 
@@ -426,7 +426,7 @@ $$ C(u)=P+k_{x} \cdot cosh(u) \cdot D_{x}+k_{y} \cdot sinh(u) \cdot D_{y} , u \i
 The  example record is interpreted as a hyperbola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Other hyperbola data are *D<sub>x</sub>*=(1, 0, 0), *D<sub>y</sub>*=(0, 1, 0), *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined by the following parametric equation: $C(u) = (1,2,3) + 5 \cdot cosh(u) \cdot (1,0,0) +4 \cdot sinh(u) \cdot (0,1,0)$.
  
  
-<h4><a id="specification__brep_format_5_1_6">Bezier Curve - \<3D curve record 6\> </a></h4>
+<h4><a id="specification__brep_format_5_1_6">Bezier Curve - <3D curve record 6></a></h4>
  
 **Example**  
 
@@ -573,7 +573,7 @@ $$ C(u)=B(u), u \in [u_{min},u_{max}] $$
 The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve $B(u)=(1,2,3)+u \cdot (1,0,0)$. The trimmed curve is  defined by the following parametric equation: $C(u)=(1,2,3)+u \cdot (1,0,0), u \in [-4, 5]$.
  
  
-<h4><a id="specification__brep_format_5_1_9">Offset Curve - \<3D curve record 9\> </a></h4>
+<h4><a id="specification__brep_format_5_1_9">Offset Curve - <3D curve record 9></a></h4>
  
 **Example**  
 
@@ -663,7 +663,7 @@ $$ S(u,v)=P+u \cdot D_{u}+v \cdot D_{v}, (u,v) \in (-\infty, \infty) \times (-\i
 The example record is interpreted as a plane which  passes through a point *P*=(0, 0, 3), has a normal *N*=(0, 0, 1) and is defined by the  following parametric equation: $S(u,v)=(0,0,3)+u \cdot (1,0,0) + v \cdot (0,1,0)$.
  
  
-<h4><a id="specification__brep_format_5_2_2">Cylinder - \< surface record 2 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_2">Cylinder - < surface record 2 ></a></h4>
  
 **Example**  
 
@@ -686,7 +686,7 @@ $$S(u,v)=P+r \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} )+v \cdot D_{v}, (u,v)
 The  example record is interpreted as a cylinder which axis passes through a point *P*=(1, 2, 3) and has a direction *D<sub>v</sub>*=(0, 0, 1). Directions for the  cylinder are *D<sub>X</sub>*=(1,0,0) and *D<sub>Y</sub>*=(0,1,0). The cylinder has a radius *r*=4 and is defined by the following  parametric equation: $S(u,v)=(1,2,3)+4 \cdot ( cos(u) \cdot D_{X} + sin(u) \cdot D_{Y} ) + v \cdot D_{v}.$  
  
  
-<h4><a id="specification__brep_format_5_2_3">Cone - \< surface record 3 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_3">Cone - < surface record 3 ></a></h4>
  
 **Example**  
 
@@ -713,7 +713,7 @@ The example record is interpreted as a cone with an axis  which passes through a
 $$ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + v \cdot cos(0.75) \cdot (0,0,1) . $$
  
 
-<h4><a id="specification__brep_format_5_2_4">Sphere - \< surface record 4 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_4">Sphere - < surface record 4 ></a></h4>
  
 **Example**  
 
@@ -738,7 +738,7 @@ The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Di
 $$ S(u,v)=(1,2,3)+ 4 \cdot cos(v) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . $$   
  
  
-<h4><a id="specification__brep_format_5_2_5">Torus - \< surface record 5 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_5">Torus - < surface record 5 ></a></h4>
  
 **Example**  
 
@@ -763,7 +763,7 @@ The example record is interpreted as a torus with an axis which passes through a
 $$ S(u,v)=(1,2,3)+ (8+4 \cdot cos(v)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . $$   
  
  
-<h4><a id="specification__brep_format_5_2_6">Linear Extrusion - \< surface record 6 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_6">Linear Extrusion - < surface record 6 ></a></h4>
  
 **Example**  
 
@@ -789,7 +789,7 @@ The example record is interpreted as a linear  extrusion surface with a directio
 $$ S(u,v)=(1,2,3)+4 \cdot (cos(u) \cdot (1,0,0)+sin(u) \cdot (0,1,0))+v \cdot (0, 0.6, 0.8), (u,v) \in [0, 2 \cdot \pi) \times (-\infty, \infty). $$  
  
  
-<h4><a id="specification__brep_format_5_2_7">Revolution Surface - \< surface record 7 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_7">Revolution Surface - < surface record 7 ></a></h4>
  
 **Example**  
 
@@ -819,7 +819,7 @@ $$ S(u,v)= (-4,0,3)+V_{D}(v)+cos(u) \cdot (V(v)-V_{D}(v))+sin(u) \cdot [(0,1,0),
 where $V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D}(v)=((0,1,0),V(v)) \cdot (0,1,0)$.  
  
  
-<h4><a id="specification__brep_format_5_2_8">Bezier Surface - \< surface record 8 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_8">Bezier Surface - < surface record 8 ></a></h4>
  
 **Example**  
 
@@ -874,7 +874,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
 \end{align}
 $$
 
-<h4><a id="specification__brep_format_5_2_9">B-spline Surface - \< surface record 9 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_9">B-spline Surface - < surface record 9 ></a></h4>
  
 **Example**  
 
@@ -1026,7 +1026,7 @@ $$ S(u,v)=B(u,v), (u,v) \in [u_{min},u_{max}] \times [v_{min},v_{max}] . $$
 The example record is interpreted as a rectangular  trim surface to the set [-1, 2]x[-3, 4] for the base surface $B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)$. The rectangular  trim surface is defined by the following parametric equation: $B(u,v)=(1,2,3)+u \cdot (1,0,0)+ v \cdot (0,1,0), (u,v) \in [-1,2] \times [-3,4]$. 
  
  
-<h4><a id="specification__brep_format_5_2_11">Offset Surface - \< surface record 11 \> </a></h4>
+<h4><a id="specification__brep_format_5_2_11">Offset Surface - < surface record 11 ></a></h4>
  
 **Example**  
  
@@ -1118,7 +1118,7 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 a
 	<2D curve record 9>;  
 ```
  
-<h4><a id="specification__brep_format_5_3_1">Line - \<2D curve record 1\> </a></h4>
+<h4><a id="specification__brep_format_5_3_1">Line - <2D curve record 1></a></h4>
  
 **Example**  
 
@@ -1141,7 +1141,7 @@ $$ C(u)=P+u \cdot D, u \in (-\infty, \infty). $$
 The example record is interpreted as a line which  passes through a point *P*=(3,0), has a direction *D*=(0,-1) and is defined by the  following parametric equation: $C(u)=(3,0)+ u \cdot (0,-1)$.  
  
  
-<h4><a id="specification__brep_format_5_3_2">Circle - \<2D curve record 2\> </a></h4>
+<h4><a id="specification__brep_format_5_3_2">Circle - <2D curve record 2></a></h4>
  
 **Example**  
 
@@ -1172,7 +1172,7 @@ $$ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}), u \in [0, 2 \cdot \
 The example record is interpreted as a circle which  has a center *P*=(1,2).  The circle plane is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The circle has a radius *r*=3 and is defined by  the following parametric equation: $C(u)=(1,2)+3 \cdot (cos(u) \cdot (1,0) + sin(u) \cdot (0,1))$.  
  
  
-<h4><a id="specification__brep_format_5_3_3">Ellipse - \<2D curve record 3\> </a></h4>
+<h4><a id="specification__brep_format_5_3_3">Ellipse - <2D curve record 3></a></h4>
  
 **Example**  
 
@@ -1206,7 +1206,7 @@ $$ C(u)=P+r_{maj} \cdot cos(u) \cdot D_{maj}+r_{min} \cdot sin(u) \cdot D_{min},
 The example record is interpreted as an ellipse which  has a center *P*=(1,2),  major and minor axis directions *D<sub>maj</sub>*=(1,0) and *D<sub>min</sub>*=(0,1), major and minor radii *r<sub>maj</sub>*=4 and *r<sub>min</sub>*=3 and is defined by  the following parametric equation: $C(u)=(1,2)+4 \cdot cos(u) \cdot (1,0)+3 \cdot sin(u) \cdot (0,1)$.  
  
  
-<h4><a id="specification__brep_format_5_3_4">Parabola - \<2D curve record 4\> </a></h4>
+<h4><a id="specification__brep_format_5_3_4">Parabola - <2D curve record 4></a></h4>
  
 **Example**  
 
@@ -1239,7 +1239,7 @@ C(u)=P+u \cdot D_{x}, u \in (-\infty, \infty) \Leftarrow f = 0\; (degenerated\;c
 The example record is interpreted as a parabola in plane which passes through a point *P*=(1,2) and is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The parabola has a focus length *f*=16 and  is defined by the following parametric equation: $C(u)=(1,2)+ \frac{u^{2}}{64} \cdot (1,0)+u \cdot (0,1)$.  
  
  
-<h4><a id="specification__brep_format_5_3_5">Hyperbola - \<2D curve record 5\> </a></h4>
+<h4><a id="specification__brep_format_5_3_5">Hyperbola - <2D curve record 5></a></h4>
 **Example**  
  
 5 1 2 1 0 -0 1 3 4  
@@ -1374,7 +1374,7 @@ The example record is interpreted as a B-spline curve with a rational flag *r*=1
 $$ C(u)= \frac{(0,1) \cdot 4 \cdot N_{1,2}(u)+(1,-2) \cdot 5 \cdot N_{2,2}(u)+(2,3) \cdot 6 \cdot N_{3,2}(u)}{ 4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)} . $$ 
  
  
-<h4><a id="specification__brep_format_5_3_8">Trimmed Curve - \<2D curve record 8\> </a></h4>
+<h4><a id="specification__brep_format_5_3_8">Trimmed Curve - <2D curve record 8></a></h4>
  
 **Example**  
 
@@ -1403,7 +1403,7 @@ $$ C(u)=B(u), u \in [u_{min},u_{max}] . $$
 The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, *u<sub>max</sub>*=5 and base curve $B(u)=(1,2)+u \cdot (1,0)$. The trimmed curve is defined by the following parametric equation: $C(u)=(1,2)+u \cdot (1,0), u \in [-4,5]$.  
  
  
-<h4><a id="specification__brep_format_5_3_9">Offset Curve - \<2D curve record 9\> </a></h4>
+<h4><a id="specification__brep_format_5_3_9">Offset Curve - <2D curve record 9></a></h4>
  
 **Example**  
 
