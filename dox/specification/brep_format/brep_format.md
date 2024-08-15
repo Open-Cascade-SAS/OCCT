@@ -111,7 +111,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 
 \<location data 1\> is interpreted as a 3 x 4 matrix
 
-
+$$
 Q =
 \begin{pmatrix}
 q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\
@@ -705,8 +705,9 @@ The  example record is interpreted as a cylinder which axis passes through a poi
  
 $$ S(u,v)=P+(r+v \cdot sin(\varphi)) \cdot (cos(u) \cdot D_{X}+sin(u) \cdot D_{Y})+v \cdot cos(\varphi) \cdot D_{Z}, (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty) . $$  
  
-The example record is interpreted as a cone with an axis  which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). Other cone data are *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r*=4 and $\varphi = 0.75$. The cone is defined by the  following parametric equation:  
-$$ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + v \cdot cos(0.75) \cdot (0,0,1) . $$  
+The example record is interpreted as a cone with an axis  which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). Other cone data are *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r*=4 and $\varphi = 0.75$. The cone is defined by the  following parametric equation:
+
+$$ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + v \cdot cos(0.75) \cdot (0,0,1) . $$
  
 
 <h4><a id="specification__brep_format_5_2_4">Sphere - \< surface record 4 \> </a></h4>
@@ -729,7 +730,8 @@ $$ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u)
  
 $$ S(u,v)=P+r \cdot cos(v) \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} ) +r \cdot sin(v) \cdot D_{Z},\; (u,v) \in [0,\;2 \cdot \pi) \times [-\pi /2,\; \pi /2] . $$  
  
-The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Directions for the sphere are  *D<sub>Z</sub>*=(0, 0, 1), *D<sub>X</sub>*=(1, 0, 0) and *D<sub>Y</sub>*=(0, 1, 0). The sphere has a radius  *r*=4 and is  defined by the following parametric equation:  
+The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Directions for the sphere are  *D<sub>Z</sub>*=(0, 0, 1), *D<sub>X</sub>*=(1, 0, 0) and *D<sub>Y</sub>*=(0, 1, 0). The sphere has a radius  *r*=4 and is  defined by the following parametric equation:
+
 $$ S(u,v)=(1,2,3)+ 4 \cdot cos(v) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . $$   
  
  
@@ -753,7 +755,8 @@ $$ S(u,v)=(1,2,3)+ 4 \cdot cos(v) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0
  
 $$ S(u,v)=P+(r_{1}+r_{2} \cdot cos(v)) \cdot (cos(u) \cdot D_{x}+sin(u) \cdot D_{y} ) +r_{2} \cdot sin(v) \cdot D_{Z},\; (u,v) \in [0,\;2 \cdot \pi) \times [0,\; 2 \cdot \pi) . $$    
  
-The example record is interpreted as a torus with an axis which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r<sub>1</sub>*=8 and *r<sub>2</sub>*=4 for the torus. The torus is defined  by the following parametric equation:  
+The example record is interpreted as a torus with an axis which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r<sub>1</sub>*=8 and *r<sub>2</sub>*=4 for the torus. The torus is defined  by the following parametric equation:
+
 $$ S(u,v)=(1,2,3)+ (8+4 \cdot cos(v)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . $$   
  
  
@@ -970,7 +973,8 @@ M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i
 \end{align}
 $$
 
-where   
+where
+
 $$ \bar{u}_{i}=u_{j}\; (1 \leq j \leq k_{u},\; \sum_{l=1}^{j-1}q_{l} \leq i \leq \sum_{l=1}^{j}q_{l}), \\
  \bar{v}_{i}=v_{j}\; (1 \leq j \leq k_{v},\; \sum_{l=1}^{j-1}t_{l} \leq i \leq \sum_{l=1}^{j}t_{l}); $$  
  
@@ -1042,7 +1046,8 @@ The example record is interpreted as a rectangular  trim surface to the set [-1,
 The offset surface data consist of a distance *d* and a \<surface record\>. The  offset surface is the result of offsetting the base surface *B* described in the record to the distance *d* along the normal *N* of  surface *B*.  The offset surface is defined by the following parametric equation:  
  
 $$ S(u,v)=B(u,v)+d \cdot N(u,v),\; (u,v) \in domain(B) . \\
-N(u,v) = [S'_{u}(u,v),S'_{v}(u,v)] $$  
+N(u,v) = [S'_{u}(u,v),S'_{v}(u,v)] $$
+
 if $[S'_{u}(u,v),S'_{v}(u,v)] \neq \vec{0}$.  
  
 The example record is interpreted as an offset surface  with a distance *d*=-2 and  base surface $B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)$.  The offset surface is defined by the following parametric equation: $S(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)-2 \cdot (0,0,1)$.
