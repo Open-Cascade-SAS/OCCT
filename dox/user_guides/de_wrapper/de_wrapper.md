@@ -11,7 +11,7 @@ The Data Exchange Wrapper (DE Wrapper) module allows reading and writing support
 
 It is also possible to add support for new CAD formats by prototyping existing tools.
 
-The DE Wrapper component requires [XDE](#occt_user_guides__xde) toolkit for operation.
+The DE Wrapper component requires [XDE](../xde/xde.md#occt_user_guides__xde) toolkit for operation.
 
 This guide mainly explains how to convert CAD files to Open CASCADE Technology (OCCT) shapes and vice versa.
 This guide principally deals with the following OCCT classes:

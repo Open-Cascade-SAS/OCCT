@@ -515,9 +515,9 @@ Source code of *TIspectorEXE* is a good sample for [using the Inspector in a cus
 
 <h3><a id="occt_inspector_4_2">How to launch the Inspector in DRAW Test Harness</a></h3>
 
-*TKToolsDraw* plugin provides DRAW commands for Qt tools. Use *INSPECTOR* parameter of [pload](#occt_draw_1_3_3) 
+*TKToolsDraw* plugin provides DRAW commands for Qt tools. Use *INSPECTOR* parameter of [pload](../draw_test_harness/draw_test_harness.md#occt_draw_1_3_3) 
 command to download the commands of this library. It contains *tinspector* command to start Inspector under DRAW.
-See more detailed description of the [tinspector](#occt_draw_13_1) command.
+See more detailed description of the [tinspector](../draw_test_harness/draw_test_harness.md#occt_draw_13_1) command.
 
 The simple code to start Inspector with all plugins loaded:
 
@@ -539,7 +539,7 @@ The examples of using Inspector in DRAW can be found in OCCT source directory /t
 <h3><a id="occt_inspector_4_3">How to use the Inspector in a custom application</a></h3>
 
 The example of using the Inspector in a custom application is presented in OCCT qt sample - <b>FuncDemo</b>.
-For building qt samples, switch on *BUILD_SAMPLES_QT* variable in [Configuration process](#build_cmake_conf).
+For building qt samples, switch on *BUILD_SAMPLES_QT* variable in [Configuration process](../../build/build_occt/building_occt.md#build_cmake_conf).
 
 In general, the following steps should be taken:
 * Set dependencies to OCCT and Qt in the application (Header and Link);
@@ -594,7 +594,7 @@ Give one the following objects for a plugin using a container of parameters:
 <h3><a id="occt_inspector_5_1">Building with CMake within OCCT</a></h3>
 
 By default the Inspector compilation is off.
-To compile it, set the *BUILD_Inspector* flag to "ON". See [Configuration process](#build_cmake_conf).
+To compile it, set the *BUILD_Inspector* flag to "ON". See [Configuration process](../../build/build_occt/building_occt.md#build_cmake_conf).
 
 When this option is switched ON, MS Visual Studio project has an additional tree of folders:
 

@@ -69,7 +69,7 @@ This module also provides a variety of general-purpose services, such as:
   * Progress indication and user break interfaces, giving a possibility even for low-level algorithms to communicate with the user in a universal and convenient way;
   * and many others...
 
-See the details in [Foundation Classes User's Guide](#occt_user_guides__foundation_classes)
+See the details in [Foundation Classes User's Guide](../user_guides/foundation_classes/foundation_classes.md#occt_user_guides__foundation_classes)
 
 <h3><a id="intro_overview_moddata">Modeling Data</a></h3>
 
@@ -101,10 +101,10 @@ A shape, which is a basic topological entity, can be divided into components (su
 
 Complex shapes can be defined as assemblies (compounds) of simpler entities.
 
-See the details in [Modeling Data User's Guide](#occt_user_guides__modeling_data)
+See the details in [Modeling Data User's Guide](../user_guides/modeling_data/modeling_data.md#occt_user_guides__modeling_data)
 
 3D geometric models can be stored in OCCT native BREP format.
-See [BREP Format Description White Paper](#specification__brep_format) for details on the format.
+See [BREP Format Description White Paper](../specification/brep_format/brep_format.md#specification__brep_format) for details on the format.
 
 <h3><a id="intro_overview_modalgo">Modeling Algorithms</a></h3>
 
@@ -149,7 +149,7 @@ Top-level API provides the following functionality:
    * *Fuse* contains all points that are in *S1* or *S2*;
    * *Cut* contains all points in that are in *S1* and not in *S2*.
 
-See [Boolean Operations](#specification__boolean_operations) User's Guide for detailed documentation.
+See [Boolean Operations](../specification/boolean_operations/boolean_operations.md#specification__boolean_operations) User's Guide for detailed documentation.
 
  * Algorithms for local modifications such as:
    * Hollowing;
@@ -161,7 +161,7 @@ See [Boolean Operations](#specification__boolean_operations) User's Guide for de
 
 <img src="images/0004.png" alt="">
  
-See the details in [Modeling Algorithms User's Guide](#occt_user_guides__modeling_algos).
+See the details in [Modeling Algorithms User's Guide](../user_guides/modeling_algos/modeling_algos.md#occt_user_guides__modeling_algos).
 
 <h3><a id="intro_overview_mesh">Mesh</a></h3>
 
@@ -214,9 +214,9 @@ Here are a few examples of OCCT Visualization features:
 <img src="images/0002.png" alt="Real time visualization by ray tracing method">
 <img src="images/0012.png" alt="Simulation of a glass cover">
 
-For more details, see [Visualization User's Guide](#occt_user_guides__visualization).
+For more details, see [Visualization User's Guide](../user_guides/visualization/visualization.md#occt_user_guides__visualization).
 
-The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate [VTK Integration Services](#occt_user_guides__vis) User's Guide.
+The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate [VTK Integration Services](../user_guides/vis/vis.md#occt_user_guides__vis) User's Guide.
 
 <h3><a id="intro_overview_de">Data Exchange</a></h3>
 
@@ -230,14 +230,14 @@ This module handles various problems of interoperability between CAD systems, ca
 
 * **Standardized Data Exchange** interfaces allow querying and examining the input file, converting its contents to a CAD model and running validity checks on a fully translated shape.
   The following formats are currently supported:
-  * [STEP](#occt_user_guides__step) (AP203: Mechanical Design, this covers General 3D CAD; AP214: Automotive Design; AP242).
-  * [IGES](#occt_iges_1) (up to 5.3).
+  * [STEP](../user_guides/step/step.md#occt_user_guides__step) (AP203: Mechanical Design, this covers General 3D CAD; AP214: Automotive Design; AP242).
+  * [IGES](../user_guides/iges/iges.md#occt_iges_1) (up to 5.3).
   * **glTF** 2.0 reader and writer.
   * **OBJ** mesh file reader and writer.
   * **VRML** converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language).
   * **STL** converter translates Open CASCADE shapes to STL files.
     STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
-* [Extended data exchange](#occt_user_guides__xde) (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
+* [Extended data exchange](../user_guides/xde/xde.md#occt_user_guides__xde) (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
 * <a href="https://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a>
   are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using [Shape Healing](#intro_overview_heal)) with CAD software using the following proprietary formats:
 	* <a href="https://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
@@ -280,7 +280,7 @@ Each sub-domain of Shape Healing has its own scope of functionality:
 | Customization | Modifies the shape representation to fit specific needs. | The shape is not modified, only the mathematical form of its internal representation is changed. |
 | Processing | Mechanism of shape modification via a user-editable resource file. | |
 
-For more details, refer to [Shape Healing User's guide](#occt_user_guides__shape_healing).
+For more details, refer to [Shape Healing User's guide](../user_guides/shape_healing/shape_healing.md#occt_user_guides__shape_healing).
 
 <h3><a id="intro_overview_ocaf">Application Framework</a></h3>
 
@@ -303,7 +303,7 @@ A shape object becomes the value of *Shape* attribute, in the same way as an int
 
 OCAF organizes and embeds these attributes in a document. OCAF documents, in their turn, are managed by an OCAF application.
 
-For more details, see [OCAF User's Guide](#occt_user_guides__ocaf). 
+For more details, see [OCAF User's Guide](../user_guides/ocaf/ocaf.md#occt_user_guides__ocaf). 
 
 <h3><a id="intro_overview_draw">Draw Test Harness</a></h3>
 
@@ -327,7 +327,7 @@ In addition, **Test Harness** provides commands to create and manipulate curves 
 
 You can add custom commands to test or demonstrate any new functionalities, which you develop.
 
-For more details, see [Draw Test Harness Manual](#occt_user_guides__test_harness).
+For more details, see [Draw Test Harness Manual](../user_guides/draw_test_harness/draw_test_harness.md#occt_user_guides__test_harness).
 
 <h2><a id="intro_req">Requirements</a></h2>
 

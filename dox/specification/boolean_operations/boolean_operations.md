@@ -2872,7 +2872,7 @@ bcheckinverted 0
 
 <h3><a id="specification__boolean_11a_5_obb">Usage of Oriented Bounding Boxes</a></h3>
 
-Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB see the [Bounding boxes](#occt_modat_6) chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
+Since Oriented Bounding Boxes are usually much tighter than Axes Aligned Bounding Boxes (for more information on OBB see the [Bounding boxes](../../user_guides/modeling_data/modeling_data.md#occt_modat_6) chapter of Modeling data User guide) its usage can significantly speed-up the intersection stage of the operation by reducing the number of interfering objects.
 
 <h4><a id="specification__boolean_11a_5_obb_1">Usage</a></h4>
 
@@ -2951,7 +2951,7 @@ Warning: The positioning of the shapes leads to creation of small edges without 
 
 <h2><a id="specification__boolean_history">History Information</a></h2>
 
-All operations in Boolean Component support [History information](#occt_modalg_hist). This chapter describes how the History is filled for these operations.
+All operations in Boolean Component support [History information](../../user_guides/modeling_algos/modeling_algos.md#occt_modalg_hist). This chapter describes how the History is filled for these operations.
 
 Additionally to Vertices, Edges and Faces the history is also available for the Solids.
 
@@ -3107,7 +3107,7 @@ Some options of the main operation are passed into the Unifier:
 - Fuzzy tolerance of the operation is given to the Unifier as the linear tolerance.
 - Non destructive mode here controls the safe input mode in Unifier.
 
-For controlling this possibility in DRAW the command **bsimplify** has been implemented. See the [Boolean Operations options](#occt_draw_bop_options) chapter in draw user guide.
+For controlling this possibility in DRAW the command **bsimplify** has been implemented. See the [Boolean Operations options](../../user_guides/draw_test_harness/draw_test_harness.md#occt_draw_bop_options) chapter in draw user guide.
 
 
 <h3><a id="specification__boolean_simplification_examples">Examples</a></h3>

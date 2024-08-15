@@ -26,7 +26,7 @@ File translation is  performed in the programming mode, via C++ calls, and the r
 
 All definitions in IGES  version 5.3 are recognized but only 3D geometric entities are translated. When  the processor encounters data, which is not translated, it ignores it and  writes a message identifying the types of data, which was not handled. This  message can be written either to a log file or to screen output. 
 
-[Shape Healing](#occt_user_guides__shape_healing) toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
+[Shape Healing](../shape_healing/shape_healing.md#occt_user_guides__shape_healing) toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to IGES translator using the same API, only the names of API packages change.
 
 <h2><a id="occt_iges_2">Reading IGES</a></h2>
 <h3><a id="occt_iges_2_1">Procedure</a></h3>
