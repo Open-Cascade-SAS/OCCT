@@ -526,8 +526,15 @@ where functions $N_{i,j}$ have the following recursion definition  by *j*:
 $$
 N_{i,1}(u)=\lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix},\;
-N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1)
+0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix}
+$$
+
+$$
+N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}}
+$$
+
+$$
+(2 \leq j \leq m+1)
 $$
 
 where 
@@ -535,8 +542,6 @@ where
 $$\bar{u}_i = u_j$$
 
 $$(1 \leq j \leq k, \sum_{l=1}^{j-1} q_l + 1 \leq i \leq \sum_{l=1}^{j} q_l)$$
-
-$\bar{u}_i = u_j$, $(1 \leq j \leq k, \sum_{l=1}^{j-1} q_l + 1 \leq i \leq \sum_{l=1}^{j} q_l)$
 
 The example record is interpreted as a B-spline curve  with a rational flag *r*=1, a degree *m*=1, pole count *n*=3, multiplicity knot count *k*=5, weight poles *B<sub>1</sub>*=(0,1,0), *h<sub>1</sub>*=4, *B<sub>2</sub>*=(1,-2,0), *h<sub>2</sub>*=5 and *B<sub>3</sub>*=(2,3,0), *h<sub>3</sub>*=6, multiplicity knots *u<sub>1</sub>*=0, *q<sub>1</sub>*=1, *u<sub>2</sub>*=0.25, *q<sub>2</sub>*=1, *u<sub>3</sub>*=0.5, *q<sub>3</sub>*=1, *u<sub>4</sub>*=0.75, *q<sub>4</sub>*=1 and *u<sub>5</sub>*=1, *q<sub>5</sub>*=1. The B-spline curve is defined  by the following parametric equation:  
 
