@@ -1049,12 +1049,11 @@ The example record is interpreted as a rectangular  trim surface to the set [-1,
 The offset surface data consist of a distance *d* and a \<surface record\>. The  offset surface is the result of offsetting the base surface *B* described in the record to the distance *d* along the normal *N* of  surface *B*.  The offset surface is defined by the following parametric equation:  
 
 $$
-S(u,v) = B(u,v) + d \cdot N(u,v), \quad (u,v) \in \text{domain}(B) . \\
-N(u,v) = [S'_{u}(u,v), S'_{v}(u,v)]
+S(u,v) = B(u,v) + d \cdot N(u,v), \quad (u,v) \in \text {domain} (B) . \\
+N(u,v) = [S'_u(u,v), S'_v(u,v)] \\
+\text {if} [S'_u(u,v), S'_v(u,v)] \neq \vec{0}
 $$
 
-if $[S'_{u}(u,v), S'_v(u,v)] \neq \vec{0}$
- 
 The example record is interpreted as an offset surface  with a distance *d*=-2 and  base surface $B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)$.  The offset surface is defined by the following parametric equation: $S(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)-2 \cdot (0,0,1)$.
  
  
