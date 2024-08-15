@@ -525,16 +525,15 @@ where functions $N_{i,j}$ have the following recursion definition  by *j*:
 
 $$
 N_{i,1}(u) =
-\begin{cases}
-1 & \text{if } \bar{u}_{i} \leq u \leq \bar{u}_{i+1} \\
-0 & \text{if } u < \bar{u}_{i} \text{ or } \bar{u}_{i+1} \leq u
+\begin{cases} 
+1 & \text{if } \bar{u}_{i} \leq u \leq \bar{u}_{i+1} \\ 
+0 & \text{if } u < \bar{u}_{i} \text{ or } u \geq \bar{u}_{i+1} 
 \end{cases}
 $$
 
 $$
 N_{i,j}(u) = \frac{(u - \bar{u}_{i}) \cdot N_{i,j-1}(u)}{\bar{u}_{i+j-1} - \bar{u}_{i}} + \frac{(\bar{u}_{i+j} - u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j} - \bar{u}_{i+1}}
 $$
-
 
 $$
 (2 \leq j \leq m+1)
