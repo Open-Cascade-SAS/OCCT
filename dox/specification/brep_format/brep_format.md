@@ -280,7 +280,7 @@ $$
  
 \<3D curve record 1\> describes a line. The line data consist of a 3D point *P* and a 3D direction *D*. The line passes through the  point *P*, has  the direction *D* and  is defined by the following parametric equation:  
  
-$$ C(u)=P+u \cdot D, \; u \in (-\infty, \infty). $$
+$$ C(u)=P+u \cdot D, u \in (-\infty, \infty). $$
 
 The example record is interpreted as a line which  passes through a point *P*=(1, 0, 3), has a direction *D*=(0, 1, 0) and is defined by the  following parametric equation: $C(u)=(1,0,3)+u \cdot (0,1,0)$.  
  
@@ -313,7 +313,7 @@ The example record is interpreted as a line which  passes through a point *P*=(1
  
 \<3D curve record 2\> describes a circle. The  circle data consist of a 3D point *P*, pairwise orthogonal 3D directions *N*, *D<sub>x</sub>* and *D<sub>y</sub>* and a non-negative real *r*. The circle has a center *P* and is located in a plane with a normal *N*. The circle has a radius *r* and is defined by the following parametric equation:  
  
-$$ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}), \; u \in [o,2 \cdot \pi). $$  
+$$ C(u)=P+r \cdot (cos(u) \cdot D_{x} + sin(u) \cdot D_{y}), u \in [o,2 \cdot \pi). $$  
  
 The  example record is interpreted as a circle which has its center *P*=(1, 2, 3), is located in plane  with a normal *N*=(0, 0 ,1).  Directions for the circle are *D<sub>x</sub>*=(1, 0 ,0) and *D<sub>y</sub>*=(0, 1 ,0). The circle has a radius *r*=4 and is defined by  the following parametric equation: $C(u) = (1,2,3) + 4 \cdot ( cos(u) \cdot(1,0,0) + sin(u) \cdot (0,1,0) )$.  
  
@@ -518,7 +518,7 @@ $$
 The B-spline curve is defined by the following  parametric equation:
 
 $$
-C(u) = \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)}, \; u \in [u_{1}, \; u_{k}]
+C(u) = \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)}, u \in [u_{1}, u_{k}]
 $$
  
 where functions $N_{i,j}$ have the following recursion definition  by *j*:  
@@ -975,7 +975,7 @@ N_{i,1}(u)= \lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix}, \\
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+  
-\frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},(2 \leq j \leq m_{u}+1), \; \\
+\frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},(2 \leq j \leq m_{u}+1), \\
 M_{i,1}(v)=\lbrace\begin{matrix}
 1\Leftarrow \bar{v}_{i} \leq v \leq \bar{v}_{i+1}\\ 
 0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix}, \\
@@ -1136,7 +1136,7 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
  
 \<2D curve record 1\> describes a line. The line  data consist of a 2D point *P* and a 2D direction *D*. The line passes through the point  *P*, has the  direction *D* and  is defined by the following parametric equation:  
  
-$$ C(u)=P+u \cdot D, \; u \in (-\infty, \infty). $$  
+$$ C(u)=P+u \cdot D, u \in (-\infty, \infty). $$  
  
 The example record is interpreted as a line which  passes through a point *P*=(3,0), has a direction *D*=(0,-1) and is defined by the  following parametric equation: $C(u)=(3,0)+ u \cdot (0,-1)$.  
  
