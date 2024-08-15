@@ -175,15 +175,25 @@ $$
 
   *  central symmetry --
 
-$$\begin{pmatrix} -1 &0 &0 &0 \\ 0 &-1 &0 &0 \\ 0 &0 &-1 &0 \end{pmatrix}$$
+$$
+\begin{pmatrix} -1 &0 &0 &0 \\ 0 &-1 &0 &0 \\ 0 &0 &-1 &0 \end{pmatrix}
+$$
 
   *  axis symmetry --
 
-$$\begin{pmatrix} -1 &0 &0 &0 \\ 0 &-1 &0 &0 \\ 0 &0 &1 &0 \end{pmatrix}$$
+$$
+\begin{pmatrix} -1 &0 &0 &0 \\ 0 &-1 &0 &0 \\ 0 &0 &1 &0 \end{pmatrix}
+$$
 
   *  plane symmetry --
 
-$$\begin{pmatrix} 1 &0 &0 &0 \\ 0 &1 &0 &0 \\ 0 &0 &-1 &0 \end{pmatrix}.$$
+$$
+\begin{pmatrix} 
+1 & 0 & 0 & 0 \\ 
+0 & 1 & 0 & 0 \\ 
+0 & 0 & -1 & 0 
+\end{pmatrix}
+$$
  
 \<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence $l_{1}p_{1} ... l_{n}p_{n}$ of $ n \geq 0 $ integer pairs $ l_{i}p_{i} \; (1 \leq i \leq n) $. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition $ L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}} $ where $ L_{l_{i}} $ is a location from $ l_{i} $-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
  
