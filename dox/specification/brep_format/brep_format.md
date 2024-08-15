@@ -526,7 +526,7 @@ where functions $N_{i,j}$ have the following recursion definition  by *j*:
 $$
 N_{i,1}(u)=\lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
+0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix},\;
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1)
 $$
 
@@ -963,12 +963,12 @@ $$
 \begin{align}
 N_{i,1}(u)= \lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix}  \right.,\; \\
+0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix},\; \\
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+  
 \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m_{u}+1), \; \\
 M_{i,1}(v)=\lbrace\begin{matrix}
 1\Leftarrow \bar{v}_{i} \leq v \leq \bar{v}_{i+1}\\ 
-0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix} \right.,\; \\
+0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix},\; \\
 M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},\;(2 \leq j \leq m_{v}+1); 
 \end{align}
 $$
@@ -1352,7 +1352,7 @@ where functions *N<sub>i,j</sub>* have the following recursion definition  by *
  
 $$ N_{i,1}(u)=\lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
-0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
+0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix},\;
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) $$ 
  
 where  
