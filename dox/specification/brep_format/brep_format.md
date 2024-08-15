@@ -1047,11 +1047,13 @@ The example record is interpreted as a rectangular  trim surface to the set [-1,
  
 \<surface record 11\> describes an offset surface.  
 The offset surface data consist of a distance *d* and a \<surface record\>. The  offset surface is the result of offsetting the base surface *B* described in the record to the distance *d* along the normal *N* of  surface *B*.  The offset surface is defined by the following parametric equation:  
- 
-$$ S(u,v)=B(u,v)+d \cdot N(u,v), (u,v) \in domain(B) . \\
-N(u,v) = [S'_{u}(u,v),S'_{v}(u,v)] $$
 
-if $[S'_{u}(u,v),S'_{v}(u,v)] \neq \vec{0}$.  
+$$
+S(u,v) = B(u,v) + d \cdot N(u,v), \quad (u,v) \in \text{domain}(B) . \\
+N(u,v) = [S'_{u}(u,v), S'_{v}(u,v)]
+$$
+
+if $[S'_{u}(u,v), S'_v(u,v)] \neq \vec{0}$
  
 The example record is interpreted as an offset surface  with a distance *d*=-2 and  base surface $B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)$.  The offset surface is defined by the following parametric equation: $S(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)-2 \cdot (0,0,1)$.
  
@@ -1415,9 +1417,9 @@ The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, 
  
 **Description**  
  
-\<2D curve record 9\> describes an offset curve. The offset curve data consist of a distance *d* and a \<2D curve record\>. The offset curve is the result of offsetting the base curve *B* described in the record to the distance *d* along  the vector $(B'_{Y}(u), -B'_{X}(u)) \neq \vec{0}$ where $B(u)=(B'_{X}(u), B'_{Y}(u))$. The offset curve is defined by the following parametric equation:  
- 
-$$ C(u)=B(u)+d \cdot (B'_{Y}(u), -B'_{X}(u)), u \in domain(B) . $$  
+\<2D curve record 9\> describes an offset curve. The offset curve data consist of a distance *d* and a \<2D curve record\>. The offset curve is the result of offsetting the base curve *B* described in the record to the distance *d* along  the vector $(B'_Y(u), -B'_X(u)) \neq \vec{0}$ where $B(u)=(B'_X(u), B'_Y(u))$. The offset curve is defined by the following parametric equation:  
+
+$$C(u)=B(u)+d \cdot (B'_Y(u), -B'_X(u)), u \in domain(B)$$
  
 The example record is interpreted as an offset curve  with a distance *d*=2 and  base curve $B(u)=(1,2)+u \cdot (1,0)$ and is defined by the following parametric equation: $C(u)=(1,2)+u \cdot (1,0)+2 \cdot (0,-1)$.  
  
