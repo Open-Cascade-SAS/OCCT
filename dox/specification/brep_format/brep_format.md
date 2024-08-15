@@ -534,8 +534,8 @@ $$
 $$
 N_{i,1}(u) =
 \begin{cases} 
-1 \\ 
-0
+1 & \text {if } \bar u_i \leq u \leq \bar u_{i+1} \\ 
+0 & \text {if } u < \bar u_{i} \text { or } u \geq \bar u_{i+1} 
 \end{cases}
 $$
 
