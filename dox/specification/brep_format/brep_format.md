@@ -522,7 +522,7 @@ $$
 where functions $ N_{i,j} $ have the following recursion definition  by *j*:  
 
 $$
-N_{i,1}(u)=\left\{\begin{matrix}
+N_{i,1}(u)=\lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1)
@@ -699,7 +699,7 @@ The  example record is interpreted as a cylinder which axis passes through a poi
  
 **Description**  
  
-\<surface record 3\> describes a cone. The cone  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>*, a non-negative real *r* and a real $ \varphi \in (-\pi /2,\; \pi/2)/\left \{ 0 \right \} $. The cone axis passes  through the point *P* and  has the direction *D<sub>Z</sub>*. The plane which passes through the point *P* and is parallel to directions *D<sub>X</sub>* and *D<sub>Y</sub>* is the cone referenced  plane. The cone section by the plane is a circle with the radius *r*. The direction from  the point *P* to  the cone apex is $ -sgn(\varphi) \cdot D_{Z} $.  The cone has a half-angle $| \varphi | $ and is defined by the following  parametric equation:  
+\<surface record 3\> describes a cone. The cone  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>*, a non-negative real *r* and a real $ \varphi \in (-\pi /2,\; \pi/2)/\lbrace 0 \rbrace $. The cone axis passes  through the point *P* and  has the direction *D<sub>Z</sub>*. The plane which passes through the point *P* and is parallel to directions *D<sub>X</sub>* and *D<sub>Y</sub>* is the cone referenced  plane. The cone section by the plane is a circle with the radius *r*. The direction from  the point *P* to  the cone apex is $ -sgn(\varphi) \cdot D_{Z} $.  The cone has a half-angle $| \varphi | $ and is defined by the following  parametric equation:  
  
 $$ S(u,v)=P+(r+v \cdot sin(\varphi)) \cdot (cos(u) \cdot D_{X}+sin(u) \cdot D_{Y})+v \cdot cos(\varphi) \cdot D_{Z}, (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty) . $$  
  
@@ -848,7 +848,7 @@ where $ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D}(
  
 \<surface record 8\> describes a Bezier surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree $ m_{u} \leq 25 $, v degree $ m_{v} \leq 25 $ and weight poles.  
  
-The weight poles are $ (m_{u}+1) \cdot (m_{v}+1) $ 3D points $ B_{i,j}\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $ if $ r_{u}+r_{v}=0 $. The weight poles are $ (m_{u}+1) \cdot (m_{v}+1) $ pairs $ B_{i,j}h_{i,j}\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $ if $ r_{u}+r_{v} \neq 0 $. Here $ B_{i,j} $ is a 3D point and $ h_{i,j} $ is a positive real $ ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $. $ h_{i,j}=1\; ((i,j) \in \left \{ 0,...,m_{u} \right \} \times \left \{ 0,...,m_{v} \right \}) $ if $ r_{u}+r_{v} = 0 $.  
+The weight poles are $ (m_{u}+1) \cdot (m_{v}+1) $ 3D points $ B_{i,j}\; ((i,j) \in \lbrace 0,...,m_{u} \rbrace \times \lbrace 0,...,m_{v} \rbrace) $ if $ r_{u}+r_{v}=0 $. The weight poles are $ (m_{u}+1) \cdot (m_{v}+1) $ pairs $ B_{i,j}h_{i,j}\; ((i,j) \in \lbrace 0,...,m_{u} \rbrace \times \lbrace 0,...,m_{v} \rbrace) $ if $ r_{u}+r_{v} \neq 0 $. Here $ B_{i,j} $ is a 3D point and $ h_{i,j} $ is a positive real $ ((i,j) \in \lbrace 0,...,m_{u} \rbrace \times \lbrace 0,...,m_{v} \rbrace) $. $ h_{i,j}=1\; ((i,j) \in \lbrace 0,...,m_{u} \rbrace \times \lbrace 0,...,m_{v} \rbrace) $ if $ r_{u}+r_{v} = 0 $.  
  
 The Bezier surface is defined by the following  parametric equation:  
  
@@ -936,7 +936,7 @@ $$
  
 \<surface record 9\> describes a B-spline surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree $ m_{u} \leq 25 $, v degree $ m_{v} \leq 25 $, u pole count $ n_{u} \geq 2 $, v pole count $ n_{v} \geq 2 $, u multiplicity knot count *k<sub>u</sub>*, v multiplicity knot count *k<sub>v</sub>*, weight poles, u multiplicity  knots, v multiplicity knots.  
  
-The weight poles are $ n_{u} \cdot n_{v} $ 3D points $ B_{i,j}\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $ if $ r_{u}+r_{v}=0 $. The weight poles are $ n_{u} \cdot n_{v} $ pairs $ B_{i,j}h_{i,j}\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $ if $ r_{u}+r_{v} \neq 0 $. Here $ B_{i,j} $ is a 3D point and $ h_{i,j} $ is a positive real $ ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $. $ h_{i,j}=1\; ((i,j) \in \left \{ 1,...,n_{u} \right \} \times \left \{ 1,...,n_{v} \right \}) $ if $ r_{u}+r_{v} = 0 $.  
+The weight poles are $ n_{u} \cdot n_{v} $ 3D points $ B_{i,j}\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace) $ if $ r_{u}+r_{v}=0 $. The weight poles are $ n_{u} \cdot n_{v} $ pairs $ B_{i,j}h_{i,j}\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace) $ if $ r_{u}+r_{v} \neq 0 $. Here $ B_{i,j} $ is a 3D point and $ h_{i,j} $ is a positive real $ ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace) $. $ h_{i,j}=1\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace) $ if $ r_{u}+r_{v} = 0 $.  
  
 The u multiplicity knots are *k<sub>u</sub>* pairs $ u_{1}q_{1} ... u_{k_{u}}q_{k_{u}} $. Here $ u_{i} $ is a knot with multiplicity $ q_{i} \geq 1 \;(1\leq i\leq k_{u}) $ so that  
  
@@ -956,12 +956,12 @@ where functions *N<sub>i,j</sub>* and *M<sub>i,j</sub>* have the following rec
 
 $$
 \begin{align}
-N_{i,1}(u)= \left\{\begin{matrix}
+N_{i,1}(u)= \lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix}  \right.,\; \\
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+  
 \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m_{u}+1), \; \\
-M_{i,1}(v)=\left\{\begin{matrix}
+M_{i,1}(v)=\lbrace\begin{matrix}
 1\Leftarrow \bar{v}_{i} \leq v \leq \bar{v}_{i+1}\\ 
 0\Leftarrow v < \bar{v}_{i} \vee  \bar{v}_{i+1} \leq v \end{matrix} \right.,\; \\
 M_{i,j}(v)=\frac{(v-\bar{v}_{i}) \cdot M_{i,j-1}(v) }{\bar{v}_{i+j-1}-\bar{v}_{i}}+ \frac{(\bar{v}_{i+j}-v) \cdot M_{i+1,j-1}(v)}{\bar{v}_{i+j}-\bar{v}_{i+1}},\;(2 \leq j \leq m_{v}+1); 
@@ -1343,7 +1343,7 @@ $$ C(u)= \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u) }{\sum_{i=1}^
 
 where functions *N<sub>i,j</sub>* have the following recursion definition  by *j*
  
-$$ N_{i,1}(u)=\left\{\begin{matrix}
+$$ N_{i,1}(u)=\lbrace\begin{matrix}
 1\Leftarrow \bar{u}_{i} \leq u \leq \bar{u}_{i+1}\\ 
 0\Leftarrow u < \bar{u}_{i} \vee  \bar{u}_{i+1} \leq u \end{matrix} \right.,\;
 N_{i,j}(u)=\frac{(u-\bar{u}_{i}) \cdot N_{i,j-1}(u) }{\bar{u}_{i+j-1}-\bar{u}_{i}}+ \frac{(\bar{u}_{i+j}-u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j}-\bar{u}_{i+1}},\;(2 \leq j \leq m+1) $$ 
@@ -1531,7 +1531,7 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
 \<triangulation u v parameters\> are used in version 2 or later.
 \<need to write normals flag\> and \<triangulation normals\> are used in version 3.
  
-\<triangulation record\> describes a triangulation  *T* which  approximates a surface *S*. The triangulation data consist of a node  count $ m \geq 3 $, a triangle count $ k \geq 1 $, a parameter  presence flag *p*, a deflection $ d \geq 0 $, nodes $ N_{i}\; (1\leq i \leq m) $, parameter pairs $ u_{i}\; v_{i}\; (1\leq i \leq m) $, triangles $ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k,\; n_{j,l} \in \left \{1,...,m \right \}\; (1\leq l\leq 3)) $. The parameters are present  only if *p*=1. The deflection describes the triangulation deflection from the surface:  
+\<triangulation record\> describes a triangulation  *T* which  approximates a surface *S*. The triangulation data consist of a node  count $ m \geq 3 $, a triangle count $ k \geq 1 $, a parameter  presence flag *p*, a deflection $ d \geq 0 $, nodes $ N_{i}\; (1\leq i \leq m) $, parameter pairs $ u_{i}\; v_{i}\; (1\leq i \leq m) $, triangles $ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k,\; n_{j,l} \in \lbrace1,...,m \rbrace\; (1\leq l\leq 3)) $. The parameters are present  only if *p*=1. The deflection describes the triangulation deflection from the surface:  
  
 $$ \underset{P \in S}{max}\; \underset{Q \in T}{min}|Q-P| \leq d . $$  
  
