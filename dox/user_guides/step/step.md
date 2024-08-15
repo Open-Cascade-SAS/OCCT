@@ -19,7 +19,7 @@ Only geometrical, topological STEP entities (shapes) and assembly structures are
 
 File translation is performed in the programming mode, via C++ calls. 
 
-[Shape Healing](#occt_user_guides__shape_healing) toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to STEP translator using the same API, only the names of API packages change.
+[Shape Healing](../shape_healing/shape_healing.md#occt_user_guides__shape_healing) toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to STEP translator using the same API, only the names of API packages change.
 
 For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin.
 

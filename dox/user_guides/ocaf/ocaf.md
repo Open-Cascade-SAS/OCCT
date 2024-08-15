@@ -510,7 +510,7 @@ Choosing the alternative way of implementation of new data types allows to forge
 
 Let’s study the implementation of the same data type in both ways by the example of transformation represented by *gp_Trsf* class. The class *gp_Trsf* defines the transformation according to the type (*gp_TrsfForm*) and a set of parameters of the particular type of transformation (two points or a vector for translation, an axis and an angle for rotation, and so on). 
 
-1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the [Samples](#samples__ocaf). 
+1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the [Samples](../../samples/ocaf/ocaf.md#samples__ocaf). 
 
 2. The second way: creation of a new data type by means of combination of standard attributes. Depending on the type of transformation it may be kept in data framework by different standard attributes. For example, a translation is defined by two points. Therefore the data tree for translation looks like this: 
   * Type of transformation <i>(gp_Translation)</i> as *TDataStd_Integer*;
@@ -1341,7 +1341,7 @@ aLabel.FindAttribute (DENSITY, anAtt);
 
 <h3><a id="occt_ocaf_7_1">Overview</a></h3>
 
-Standard visualization attributes implement the Application Interactive Services (see [Visualization User's Guide](#occt_user_guides__visualization)). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
+Standard visualization attributes implement the Application Interactive Services (see [Visualization User's Guide](../visualization/visualization.md#occt_user_guides__visualization)). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
 
 <h3><a id="occt_ocaf_7_2">Services provided</a></h3>
 

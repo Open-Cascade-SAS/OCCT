@@ -6368,7 +6368,7 @@ sr is a shape COMPOUND FORWARD Free Modified
 
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old Boolean operation algorithm.
 It also provides wider range of options and diagnostics.
-The algorithms of Boolean component are fully described in the [Boolean Operations](#specification__boolean_operations) of boolean operation user guide.
+The algorithms of Boolean component are fully described in the [Boolean Operations](../../specification/boolean_operations/boolean_operations.md#specification__boolean_operations) of boolean operation user guide.
 
 For the Draw commands to perform operations in Boolean component, read the dedicated section [Boolean operations commands](#occt_draw_bop)
 
@@ -6577,7 +6577,7 @@ buildevol
 
 <h3><a id="occt_draw_defeaturing">Defeaturing</a></h3>
 
-Draw command **removefeatures** is intended for performing [3D Model Defeaturing](#occt_modalg_defeaturing), i.e. it performs the removal of the requested features from the shape.
+Draw command **removefeatures** is intended for performing [3D Model Defeaturing](../modeling_algos/modeling_algos.md#occt_modalg_defeaturing), i.e. it performs the removal of the requested features from the shape.
 
 Syntax:
 ~~~~{.php}
@@ -6596,7 +6596,7 @@ parallel - enables the parallel processing mode.
 
 <h3><a id="occt_draw_makeperiodic">3D Model Periodicity</a></h3>
 
-Draw module for [making the shape periodic](#occt_modalg_makeperiodic) includes the following commands:
+Draw module for [making the shape periodic](../modeling_algos/modeling_algos.md#occt_modalg_makeperiodic) includes the following commands:
 * **makeperiodic** - makes the shape periodic in required directions;
 * **repeatshape** - repeats the periodic shape in requested periodic direction;
 * **periodictwins** - returns the periodic twins for the shape;
@@ -6656,7 +6656,7 @@ No arguments are needed for the command.
 
 <h3><a id="occt_draw_makeconnected">Making the touching shapes connected</a></h3>
 
-Draw module for [making the touching same-dimensional shapes connected](#occt_modalg_makeconnected) includes the following commands:
+Draw module for [making the touching same-dimensional shapes connected](../modeling_algos/modeling_algos.md#occt_modalg_makeconnected) includes the following commands:
 * **makeconnected** - make the input shapes connected or glued, performs material associations;
 * **cmaterialson** - returns the materials located on the requested side of a shape;
 * **cmakeperiodic** - makes the connected shape periodic in requested directions;
@@ -7455,7 +7455,7 @@ Options:
 
 <h3><a id="occt_draw_hist">History commands</a></h3>
 
-Draw module for [History Information support](#occt_modalg_hist) includes the command to save history of modifications performed by Boolean operation or sibling commands into a drawable object and the actual history commands:
+Draw module for [History Information support](../modeling_algos/modeling_algos.md#occt_modalg_hist) includes the command to save history of modifications performed by Boolean operation or sibling commands into a drawable object and the actual history commands:
 
 * **setfillhistory**;
 * **savehistory**;
@@ -7654,7 +7654,7 @@ The method *BRepTest_Objects::IsHistoryNeeded()* controls if the history is need
 <h2><a id="occt_draw_bop">Boolean Operations Commands</a></h2>
 
 This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for performing, analyzing, debugging the algorithm in Boolean Component.
-See [Boolean operations](#specification__boolean_operations) user's guide for the description of these algorithms.
+See [Boolean operations](../../specification/boolean_operations/boolean_operations.md#specification__boolean_operations) user's guide for the description of these algorithms.
 
 <h3><a id="occt_draw_bop_two">Boolean Operations on two operands</a></h3>
 
@@ -7740,7 +7740,7 @@ shape1, shape2 - arguments of the operation
 The modern Boolean Operations algorithm available in Open CASCADE Technology is capable of performing a Boolean Operations not only on two shapes, but on arbitrary number of shapes.
 In terms of Boolean Operations these arguments are divided on two groups **Objects** and **Tools**. The meaning of these groups is similar to the single object and tool of Boolean Operations on two shapes.
 
-The Boolean operations are based on the General Fuse operation (see [General Fuse algorithm](#specification__boolean_7)) which splits all input shapes basing on the intersection results.
+The Boolean operations are based on the General Fuse operation (see [General Fuse algorithm](../../specification/boolean_operations/boolean_operations.md#specification__boolean_7)) which splits all input shapes basing on the intersection results.
 Depending on the type of Boolean operation the BOP algorithm choses the necessary splits of the arguments.
 
 <h3><a id="occt_draw_bop_general_com">General commands for working with multiple arguments</a></h3>
@@ -7864,7 +7864,7 @@ bsplit result
 
 There is an alternative way to build the result of Boolean operation using the **buildbop** command, which should be run after any other building command, such as **bbuild** or **bbop** or **bsplit**.
 The command has the following features:
-* It is designed to work on open solids and thus uses the alternative approach for building the results (see [BOP on open solids](#specification__boolean_bop_on_opensolids) chapter of Boolean operations user guide).
+* It is designed to work on open solids and thus uses the alternative approach for building the results (see [BOP on open solids](../../specification/boolean_operations/boolean_operations.md#specification__boolean_bop_on_opensolids) chapter of Boolean operations user guide).
 * It allows changing the groups of Objects and Tools of the operation (even excluding some of the arguments is possible).
 * History information for solids will be lost.
 
@@ -7919,7 +7919,7 @@ buildbop r11 -o b1 -t b2 b3 -op tuc
 
 <h4><a id="occt_draw_bop_build_CB">Cells Builder</a></h4>
 
-See the [Cells Builder Usage](#specification__boolean_10c_Cells_1) for the Draw usage of Cells Builder algorithm.
+See the [Cells Builder Usage](../../specification/boolean_operations/boolean_operations.md#specification__boolean_10c_Cells_1) for the Draw usage of Cells Builder algorithm.
 
 
 <h4><a id="occt_draw_bop_build_API">Building result through API</a></h4>

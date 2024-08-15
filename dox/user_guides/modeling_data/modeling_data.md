@@ -1307,13 +1307,13 @@ In other words, regularity is a minimal continuity between connected faces in ea
 
 Edge's regularity can be set by *BRep_Builder::Continuity* method. To get the regularity use *BRep_Tool::Continuity* method.
 
-Some algorithms like [Fillet](#occt_modalg_6) set regularity of produced edges by their own algorithms.
-On the other hand, some other algorithms (like [Boolean Operations](#specification__boolean_operations), [Shape Healing](#occt_user_guides__shape_healing), etc.) do not set regularity.
+Some algorithms like [Fillet](../modeling_algos/modeling_algos.md#occt_modalg_6) set regularity of produced edges by their own algorithms.
+On the other hand, some other algorithms (like [Boolean Operations](../../specification/boolean_operations//boolean_operations.md#specification__boolean_operations), [Shape Healing](../shape_healing/shape_healing.md#occt_user_guides__shape_healing), etc.) do not set regularity.
 If the regularity is needed to be set correctly on a shape, the method *BRepLib::EncodeRegularity* can be used.
 It calculates and sets correct values for all edges of the shape.
 
 The regularity flag is extensively used by the following high level algorithms:
-[Chamfer](#occt_modalg_6_1_2), [Draft Angle](#occt_modalg_7_3), [Hidden Line Removal](#occt_modalg_10), [Gluer](#occt_modalg_9_2).
+[Chamfer](../modeling_algos/modeling_algos.md#occt_modalg_6_1_2), [Draft Angle](../modeling_algos/modeling_algos.md#occt_modalg_7_3), [Hidden Line Removal](../modeling_algos/modeling_algos.md#occt_modalg_10), [Gluer](../modeling_algos/modeling_algos.md#occt_modalg_9_2).
 
 <h3><a id="occt_modat_4_3">Global Properties of Shapes</a></h3>
 
