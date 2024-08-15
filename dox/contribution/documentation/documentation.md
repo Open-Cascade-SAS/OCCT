@@ -387,7 +387,7 @@ To insert a reference to a website, it is sufficient to write an URL.
 For example: http://en.wikipedia.org
 
 To insert a reference to a document or its subsection, use command <i>\@ref</i> followed by the document or section tag name.
-For instance, @code @ref OCCT_DM_SECTION_A @endcode will be rendered as @ref OCCT_DM_SECTION_A.
+For instance, @code [Link](#OCCT_DM_SECTION_A) @endcode will be rendered as [Link](#OCCT_DM_SECTION_A).
 
 Note that links between documents will not work in PDF output if each document is generated independently.
 Hence it is recommended to add a name of the referenced section after the tag name in the <i>\@ref</i> command (in quotes): this will guarantee that the reference is recognizable for the reader even if the cross-link is not instantiated. 

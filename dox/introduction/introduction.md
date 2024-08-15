@@ -400,7 +400,7 @@ OCCT can be downloaded from https://dev.opencascade.org/release
 
 In most cases you would want to rebuild OCCT from sources on your platform (OS, compiler) before
 using it in your project, to ensure binary compatibility and appropriate configuration of the library.
-See @ref build_upgrade for instructions on building OCCT from sources on supported platforms.
+See [Link](#build_upgrade) for instructions on building OCCT from sources on supported platforms.
 
 The following subsections describe how OCCT can be installed from ready-to-use packages on different platforms.
 

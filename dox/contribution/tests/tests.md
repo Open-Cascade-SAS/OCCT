@@ -1197,7 +1197,7 @@ if { abs($area - $expected) > 0.1 + 0.01 * abs ($area) } {
 
 <h4><a id="testmanual_5_3_4">Memory leaks</a></h4>
 
-The test system measures the amount of memory used by each test case. Considerable deviations (as well as the overall difference) in comparison with reference results can be reported by command *testdiff*  (see @ref testmanual_4_4).
+The test system measures the amount of memory used by each test case. Considerable deviations (as well as the overall difference) in comparison with reference results can be reported by command *testdiff*  (see [Link](#testmanual_4_4)).
 
 To check memory leak on a particular operation, run it in a cycle, measure the memory consumption at each step and compare it with a threshold value.
 The command *checktrend* (defined in *tests/bugs/begin*) can be used to analyze a sequence of memory measurements and to get a statistically based evaluation of the leak presence.

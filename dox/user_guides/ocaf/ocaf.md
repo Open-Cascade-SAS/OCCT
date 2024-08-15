@@ -980,7 +980,7 @@ There are some simple exceptions for several cases. For example, if the Result c
 
 All elements returned by the used algorithm according to the aforementioned rules should be put in the Data Framework (or OCAF document in other words) consequently in linear order under the so-called **Result Label**. 
 
-The "Result Label" is *TDF_label* used to keep the algorithm result *Shape* from *TopoDS* in *NamedShape* attribute. During loading sub-shapes of the result in Data Framework should be used the rules of chapter @ref occt_ocaf_5_3.  These rules are also applicable for loading the main shape, i.e. the resulting shape produced by the modeling algorithm.
+The "Result Label" is *TDF_label* used to keep the algorithm result *Shape* from *TopoDS* in *NamedShape* attribute. During loading sub-shapes of the result in Data Framework should be used the rules of chapter [Link](#occt_ocaf_5_3).  These rules are also applicable for loading the main shape, i.e. the resulting shape produced by the modeling algorithm.
 
 <h4><a id="occt_ocaf_5_6_3">Selection / re-computation mechanism</a></h4>
 

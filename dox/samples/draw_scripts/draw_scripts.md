@@ -54,7 +54,7 @@ Declaration of available plug-ins is done through special resource file(s).
 The *pload* command loads the plug-in in accordance with 
 the specified resource file and activates the commands implemented in the plug-in.
 
-The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref occt_user_guides__test_harness.
+The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the [Link](#occt_user_guides__test_harness).
 
 Draw Test Harness provides an environment for OCCT automated testing system. 
 Check its [Automated Testing System](#occt_contribution__tests) for details.

@@ -39,7 +39,7 @@ According to his access level, the user can participate in the issue handling pr
   
 <h3><a id="occt_contribution_workflow_issue">Issue registration</a></h3>
 
-An issue is registered in Mantis bugtracker by the **Reporter** with definition of the necessary attributes (see also @ref occt_contribution_app):
+An issue is registered in Mantis bugtracker by the **Reporter** with definition of the necessary attributes (see also [Link](#occt_contribution_app)):
 
 **Category** -- indicates the OCCT component, to which the issue relates.
     (If in doubt, assign to OCCT:Foundation Classes.)
@@ -181,7 +181,7 @@ It is highly preferable to submit changes basing on the current master.
 In case if the fix is implemented on the previous release of OCCT, the branch can be based on the corresponding tag in Git, instead of the master.
   
 The branch name should be composed of letters **CR** (abbreviation of "Change Request") followed by the issue ID number (without leading zeros). 
-It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix (see @ref occt_contribution_nonstd_rebase).
+It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix (see [Link](#occt_contribution_nonstd_rebase)).
 
 See [Guide to using GIT](#occt_contribution__git_guide) for help.
 
@@ -263,7 +263,7 @@ If the **Tester** does not detect problems or regressions, he changes the status
 If the **Tester** detects build problems or regressions, he changes the status to **ASSIGNED** and reassigns the issue to the **Developer** with a detailed description of the problems. 
 The **Developer** should analyze the reported problems and, depending on results of this analysis, either:
 * Confirm that the detected problems are expected changes and they should be accepted as a new status of the code. Then the issue should be switched to **FEEDBACK** and assigned to the **Bugmaster**.
-* Produce a new solution (see @ref occt_contribution_workflow_fix, and also @ref occt_contribution_nonstd_minor).
+* Produce a new solution (see [Link](#occt_contribution_workflow_fix), and also [Link](#occt_contribution_nonstd_minor)).
 
 <h3><a id="occt_contribution_workflow_integrate">Integration of a solution</a></h3>
 
@@ -310,7 +310,7 @@ If, at any step of the issue lifetime, the person responsible for it cannot proc
 
 * The **Maintainer** or the **Developer** requests for more information from the **Reporter** to reproduce the issue;
 * The **Tester** requests the **Developer** or the **Maintainer** to help him in the interpretation of testing results; 
-* The **Developer** or the **Maintainer** asks the **Bugmaster** to close the issue that is found irrelevant or already fixed (see @ref occt_contribution_nonstd_autofix).
+* The **Developer** or the **Maintainer** asks the **Bugmaster** to close the issue that is found irrelevant or already fixed (see [Link](#occt_contribution_nonstd_autofix)).
 
 In general, issues with status **FEEDBACK** should be processed as fast as possible, to avoid unjustified delays.
 

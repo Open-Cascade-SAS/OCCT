@@ -15,4 +15,4 @@ To generate Reference manual:
 
 Run this command without arguments to get help on supported options.
 
-See @ref occt_contribution__documentation for prerequisites and details on OCCT documentation system.
+See [Link](#occt_contribution__documentation) for prerequisites and details on OCCT documentation system.

@@ -141,10 +141,10 @@ The sequence of actions is as follows:
      The maximum tolerance value limits the increasing tolerance for fixing a problem such as fix of not connected and self-intersected wires.
      If a value larger than the maximum allowed tolerance is necessary for correcting a detected problem the problem can not be fixed.
      The maximal tolerance is not taking into account during computation of tolerance of edges in *ShapeFix_SameParameter()* method and *ShapeFix_Edge::FixVertexTolerance()* method.
-     See @ref occt_shg_2_3_8 for details.
+     See [Link](#occt_shg_2_3_8) for details.
    * *theMintol* --  minimal allowed tolerance.
      It defines the minimal allowed length of edges. Detected edges having length less than the specified minimal tolerance will be removed if *ModifyTopologyMode* in Repairing tool for wires is set to true.
-     See @ref occt_shg_2_3_7 for details.
+     See [Link](#occt_shg_2_3_7) for details.
 
 3. Launch fixing:
 ~~~~{.cpp}

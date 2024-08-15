@@ -1503,12 +1503,12 @@ If OBBs are not interfered in terms of at least one axis (of 15) then they are n
 
 <h4><a id="occt_modat_6_1_5">Method Add for point or another bounding box</a></h4>
 
-Create a new OBB (see the section @ref occt_modat_6_1_1) based on the source point and all vertices of the given bounding boxes.
+Create a new OBB (see the section [Link](#occt_modat_6_1_1)) based on the source point and all vertices of the given bounding boxes.
 
 <h3><a id="occt_modat_6_2">Add a shape</a></h3>
 
 Method *BRepBndLib::AddOBB(...)* allows creating the bounding box from a complex object *(TopoDS_Shape)*.
-This method uses both algorithms described in the sections @ref occt_modat_6_1_1 and sections @ref occt_modat_6_1_2.
+This method uses both algorithms described in the sections [Link](#occt_modat_6_1_1) and sections [Link](#occt_modat_6_1_2).
 
 The first algorithm is used if the outer shell of the shape can be represented by a set of points contained in it.
 Namely, only the following elements are the source of set of points:
@@ -1519,13 +1519,13 @@ Namely, only the following elements are the source of set of points:
   - Vertices of edges with a linear 3D-curve if the source shape does not contain a more complex topological structure (e.g. the source shape is a compound of edges);
   - Vertices if the source shape does not contain a more complex topological structure (e.g. the source shape is a compound of vertices).
 
-If the required set of points cannot be extracted then the algorithm from section @ref occt_modat_6_1_2 is used for OBB creation.
+If the required set of points cannot be extracted then the algorithm from section [Link](#occt_modat_6_1_2) is used for OBB creation.
 
 The package *BRepBndLib* contains methods *BRepBndLib::Add(...), BRepBndLib::AddClose(...)* and *BRepBndLib::AddOptimal(...)* for creation of AABB of a shape. See the reference manual for the detailed information.
 
 <h3><a id="occt_modat_6_3">Limitations of algorithm for OBB creation</a></h3>
 
-1. The algorithm described in the section @ref occt_modat_6_1_1 works significantly better (finds resulting OBB with less surface area) and faster than the algorithm from the section @ref occt_modat_6_1_2.
+1. The algorithm described in the section [Link](#occt_modat_6_1_1) works significantly better (finds resulting OBB with less surface area) and faster than the algorithm from the section [Link](#occt_modat_6_1_2).
    Nevertheless, (in general) the result returned by both algorithms is not always optimal (i.e. sometimes another OBB exists with a smaller surface area).
    Moreover, the first method does not allow computing OBBs of shapes with a complex geometry.
 2. Currently, the algorithm of OBB creation is implemented for objects in 3D space only.
