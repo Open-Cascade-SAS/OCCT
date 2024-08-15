@@ -149,11 +149,10 @@ $$
 *Q* may be a composition of matrices for the following elementary transformations:  
  
   *  parallel translation --
-  
 $\begin{pmatrix}
-\&0 &0 &q_{1,4} \\
-0 &1 &0 &q_{2,4} \\
-0 &0 &1 &q_{3,4}
+1 & 0 & 0 & q_{1,4} \\
+0 & 1 & 0 & q_{2,4} \\
+0 & 0 & 1 & q_{3,4}
 \end{pmatrix}$
 
   *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle $\varphi$ --  
