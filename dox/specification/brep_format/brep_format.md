@@ -174,7 +174,7 @@ s & 0 & 0 & 0 \\
 0 & s & 0 & 0 \\ 
 0 & 0 & s & 0 
 \end{pmatrix} \text{ where } 
-s \in (-\infty, \infty) \{ 0 \}
+s \in (-\infty, \infty) \setminus \lbrace 0 \rbrace
 $$
 
   *  central symmetry --
