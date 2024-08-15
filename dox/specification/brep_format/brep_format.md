@@ -540,7 +540,7 @@ N_{i,1}(u) =
 $$
 
 $$
-N_{i,j}(u) = \frac{(u - \bar{u}_{i}) \cdot N_{i,j-1}(u)}{\bar{u}_{i+j-1} - \bar{u}_{i}} + \frac{(\bar{u}_{i+j} - u) \cdot N_{i+1,j-1}(u)}{\bar{u}_{i+j} - \bar{u}_{i+1}}
+N_{i,j}(u) = \frac {(u - \bar {u}_{i}) \cdot N_{i,j-1}(u)}{\bar {u}_{i+j-1} - \bar {u}_{i}} + \frac {(\bar {u}_{i+j} - u) \cdot N_{i+1,j-1}(u)}{\bar {u}_{i+j} - \bar {u}_{i+1}}
 $$
 
 $$
