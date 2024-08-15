@@ -203,7 +203,7 @@ $$
 \end{pmatrix}
 $$
  
-\<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence $l_{1}p_{1} ... l_{n}p_{n}$ of $n \geq 0 $ integer pairs $l_{i}p_{i} \; (1 \leq i \leq n)$. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition $L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}}$ where $L_{l_{i}}$ is a location from $l_{i}$-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
+\<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence $l_{1}p_{1} ... l_{n}p_{n}$ of $n \geq 0$ integer pairs $l_{i}p_{i} \; (1 \leq i \leq n)$. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition $L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}}$ where $L_{l_{i}}$ is a location from $l_{i}$-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
  
  
 <h2><a id="specification__brep_format_5">Geometry</a></h2>
@@ -704,7 +704,7 @@ The  example record is interpreted as a cylinder which axis passes through a poi
  
 **Description**  
  
-\<surface record 3\> describes a cone. The cone  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>*, a non-negative real *r* and a real $\varphi \in (-\pi /2, \pi/2)/\lbrace 0 \rbrace$. The cone axis passes  through the point *P* and  has the direction *D<sub>Z</sub>*. The plane which passes through the point *P* and is parallel to directions *D<sub>X</sub>* and *D<sub>Y</sub>* is the cone referenced  plane. The cone section by the plane is a circle with the radius *r*. The direction from  the point *P* to  the cone apex is $-sgn(\varphi) \cdot D_{Z}$.  The cone has a half-angle$|\varphi|$ and is defined by the following  parametric equation:  
+\<surface record 3\> describes a cone. The cone  data consist of a 3D point *P*, pairwise orthogonal 3D directions *D<sub>Z</sub>*, *D<sub>X</sub>* and *D<sub>Y</sub>*, a non-negative real *r* and a real $\varphi \in (-\pi /2, \pi/2)/\lbrace 0 \rbrace$. The cone axis passes  through the point *P* and  has the direction *D<sub>Z</sub>*. The plane which passes through the point *P* and is parallel to directions *D<sub>X</sub>* and *D<sub>Y</sub>* is the cone referenced  plane. The cone section by the plane is a circle with the radius *r*. The direction from  the point *P* to  the cone apex is $-sgn(\varphi) \cdot D_{Z}$.  The cone has a half-angle $|\varphi|$ and is defined by the following  parametric equation:  
  
 $$ S(u,v)=P+(r+v \cdot sin(\varphi)) \cdot (cos(u) \cdot D_{X}+sin(u) \cdot D_{Y})+v \cdot cos(\varphi) \cdot D_{Z}, (u,v) \in [0, 2 \cdot \pi) \times (-\infty, \infty) . $$  
  
@@ -944,7 +944,7 @@ $$
  
 \<surface record 9\> describes a B-spline surface.  The surface data consist of a u rational flag *r<sub>u</sub>*, v rational flag *r<sub>v</sub>*, u degree $m_{u} \leq 25$, v degree $m_{v} \leq 25$, u pole count $n_{u} \geq 2$, v pole count $n_{v} \geq 2$, u multiplicity knot count *k<sub>u</sub>*, v multiplicity knot count *k<sub>v</sub>*, weight poles, u multiplicity  knots, v multiplicity knots.  
  
-The weight poles are $n_{u} \cdot n_{v}$ 3D points $B_{i,j}\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$ if $r_{u}+r_{v}=0$. The weight poles are $n_{u} \cdot n_{v}$ pairs $B_{i,j}h_{i,j}\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$ if $r_{u}+r_{v} \neq 0$. Here $B_{i,j}$ is a 3D point and $h_{i,j} $ is a positive real $((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$. $h_{i,j}=1\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$ if $r_{u}+r_{v} = 0$.
+The weight poles are $n_{u} \cdot n_{v}$ 3D points $B_{i,j}\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$ if $r_{u}+r_{v}=0$. The weight poles are $n_{u} \cdot n_{v}$ pairs $B_{i,j}h_{i,j}\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$ if $r_{u}+r_{v} \neq 0$. Here $B_{i,j}$ is a 3D point and $h_{i,j}$ is a positive real $((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$. $h_{i,j}=1\; ((i,j) \in \lbrace 1,...,n_{u} \rbrace \times \lbrace 1,...,n_{v} \rbrace)$ if $r_{u}+r_{v} = 0$.
  
 The u multiplicity knots are *k<sub>u</sub>* pairs $u_{1}q_{1} ... u_{k_{u}}q_{k_{u}}$. Here $u_{i}$ is a knot with multiplicity $q_{i} \geq 1 \;(1\leq i\leq k_{u})$ so that  
  
@@ -1049,8 +1049,14 @@ The example record is interpreted as a rectangular  trim surface to the set [-1,
 The offset surface data consist of a distance *d* and a \<surface record\>. The  offset surface is the result of offsetting the base surface *B* described in the record to the distance *d* along the normal *N* of  surface *B*.  The offset surface is defined by the following parametric equation:  
 
 $$
-S(u,v) = B(u,v) + d \cdot N(u,v), \quad (u,v) \in \text {domain} (B) . \\
-N(u,v) = [S'_u(u,v), S'_v(u,v)] \\
+S(u,v) = B(u,v) + d \cdot N(u,v), \quad (u,v) \in \text {domain} (B)
+$$
+
+$$
+N(u,v) = [S'_u(u,v), S'_v(u,v)]
+$$
+
+$$
 \text {if} [S'_u(u,v), S'_v(u,v)] \neq \vec{0}
 $$
 
@@ -1341,7 +1347,7 @@ $$ C(u)= \frac{(0,1) \cdot 4 \cdot (1-u)^{2}+(1,-2) \cdot 5 \cdot 2 \cdot u \cdo
  
 \<2D curve record 7\> describes a B-spline curve.  The curve data consist of a rational flag *r*, a degree $m \leq 25$, a pole count $n \geq 2$, a multiplicity knot count *k*, weight poles and  multiplicity knots.  
  
-The weight poles are *n* 2D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight  poles are *n* pairs  *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag  *r* is 1. Here *B<sub>i</sub>* is a 2D point and *h<sub>i</sub>* is a positive real $(1\leq i\leq n)$. *h<sub>i</sub>*=1 $(1\leq i\leq n) $ if the flag *r* is 0.  
+The weight poles are *n* 2D points *B<sub>1</sub> ... B<sub>n</sub>* if the flag *r* is 0. The weight  poles are *n* pairs  *B<sub>1</sub>h<sub>1</sub> ... B<sub>n</sub>h<sub>n</sub>* if the flag  *r* is 1. Here *B<sub>i</sub>* is a 2D point and *h<sub>i</sub>* is a positive real $(1\leq i\leq n)$. *h<sub>i</sub>*=1 $(1\leq i\leq n)$ if the flag *r* is 0.  
  
 The multiplicity knots are *k* pairs *u<sub>1</sub>q<sub>1</sub> ... u<sub>k</sub>q<sub>k</sub>*. Here *u<sub>i</sub>* is a knot with multiplicity $q_{i} \geq 1\; (1 \leq i \leq k)$ so that  
  
@@ -1466,7 +1472,7 @@ The example record is interpreted as an offset curve  with a distance *d*=2 and 
  
 **Description**  
  
-\<3D polygons\> record describes a 3D polyline *L* which approximates a 3D curve *C*.  The polyline data consist of a node count $m \geq 2$, a parameter presence flag *p*, a deflection $  \geq 0$, nodes $N_{i}\; (1\leq i \leq m)$ and parameters $u_{i}\; (1\leq i \leq m)$. The parameters are present only if *p*=1. The polyline *L* passes  through the nodes. The deflection *d* describes the deflection of polyline *L* from the curve *C*:  
+\<3D polygons\> record describes a 3D polyline *L* which approximates a 3D curve *C*.  The polyline data consist of a node count $m \geq 2$, a parameter presence flag *p*, a deflection $\geq 0$, nodes $N_{i}\; (1\leq i \leq m)$ and parameters $u_{i}\; (1\leq i \leq m)$. The parameters are present only if *p*=1. The polyline *L* passes  through the nodes. The deflection *d* describes the deflection of polyline *L* from the curve *C*:  
  
 $$ \underset{P \in C}{max}\; \underset{Q \in L}{min}|Q-P| \leq d . $$  
  
@@ -1550,7 +1556,7 @@ The parameter pair $u_{i}\; v_{i}\; (1\leq i \leq m)$ describes the parameters o
  
 $$ S(u_{i},v_{i})=N_{i} . $$  
  
-The triangle $n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k)$ is interpreted as a triangle of nodes $N_{n_{j},1}\; N_{n_{j},2}$ and $ N_{n_{j},3} $ with circular traversal of the nodes in the order $N_{n_{j},1}\;  N_{n_{j},2}$ and $N_{n_{j},3}$. From any side of the triangulation *T* all its triangles  have the same direction of the node circular traversal: either clockwise or  counterclockwise.  
+The triangle $n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k)$ is interpreted as a triangle of nodes $N_{n_{j},1}\; N_{n_{j},2}$ and $N_{n_{j},3}$ with circular traversal of the nodes in the order $N_{n_{j},1}\;  N_{n_{j},2}$ and $N_{n_{j},3}$. From any side of the triangulation *T* all its triangles  have the same direction of the node circular traversal: either clockwise or  counterclockwise.  
  
 Triangulation record  
 
