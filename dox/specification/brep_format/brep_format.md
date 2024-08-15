@@ -111,7 +111,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
 
 \<location data 1\> is interpreted as a 3 x 4 matrix
 
-$$
+
 Q =
 \begin{pmatrix}
 q_{1,1} & q_{1,2} & q_{1,3} & q_{1,4} \\
@@ -169,14 +169,20 @@ $$
   *  scaling --
 
 $$
-\begin{pmatrix} s &0 &0 &0\\ 0 &s &0 &0\\ 0 &0 &s &0 \end{pmatrix} \text{ where } 
-S \in (-\infty,\; \infty)/\left \{ 0 \right \};
+\begin{pmatrix} 
+s & 0 & 0 & 0 \\
+0 & s & 0 & 0 \\ 
+0 & 0 & s & 0 
+\end{pmatrix} \text{ where } 
+s \in (-\infty, \infty) \setminus \{ 0 \};
 $$
 
   *  central symmetry --
 
 $$
-\begin{pmatrix} -1 &0 &0 &0 \\ 0 &-1 &0 &0 \\ 0 &0 &-1 &0 \end{pmatrix}
+\begin{pmatrix} -1 &0 &0 &0 \\
+0 &-1 &0 &0 \\
+0 &0 &-1 &0 \end{pmatrix}
 $$
 
   *  axis symmetry --
