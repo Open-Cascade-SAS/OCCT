@@ -149,14 +149,13 @@ $$
 *Q* may be a composition of matrices for the following elementary transformations:  
  
   *  parallel translation --
-$\begin{pmatrix}
+$$\begin{pmatrix}
 1 & 0 & 0 & q_{1,4} \\
 0 & 1 & 0 & q_{2,4} \\
 0 & 0 & 1 & q_{3,4}
-\end{pmatrix}$
+\end{pmatrix}$$
 
-  *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle $\varphi$ --  
-
+  *  rotation around an axis with a direction *D(D<sub>x</sub>, D<sub>y</sub>, D<sub>z</sub>)* by an angle $\varphi$ --
 $$
 \begin{pmatrix}
 D_{x}^{2} \cdot (1-cos(\varphi)) + cos(\varphi) &D_{x} \cdot D_{y} \cdot (1-cos(\varphi)) - D_{z} \cdot sin(\varphi) &D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) + D_{y} \cdot sin(\varphi) &0\\
@@ -166,15 +165,13 @@ D_{x} \cdot D_{z} \cdot (1-cos(\varphi)) - D_{y} \cdot sin(\varphi) &D_{y} \cdot
 $$
  
   *  scaling -- 
-$
-\begin{pmatrix} s &0 &0 &0\\ 0 &s &0 &0\\ 0 &0 &s &0 \end{pmatrix}
-$
-where $
+$$
+\begin{pmatrix} s &0 &0 &0\\ 0 &s &0 &0\\ 0 &0 &s &0 \end{pmatrix} \text{ where } 
 S \in (-\infty,\; \infty)/\left \{ 0 \right \};
-$
-  *  central symmetry -- $\begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix};$
-  *  axis symmetry -- $\begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &1 &0 \end{pmatrix};$
-  *  plane symmetry -- $\begin{pmatrix} 1 &0 &0 &0\\ 0 &1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}.$
+$$
+  *  central symmetry -- $$\begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix};$$
+  *  axis symmetry -- $$\begin{pmatrix} -1 &0 &0 &0\\ 0 &-1 &0 &0\\ 0 &0 &1 &0 \end{pmatrix};$$
+  *  plane symmetry -- $$\begin{pmatrix} 1 &0 &0 &0\\ 0 &1 &0 &0\\ 0 &0 &-1 &0 \end{pmatrix}.$$
  
 \<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence $l_{1}p_{1} ... l_{n}p_{n}$ of $ n \geq 0 $ integer pairs $ l_{i}p_{i} \; (1 \leq i \leq n) $. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition $ L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}} $ where $ L_{l_{i}} $ is a location from $ l_{i} $-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
  
