@@ -521,13 +521,21 @@ $$
 C(u) = \frac{\sum_{i=1}^{n} B_{i} \cdot h_{i} \cdot N_{i,m+1}(u)}{\sum_{i=1}^{n} h_{i} \cdot N_{i,m+1}(u)}, u \in [u_{1}, u_{k}]
 $$
  
-where functions $N_{i,j}$ have the following recursion definition  by *j*:  
+where functions $N_{i,j}$ have the following recursion definition  by *j*:
 
 $$
 N_{i,1}(u) =
 \begin{cases} 
 1 & \text{if } \bar{u}_{i} \leq u \leq \bar{u}_{i+1} \\ 
 0 & \text{if } u < \bar{u}_{i} \text{ or } u \geq \bar{u}_{i+1} 
+\end{cases}
+$$
+
+$$
+N_{i,1}(u) =
+\begin{cases} 
+1 \\ 
+0
 \end{cases}
 $$
 
