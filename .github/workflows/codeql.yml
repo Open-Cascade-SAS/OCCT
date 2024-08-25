@@ -1,0 +1,60 @@
+# Security scanning with CodeQL.
+# Checks any master integration and publish warnings into security GitHub tab.
+#
+# Find more information at:
+# https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning
+
+name: CodeQL Code Analysis
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ 'ubuntu-latest' }}
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # required to fetch internal or private CodeQL packs
+      packages: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: c-cpp
+          build-mode: manual
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3.26.5
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+
+    - if: matrix.build-mode == 'manual'
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Unix Makefiles" \
+              -D CMAKE_C_COMPILER=gcc \
+              -D CMAKE_CXX_COMPILER=g++ \
+              -D USE_FREETYPE=OFF \
+              -D CMAKE_BUILD_TYPE=Release ..
+        make -j$(nproc)
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3.26.5
+      with:
+        category: "/language:${{matrix.language}}"

@@ -1,0 +1,43 @@
+# This workflow builds OCCT on macOS with Clang x64 dynamic.
+#
+# Notes:
+# freetype is disabled
+# samples are not built
+
+name: Build OCCT on macOS with Clang x64 dynamic
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build-macos-clang:
+    name: Build on macOS with Clang
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew
+
+    - name: Configure OCCT
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Unix Makefiles" \
+              -D CMAKE_C_COMPILER=clang \
+              -D CMAKE_CXX_COMPILER=clang++ \
+              -D USE_FREETYPE=OFF \
+              -D CMAKE_BUILD_TYPE=Release ..
+
+    - name: Build OCCT
+      run: |
+        cd build
+        make -j$(sysctl -n hw.logicalcpu)
