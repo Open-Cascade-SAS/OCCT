@@ -1,0 +1,44 @@
+# This workflow will build OCCT on Windows with MSVC x64 in dynamic mode
+# using the provided Docker image with MSVC tools.
+#
+# Notes:
+# freetype is disabled
+# Draw module is disabled
+# samples are not built
+
+name: Build OCCT on Windows with MSVC x64 dynamic
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build-windows-msvc:
+    name: Build on Windows with MSVC
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1.13.0
+      with:
+        arch: x64
+
+    - name: Install dependencies
+      run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        choco install magicsplat-tcl-tk -y
+
+    - name: Configure OCCT
+      run: |
+        mkdir build
+        cd build
+        cmake -T host=x64 -D USE_FREETYPE=OFF -D BUILD_MODULE_Draw=OFF -D CMAKE_BUILD_TYPE=Release ..
+
+    - name: Build OCCT
+      run: |
+        cd build
+        cmake --build . --config Release -- /m
