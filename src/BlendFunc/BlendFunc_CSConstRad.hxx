@@ -117,7 +117,7 @@ public:
   
   Standard_EXPORT Standard_Boolean GetSection (const Standard_Real Param, const Standard_Real U, const Standard_Real V, const Standard_Real W, TColgp_Array1OfPnt& tabP, TColgp_Array1OfVec& tabV);
   
-  //! Returns  if the section is rationnal
+  //! Returns  if the section is rational
   Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
   
   //! Returns the length of the maximum section
@@ -142,7 +142,7 @@ public:
   Standard_EXPORT void GetShape (Standard_Integer& NbPoles, Standard_Integer& NbKnots, Standard_Integer& Degree, Standard_Integer& NbPoles2d) Standard_OVERRIDE;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.

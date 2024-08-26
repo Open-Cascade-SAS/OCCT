@@ -2890,7 +2890,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 
 //=======================================================================
 //function : Build
-//purpose  : Construt the result of sweeping
+//purpose  : Construct the result of sweeping
 //======================================================================
 void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
                            BRepFill_DataMapOfShapeHArray2OfShape& Tapes,

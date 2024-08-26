@@ -116,7 +116,7 @@ public:
 protected:
 
   
-  //! Create a new additional structure entities and add ncessary references
+  //! Create a new additional structure entities and add necessary references
   //! Note: do not refer from ADR to DF directly in AP214 (TRJ11).
   Standard_EXPORT Standard_Boolean addAP214ExterRef (const Handle(StepAP214_AppliedDocumentReference)& ADR, const Handle(StepBasic_ProductDefinition)& PD, const Handle(StepBasic_DocumentFile)& DF, const Standard_CString filename);
 

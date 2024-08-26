@@ -559,7 +559,7 @@ Standard_Boolean Adaptor3d_TopolTool::Identical
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
 
-#define myMinPnts 4 //Absolut possible minimum of sample points
+#define myMinPnts 4 //Absolute possible minimum of sample points
                     //Restriction of IntPolyh
 
 

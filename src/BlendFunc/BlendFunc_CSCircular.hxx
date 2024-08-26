@@ -116,7 +116,7 @@ public:
   
   Standard_EXPORT void Set (const Standard_Real Radius, const Standard_Integer Choix);
   
-  //! Sets  the  type  of   section generation   for the
+  //! Sets the type of section generation for the
   //! approximations.
   Standard_EXPORT void Set (const BlendFunc_SectionShape TypeSection);
   
@@ -129,7 +129,7 @@ public:
   
   Standard_EXPORT Standard_Boolean GetSection (const Standard_Real Param, const Standard_Real U, const Standard_Real V, const Standard_Real W, TColgp_Array1OfPnt& tabP, TColgp_Array1OfVec& tabV);
   
-  //! Returns  if the section is rationnal
+  //! Returns if the section is rational
   Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
   
   //! Returns the length of the maximum section
@@ -143,7 +143,7 @@ public:
   //! <S>. May be one if Continuity(me) >= <S>
   Standard_EXPORT Standard_Integer NbIntervals (const GeomAbs_Shape S) const Standard_OVERRIDE;
   
-  //! Stores in <T> the  parameters bounding the intervals
+  //! Stores in <T> the parameters bounding the intervals
   //! of continuity <S>.
   //!
   //! The array must provide  enough room to  accommodate
@@ -155,7 +155,7 @@ public:
   Standard_EXPORT void GetShape (Standard_Integer& NbPoles, Standard_Integer& NbKnots, Standard_Integer& Degree, Standard_Integer& NbPoles2d) Standard_OVERRIDE;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.

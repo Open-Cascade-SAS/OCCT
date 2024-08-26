@@ -34,7 +34,7 @@ set step_file ${imagedir}/torus.stp
 testwritestep ${step_file} tor
 stepread ${step_file} a *
 
-# Cheking the face of the torus
+# Checking the face of the torus
 explode a_1 f
 renamevar a_1_1 result
 checkshape result

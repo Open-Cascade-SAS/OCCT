@@ -370,7 +370,7 @@ https://dev.opencascade.org/resources/download/3rd-party-components
 | Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Updating STEP and ExprIntrp parsers |
 | RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Reading glTF files |
 | Draco 1.4.1+ | https://github.com/google/draco | Data Exchange | Reading compressed glTF files |
-| Tcl/Tk 8.6.3+ | https://www.tcl.tk/software/tcltk/download.html | DRAW Test Harness | Tcl interpretor in Draw module |
+| Tcl/Tk 8.6.3+ | https://www.tcl.tk/software/tcltk/download.html | DRAW Test Harness | Tcl interpreter in Draw module |
 | Qt 5.3.2+ | https://www.qt.io/download/ | Inspector and Samples | Inspector Qt samples and  |
 | Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | (Re)generating documentation |
 | Graphviz 2.38+ | https://graphviz.org/ | Documentation | Generating dependency graphs |

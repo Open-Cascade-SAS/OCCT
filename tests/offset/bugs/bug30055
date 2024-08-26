@@ -9,5 +9,5 @@ restore [locate_data_file bug30055.brep] a
 thickshell result a 1 i
 
 if { [isdraw result] } {
-   puts "ERROR - result must not be buit"
+   puts "ERROR - result must not be built"
 }

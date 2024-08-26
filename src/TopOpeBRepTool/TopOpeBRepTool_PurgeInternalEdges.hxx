@@ -69,8 +69,8 @@ public:
     return myIsDone;
   }
   
-  //! Using   the list  of internal edge    from each face,
-  //! rebuild myShape by removing thoses edges.
+  //! Using the list of internal edges from each face,
+  //! rebuild myShape by removing those edges.
   Standard_EXPORT void Perform();
 
 protected:

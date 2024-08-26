@@ -315,7 +315,7 @@ void OSD_Error::Perror() {
    }
    break;
   case EINTR:
-   buffer += "operation breaked by a signal";
+   buffer += "operation broken by a signal";
    extCode = ERR_INTR;
    break;
   case ENOMEM: 

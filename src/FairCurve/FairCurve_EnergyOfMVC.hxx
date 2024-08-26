@@ -45,7 +45,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Angles corresspond to the Ox axis
+  //! Angles correspond to the Ox axis
   Standard_EXPORT FairCurve_EnergyOfMVC(const Standard_Integer BSplOrder, const Handle(TColStd_HArray1OfReal)& FlatKnots, const Handle(TColgp_HArray1OfPnt2d)& Poles, const Standard_Integer ContrOrder1, const Standard_Integer ContrOrder2, const FairCurve_BattenLaw& Law, const Standard_Real PhysicalRatio, const Standard_Real LengthSliding, const Standard_Boolean FreeSliding = Standard_True, const Standard_Real Angle1 = 0, const Standard_Real Angle2 = 0, const Standard_Real Curvature1 = 0, const Standard_Real Curvature2 = 0);
   
   //! return  the  lengthSliding = P1P2 + Sliding
@@ -63,10 +63,10 @@ public:
 protected:
 
   
-  //! compute  the  poles which correspond with the variable X
+  //! compute the poles which correspond with the variable X
   Standard_EXPORT virtual void ComputePoles (const math_Vector& X) Standard_OVERRIDE;
   
-  //! compute the energy in intermediat format
+  //! compute the energy in intermediate format
   Standard_EXPORT virtual Standard_Boolean Compute (const Standard_Integer DerivativeOrder, math_Vector& Result) Standard_OVERRIDE;
 
 

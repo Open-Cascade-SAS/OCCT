@@ -28,7 +28,7 @@ Standard_Boolean OSD::RealToCString(const Standard_Real aReal,
   if (Sprintf(aString,"%.17e",aReal)  <= 0) //BUC60808
     return Standard_False ;
 
-  // Suppress "e+00" and unsignificant 0's 
+  // Suppress "e+00" and insignificant 0's 
 
   p = strchr(aString,'e');
   if (p) {

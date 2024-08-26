@@ -51,12 +51,12 @@ public:
   //! Warning:
   //! The Wires must be closed.
   //!
-  //! The edges of <W> can be modified if they  have not pcurves
-  //! on the surface <S>  of <F>. In this  case
-  //! if <Proj> is false the first pcurve of  the edge
-  //! is positionned on <S>.
-  //! if <Proj> is True ,the Pcurve On <S> is the
-  //! projection of the  curve 3d on <F>.
+  //! The edges of <W> can be modified if they don't have
+  //! pcurves on the surface <S> of <F>. In this case
+  //! if <Proj> is false the first pcurve of the edge
+  //! is positioned on <S>.
+  //! if <Proj> is True, the Pcurve On <S> is the
+  //! projection of the curve 3d on <F>.
   Standard_EXPORT void Add (TopoDS_Wire& W);
   
   //! Removes all the Wires

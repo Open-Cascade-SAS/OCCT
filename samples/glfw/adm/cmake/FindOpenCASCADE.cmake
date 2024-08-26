@@ -119,7 +119,7 @@ if (OpenCASCADE_INCLUDE_DIR_FOUND AND OpenCASCADE_LIBRARY_DIR_FOUND)
   set (OpenCASCADE_INSTALL_PREFIX ${OpenCASCADE_DIR})
 
   # Define OCCT toolkits so that CMake can put absolute paths to linker;
-  # the library existance is not checked here, since modules can be disabled.
+  # the library existence is not checked here, since modules can be disabled.
   foreach (aLibIter ${OpenCASCADE_TKLIST})
     add_library (${aLibIter} SHARED IMPORTED)
 

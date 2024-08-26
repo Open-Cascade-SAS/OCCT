@@ -405,7 +405,7 @@ proc Rename {thePath theExtensions theNewNames theCheckMode} {
   }
 }
 
-# @thePackagePath eather file or folder. If it is a folder, 
+# @thePackagePath either file or folder. If it is a folder, 
 # all files with @theHeaderExtensions are processed.
 # "fwd.tcollection" section from upgrade.ini file is used to find out what 
 # classes have been converted and, thus, what forward declarations can be replaced

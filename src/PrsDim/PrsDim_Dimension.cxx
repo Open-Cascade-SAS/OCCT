@@ -440,7 +440,7 @@ void PrsDim_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentati
       aTextWidth += aFont.AdvanceX (aCurrChar, aNextChar);
     }
 
-    // formating text position in XOY plane
+    // formatting text position in XOY plane
     Standard_Integer aHLabelPos = theLabelPosition & LabelPosition_HMask;
     Standard_Integer aVLabelPos = theLabelPosition & LabelPosition_VMask;
 

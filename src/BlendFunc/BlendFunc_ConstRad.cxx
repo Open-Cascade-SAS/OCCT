@@ -62,7 +62,7 @@ BlendFunc_ConstRad::BlendFunc_ConstRad(const Handle(Adaptor3d_Surface)& S1,
                   distmin(RealLast()),
                   mySShape(BlendFunc_Rational)
 { 
-// Initialisaton of cash control variables.
+// Initialisation of cash control variables.
   tval = -9.876e100;
   xval.Init(-9.876e100);
   myXOrder = -1;

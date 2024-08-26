@@ -652,7 +652,7 @@ Standard_Integer STEPConstruct_ExternRefs::AddExternRef (const Standard_CString 
     //Handle(StepBasic_ProductDefinitionWithAssociatedDocuments) PDWAD = 
     //  Handle(StepBasic_ProductDefinitionWithAssociatedDocuments)::DownCast(PD);
     
-    // searh in graph for replace
+    // search in graph for replace
 //    Standard_Integer numProdDef;
 //    Interface_EntityIterator subs = Graph().Shareds(SDR);
 //    for (subs.Start(); subs.More(); subs.Next()) {
@@ -832,7 +832,7 @@ Standard_Boolean STEPConstruct_ExternRefs::addAP214ExterRef (const Handle(StepAP
 
   // create new product definition formation
   Handle(StepBasic_ProductDefinitionFormation) PDF = new StepBasic_ProductDefinitionFormation;
-  // name id taked from example Standard_ExtString_ref_master.stp
+  // name id taken from example Standard_ExtString_ref_master.stp
   Handle(TCollection_HAsciiString) PDF_ID = new TCollection_HAsciiString("1");
   PDF->Init( PDF_ID, EmptyString, Product );
   

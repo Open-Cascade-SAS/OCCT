@@ -60,7 +60,7 @@ public:
   Standard_EXPORT void Initialize (const Adaptor3d_Surface& S, const Standard_Real Uinf, const Standard_Real Usup, const Standard_Real Vinf, const Standard_Real Vsup, const Standard_Real TolC, const Standard_Real TolS);
   
   //! Computes the distances.
-  //! An exception is raised if the fieds have not been
+  //! An exception is raised if the fields have not been
   //! initialized.
   Standard_EXPORT void Perform (const Adaptor3d_Curve& C, const Standard_Real Uinf, const Standard_Real Usup);
   

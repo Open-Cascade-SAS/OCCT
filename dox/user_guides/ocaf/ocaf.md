@@ -763,7 +763,7 @@ filter2->AddSkipped("TDataStd_Integer");
 app->Open("example.cbf", doc, filter2); 
 ~~~~
 
-*PCDM_ReaderFilter::AppendMode_Protect* means that if the loading algorithm finds already existing attribute in the document, it will not be overwritten by attibute from the loading file. If it is needed to
+*PCDM_ReaderFilter::AppendMode_Protect* means that if the loading algorithm finds already existing attribute in the document, it will not be overwritten by attribute from the loading file. If it is needed to
 substitute the existing attributes, the reading mode *PCDM_ReaderFilter::AppendMode_Overwrite* must be used instead.
 
 *AddRead* and *AddSkipped* methods for attributes should not be used in one filter. If it is so, *AddSkipped* attributes are ignored during the read.
@@ -971,7 +971,7 @@ The "correct" history of a used modeling operation serves the basis of naming me
 | Closed wire | Edges | All edges |
 | Opened wire |	Edges and ending vertexes | All edges plus ending vertexes of the wire |
 | Edge | Vertexes |	Two vertexes are expected |
-| Compound or CompSolid	| To be used consequentially the above declared rule applied to all sub-shapes of the first level | Compound/CompSolid to be explored level by level until any the mentioned above types will be met | 
+| Compound or CompSolid	| To be used consequently the above declared rule applied to all sub-shapes of the first level | Compound/CompSolid to be explored level by level until any the mentioned above types will be met | 
 
 The history should return (and track) only elementary types of sub-shapes, i.e. Faces, Edges and Vertexes, while other so-called aggregation types: Compounds, Shells, Wires, are calculated by Selection mechanism automatically.
 

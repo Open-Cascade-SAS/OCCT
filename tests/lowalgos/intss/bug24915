@@ -9,7 +9,7 @@ puts ""
 ###############################
 
 puts "##############################"
-puts "#!!!Searh \"Attention\" keyword on this web-page for additinal checking!!!"
+puts "#!!!Search \"Attention\" keyword on this web-page for additional checking!!!"
 puts "##############################"
 
 restore [locate_data_file bug24915_ft2.brep] b1

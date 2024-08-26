@@ -1263,7 +1263,7 @@ void BSplCLib::MovePoint (const Standard_Real            U,
     }
   }
   
-  // find a kk2 if symetriy
+  // find a kk2 if symmetry
   kk2 = kk1;
   i = kk1 - FirstNonZeroBsplineIndex + 2;
   if ((kk1+1) <= LastIndex) {

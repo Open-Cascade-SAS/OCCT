@@ -14,7 +14,7 @@ set output [trinfo b]
   
 foreach data ${expected} {
     if ![regexp $data $output] {
-       puts "Error: Not cleanned all trinfo in '$data'"
+       puts "Error: Not cleaned all trinfo in '$data'"
        break; 
     }
 }

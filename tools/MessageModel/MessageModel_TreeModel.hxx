@@ -59,7 +59,7 @@ public:
 
   //! Returns true if parameter report was added into the model
   //! \param theReport a report instance
-  //! \return boolen value
+  //! \return boolean value
   Standard_EXPORT Standard_Boolean HasReport (const Handle(Message_Report)& theReport);
 
   //! Add shape, append it to the model root item
@@ -79,7 +79,7 @@ public:
   Standard_EXPORT const NCollection_List<MessageModel_ReportInformation>& Reports() const;
 
   //! Sets the text value of the Root item, only "Name" column accepts the parameter value
-  //! \theName visulized text of root item
+  //! \theName visualized text of root item
   Standard_EXPORT void SetRootItemName (const TCollection_AsciiString& theName);
 
   //! Updates tree model

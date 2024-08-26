@@ -306,7 +306,7 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
   Standard_Boolean status = algo.Perform(radius);
   if (!status)
   {
-    di << "Error: the algrithm failed.";
+    di << "Error: the algorithm failed.";
     return 1;
   }
 
@@ -326,7 +326,7 @@ static Standard_Integer fillet2d(Draw_Interpretor& di, Standard_Integer n, const
   TopoDS_Edge fillet = algo.Result(common, M1, M2);
   if (fillet.IsNull())
   {
-    di << "Error: the algrithm produced no result.";
+    di << "Error: the algorithm produced no result.";
     return 1;
   }
 
@@ -403,7 +403,7 @@ static Standard_Integer chamfer2d(Draw_Interpretor& di, Standard_Integer n, cons
   TopoDS_Edge chamfer = algo.Result(M1, M2, length1, length2);
   if (chamfer.IsNull())
   {
-    di << "Error: the algrithm produced no result.";
+    di << "Error: the algorithm produced no result.";
     return 1;
   }
 

@@ -146,7 +146,7 @@ static void Hunt(const TColStd_Array1OfReal& Arr,
 		 const Standard_Real Coord,
 		 Standard_Integer& Iloc)
 {//Warning: Hunt is used to find number of knot which equals coordinate component,
-  //        when coordinate component definitly equals a knot only.
+  //        when coordinate component definitely equals a knot only.
   Standard_Real Tol=Precision::PConfusion()/10;
   Standard_Integer i=1; 
   while((i <= Arr.Upper()) && (Abs(Coord - Arr(i)) > Tol)){
@@ -638,7 +638,7 @@ static void Locate2Coord(const Standard_Integer Index,
   if((DComp > 0)&&(Abs(DComp)>Tol)) {  
     Hunt(Arr,Comp,N);
     if (N >= NUp){
-      //limit case: Hunt() cought upper knot. Take the last span. 
+      //limit case: Hunt() caught upper knot. Take the last span. 
       N = NUp - 1;
     }
     if(Index==1) {  Tmp1=BSplS->UKnot(N);
@@ -659,7 +659,7 @@ static void Locate2Coord(const Standard_Integer Index,
     if((DComp < 0)&&(Abs(DComp)>Tol)){      
      Hunt(Arr,Comp,N);
      if (N <= NLo) {
-       //limit case: Hunt() cought lower knot. Take the first span.
+       //limit case: Hunt() caught lower knot. Take the first span.
        N = NLo + 1;
      }
      if(Index==1) {	  Tmp1=BSplS->UKnot(N-1);

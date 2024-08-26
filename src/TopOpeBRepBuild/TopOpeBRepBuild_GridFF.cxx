@@ -135,7 +135,7 @@ Standard_Boolean FUN_computeLIFfaces2d(const TopOpeBRepBuild_Builder& BU,
 				       const TopoDS_Edge& E, 
 				       TopOpeBRepDS_PDataStructure& pDS2d)
 // purpose : compute new face/face interferences F FTRA,
-//  {I = (T(F),ES,FTRA)} / Fsdm F and ES interfers with E which has splits ON
+//  {I = (T(F),ES,FTRA)} / Fsdm F and ES interferes with E which has splits ON
 //  E is edge of F
 { 
   const TopOpeBRepDS_DataStructure& BDS = BU.DataStructure()->DS(); 

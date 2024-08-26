@@ -3,7 +3,7 @@ puts "OCC904"
 puts "============"
 puts ""
 #####################################################
-## Invalid resut shell after command fixshell in DRAW with non-manifold mode
+## Invalid result shell after command fixshell in DRAW with non-manifold mode
 #####################################################
 
 pload QAcommands

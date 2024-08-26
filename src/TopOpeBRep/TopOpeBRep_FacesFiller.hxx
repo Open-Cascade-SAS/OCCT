@@ -43,7 +43,7 @@ class gp_Pnt;
 
 
 //! Fills a DataStructure from TopOpeBRepDS with the result
-//! of Face/Face instersection described by FacesIntersector from TopOpeBRep.
+//! of Face/Face intersection described by FacesIntersector from TopOpeBRep.
 //! if the faces have same Domain, record it in the DS.
 //! else record lines and  points and attach list of interferences
 //! to the faces, the lines and the edges.

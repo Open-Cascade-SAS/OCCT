@@ -156,7 +156,7 @@ public:
   //! but  the  values  calculated can  be  senseless.
   Standard_EXPORT virtual Blend_DecrochStatus Decroch (const math_Vector& Sol, gp_Vec& NRst1, gp_Vec& TgRst1, gp_Vec& NRst2, gp_Vec& TgRst2) const = 0;
   
-  //! Returns  if the section is rationnal
+  //! Returns  if the section is rational
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
   
   //! Returns the length of the maximum section
@@ -180,7 +180,7 @@ public:
   Standard_EXPORT virtual void GetShape (Standard_Integer& NbPoles, Standard_Integer& NbKnots, Standard_Integer& Degree, Standard_Integer& NbPoles2d) = 0;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.

@@ -13,7 +13,7 @@ restore [locate_data_file OCC504b.draw] su2
 # checkshape su2
 
 if [catch {intersect result su1 su2} catch_result] {
-    puts "Faulty OCC504 : A solution takes all memory and crach with AllocMemory"
+    puts "Faulty OCC504 : A solution takes all memory and crashes with AllocMemory"
 } else {
     puts "OCC504 OK: function intersection works ok"
 }

@@ -1,5 +1,5 @@
 puts "Test includes comparing for $CompareDocumentsMode"
-############## INIZIALIZING OF VARIABLES #################################
+############## INITIALIZING OF VARIABLES #################################
 # ========== variables for comparison ======================
 # Checkshape
 set Checkshape_Second **

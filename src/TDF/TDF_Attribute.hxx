@@ -358,7 +358,7 @@ Standard_OStream& operator<< (Standard_OStream& anOS) const
   //! forgotten attribute is also flagged not "Valid".
   //!
   //! A forgotten attribute is invisible. Set also the
-  //! "Valid" status to False. Obvioulsy, DF cannot
+  //! "Valid" status to False. Obviously, DF cannot
   //! empty an attribute (this has a semantic
   //! signification), but can remove it from the
   //! structure. So, a forgotten attribute is NOT an empty

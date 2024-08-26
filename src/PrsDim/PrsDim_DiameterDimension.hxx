@@ -31,7 +31,7 @@ DEFINE_STANDARD_HANDLE(PrsDim_DiameterDimension, PrsDim_Dimension)
 //! - On generic circle in the specified plane.
 //! - On generic shape containing geometry that can be measured
 //!   by diameter dimension: circle wire, circular face, etc.
-//! The anchor point is the location of the left attachement point of
+//! The anchor point is the location of the left attachment point of
 //! dimension on the circle.
 //! The anchor point computation is processed after dimension plane setting
 //! so that positive flyout direction stands with normal of the circle and

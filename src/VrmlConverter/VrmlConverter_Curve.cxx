@@ -78,7 +78,7 @@ static void DrawCurve (const Adaptor3d_Curve&          aCurve,
 		       const Standard_Integer        NbP,
                        const Standard_Real           U1,
                        const Standard_Real           U2,
-		       const Handle(VrmlConverter_Drawer)& aDrawer, // for passsing of LineAspect
+		       const Handle(VrmlConverter_Drawer)& aDrawer, // for passing of LineAspect
                        Standard_OStream&             anOStream) 
 {
   Standard_Integer nbintervals = 1, i;

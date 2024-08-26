@@ -3,7 +3,7 @@ puts "OCC29391"
 puts "========"
 puts ""
 ##########################################################################
-# transormations for few entities with type 144 are missing
+# transformations for a few entities with type 144 are missing
 ##########################################################################
 
 igesbrep [locate_data_file bug29391.igs] a *

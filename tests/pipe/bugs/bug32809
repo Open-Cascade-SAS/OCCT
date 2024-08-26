@@ -1,5 +1,5 @@
 puts "========"
-puts "bug32809: Sweep algorithm with Round Corner doesnot work"
+puts "bug32809: Sweep algorithm with Round Corner does not work"
 puts "========"
 puts ""
 

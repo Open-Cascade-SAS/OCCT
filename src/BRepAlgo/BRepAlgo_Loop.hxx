@@ -86,13 +86,13 @@ public:
   
   Standard_EXPORT void VerticesForSubstitute (TopTools_DataMapOfShapeShape& VerVerMap);
 
-  //! Set maximal tolerance used for comparing distaces between vertices. 
+  //! Set maximal tolerance used for comparing distances between vertices. 
   void SetTolConf(const Standard_Real theTolConf)
   {
     myTolConf = theTolConf;
   }
 
-  //! Get maximal tolerance used for comparing distaces between vertices. 
+  //! Get maximal tolerance used for comparing distances between vertices. 
   Standard_Real GetTolConf() const
   {
     return myTolConf;

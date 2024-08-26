@@ -541,7 +541,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 
   if (!Surf.IsNull()) { // Add the face at end
 
-  // Waiting the use of traces & retriction in BRepFill_Sweep
+  // Waiting the use of traces & restriction in BRepFill_Sweep
   // Make Fuse.
     BRepLib_MakeFace MkF;
     MkF.Init(Surf, Standard_True, Precision::Confusion());

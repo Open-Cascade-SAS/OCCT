@@ -15,7 +15,7 @@ if (NOT FLEX_INCLUDE_DIR OR NOT EXISTS "${FLEX_INCLUDE_DIR}")
 endif()
 
 # Add paths to 3rdparty subfolders containing name "flex" to CMAKE_PROGRAM_PATH and 
-# CMAKE_INCLUDE_PATH variables to make these paths searhed by find_package
+# CMAKE_INCLUDE_PATH variables to make these paths searched by find_package
 if (3RDPARTY_DIR)
   file (GLOB FLEX_PATHS LIST_DIRECTORIES true "${3RDPARTY_DIR}/*flex*")
   foreach (candidate_path ${FLEX_PATHS})

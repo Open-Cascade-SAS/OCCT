@@ -127,7 +127,7 @@ public:
   Standard_EXPORT void GetShape (Standard_Integer& NbPoles, Standard_Integer& NbKnots, Standard_Integer& Degree, Standard_Integer& NbPoles2d) Standard_OVERRIDE;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.

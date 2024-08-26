@@ -108,14 +108,14 @@ public:
   
   Standard_EXPORT void Set (const Standard_Integer Choix);
   
-  //! Sets  the  type  of   section generation   for the
+  //! Sets the type of section generation for the
   //! approximations.
   Standard_EXPORT void Set (const BlendFunc_SectionShape TypeSection);
   
   //! Method for graphic traces
   Standard_EXPORT void Section (const Standard_Real Param, const Standard_Real U1, const Standard_Real V1, const Standard_Real U2, const Standard_Real V2, Standard_Real& Pdeb, Standard_Real& Pfin, gp_Circ& C);
   
-  //! Returns  if the section is rationnal
+  //! Returns if the section is rational
   Standard_EXPORT Standard_Boolean IsRational() const Standard_OVERRIDE;
   
   //! Returns the length of the maximum section
@@ -139,7 +139,7 @@ public:
   Standard_EXPORT void GetShape (Standard_Integer& NbPoles, Standard_Integer& NbKnots, Standard_Integer& Degree, Standard_Integer& NbPoles2d) Standard_OVERRIDE;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.

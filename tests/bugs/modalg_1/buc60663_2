@@ -1,4 +1,4 @@
-puts "TODO OCC12345 ALL: Faulty : the distanse is"
+puts "TODO OCC12345 ALL: Faulty : the distance is"
 puts "TODO OCC12345 ALL: Error : The length of result shape is"
 
 puts "====================================="
@@ -27,7 +27,7 @@ regexp {([-0-9.+eE]+)$} [dump d_val] full dist
 regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance $ver] full toler
 
 if {$dist > $toler} {
-    puts "Faulty : the distanse is $dist. It is more $toler."
+    puts "Faulty : the distance is $dist. It is more $toler."
 }
 checkprops result -l 0 
 checkshape result

@@ -28,7 +28,7 @@ DEFINE_STANDARD_HANDLE(PrsDim_RadiusDimension, PrsDim_Dimension)
 //! - On generic circle with user-defined anchor point on that circle.
 //! - On generic shape containing geometry that can be measured
 //!   by diameter dimension: circle wire, arc, circular face, etc.
-//! The anchor point is the location of left attachement point of
+//! The anchor point is the location of left attachment point of
 //! dimension on the circle. It can be user-specified, or computed as
 //! middle point on the arc. The radius dimension always lies in the
 //! plane of the measured circle. The dimension is considered as

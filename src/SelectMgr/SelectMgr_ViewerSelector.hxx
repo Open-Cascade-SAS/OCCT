@@ -269,7 +269,7 @@ public:
 
   //! Picks the sensitive entity according to the input axis.
   //! This is geometric intersection 3D objects by axis
-  //! (camera parameters are ignored and objects with transform persistance are skipped).
+  //! (camera parameters are ignored and objects with transform persistence are skipped).
   Standard_EXPORT void Pick (const gp_Ax1& theAxis,
                              const Handle(V3d_View)& theView);
 

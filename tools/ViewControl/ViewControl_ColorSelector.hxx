@@ -73,7 +73,7 @@ public:
                                             Quantity_NameOfColor& theColorName);
 
 private:
-  //! Returns symbol used as a separtor of color components in string conversion
+  //! Returns symbol used as a separator of color components in string conversion
   //! \return symbol value
   static QString ColorSeparator() { return ";"; }
 

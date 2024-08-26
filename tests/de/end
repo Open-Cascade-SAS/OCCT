@@ -627,7 +627,7 @@ if { $dump_file == 1 } {
 
     if {$lengthunit_start != ""} {
       puts $fd_stream "" 
-      puts $fd_stream "# set $lengthunit_start as local lenght unit"
+      puts $fd_stream "# set $lengthunit_start as local length unit"
       puts $fd_stream "set lengthunit_start \"$lengthunit_start\""
     }
 

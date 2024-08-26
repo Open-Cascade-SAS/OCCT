@@ -114,7 +114,7 @@ public:
                                      const Standard_Boolean RemoveIntEdges = Standard_False,
                                      const Message_ProgressRange& theRange = Message_ProgressRange());
 
-  //! Returns instance of the unrelying intersection / arc algorithm.
+  //! Returns instance of the underlying intersection / arc algorithm.
   Standard_EXPORT virtual const BRepOffset_MakeOffset& MakeOffset() const;
 
   //! Does nothing.

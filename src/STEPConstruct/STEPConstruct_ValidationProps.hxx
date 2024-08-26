@@ -116,7 +116,7 @@ public:
                                                 Standard_Boolean& isArea,
                                                 const StepData_Factors& theLocalFactors = StepData_Factors()) const;
   
-  //! Returns value of Centriod property (or False if it is not)
+  //! Returns value of Centroid property (or False if it is not)
   Standard_EXPORT Standard_Boolean GetPropPnt (const Handle(StepRepr_RepresentationItem)& item,
                                                const Handle(StepRepr_RepresentationContext)& Context,
                                                gp_Pnt& Pnt,

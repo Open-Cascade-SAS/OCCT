@@ -31,7 +31,7 @@
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
-// This is a generic header for any STEP sheme
+// This is a generic header for any STEP scheme
 static Handle(TCollection_HAsciiString) nulstr;
 static Handle(Interface_HArray1OfHAsciiString) nularr;
 
