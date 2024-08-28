@@ -290,6 +290,7 @@ Standard_Boolean DE_Wrapper::Load(const Handle(DE_ConfigurationContext)& theReso
                                   const Standard_Boolean theIsRecursive)
 {
   GlobalParameters.LengthUnit = theResource->RealVal("general.length.unit", GlobalParameters.LengthUnit, THE_CONFIGURATION_SCOPE());
+  GlobalParameters.SystemUnit = theResource->RealVal("general.system.unit", GlobalParameters.SystemUnit, THE_CONFIGURATION_SCOPE());
   if (theIsRecursive)
   {
     for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);
@@ -372,8 +373,10 @@ TCollection_AsciiString DE_Wrapper::Save(const Standard_Boolean theIsRecursive,
     aResult += "\n";
   }
   aResult += "!Global parameters. Used for all providers\n";
-  aResult += "!Length scale unit value. Should be more the 0. Default value: 1.0(MM)\n";
+  aResult += "!Length scale unit value. Should be more than 0. Default value: 1.0(MM)\n";
   aResult += THE_CONFIGURATION_SCOPE() + ".general.length.unit :\t " + GlobalParameters.LengthUnit + "\n";
+  aResult += "!System unit value. Should be more than 0. Default value: 1.0(MM)\n";
+  aResult += THE_CONFIGURATION_SCOPE() + ".general.system.unit :\t " + GlobalParameters.SystemUnit + "\n";
   if (theIsRecursive)
   {
     for (DE_ConfigurationFormatMap::Iterator aFormatIter(myConfiguration);

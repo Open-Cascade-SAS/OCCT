@@ -98,7 +98,7 @@ if [catch {ReadFile D7 $write_path -conf "provider.VRML.OCC.read.file.unit : 0.0
 }
 XGetOneShape S7 D7
 
-array set areas {0 5.3415e+06 1 5.3415 2 5.3415e+06 3 5.3415e+06 4 5.3415 5 5.3415 6 5.3415e+06 7 5.3415e-06}
+array set areas {0 5.3415e+06 1 5.3415 2 5.3415e+06 3 5.3415e+06 4 5.3415e+06 5 5.3415 6 5.3415e+06 7 5.3415e-06}
 array set results {0 S0 1 S1 2 S2 3 S3 4 S4 5 S5 6 S6 7 S7}
 for { set anind 0} { $anind < 8 } { incr anind } {
   checkprops $results($anind) -s $areas($anind) -eps 1e-2

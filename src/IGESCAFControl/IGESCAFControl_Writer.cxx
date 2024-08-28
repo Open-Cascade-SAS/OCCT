@@ -135,6 +135,23 @@ IGESCAFControl_Writer::IGESCAFControl_Writer (const Handle(XSControl_WorkSession
 }
 
 //=======================================================================
+//function : IGESCAFControl_Writer
+//purpose  : 
+//=======================================================================
+
+IGESCAFControl_Writer::IGESCAFControl_Writer(const Handle(XSControl_WorkSession)& WS,
+                                             const Standard_CString theUnit)
+  :IGESControl_Writer(theUnit)
+{
+
+  WS->SetModel(Model());
+  WS->SetMapWriter(TransferProcess());
+  myColorMode = Standard_True;
+  myNameMode = Standard_True;
+  myLayerMode = Standard_True;
+}
+
+//=======================================================================
 //function : Transfer
 //purpose  : 
 //=======================================================================

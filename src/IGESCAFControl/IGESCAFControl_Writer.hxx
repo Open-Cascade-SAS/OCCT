@@ -65,6 +65,11 @@ public:
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for IGES
   Standard_EXPORT IGESCAFControl_Writer(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
+
+  //! Creates a reader tool and attaches it to an already existing Session
+  //! Clears the session if it was not yet set for IGES
+  //! Sets target Unit for the writing process.
+  Standard_EXPORT IGESCAFControl_Writer(const Handle(XSControl_WorkSession)& theWS, const Standard_CString theUnit);
   
   //! Transfers a document to a IGES model
   //! Returns True if translation is OK

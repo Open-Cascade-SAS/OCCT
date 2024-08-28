@@ -131,9 +131,19 @@ bool RWObj_Provider::Write(const TCollection_AsciiString& thePath,
   }
 
   RWMesh_CoordinateSystemConverter aConverter;
-  aConverter.SetInputLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
+  Standard_Real aScaleFactorMM = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
+  {
+    aConverter.SetInputLengthUnit(aScaleFactorMM / 1000.);
+  }
+  else
+  {
+    aConverter.SetInputLengthUnit(aNode->GlobalParameters.SystemUnit / 1000.);
+    Message::SendWarning() << "Warning in the RWObj_Provider during writing the file " <<
+      thePath << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+  }
   aConverter.SetInputCoordinateSystem(aNode->InternalParameters.SystemCS);
-  aConverter.SetOutputLengthUnit(aNode->InternalParameters.FileLengthUnit);
+  aConverter.SetOutputLengthUnit(aNode->GlobalParameters.LengthUnit / 1000.);
   aConverter.SetOutputCoordinateSystem(aNode->InternalParameters.FileCS);
 
   RWObj_CafWriter aWriter(thePath);

@@ -110,6 +110,13 @@ bool DEBRepCascade_Provider::Write(const TCollection_AsciiString& thePath,
     return false;
   }
 
+  Handle(DEBRepCascade_ConfigurationNode) aNode = Handle(DEBRepCascade_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning() << "Warning in the DEBRepCascade_Provider during writing the file " <<
+      thePath << "\t: Target Units for writing were changed, but current format doesn't support scaling";
+  }
+
   if (aLabels.Length() == 1)
   {
     aShape = aSTool->GetShape(aLabels.Value(1));
@@ -223,6 +230,11 @@ bool DEBRepCascade_Provider::Write(const TCollection_AsciiString& thePath,
     return false;
   }
   Handle(DEBRepCascade_ConfigurationNode) aNode = Handle(DEBRepCascade_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning() << "Warning in the DEBRepCascade_Provider during writing the file " <<
+      thePath << "\t: Target Units for writing were changed, but current format doesn't support scaling";
+  }
   if (aNode->InternalParameters.WriteBinary)
   {
     if (aNode->InternalParameters.WriteVersionBin > static_cast<BinTools_FormatVersion>(BinTools_FormatVersion_UPPER) ||

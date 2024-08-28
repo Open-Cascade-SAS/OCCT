@@ -131,6 +131,10 @@ public:
   //! Returns the maximum allowed value for Drafting Flag
   Standard_EXPORT static Standard_Integer DraftingMax();
 
+  //! Returns Flag corresponding to the scaling theValue.
+  //! Returns 0 if there's no such flag.
+  Standard_EXPORT static Standard_Integer GetFlagByValue(const Standard_Real theValue);
+
 
 
 

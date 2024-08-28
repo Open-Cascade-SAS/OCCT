@@ -110,10 +110,6 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
     return false;
   }
   Handle(STEPCAFControl_ConfigurationNode) aNode = Handle(STEPCAFControl_ConfigurationNode)::DownCast(GetNode());
-
-  XCAFDoc_DocumentTool::SetLengthUnit(theDocument, 
-    UnitsMethods::GetLengthUnitScale(aNode->InternalParameters.WriteUnit,
-                                     UnitsMethods_LengthUnit_Millimeter), UnitsMethods_LengthUnit_Millimeter);
   personizeWS(theWS);
   STEPCAFControl_Writer aWriter;
   aWriter.Init(theWS);
@@ -124,9 +120,22 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   aWriter.SetNameMode(aNode->InternalParameters.WriteName);
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
   aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
-
-  TDF_Label aLabel;
   StepData_ConfParameters aParams;
+  Standard_Real aScaleFactorMM = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
+  {
+    aModel->SetLocalLengthUnit(aScaleFactorMM);
+  }
+  else
+  {
+    aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
+    Message::SendWarning() << "Warning in the STEPCAFControl_Provider during writing the file " <<
+      thePath << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+  }
+  UnitsMethods_LengthUnit aTargetUnit = UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit, UnitsMethods_LengthUnit_Millimeter);
+  aParams.WriteUnit = aTargetUnit;
+  aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
+  TDF_Label aLabel;
   if (!aWriter.Transfer(theDocument, aParams, aMode, 0, theProgress))
   {
     Message::SendFail() << "Error in the STEPCAFControl_Provider during writing the file " <<
@@ -242,9 +251,20 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   STEPControl_Writer aWriter;
   aWriter.SetWS(theWS);
   IFSelect_ReturnStatus aWritestat = IFSelect_RetVoid;
-  Handle(StepData_StepModel) aModel = aWriter.Model();
-  aModel->SetWriteLengthUnit(UnitsMethods::GetLengthUnitScale(aNode->InternalParameters.WriteUnit, UnitsMethods_LengthUnit_Millimeter));
+  Handle(StepData_StepModel) aModel = aWriter.Model();;
   StepData_ConfParameters aParams;
+  aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
+  UnitsMethods_LengthUnit aTargetUnit = UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit, UnitsMethods_LengthUnit_Millimeter);
+  aParams.WriteUnit = aTargetUnit;
+  if (aTargetUnit == UnitsMethods_LengthUnit_Undefined)
+  {
+    aModel->SetWriteLengthUnit(1.0);
+    Message::SendWarning() << "Custom units are not supported by STEP format, but LengthUnit global parameter doesn't fit any predefined unit. Units will be scaled to Millimeters";
+  }
+  else
+  {
+    aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
+  }
   aWritestat = aWriter.Transfer(theShape, aNode->InternalParameters.WriteModelType, aParams, true, theProgress);
   if (aWritestat != IFSelect_RetDone)
   {

@@ -145,6 +145,14 @@ bool DEXCAFCascade_Provider::Write(const TCollection_AsciiString& thePath,
 {
   Handle(TDocStd_Application) anApp = new TDocStd_Application();
   BinXCAFDrivers::DefineFormat(anApp);
+
+  Handle(DEXCAFCascade_ConfigurationNode) aNode = Handle(DEXCAFCascade_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning() << "Warning in the DEXCAFCascade_Provider during writing the file " <<
+      thePath << "\t: Target Units for writing were changed, but current format doesn't support scaling";
+  }
+
   PCDM_StoreStatus aStatus = PCDM_SS_Doc_IsNull;
   if (!thePath.IsEmpty())
   {

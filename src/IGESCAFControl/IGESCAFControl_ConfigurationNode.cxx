@@ -96,8 +96,6 @@ bool IGESCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->IntegerVal("write.brep.mode", InternalParameters.WriteBRepMode, aScope);
   InternalParameters.WriteConvertSurfaceMode = (WriteMode_ConvertSurface)
     theResource->IntegerVal("write.convertsurface.mode", InternalParameters.WriteConvertSurfaceMode, aScope);
-  InternalParameters.WriteUnit = (UnitsMethods_LengthUnit)
-    theResource->IntegerVal("write.unit", InternalParameters.WriteUnit, aScope);
   InternalParameters.WriteHeaderAuthor =
     theResource->StringVal("write.header.author", InternalParameters.WriteHeaderAuthor, aScope);
   InternalParameters.WriteHeaderCompany =
@@ -270,14 +268,6 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "(if the value of a parameter value is On), or written as surfaces of revolution(by default)\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(1)\n";
   aResult += aScope + "write.convertsurface.mode :\t " + InternalParameters.WriteConvertSurfaceMode + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Allows choosing the unit. The default unit for Open CASCADE Technology is \"MM\" (millimeter).";
-  aResult += "You can choose to write a file into any unit accepted by IGES\n";
-  aResult += "!Default value: MM(2). Available values: \"INCH\"(1), \"MM\"(2), \"??\"(3), \"FT\"(4), \"MI\"(5), ";
-  aResult += "\"M\"(6), \"KM\"(7), \"MIL\"(8), \"UM\"(9), \"CM\"(10), \"UIN\"(11)\n";
-  aResult += aScope + "write.unit :\t " + InternalParameters.WriteUnit + "\n";
   aResult += "!\n";
 
   aResult += "!\n";

@@ -28,12 +28,12 @@ if [catch {ReadObj D1 $filename -fileUnit mm } catch_result] {
 }
 XGetOneShape S1 D1
 
-if [catch {WriteFile D0 $write_path -conf "provider.OBJ.OCC.file.length.unit : 0.001 "} catch_result] {
+if [catch {WriteFile D0 $write_path -conf "global.general.length.unit : 1 "} catch_result] {
     puts "Error : Problem with writing file"
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {readfile S2 $write_path} catch_result] {
+if [catch {readfile S2 $write_path -conf "provider.OBJ.OCC.file.length.unit : 0.001 "} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"
@@ -44,18 +44,18 @@ if [catch {writefile S0 $write_path} catch_result] {
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {readfile S3 $write_path} catch_result] {
+if [catch {readfile S3 $write_path  -conf "provider.OBJ.OCC.file.length.unit : 0.001 "} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"
 }
 
-if [catch {WriteFile D1 $write_path -conf "provider.OBJ.OCC.file.length.unit : 1 "} catch_result] {
+if [catch {WriteFile D1 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
     puts "Error : Problem with writing file"
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {readfile S4 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
+if [catch {readfile S4 $write_path -conf "global.general.length.unit : 1000 \n provider.OBJ.OCC.file.length.unit : 1"} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"
@@ -66,13 +66,13 @@ if [catch {writefile S1 $write_path} catch_result] {
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {readfile S5 $write_path} catch_result] {
+if [catch {readfile S5 $write_path -conf "provider.OBJ.OCC.file.length.unit : 0.001 "} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"
 }
 
-if [catch {WriteFile D0 $write_path -conf "provider.GLTF.OCC.file.length.unit : 0.001 "} catch_result] {
+if [catch {WriteFile D0 $write_path -conf "global.general.length.unit : 1 "} catch_result] {
     puts "Error : Problem with writing file"
 } else {
     puts "OK : Writing is correct"
@@ -84,12 +84,12 @@ if [catch {ReadFile D6 $write_path -conf "global.general.length.unit : 1 "} catc
 }
 XGetOneShape S6 D6
 
-if [catch {writefile S1 $write_path -conf "provider.GLTF.OCC.file.length.unit : 1 "} catch_result] {
+if [catch {writefile S1 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
     puts "Error : Problem with writing file"
 } else {
     puts "OK : Writing is correct"
 }
-if [catch {ReadFile D7 $write_path -conf "global.general.length.unit : 1000 "} catch_result] {
+if [catch {ReadFile D7 $write_path -conf "global.general.length.unit : 1000 \n provider.OBJ.OCC.file.length.unit : 1"} catch_result] {
     puts "Error : Problem with reading file"
 } else {
     puts "OK : Reading is correct"

@@ -15,6 +15,7 @@ global.priority.XCAF :   OCC
 global.priority.IGES :   OCC
 global.priority.PLY :    OCC
 global.general.length.unit :     1
+global.general.system.unit :     1
 provider.STEP.OCC.read.iges.bspline.continuity :         1
 provider.STEP.OCC.read.precision.mode :  0
 provider.STEP.OCC.read.precision.val :   0.0001

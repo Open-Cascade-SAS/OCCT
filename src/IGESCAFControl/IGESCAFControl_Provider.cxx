@@ -90,7 +90,6 @@ void IGESCAFControl_Provider::initStatic(const Handle(DE_ConfigurationNode)& the
 
   myOldValues.WriteBRepMode = (IGESCAFControl_ConfigurationNode::WriteMode_BRep)Interface_Static::IVal("write.iges.brep.mode");
   myOldValues.WriteConvertSurfaceMode = (IGESCAFControl_ConfigurationNode::WriteMode_ConvertSurface)Interface_Static::IVal("write.convertsurface.mode");
-  myOldValues.WriteUnit = (UnitsMethods_LengthUnit)Interface_Static::IVal("write.iges.unit");
   myOldValues.WriteHeaderAuthor = Interface_Static::CVal("write.iges.header.author");
   myOldValues.WriteHeaderCompany = Interface_Static::CVal("write.iges.header.company");
   myOldValues.WriteHeaderProduct = Interface_Static::CVal("write.iges.header.product");
@@ -135,7 +134,6 @@ void IGESCAFControl_Provider::setStatic(const IGESCAFControl_ConfigurationNode::
 
   Interface_Static::SetIVal("write.iges.brep.mode", theParameter.WriteBRepMode);
   Interface_Static::SetIVal("write.convertsurface.mode", theParameter.WriteConvertSurfaceMode);
-  Interface_Static::SetIVal("write.iges.unit", theParameter.WriteUnit);
   Interface_Static::SetCVal("write.iges.header.author", theParameter.WriteHeaderAuthor.ToCString());
   Interface_Static::SetCVal("write.iges.header.company", theParameter.WriteHeaderCompany.ToCString());
   Interface_Static::SetCVal("write.iges.header.product", theParameter.WriteHeaderProduct.ToCString());
@@ -232,8 +230,26 @@ bool IGESCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   Handle(IGESCAFControl_ConfigurationNode) aNode = Handle(IGESCAFControl_ConfigurationNode)::DownCast(GetNode());
   personizeWS(theWS);
   initStatic(aNode);
-  XCAFDoc_DocumentTool::SetLengthUnit(theDocument, aNode->InternalParameters.WriteUnit, UnitsMethods_LengthUnit_Millimeter);
-  IGESCAFControl_Writer aWriter(theWS);
+  Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(aNode->GlobalParameters.LengthUnit);
+  IGESCAFControl_Writer aWriter(theWS, (aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM");
+  IGESData_GlobalSection aGS = aWriter.Model()->GlobalSection();
+  Standard_Real aScaleFactorMM = 1.;
+  Standard_Boolean aHasUnits = XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter);
+  if (aHasUnits)
+  {
+    aGS.SetCascadeUnit(aScaleFactorMM);
+  }
+  else
+  {
+    aGS.SetCascadeUnit(aNode->GlobalParameters.SystemUnit);
+    Message::SendWarning() << "Warning in the IGESCAFControl_Provider during writing the file " <<
+      thePath << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+  }
+  if (aFlag == 0)
+  {
+    aGS.SetScale(aNode->GlobalParameters.LengthUnit);
+  }
+  aWriter.Model()->SetGlobalSection(aGS);
   aWriter.SetColorMode(aNode->InternalParameters.WriteColor);
   aWriter.SetNameMode(aNode->InternalParameters.WriteName);
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
@@ -342,10 +358,16 @@ bool IGESCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   }
   Handle(IGESCAFControl_ConfigurationNode) aNode = Handle(IGESCAFControl_ConfigurationNode)::DownCast(GetNode());
   initStatic(aNode);
-  TCollection_AsciiString aUnit(UnitsMethods::DumpLengthUnit(aNode->InternalParameters.WriteUnit));
-  aUnit.UpperCase();
-  IGESControl_Writer aWriter(aUnit.ToCString(),
-                             aNode->InternalParameters.WriteBRepMode);
+  Standard_Integer aFlag = IGESData_BasicEditor::GetFlagByValue(aNode->GlobalParameters.LengthUnit);
+  IGESControl_Writer aWriter((aFlag > 0) ? IGESData_BasicEditor::UnitFlagName(aFlag) : "MM",
+    aNode->InternalParameters.WriteBRepMode);
+  IGESData_GlobalSection aGS = aWriter.Model()->GlobalSection();
+  aGS.SetCascadeUnit(aNode->GlobalParameters.SystemUnit);
+  if (!aFlag)
+  {
+    aGS.SetScale(aNode->GlobalParameters.LengthUnit);
+  }
+  aWriter.Model()->SetGlobalSection(aGS);
   Standard_Boolean aIsOk = aWriter.AddShape(theShape);
   if (!aIsOk)
   {

@@ -110,6 +110,13 @@ bool RWStl_Provider::Write(const TCollection_AsciiString& thePath,
     return false;
   }
 
+  Handle(RWStl_ConfigurationNode) aNode = Handle(RWStl_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning() << "Warning in the RWStl_Provider during writing the file " <<
+      thePath << "\t: Target Units for writing were changed, but current format doesn't support scaling";
+  }
+
   if (aLabels.Length() == 1)
   {
     aShape = aSTool->GetShape(aLabels.Value(1));
@@ -220,6 +227,11 @@ bool RWStl_Provider::Write(const TCollection_AsciiString& thePath,
     return false;
   }
   Handle(RWStl_ConfigurationNode) aNode = Handle(RWStl_ConfigurationNode)::DownCast(GetNode());
+  if (aNode->GlobalParameters.LengthUnit != 1.0)
+  {
+    Message::SendWarning() << "Warning in the RWStl_Provider during writing the file " <<
+      thePath << "\t: Target Units for writing were changed, but current format doesn't support scaling";
+  }
 
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = aNode->InternalParameters.WriteAscii;

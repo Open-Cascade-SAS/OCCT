@@ -140,9 +140,20 @@ bool RWGltf_Provider::Write(const TCollection_AsciiString& thePath,
   Handle(RWGltf_ConfigurationNode) aNode = Handle(RWGltf_ConfigurationNode)::DownCast(GetNode());
 
   RWMesh_CoordinateSystemConverter aConverter;
-  aConverter.SetInputLengthUnit(aNode->GlobalParameters.LengthUnit / 1000);
+  Standard_Real aScaleFactorM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorM))
+  {
+    aConverter.SetInputLengthUnit(aNode->GlobalParameters.SystemUnit / 1000.);
+    Message::SendWarning() << "Warning in the RWGltf_Provider during writing the file " <<
+      thePath << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+  }
   aConverter.SetInputCoordinateSystem(aNode->InternalParameters.SystemCS);
-  aConverter.SetOutputLengthUnit(aNode->InternalParameters.FileLengthUnit);
+  if (aNode->GlobalParameters.LengthUnit != 1000.)
+  {
+    Message::SendWarning() << "Warning in the RWGltf_Provider during writing the file " <<
+      thePath << "\t: Target format doesn't support custom units. Model will be scaled to Meters";
+  }
+  aConverter.SetOutputLengthUnit(1.); // gltf units always Meters
   aConverter.SetOutputCoordinateSystem(aNode->InternalParameters.FileCS);
 
   TColStd_IndexedDataMapOfStringString aFileInfo;

@@ -157,7 +157,6 @@ public:
     // Write
     WriteMode_BRep WriteBRepMode = WriteMode_BRep_Faces; //<! Flag to define entities type to write
     WriteMode_ConvertSurface WriteConvertSurfaceMode = WriteMode_ConvertSurface_Off; //<! Flag to convert surface to elementary
-    UnitsMethods_LengthUnit WriteUnit = UnitsMethods_LengthUnit_Millimeter; //<! Define unit to write IGES file
     TCollection_AsciiString WriteHeaderAuthor; //<! Name of the author of the file
     TCollection_AsciiString WriteHeaderCompany; //<! Name of the sending company
     TCollection_AsciiString WriteHeaderProduct; //<! Name of the sending product

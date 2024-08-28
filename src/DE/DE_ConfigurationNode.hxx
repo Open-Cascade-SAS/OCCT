@@ -154,7 +154,8 @@ public:
   //!< Internal parameters for transfer process
   struct DE_SectionGlobal
   {
-    Standard_Real LengthUnit = 1.0; //!< Scale length unit value from MM, default 1.0 (MM)
+    Standard_Real LengthUnit = 1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
+    Standard_Real SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial unit is unknown, default 1.0 (MM)
   } GlobalParameters;
 
 private:

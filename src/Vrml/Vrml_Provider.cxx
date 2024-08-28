@@ -131,8 +131,19 @@ bool Vrml_Provider::Write(const TCollection_AsciiString& thePath,
 
   VrmlAPI_Writer aWriter;
   aWriter.SetRepresentation(static_cast<VrmlAPI_RepresentationOfShape>(aNode->InternalParameters.WriteRepresentationType));
-  Standard_Real aScaleFactorM = aNode->GlobalParameters.LengthUnit;
-  if (!aWriter.WriteDoc(theDocument, thePath.ToCString(), aScaleFactorM))
+  Standard_Real aScaling = 1.;
+  Standard_Real aScaleFactorMM = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
+  {
+    aScaling = aScaleFactorMM / aNode->GlobalParameters.LengthUnit;
+  }
+  else
+  {
+    aScaling = aNode->GlobalParameters.SystemUnit / aNode->GlobalParameters.LengthUnit;
+    Message::SendWarning() << "Warning in the Vrml_Provider during writing the file " <<
+      thePath << "\t: The document has no information on Units. Using global parameter as initial Unit.";
+  }
+  if (!aWriter.WriteDoc(theDocument, thePath.ToCString(), aScaling))
   {
     Message::SendFail() << "Error in the Vrml_Provider during wtiting the file " <<
       thePath << "\t: File was not written";

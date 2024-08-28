@@ -92,17 +92,27 @@ void IGESData_BasicEditor::Init (const Handle(IGESData_IGESModel)& model, const 
   //#73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
   //if (Interface_Static::IVal("read.scale.unit") == 1) vmm = vmm * 1000.;
 // vmm est exprime en MILLIMETRES
-  if (vmm >=      25.       && vmm <=      26.      ) return SetUnitFlag(1);
-  if (vmm >=       0.9      && vmm <=       1.1     ) return SetUnitFlag(2);
-  if (vmm >=     300.       && vmm <=     310.      ) return SetUnitFlag(4);
-  if (vmm >= 1600000.       && vmm <= 1620000.      ) return SetUnitFlag(5);
-  if (vmm >=     990.       && vmm <=    1010.      ) return SetUnitFlag(6);
-  if (vmm >=  990000.       && vmm <= 1010000.      ) return SetUnitFlag(7);
-  if (vmm >=       0.025    && vmm <=       0.026   ) return SetUnitFlag(8);
-  if (vmm >=       0.0009   && vmm <=       0.0011  ) return SetUnitFlag(9);
-  if (vmm >=       9.       && vmm <=      11.      ) return SetUnitFlag(10);
-  if (vmm >=       0.000025 && vmm <=       0.000026) return SetUnitFlag(11);
-  return Standard_False;
+  Standard_Integer aFlag = GetFlagByValue(vmm);
+  return (aFlag > 0) ? SetUnitFlag(aFlag) : Standard_False;
+}
+
+//=======================================================================
+//function : GetFlagByValue
+//purpose  : 
+//=======================================================================
+Standard_Integer IGESData_BasicEditor::GetFlagByValue(const Standard_Real theValue)
+{
+  if (theValue >= 25. && theValue <= 26.) return 1;
+  if (theValue >= 0.9 && theValue <= 1.1) return 2;
+  if (theValue >= 300. && theValue <= 310.) return 4;
+  if (theValue >= 1600000. && theValue <= 1620000.) return 5;
+  if (theValue >= 990. && theValue <= 1010.) return 6;
+  if (theValue >= 990000. && theValue <= 1010000.) return 7;
+  if (theValue >= 0.025 && theValue <= 0.026) return 8;
+  if (theValue >= 0.0009 && theValue <= 0.0011) return 9;
+  if (theValue >= 9. && theValue <= 11.) return 10;
+  if (theValue >= 0.000025 && theValue <= 0.000026) return 11;
+  return 0;
 }
 
 //=======================================================================
