@@ -1,6 +1,7 @@
 
 # standard directories for derived files in CASROOT
 /.adm
+/.vscode
 /lin
 /mac
 /wnt
