@@ -250,7 +250,7 @@ static Standard_Boolean IsTangentSegment(const IntRes2d_IntersectionPoint &P1,
 Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Edge& E2,const TopoDS_Vertex& vG,
 			      TopOpeBRepDS_Transition& newT)
 //------------------------------------------------------------------------
-     // E1 sdm E2, interfers with E2 at vertex vG
+     // E1 sdm E2, interferes with E2 at vertex vG
      // vG is vertex of E2, but not vertex of E1
      // purpose : get newT / attached to E1, I1d=(newT(E2),G,E2)
 {

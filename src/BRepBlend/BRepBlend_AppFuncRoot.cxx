@@ -49,7 +49,7 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
   //  Tables
   Func.GetShape( NbPoles, NbKnots, Degree, NbPoles2d);
   
-  // Calculation of BaryCentre (rationnal case).
+  // Calculation of BaryCentre (rational case).
   if (Func.IsRational()) {
     Standard_Real Xmax =-1.e100, Xmin = 1.e100, 
     Ymax =-1.e100, Ymin = 1.e100, 

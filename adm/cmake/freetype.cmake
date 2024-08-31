@@ -14,7 +14,7 @@ OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 OCCT_MAKE_COMPILER_SHORT_NAME()
 OCCT_MAKE_COMPILER_BITNESS()
 
-# specify freetype folder in connectin with 3RDPARTY_DIR
+# specify freetype folder in connection with 3RDPARTY_DIR
 if (3RDPARTY_DIR AND EXISTS "${3RDPARTY_DIR}")
   #CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_DIR 3RDPARTY_FREETYPE_DIR PATH "The directory containing freetype")
 

@@ -19,7 +19,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
   # include occt macros. compiler_bitness, os_wiht_bit, compiler
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
-  # specify product folder in connectin with 3RDPARTY_DIR
+  # specify product folder in connection with 3RDPARTY_DIR
   if (3RDPARTY_DIR AND EXISTS "${3RDPARTY_DIR}")
     #CHECK_PATH_FOR_CONSISTENCY (3RDPARTY_DIR 3RDPARTY_${PRODUCT_NAME}_DIR PATH "The directory containing ${PRODUCT_NAME}")
 

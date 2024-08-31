@@ -154,7 +154,7 @@ public slots:
 
 protected slots:
 
-  //! Activates plugin correspnded to the clicked button
+  //! Activates plugin corresponded to the clicked button
   void onButtonClicked();
 
   //! Updates available actions by the active plugin

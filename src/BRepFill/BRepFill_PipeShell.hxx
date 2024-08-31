@@ -48,7 +48,7 @@ class BRepFill_PipeShell;
 DEFINE_STANDARD_HANDLE(BRepFill_PipeShell, Standard_Transient)
 
 //! Computes a topological shell using some wires
-//! (spines and profiles) and diplacement option
+//! (spines and profiles) and displacement option
 //! Perform general sweeping construction
 class BRepFill_PipeShell : public Standard_Transient
 {
@@ -116,7 +116,7 @@ public:
   //! to be C0.
   //! Give section to sweep.
   //! Possibilities are :
-  //! - Give one or sevral profile
+  //! - Give one or several profile
   //! - Give one profile and an homotetic law.
   //! - Automatic compute of correspondence between profile, and section on the sweeped shape
   //! - correspondence between profile, and section on the sweeped shape defined by a vertex of the spine
@@ -153,7 +153,7 @@ public:
   Standard_EXPORT void SetTransition (const BRepFill_TransitionStyle Mode = BRepFill_Modified, const Standard_Real Angmin = 1.0e-2, const Standard_Real Angmax = 6.0);
   
   //! Perform simulation of the sweep :
-  //! Somes Section are returned.
+  //! Some Section are returned.
   Standard_EXPORT void Simulate (const Standard_Integer NumberOfSection, TopTools_ListOfShape& Sections);
   
   //! Builds the resulting shape (redefined from MakeShape).

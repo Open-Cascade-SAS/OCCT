@@ -1986,7 +1986,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 // the table of sequences Parcont contains all 
 // parameter of points on curves 
 // Field myPlateCont contains parameter of points on a plate;
-// it excludes duplicate points and imcompatible zones.
+// it excludes duplicate points and incompatible zones.
 // The first part corresponds to verification of compatibility
 // and to removal of duplicate points.
 //---------------------------------------------------------

@@ -1842,7 +1842,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
   gp_Pln aPlnPrp = aPln.Rotated (gp_Ax1 (O,aXVec), M_PI/2.);
   
   // project Line and it's X-axe symmetric one to plane and intersect
-  // resulting curve with projection of Basic Curev
+  // resulting curve with projection of Basic Curve
   Standard_Real aVmin = RealLast(), aVmax = -aVmin;
   Standard_Boolean aNoInt1 = Standard_False, aNoInt2 = Standard_False;
   ProjectIntersectAndEstLim (Line, aPln,    aBasCurvProj, aVmin, aVmax, aNoInt1);

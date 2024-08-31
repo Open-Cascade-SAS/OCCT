@@ -9,7 +9,7 @@ incmesh result 0.0001
 
 set info_good [tricheck result]
 if { [string compare $info_good "" ] != 0 } {
-    puts "Error : something wierd has been produced, like free nodes, or links"
+    puts "Error : something weird has been produced, like free nodes, or links"
 }
 
 checktrinfo result -tri 65 -nod 67

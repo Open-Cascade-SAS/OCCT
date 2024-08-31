@@ -115,7 +115,7 @@ public:
   //! Returns the point on the first support.
   Standard_EXPORT virtual const gp_Pnt& Pnt2() const = 0;
   
-  //! Returns  if the section is rationnal
+  //! Returns  if the section is rational
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
   
   //! Returns the length of the maximum section
@@ -145,7 +145,7 @@ public:
                                          Standard_Integer& NbPoles2d) = 0;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary
   //! SurfTol error inside the surface.

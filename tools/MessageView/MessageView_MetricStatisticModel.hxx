@@ -29,7 +29,7 @@
 //! metric time spent on the alert and its children.
 //! It visualizes a table with statistic information:
 //! the 1st column is alert name, the 2nd column is a counter of the name appearance,
-//! the 3rd column is the cummulative time.
+//! the 3rd column is the cumulative time.
 //! Tables rows are sorted by descending time.
 class MessageView_MetricStatisticModel : public QAbstractTableModel
 {
@@ -59,7 +59,7 @@ public:
   //! It returns value only for DisplayRole
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex, int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! Returns number of rows

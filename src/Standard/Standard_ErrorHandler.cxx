@@ -225,7 +225,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
   // lock the stack
   GetMutex().Lock();
     
-  // Find the current ErrorHandler Accordin tread
+  // Find the current ErrorHandler according to thread
   Standard_ErrorHandler* aPrevious = 0;
   Standard_ErrorHandler* aCurrent = Top;
   Standard_ErrorHandler* anActive = 0;

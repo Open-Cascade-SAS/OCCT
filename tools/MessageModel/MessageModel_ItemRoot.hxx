@@ -68,7 +68,7 @@ public:
 
   //! Returns true if report exists is in the list of the current reports
   //! \param theReport a report instance
-  //! \return boolen value
+  //! \return boolean value
   Standard_EXPORT Standard_Boolean HasReport (const Handle(Message_Report)& theReport);
 
   //!< Returns processed reports

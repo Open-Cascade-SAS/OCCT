@@ -37,7 +37,7 @@ class TopOpeBRepDS_Interference;
 
 
 //! Fills a TopOpeBRepDS_DataStructure with Edge/Edge
-//! instersection data described by TopOpeBRep_EdgesIntersector.
+//! intersection data described by TopOpeBRep_EdgesIntersector.
 class TopOpeBRep_EdgesFiller 
 {
 public:

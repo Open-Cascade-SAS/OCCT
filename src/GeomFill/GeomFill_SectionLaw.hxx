@@ -69,7 +69,7 @@ public:
   //! get the Multplicities of the section
   Standard_EXPORT virtual void Mults (TColStd_Array1OfInteger& TMults) const = 0;
   
-  //! Returns if the sections are rationnal or not
+  //! Returns if the sections are rational or not
   Standard_EXPORT virtual Standard_Boolean IsRational() const = 0;
   
   //! Returns if the sections are periodic or not

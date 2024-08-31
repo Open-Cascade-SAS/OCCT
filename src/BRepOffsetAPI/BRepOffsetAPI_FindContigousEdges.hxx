@@ -37,7 +37,7 @@ class TopoDS_Edge;
 //! - define if necessary a new tolerance
 //! - set if necessary analysis of degenerated shapes off
 //! - add shapes to be controlled -> Add
-//! - compute -> Perfom
+//! - compute -> Perform
 //! - output couples of connected edges for control
 //! - output the problems if any
 class BRepOffsetAPI_FindContigousEdges 

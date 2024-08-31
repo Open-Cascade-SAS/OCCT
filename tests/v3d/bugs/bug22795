@@ -1,5 +1,5 @@
 puts "================"
-puts "OCC22795: Make possible to display some presentable objecys in overlay of others, groupped by display priority "
+puts "OCC22795: Makes it possible to display some presentable objects in overlay of others, grouped by display priority "
 puts "================"
 puts ""
 

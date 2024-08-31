@@ -30,8 +30,8 @@ class TopoDS_Shape;
 class TopOpeBRepTool_ShapeExplorer;
 
 
-//! Find, among the  subshapes SS of a reference shape
-//! RS, the ones which 3D box interfers with the box of
+//! Find, among the subshapes SS of a reference shape
+//! RS, the ones which 3D box interferes with the box of
 //! a shape S (SS and S are of the same type).
 class TopOpeBRep_ShapeScanner 
 {

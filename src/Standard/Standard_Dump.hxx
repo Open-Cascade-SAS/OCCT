@@ -432,7 +432,7 @@ private:
                                                            NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue>& theValues);
 
 
-  //! Returns key of json in the index position. Incement the index position to the next symbol in the row
+  //! Returns key of json in the index position. Increment the index position to the next symbol in the row
   Standard_EXPORT static Standard_Boolean jsonKey (const TCollection_AsciiString& theStreamStr,
                                                    Standard_Integer theStartIndex,
                                                    Standard_Integer& theNextIndex,

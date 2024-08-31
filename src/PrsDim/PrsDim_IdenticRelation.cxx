@@ -362,7 +362,7 @@ void PrsDim_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)&
   Handle(SelectMgr_EntityOwner) own = new SelectMgr_EntityOwner(this,7);
 
   Handle(Select3D_SensitiveSegment) seg;
-  // attachement point of the segment linking position to the curve
+  // attachment point of the segment linking position to the curve
   gp_Pnt attach; 
   Standard_Real confusion (Precision::Confusion());
     
@@ -437,7 +437,7 @@ void PrsDim_IdenticRelation::ComputeSelection(const Handle(SelectMgr_Selection)&
 // jfa 24/10/2000 end
     }
 
-  // Creation of the segment linking the attachement point with the
+  // Creation of the segment linking the attachment point with the
   // position
   if ( !attach.IsEqual(myPosition, confusion) )
     {
@@ -1424,7 +1424,7 @@ void PrsDim_IdenticRelation::ComputeTwoVerticesPresentation(const Handle(Prs3d_P
     return ;
 
   
-  // The attachement points are the points themselves that must be 
+  // The attachment points are the points themselves that must be 
   //identical
   myFAttach = BRep_Tool::Pnt(FVertex);
   mySAttach = myFAttach;
@@ -1657,7 +1657,7 @@ void PrsDim_IdenticRelation::ComputeOneEdgeOVertexPresentation(const Handle(Prs3
     if (numedge == 1) myExtShape = 2;
     else myExtShape = 1;
   }
-  // The attachement points are the point 
+  // The attachment points are the point 
   myFAttach = BRep_Tool::Pnt(V);
   mySAttach = myFAttach;
 

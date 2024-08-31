@@ -171,7 +171,7 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       mySplitValues->SetValue(mySplitValues->Length(),Last);
     }
 
-    // PTV 20.12.2001 Try to simpify BSpline Curve
+    // PTV 20.12.2001 Try to simplify BSpline Curve
     ShapeCustom_Curve2d::SimplifyBSpline2d (aBSpline2d, Precision::Approximation());
     
     Geom2dConvert_BSplineCurveToBezierCurve tool(aBSpline2d,First,Last,precision);

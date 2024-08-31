@@ -1985,7 +1985,7 @@ void GeomLib::AxeOfInertia(const TColgp_Array1OfPnt& Points,
 //function : CanBeTreated
 //purpose  : indicates if the surface can be treated(if the conditions are
 //           filled) and need to be treated(if the surface hasn't been yet
-//           treated or if the surface is rationnal and non periodic)
+//           treated or if the surface is rational and non periodic)
 //=======================================================================
 
 static Standard_Boolean CanBeTreated(Handle(Geom_BSplineSurface)& BSurf)

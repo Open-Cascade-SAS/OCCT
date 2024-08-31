@@ -3,8 +3,8 @@ puts "PRO19895"
 puts "=========="
 
 #############################################################################
-## There is wrong tolerance after reading of the model in optimize mode (C30). Retrieve entity number 2139 from file
-## "bm4_db_punch_a.stp" and will obtaine tolerance. It is very big and isolains extend from entity. 
+## There is wrong tolerance after reading the model in optimize mode (C30). Retrieve entity number 2139 from file
+## "bm4_db_punch_a.stp" and will obtain tolerance. It's very big and isolates extend from entity. 
 #############################################################################
 
 stepread [locate_data_file bm4_db_punch_a.stp] a *

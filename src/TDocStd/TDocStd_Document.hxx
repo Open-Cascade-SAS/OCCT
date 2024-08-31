@@ -117,7 +117,7 @@ public:
   //! Launches a new command. This command may be undone.
   Standard_EXPORT void NewCommand();
   
-  //! returns True if a Command transaction is open in the curret .
+  //! returns True if a Command transaction is open in the current .
   Standard_EXPORT Standard_Boolean HasOpenCommand() const;
   
   //! Opens a new command transaction in this document.

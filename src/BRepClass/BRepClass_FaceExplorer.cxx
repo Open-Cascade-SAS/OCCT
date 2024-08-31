@@ -202,7 +202,7 @@ Standard_Boolean BRepClass_FaceExplorer::OtherSegment(const gp_Pnt2d& P,
               // is tangent to the edge curve. This condition is bad for classification.
               // Therefore try to go to another point in the hope that there will be 
               // no tangent. If there tangent is preserved then leave the last point in 
-              // order to get this edge chanse to participate in classification.
+              // order to get this edge chance to participate in classification.
               if (myCurEdgePar + Probing_Step < Probing_End)
                 continue;
             }

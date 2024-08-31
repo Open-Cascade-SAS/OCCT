@@ -92,7 +92,7 @@ public:
   NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>& ChangeEntities() { return myEntities; }
 
   //! Returns the flag UpdateFlag.
-  //! This flage gives the update status of this framework
+  //! This flag gives the update status of this framework
   //! in a ViewerSelector object:
   //! -   full
   //! -   partial, or

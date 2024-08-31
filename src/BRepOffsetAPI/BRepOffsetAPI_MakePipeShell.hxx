@@ -112,7 +112,7 @@ public:
   //! along the path.
   //! Give section to sweep.
   //! Possibilities are :
-  //! - Give one or sevral section
+  //! - Give one or several section
   //! - Give one profile and an homotetic law.
   //! - Automatic compute of correspondence between spine, and section
   //! on the sweeped shape

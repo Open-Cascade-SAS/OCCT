@@ -53,7 +53,7 @@ public:
   View_DisplayPreview* DisplayPreview() const { return myDisplayPreview; }
 
   //! Stores the current context where the presentations will be displayed/erased.
-  //! Erases previuously displayed presentations if there were some displayed
+  //! Erases previously displayed presentations if there were some displayed
   //! \param theContext a context instance
   Standard_EXPORT void SetContext (const Handle(AIS_InteractiveContext)& theContext);
 

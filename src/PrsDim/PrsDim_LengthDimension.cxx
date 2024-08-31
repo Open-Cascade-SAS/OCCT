@@ -792,7 +792,7 @@ Standard_Boolean PrsDim_LengthDimension::InitTwoShapesPoints (const TopoDS_Shape
 //function : InitOneShapePoints
 //purpose  : Initialization of two points where dimension layouts
 //           will be attached
-// Attention: 1) <theShape> can be only the edge in currect implementation
+// Attention: 1) <theShape> can be only the edge in current implementation
 //            2) No length for infinite edge
 //=======================================================================
 Standard_Boolean PrsDim_LengthDimension::InitOneShapePoints (const TopoDS_Shape& theShape)

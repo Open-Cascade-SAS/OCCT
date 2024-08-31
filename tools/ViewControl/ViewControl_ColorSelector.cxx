@@ -100,7 +100,7 @@ public:
     return QVariant();
   }
 
-  //! Sets content of the model index for the given role, it is applyed to internal container of values
+  //! Sets content of the model index for the given role, it is applied to internal container of values
   //! \param theRow a model index row
   //! \param theColumn a model index column
   //! \param theRole a view role
@@ -128,11 +128,11 @@ public:
     return true;
   }
 
-  //! Returns number of tree level line items = colums in table view
+  //! Returns number of tree level line items = columns in table view
   virtual int ColumnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return 2; }
 
-  //! Returns onlly one row in table view
+  //! Returns only one row in table view
   virtual int RowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return 7; }
 
@@ -211,7 +211,7 @@ public:
   //! Returns item information(short) for display role.
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex,
                                          int theRole = Qt::DisplayRole) const Standard_OVERRIDE
   {
@@ -231,7 +231,7 @@ public:
   virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return 26; }
 
-  //! Returns onlly one row in table view
+  //! Returns only one row in table view
   virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return 20; }
 

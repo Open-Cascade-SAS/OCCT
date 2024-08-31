@@ -239,7 +239,7 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
         // the norm (square) of 3.*lambda (d1 - d4)/8.
         // either the norm of :
         //    3.*(Sqrt(Norme)/3.)*StepSign*(d1-d4)/8.
-        // which produces, takin the square :
+        // which produces, taking the square :
         //         Norme * (d1-d4).SquareMagnitude()/64.
 
       Standard_Real FlecheCourante = 

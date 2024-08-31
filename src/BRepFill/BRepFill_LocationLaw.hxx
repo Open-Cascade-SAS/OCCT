@@ -122,18 +122,18 @@ public:
 protected:
 
   
-  //! Initialize all the fields, this methode have to
+  //! Initialize all the fields, this methode has to
   //! be called by the constructors of Inherited class.
   Standard_EXPORT void Init (const TopoDS_Wire& Path);
   
-  //! To preseve if possible  the Tangent in transformations
+  //! To preserve if possible the Tangent in transformations
   //! It is the default mode.
   Standard_EXPORT void TangentIsMain();
   
-  //! To preseve if possible the Normal in transformations
+  //! To preserve if possible the Normal in transformations
   Standard_EXPORT void NormalIsMain();
   
-  //! To preseve if possible the BiNormal in transformations
+  //! To preserve if possible the BiNormal in transformations
   Standard_EXPORT void BiNormalIsMain();
 
   TopoDS_Wire myPath;

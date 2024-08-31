@@ -79,7 +79,7 @@ public:
   //! get the Multplicities of the section
   Standard_EXPORT virtual void Mults (TColStd_Array1OfInteger& TMults) const Standard_OVERRIDE;
   
-  //! Returns if the section is rationnal or not
+  //! Returns if the section is rational or not
   Standard_EXPORT virtual Standard_Boolean IsRational() const Standard_OVERRIDE;
   
   //! Returns  the number  of  intervals for  continuity
@@ -100,7 +100,7 @@ public:
   Standard_EXPORT virtual void SetInterval (const Standard_Real First, const Standard_Real Last) Standard_OVERRIDE;
   
   //! Returns the tolerance to reach in approximation
-  //! to respecte
+  //! to respect
   //! BoundTol error at the Boundary
   //! AngleTol tangent error at the Boundary (in radian)
   //! SurfTol error inside the surface.

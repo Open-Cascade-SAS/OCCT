@@ -616,7 +616,7 @@ static void Pretreatment(TColGeom_Array1OfBSplineCurve& tab)
 	 
 //=======================================================================
 //function : NeedToBeTreated
-//purpose  : Say if the BSpline is rationnal and if the two first and two
+//purpose  : Say if the BSpline is rational and if the two first and two
 //           last weigths are different
 //=======================================================================    
 

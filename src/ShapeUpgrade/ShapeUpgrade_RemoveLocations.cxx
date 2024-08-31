@@ -239,7 +239,7 @@ Standard_Boolean ShapeUpgrade_RemoveLocations::MakeNewShape(const TopoDS_Shape& 
   }
   isDone = aRebuild;
   
-  //Removing location from sub-shapes in dependance of LevelRemoving and re-building shape.
+  //Removing location from sub-shapes in dependence of LevelRemoving and re-building shape.
   
   if(!isBound) {
     if(!aRebuild)

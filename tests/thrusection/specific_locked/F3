@@ -53,7 +53,7 @@ set z2 20
 set z3 0
 set z4 100
 
-# begining vertex
+# beginning vertex
 vertex v4 2.5 5 ${z4}
 # ending vertex
 vertex v5 2.5 5 -${z4}

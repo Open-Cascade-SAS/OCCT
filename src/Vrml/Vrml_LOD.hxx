@@ -37,7 +37,7 @@ DEFINE_STANDARD_HANDLE(Vrml_LOD, Standard_Transient)
 //! of  Levels  Of  Detail  (LOD),  from  highest  detail  to  lowest.
 //!
 //! The  specified  center  point  of  the  LOD  is  transformed  by  current
-//! transformation  into  world  space,  and  yhe  distancefrom  the  transformed
+//! transformation  into  world  space,  and  the  distance from  the  transformed
 //! center  to  the  world-space  eye  point  is  calculated.
 //! If  thedistance  is  less  than  the  first  value  in  the  ranges  array,
 //! than  the  first  child  of  the  LOD  group  is  drawn.  If  between

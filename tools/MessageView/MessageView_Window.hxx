@@ -85,7 +85,7 @@ public:
   //! \param theItem container of preference elements
   Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
 
-  //! Applyes parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
+  //! Applies parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
   Standard_EXPORT void UpdateContent();
 
   //! Returns main control
@@ -116,7 +116,7 @@ protected slots:
   //! \param theIndex tree view model index
   void onTreeViewVisibilityClicked(const QModelIndex& theIndex);
 
-  //! Udpates all controls by changed selection in OCAF tree view
+  //! Updates all controls by changed selection in OCAF tree view
   //! \param theSelected list of selected tree view items
   //! \param theDeselected list of deselected tree view items
   void onTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);

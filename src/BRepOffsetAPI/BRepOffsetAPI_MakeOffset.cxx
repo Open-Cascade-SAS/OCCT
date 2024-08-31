@@ -166,7 +166,7 @@ void BRepOffsetAPI_MakeOffset::Init(const GeomAbs_JoinType Join,
 //=======================================================================
 //function : SetApprox
 //purpose  : Set approximation flag
-//           for convertion input contours into ones consisting of
+//           for conversion input contours into ones consisting of
 //           2D circular arcs and 2D linear segments only
 //=======================================================================
 

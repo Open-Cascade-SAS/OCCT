@@ -501,7 +501,7 @@ TopoDS_Shape BRepFill_Pipe::Section(const TopoDS_Vertex& VSpine) const
 
 TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point)
 {
- // Postioning 
+ // Positioning 
  gp_Pnt P;
  P = Point;
  P.Transform(myTrsf);

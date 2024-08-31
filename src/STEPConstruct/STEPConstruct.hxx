@@ -46,7 +46,7 @@ public:
 
   
   //! Returns STEP entity of the (sub)type of RepresentationItem
-  //! which is a result of the tranalation of the Shape, or Null if
+  //! which is a result of the translation of the Shape, or Null if
   //! no result is recorded
   Standard_EXPORT static Handle(StepRepr_RepresentationItem) FindEntity (const Handle(Transfer_FinderProcess)& FinderProcess, const TopoDS_Shape& Shape);
   
@@ -59,7 +59,7 @@ public:
   //! Returns Shape resulting from given STEP entity (Null if not mapped)
   Standard_EXPORT static TopoDS_Shape FindShape (const Handle(Transfer_TransientProcess)& TransientProcess, const Handle(StepRepr_RepresentationItem)& item);
   
-  //! Find CDSR correcponding to the component in the specified assembly
+  //! Find CDSR corresponding to the component in the specified assembly
   Standard_EXPORT static Standard_Boolean FindCDSR (const Handle(Transfer_Binder)& ComponentBinder, const Handle(StepShape_ShapeDefinitionRepresentation)& AssemblySDR, Handle(StepShape_ContextDependentShapeRepresentation)& ComponentCDSR);
 
 };

@@ -121,7 +121,7 @@ extern "C" int getpagesize() ;
 /* In the allocated block, first bytes are used for storing of memory manager's data.
    (size of block). The minimal size of these data is sizeof(int).
    The memory allocated in system usually aligned by 16 bytes. The alignment of the
-   data area in the memory block is shfted on BLOCK_SHIFT*sizeof(Standard_Size)
+   data area in the memory block is shifted on BLOCK_SHIFT*sizeof(Standard_Size)
    bytes.
    It is OK for WNT, SUN and Linux systems, but on SGI alignment should be 8 bytes.
    So, BLOCK_SHIFT is formed as macro for support on other possible platforms.

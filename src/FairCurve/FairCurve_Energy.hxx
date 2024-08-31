@@ -77,7 +77,7 @@ public:
 protected:
 
   
-  //! Angles corresspond to the Ox axis
+  //! Angles correspond to the Ox axis
   //! ConstrOrder1(2) can be equal to 0, 1 or 2
   Standard_EXPORT FairCurve_Energy(const Handle(TColgp_HArray1OfPnt2d)& Poles, const Standard_Integer ConstrOrder1, const Standard_Integer ConstrOrder2, const Standard_Boolean WithAuxValue = Standard_False, const Standard_Real Angle1 = 0, const Standard_Real Angle2 = 0, const Standard_Integer Degree = 2, const Standard_Real Curvature1 = 0, const Standard_Real Curvature2 = 0);
   
@@ -92,13 +92,13 @@ protected:
   
     Standard_Integer Indice (const Standard_Integer i, const Standard_Integer j) const;
   
-  //! compute  the  pole which depend of variables and G1 constraint
+  //! compute the pole which depend of variables and G1 constraint
   Standard_EXPORT void ComputePolesG1 (const Standard_Integer Side, const Standard_Real Lambda, const gp_Pnt2d& P1, gp_Pnt2d& P2) const;
   
-  //! compute  the  pole which depend of variables and G2 constraint
+  //! compute the pole which depend of variables and G2 constraint
   Standard_EXPORT void ComputePolesG2 (const Standard_Integer Side, const Standard_Real Lambda, const Standard_Real Rho, const gp_Pnt2d& P1, gp_Pnt2d& P2) const;
   
-  //! compute the energy (and derivatives) in intermediat format
+  //! compute the energy (and derivatives) in intermediate format
   Standard_EXPORT virtual Standard_Boolean Compute (const Standard_Integer DerivativeOrder, math_Vector& Result) = 0;
 
 
