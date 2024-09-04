@@ -168,7 +168,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
     set (CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
   endif()
   # Optimize size of binaries
-  set (CMAKE_SHARED_LINKER_FLAGS "-Wl,-s ${CMAKE_SHARED_LINKER_FLAGS}")
+  set (CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-s ${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
 elseif(MINGW)
   add_definitions(-D_WIN32_WINNT=0x0601)
   # _WIN32_WINNT=0x0601 (use Windows 7 SDK)
