@@ -134,9 +134,6 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
     if ( count < 2 ) isSeam = Standard_False;
   }
 
-  BRepAdaptor_Curve   CA = BRepAdaptor_Curve(aEdge);
-  BRepAdaptor_Surface SA = BRepAdaptor_Surface(aTool.CurrentFace());
-
   if (aEdge.Orientation() == TopAbs_INTERNAL  ||
       aEdge.Orientation() == TopAbs_EXTERNAL ) {
     Handle(TransferBRep_ShapeMapper) errShape =
@@ -184,7 +181,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
   // ---------------------------------------
   // Translate 3D representation of the Edge
   // ---------------------------------------
-  
+  BRepAdaptor_Curve CA = BRepAdaptor_Curve(aEdge);
   Handle(StepGeom_Curve) Gpms;
   Handle(Geom_Curve) C = CA.Curve().Curve();
  
@@ -262,6 +259,8 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
 #ifdef OCCT_DEBUG
     std::cout << "Warning: TopoDSToStep_MakeStepEdge: edge without 3d curve; creating..." << std::endl;
 #endif
+    BRepAdaptor_Surface SA = BRepAdaptor_Surface(aTool.CurrentFace());
+
     if ((SA.GetType() == GeomAbs_Plane) &&
 	(CA.GetType() == GeomAbs_Line)) {
       U1 = CA.FirstParameter();
