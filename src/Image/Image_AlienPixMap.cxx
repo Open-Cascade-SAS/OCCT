@@ -1251,6 +1251,7 @@ bool Image_AlienPixMap::Save (Standard_Byte* theBuffer,
   }
   return true;
 #else
+  (void)theLength;
   if (theBuffer != NULL)
   {
     Message::SendFail ("Error: no image library available");
@@ -1450,6 +1451,8 @@ bool Image_AlienPixMap::Save (std::ostream& theStream, const TCollection_AsciiSt
   }
   return true;
 #else
+  (void)theExtension;
+  (void)theStream;
   Message::SendFail ("Error: no image library available");
   return false;
 #endif
