@@ -107,8 +107,8 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
 
           # choose appropriate extension for generated files: "cxx" if source file contains
           # instruction to generate C++ code, "c" otherwise
-          set (BISON_OUTPUT_FILE_EXT "c")
-          set (FLEX_OUTPUT_FILE_EXT "c")
+          set (BISON_OUTPUT_FILE_EXT "cxx")
+          set (FLEX_OUTPUT_FILE_EXT "cxx")
           file (STRINGS "${CURRENT_BISON_FILE}" FILE_BISON_CONTENT)
           foreach (FILE_BISON_CONTENT_LINE ${FILE_BISON_CONTENT})
             string (REGEX MATCH "%language \"C\\+\\+\"" CXX_BISON_LANGUAGE_FOUND ${FILE_BISON_CONTENT_LINE})
