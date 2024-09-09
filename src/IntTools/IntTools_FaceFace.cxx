@@ -977,7 +977,7 @@ void IntTools_FaceFace::MakeCurve(const Standard_Integer Index,
       fprm=aSeqFprm(i);
       lprm=aSeqLprm(i);
       //
-      Standard_Real aRealEpsilon=RealEpsilon();
+      constexpr Standard_Real aRealEpsilon=RealEpsilon();
       if (Abs(fprm) > aRealEpsilon || Abs(lprm-2.*M_PI) > aRealEpsilon) {
         //==============================================
         ////

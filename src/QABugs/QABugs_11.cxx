@@ -2187,10 +2187,20 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "(Integer) Overflow...";
       //std::cout.flush();
       di << "\n";
-      Standard_Integer res, i=IntegerLast();
-      res = i + 1;
-      //++++ std::cout << " -- "<<res<<"="<<i<<"+1   Does not Caught... KO"<< std::endl;
-      //++++ Succes = Standard_False;
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Winteger-overflow"
+#elif defined(__GNUC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Woverflow"
+#endif
+      constexpr Standard_Integer i=IntegerLast();
+      Standard_Integer res = i + 1;
+#if defined(__clang__)
+  #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+  #pragma GCC diagnostic pop
+#endif
       di << "Not caught: " << i << " + 1 = " << res << ", still OK\n";
     }
     catch(Standard_Overflow const&) {
@@ -2212,8 +2222,8 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "(Real) Overflow...";
       //std::cout.flush();
       di << "\n";
-      Standard_Real res, r=RealLast();
-      res = r * r;
+      constexpr Standard_Real r = RealLast();
+      Standard_Real res = r * r;
       
       (void)sin(1.); //this function tests FPU flags and raises signal (tested on LINUX).
 
@@ -2244,8 +2254,8 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "(Real) Underflow";
       //std::cout.flush();
       di << "\n";
-      Standard_Real res, r = RealSmall();
-      res = r * r;
+      constexpr Standard_Real r = RealSmall();
+      Standard_Real res = r * r;
       //res = res + 1.;
       //++++ std::cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<std::endl;
       //++++ Succes = Standard_False;
@@ -4540,7 +4550,7 @@ Standard_Integer OCC17424 (Draw_Interpretor& di, Standard_Integer argc, const ch
   gp_Dir dir(X_Dir, Y_Dir, Z_Dir);
   gp_Lin ray(origin, dir);
 
-  Standard_Real PSup = RealLast();
+  constexpr Standard_Real PSup = RealLast();
   intersector.PerformNearest(ray, PInf, PSup);
   if (intersector.NbPnt() != 0)
     {

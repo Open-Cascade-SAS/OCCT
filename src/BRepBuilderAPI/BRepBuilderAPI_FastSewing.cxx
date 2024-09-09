@@ -43,7 +43,7 @@ static Standard_Integer
       IntersectionOfSets( const NCollection_List<Standard_Integer>& theSet1,
                           const NCollection_List<Standard_Integer>& theSet2)
 {
-  const Standard_Integer anIntMax = IntegerLast();
+  constexpr Standard_Integer anIntMax = IntegerLast();
   Standard_Integer aRetVal = anIntMax;
   for(NCollection_List<Standard_Integer>::Iterator
                             anIt1 = theSet1.begin().Iterator();
