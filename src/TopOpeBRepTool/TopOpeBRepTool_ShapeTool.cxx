@@ -566,7 +566,8 @@ Standard_Real TopOpeBRepTool_ShapeTool::EdgeData
   C = BL.Curvature();
 
   // xpu150399 cto900R4
-  Standard_Real tol1 = Epsilon(0.), tol2 = RealLast();
+  const Standard_Real tol1 = Epsilon(0.);
+  constexpr Standard_Real tol2 = RealLast();
   Standard_Real tolm = Max(tol,Max(tol1,tol2));
 
   if ( Abs(C) > tolm ) BL.Normal(N);
