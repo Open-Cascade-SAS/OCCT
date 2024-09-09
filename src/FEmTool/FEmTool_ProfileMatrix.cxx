@@ -108,7 +108,7 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
   SMA--;
   const Standard_Real * PM = &ProfileMatrix->Value(1);
   PM--;
-
+  IsDecomp = Standard_False;
   for(j = 1; j <= RowNumber(); j++) {
     DiagAddr = profile(2, j);
     Kj = j - profile(1, j);
@@ -118,7 +118,7 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
 
     a = PM[DiagAddr] - Sum;
     if(a < Eps) {
-      return IsDecomp = Standard_False;// Matrix is not positive defined
+      return Standard_False;// Matrix is not positive defined
     }
     a = Sqrt(a);
     SMA[DiagAddr] = a;
@@ -139,7 +139,8 @@ FEmTool_ProfileMatrix::FEmTool_ProfileMatrix(const TColStd_Array1OfInteger& Firs
       SMA[CurrAddr] = (PM[CurrAddr] - Sum)/a;
     }
   }
-  return IsDecomp = Standard_True;
+  IsDecomp = Standard_True;
+  return IsDecomp;
 }
 
 //=======================================================================
