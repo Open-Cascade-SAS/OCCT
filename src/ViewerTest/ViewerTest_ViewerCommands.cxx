@@ -12619,8 +12619,7 @@ static int VManipulator (Draw_Interpretor& theDi,
     {
       anAttachOptions.SetAdjustSize (Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0);
     }
-    else if (anArg == "-enablemodes"
-          || anArg == "-enablemodes")
+    else if (anArg == "-enablemodes")
     {
       anAttachOptions.SetEnableModes (Draw::ParseOnOffNoIterator (theArgsNb, theArgVec, anArgIter) ? 1 : 0);
     }
