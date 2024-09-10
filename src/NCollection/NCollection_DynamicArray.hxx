@@ -240,7 +240,7 @@ public: //! @name public methods
   }
 
   //! Assignment operator
-  NCollection_DynamicArray& operator= (NCollection_DynamicArray&& theOther)
+  NCollection_DynamicArray& operator= (NCollection_DynamicArray&& theOther) noexcept
   {
     return Assign(std::forward<NCollection_DynamicArray>(theOther));
   }

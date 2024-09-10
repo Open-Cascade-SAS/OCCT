@@ -81,7 +81,7 @@ public:
   NCollection_UtfString (const NCollection_UtfString& theCopy);
 
   //! Move constructor
-  NCollection_UtfString (NCollection_UtfString&& theOther);
+  NCollection_UtfString (NCollection_UtfString&& theOther) noexcept;
 
   //! Copy constructor from UTF-8 string.
   //! @param theCopyUtf8 UTF-8 string to copy
