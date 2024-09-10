@@ -23,6 +23,7 @@
 
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TColStd_IndexedMapOfTransient.hxx>
+#include <TColStd_SequenceOfTransient.hxx>
 #include <BRepToIGES_BREntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Message_ProgressRange.hxx>
@@ -136,7 +137,7 @@ private:
 
   TopTools_IndexedMapOfShape myVertices;
   TopTools_IndexedMapOfShape myEdges;
-  TColStd_IndexedMapOfTransient myCurves;
+  TColStd_SequenceOfTransient myCurves;
   Handle(IGESSolid_EdgeList) myEdgeList;
   Handle(IGESSolid_VertexList) myVertexList;
 
