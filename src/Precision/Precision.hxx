@@ -118,7 +118,7 @@ public:
   //! you can use :
   //! If ( Abs( D1.D2 ) < Precision::Angular() ) ...
   //! (although the function IsNormal does exist).
-  static Standard_Real Angular() { return 1.e-12; }
+  static constexpr Standard_Real Angular() { return 1.e-12; }
 
   //! Returns the recommended precision value when
   //! checking coincidence of two points in real space.
@@ -160,11 +160,11 @@ public:
   //! distance (1 / 10 millimeter). This distance
   //! becomes easily measurable, but only within a restricted
   //! space which contains some small objects of the complete scene.
-  static Standard_Real Confusion() { return 1.e-7; }
+  static constexpr Standard_Real Confusion() { return 1.e-7; }
 
   //! Returns square of Confusion.
   //! Created for speed and convenience.
-  static Standard_Real SquareConfusion() { return Confusion() * Confusion(); }
+  static constexpr Standard_Real SquareConfusion() { return Confusion() * Confusion(); }
 
   //! Returns the precision value in real space, frequently
   //! used by intersection algorithms to decide that a solution is reached.
@@ -188,7 +188,7 @@ public:
   //! The tolerance of intersection is equal to :
   //! Precision::Confusion() / 100.
   //! (that is, 1.e-9).
-  static Standard_Real Intersection() { return Confusion() * 0.01; }
+  static constexpr Standard_Real Intersection() { return Confusion() * 0.01; }
 
   //! Returns the precision value in real space, frequently used
   //! by approximation algorithms.
@@ -203,14 +203,14 @@ public:
   //! (that is, 1.e-6).
   //! You may use a smaller tolerance in an approximation
   //! algorithm, but this option might be costly.
-  static Standard_Real Approximation() { return Confusion() * 10.0; }
+  static constexpr Standard_Real Approximation() { return Confusion() * 10.0; }
 
   //! Convert a real  space precision  to  a  parametric
   //! space precision.   <T>  is the mean  value  of the
   //! length of the tangent of the curve or the surface.
   //!
   //! Value is P / T
-  static Standard_Real Parametric (const Standard_Real P, const Standard_Real T) { return P / T; }
+  static inline Standard_Real Parametric (const Standard_Real P, const Standard_Real T) { return P / T; }
 
   //! Returns a precision value in parametric space, which may be used :
   //! -   to test the coincidence of two points in the real space,
@@ -256,11 +256,11 @@ public:
   //! 2.Pi without impacting on the resulting point.
   //! Therefore, take great care when adjusting a parametric
   //! tolerance to your own algorithm.
-  static Standard_Real PConfusion (const Standard_Real T) { return Parametric (Confusion(), T); }
+  static inline Standard_Real PConfusion (const Standard_Real T) { return Parametric (Confusion(), T); }
 
   //! Returns square of PConfusion.
   //! Created for speed and convenience.
-  static Standard_Real SquarePConfusion() { return PConfusion() * PConfusion(); }
+  static constexpr Standard_Real SquarePConfusion() { return PConfusion() * PConfusion(); }
 
   //! Returns a precision value in parametric space, which
   //! may be used by intersection algorithms, to decide that
@@ -275,7 +275,7 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Intersection() / 100., or Precision::Intersection() / T.
-  static Standard_Real PIntersection (const Standard_Real T) { return Parametric(Intersection(),T); }
+  static inline Standard_Real PIntersection (const Standard_Real T) { return Parametric(Intersection(),T); }
 
   //! Returns a precision value in parametric space, which may
   //! be used by approximation algorithms. The purpose of this
@@ -290,47 +290,47 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Approximation() / 100., or Precision::Approximation() / T.
-  static Standard_Real PApproximation (const Standard_Real T) { return Parametric(Approximation(),T); }
+  static inline Standard_Real PApproximation (const Standard_Real T) { return Parametric(Approximation(),T); }
 
   //! Convert a real  space precision  to  a  parametric
   //! space precision on a default curve.
   //!
   //! Value is Parametric(P,1.e+2)
-  static Standard_Real Parametric (const Standard_Real P) { return Parametric (P, 100.0); }
+  static inline Standard_Real Parametric (const Standard_Real P) { return P * 0.01; }
 
   //! Used  to test distances  in parametric  space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Confusion())
-  static Standard_Real PConfusion() { return Parametric (Confusion()); }
+  static constexpr Standard_Real PConfusion() { return Confusion() * 0.01; }
 
   //! Used for Intersections  in parametric  space  on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Intersection())
-  static Standard_Real PIntersection() { return Parametric (Intersection()); }
+  static constexpr Standard_Real PIntersection() { return Intersection() * 0.01; }
 
   //! Used for  Approximations  in parametric space on a
   //! default curve.
   //!
   //! This is Precision::Parametric(Precision::Approximation())
-  static Standard_Real PApproximation() { return Parametric (Approximation()); }
+  static constexpr Standard_Real PApproximation() { return Approximation() * 0.01; }
 
   //! Returns True if R may be considered as an infinite
   //! number. Currently Abs(R) > 1e100
-  static Standard_Boolean IsInfinite (const Standard_Real R) { return Abs (R) >= (0.5 * Precision::Infinite()); }
+  static inline Standard_Boolean IsInfinite (const Standard_Real R) { return Abs (R) >= (0.5 * Precision::Infinite()); }
 
   //! Returns True if R may be considered as  a positive
   //! infinite number. Currently R > 1e100
-  static Standard_Boolean IsPositiveInfinite (const Standard_Real R) { return R >= (0.5 * Precision::Infinite()); }
+  static inline Standard_Boolean IsPositiveInfinite (const Standard_Real R) { return R >= (0.5 * Precision::Infinite()); }
 
   //! Returns True if R may  be considered as a negative
   //! infinite number. Currently R < -1e100
-  static Standard_Boolean IsNegativeInfinite (const Standard_Real R) { return R <= -(0.5 * Precision::Infinite()); }
+  static inline Standard_Boolean IsNegativeInfinite (const Standard_Real R) { return R <= -(0.5 * Precision::Infinite()); }
 
   //! Returns a  big number that  can  be  considered as
   //! infinite. Use -Infinite() for a negative big number.
-  static Standard_Real Infinite() { return 2.e+100; }
+  static constexpr Standard_Real Infinite() { return 2.e+100; }
 
 };
 
