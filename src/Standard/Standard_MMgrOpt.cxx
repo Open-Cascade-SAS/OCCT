@@ -177,7 +177,7 @@ Standard_MMgrOpt::Standard_MMgrOpt(const Standard_Boolean aClear,
 
 Standard_MMgrOpt::~Standard_MMgrOpt()
 {
-  Purge(Standard_True);
+  purge(Standard_True);
   free(myFreeList);
   
   // NOTE: freeing pools may be dangerous if not all memory taken by 
@@ -478,9 +478,18 @@ void Standard_MMgrOpt::Free(Standard_Address theStorage)
 //function : Purge
 //purpose  : Frees all free lists except small blocks (less than CellSize)
 //=======================================================================
-
-Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean )
+Standard_Integer Standard_MMgrOpt::Purge(Standard_Boolean isDestroyed)
 {
+  return purge(isDestroyed);
+}
+
+//=======================================================================
+//function : purge
+//purpose  : Frees all free lists except small blocks (less than CellSize)
+//=======================================================================
+Standard_Integer Standard_MMgrOpt::purge(const Standard_Boolean theIsDestroyed)
+{
+  (void)theIsDestroyed;
   // Lock access to critical data by mutex
   Standard_Mutex::Sentry aSentry (myMutex);
 

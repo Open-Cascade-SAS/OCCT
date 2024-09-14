@@ -44,10 +44,10 @@ Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message (cons
   }
 
   const Standard_Size aLen = strlen (theString);
-  StringRef* aStrPtr = (StringRef* )malloc (aLen + sizeof(Standard_Integer) + 1);
+  StringRef* aStrPtr = (StringRef*)Standard::AllocateOptimal (aLen + sizeof(Standard_Integer) + 1);
   if (aStrPtr != NULL)
   {
-    strcpy ((char* )&aStrPtr->Message[0], theString);
+    strlcpy ((char* )&aStrPtr->Message[0], theString, aLen + 1);
     aStrPtr->Counter = 1;
   }
   return aStrPtr;

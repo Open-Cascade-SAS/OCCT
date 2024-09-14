@@ -298,7 +298,6 @@ void Units_UnitsDictionary::Creates()
       }
 
       if(unit2[0]) {
-        j = 0;
         for(j=1;j<=theunitssequence->Length();j++)
           if(theunitssequence->Value(j) == unit2)break;
 

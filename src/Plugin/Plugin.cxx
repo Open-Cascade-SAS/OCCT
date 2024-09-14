@@ -96,7 +96,7 @@ Handle(Standard_Transient) Plugin::Load (const Standard_GUID& aGUID,
     f = theMapOfFunctions(pid);
   
   Standard_Transient* (*fp) (const Standard_GUID&) = NULL;
-  fp = (Standard_Transient* (*)(const Standard_GUID&)) f;
+  fp = (Standard_Transient* (*)(const Standard_GUID&)) f; // NOLINT
   Handle(Standard_Transient) theServiceFactory = (*fp) (aGUID);
   return theServiceFactory;
   

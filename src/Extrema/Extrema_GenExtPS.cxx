@@ -518,8 +518,6 @@ const Extrema_POnSurfParams& Extrema_GenExtPS::ComputeEdgeParameters
 
 void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
 {
-  Standard_Integer NoU, NoV;
-
   //if grid was already built skip its creation
   if (!myInit) {
     //build parametric grid in case of a complex surface geometry (BSpline and Bezier surfaces)
@@ -533,8 +531,7 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
       PasU = (PasU - U0) / (myusample - 1);
       U0 = U0/2. + myumin;
       myUParams = new TColStd_HArray1OfReal(1,myusample );
-      Standard_Real U = U0;
-      for ( NoU = 1 ; NoU <= myusample; NoU++, U += PasU) 
+      for (Standard_Integer NoU = 1, U = U0 ; NoU <= myusample; NoU++, U += PasU)
         myUParams->SetValue(NoU, U);
     }
   
@@ -546,9 +543,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
       V0 = V0/2. + myvmin;
       
       myVParams = new TColStd_HArray1OfReal(1,myvsample );
-      Standard_Real V = V0;
-     
-      for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
+
+      for (Standard_Integer NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
         myVParams->SetValue(NoV, V);
     }
 
@@ -556,8 +552,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
     myPoints.Resize (0, myusample + 1, 0, myvsample + 1, false);
     // Calculation of distances
   
-    for ( NoU = 1 ; NoU <= myusample; NoU++ ) {
-      for ( NoV = 1 ; NoV <= myvsample; NoV++) {
+    for (Standard_Integer NoU = 1 ; NoU <= myusample; NoU++ ) {
+      for (Standard_Integer NoV = 1 ; NoV <= myvsample; NoV++) {
         gp_Pnt aP1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
         Extrema_POnSurfParams aParam
           (myUParams->Value(NoU), myVParams->Value(NoV), aP1);
@@ -574,12 +570,12 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
 
     // Fill boundary with negative square distance.
     // It is used for computation of Maximum.
-    for (NoV = 0; NoV <= myvsample + 1; NoV++) {
+    for (Standard_Integer NoV = 0; NoV <= myvsample + 1; NoV++) {
       myPoints.ChangeValue(0, NoV).SetSqrDistance(-1.);
       myPoints.ChangeValue(myusample + 1, NoV).SetSqrDistance(-1.);
     }
 
-    for (NoU = 1; NoU <= myusample; NoU++) {
+    for (Standard_Integer NoU = 1; NoU <= myusample; NoU++) {
       myPoints.ChangeValue(NoU, 0).SetSqrDistance(-1.);
       myPoints.ChangeValue(NoU, myvsample + 1).SetSqrDistance(-1.);
     }
@@ -589,8 +585,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
 
   // Compute distances to mesh.
   // Step 1. Compute distances to nodes.
-  for ( NoU = 1 ; NoU <= myusample; NoU++ ) {
-    for ( NoV = 1 ; NoV <= myvsample; NoV++) {
+  for (Standard_Integer NoU = 1 ; NoU <= myusample; NoU++ ) {
+    for (Standard_Integer NoV = 1 ; NoV <= myvsample; NoV++) {
       Extrema_POnSurfParams &aParam = myPoints.ChangeValue(NoU, NoV);
 
       aParam.SetSqrDistance(thePoint.SquareDistance(aParam.Value()));
@@ -607,9 +603,9 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
     // Step 2. Compute distances to edges.
     // Assume UEdge(i, j) = { Point(i, j); Point(i + 1, j    ) }
     // Assume VEdge(i, j) = { Point(i, j); Point(i,     j + 1) }
-    for ( NoU = 1 ; NoU <= myusample; NoU++ ) 
+    for (Standard_Integer NoU = 1 ; NoU <= myusample; NoU++ )
     {
-      for ( NoV = 1 ; NoV <= myvsample; NoV++)
+      for (Standard_Integer NoV = 1 ; NoV <= myvsample; NoV++)
       {
         const Extrema_POnSurfParams &aParam0 = myPoints.Value(NoU, NoV);
 
@@ -642,8 +638,8 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
     Standard_Real aDiffDist;
     Standard_Boolean isOut;
 
-    for ( NoU = 1 ; NoU < myusample; NoU++ ) {
-      for ( NoV = 1 ; NoV < myvsample; NoV++) {
+    for (Standard_Integer NoU = 1 ; NoU < myusample; NoU++ ) {
+      for (Standard_Integer NoV = 1 ; NoV < myvsample; NoV++) {
         const Extrema_POnSurfParams &aUE0 = myUEdgePntParams.Value(NoU, NoV);
         const Extrema_POnSurfParams &aUE1 = myUEdgePntParams.Value(NoU, NoV+1);
         const Extrema_POnSurfParams &aVE0 = myVEdgePntParams.Value(NoU, NoV);
@@ -703,12 +699,12 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
     }
 
     // Fill boundary with RealLast square distance.
-    for (NoV = 0; NoV <= myvsample; NoV++) {
+    for (Standard_Integer NoV = 0; NoV <= myvsample; NoV++) {
       myFacePntParams.ChangeValue(0, NoV).SetSqrDistance(RealLast());
       myFacePntParams.ChangeValue(myusample, NoV).SetSqrDistance(RealLast());
     }
 
-    for (NoU = 1; NoU < myusample; NoU++) {
+    for (Standard_Integer NoU = 1; NoU < myusample; NoU++) {
       myFacePntParams.ChangeValue(NoU, 0).SetSqrDistance(RealLast());
       myFacePntParams.ChangeValue(NoU, myvsample).SetSqrDistance(RealLast());
     }
@@ -840,7 +836,7 @@ void Extrema_GenExtPS::BuildTree()
   Standard_Real U = U0, V = V0;
   for ( NoU = 1 ; NoU <= myusample; NoU++, U += PasU) 
     myUParams->SetValue(NoU, U);
-  for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
+  for ( NoV = 1 ; NoV <= myvsample; NoV++, V += PasV)
     myVParams->SetValue(NoV, V);
 
   // Calculation of distances

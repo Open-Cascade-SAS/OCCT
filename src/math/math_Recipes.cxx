@@ -314,7 +314,7 @@ Standard_Integer SVD_Decompose(math_Matrix& a,
                      math_Vector& rv1) {
 
      Standard_Integer flag, i, its, j, jj, k, l=0, nm=0;
-     Standard_Real ar, aw, aik, aki, c, f, h, s, x, y, z;
+     Standard_Real ar, aw, aik, aki, f, h, s, x, y, z;
      Standard_Real anorm = 0.0, g = 0.0, scale = 0.0;
      Standard_Integer m = a.RowNumber();
      Standard_Integer n = a.ColNumber();
@@ -445,7 +445,6 @@ Standard_Integer SVD_Decompose(math_Matrix& a,
            if(fabs(w(nm)) + anorm == anorm) break;
          }
          if(flag) {
-           c = 0.0;
            s = 1.0;
            for(i = l; i <= k; i++) {
              f = s * rv1(i);
@@ -454,7 +453,7 @@ Standard_Integer SVD_Decompose(math_Matrix& a,
                h = PYTHAG(f, g);
                w(i) = h;
                h = 1.0 / h;
-               c = g * h;
+               Standard_Real c = g * h;
                s = (-f * h);
                for(j = 1; j <= m; j++) {
                  y = a(j,nm);
@@ -486,7 +485,7 @@ Standard_Integer SVD_Decompose(math_Matrix& a,
          g = PYTHAG(f, 1.0);
          f = ((x - z) * (x + z) + h * ((y / ( f + SIGN(g, f))) - h)) / x;
          
-         c = s = 1.0;
+         Standard_Real c = s = 1.0;
          for(j = l; j <= nm; j++) {
            i = j + 1;
            g = rv1(i);

@@ -78,9 +78,7 @@ void IntAna2d_AnaIntersection::Perform (const gp_Circ2d& C1,
     Standard_Real ref2=Ox2.Angle(ax);                       // Resultat entre -PI et +PI
 
     Standard_Real l1=(d*d + R1*R1 -R2*R2)/(2.0*d);
-    Standard_Real aDet = R1*R1-l1*l1;
-    if(aDet < 0.) {
-      aDet = 0.;
+    if(R1*R1-l1*l1 < 0.) {
       l1 = (l1 > 0 ? R1 : - R1);
     }
     Standard_Real h= Sqrt(R1*R1-l1*l1);

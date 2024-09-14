@@ -252,7 +252,7 @@ Standard_Real Extrema_GlobOptFuncConicS::ConicParameter(const math_Vector& theUV
   Fext = aPS.SquareDistance(myCPl);
   if (Fext < F)
   {
-    F = Fext;
+    F = Fext; // NOLINT
     ct = myTl;
   }
   return ct;

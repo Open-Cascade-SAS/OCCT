@@ -1251,7 +1251,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
         gp_Dir D2 = Cyl2.Axis().Direction();
         A1A2.Distance(d,p1,p2);
         gp_Pnt P = Cyl1.Axis().Location();
-        gp_Pnt P1(P.X() - p1*D1.X(),
+        gp_Pnt P1(P.X() - p1*D1.X(), // NOLINT
                   P.Y() - p1*D1.Y(),
                   P.Z() - p1*D1.Z());
         
@@ -1610,7 +1610,6 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
     // 3.2 - one line  when cone1 touches cone2 (iRet=1)
     // 3.3 - two lines when cone1 intersects cone2 (iRet=2)
     //
-    Standard_Integer iRet;
     Standard_Real aGamma, aBeta1, aBeta2;
     Standard_Real aD1, aR1, aTgBeta1, aTgBeta2, aHalfPI;
     Standard_Real aCosGamma, aSinGamma, aDx, aR2, aRD2, aD2;
@@ -1620,7 +1619,6 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
     //
     // Preliminary analysis. Determination of iRet
     //
-    iRet=0;
     aHalfPI=0.5*M_PI;
     aD1=1.;
     aPA1.SetCoord(aD1, 0.);
@@ -1663,12 +1661,11 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
     aRD2=aPA2.Distance(aP1);
     //
     if (aRD2>(aR2+Tol)) {
-      iRet=0;
       typeres=IntAna_Empty; //nothing
       return;
     }
     //
-    iRet=1; //touch case => 1 line
+    Standard_Integer iRet=1; //touch case => 1 line
     if (aRD2<(aR2-Tol)) {
       iRet=2;//intersection => couple of lines
     }
@@ -1704,7 +1701,6 @@ IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
     //
     aIntr.Perform(aPln1, aPln2, Tol, Tol);
     if (!aIntr.IsDone() || 0 == aIntr.NbSolutions()) {
-      iRet=-1; // just in case. it must not be so
       typeres=IntAna_NoGeometricSolution; 
       return;
     }

@@ -211,7 +211,7 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
 	
 	for (qq = 0 ; qq <= jj ; qq++) {
 	  index2--;
-	  Pjq    = Pip * PLib::Bin(jj,qq) * StoreW[index2]; 
+	  Pjq    = Pip * PLib::Bin(jj,qq) * StoreW[index2]; // NOLINT
 	  RArray[index1] -= Pjq * RArray[index]; index++; index1++;
 	  RArray[index1] -= Pjq * RArray[index]; index++; index1++;
 	  RArray[index1] -= Pjq * RArray[index]; index++;
@@ -224,13 +224,13 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
 
       for (qq = 0 ; qq < jj ; qq++) {
 	index2--;
-	Pjq = Pii * PLib::Bin(jj,qq) * StoreW[index2]; 
-	RArray[index1] -= Pjq * RArray[index]; index++; index1++;
+	Pjq = Pii * PLib::Bin(jj,qq) * StoreW[index2]; // NOLINT
+	RArray[index1] -= Pjq * RArray[index]; index++; index1++; // NOLINT
 	RArray[index1] -= Pjq * RArray[index]; index++; index1++;
 	RArray[index1] -= Pjq * RArray[index]; index++;
 	index1 -= 2;
       }
-      RArray[index1] *= denominator; index1++;
+      RArray[index1] *= denominator; index1++; // NOLINT
       RArray[index1] *= denominator; index1++;
       RArray[index1] *= denominator;
       index1 -= 2;
@@ -2104,7 +2104,6 @@ void BSplSLib::BuildCache(const Standard_Real          theU,
     BSplCLib::Bohm(u2, d2, d2, *dc.knots2, aDimension, *(dc.poles + kk * aDimension * d2p1));
 
   Standard_Real* aCache = (Standard_Real *) &(theCacheArray(theCacheArray.LowerRow(), theCacheArray.LowerCol()));
-  Standard_Real* aPolyCoeffs = dc.poles;
 
   Standard_Real aFactors[2];
   // aFactors[0] corresponds to variable with minimal degree
@@ -2117,7 +2116,7 @@ void BSplSLib::BuildCache(const Standard_Real          theU,
     aFactors[0] = 1.0;
     for (aCol = 0; aCol <= d1; aCol++)
     {
-      aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
+      Standard_Real* aPolyCoeffs = dc.poles + (aCol * d2p1 + aRow) * aDimension;
       aCoeff = aFactors[0] * aFactors[1];
       for (i = 0; i < aDimension; i++)
         aCache[i] = aPolyCoeffs[i] * aCoeff;
@@ -2836,9 +2835,9 @@ void BSplSLib::MovePoint (const Standard_Real            U,
   if (ULastIndex > UIndex2) ULastIndex = UIndex2;
 
   Standard_Real maxValue = 0.0;
-  Standard_Integer i, ukk1=0, ukk2;
+  Standard_Integer ukk1=0, ukk2;
 
-  for (i = UFirstIndex-UFirstNonZeroBsplineIndex+1; i <= ULastIndex-UFirstNonZeroBsplineIndex+1; i++) {
+  for (Standard_Integer i = UFirstIndex-UFirstNonZeroBsplineIndex+1; i <= ULastIndex-UFirstNonZeroBsplineIndex+1; i++) {
     if (UBSplineBasis(1,i) > maxValue) {
       ukk1 = i + UFirstNonZeroBsplineIndex - 1;
       maxValue = UBSplineBasis(1,i);
@@ -2847,7 +2846,6 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 
   // find a ukk2 if symmetry
   ukk2 = ukk1;
-  i = ukk1 - UFirstNonZeroBsplineIndex + 2;
   if ((ukk1+1) <= ULastIndex) {
     if (Abs(UBSplineBasis(1, ukk1-UFirstNonZeroBsplineIndex+2) - maxValue) < 1.e-10) {
       ukk2 = ukk1+1;
@@ -2862,9 +2860,9 @@ void BSplSLib::MovePoint (const Standard_Real            U,
   if (VLastIndex > VIndex2) VLastIndex = VIndex2;
 
   maxValue = 0.0;
-  Standard_Integer j, vkk1=0, vkk2;
+  Standard_Integer vkk1=0, vkk2;
 
-  for (j = VFirstIndex-VFirstNonZeroBsplineIndex+1; j <= VLastIndex-VFirstNonZeroBsplineIndex+1; j++) {
+  for (Standard_Integer j = VFirstIndex-VFirstNonZeroBsplineIndex+1; j <= VLastIndex-VFirstNonZeroBsplineIndex+1; j++) {
     if (VBSplineBasis(1,j) > maxValue) {
       vkk1 = j + VFirstNonZeroBsplineIndex - 1;
       maxValue = VBSplineBasis(1,j);
@@ -2873,7 +2871,6 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 
   // find a vkk2 if symmetry
   vkk2 = vkk1;
-  j = vkk1 - VFirstNonZeroBsplineIndex + 2;
   if ((vkk1+1) <= VLastIndex) {
     if (Abs(VBSplineBasis(1, vkk1-VFirstNonZeroBsplineIndex+2) - maxValue) < 1.e-10) {
       vkk2 = vkk1+1;
@@ -2887,7 +2884,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 
   Standard_Integer ii, jj;
 
-  for (i = 1; i <= UDegree+1; i++) {
+  for (Standard_Integer i = 1; i <= UDegree+1; i++) {
     ii = i + UFirstNonZeroBsplineIndex - 1;
     if (ii < ukk1) {
       DvalU = ukk1-ii;
@@ -2899,7 +2896,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
       DvalU = 0.0;
     }
 
-    for (j = 1; j <= VDegree+1; j++) {
+    for (Standard_Integer j = 1; j <= VDegree+1; j++) {
       jj = j + VFirstNonZeroBsplineIndex - 1;
       if (Rational) {
 	hN = Weights(ii, jj)*UBSplineBasis(1, i)*VBSplineBasis(1,j);
@@ -2932,7 +2929,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
 
   // compute the new poles
 
-  for (i=Poles.LowerRow(); i<=Poles.UpperRow(); i++) {
+  for (Standard_Integer i=Poles.LowerRow(); i<=Poles.UpperRow(); i++) {
     if (i < ukk1) {
       DvalU = ukk1-i;
     }
@@ -2943,7 +2940,7 @@ void BSplSLib::MovePoint (const Standard_Real            U,
       DvalU = 0.0;
     }
 
-    for (j=Poles.LowerCol(); j<=Poles.UpperCol(); j++) {
+    for (Standard_Integer j=Poles.LowerCol(); j<=Poles.UpperCol(); j++) {
       if (i >= UFirstIndex && i <= ULastIndex && j >= VFirstIndex && j <= VLastIndex) {
 	if (j < vkk1) {
 	  DvalV = vkk1-j;

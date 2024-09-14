@@ -144,9 +144,7 @@ void gp_Mat2d::Invert()
   aNewMat[1][0] = -myMat[1][0];
   aNewMat[1][1] =  myMat[0][0];
   Standard_Real aDet = aNewMat[0][0] * aNewMat[1][1] - aNewMat[0][1] * aNewMat[1][0];
-  Standard_Real val = aDet;
-  if (val < 0) val = - val;
-  Standard_ConstructionError_Raise_if (val <= gp::Resolution(), "gp_Mat2d::Invert() - matrix has zero determinant");
+  Standard_ConstructionError_Raise_if (Abs(aDet) <= gp::Resolution(), "gp_Mat2d::Invert() - matrix has zero determinant");
   aDet = 1.0 / aDet;
   myMat[0][0] = aNewMat[0][0] * aDet;
   myMat[1][0] = aNewMat[1][0] * aDet;

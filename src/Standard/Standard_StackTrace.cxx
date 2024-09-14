@@ -339,7 +339,7 @@ Standard_Boolean Standard::StackTrace (char* theBuffer,
   size_t aLimit = (size_t) theBufferSize - aLenInit - 1;
   if (aLimit > 14)
   {
-    strcat (theBuffer, "\n==Backtrace==");
+    strlcat (theBuffer, "\n==Backtrace==", theBufferSize);
     aLimit -= 14;
   }
   for (int aLineIter = 0; aLineIter < aNbTraces; ++aLineIter)
@@ -350,14 +350,14 @@ Standard_Boolean Standard::StackTrace (char* theBuffer,
       break;
     }
 
-    strcat (theBuffer, "\n");
-    strcat (theBuffer, aStrings[aLineIter]);
+    strlcat (theBuffer, "\n", theBufferSize);
+    strlcat (theBuffer, aStrings[aLineIter], theBufferSize);
     aLimit -= aLen + 1;
   }
   free (aStrings);
   if (aLimit > 14)
   {
-    strcat (theBuffer, "\n=============");
+    strlcat (theBuffer, "\n=============", theBufferSize);
   }
   return true;
 #endif

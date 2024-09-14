@@ -90,7 +90,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B,
                                const Standard_Real EPS) {
 
   Standard_Integer i, j, k, n, l, m;
-  Standard_Real scale, f, g, h = 0., alfaii;
+  Standard_Real f, g, h = 0., alfaii;
   Standard_Real qki;
   Standard_Real cj;
   n = Q.ColNumber();
@@ -112,7 +112,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B,
 
 // Traitement de chaque colonne de A:
     for (i = 1; i <= n; i++) {
-      h = scale = 0.0;
+      h = 0.0;
         for (k = i; k <= l; k++) {
           qki = Q(k, i);
 	  h += qki*qki;                           // = ||a||*||a||     = EUAI
@@ -126,7 +126,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B,
         h -= f*g;                                 // = (v*v)/2         = C1
         alfaii = g-f;                             // = v               = ALFAII
         for (j =i+1; j <= n; j++) {
-     	  scale = 0.0;
+     	  Standard_Real scale = 0.0;
 	  for (k = i; k <= l; k++) {
 	   scale += Q(k,i)* Q(k,j);                //                   = SCAL
 	  }
@@ -140,7 +140,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B,
 // Modification de B:
 
         for (j = 1; j <= m; j++) {
-          scale= Q(i,i)*B2(i,j);
+           Standard_Real scale= Q(i,i)*B2(i,j);
           for (k = i+1; k <= l; k++) {
 	    scale += Q(k,i)*B2(k,j);
 	  }
@@ -158,7 +158,7 @@ void math_Householder::Perform(const math_Matrix& A, const math_Matrix& B,
   for (j = 1; j <= m; j++) {
     Sol(n,j) = B2(n,j)/Q(n,n);
     for (i = n -1; i >=1; i--) {
-      scale= 0.0;
+      Standard_Real scale= 0.0;
       for(k = i+1; k <= n; k++) {
 	scale += Q(i,k) * Sol(k,j);
       }

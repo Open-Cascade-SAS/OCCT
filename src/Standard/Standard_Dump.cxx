@@ -160,7 +160,10 @@ Standard_Boolean Standard_Dump::InitRealValues (const TCollection_AsciiString& t
     TCollection_AsciiString aValueText = aSubText.SubString (aStreamPos, aNextPos - 1);
 
     if (!aValueText.IsRealValue())
+    {
+      va_end(vl);
       return Standard_False;
+    }
 
     Standard_Real aValue = aValueText.RealValue();
     *(va_arg(vl, Standard_Real*)) = aValue;

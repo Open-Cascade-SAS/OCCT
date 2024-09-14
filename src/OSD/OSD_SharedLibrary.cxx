@@ -18,6 +18,7 @@
 #include <OSD_Function.hxx>
 #include <OSD_LoadMode.hxx>
 #include <OSD_SharedLibrary.hxx>
+#include <Standard.hxx>
 
 #include <stdio.h>
 #include <cstring>
@@ -60,12 +61,11 @@ OSD_SharedLibrary::OSD_SharedLibrary():myHandle(NULL),myName(NULL){
 // name given as argument
 //
 // ----------------------------------------------------------------
-OSD_SharedLibrary::OSD_SharedLibrary(const Standard_CString aName):myHandle(NULL) 
+OSD_SharedLibrary::OSD_SharedLibrary(const Standard_CString aName) :
+  myHandle (nullptr),
+  myName (nullptr)
 {
-  if (aName != NULL) {
-    myName = new char [(strlen (aName) + 1 )];
-    strcpy (myName,aName);
-  }
+  SetName(aName);
 }
 // ----------------------------------------------------------------
 //
@@ -80,11 +80,16 @@ Standard_CString  OSD_SharedLibrary::Name() const {
 // SetName: Sets a name to a shared library object
 //
 // ----------------------------------------------------------------
-void  OSD_SharedLibrary::SetName(const Standard_CString aName)  {
-  if (aName != NULL) {
-    myName = new char [(strlen (aName) + 1 )];
-    strcpy (myName,aName);
+void  OSD_SharedLibrary::SetName(const Standard_CString aName)
+{
+  if (aName == nullptr)
+  {
+    Standard::Free(myName);
+    return;
   }
+  const size_t aNameLen = strlen (aName);
+  myName = static_cast<char*>(Standard::Reallocate(myName, aNameLen + 1));
+  strlcpy (myName,aName, aNameLen);
 }
 // ----------------------------------------------------------------
 //

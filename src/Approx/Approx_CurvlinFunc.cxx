@@ -685,7 +685,7 @@ Standard_Boolean Approx_CurvlinFunc::EvalCurOnSur(const Standard_Real S, const S
     d2V_dS2 = d2V_dU2*dU_dS*dU_dS + dV_dU*d2U_dS2;
     d2W_dS2 = d2W_dU2*dU_dS*dU_dS + dW_dU*d2U_dS2;
     
-    d2U_dS2 = -dC_dU.Dot(d2C_dU2)*dU_dS/(Mag*Mag);
+    d2U_dS2 = -dC_dU.Dot(d2C_dU2)*dU_dS/(Mag*Mag); // NOLINT
     d2C_dS2 = (d2S_dV2 * dV_dS + d2S_dVdW * dW_dS) * dV_dS + dS_dV * d2V_dS2 +
               (d2S_dW2 * dW_dS + d2S_dVdW * dV_dS) * dW_dS + dS_dW * d2W_dS2;
     

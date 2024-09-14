@@ -223,7 +223,7 @@ void Message_PrinterOStream::SetConsoleTextColor (Standard_OStream* theOStream,
     return;
   }
 
-  const char* aCode = "\e[0m";
+  const char* aCode;
   switch (theTextColor)
   {
     case Message_ConsoleColor_Default:
