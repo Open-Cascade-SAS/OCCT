@@ -772,7 +772,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
 
-  Standard_Real delt = 5.0*Precision::Confusion();
+  constexpr Standard_Real delt = 5.0*Precision::Confusion();
   Standard_Real mesh_delt = Draw::Atof(argv[2]);
   if (mesh_delt <= 0.0)
   {

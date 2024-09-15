@@ -1592,7 +1592,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_Surface)&    S
   if (Surf1->IsUClosed() || Surf1->IsVClosed() ||
       Surf2->IsUClosed() || Surf2->IsVClosed())
   {
-    Standard_Real TolPar = Precision::PConfusion();
+    constexpr Standard_Real TolPar = Precision::PConfusion();
     IntSurf_ListOfPntOn2S AdditionalPnts;
     Standard_Real NewU1, NewV1, NewU2, NewV2;
     for(; IterLOP1.More(); IterLOP1.Next())

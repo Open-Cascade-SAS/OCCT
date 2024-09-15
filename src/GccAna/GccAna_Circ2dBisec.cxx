@@ -51,7 +51,7 @@ GccAna_Circ2dBisec::
 //=========================================================================
 
    WellDone = Standard_False;
-   Standard_Real Tol=Precision::Confusion();
+   constexpr Standard_Real Tol=Precision::Confusion();
 
    Standard_Real R1 = Circ1.Radius();
    Standard_Real R2 = Circ2.Radius();

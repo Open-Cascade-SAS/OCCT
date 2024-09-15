@@ -755,7 +755,7 @@ static void Descendants(const TopoDS_Shape&,
 // intersects Shapes From and Until
 //       case of several intersections (keep PartsOfTool according to the selection)  
 //       position of the face of intersection in PartsOfTool (before or after)
-      Standard_Real delta = Precision::Confusion();
+      constexpr Standard_Real delta = Precision::Confusion();
 
       if (myPerfSelection != BRepFeat_NoSelection) {
 // modif of the test for cts21181 : (prbmax2 and prnmin2) -> (prbmin1 and prbmax1)

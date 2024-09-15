@@ -89,7 +89,7 @@ ShapeUpgrade_SplitSurfaceContinuity::ShapeUpgrade_SplitSurfaceContinuity()
   Standard_Real ULast  = myUSplitValues->Value(myUSplitValues->Length());
   Standard_Real VFirst = myVSplitValues->Value(1);
   Standard_Real VLast  = myVSplitValues->Value(myVSplitValues->Length());
-  Standard_Real precision = Precision::Confusion();
+  constexpr Standard_Real precision = Precision::Confusion();
 //  if (ShapeUpgrade::Debug()) std::cout << "SplitSurfaceContinuity::Build" << std::endl;
   if(mySurface->Continuity() < myCriterion) 
     myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2);

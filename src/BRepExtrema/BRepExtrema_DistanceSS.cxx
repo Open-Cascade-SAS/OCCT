@@ -423,7 +423,7 @@ static void PERFORM_C0(const TopoDS_Edge& S1, const TopoDS_Edge& S2,
 
     if (pCurv->Continuity() == GeomAbs_C0)
     {
-      const Standard_Real epsP = Precision::PConfusion();
+      constexpr Standard_Real epsP = Precision::PConfusion();
 
       GeomAdaptor_Curve aAdaptorCurve(pCurv, aFirst, aLast);
       const Standard_Integer nbIntervals = aAdaptorCurve.NbIntervals(GeomAbs_C1);
@@ -716,7 +716,7 @@ void BRepExtrema_DistanceSS::Perform (const TopoDS_Vertex& theS1,
     if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin - myDstRef) < myEps))
     {
       gp_Pnt Pt, P1 = BRep_Tool::Pnt(theS1);
-      const Standard_Real epsP = Precision::PConfusion();
+      constexpr Standard_Real epsP = Precision::PConfusion();
 
       for (i = 1; i <= NbExtrema; i++)
       {
@@ -833,7 +833,7 @@ void BRepExtrema_DistanceSS::Perform (const TopoDS_Edge& theS1,
     if ((Dstmin < myDstRef - myEps) || (fabs(Dstmin - myDstRef) < myEps))
     {
       gp_Pnt Pt1, Pt2;
-      const Standard_Real epsP = Precision::PConfusion();
+      constexpr Standard_Real epsP = Precision::PConfusion();
 
       for (i = 1; i <= NbExtrema; i++)
       {
@@ -925,7 +925,7 @@ void BRepExtrema_DistanceSS::Perform (const TopoDS_Edge& theS1, const TopoDS_Fac
       const Standard_Real tol = BRep_Tool::Tolerance(theS2);
 
       gp_Pnt Pt1, Pt2;
-      const Standard_Real epsP = Precision::PConfusion();
+      constexpr Standard_Real epsP = Precision::PConfusion();
 
       for (i = 1; i <= NbExtrema; i++)
       {

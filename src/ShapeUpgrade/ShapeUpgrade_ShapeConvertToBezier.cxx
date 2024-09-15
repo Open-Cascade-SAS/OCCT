@@ -127,7 +127,7 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform (const Standard_Bool
     BRep_Builder B;
     ShapeAnalysis_Edge sae;
     ShapeBuild_Edge sbe;
-    Standard_Real preci = Precision::PConfusion();
+    constexpr Standard_Real preci = Precision::PConfusion();
     for(TopExp_Explorer exp(myResult,TopAbs_FACE); exp.More(); exp.Next()) {
       TopoDS_Face face = TopoDS::Face(exp.Current());
       face.Orientation(TopAbs_FORWARD);

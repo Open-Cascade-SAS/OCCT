@@ -1613,8 +1613,8 @@ static Standard_Integer OCC27466(Draw_Interpretor& theDI,
     return 1;
   BRepAdaptor_Surface aSurf(aFace);
 
-  Standard_Real aTolU = Precision::PConfusion();
-  Standard_Real aTolV = Precision::PConfusion();
+  constexpr Standard_Real aTolU = Precision::PConfusion();
+  constexpr Standard_Real aTolV = Precision::PConfusion();
 
   Extrema_GenLocateExtPS anExtrema(aSurf, aTolU, aTolV);
   anExtrema.Perform(aPnt, aUV.X(), aUV.Y(), Standard_True);

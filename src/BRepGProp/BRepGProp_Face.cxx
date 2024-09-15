@@ -548,7 +548,7 @@ static void GetRealKnots(const Standard_Real                  theMin,
   Standard_Integer iU      = theKnots->Upper();
   Standard_Integer aStartI = 0;
   Standard_Integer aEndI   = 0;
-  Standard_Real    aTol    = Precision::Confusion();
+  constexpr Standard_Real aTol = Precision::Confusion();
 
   while (++i < iU) {
     if (aStartI == 0 && theKnots->Value(i) > theMin + aTol)

@@ -438,7 +438,7 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
   gp_Vec2d& aPrmTg = MyImplicitFirst ? Tguv2 : Tguv1;
 
   //for square
-  const Standard_Real aNullValue =  Precision::Approximation()*
+  constexpr Standard_Real aNullValue =  Precision::Approximation()*
                                     Precision::Approximation(),
                       anAngTol = Precision::Angular();
 

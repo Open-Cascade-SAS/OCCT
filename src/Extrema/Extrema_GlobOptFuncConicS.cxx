@@ -138,7 +138,7 @@ void Extrema_GlobOptFuncConicS::LoadConic(const Adaptor3d_Curve   *C,
   myTl = theTl;
   if (myC->IsPeriodic())
   {
-    Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
+    constexpr Standard_Real aTMax = 2. * M_PI + Precision::PConfusion();
     if (myTf > aTMax || myTf < -Precision::PConfusion() ||
       Abs(myTl - myTf) > aTMax)
     {

@@ -140,7 +140,7 @@ void BRepCheck_Edge::Minimum()
 
     if (!myCref.IsNull()) {
       Handle(BRep_GCurve) GCref (Handle(BRep_GCurve)::DownCast (myCref));
-      Standard_Real eps = Precision::PConfusion();
+      constexpr Standard_Real eps = Precision::PConfusion();
       Standard_Real First,Last;
       GCref->Range(First,Last);
       if (Last<=First) {
@@ -314,7 +314,7 @@ void BRepCheck_Edge::InContext(const TopoDS_Shape& S)
       Standard_Boolean pcurvefound = Standard_False;
 
       BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
-      Standard_Real eps = Precision::PConfusion();
+      constexpr Standard_Real eps = Precision::PConfusion();
       Standard_Boolean toRunParallel = !myMutex.IsNull();
       while (itcr.More()) {
         const Handle(BRep_CurveRepresentation)& cr = itcr.Value();

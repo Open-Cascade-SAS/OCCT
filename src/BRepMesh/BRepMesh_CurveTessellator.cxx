@@ -126,7 +126,7 @@ void BRepMesh_CurveTessellator::init()
     const Adaptor3d_CurveOnSurface& aCurve = myCurve.CurveOnSurface();
     const Handle(Adaptor3d_Surface)& aSurface = aCurve.GetSurface();
 
-    const Standard_Real aTol = Precision::Confusion();
+    constexpr Standard_Real aTol = Precision::Confusion();
     const Standard_Real aDu = aSurface->UResolution(aTol);
     const Standard_Real aDv = aSurface->VResolution(aTol);
 

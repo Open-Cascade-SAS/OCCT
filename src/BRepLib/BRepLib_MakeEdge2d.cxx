@@ -593,7 +593,7 @@ void  BRepLib_MakeEdge2d::Init(const Handle(Geom2d_Curve)& CC,
   Standard_Real p2 = pp2;
   Standard_Real cf = C->FirstParameter();
   Standard_Real cl = C->LastParameter();
-  Standard_Real epsilon = Precision::Confusion();
+  constexpr Standard_Real epsilon = Precision::Confusion();
   Standard_Boolean periodic = C->IsPeriodic();
 
 
@@ -632,7 +632,7 @@ void  BRepLib_MakeEdge2d::Init(const Handle(Geom2d_Curve)& CC,
   if (!p1inf) P1 = C->Value(p1);
   if (!p2inf) P2 = C->Value(p2);
 
-  Standard_Real preci = Precision::Confusion();
+  constexpr Standard_Real preci = Precision::Confusion();
   BRep_Builder B;
 
   // check for closed curve

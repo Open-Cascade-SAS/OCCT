@@ -729,7 +729,7 @@ void ProjLib_CompProjectedCurve::Init()
   Standard_Boolean FromLastU = Standard_False,
                    isSplitsComputed = Standard_False;
 
-  const Standard_Real aTolExt = Precision::PConfusion();
+  constexpr Standard_Real aTolExt = Precision::PConfusion();
   Extrema_ExtCS CExt (*myCurve, *mySurface, aTolExt, aTolExt);
   if (CExt.IsDone() && CExt.NbExt())
   {

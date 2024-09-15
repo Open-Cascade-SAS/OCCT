@@ -44,7 +44,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
   Standard_Integer i, NbExt, n;                     
   Standard_Real U;
   mysample = 17;
-  Standard_Real t3d = Precision::Confusion();
+  constexpr Standard_Real t3d = Precision::Confusion();
   if (Precision::IsInfinite(myuinf)) mydist1 = RealLast();
   else {
     Pf = TheCurveTool::Value(*((TheCurve*)myC), myuinf);

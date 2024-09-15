@@ -541,7 +541,7 @@ TopoDS_Edge MakeEdge(const Handle(Geom2d_Curve) &theCurve,
 {
   TopoDS_Edge   aNewEdge;
   BRep_Builder  aBuilder;
-  Standard_Real aTol  = Precision::Confusion();
+  constexpr Standard_Real aTol  = Precision::Confusion();
   Standard_Real aFPar = theCurve->FirstParameter();
   Standard_Real aLPar = theCurve->LastParameter();
 

@@ -495,7 +495,7 @@ void BndLib_Box2dCurve::PerformBSpline()
   }
 
   //
-  const Standard_Real eps = Precision::PConfusion();
+  constexpr Standard_Real eps = Precision::PConfusion();
   if (fabs(aT1-aTb[0]) > eps || fabs(aT2-aTb[1]) > eps) {
     aG=aCBS->Copy();
     //

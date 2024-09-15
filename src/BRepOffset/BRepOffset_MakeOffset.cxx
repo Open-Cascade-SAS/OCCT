@@ -4573,7 +4573,7 @@ Standard_Boolean TrimEdge(TopoDS_Edge&                  NE,
   BOPTools_AlgoTools::MakeSplitEdge(NE, V1, aT1, V2, aT2, aSourceEdge);
   //
   //
-  Standard_Real aSameParTol = Precision::Confusion();
+  constexpr Standard_Real aSameParTol = Precision::Confusion();
   
   Standard_Real U = 0.;
   Standard_Real UMin =  Precision::Infinite();
