@@ -103,29 +103,55 @@ static void QuasiFleche (const TheCurve& theC,
     aVdelta = theVfin;
   }
 
+  // square length of chord
   const Standard_Real aNorme = gp_Vec (thePdeb, aPdelta).SquareMagnitude();
   Standard_Real aFleche = 0.0;
   Standard_Boolean isFlecheOk = Standard_False;
-  if (aNorme > theEps)
+  if (aNorme > theEps && aNorme > 16. * theDeflection2)
   {
     // Evaluation de la fleche par interpolation . Voir IntWalk_IWalking_5.gxx
     Standard_Real N1 = theVdeb.SquareMagnitude();
     Standard_Real N2 = aVdelta.SquareMagnitude();
     if (N1 > theEps && N2 > theEps)
     {
+      // square distance between ends of two normalized vectors [0; 4]
       Standard_Real aNormediff = (theVdeb.Normalized().XYZ() - aVdelta.Normalized().XYZ()).SquareModulus();
       if (aNormediff > theEps)
       {
         aFleche = aNormediff * aNorme / 64.0;
+        // So, fleche <= (aNorme / 16), independently of Vdeb and Vdelta.
+        // And if (aNorme / 16) < theDeflection2, this approach gives
+        // fleche < theDeflection2 independently of real curve.
+        // That is why we exclude case aNorme < (16. * theDeflection2)
         isFlecheOk = Standard_True;
       }
     }
   }
-  if (!isFlecheOk)
+
+  gp_Pnt aPmid ((thePdeb.XYZ() + aPdelta.XYZ()) * 0.5);
+  gp_Pnt aPverif (Value (theC, theUdeb + aUdelta * 0.5));
+  Standard_Real aFlecheMidMid = aPmid.SquareDistance (aPverif);
+
+  if (isFlecheOk)
   {
-    gp_Pnt aPmid ((thePdeb.XYZ() + aPdelta.XYZ()) * 0.5);
-    gp_Pnt aPverif (Value (theC, theUdeb + aUdelta * 0.5));
-    aFleche = aPmid.SquareDistance (aPverif);
+    // Algorithm, evaluating "fleche" by interpolation,
+    // can give false-positive result.
+    // So we check also distance between Pmid and Pverif (aFlecheMidMid).
+    // But aFlecheMidMid gives worse result in case of non-uniform parameterisation.
+    // Maximum aFlecheMidMid, that seems reasonable, is (chord/2)^2 + theDeflection2
+    //   .---------------.Pverif  .
+    //   |               |        | Deflection
+    //   ._______. ______.        .
+    // Pdeb    Pmid    Pdelta
+    if (aFlecheMidMid > aNorme/4. + theDeflection2)
+    //if (aFlecheMidMid > aNorme/4.)
+    {
+      aFleche = aFlecheMidMid;
+    }
+  }
+  else
+  {
+    aFleche = aFlecheMidMid;
   }
 
   if (aFleche < theDeflection2)
