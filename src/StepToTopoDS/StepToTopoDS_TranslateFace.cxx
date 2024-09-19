@@ -433,264 +433,286 @@ StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace(const Handle(StepVisual_T
 // ============================================================================
 static inline Standard_Boolean isReversed(const Handle(StepGeom_Surface)& theStepSurf)
 {
-  Handle(StepGeom_ToroidalSurface) aStepTorSur;
   if(theStepSurf->IsKind(STANDARD_TYPE(StepGeom_RectangularTrimmedSurface)))
+  {
     return isReversed(Handle(StepGeom_RectangularTrimmedSurface)::DownCast(theStepSurf)->BasisSurface());
-  
+  }
   else
-    aStepTorSur = Handle(StepGeom_ToroidalSurface)::DownCast(theStepSurf);
-  
-  return (!aStepTorSur.IsNull() && aStepTorSur->MajorRadius() < 0 ? Standard_True : Standard_False);
+  {
+    Handle(StepGeom_ToroidalSurface) aStepTorSur =
+        Handle(StepGeom_ToroidalSurface)::DownCast(theStepSurf);
+    return !aStepTorSur.IsNull() && aStepTorSur->MajorRadius() < 0.;
+  }
 }
 
 // ============================================================================
 // Method  : Init
 // Purpose : Init with a FaceSurface and a Tool
 // ============================================================================
-void StepToTopoDS_TranslateFace::Init(const Handle(StepShape_FaceSurface)& FS,
-                                      StepToTopoDS_Tool& aTool,
-                                      StepToTopoDS_NMTool& NMTool,
-                                      const StepData_Factors& theLocalFactors)
+void StepToTopoDS_TranslateFace::Init (const Handle (StepShape_FaceSurface)& theFaceSurface,
+                                       StepToTopoDS_Tool&                    theTopoDSTool,
+                                       StepToTopoDS_NMTool&                  theTopoDSToolNM,
+                                       const StepData_Factors&               theLocalFactors)
 {
   done = Standard_True;
-  if (aTool.IsBound(FS)) {
-    myResult = TopoDS::Face(aTool.Find(FS));
-    myError = StepToTopoDS_TranslateFaceDone;
-    done = Standard_True;
+  if (theTopoDSTool.IsBound (theFaceSurface))
+  {
+    myResult = TopoDS::Face (theTopoDSTool.Find (theFaceSurface));
+    myError  = StepToTopoDS_TranslateFaceDone;
+    done     = Standard_True;
     return;
   }
-  
-  Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
-  
+
+  // Within a context of this method this object is used for message handling only.
+  Handle (Transfer_TransientProcess) aMessageHandler = theTopoDSTool.TransientProcess();
+
   // ----------------------------------------------
   // Map the Face Geometry and create a TopoDS_Face
   // ----------------------------------------------
-  Handle(StepGeom_Surface) StepSurf = FS->FaceGeometry();
-
-   // sln 01.10.2001 BUC61003. If corresponding entity was read with error StepSurface may be NULL. In this case we exit from function
-  if ( StepSurf.IsNull() ) {
-    TP->AddFail(StepSurf," Surface has not been created");
+  Handle (StepGeom_Surface) aStepGeomSurface = theFaceSurface->FaceGeometry();
+  // sln 01.10.2001 BUC61003. If corresponding entity was read with error StepSurface may be NULL.
+  // In this case we exit from function
+  if (aStepGeomSurface.IsNull())
+  {
+    aMessageHandler->AddFail (aStepGeomSurface, " Surface has not been created");
     myError = StepToTopoDS_TranslateFaceOther;
-    done = Standard_False;
+    done    = Standard_False;
     return;
   }
 
   // [BEGIN] Added to process non-manifold topology (ssv; 14.11.2010)
-  if ( NMTool.IsActive() && NMTool.IsBound(StepSurf) ) {
-    TopoDS_Shape existingShape = NMTool.Find(StepSurf);
+  if (theTopoDSToolNM.IsActive() && theTopoDSToolNM.IsBound (aStepGeomSurface))
+  {
+    TopoDS_Shape anExistingShape = theTopoDSToolNM.Find (aStepGeomSurface);
     // Reverse shape's orientation for the next shell
-    existingShape.Reverse();
-    myResult = existingShape;
+    anExistingShape.Reverse();
+    myResult = anExistingShape;
     myError  = StepToTopoDS_TranslateFaceDone;
-    done = Standard_True;
+    done     = Standard_True;
     return;
   }
   // [END] Added to process non-manifold topology (ssv; 14.11.2010)
 
-  if (StepSurf->IsKind(STANDARD_TYPE(StepGeom_OffsetSurface))) //:d4 abv 12 Mar 98
-    TP->AddWarning(StepSurf," Type OffsetSurface is out of scope of AP 214");
-  Handle(Geom_Surface) GeomSurf = StepToGeom::MakeSurface (StepSurf, theLocalFactors);
-  if (GeomSurf.IsNull())
+  if (aStepGeomSurface->IsKind (STANDARD_TYPE (StepGeom_OffsetSurface))) //: d4 abv 12 Mar 98
   {
-    TP->AddFail(StepSurf," Surface has not been created");
+    aMessageHandler->AddWarning (aStepGeomSurface, " Type OffsetSurface is out of scope of AP 214");
+  }
+
+  Handle (Geom_Surface) aGeomSurface = StepToGeom::MakeSurface (aStepGeomSurface, theLocalFactors);
+  if (aGeomSurface.IsNull())
+  {
+    aMessageHandler->AddFail (aStepGeomSurface, " Surface has not been created");
     myError = StepToTopoDS_TranslateFaceOther;
-    done = Standard_False;
+    done    = Standard_False;
     return;
   }
+
   // pdn to force bsplsurf to be periodic
-  Handle(StepGeom_BSplineSurface) sgbss = Handle(StepGeom_BSplineSurface)::DownCast(StepSurf);
-  if (!sgbss.IsNull()) {
-    Handle(Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic(GeomSurf);
-    if (!periodicSurf.IsNull()) {
-      TP->AddWarning(StepSurf, "Surface forced to be periodic");
-      GeomSurf = periodicSurf;
+  if (!Handle (StepGeom_BSplineSurface)::DownCast (aStepGeomSurface).IsNull())
+  {
+    Handle (Geom_Surface) periodicSurf = ShapeAlgo::AlgoContainer()->ConvertToPeriodic (
+      aGeomSurface);
+    if (!periodicSurf.IsNull())
+    {
+      aMessageHandler->AddWarning (aStepGeomSurface, "Surface forced to be periodic");
+      aGeomSurface = periodicSurf;
     }
   }
-    
-  Standard_Boolean sameSenseFace = FS->SameSense();
 
-  //fix for bug 0026376 Solid Works wrote face based on toroidal surface having negative major radius
-  //seems that such case is interpreted  by "Solid Works" and "ProE" as face having reversed orientation.
-  Standard_Boolean sameSense = (isReversed(StepSurf) ? !sameSenseFace : sameSenseFace);
-  
+  // fix for bug 0026376 Solid Works wrote face based on toroidal surface having negative major radius
+  // seems that such case is interpreted  by "Solid Works" and "ProE" as face having reversed orientation.
+  const Standard_Boolean aSameSense = isReversed (aStepGeomSurface) ? !theFaceSurface->SameSense()
+                                                                    : theFaceSurface->SameSense();
+
   // -- Statistics --
-  aTool.AddContinuity (GeomSurf);
-  
-  TopoDS_Face   F;
-  BRep_Builder B;
-  B.MakeFace ( F, GeomSurf, Precision::Confusion() );
-  
+  theTopoDSTool.AddContinuity (aGeomSurface);
+
+  TopoDS_Face  aResultFace;
+  BRep_Builder aFaceBuilder;
+  aFaceBuilder.MakeFace (aResultFace, aGeomSurface, Precision::Confusion());
+
   // ----------------------------------
   // Iterate on each FaceBounds (Wires)
   // ----------------------------------
-  Handle(StepShape_FaceBound) FaceBound;
-  Handle(StepShape_Loop)      Loop;
-  
-  StepToTopoDS_TranslateVertexLoop myTranVL;
-  StepToTopoDS_TranslatePolyLoop   myTranPL;
-  StepToTopoDS_TranslateEdgeLoop   myTranEdgeLoop;
-  
-  Standard_Integer NbBnd = FS->NbBounds();
-
-  // --  Critere de couture simple (CKY, JAN97)
-  // surface periodique (typiquement un cylindre)
-  // 2 face bounds, chacun avec un edge loop d une seule edge
-  //  cette edge est fermee, c-a-d vtx-deb = vtx-fin (pour les deux edges)
-  // est-ce suffisant (verifier que ce sont deux outer-bounds ... ?? comment ?)
-  // Alors on peut dire : face a deux bords dont la couture manque
-  // La couture est entre les deux vertex
-
-  for (Standard_Integer i = 1; i <= NbBnd; i ++) {
-
-#ifdef OCCT_DEBUG
-    std::cout << "    Processing Wire : " << i << std::endl;
-#endif    
-    FaceBound = FS->BoundsValue(i);
-    Loop      = FaceBound->Bound();
-    if (Loop.IsNull())
+  // - Simple sewing criterion (CKY, Jan97)
+  // Periodic surface (typically a cylinder)
+  // 2 face bounds, each with an edge loop from a single edge.
+  // This edge is closed, c-a-d vertex-begin = vertex-end (for the two edges)
+  // Is it sufficient (check that these are two outer-bounds... ?? How?)
+  // Then we can say: face with two edges whose seam is missing
+  // The seam is between the two vertex
+  for (Standard_Integer aBoundIndex = 1; aBoundIndex <= theFaceSurface->NbBounds(); ++aBoundIndex)
+  {
+    Handle (StepShape_FaceBound) aFaceBound = theFaceSurface->BoundsValue (aBoundIndex);
+    if (aFaceBound.IsNull())
     {
       continue;
     }
+    Handle (StepShape_Loop) aFaceLoop = aFaceBound->Bound();
+    if (aFaceLoop.IsNull())
+    {
+      continue;
+    }
+
     // ------------------------
     // The Loop is a VertexLoop
     // ------------------------
-    
-    if (Loop->IsKind(STANDARD_TYPE(StepShape_VertexLoop))) {
-//:S4136      STF.Closed() = Standard_False;
-//  PROBLEME si SPHERE ou TORE
-//  Il faudra faire un wire complet, a condition que le point porte sur la face
-//  En attendant, on ne fait rien
-      Handle(StepShape_VertexLoop) VL = Handle(StepShape_VertexLoop)::DownCast(Loop);
+    if (aFaceLoop->IsKind (STANDARD_TYPE (StepShape_VertexLoop)))
+    {
+      //: S4136      STF.Closed() = Standard_False;
+      //  PROBLEM if SPHERE or TORE
+      // It will be necessary to make a complete wire, provided that the point carries on the face
+      // In the meantime, we do nothing
 
       // abv 10.07.00 pr1sy.stp: vertex_loop can be wrong; so just make natural bounds
-      if (GeomSurf->IsKind (STANDARD_TYPE(Geom_SphericalSurface)) ||
-          GeomSurf->IsKind (STANDARD_TYPE(Geom_BSplineSurface)) || 
-          GeomSurf->IsKind (STANDARD_TYPE(Geom_SurfaceOfRevolution)))
+      if (aGeomSurface->IsKind (STANDARD_TYPE (Geom_SphericalSurface))
+          || aGeomSurface->IsKind (STANDARD_TYPE (Geom_BSplineSurface))
+          || aGeomSurface->IsKind (STANDARD_TYPE (Geom_SurfaceOfRevolution)))
       {
-
-        //  Modification to create natural bounds for face based on the spherical and Bspline surface and having only one bound represented by Vertex loop was made.
-        //  According to the specification of ISO - 10303 part 42:
-        //  "If the face has only one bound and this is of type vertex_loop, then the interior of the face is the domain of the face_surface.face_geometry.
-        //   In such a case the underlying surface shall be closed (e.g. a spherical_surface.)"
-        //  - natural bounds are applied only in case if VertexLoop is only the one  defined face bound.
-        if (NbBnd == 1)
+        // Modification to create natural bounds for face based on the spherical and Bspline
+        // surface and having only one bound represented by Vertex loop was made.
+        // According to the specification of ISO - 10303 part 42:
+        // "If the face has only one bound and this is of type vertex_loop, then the interior of
+        // the face is the domain of the face_surface.face_geometry. In such a case the underlying
+        // surface shall be closed (e.g. a spherical_surface.)"
+        // - natural bounds are applied only in case if VertexLoop is only the one defined face bound.
+        if (theFaceSurface->NbBounds() == 1)
         {
-          BRepBuilderAPI_MakeFace mf(GeomSurf, Precision());
-          for (TopoDS_Iterator it(mf); it.More(); it.Next())
+          BRepBuilderAPI_MakeFace anAuxiliaryFaceBuilder (aGeomSurface, Precision());
+          for (TopoDS_Iterator aFaceIt (anAuxiliaryFaceBuilder); aFaceIt.More(); aFaceIt.Next())
           {
-            B.Add(F, it.Value());
+            aFaceBuilder.Add (aResultFace, aFaceIt.Value());
           }
           continue;
         }
       }
 
-    if (GeomSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {
-      continue;
-    }
-    if (GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane))) {
-      TP->AddWarning(VL, "VertexLoop on plane is ignored");
-      continue; //smh : BUC60809
-    }
-    myTranVL.SetPrecision(Precision());//gka
-    myTranVL.SetMaxTol(MaxTol());
-    myTranVL.Init(VL, aTool, NMTool, theLocalFactors);
-    if (myTranVL.IsDone()) {
-      B.Add(F, myTranVL.Value());
-    }
-    else {
-      TP->AddWarning(VL, " a VertexLoop not mapped to TopoDS");
-    }
-  }
-    
-  // ----------------------
-  // The Loop is a PolyLoop
-  // ----------------------
-    else if (Loop->IsKind(STANDARD_TYPE(StepShape_PolyLoop))) {
-//:S4136      STF.Closed() = Standard_False;
-      Handle(StepShape_PolyLoop) PL = Handle(StepShape_PolyLoop)::DownCast(Loop);
-      F.Orientation ( FS->SameSense() ? TopAbs_FORWARD : TopAbs_REVERSED);
-      myTranPL.SetPrecision(Precision()); //gka
-      myTranPL.SetMaxTol(MaxTol());
-      myTranPL.Init(PL, aTool, GeomSurf, F, theLocalFactors);
-      if (myTranPL.IsDone()) {
-        TopoDS_Wire W = TopoDS::Wire(myTranPL.Value());
-        W.Orientation(FaceBound->Orientation() ? TopAbs_FORWARD : TopAbs_REVERSED);
-        B.Add(F, W);
+      if (aGeomSurface->IsKind (STANDARD_TYPE (Geom_ToroidalSurface)))
+      {
+        continue;
       }
-      else {
-        TP->AddWarning(PL, " a PolyLoop not mapped to TopoDS");
+
+      Handle (StepShape_VertexLoop) aVertexLoop = Handle (StepShape_VertexLoop)::DownCast (
+        aFaceLoop);
+      if (aGeomSurface->IsKind (STANDARD_TYPE (Geom_Plane)))
+      {
+        aMessageHandler->AddWarning (aVertexLoop, "VertexLoop on plane is ignored");
+        continue; // smh : BUC60809
+      }
+
+      StepToTopoDS_TranslateVertexLoop aVertexLoopTranslator;
+      aVertexLoopTranslator.SetPrecision (Precision()); // gka
+      aVertexLoopTranslator.SetMaxTol (MaxTol());
+      aVertexLoopTranslator.Init (aVertexLoop, theTopoDSTool, theTopoDSToolNM, theLocalFactors);
+      if (aVertexLoopTranslator.IsDone())
+      {
+        aFaceBuilder.Add (aResultFace, aVertexLoopTranslator.Value());
+      }
+      else
+      {
+        aMessageHandler->AddWarning (aVertexLoop, " a VertexLoop not mapped to TopoDS");
       }
     }
-    
+    // ----------------------
+    // The Loop is a PolyLoop
+    // ----------------------
+    else if (aFaceLoop->IsKind (STANDARD_TYPE (StepShape_PolyLoop)))
+    {
+      Handle (StepShape_PolyLoop) aPolyLoop = Handle (StepShape_PolyLoop)::DownCast (aFaceLoop);
+      aResultFace.Orientation (theFaceSurface->SameSense() ? TopAbs_FORWARD : TopAbs_REVERSED);
+      StepToTopoDS_TranslatePolyLoop aPolyLoopTranslator;
+      aPolyLoopTranslator.SetPrecision (Precision()); // gka
+      aPolyLoopTranslator.SetMaxTol (MaxTol());
+      aPolyLoopTranslator.Init (aPolyLoop,
+                                theTopoDSTool,
+                                aGeomSurface,
+                                aResultFace,
+                                theLocalFactors);
+      if (aPolyLoopTranslator.IsDone())
+      {
+        TopoDS_Wire aPolyLoopWire = TopoDS::Wire (aPolyLoopTranslator.Value());
+        aPolyLoopWire.Orientation (aFaceBound->Orientation() ? TopAbs_FORWARD : TopAbs_REVERSED);
+        aFaceBuilder.Add (aResultFace, aPolyLoopWire);
+      }
+      else
+      {
+        aMessageHandler->AddWarning (aPolyLoop, " a PolyLoop not mapped to TopoDS");
+      }
+    }
     // -----------------------
     // The Loop is an EdgeLoop
     // -----------------------
-  else if (Loop->IsKind(STANDARD_TYPE(StepShape_EdgeLoop))) {
-    //:S4136      if (STF.Closed()) {
-    //:S4136	Handle(StepShape_EdgeLoop) EL = 
-    //:S4136	  Handle(StepShape_EdgeLoop)::DownCast(FaceBound->Bound());
-    //:S4136	if (EL->NbEdgeList() != 1) STF.Closed() = Standard_False;
-    //:S4136      }
+    else if (aFaceLoop->IsKind (STANDARD_TYPE (StepShape_EdgeLoop)))
+    {
+      StepToTopoDS_TranslateEdgeLoop anEdgeLoopTranslator;
+      anEdgeLoopTranslator.SetPrecision (Precision()); // gka
+      anEdgeLoopTranslator.SetMaxTol (MaxTol());
+      anEdgeLoopTranslator.Init (aFaceBound,
+                                 aResultFace,
+                                 aGeomSurface,
+                                 aStepGeomSurface,
+                                 aSameSense,
+                                 theTopoDSTool,
+                                 theTopoDSToolNM,
+                                 theLocalFactors);
 
-    TopoDS_Wire   W;
-    myTranEdgeLoop.SetPrecision(Precision());  //gka
-    myTranEdgeLoop.SetMaxTol(MaxTol());
-    myTranEdgeLoop.Init(FaceBound, F, GeomSurf, StepSurf, sameSense, aTool, NMTool, theLocalFactors);
+      if (anEdgeLoopTranslator.IsDone())
+      {
+        TopoDS_Wire anEdgeLoopWire = TopoDS::Wire (anEdgeLoopTranslator.Value());
 
-    if (myTranEdgeLoop.IsDone()) {
-      W = TopoDS::Wire(myTranEdgeLoop.Value());
-
-      // STEP Face_Surface orientation :
-      // if the topological orientation is opposite to the geometric
-      // orientation of the surface => the underlying topological 
-      // orientation are not implicitly reversed
-      // this is the case in CAS.CADE => If the face_surface is reversed,
-      // the wire orientation has to be explicitly reversed
-      if (FaceBound->Orientation()) {
-        // *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
-        W.Orientation(sameSense ? TopAbs_FORWARD : TopAbs_REVERSED);
+        // STEP Face_Surface orientation :
+        // if the topological orientation is opposite to the geometric
+        // orientation of the surface => the underlying topological
+        // orientation are not implicitly reversed
+        // this is the case in CAS.CADE => If the face_surface is reversed,
+        // the wire orientation has to be explicitly reversed
+        if (aFaceBound->Orientation())
+        {
+          anEdgeLoopWire.Orientation (aSameSense ? TopAbs_FORWARD : TopAbs_REVERSED);
+        }
+        else
+        {
+          anEdgeLoopWire.Orientation (aSameSense ? TopAbs_REVERSED : TopAbs_FORWARD);
+        }
+        // -----------------------------
+        // The Wire is added to the Face
+        // -----------------------------
+        aFaceBuilder.Add (aResultFace, anEdgeLoopWire);
       }
-      else {
-        // *DTH*	  if (sameSense || GeomSurf->IsKind(STANDARD_TYPE(Geom_Plane)))
-        W.Orientation(sameSense ? TopAbs_REVERSED : TopAbs_FORWARD);
+      else
+      {
+        // Il y a eu un probleme dans le mapping : On perd la Face
+        // (facon de parler ...) Pas de moyen aujourd hui de recuperer
+        // au moins toutes les geometries (Points, Courbes 3D, Surface)
+        aMessageHandler->AddFail (aFaceLoop, " EdgeLoop not mapped to TopoDS");
+
+        // CKY JAN-97 : un Wire manque, eh bien on continue quand meme !!
+        //  sauf si OuterBound : la c est quand meme pas bien normal ...
+        if (aFaceBound->IsKind (STANDARD_TYPE (StepShape_FaceOuterBound)))
+        {
+          aMessageHandler->AddWarning (theFaceSurface, "No Outer Bound : Face not done");
+        }
+        continue;
       }
-      // -----------------------------
-      // The Wire is added to the Face      
-      // -----------------------------
-      B.Add(F, W);
     }
-    else {
-      // Il y a eu un probleme dans le mapping : On perd la Face
-      // (facon de parler ...) Pas de moyen aujourd hui de recuperer
-      // au moins toutes les geometries (Points, Courbes 3D, Surface)
-      TP->AddFail(Loop, " EdgeLoop not mapped to TopoDS");
-
-      // CKY JAN-97 : un Wire manque, eh bien on continue quand meme !!
-      //  sauf si OuterBound : la c est quand meme pas bien normal ...
-      if (FaceBound->IsKind(STANDARD_TYPE(StepShape_FaceOuterBound))) {
-        TP->AddWarning(FS, "No Outer Bound : Face not done");
-      }
-      continue;
-    }
-    }    
-    else { 
+    else
+    {
       // Type not yet implemented or non sens
-      TP->AddFail(Loop," Type of loop not yet implemented");
-#ifdef OCCT_DEBUG
-      std::cout << Loop->DynamicType() << std::endl;
-#endif
+      aMessageHandler->AddFail (aFaceLoop, " Type of loop not yet implemented");
       continue;
     }
   }
 
-  F.Orientation ( FS->SameSense() ? TopAbs_FORWARD : TopAbs_REVERSED);
-  aTool.Bind(FS,F);
+  aResultFace.Orientation (theFaceSurface->SameSense() ? TopAbs_FORWARD : TopAbs_REVERSED);
+  theTopoDSTool.Bind (theFaceSurface, aResultFace);
 
   // Register face in NM tool (ssv; 14.11.2010)
-  if ( NMTool.IsActive() )
-    NMTool.Bind(StepSurf, F);
+  if (theTopoDSToolNM.IsActive())
+  {
+    theTopoDSToolNM.Bind (aStepGeomSurface, aResultFace);
+  }
 
-  myResult = F;
+  myResult = aResultFace;
   myError  = StepToTopoDS_TranslateFaceDone;
   done     = Standard_True;
 }

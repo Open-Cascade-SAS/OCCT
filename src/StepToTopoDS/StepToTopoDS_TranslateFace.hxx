@@ -60,9 +60,9 @@ public:
                                              StepToTopoDS_NMTool& theNMTool,
                                              const StepData_Factors& theLocalFactors = StepData_Factors());
   
-  Standard_EXPORT void Init (const Handle(StepShape_FaceSurface)& FS,
-                             StepToTopoDS_Tool& T,
-                             StepToTopoDS_NMTool& NMTool,
+  Standard_EXPORT void Init (const Handle(StepShape_FaceSurface)& theFaceSurface,
+                             StepToTopoDS_Tool& theTopoDSTool,
+                             StepToTopoDS_NMTool& theTopoDSToolNM,
                              const StepData_Factors& theLocalFactors = StepData_Factors());
   
   Standard_EXPORT void Init (const Handle(StepVisual_TessellatedFace)& theTF,
