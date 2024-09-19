@@ -565,9 +565,10 @@ void StepToTopoDS_TranslateFace::Init (const Handle (StepShape_FaceSurface)& the
       // In the meantime, we do nothing
 
       // abv 10.07.00 pr1sy.stp: vertex_loop can be wrong; so just make natural bounds
-      if (aGeomSurface->IsKind (STANDARD_TYPE (Geom_SphericalSurface))
-          || aGeomSurface->IsKind (STANDARD_TYPE (Geom_BSplineSurface))
-          || aGeomSurface->IsKind (STANDARD_TYPE (Geom_SurfaceOfRevolution)))
+      if ((aGeomSurface->IsKind (STANDARD_TYPE (Geom_SphericalSurface))
+           || aGeomSurface->IsKind (STANDARD_TYPE (Geom_BSplineSurface))
+           || aGeomSurface->IsKind (STANDARD_TYPE (Geom_SurfaceOfRevolution)))
+          && (theFaceSurface->NbBounds() == 1))
       {
         // Modification to create natural bounds for face based on the spherical and Bspline
         // surface and having only one bound represented by Vertex loop was made.
@@ -576,15 +577,12 @@ void StepToTopoDS_TranslateFace::Init (const Handle (StepShape_FaceSurface)& the
         // the face is the domain of the face_surface.face_geometry. In such a case the underlying
         // surface shall be closed (e.g. a spherical_surface.)"
         // - natural bounds are applied only in case if VertexLoop is only the one defined face bound.
-        if (theFaceSurface->NbBounds() == 1)
+        BRepBuilderAPI_MakeFace anAuxiliaryFaceBuilder (aGeomSurface, Precision());
+        for (TopoDS_Iterator aFaceIt (anAuxiliaryFaceBuilder); aFaceIt.More(); aFaceIt.Next())
         {
-          BRepBuilderAPI_MakeFace anAuxiliaryFaceBuilder (aGeomSurface, Precision());
-          for (TopoDS_Iterator aFaceIt (anAuxiliaryFaceBuilder); aFaceIt.More(); aFaceIt.Next())
-          {
-            aFaceBuilder.Add (aResultFace, aFaceIt.Value());
-          }
-          continue;
+          aFaceBuilder.Add (aResultFace, aFaceIt.Value());
         }
+        continue;
       }
 
       if (aGeomSurface->IsKind (STANDARD_TYPE (Geom_ToroidalSurface)))
