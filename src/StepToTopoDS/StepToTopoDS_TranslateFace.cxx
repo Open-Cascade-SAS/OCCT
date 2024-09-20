@@ -679,13 +679,12 @@ void StepToTopoDS_TranslateFace::Init (const Handle (StepShape_FaceSurface)& the
       }
       else
       {
-        // Il y a eu un probleme dans le mapping : On perd la Face
-        // (facon de parler ...) Pas de moyen aujourd hui de recuperer
-        // au moins toutes les geometries (Points, Courbes 3D, Surface)
+        // There was a problem in the mapping: We lost Face (so to speak...).
+        // No way today to recover at least all the geometries (Points, 3D Curves, Surface).
         aMessageHandler->AddFail (aFaceLoop, " EdgeLoop not mapped to TopoDS");
 
-        // CKY JAN-97 : un Wire manque, eh bien on continue quand meme !!
-        //  sauf si OuterBound : la c est quand meme pas bien normal ...
+        // CKY JAN-97: a Wire is missing, well we continue anyway
+        // unless OuterBound: that's still not quite normal...
         if (aFaceBound->IsKind (STANDARD_TYPE (StepShape_FaceOuterBound)))
         {
           aMessageHandler->AddWarning (theFaceSurface, "No Outer Bound : Face not done");
