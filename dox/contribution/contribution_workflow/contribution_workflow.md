@@ -1,19 +1,18 @@
-Contribution Workflow {#occt_contribution__contribution_workflow}
-====================================
+<h1><a id="occt_contribution__contribution_workflow" class="anchor">Contribution Workflow</a></h1>
 @tableofcontents 
 
-@section occt_contribution_intro Introduction
+<h2><a id="occt_contribution_intro">Introduction</a></h2>
 
 The purpose of this document is to describe standard workflow for processing contributions to certified version of OCCT. 
 
-@subsection occt_contribution_intro_tracker Use of issue tracker system
+<h3><a id="occt_contribution_intro_tracker">Use of issue tracker system</a></h3>
 
 Each contribution should have corresponding issue (bug, or feature, or integration request) 
 registered in the MantisBT issue tracker system accessible by URL 
 https://tracker.dev.opencascade.org.
 The issue is processed according to the described workflow.
 
-@subsection occt_contribution_intro_access Access levels
+<h3><a id="occt_contribution_intro_access">Access levels</a></h3>
 
 Access level defines the permissions of the user to view, register and modify issues in the issue tracker. 
 The correspondence of access level and user permissions is defined in the table below.
@@ -30,17 +29,17 @@ The correspondence of access level and user permissions is defined in the table 
 
 According to his access level, the user can participate in the issue handling process under different roles, as described below.
 
-@section occt_contribution_workflow Standard workflow for an issue
+<h2><a id="occt_contribution_workflow">Standard workflow for an issue</a></h2>
 
-@subsection occt_contribution_workflow_general General scheme
+<h3><a id="occt_contribution_workflow_general">General scheme</a></h3>
 
 <center>
-@figure{OCCT_ContributionWorkflow_V3_image001.svg,"Standard life cycle of an issue",360}
+<img src="images/OCCT_ContributionWorkflow_V3_image001.svg" alt="Standard life cycle of an issue" width="360">
 </center>
   
-@subsection occt_contribution_workflow_issue Issue registration
+<h3><a id="occt_contribution_workflow_issue">Issue registration</a></h3>
 
-An issue is registered in Mantis bugtracker by the **Reporter** with definition of the necessary attributes (see also @ref occt_contribution_app):
+An issue is registered in Mantis bugtracker by the **Reporter** with definition of the necessary attributes (see also [Link](#occt_contribution_app)):
 
 **Category** -- indicates the OCCT component, to which the issue relates.
     (If in doubt, assign to OCCT:Foundation Classes.)
@@ -100,7 +99,7 @@ When the number sign or the tilde followed by digits are a part of a normal text
 **Steps To Reproduce** -- allows describing in detail how to reproduce the issue. 
 
 This information is crucial for the developer to investigate the cause of the problem and to create the test case.
-The optimal approach is to give a sequence of @ref occt_user_guides__test_harness "DRAW Test Harness" commands to reproduce the problem in DRAW.
+The optimal approach is to give a sequence of [DRAW Test Harness](#occt_user_guides__test_harness) commands to reproduce the problem in DRAW.
 This information can also be provided as a DRAW Tcl script attached to the issue (in **Upload File** field).
 
 **Additional information and documentation updates** -- any additional information, remarks to be taken into account in Release Notes, etc.. 
@@ -112,7 +111,7 @@ Where applicable, pictures demonstrating a problem and/or desired result can be 
   
 The newly registered issue gets status **NEW** and is assigned to the person indicated in the **Assign to** field. 
 
-@subsection occt_contribution_workflow_assign Assigning the issue
+<h3><a id="occt_contribution_workflow_assign">Assigning the issue</a></h3>
 
 The description of the new issue is checked by the **Maintainer** and if it is feasible, he may assign the issue to a **Developer**.
 Alternatively, any user with **Developer** access level or higher can assign the issue to himself if he wants to provide a solution. 
@@ -124,7 +123,7 @@ That decision shall be documented in the comments to the issue in the Bugtracker
 
 The assigned issue has status **ASSIGNED**.
 
-@subsection occt_contribution_workflow_fix Resolving the issue
+<h3><a id="occt_contribution_workflow_fix">Resolving the issue</a></h3>
 
 The **Developer** responsible for the issue assigned to him provides a solution including:
 
@@ -137,58 +136,58 @@ Then the issue is switched to **RESOLVED** for further review and testing.
 
 The following sub-sections describe this process, relevant requirements and options, in more details.
 
-@subsubsection  occt_contribution_workflow_fix_code Requirements to the code modification
+<h4><a id="occt_contribution_workflow_fix_code">Requirements to the code modification</a></h4>
  
 The amount of code affected by the change should be limited to the changes required for the bug fix or improvement.
 Change of layout or re-formatting of the existing code is allowed only in the parts where meaningful changes related to the issue have been made.
 
 @note If deemed useful, re-formatting or cosmetic changes affecting considerable parts of the code can be made within a dedicated issue.
 
-The changes should comply with the OCCT @ref occt_contribution__coding_rules "Codng Rules". 
+The changes should comply with the OCCT [Codng Rules](#occt_contribution__coding_rules). 
 It is especially important to comment the code properly so that other people can understand it easier.
 
 The modification should be tested by running OCCT tests (on the platform and scope available to **Developer**) and ensuring absence of regressions.
 In case if modification affects results of some existing test case and the new result is correct,
-such test case should be updated to report OK (or BAD), as described in @ref testmanual_details_results "Automated Test System / Interpretation of Test Results".
+such test case should be updated to report OK (or BAD), as described in [Automated Test System / Interpretation of Test Results](#testmanual_details_results).
       
-@subsubsection occt_contribution_workflow_fix_test Providing a test case
+<h4><a id="occt_contribution_workflow_fix_test">Providing a test case</a></h4>
 
 For modifications affecting OCCT functionality, a test case should be created (unless already exists) and included in the commit or patch.
-See @ref testmanual_intro_quick_create "Automated Test System / Creating a New Test" for relevant instructions.
+See [Automated Test System / Creating a New Test](#testmanual_intro_quick_create) for relevant instructions.
 
 The data files required for a test case should be attached to the corresponding issue in Mantis (i.e. not included in the commit).
 
 When the test case cannot be provided for any reason, the maximum possible information on how the problem can be reproduced and how to check the fix should be provided in the **Steps to Reproduce** field of an issue.
 
-@subsubsection  occt_contribution_workflow_fix_doc Updating user and developer guides
+<h4><a id="occt_contribution_workflow_fix_doc">Updating user and developer guides</a></h4>
 
-If the change affects a functionality described in @ref user_guides "User Guides", the corresponding user guide should be updated to reflect the change.
+If the change affects a functionality described in [User Guides](#user_guides), the corresponding user guide should be updated to reflect the change.
 
-If the change affects OCCT test system, build environment, or development tools described in @ref build_upgrade "Build, Debug and Upgrade" or @ref contribution "Contribution", the corresponding guide should be updated.
+If the change affects OCCT test system, build environment, or development tools described in [Build, Debug and Upgrade](#build_upgrade) or [Contribution](#contribution), the corresponding guide should be updated.
  
-The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document @ref occt__upgrade "Upgrade from previous OCCT versions".
+The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document [Upgrade from previous OCCT versions](#occt__upgrade).
 It is recommended to add a sub-section for each change described.
 The description should provide the explanation of the incompatibility introduced by the change, and describe how it can be resolved (at least, in known situations).
 When feasible, the automatic upgrade procedure (adm/upgrade.tcl) can be extended by a new option to perform the required upgrade of the dependent code automatically. 
 
-@subsubsection  occt_contribution_workflow_fix_git Submission of change as a Git branch
+<h4><a id="occt_contribution_workflow_fix_git">Submission of change as a Git branch</a></h4>
   
 The modification of sources should be provided in the dedicated branch of the official OCCT Git repository.
 
-The branch should contain a single commit, with the appropriate commit message (see @ref occt_contribution_workflow_fix_commit "Requirements to the commit message" below).
+The branch should contain a single commit, with the appropriate commit message (see [Requirements to the commit message](#occt_contribution_workflow_fix_commit) below).
 
 In general, this branch should be based on the recent version of the master branch.
 It is highly preferable to submit changes basing on the current master.
 In case if the fix is implemented on the previous release of OCCT, the branch can be based on the corresponding tag in Git, instead of the master.
   
 The branch name should be composed of letters **CR** (abbreviation of "Change Request") followed by the issue ID number (without leading zeros). 
-It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix (see @ref occt_contribution_nonstd_rebase).
+It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix (see [Link](#occt_contribution_nonstd_rebase)).
 
-See @ref occt_contribution__git_guide "Guide to using GIT" for help.
+See [Guide to using GIT](#occt_contribution__git_guide) for help.
 
 @note When a branch with the name given according to the above rule is pushed to Git, a note is automatically added to the corresponding issue in Mantis, indicating the person who has made the push, the commit hash, and (for new commits) the description.
   
-@subsubsection  occt_contribution_workflow_fix_commit Requirements to the commit message
+<h4><a id="occt_contribution_workflow_fix_commit">Requirements to the commit message</a></h4>
 
 The commit message posted in Git constitutes an integral part of both the fix and the release documentation.
 
@@ -211,7 +210,7 @@ Example:
 Provide sufficient context so that potential user of the affected functionality can understand what has been changed and how the algorithm works now.
 Describe reason and essence of the changes made, but do not go too deep into implementation details -- these should be reflected in comments in the code.
 
-@subsubsection occt_contribution_workflow_fix_resolve Marking issue as resolved
+<h4><a id="occt_contribution_workflow_fix_resolve">Marking issue as resolved</a></h4>
 
 To mark the change as ready for review and testing, the corresponding issue should be switched to **RESOLVED** state.
 By default, the issue gets assigned to the **Maintainer** of the component, who is thus responsible for its review. 
@@ -225,9 +224,9 @@ The possible variants are:
 * N/A (Not required / Not possible / Not applicable);
 * Reference to an issue in the bug tracker of another project.
 
-@subsection occt_contribution_workflow_review Code review
+<h3><a id="occt_contribution_workflow_review">Code review</a></h3>
 
-The **Reviewer** analyzes the proposed solution for applicability in accordance with OCCT @ref occt_contribution__coding_rules "Coding Rules" and examines all changes in the sources, test case(s), and documentation to detect obvious and possible errors, misprints, or violations of the coding style. 
+The **Reviewer** analyzes the proposed solution for applicability in accordance with OCCT [Coding Rules](#occt_contribution__coding_rules) and examines all changes in the sources, test case(s), and documentation to detect obvious and possible errors, misprints, or violations of the coding style. 
 
 If the Reviewer detects some problems, he can either:
 
@@ -242,12 +241,12 @@ If the Reviewer detects some problems, he can either:
 If Reviewer does not detect any problems, or provides a corrected version, he changes status to **REVIEWED**.
 The issue gets assigned to the **Bugmaster**.
 
-@subsection occt_contribution_workflow_test Testing
+<h3><a id="occt_contribution_workflow_test">Testing</a></h3>
 
   The issues that are in **REVIEWED** state are subject of certification (non-regression) testing. 
   The issue is assigned to an OCCT **Tester** when he starts processing it.
 
-  If the branch submitted for testing is based on obsolete status of the master branch, **Tester** @ref occt_contribution_nonstd_rebase "rebases" it on master HEAD.
+  If the branch submitted for testing is based on obsolete status of the master branch, **Tester** [rebases](#occt_contribution_nonstd_rebase) it on master HEAD.
   In case of conflicts, the issue is assigned back to **Developer** in **FEEDBACK** status, requesting for a rebase.
 
   Certification testing includes:
@@ -264,9 +263,9 @@ If the **Tester** does not detect problems or regressions, he changes the status
 If the **Tester** detects build problems or regressions, he changes the status to **ASSIGNED** and reassigns the issue to the **Developer** with a detailed description of the problems. 
 The **Developer** should analyze the reported problems and, depending on results of this analysis, either:
 * Confirm that the detected problems are expected changes and they should be accepted as a new status of the code. Then the issue should be switched to **FEEDBACK** and assigned to the **Bugmaster**.
-* Produce a new solution (see @ref occt_contribution_workflow_fix, and also @ref occt_contribution_nonstd_minor).
+* Produce a new solution (see [Link](#occt_contribution_workflow_fix), and also [Link](#occt_contribution_nonstd_minor)).
 
-@subsection occt_contribution_workflow_integrate Integration of a solution
+<h3><a id="occt_contribution_workflow_integrate">Integration of a solution</a></h3>
 
 Before integration into the master branch of the repository the **Integrator** checks the following conditions:
     * the change has been reviewed;
@@ -281,7 +280,7 @@ Each change is integrated as a single commit without preserving the history of c
 This is done to have the master branch history plain and clean.
 The following picture illustrates the process:
   
-@figure{OCCT_ContributionWorkflow_V3_image002.png,"Integration of several branches",420}
+<img src="images/OCCT_ContributionWorkflow_V3_image002.png" alt="Integration of several branches" width="420">
   
 The new integration branch is tested against possible regressions that might appear due to interference between separate changes.
 When the tests are OK, the integration branch is pushed as the new master to the official repository.
@@ -289,12 +288,12 @@ The issue status is set then to **VERIFIED** and is assigned to the **Reporter**
 
 The branches corresponding to the integrated fixes are removed from the repository by the **Bugmaster**.
 
-@subsection occt_contribution_workflow_close Closing an issue
+<h3><a id="occt_contribution_workflow_close">Closing an issue</a></h3>
 
 When possible, the **Reporter** should check whether the problem is actually resolved in the environment where it has been discovered, after the fix is integrated to master.
 If the fix does not actually resolve the original problem, the issue in **VERIFIED** status can be reopened and assigned back to the **Developer** for rework.
 The details on how to check that the issue is still reproducible should be provided.
-However, if the issue does resolve the problem as described in the original report, but a similar problem is discovered for another input data or configuration, or the fix has caused a regression, that problem should be registered as a separate (@ref occt_contribution_nonstd_relate "related") issue.
+However, if the issue does resolve the problem as described in the original report, but a similar problem is discovered for another input data or configuration, or the fix has caused a regression, that problem should be registered as a separate ([related](#occt_contribution_nonstd_relate)) issue.
 
 If the fix integrated to master causes regressions, **Bugmaster** can revert it and reopen the issue.
 
@@ -303,19 +302,19 @@ The final issue state is **CLOSED**.
 
 The field **Fixed in Version** of the issue is set to the OCCT version where it is fixed.
 
-@section occt_contribution_nonstd Additional workflow elements
+<h2><a id="occt_contribution_nonstd">Additional workflow elements</a></h2>
 
-@subsection occt_contribution_nonstd_feedback Requesting more information or specific action
+<h3><a id="occt_contribution_nonstd_feedback">Requesting more information or specific action</a></h3>
 
 If, at any step of the issue lifetime, the person responsible for it cannot process it due to absence of required information, expertise, or rights, he can switch it to status **FEEDBACK** and assign to the person who is (presumably) able to resolve the block. Some examples of typical situations where **FEEDBACK** is used are:
 
 * The **Maintainer** or the **Developer** requests for more information from the **Reporter** to reproduce the issue;
 * The **Tester** requests the **Developer** or the **Maintainer** to help him in the interpretation of testing results; 
-* The **Developer** or the **Maintainer** asks the **Bugmaster** to close the issue that is found irrelevant or already fixed (see @ref occt_contribution_nonstd_autofix).
+* The **Developer** or the **Maintainer** asks the **Bugmaster** to close the issue that is found irrelevant or already fixed (see [Link](#occt_contribution_nonstd_autofix)).
 
 In general, issues with status **FEEDBACK** should be processed as fast as possible, to avoid unjustified delays.
 
-@subsection occt_contribution_nonstd_relate Defining relationships between issues
+<h3><a id="occt_contribution_nonstd_relate">Defining relationships between issues</a></h3>
 
 When two or more issues are related to each other, this relationship should be reflected in the issue tracker.
 It is also highly recommended to add a note to explain the relationship.
@@ -328,14 +327,14 @@ Typical cases of relationships are:
 When the fix made for one issue also resolves  another one, these issues should be marked as related or duplicate.
 In general, the duplicate issue should have the same status, and, when closed, be marked as fixed in the same OCCT version, as the main one.
 
-@subsection  occt_contribution_nonstd_patch Submission of a change as a patch
+<h3><a id="occt_contribution_nonstd_patch">Submission of a change as a patch</a></h3>
   
 In some cases (if Git is not accessible for the contributor), external contributions can be submitted as a patch file (generated by *diff* command) or as modified sources attached to the Mantis issue.
 The OCCT version, for which the patch is generated, should be clearly specified (e.g. as hash code of Git commit if the patch is based on an intermediate state of the master).
   
 @note Such contributions should be put to Git by someone else (e.g. the **Reviewer**), this may cause delay in their processing.
   
-@subsection occt_contribution_nonstd_rebase Updating branches in Git
+<h3><a id="occt_contribution_nonstd_rebase">Updating branches in Git</a></h3>
 
 Updates of the existing branch (e.g. taking into account the remarks of the **Reviewer**, or fixing regressions) should be provided as new commits on top of previous state of the branch.
 
@@ -350,12 +349,12 @@ To avoid confusions, the branch corresponding to the latest version of the chang
 
 @note Make sure to revise the commit message after squashing a branch, to keep it meaningful and comprehensive.
 
-@subsection occt_contribution_nonstd_minor Minor corrections
+<h3><a id="occt_contribution_nonstd_minor">Minor corrections</a></h3>
 
 In some cases review remarks or results of testing require only minor corrections to be done in the branch containing a change.
 "Minor" implies that the correction does not impact the functionality and does not affect the description of the previously committed change.
 
-As an exception to general @ref occt_contribution_workflow_fix_git "single-commit rule", it is allowed to put such minor corrections on top of the existing branch as a separate commit, and re-submit it for further processing in the same branch, without squashing.
+As an exception to general [single-commit rule](#occt_contribution_workflow_fix_git), it is allowed to put such minor corrections on top of the existing branch as a separate commit, and re-submit it for further processing in the same branch, without squashing.
 
 Minor commits should have a single-line message starting with #.
 These messages will be ignored when the branch is squashed at integration.
@@ -367,7 +366,7 @@ Typical cases of minor corrections are:
 * Addition or correction of comments or documentation;
 * Corrections of code formatting (e.g. reversion of irrelevant formatting changes made in the main commit).
 
-@subsection occt_contribution_nonstd_autofix Handling non-reproducible issues
+<h3><a id="occt_contribution_nonstd_autofix">Handling non-reproducible issues</a></h3>
 
 Investigation of each issue starts with reproducing it on current development version (master).
 
@@ -383,9 +382,9 @@ Otherwise, if the issue is fixed in one of previous releases, the **Bugmaster** 
 If the issue cannot be reproduced due to an unclear description, missing data, etc., it should be assigned back to the **Reporter** in **FEEDBACK** status, requesting for more information.
 The **Reporter** should provide additional information within one month; after that time, if no new information is provided, the issue should be closed by the **Bugmaster** with resolution **Unable to reproduce**. 
 
-@section occt_contribution_app Appendix: Issue attributes
+<h2><a id="occt_contribution_app">Appendix: Issue attributes</a></h2>
 
-@subsection occt_contribution_app_category Category
+<h3><a id="occt_contribution_app_category">Category</a></h3>
 
 The category corresponds to the component of OCCT where the issue is found:
     
@@ -410,7 +409,7 @@ The category corresponds to the component of OCCT where the issue is found:
   | Website:Git                  | OCCT Git repository, git.dev.opencascade.org           |
 
 
-@subsection occt_contribution_app_severity Severity
+<h3><a id="occt_contribution_app_severity">Severity</a></h3>
 
   Severity shows at which extent the issue affects the product. 
   The list of used severities is given in the table below in the descending order.
@@ -428,7 +427,7 @@ The category corresponds to the component of OCCT where the issue is found:
   | integration request | Requested integration of an existing feature into the product. |
   | just a question       | A question to be processed, without need   of any changes in the product. |
 
-@subsection occt_contribution_app_status Status
+<h3><a id="occt_contribution_app_status">Status</a></h3>
 
   The bug statuses that can be applied to the issues are listed in the table below. 
   
@@ -445,7 +444,7 @@ The category corresponds to the component of OCCT where the issue is found:
   | Verified             | The fix has been integrated into the master of the corresponding repository |
   | Closed + resolution  | The fix has been integrated to the master. The corresponding test case has been executed successfully. The issue is no longer reproduced. |
 
-@subsection occt_contribution_app_resolution Resolution
+<h3><a id="occt_contribution_app_resolution">Resolution</a></h3>
 
   **Resolution** is set when the bug is closed. "Reopen" resolution is added automatically when the bug is reopened.
 

@@ -1,5 +1,4 @@
-Specifications {#specification}
-=============
+<h1><a id="specification" class="anchor">Specifications</a></h1>
 
 This chapter contains the detailed specifications information:
 

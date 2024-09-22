@@ -1,28 +1,27 @@
-Modeling: Bottle Tutorial {#occt__tutorial}
-=======
+<h1><a id="occt__tutorial" class="anchor">Modeling: Bottle Tutorial</a></h1>
 
 @tableofcontents
 
-@section sec1 Overview 
+<h2><a id="sec1">Overview </a></h2>
 
 
 This tutorial will teach you how to use Open CASCADE Technology services to model a 3D object. The purpose of this tutorial is not to describe all Open CASCADE Technology classes but to help you start thinking in terms of Open CASCADE Technology as a tool. 
 
 
-@subsection OCCT_TUTORIAL_SUB1_1 Prerequisites 
+<h3><a id="OCCT_TUTORIAL_SUB1_1">Prerequisites </a></h3>
 
 This tutorial assumes that you have experience in using and setting up C++.
 From a programming standpoint, Open CASCADE Technology is designed to enhance your C++ tools with 3D modeling classes, methods and functions. The combination of all these resources will allow you to create substantial applications.
 
-@subsection OCCT_TUTORIAL_SUB1_2 The Model
+<h3><a id="OCCT_TUTORIAL_SUB1_2">The Model</a></h3>
 
 To illustrate the use of classes provided in the 3D geometric modeling toolkits, you will create a bottle as shown:
 
-@figure{/tutorial/images/tutorial_image001.png,"",240} height=350px
+<img src="images/tutorial_image001.png" alt="" width="240"> height=350px
 
 In the tutorial we will create, step-by-step, a function that will model a bottle as shown above. You will find the complete source code of this tutorial, including the very function *MakeBottle* in the distribution of Open CASCADE Technology. The function body is provided in the file samples/qt/Tutorial/src/MakeBottle.cxx.
 
-@subsection OCCT_TUTORIAL_SUB1_3 Model Specifications
+<h3><a id="OCCT_TUTORIAL_SUB1_3">Model Specifications</a></h3>
 
 We first define the bottle specifications as follows:
 
@@ -34,7 +33,7 @@ We first define the bottle specifications as follows:
 
 In addition, we decide that the bottle's profile (base) will be centered on the origin of the global Cartesian coordinate system.
 
-@figure{/tutorial/images/tutorial_image002.png,"",240} height=350px
+<img src="images/tutorial_image002.png" alt="" width="240"> height=350px
 
 This modeling requires four steps:
 
@@ -44,13 +43,13 @@ This modeling requires four steps:
   * build the result compound
 
   
-@section sec2 Building the Profile 
+<h2><a id="sec2">Building the Profile </a></h2>
 
-@subsection OCCT_TUTORIAL_SUB2_1 Defining Support Points
+<h3><a id="OCCT_TUTORIAL_SUB2_1">Defining Support Points</a></h3>
 
 To create the bottle's profile, you first create characteristic points with their coordinates as shown below in the (XOY) plane. These points will be the supports that define the geometry of the profile.
 
-@figure{tutorial/images/tutorial_image003.svg,"",466}
+<img src="images/tutorial/images/tutorial_image003.svg" alt="" width="466">
 
 There are two classes to describe a 3D Cartesian point from its X, Y and Z coordinates in Open CASCADE Technology:
 
@@ -80,10 +79,10 @@ Once your objects are instantiated, you can use methods provided by the class to
 Standard_Real xValue1 = aPnt1.X();
 ~~~~
 
-@subsection OCCT_TUTORIAL_SUB2_2 Profile: Defining the Geometry
+<h3><a id="OCCT_TUTORIAL_SUB2_2">Profile: Defining the Geometry</a></h3>
 With the help of the previously defined points, you can compute a part of the bottle's profile geometry. As shown in the figure below, it will consist of two segments and one arc.
 
-@figure{/tutorial/images/tutorial_image004.png,"",240}
+<img src="images/tutorial_image004.png" alt="" width="240">
 
 To create such entities, you need a specific data structure, which implements 3D geometric objects. This can be found in the Geom package of Open CASCADE Technology.
 In Open CASCADE Technology a package is a group of classes providing related functionality. The classes have names that start with the name of a package they belong to. For example, *Geom_Line* and *Geom_Circle* classes belong to the *Geom* package. The *Geom* package implements 3D geometric objects: elementary curves and surfaces are provided as well as more complex ones (such as *Bezier* and *BSpline*).
@@ -115,7 +114,7 @@ All *GC* classes provide a casting method to obtain a result automatically with 
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB2_3 Profile: Defining the Topology
+<h3><a id="OCCT_TUTORIAL_SUB2_3">Profile: Defining the Topology</a></h3>
 
 
 You have created the support geometry of one part of the profile but these curves are independent with no relations between each other.
@@ -139,7 +138,7 @@ Referring to the previous table, to build the profile, you will create:
   * Three edges out of the previously computed curves.
   * One wire with these edges.
 
-@figure{/tutorial/images/tutorial_image005.png,"",240}
+<img src="images/tutorial_image005.png" alt="" width="240">
     
 However, the *TopoDS* package provides only the data structure of the topological entities. Algorithm classes available to compute standard topological objects can be found in the *BRepBuilderAPI* package.
 To create an edge, you use the BRepBuilderAPI_MakeEdge class with the previously computed curves:
@@ -169,7 +168,7 @@ When building a wire from less than four edges, as in the present case, you can 
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB2_4 Profile: Completing the Profile
+<h3><a id="OCCT_TUTORIAL_SUB2_4">Profile: Completing the Profile</a></h3>
 
 
 Once the first part of your wire is created you need to compute the complete profile. A simple way to do this is to:
@@ -177,7 +176,7 @@ Once the first part of your wire is created you need to compute the complete pro
   * compute a new wire by reflecting the existing one.
   * add the reflected wire to the initial one.
 
-@figure{/tutorial/images/tutorial_image006.png,"",377}
+<img src="images/tutorial_image006.png" alt="" width="377">
 
 To apply a transformation on shapes (including wires), you first need to define the properties of a 3D geometric transformation by using the gp_Trsf class. This transformation can be a translation, a rotation, a scale, a reflection, or a combination of these.
 In our case, we need to define a reflection with respect to the X axis of the global coordinate system. An axis, defined with the gp_Ax1 class, is built out of a point and has a direction (3D unitary vector). There are two ways to define this axis.
@@ -244,10 +243,10 @@ The bottle's profile is almost finished. You have created two wires: *aWire* and
 ~~~~
 
 
-@section sec3 Building the Body
+<h2><a id="sec3">Building the Body</a></h2>
 
 
-@subsection OCCT_TUTORIAL_SUB3_1 Prism the Profile
+<h3><a id="OCCT_TUTORIAL_SUB3_1">Prism the Profile</a></h3>
 
 
 To compute the main body of the bottle, you need to create a solid shape. The simplest way is to use the previously created profile and sweep it along a direction. The *Prism* functionality of Open CASCADE Technology is the most appropriate for that task. It accepts a shape and a direction as input and generates a new shape according to the following rules:
@@ -260,7 +259,7 @@ To compute the main body of the bottle, you need to create a solid shape. The si
 | Face   | Solid              |
 | Shell  | Compound of Solids |
 
-@figure{/tutorial/images/tutorial_image007.png,"",240} height=350px
+<img src="images/tutorial_image007.png" alt="" width="240"> height=350px
 
 Your current profile is a wire. Referring to the Shape/Generates table, you need to compute a face out of its wire to generate a solid.
 To create a face, use the *BRepBuilderAPI_MakeFace* class. As previously explained, a face is a part of a surface bounded by a closed wire. Generally, *BRepBuilderAPI_MakeFace* computes a face out of a surface and one or more wires.
@@ -288,7 +287,7 @@ All the necessary data to create the main body of your bottle is now available. 
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB3_2 Applying Fillets
+<h3><a id="OCCT_TUTORIAL_SUB3_2">Applying Fillets</a></h3>
 
 
 The edges of the bottle's body are very sharp. To replace them by rounded faces, you use the *Fillet* functionality of Open CASCADE Technology.
@@ -297,7 +296,7 @@ For our purposes, we will specify that fillets must be:
   * applied on all edges of the shape
   * have a radius of *myThickness* / 12
 
-@figure{/tutorial/images/tutorial_image008.png,"",240} height=350px
+<img src="images/tutorial_image008.png" alt="" width="240"> height=350px
 
 To apply fillets on the edges of a shape, you use the *BRepFilletAPI_MakeFillet* class. This class is normally used as follows:
 
@@ -348,12 +347,12 @@ Once this is done, you perform the last step of the procedure by asking for the 
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB3_3 Adding the Neck
+<h3><a id="OCCT_TUTORIAL_SUB3_3">Adding the Neck</a></h3>
 
 
 To add a neck to the bottle, you will create a cylinder and fuse it to the body. The cylinder is to be positioned on the top face of the body with a radius of *myThickness* / 4. and a height of *myHeight* / 10.
 
-@figure{/tutorial/images/tutorial_image009.png,"",240} height=350px
+<img src="images/tutorial_image009.png" alt="" width="240"> height=350px
 
 To position the cylinder, you need to define a coordinate system with the *gp_Ax2* class defining a right-handed coordinate system from a point and two directions - the main (Z) axis direction and the X direction (the Y direction is computed from these two).
 To align the neck with the center of the top face, being in the global coordinate system (0, 0, *myHeight*), with its normal on the global Z axis, your local coordinate system can be defined as follows:
@@ -385,7 +384,7 @@ Use *BRepAlgoAPI_Fuse* to fuse the two shapes:
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB3_4 Creating a Hollowed Solid
+<h3><a id="OCCT_TUTORIAL_SUB3_4">Creating a Hollowed Solid</a></h3>
 
 
 Since a real bottle is used to contain liquid material, you should now create a hollowed solid from the bottle's top face.
@@ -395,7 +394,7 @@ In Open CASCADE Technology, a hollowed solid is called a *Thick* *Solid* and is 
   * Create a parallel wall W2 from W1 at a distance D. If D is positive, W2 will be outside the initial solid, otherwise it will be inside.
   * Compute a solid from the two walls W1 and W2.
 
-@figure{/tutorial/images/tutorial_image010.png,"",240} height=350px
+<img src="images/tutorial_image010.png" alt="" width="240"> height=350px
     
 To compute a thick solid, you create an instance of the *BRepOffsetAPI_MakeThickSolid* class by giving the following information:
     
@@ -483,10 +482,10 @@ All the necessary data are now available so you can create your hollowed solid b
 ~~~~
 
 
-@section sec4 Building the Threading
+<h2><a id="sec4">Building the Threading</a></h2>
 
 
-@subsection OCCT_TUTORIAL_SUB4_1 Creating Surfaces
+<h3><a id="OCCT_TUTORIAL_SUB4_1">Creating Surfaces</a></h3>
 
 
 Up to now, you have learned how to create edges out of 3D curves.
@@ -499,7 +498,7 @@ As a first step, you compute these cylindrical surfaces. You are already familia
 
 Using the same coordinate system *neckAx2* used to position the neck, you create two cylindrical surfaces *Geom_CylindricalSurface* with the following radii:
 
-@figure{/tutorial/images/tutorial_image011.png,"",300}
+<img src="images/tutorial_image011.png" alt="" width="300">
 
 Notice that one of the cylindrical surfaces is smaller than the neck. There is a good reason for this: after the thread creation, you will fuse it with the neck. So, we must make sure that the two shapes remain in contact.
 
@@ -510,7 +509,7 @@ Notice that one of the cylindrical surfaces is smaller than the neck. There is a
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB4_2 Defining 2D Curves
+<h3><a id="OCCT_TUTORIAL_SUB4_2">Defining 2D Curves</a></h3>
 
 
 To create the neck of the bottle, you made a solid cylinder based on a cylindrical surface. You will create the profile of threading by creating 2D curves on such a surface.
@@ -524,7 +523,7 @@ P(U, V) = O + R * (cos(U) * xDir + sin(U) * yDir) + V * zDir, where :
   * R is the radius of the cylindrical surface.
   * U range is [0, 2PI] and V is infinite.
 
-@figure{/tutorial/images/tutorial_image012.png,"",400}
+<img src="images/tutorial_image012.png" alt="" width="400">
 
 The advantage of having such parameterized geometries is that you can compute, for any (U, V) parameters of the surface:
 
@@ -533,7 +532,7 @@ The advantage of having such parameterized geometries is that you can compute, f
 
 There is another advantage of these parametric equations: you can consider a surface as a 2D parametric space defined with a (U, V) coordinate system. For example, consider the parametric ranges of the neck's surface:
 
-@figure{/tutorial/images/tutorial_image013.png,"",320}
+<img src="images/tutorial_image013.png" alt="" width="320">
 
 Suppose that you create a 2D line on this parametric (U, V) space and compute its 3D parametric curve. Depending on the line definition, results are as follows:
 
@@ -548,14 +547,14 @@ The helicoidal curve type is exactly what you need. On the neck's surface, the e
   * In V parameter: between 0 and myHeighNeck for the height description
   * In U parameter: between 0 and 2PI for the angle description. But, since a cylindrical surface is U periodic, you can decide to extend this angle evolution to 4PI as shown in the following drawing:
 
-@figure{/tutorial/images/tutorial_image014.png,"",440}
+<img src="images/tutorial_image014.png" alt="" width="440">
 
 In this (U, V) parametric space, you will create a local (X, Y) coordinate system to position the curves to be created. This coordinate system will be defined with:
 
   * A center located in the middle of the neck's cylinder parametric space at (2*PI, myNeckHeight / 2) in U, V coordinates.
   * A X direction defined with the (2*PI, myNeckHeight/4) vector in U, V coordinates, so that the curves occupy half of the neck's surfaces.
   
-@figure{/tutorial/images/tutorial_image015.png,"",440}
+<img src="images/tutorial_image015.png" alt="" width="440">
   
 To use 2D primitive geometry types of Open CASCADE Technology for defining a point and a coordinate system, you will once again instantiate classes from gp:
 
@@ -571,7 +570,7 @@ To use 2D primitive geometry types of Open CASCADE Technology for defining a poi
 
 You will now define the curves. As previously mentioned, these thread profiles are computed on two cylindrical surfaces. In the following figure, curves on the left define the base (on *aCyl1* surface) and the curves on the right define the top of the thread's shape (on *aCyl2* surface).
 
-@figure{/tutorial/images/tutorial_image016.png,"",440}
+<img src="images/tutorial_image016.png" alt="" width="440">
 
 You have already used the *Geom* package to define 3D geometric entities. For 2D, you will use the *Geom2d* package. As for *Geom*, all geometries are parameterized. For example, a *Geom2d_Ellipse* ellipse is defined from:
 
@@ -619,7 +618,7 @@ In 2D geometry, this kind of algorithms is found in the *GCE2d* package. Class n
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB4_3 Building Edges and Wires
+<h3><a id="OCCT_TUTORIAL_SUB4_3">Building Edges and Wires</a></h3>
 
 
 As you did when creating the base profile of the bottle, you can now:
@@ -627,7 +626,7 @@ As you did when creating the base profile of the bottle, you can now:
   * compute the edges of the neck's threading.
   * compute two wires out of these edges.
 
-@figure{/tutorial/images/tutorial_image017.png,"",440}
+<img src="images/tutorial_image017.png" alt="" width="440">
 
 Previously, you have built:
 
@@ -660,14 +659,14 @@ When a shape contains all the necessary information except 3D curves, Open CASCA
 ~~~~
 
 
-@subsection OCCT_TUTORIAL_SUB4_4 Creating Threading
+<h3><a id="OCCT_TUTORIAL_SUB4_4">Creating Threading</a></h3>
 
 
 You have computed the wires of the threading. The threading will be a solid shape, so you must now compute the faces of the wires, the faces allowing you to join the wires, the shell out of these faces and then the solid itself. This can be a lengthy operation.
 There are always faster ways to build a solid when the base topology is defined. You would like to create a solid out of two wires. Open CASCADE Technology provides a quick way to do this by building a loft: a shell or a solid passing through a set of wires in a given sequence.   
 The loft function is implemented in the *BRepOffsetAPI_ThruSections* class, which you use as follows:
   
-@figure{/tutorial/images/tutorial_image018.png,"",285}
+<img src="images/tutorial_image018.png" alt="" width="285">
   
   * Initialize the algorithm by creating an instance of the class. The first parameter of this constructor must be specified if you want to create a solid. By default, *BRepOffsetAPI_ThruSections* builds a shell.
   * Add the successive wires using the AddWire method.
@@ -682,7 +681,7 @@ The loft function is implemented in the *BRepOffsetAPI_ThruSections* class, whic
 ~~~~
 
 
-@section sec5 Building the Resulting Compound
+<h2><a id="sec5">Building the Resulting Compound</a></h2>
 
 
 You are almost done building the bottle. Use the *TopoDS_Compound* and *BRep_Builder* classes to build single shape from *myBody* and *myThreading*:
@@ -697,13 +696,13 @@ You are almost done building the bottle. Use the *TopoDS_Compound* and *BRep_Bui
 
 Congratulations! Your bottle is complete. Here is the result snapshot of the Tutorial application:
 
-@figure{/tutorial/images/tutorial_image019.png,"",320} height=450px
+<img src="images/tutorial_image019.png" alt="" width="320"> height=450px
 
 We hope that this tutorial has provided you with a feel for the industrial strength power of Open CASCADE Technology.
 If you want to know more and develop major projects using Open CASCADE Technology, we invite you to study our training, support, and consulting services on our site at https://www.opencascade.com/content/technology-support. Our professional services can maximize the power of your Open CASCADE Technology applications.
 
 
-@section sec6 Appendix
+<h2><a id="sec6">Appendix</a></h2>
 
 
 Complete definition of MakeBottle function (defined in the file src/MakeBottle.cxx of the Tutorial):

@@ -1,5 +1,4 @@
-﻿Draw: Demo Scripts {#samples__draw_scripts}
-================
+﻿<h1><a id="samples__draw_scripts" class="anchor">Draw: Demo Scripts</a></h1>
 
 All demo scripts are provided with OCCT sources and locate in <i>CASROOT/samples/tcl</i>. To play around them please 
 follow the steps below:
@@ -26,7 +25,7 @@ Draw is a command interpreter based on TCL and a graphical system used for testi
 
 Draw can be used interactively to create, display and modify objects such as curves, surfaces and topological shapes.
 
-@figure{/introduction/images/overview_draw.png}
+<img src="images/overview_draw.png" alt="">
 
 Scripts can be written to customize Draw and perform tests. 
 New types of objects and new commands can be added using C++ programming language.
@@ -55,10 +54,10 @@ Declaration of available plug-ins is done through special resource file(s).
 The *pload* command loads the plug-in in accordance with 
 the specified resource file and activates the commands implemented in the plug-in.
 
-The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref occt_user_guides__test_harness.
+The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the [Link](../../user_guides/draw_test_harness/draw_test_harness.md#occt_user_guides__test_harness).
 
 Draw Test Harness provides an environment for OCCT automated testing system. 
-Check its @ref occt_contribution__tests "Automated Testing System" for details.
+Check its [Automated Testing System](../../contribution/tests/tests.md#occt_contribution__tests) for details.
 
 Remarks:
 

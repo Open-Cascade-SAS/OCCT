@@ -1,5 +1,4 @@
-User Guides {#user_guides}
-===========
+<h1><a id="user_guides" class="anchor">User Guides</a></h1>
 
 OCCT User Guides are organized by OCCT modules:
 

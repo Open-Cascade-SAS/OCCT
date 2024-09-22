@@ -1,5 +1,4 @@
-﻿Build, Debug and Upgrade {#build_upgrade}
-=================
+﻿<h1><a id="build_upgrade" class="anchor">Build, Debug and Upgrade</a></h1>
 
 This chapter contains the detailed information about building, debugging and upgrade procedures:
 

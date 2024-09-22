@@ -15,7 +15,7 @@ Both applications provide the same functionality as the standard OCCT Import/Exp
 The first project is called *IE_WinForms* and uses Windows Forms for GUI.
 The second application is called *IE_WPF_WinForms* and uses Windows Presentation Foundation.
 
-@figure{samples_c__ie.png}
+<img src="image/samples_c__ie.png" alt="">
 
 Note a few important details:
 

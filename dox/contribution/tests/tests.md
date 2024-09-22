@@ -1,17 +1,16 @@
- Automated Testing System  {#occt_contribution__tests}
-======================================
+<h1><a id="occt_contribution__tests" class="anchor"> Automated Testing System </a></h1>
 
 @tableofcontents
 
-@section testmanual_intro Introduction
+<h2><a id="testmanual_intro">Introduction</a></h2>
 
 This document provides OCCT developers and contributors with an overview and practical guidelines for work with OCCT automatic testing system.
 
 Reading the Introduction should be sufficient for developers to use the test system to control non-regression of the modifications they implement in OCCT. Other sections provide a more in-depth description of the test system, required for modifying the tests and adding new test cases. 
 
-@subsection testmanual_intro_basic Basic Information
+<h3><a id="testmanual_intro_basic">Basic Information</a></h3>
 
-OCCT automatic testing system is organized around @ref occt_user_guides__test_harness "DRAW Test Harness", a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
+OCCT automatic testing system is organized around [DRAW Test Harness](#occt_user_guides__test_harness), a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
 
 Standard OCCT tests are included with OCCT sources and are located in subdirectory *tests* of the OCCT root folder. Other test folders can be included in the test system, e.g. for testing applications based on OCCT.
 
@@ -21,12 +20,12 @@ The tests are organized in three levels:
   * Grid: a set of test cases within a group, usually aimed at testing some particular aspect or mode of execution of the relevant functionality (e.g. buildevol);
   * Test case: a script implementing an individual test (e.g. K4).
   
-See @ref testmanual_5_1 "Test Groups" chapter for the current list of available test groups and grids.
+See [Test Groups](#testmanual_5_1) chapter for the current list of available test groups and grids.
 
 @note Many tests involve data files (typically CAD models) which are located separately and (except a few) are not included with OCCT code. 
 These tests will be skipped if data files are not available.
 
-@subsection testmanual_1_2 Intended Use of Automatic Tests
+<h3><a id="testmanual_1_2">Intended Use of Automatic Tests</a></h3>
 
 Each modification made in OCCT code must be checked for non-regression 
 by running the whole set of tests. The developer who makes the modification 
@@ -41,9 +40,9 @@ If a modification affects the result of an existing test case, either the modifi
 
 The modifications made in the OCCT code and related test scripts should be included in the same integration to the master branch.
 
-@subsection testmanual_1_3 Quick Start
+<h3><a id="testmanual_1_3">Quick Start</a></h3>
 
-@subsubsection testmanual_1_3_1 Setup
+<h4><a id="testmanual_1_3_1">Setup</a></h4>
 
 Before running tests, make sure to define environment variable *CSF_TestDataPath* pointing to the directory containing test data files. 
 
@@ -60,7 +59,7 @@ In this example, subdirectory <i>d:/occt/test-data</i> is added to this path. Si
 
 All tests are run from DRAW command prompt (run *draw.bat* or *draw.sh* to start it).
 
-@subsubsection testmanual_1_3_2 Running Tests
+<h4><a id="testmanual_1_3_2">Running Tests</a></h4>
 
 To run all tests, type command *testgrid* 
 
@@ -99,7 +98,7 @@ Example:
     Detailed logs are saved in D:/occt/results_2012-06-04T0919
 ~~~~
 
-The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See @ref testmanual_details_results "Interpretation of test results" for details.
+The tests are considered as non-regressive if only OK, BAD (i.e. known problem), and SKIPPED (i.e. not executed, typically because of lack of a data file) statuses are reported. See [Interpretation of test results](#testmanual_details_results) for details.
 
 The results and detailed logs of the tests are saved by default to a new subdirectory of the subdirectory *results* in the current folder, whose name is generated automatically using the current date and time, prefixed by Git branch name (if Git is available and current sources are managed by Git).
 If necessary, a non-default output directory can be specified using option <i> -outdir</i> followed by a path to the directory. This directory should be new or empty; use option <i>-overwrite</i> to allow writing results in the existing non-empty directory. 
@@ -137,7 +136,7 @@ testgrid: Run all tests, or specified group, or one grid
     masks separated by spaces or commas; default is all (*).
 ~~~~
 
-@subsubsection testmanual_1_3_3 Running a Single Test
+<h4><a id="testmanual_1_3_3">Running a Single Test</a></h4>
 
 To run a single test, type command *test* followed by names of group, grid, and test case. 
 
@@ -176,21 +175,21 @@ test: Run specified test case
         This key will be ignored if the "-echo" key is already set.
 ~~~~
 
-@subsubsection testmanual_intro_quick_create Creating a New Test
+<h4><a id="testmanual_intro_quick_create">Creating a New Test</a></h4>
 
-The detailed rules of creation of new tests are given in @ref testmanual_3 "Creation and modification of tests" chapter. The following short description covers the most typical situations:
+The detailed rules of creation of new tests are given in [Creation and modification of tests](#testmanual_3) chapter. The following short description covers the most typical situations:
 
 Use prefix <i>bug</i> followed by Mantis issue ID and, if necessary, additional suffixes, for naming the test script, data files, and DRAW commands specific for this test case.
 
 1.  If the test requires C++ code, add it as new DRAW command(s) in one of files in *QABugs* package. 
-2.  Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See @ref testmanual_5_2 "the correspondence map".
+2.  Add script(s) for the test case in the subfolder corresponding to the relevant OCCT module of the group *bugs* <i>($CASROOT/tests/bugs)</i>. See [the correspondence map](#testmanual_5_2).
 3.  In the test script:
   * Load all necessary DRAW modules by command *pload*.
   * Use command *locate_data_file* to get a path to data files used by test script. (Make sure to have this command not inside catch statement if it is used.)
   * Use DRAW commands to reproduce the tested situation.
   * Make sure that in case of failure the test produces a message containing word "Error" or other recognized by the test system as error (add new error patterns in file parse.rules if necessary).
-  * If the test case reports error due to an existing problem and the fix is not available, add @ref testmanual_3_6 "TODO" statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
-  * To check expected output which should be obtained as the test result, add @ref testmanual_3_7 "REQUIRED" statement for each line of output to mark it as required.
+  * If the test case reports error due to an existing problem and the fix is not available, add [TODO](#testmanual_3_6) statement for each error to mark it as a known problem. The TODO statements must be specific so as to match the actually generated messages but not all similar errors.
+  * To check expected output which should be obtained as the test result, add [REQUIRED](#testmanual_3_7) statement for each line of output to mark it as required.
   * If the test case produces error messages (contained in parse.rules), which are expected in that test and should not be considered as its failure (e.g. test for *checkshape* command), add REQUIRED statement for each error to mark it as required output.
 4.  To check whether the data files needed for the test are already present in the database, use DRAW command *testfile* (see below).
     If the data file is already present, use it for a new test instead of adding a duplicate.
@@ -249,9 +248,9 @@ Checking new file(s)...
   --> //server/occt_tests_data/public/brep/case_8_wire4.brep
 ~~~~
 
-@section testmanual_2 Organization of Test Scripts
+<h2><a id="testmanual_2">Organization of Test Scripts</a></h2>
 
-@subsection testmanual_2_1 General Layout
+<h3><a id="testmanual_2_1">General Layout</a></h3>
 
 Standard OCCT tests are located in subdirectory tests of the OCCT root folder ($CASROOT).
 
@@ -273,12 +272,12 @@ The names *begin, end, data, parse.rules, grids.list* and *cases.list* are reser
 
 General layout of test scripts is shown in Figure 1.
 
-@figure{/contribution/tests/images/tests_image001.png,"Layout of tests folder",400}
+<img src="images/tests_image001.png" alt="Layout of tests folder" width="400">
 
 
-@subsection testmanual_2_2 Test Groups
+<h3><a id="testmanual_2_2">Test Groups</a></h3>
 
-@subsubsection testmanual_2_2_1 Group Names
+<h4><a id="testmanual_2_2_1">Group Names</a></h4>
 
 The names of directories of test groups containing systematic test grids correspond to the functionality tested by each group.
 
@@ -292,7 +291,7 @@ Example:
 
 Test group *bugs* is used to collect the tests coming from bug reports. Group *demo* collects tests of the test system, DRAW, samples, etc.
 
-@subsubsection testmanual_2_2_2 File "grids.list" 
+<h4><a id="testmanual_2_2_2">File "grids.list" </a></h4>
 
 This test group contains file *grids.list*, which defines an ordered list of grids in this group in the following format:
 
@@ -310,7 +309,7 @@ Example:
     002 advanced
 ~~~~
 
-@subsubsection testmanual_2_2_3 File "begin"
+<h4><a id="testmanual_2_2_3">File "begin"</a></h4>
 
 This file is a Tcl script. It is executed before every test in the current group. 
 Usually it loads necessary Draw commands, sets common parameters and defines 
@@ -323,13 +322,13 @@ Example:
     set cpulimit 300 ;# set maximum time allowed for script execution
 ~~~~
 
-@subsubsection testmanual_2_2_4 File "end"
+<h4><a id="testmanual_2_2_4">File "end"</a></h4>
 
 This file is a TCL script. It is executed after every test in the current group. Usually it checks the results of script work, makes a snap-shot of the viewer and writes *TEST COMPLETED* to the output.
 
 Note: *TEST COMPLETED* string should be present in the output to indicate that the test is finished without crash. 
 
-See @ref testmanual_3 "Creation and modification of tests" chapter for more information.
+See [Creation and modification of tests](#testmanual_3) chapter for more information.
 
 Example:
 ~~~~{.php}
@@ -341,7 +340,7 @@ Example:
     puts "TEST COMPLETED"
 ~~~~
 
-@subsubsection testmanual_2_2_5 File "parse.rules"
+<h4><a id="testmanual_2_2_5">File "parse.rules"</a></h4>
 
 The test group may contain *parse.rules* file. This file defines patterns used for analysis of the test execution log and deciding the status of the test run. 
 
@@ -362,7 +361,7 @@ Example:
 
 Lines starting with a *#* character and blank lines are ignored to allow comments and spacing.
 
-See @ref testmanual_details_results "Interpretation of test results" chapter for details.
+See [Interpretation of test results](#testmanual_details_results) chapter for details.
 
 If a line matches several rules, the first one applies. Rules defined in the grid are checked first, then rules in the group, then rules in the test root directory. This allows defining some rules on the grid level with status *IGNORE* to ignore messages that would otherwise be treated as errors due to the group level rules.
 
@@ -374,12 +373,12 @@ Example:
     IGNORE /^Tcl Exception: tolerance ang : [\d.-]+/ blend failure
 ~~~~
 
-@subsubsection testmanual_2_2_6  Directory "data"
-The test group may contain subdirectory *data*, where test scripts shared by different test grids can be put. See also @ref testmanual_2_3_5 "Directory data".
+<h4><a id="testmanual_2_2_6">Directory "data"</a></h4>
+The test group may contain subdirectory *data*, where test scripts shared by different test grids can be put. See also [Directory data](#testmanual_2_3_5).
 
-@subsection testmanual_2_3 Test Grids
+<h3><a id="testmanual_2_3">Test Grids</a></h3>
 
-@subsubsection testmanual_2_3_1 Grid Names
+<h4><a id="testmanual_2_3_1">Grid Names</a></h4>
 
 The folder of a test group  can have several sub-directories (Grid 1… Grid N) defining test grids. 
 Each directory contains a set of related test cases. The name of a directory should correspond to its contents.
@@ -395,7 +394,7 @@ caf
 
 Here *caf* is the name of the test group and *basic*, *bugs*, *presentation*, etc. are the names of grids.
 
-@subsubsection testmanual_2_3_2 File "begin"
+<h4><a id="testmanual_2_3_2">File "begin"</a></h4>
 
 This file is a TCL script executed before every test in the current grid. 
 
@@ -407,7 +406,7 @@ Example:
     set command bopfuse ;# command tested in this grid
 ~~~~
 
-@subsubsection testmanual_2_3_3 File "end"
+<h4><a id="testmanual_2_3_3">File "end"</a></h4>
 
 This file is a TCL script executed after every test in current grid. 
 
@@ -419,7 +418,7 @@ Example:
     vdump $imagedir/${casename}.png ;# makes a snap-shot of AIS viewer
 ~~~~
 
-@subsubsection testmanual_2_3_4 File "cases.list"
+<h4><a id="testmanual_2_3_4">File "cases.list"</a></h4>
 
 The grid directory can contain an optional file cases.list 
 defining an alternative location of the test cases. 
@@ -439,11 +438,11 @@ The specific parameters and pre- and post-processing commands
 for test execution in this grid should be defined in the files *begin* and *end*.
 
 
-@subsubsection testmanual_2_3_5  Directory "data"
+<h4><a id="testmanual_2_3_5">Directory "data"</a></h4>
 
 The test grid may contain subdirectory *data*, containing data files used in tests (BREP, IGES, STEP, etc.) of this grid.
 
-@subsection testmanual_2_4 Test Cases
+<h3><a id="testmanual_2_4">Test Cases</a></h3>
 
 The test case is a TCL script, which performs some operations using DRAW commands 
 and produces meaningful messages that can be used to check the validity of the result.
@@ -473,15 +472,15 @@ Example:
 Such naming facilitates compact representation of tests execution results in tabular format within HTML reports.
 
 
-@section testmanual_3 Creation And Modification Of Tests
+<h2><a id="testmanual_3">Creation And Modification Of Tests</a></h2>
 
 This section describes how to add new tests and update existing ones.
 
-@subsection testmanual_3_1 Choosing Group, Grid, and Test Case Name
+<h3><a id="testmanual_3_1">Choosing Group, Grid, and Test Case Name</a></h3>
 
 The new tests are usually added in the frame of processing issues in OCCT Mantis tracker. 
 Such tests in general should be added to group bugs, in the grid 
-corresponding to the affected OCCT functionality. See @ref testmanual_5_2 "Mapping of OCCT functionality to grid names in group bugs".
+corresponding to the affected OCCT functionality. See [Mapping of OCCT functionality to grid names in group bugs](#testmanual_5_2).
 
 New grids can be added as necessary to contain tests for the functionality not yet covered by existing test grids. 
 The test case name in the bugs group should be prefixed by the ID of the corresponding issue in Mantis (without leading zeroes) with prefix *bug*. It is recommended to add a suffix providing a hint on the tested situation. If more than one test is added for a bug, they should be distinguished by suffixes; either meaningful or just ordinal numbers.
@@ -496,7 +495,7 @@ Example:
 
 If the new test corresponds to a functionality already covered by the existing systematic test grid (e.g. group *mesh* for *BRepMesh* issues), this test can be added (or moved later by OCC team) to that grid. 
 
-@subsection testmanual_3_2 Adding Data Files Required for a Test
+<h3><a id="testmanual_3_2">Adding Data Files Required for a Test</a></h3>
 
 It is advisable to make self-contained test scripts whenever possible, so as they could be used in the  environments where data files are not available. For that simple geometric objects and shapes can be created using DRAW commands in the test script itself.
 
@@ -509,7 +508,7 @@ Note that when the test is integrated to the master branch, OCC team will move t
 When you prepare a test script, try to minimize the size of involved data model. For instance, if the problem detected on a big shape can be reproduced on a single face extracted from that shape, use only that face in the test.
 
 
-@subsection testmanual_3_3 Adding new DRAW commands
+<h3><a id="testmanual_3_3">Adding new DRAW commands</a></h3>
 
 If the test cannot be implemented using available DRAW commands, consider the following possibilities:
 * If the existing DRAW command can be extended to enable possibility required for a test in a natural way (e.g. by adding an option to activate a specific mode of the algorithm), this way is recommended. This change should be appropriately documented in a relevant Mantis issue.
@@ -519,7 +518,7 @@ If the test cannot be implemented using available DRAW commands, consider the fo
 Note that a DRAW command is expected to return 0 in case of a normal completion, and 1 (Tcl exception) if it is incorrectly used (e.g. a wrong number of input arguments). Thus if the new command needs to report a test error, this should be done by outputting an appropriate error message rather than by returning a non-zero value.
 File names must be encoded in the script rather than in the DRAW command and passed to the DRAW command as an argument.
 
-@subsection testmanual_3_4 Script Implementation
+<h3><a id="testmanual_3_4">Script Implementation</a></h3>
 
 The test should run commands necessary to perform the tested operations, in general assuming a clean DRAW session. The required DRAW modules should be loaded by *pload* command, if it is not done by *begin* script. The messages produced by commands in a standard output should include identifiable messages on the discovered problems if any. 
 
@@ -623,7 +622,7 @@ In order to ensure that the test works as expected in different environments, ob
 * Do not put call to *locate_data_file* in catch statement -- this can prevent correct interpretation of the missing data file by the test system.
 * Do not use commands *decho* and *dlog* in the test script, to avoid interference with use of these commands by the test system.
 
-@subsection testmanual_details_results Interpretation of test results
+<h3><a id="testmanual_details_results">Interpretation of test results</a></h3>
 
 The result of the test is evaluated by checking its output against patterns defined in the files *parse.rules* of the grid and group.
 
@@ -639,7 +638,7 @@ Other statuses can be specified in *parse.rules* files, these will be classified
 For integration of the change to OCCT repository, all tests should return either OK or BAD status.
 The new test created for an unsolved problem should return BAD. The new test created for a fixed problem should return FAILED without the fix, and OK with the fix.
 
-@subsection testmanual_3_6 Marking BAD cases
+<h3><a id="testmanual_3_6">Marking BAD cases</a></h3>
 
 If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker located at https://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
 
@@ -679,7 +678,7 @@ puts "TODO OCC22817 All: \\*\\* Exception \\*\\*"
 puts "TODO OCC22817 All: TEST INCOMPLETE"
 ~~~~
 
-@subsection testmanual_3_7 Marking required output
+<h3><a id="testmanual_3_7">Marking required output</a></h3>
 
 To check the obtained test output matches the expected results considered correct, add REQUIRED statement for each specific message.
 For that, the following statement should be added to the corresponding test script:
@@ -701,9 +700,9 @@ This statement notifies test system that errors reported by *checkshape* command
 
 If output does not contain required statement, test case will be marked as FAILED.
 
-@section testmanual_4 Advanced Use
+<h2><a id="testmanual_4">Advanced Use</a></h2>
 
-@subsection testmanual_4_1 Running Tests on Older Versions of OCCT
+<h3><a id="testmanual_4_1">Running Tests on Older Versions of OCCT</a></h3>
 
 Sometimes it might be necessary to run tests on the previous versions of OCCT (<= 6.5.4) that do not include this test system. This can be done by adding DRAW configuration file *DrawAppliInit* in the directory, which is current by the moment of DRAW start-up, to load test commands and to define the necessary environment.
 
@@ -721,7 +720,7 @@ return
 
 Note that on older versions of OCCT the tests are run in compatibility mode and thus not all output of the test command can be captured; this can lead to absence of some error messages (can be reported as either a failure or an improvement).
 
-@subsection testmanual_4_2 Adding custom tests
+<h3><a id="testmanual_4_2">Adding custom tests</a></h3>
 
 You can extend the test system by adding your own tests. For that it is necessary to add paths to the directory where these tests are located, and one or more additional data directories, to the environment variables *CSF_TestScriptsPath* and *CSF_TestDataPath*. The recommended way for doing this is using DRAW configuration file *DrawAppliInit* located in the directory which is current by the moment of DRAW start-up.
 
@@ -736,14 +735,14 @@ set env(CSF_TestDataPath) \
 return ;# this is to avoid an echo of the last command above in cout
 ~~~~
 
-@subsection testmanual_4_3 Parallel execution of tests
+<h3><a id="testmanual_4_3">Parallel execution of tests</a></h3>
 
 For better efficiency, on computers with multiple CPUs the tests can be run in parallel mode. This is default behavior for command *testgrid* : the tests are executed in parallel processes (their number is equal to the number of CPUs available on the system). In order to change this behavior, use option  parallel followed by the number of processes to be used (1 or 0 to run sequentially).
 
 Note that the parallel execution is only possible if Tcl extension package *Thread* is installed. 
 If this package is not available, *testgrid* command will output a warning message.
 
-@subsection testmanual_4_4 Checking non-regression of performance, memory, and visualization
+<h3><a id="testmanual_4_4">Checking non-regression of performance, memory, and visualization</a></h3>
 
 Some test results are very dependent on the characteristics of the workstation, where they are performed, and thus cannot be checked by comparison with some predefined values. These results can be checked for non-regression (after a change in OCCT code) by comparing them with the results produced by the version without this change. The most typical case is comparing the result obtained in a branch created for integration of a fix (CR***) with the results obtained on the master branch before that change is made.
 
@@ -784,11 +783,11 @@ Example of test code:
 puts "COUNTER Memory heap usage at step 5: [meminfo h]"
 ~~~~
 
-@section testmanual_5 APPENDIX
+<h2><a id="testmanual_5">APPENDIX</a></h2>
 
-@subsection testmanual_5_1 Test groups
+<h3><a id="testmanual_5_1">Test groups</a></h3>
 
-@subsubsection testmanual_5_1_1 3rdparty
+<h4><a id="testmanual_5_1_1">3rdparty</a></h4>
 
 This group allows testing the interaction of OCCT and 3rdparty products.
 
@@ -800,7 +799,7 @@ DRAW module: VISUALIZATION.
 | fonts  | vtrihedron, vcolorscale, vdrawtext | display of fonts |
 
 
-@subsubsection testmanual_5_1_2 blend
+<h4><a id="testmanual_5_1_2">blend</a></h4>
 
 This group allows testing blends (fillets) and related operations.
 
@@ -816,7 +815,7 @@ DRAW module: MODELING.
 | bfuseblend  | bfuseblend  | | 
 | encoderegularity  | encoderegularity  | | 
 
-@subsubsection testmanual_5_1_3 boolean
+<h4><a id="testmanual_5_1_3">boolean</a></h4>
 
 This group allows testing Boolean operations.
 
@@ -854,14 +853,14 @@ Grids names are based on name of the command used, with suffixes:
 | boptuc_simple | boptuc  | |
 | bsection |  bsection  | Section (old algorithm) |
 
-@subsubsection testmanual_5_1_4 bugs
+<h4><a id="testmanual_5_1_4">bugs</a></h4>
 
 This group allows testing cases coming from Mantis issues.
 
 The grids are organized following OCCT module and category set for the issue in the Mantis tracker. 
-See @ref testmanual_5_2 "Mapping of OCCT functionality to grid names in group bugs" chapter for details.
+See [Mapping of OCCT functionality to grid names in group bugs](#testmanual_5_2) chapter for details.
 
-@subsubsection testmanual_5_1_5 caf
+<h4><a id="testmanual_5_1_5">caf</a></h4>
 
 This group allows testing OCAF functionality.
 
@@ -877,7 +876,7 @@ DRAW module: OCAFKERNEL.
 | tree  | | Tree construction attributes |
 | xlink  | |  XLink attributes |
 
-@subsubsection testmanual_5_1_6 chamfer
+<h4><a id="testmanual_5_1_6">chamfer</a></h4>
 
 This group allows testing chamfer operations.
 
@@ -897,7 +896,7 @@ The test grid name is constructed depending on the type of the tested chamfers. 
 | dist_angle_complex  | | Distance from edge and given angle |
 | dist_angle_sequence | | Distance from edge and given angle |
 
-@subsubsection testmanual_5_1_7 de
+<h4><a id="testmanual_5_1_7">de</a></h4>
 
 This group tests reading and writing of CAD data files (iges, step) to and from OCCT.
 
@@ -908,7 +907,7 @@ Test cases check transfer status, shape and attributes against expected referenc
 | iges_1, iges_2, iges_3 | igesbrep, brepiges, ReadIges, WriteIges | IGES tests | 
 | step_1, step_2, step_3, step_4, step_5 | stepread, stepwrite, ReadStep, WriteStep | STEP tests |
 
-@subsubsection testmanual_5_1_8 demo
+<h4><a id="testmanual_5_1_8">demo</a></h4>
 
 This group allows demonstrating how testing cases are created, and testing DRAW commands and the test system as a whole.
 
@@ -919,7 +918,7 @@ This group allows demonstrating how testing cases are created, and testing DRAW 
 | samples | | OCCT samples | 
 
 
-@subsubsection testmanual_5_1_9 draft
+<h4><a id="testmanual_5_1_9">draft</a></h4>
 
 This group allows testing draft operations.
 
@@ -930,7 +929,7 @@ DRAW module: MODELING.
 | Angle | depouille | Drafts with angle (inclined walls) |
 
 
-@subsubsection testmanual_5_1_10 feat
+<h4><a id="testmanual_5_1_10">feat</a></h4>
 
 This group allows testing creation of features on a shape.
 
@@ -944,7 +943,7 @@ DRAW module: MODELING (package *BRepTest*).
 | featrevol   | | | 
 | featrf    | | |
 
-@subsubsection testmanual_5_1_11 heal
+<h4><a id="testmanual_5_1_11">heal</a></h4>
 
 This group allows testing the functionality provided by *ShapeHealing* toolkit.
 
@@ -973,7 +972,7 @@ DRAW module: XSDRAW
 | surface_to_revolution_standard |  DT_ShapeConvertRev  | Convert elementary surfaces to revolutions, simple cases |
 | update_tolerance_locked | updatetolerance | Update the tolerance of shape so that it satisfy the rule: toler(face)<=toler(edge)<=toler(vertex) |
 
-@subsubsection testmanual_5_1_12 mesh
+<h4><a id="testmanual_5_1_12">mesh</a></h4>
 
 This group allows testing shape tessellation (*BRepMesh*) and shading.
 
@@ -990,7 +989,7 @@ DRAW modules: MODELING (package *MeshTest*), VISUALIZATION (package *ViewerTest*
 | advanced_incmesh_parallel | incmesh | Meshing of complex shapes, parallel mode |
 | standard_incmesh_parallel | incmesh | Meshing of simple shapes, parallel mode |
 
-@subsubsection testmanual_5_1_13 mkface
+<h4><a id="testmanual_5_1_13">mkface</a></h4>
 
 This group allows testing creation of simple surfaces.
 
@@ -1005,7 +1004,7 @@ DRAW module: MODELING (package *BRepTest*)
 | after_revsurf_and_offset | mkface | | 
 | mkplane | mkplane | |
 
-@subsubsection testmanual_5_1_14 nproject
+<h4><a id="testmanual_5_1_14">nproject</a></h4>
 
 This group allows testing normal projection of edges and wires onto a face.
 
@@ -1015,7 +1014,7 @@ DRAW module: MODELING (package *BRepTest*)
 | :---- | :----- | :------- | 
 | Base  | nproject  |  |
 
-@subsubsection testmanual_5_1_15 offset
+<h4><a id="testmanual_5_1_15">offset</a></h4>
 
 This group allows testing offset functionality for curves and surfaces.
 
@@ -1031,7 +1030,7 @@ DRAW module: MODELING (package *BRepTest*)
 | shape  | offsetshape  | |
 | wire_closed_outside_0_005, wire_closed_outside_0_025, wire_closed_outside_0_075, wire_closed_inside_0_005, wire_closed_inside_0_025, wire_closed_inside_0_075, wire_unclosed_outside_0_005, wire_unclosed_outside_0_025, wire_unclosed_outside_0_075  | mkoffset | 2d offset of closed and unclosed planar wires with different offset step and directions of offset ( inside / outside ) |
   
-@subsubsection testmanual_5_1_16 pipe
+<h4><a id="testmanual_5_1_16">pipe</a></h4>
 
 This group allows testing construction of pipes (sweeping of a contour along profile).
 
@@ -1041,7 +1040,7 @@ DRAW module: MODELING (package *BRepTest*)
 | :---- | :----- | :------- | 
 | Standard  | pipe  | |
 
-@subsubsection testmanual_5_1_17 prism
+<h4><a id="testmanual_5_1_17">prism</a></h4>
 
 This group allows testing construction of prisms.
 
@@ -1051,7 +1050,7 @@ DRAW module: MODELING (package *BRepTest*)
 | :---- | :----- | :------- | 
 | seminf | prism  | |
 
-@subsubsection testmanual_5_1_18 sewing
+<h4><a id="testmanual_5_1_18">sewing</a></h4>
 
 This group allows testing sewing of faces by connecting edges.
 
@@ -1063,7 +1062,7 @@ DRAW module: MODELING (package *BRepTest*)
 | tol_1 | sewing | Sewing faces with tolerance 1 |
 | tol_100 | sewing | Sewing faces with tolerance 100 | 
 
-@subsubsection testmanual_5_1_19 thrusection
+<h4><a id="testmanual_5_1_19">thrusection</a></h4>
 
 This group allows testing construction of shell or a solid passing through a set of sections in a given sequence (loft).
 
@@ -1072,7 +1071,7 @@ This group allows testing construction of shell or a solid passing through a set
 | solids  | thrusection | Lofting with resulting solid | 
 | not_solids | thrusection  | Lofting with resulting shell or face | 
 
-@subsubsection testmanual_5_1_20 xcaf
+<h4><a id="testmanual_5_1_20">xcaf</a></h4>
 
 This group allows  testing extended data exchange packages.
 
@@ -1081,7 +1080,7 @@ This group allows  testing extended data exchange packages.
 | dxc, dxc_add_ACL, dxc_add_CL, igs_to_dxc, igs_add_ACL, brep_to_igs_add_CL, stp_to_dxc, stp_add_ACL, brep_to_stp_add_CL, brep_to_dxc, add_ACL_brep, brep_add_CL  | | Subgroups are divided by format of source file, by format of result file and by type of document modification. For example, *brep_to_igs* means that the source shape in brep format was added to the document, which was saved into igs format after that. The postfix *add_CL* means that colors and layers were initialized in the document before saving and the postfix *add_ACL* corresponds to the creation of assembly and initialization of colors and layers in a document before saving. |
   
 
-@subsection testmanual_5_2 Mapping of OCCT functionality to grid names in group *bugs*
+<h3><a id="testmanual_5_2">Mapping of OCCT functionality to grid names in group *bugs*</a></h3>
 
 | OCCT Module / Mantis category | Toolkits  | Test grid in group bugs |
 | :---------- | :--------- | :---------- | 
@@ -1099,9 +1098,9 @@ This group allows  testing extended data exchange packages.
 | Visualization | TKService, TKV2d, TKV3d, TKOpenGl, TKMeshVS, TKNIS  | vis |
 
 
-@subsection testmanual_5_3 Recommended approaches to checking test results
+<h3><a id="testmanual_5_3">Recommended approaches to checking test results</a></h3>
 
-@subsubsection testmanual_5_3_1 Shape validity
+<h4><a id="testmanual_5_3_1">Shape validity</a></h4>
 
 Run command *checkshape* on the result (or intermediate) shape and make sure that *parse.rules* of the test grid or group reports bad shapes (usually recognized by word "Faulty") as error.
 
@@ -1140,7 +1139,7 @@ checkfaults results a_1 -1
 Error : Number of faults is UNSTABLE
 ~~~~
 
-@subsubsection testmanual_5_3_2 Shape tolerance
+<h4><a id="testmanual_5_3_2">Shape tolerance</a></h4>
 
 The maximal tolerance of sub-shapes of each kind of the resulting shape can be extracted from output of tolerance command as follows:
 
@@ -1183,7 +1182,7 @@ Also, command *checkmaxtol* can be used to get max tolerance of the shape:
 set maxtol [checkmaxtol result]
 ~~~~
 
-@subsubsection testmanual_5_3_3 Shape volume, area, or length
+<h4><a id="testmanual_5_3_3">Shape volume, area, or length</a></h4>
 
 Use command *vprops, sprops,* or *lprops* to correspondingly measure volume, area, or length of the shape produced by the test. The value can be extracted from the result of the command by *regexp*.
 
@@ -1196,9 +1195,9 @@ if { abs($area - $expected) > 0.1 + 0.01 * abs ($area) } {
 }
 ~~~~
 
-@subsubsection testmanual_5_3_4 Memory leaks
+<h4><a id="testmanual_5_3_4">Memory leaks</a></h4>
 
-The test system measures the amount of memory used by each test case. Considerable deviations (as well as the overall difference) in comparison with reference results can be reported by command *testdiff*  (see @ref testmanual_4_4).
+The test system measures the amount of memory used by each test case. Considerable deviations (as well as the overall difference) in comparison with reference results can be reported by command *testdiff*  (see [Link](#testmanual_4_4)).
 
 To check memory leak on a particular operation, run it in a cycle, measure the memory consumption at each step and compare it with a threshold value.
 The command *checktrend* (defined in *tests/bugs/begin*) can be used to analyze a sequence of memory measurements and to get a statistically based evaluation of the leak presence.
@@ -1218,7 +1217,7 @@ for {set i 1} {$i < 100} {incr i} {
 }
 ~~~~
 
-@subsubsection testmanual_5_3_5 Visualization
+<h4><a id="testmanual_5_3_5">Visualization</a></h4>
 
 The following command sequence allows you to take a snapshot of the viewer, give it the name of the test case, and save in the directory indicated by Tcl variable *imagedir*. 
 
@@ -1280,7 +1279,7 @@ vfit
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
 ~~~~
 
-@subsubsection testmanual_5_3_6 Number of free edges
+<h4><a id="testmanual_5_3_6">Number of free edges</a></h4>
 
 Procedure *checkfreebounds* compares the number of free edges with a reference value.
 
@@ -1306,7 +1305,7 @@ checkfreebounds result -1
 Error : Number of free edges is UNSTABLE
 ~~~~
 
-@subsubsection testmanual_5_3_7 Compare numbers
+<h4><a id="testmanual_5_3_7">Compare numbers</a></h4>
 
 Procedure *checkreal* checks the equality of two reals with a tolerance (relative and absolute).
 
@@ -1316,7 +1315,7 @@ Use: checkreal name value expected tol_abs tol_rel
 checkreal "Some important value" $value 5 0.0001 0.01
 ~~~~
 
-@subsubsection testmanual_5_3_8 Check number of sub-shapes
+<h4><a id="testmanual_5_3_8">Check number of sub-shapes</a></h4>
 
 Procedure *checknbshapes* compares the number of sub-shapes in "shape" with the given reference data.
 
@@ -1340,7 +1339,7 @@ Allowed options are:
 checknbshapes result -vertex 8 -edge 4
 ~~~~
 
-@subsubsection testmanual_5_3_9 Check pixel color
+<h4><a id="testmanual_5_3_9">Check pixel color</a></h4>
 
 Command *checkcolor* can be used to check pixel color.
 
@@ -1358,7 +1357,7 @@ If colors are not equal, procedure will check the nearest ones points (5x5 area)
 checkcolor 100 100 1 0 0
 ~~~~
 
-@subsubsection testmanual_5_3_10 Compute length, area and volume of input shape
+<h4><a id="testmanual_5_3_10">Compute length, area and volume of input shape</a></h4>
 
 Procedure *checkprops* computes length, area and volume of the input shape.
 
@@ -1380,7 +1379,7 @@ checkprops result -s 6265.68
 checkprops result -s -equal FaceBrep
 ~~~~
 
-@subsubsection testmanual_5_3_11 Parse output dump and compare it with reference values
+<h4><a id="testmanual_5_3_11">Parse output dump and compare it with reference values</a></h4>
 
 Procedure *checkdump* is used to parse output dump and compare it with reference values.
 
@@ -1395,7 +1394,7 @@ Allowed options are:
 checkdump result -name {Center Axis XAxis YAxis Radii} -ref {{-70 0} {-1 -0} {-1 -0} {0 -1} {20 10}} -eps 0.01
 ~~~~
 
-@subsubsection testmanual_5_3_12 Compute length of input curve
+<h4><a id="testmanual_5_3_12">Compute length of input curve</a></h4>
 
 Procedure *checklength* computes length of the input curve.
 
@@ -1411,7 +1410,7 @@ Allowed options are:
 checklength cp1 -l 7.278
 checklength res -l -equal ext_1
 ~~~~
-@subsubsection testmanual_5_3_13 Check maximum deflection, number of triangles and nodes in mesh
+<h4><a id="testmanual_5_3_13">Check maximum deflection, number of triangles and nodes in mesh</a></h4>
 
 Command *checktrinfo* can be used to to check the maximum deflection, as well as the number of nodes and triangles in mesh.
 

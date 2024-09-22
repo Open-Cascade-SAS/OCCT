@@ -1,14 +1,13 @@
-OCAF  {#occt_user_guides__ocaf}
-========================
+<h1><a id="occt_user_guides__ocaf" class="anchor">OCAF </a></h1>
 
 @tableofcontents
 
-@section occt_ocaf_1 Introduction
+<h2><a id="occt_ocaf_1">Introduction</a></h2>
 
 This manual explains how to use the Open CASCADE Application Framework (OCAF).
 It provides basic documentation on using OCAF.
 
-@subsection occt_ocaf_1_1 Purpose of OCAF
+<h3><a id="occt_ocaf_1_1">Purpose of OCAF</a></h3>
 
 OCAF (the Open CASCADE Application Framework) is an  easy-to-use platform for rapidly developing
   sophisticated domain-specific  design applications. 
@@ -54,26 +53,26 @@ OCAF uses other modules of Open CASCADE Technology — the Shape  is implemented
 
 The relationship between OCAF and the Open CASCADE Technology (**OCCT**) Object Libraries can be seen in the image below. 
 
-@figure{/user_guides/ocaf/images/ocaf_image003.svg,"OCCT Architecture",360}
+<img src="images/ocaf_image003.svg" alt="OCCT Architecture" width="360">
 
 In the image, the OCAF (Open CASCADE Application Framework) is shown with black rectangles and OCCT Object Libraries required by OCAF are shown with white rectangles. 
  
 The subsequent chapters of this document explain the concepts and show how to use the services of OCAF.
 
-@subsection occt_ocaf_1_2 Architecture Overview
+<h3><a id="occt_ocaf_1_2">Architecture Overview</a></h3>
 
 OCAF provides you with an object-oriented Application-Document-Attribute model consisting of C++ class libraries. 
 
-@figure{ocaf_wp_image003.png,"The Application-Document-Attribute model",420}
+<img src="images/ocaf_wp_image003.png" alt="The Application-Document-Attribute model" width="420">
 
-@subsubsection occt_ocaf_1_2_1 Application
+<h4><a id="occt_ocaf_1_2_1">Application</a></h4>
 
 The *Application* is an abstract class in charge of handling documents during the working session, namely:  
   * Creating new  documents;
   * Saving documents and opening them;
   * Initializing document views.
   
-@subsubsection occt_ocaf_1_2_2 Document   
+<h4><a id="occt_ocaf_1_2_2">Document   </a></h4>
  
   The document, implemented by the concrete class  *Document*, is the container for the application data. Documents offer access to the data framework and serve the following purposes: 
 
@@ -88,24 +87,24 @@ The *Application* is an abstract class in charge of handling documents during th
 
   Apart from their role as a container of application data, documents can refer to each other; Document A, for example, can refer to a specific label in Document B. This functionality is made possible by means of the reference key.   
   
-@subsubsection occt_ocaf_1_2_3 Attribute
+<h4><a id="occt_ocaf_1_2_3">Attribute</a></h4>
 
   Application data is described by **Attributes**, which are instances of  classes derived from the *Attribute* abstract class, organized according to the OCAF Data  Framework. 
   
-  The @ref occt_ocaf_3 "OCAF Data Framework" references aggregations of attributes using  persistent identifiers in a single hierarchy. A wide range of  attributes come with OCAF, including:    
+  The [OCAF Data Framework](#occt_ocaf_3) references aggregations of attributes using  persistent identifiers in a single hierarchy. A wide range of  attributes come with OCAF, including:    
   
-  * @ref occt_ocaf_6 "Standard attributes" allow operating with simple common data in the data framework (for example: integer, real, string, array kinds of data), realize auxiliary functions (for example: tag sources attribute for the children of the label counter), create dependencies (for example: reference, tree node)....;
-  * @ref occt_ocaf_5 "Shape attributes" contain the geometry of the whole model or its elements including reference to the shapes and tracking of shape evolution;
+  * [Standard attributes](#occt_ocaf_6) allow operating with simple common data in the data framework (for example: integer, real, string, array kinds of data), realize auxiliary functions (for example: tag sources attribute for the children of the label counter), create dependencies (for example: reference, tree node)....;
+  * [Shape attributes](#occt_ocaf_5) contain the geometry of the whole model or its elements including reference to the shapes and tracking of shape evolution;
   * Other  geometric attributes such as **Datums** (points, axis and plane) and **Constraints** (*tangent-to, at-a-given-distance, from-a-given-angle, concentric,* etc.)
   * User  attributes, that is, attributes typed by the application  
-  * @ref occt_ocaf_7 "Visualization attributes" allow placing viewer information to the data framework, visual representation of objects and other auxiliary visual information, which is needed for graphical data representation.
-  * @ref occt_ocaf_8 "Function services" — the purpose of these attributes is to rebuild  objects after they have been modified (parameterization of models). While the document manages the notification of changes, a function manages propagation of these changes. The function mechanism provides links between functions and calls to various algorithms. 
+  * [Visualization attributes](#occt_ocaf_7) allow placing viewer information to the data framework, visual representation of objects and other auxiliary visual information, which is needed for graphical data representation.
+  * [Function services](#occt_ocaf_8) — the purpose of these attributes is to rebuild  objects after they have been modified (parameterization of models). While the document manages the notification of changes, a function manages propagation of these changes. The function mechanism provides links between functions and calls to various algorithms. 
   
 In addition,  application-specific data can be added by defining new attribute classes; naturally, this changes the standard file format. The only functions that have to be implemented are:
     * Copying the  attribute
     * Converting  it from and persistent data storage
 	
-@subsection occt_ocaf_1_3  Reference-key model
+<h3><a id="occt_ocaf_1_3">Reference-key model</a></h3>
 
   In most existing geometric modeling systems, the data are topology driven. 
   They usually use a boundary representation (BRep), where geometric models 
@@ -132,7 +131,7 @@ In addition,  application-specific data can be added by defining new attribute c
   For example, to associate a texture to a face in a geometric model, 
   both the face and the texture are attached to the same reference-key.  
  
-@figure{ocaf_image004.png,"Topology driven versus reference-key driven approaches",360}
+<img src="images/ocaf_image004.png" alt="Topology driven versus reference-key driven approaches" width="360">
 
  Reference-keys can be created in two ways:   
  
@@ -190,9 +189,9 @@ In addition,  application-specific data can be added by defining new attribute c
   * OCAF is not  coupled to the underlying modeling libraries.
   
   
-@section occt_ocaf_3 The Data  Framework
+<h2><a id="occt_ocaf_3">The Data  Framework</a></h2>
  
-@subsection occt_ocaf_3_1 Data Structure
+<h3><a id="occt_ocaf_3_1">Data Structure</a></h3>
  
   The OCAF Data Framework is the Open CASCADE Technology  realization 
   of the reference-key model in a tree structure. It offers a single environment where data from different application components can be handled. This allows exchanging and modifying data simply, consistently, with a maximum level of information and stable semantics.
@@ -212,7 +211,7 @@ The sub-labels of a label are called its children. Conversely, each label, which
 
 The most important property is that a label’s entry is its persistent address in the data framework. 
   
-@figure{/user_guides/ocaf/images/ocaf_image005.png,"A simple framework model",216}
+<img src="images/ocaf_image005.png" alt="A simple framework model" width="216">
 
 In this image the circles contain tags of the corresponding labels.  The lists of tags are located under the circles. The root label always has a zero tag. 
 
@@ -220,11 +219,11 @@ The children of a root label are middle-level labels with tags 1 and 3. These la
 
 List of tags of the right-bottom label is "0:3:4": this label has tag 4, its father (with entry "0:3") has tag 3, father of father has tag 0 (the root label always has "0" entry). 
 
-@subsection occt_ocaf_3_2 Examples of a Data Structure
+<h3><a id="occt_ocaf_3_2">Examples of a Data Structure</a></h3>
 
 Let's have a look at the example:
   
-@figure{ocaf_wp_image007.png,"The coffee machine",200}
+<img src="images/ocaf_wp_image007.png" alt="The coffee machine" width="200">
   
    In the image the application for designing coffee  machines first allocates 
   a label for the machine unit. It then adds sub-labels  for the main features 
@@ -236,7 +235,7 @@ Let's have a look at the example:
   Later on, you can  modify the handle's geometry without changing its color — 
   both remain attached  to the same label.  
   
-@figure{ocaf_wp_image005.png,"The data structure of the coffee machine",361}
+<img src="images/ocaf_wp_image005.png" alt="The data structure of the coffee machine" width="361">
  
   The nesting of labels is key to OCAF. This allows a  label to have its own structure 
   with its local addressing scheme which can be  reused in a more complex structure. 
@@ -250,7 +249,7 @@ Let's have a look at the example:
 
 Another example is the application for designing table lamps. The first label is allocated to the lamp unit. 
 
-@figure{/user_guides/ocaf/images/ocaf_image006.png,"",200}
+<img src="images/ocaf_image006.png" alt="" width="200">
 
 The root label cannot have brother labels. Consequently, various lamps in the framework allocation correspond to the sub-labels of the root label. This allows avoiding any confusion between table lamps in the data framework. Different lamp parts have different material, color and other attributes, so a child label of the lamp with the specified tags is allocated for each sub-unit of the lamp: 
 
@@ -264,7 +263,7 @@ Remember that tags are private addresses without any meaning outside the data fr
 
 So, after the user changes the lamp design, only corresponding attributes are changed, but the label structure is maintained. The lamp shape must be recreated by new attribute values and attributes of the lamp shape must refer to a new shape. 
 
-@figure{/user_guides/ocaf/images/ocaf_image007.png,"",360}
+<img src="images/ocaf_image007.png" alt="" width="360">
 
 
 The previous figure shows the table-lamps document structure: each child of the root label contains a lamp shape attribute and refers to the sub-labels, which contain some design information about corresponding sub-units. 
@@ -273,7 +272,7 @@ The data framework structure allows to create more complex structures: each lamp
 
 Note that the root label can have attributes too, usually global attributes: the name of the document, for example. 
 
-@subsection occt_ocaf_3_3 Tag
+<h3><a id="occt_ocaf_3_3">Tag</a></h3>
 
 A tag is an integer, which identifies a label in two ways: 
 
@@ -293,7 +292,7 @@ The tag can be created in two ways:
 
 As the names suggest, in random delivery, the tag value is generated by the system in a random manner. In user-defined delivery, you assign it by passing the tag as an argument to a method. 
 
-@subsubsection occt_ocaf_3_3_1 Creating child labels using random delivery of tags
+<h4><a id="occt_ocaf_3_3_1">Creating child labels using random delivery of tags</a></h4>
 
 To append and return a new child label, you use *TDF_TagSource::NewChild*. In the example below, the argument *level2*, which is passed to *NewChild,* is a *TDF_Label*. 
 
@@ -303,7 +302,7 @@ TDF_Label child1 = TDF_TagSource::NewChild (level2);
 TDF_Label child2 = TDF_TagSource::NewChild (level2); 
 ~~~~
 
-@subsubsection occt_ocaf_3_3_2 Creation of a child label by user delivery from a tag
+<h4><a id="occt_ocaf_3_3_2">Creation of a child label by user delivery from a tag</a></h4>
 
 The other way to create a child label from a tag is by user delivery. In other words, you specify the tag, which you want your child label to have. 
 
@@ -317,17 +316,17 @@ Standard_Integer tag = achild.Tag();
 } 
 ~~~~
 
-@subsection occt_ocaf_3_4 Label
+<h3><a id="occt_ocaf_3_4">Label</a></h3>
 
 The tag gives a persistent address to a label. The label -- the semantics of the tag -- is a place in the data framework where attributes, which contain data, are attached. The data framework is, in fact, a tree of labels with a root as the ultimate father label.
 
 Label can not be deleted from the data framework, so, the structure of the data framework that has been created can not be removed while the document is opened. Hence any kind of reference to an existing label will be actual while an application is working with the document. 
 
-@subsubsection occt_ocaf_3_4_1 Label creation
+<h4><a id="occt_ocaf_3_4_1">Label creation</a></h4>
 
 Labels can be created on any labels, compared with brother labels and retrieved. You can also find their depth in the data framework (depth of the root label is 0, depth of child labels of the root is 1 and so on), whether they have children or not, relative placement of labels, data framework of this label. The class *TDF_Label* offers the above services. 
 
-@subsubsection occt_ocaf_3_4_2 Creating child labels
+<h4><a id="occt_ocaf_3_4_2">Creating child labels</a></h4>
 
 To create a new child label in the data framework using explicit delivery of tags, use *TDF_Label::FindChild*. 
 
@@ -348,7 +347,7 @@ You could also use the same syntax but add the Boolean *true* as a value of the 
 TDF_Label level1 = root.FindChild(3,Standard_True); 
 TDF_Label level2 = level1.FindChild(1,Standard_True); 
 ~~~~
-@subsubsection occt_ocaf_3_4_3 Retrieving child labels
+<h4><a id="occt_ocaf_3_4_3">Retrieving child labels</a></h4>
 
 You can retrieve child labels of your current label by iteration on the first level in the scope of this label. 
 
@@ -386,7 +385,7 @@ void DumpChildren(const TDF_Label& aLabel)
   } 
 } 
 ~~~~
-@subsubsection occt_ocaf_3_4_4 Retrieving the father label
+<h4><a id="occt_ocaf_3_4_4">Retrieving the father label</a></h4>
 
 Retrieving the father label of a current label. 
 
@@ -396,13 +395,13 @@ TDF_Label father = achild.Father();
 isroot = father.IsRoot(); 
 ~~~~
 
-@subsection occt_ocaf_3_5 Attribute
+<h3><a id="occt_ocaf_3_5">Attribute</a></h3>
 
 The label itself contains no data. All data of any type whatsoever -- application or non-application -- is contained in attributes. These are attached to labels, and there are different types for different types of data. OCAF provides many ready-to-use standard attributes such as integer, real, constraint, axis and plane. There are also attributes for topological naming, functions and visualization. Each type of attribute is identified by a GUID. 
 
 The advantage of OCAF is that all of the above attribute types are handled in the same way. Whatever the attribute type is, you can create new instances of them, retrieve them, attach them to and remove them from labels, "forget" and "remember" the attributes of a particular label. 
 
-@subsubsection occt_ocaf_3_5_1 Retrieving an attribute from a label
+<h4><a id="occt_ocaf_3_5_1">Retrieving an attribute from a label</a></h4>
 
 To retrieve an attribute from a label, you use *TDF_Label::FindAttribute*. In the example below, the GUID for integer attributes, and *INT*, a handle to an attribute are passed as arguments to *FindAttribute* for the current label. 
 
@@ -417,7 +416,7 @@ else
   // the attribute is not found 
 } 
 ~~~~
-@subsubsection occt_ocaf_3_5_2 Identifying an attribute using a GUID
+<h4><a id="occt_ocaf_3_5_2">Identifying an attribute using a GUID</a></h4>
 
 You can create a new instance of an attribute and retrieve its GUID. In the example below, a new integer attribute is created, and its GUID is passed to the variable *guid* by the method ID inherited from *TDF_Attribute*. 
 
@@ -427,7 +426,7 @@ Handle(TDataStd_Integer) INT = new TDataStd_Integer();
 Standard_GUID guid = INT->ID(); 
 ~~~~
 
-@subsubsection occt_ocaf_3_5_3 Attaching an attribute to a label
+<h4><a id="occt_ocaf_3_5_3">Attaching an attribute to a label</a></h4>
 
 To attach an attribute to a label, you use *TDF_Label::Add*. Repetition of this syntax raises an error message because there is already an attribute with the same GUID attached to the current label. 
 
@@ -442,7 +441,7 @@ TDF_Label attach = INT->Label();
 
 Note. There is an exception from this rule for some sub-set of Standard attributes. See for details chapter 6.Standard Attributes.
 
-@subsubsection occt_ocaf_3_5_4 Testing the attachment to a label
+<h4><a id="occt_ocaf_3_5_4">Testing the attachment to a label</a></h4>
 
 You can test whether an attribute is attached to a label or not by using *TDF_Attribute::IsA* with the GUID of the attribute as an argument. In the example below, you test whether the current label has an integer attribute, and then, if that is so, how many attributes are attached to it. *TDataStd_Integer::GetID* provides the GUID argument needed by the method IsAttribute. 
 
@@ -461,7 +460,7 @@ Standard_Integer nbatt = current.NbAttributes();
 // the label has nbatt attributes attached 
 } 
 ~~~~
-@subsubsection occt_ocaf_3_5_5 Removing an attribute from a label
+<h4><a id="occt_ocaf_3_5_5">Removing an attribute from a label</a></h4>
 
 To remove an attribute from a label, you use *TDF_Label::Forget* with the GUID of the deleted attribute. To remove all attributes of a label, *TDF_Label::ForgetAll*. 
 
@@ -472,7 +471,7 @@ current.Forget(TDataStd_Integer::GetID());
 current.ForgetAll(); 
 // current has now 0 attributes attached 
 ~~~~
-@subsubsection occt_ocaf_3_5_6 Specific attribute creation
+<h4><a id="occt_ocaf_3_5_6">Specific attribute creation</a></h4>
 
 If the set of existing and ready to use attributes implementing standard data types does  not cover the needs of a specific data presentation task, the user can build his own data type and the corresponding new specific attribute implementing this new data type. 
 
@@ -500,7 +499,7 @@ To enable possibility to save / restore the new attribute in binary format, do t
 	  * Factory, which loads the document storage and retrieval drivers; and 
 	  * AttributeDrivers, which calls the methods AddDrivers for all packages responsible for persistence of the document.
   3. Create a plug-in implemented as an executable (see example *BinPlugin*). It calls a macro PLUGIN with the package name where you implemented the method Factory.
-See @ref occt_ocaf_4_3_3 "Saving the document" and @ref occt_ocaf_4_3_4 "Opening the document from a file" for the description of document save/open mechanisms. 
+See [Saving the document](#occt_ocaf_4_3_3) and [Opening the document from a file](#occt_ocaf_4_3_4) for the description of document save/open mechanisms. 
 
 If you decided to use the alternative way (create a new attribute by means of *UAttribute* and a combination of other standard attributes), do the following: 
   1. Set a *TDataStd_UAttribute* with a unique GUID attached to a label. This attribute defines the semantics of the data type (identifies the data type).
@@ -511,14 +510,14 @@ Choosing the alternative way of implementation of new data types allows to forge
 
 Let’s study the implementation of the same data type in both ways by the example of transformation represented by *gp_Trsf* class. The class *gp_Trsf* defines the transformation according to the type (*gp_TrsfForm*) and a set of parameters of the particular type of transformation (two points or a vector for translation, an axis and an angle for rotation, and so on). 
 
-1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the @ref samples__ocaf "Samples". 
+1. The first way: creation of a new attribute. The implementation of the transformation by creation of a new attribute is represented in the [Samples](../../samples/ocaf/ocaf.md#samples__ocaf). 
 
 2. The second way: creation of a new data type by means of combination of standard attributes. Depending on the type of transformation it may be kept in data framework by different standard attributes. For example, a translation is defined by two points. Therefore the data tree for translation looks like this: 
   * Type of transformation <i>(gp_Translation)</i> as *TDataStd_Integer*;
   * First point as *TDataStd_RealArray* (three values: X1, Y1 and Z1);
   * Second point as *TDataStd_RealArray* (three values: X2, Y2 and Z2).
 
-@figure{/user_guides/ocaf/images/ocaf_image010.png,"Data tree for translation",240}
+<img src="images/ocaf_image010.png" alt="Data tree for translation" width="240">
 
 If the type of transformation is changed to rotation, the data tree looks like this: 
   * Type of transformation <i>(gp_Rotation)</i> as *TDataStd_Integer*;
@@ -526,11 +525,11 @@ If the type of transformation is changed to rotation, the data tree looks like t
   * Axis of rotation as *TDataStd_RealArray* (three values: DX, DY and DZ);
   * Angle of rotation as *TDataStd_Real*.
 
-@figure{/user_guides/ocaf/images/ocaf_image011.png,"Data tree for rotation",240}
+<img src="images/ocaf_image011.png" alt="Data tree for rotation" width="240">
 
 The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the data type. The interface class initialized by the label of this attribute allows access to the data container (type of transformation and the data of transformation according to the type). 
   
-@subsection occt_ocaf_3_6 Compound documents
+<h3><a id="occt_ocaf_3_6">Compound documents</a></h3>
  
   As the identification of data is persistent, one document can reference data contained in another document, 
   the referencing and  referenced documents being saved in two separate files.  
@@ -541,7 +540,7 @@ The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the d
   which references the coffee pot of the first document 
   (the XLink contains the relative path of the coffee pot document and the entry of the coffee pot data [0:1] ).  
 
-@figure{ocaf_wp_image006.png,"The coffee machine compound document",360}
+<img src="images/ocaf_wp_image006.png" alt="The coffee machine compound document" width="360">
  
   In this context, the end-user of the coffee machine application can open the coffee pot document, 
   modify the geometry of, for  example, the reservoir, and overwrite the document without worrying 
@@ -553,7 +552,7 @@ The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the d
   we can detect that the referencing document has to  be updated by comparing the two counters 
   (an update function importing the data  referenced by an XLink into the referencing document is also provided).  
  
- @subsection occt_ocaf_3_7 Transaction mechanism
+ <h3><a id="occt_ocaf_3_7">Transaction mechanism</a></h3>
  
   The Data Framework also provides a transaction mechanism inspired from database management systems: 
   the data are modified within a transaction which is terminated either by a Commit 
@@ -578,9 +577,9 @@ The attribute *TDataStd_UAttribute* with the chosen unique GUID identifies the d
   two transactions, even if both operations are done in the same working session.
 
   
-@section occt_ocaf_4_ Standard Document Services
+<h2><a id="occt_ocaf_4_">Standard Document Services</a></h2>
 
-@subsection occt_ocaf_4_1 Overview
+<h3><a id="occt_ocaf_4_1">Overview</a></h3>
 
 Standard documents offer ready-to-use documents containing a TDF-based data framework. Each document can contain only one framework. 
 
@@ -595,11 +594,11 @@ To sum up, standard documents alone provide access to the data framework. They a
   * Manage the undo/redo functionality.
 
 
-@subsection occt_ocaf_4_2 The Application
+<h3><a id="occt_ocaf_4_2">The Application</a></h3>
 
 As a container for your data framework, you need a document, and your document must be contained in your application. This application will be a class *TDocStd_Application* or a class inheriting from it. 
 
-@subsubsection occt_ocaf_4_2_1 Creating an application
+<h4><a id="occt_ocaf_4_2_1">Creating an application</a></h4>
 
 To create an application, use the following syntax. 
 
@@ -607,7 +606,7 @@ To create an application, use the following syntax.
 Handle(TDocStd_Application) app = new TDocStd_Application (); 
 ~~~~
 
-@subsubsection occt_ocaf_4_2_2 Creating a new document
+<h4><a id="occt_ocaf_4_2_2">Creating a new document</a></h4>
 
 To the application which you declared in the previous example (4.2.1), you must add the document *doc* as an argument of *TDocStd_Application::NewDocument*. 
 
@@ -620,32 +619,32 @@ Here "NewDocumentFormat" is identifier of the format of your document.
 OCCT defines several standard formats, distinguishing by a set of supported OCAF attributes, and method of encoding (e.g. binary data or XML), described below.
 If your application defines specific OCAF attributes, you need to define your own format for it.
 
-@subsubsection occt_ocaf_4_2_3 Retrieving the application to which the document belongs
+<h4><a id="occt_ocaf_4_2_3">Retrieving the application to which the document belongs</a></h4>
 
 To retrieve the application containing your document, you use the syntax below. 
 
 ~~~~{.cpp}
 app = Handle(TDocStd_Application)::DownCast (doc->Application()); 
 ~~~~
-@subsection occt_ocaf_4_3 The Document
+<h3><a id="occt_ocaf_4_3">The Document</a></h3>
 
 The document contains your data framework, and allows you to retrieve this framework, recover its main label, save it in a file, and open or close this file. 
 
-@subsubsection occt_ocaf_4_3_1 Accessing the main label of the framework
+<h4><a id="occt_ocaf_4_3_1">Accessing the main label of the framework</a></h4>
 
 To access the main label in the data framework, you use *TDocStd_Document::Main* as in the example below. The main label is the first child of the root label in the data framework, and has the entry 0:1. 
 
 ~~~~{.cpp}
 TDF_Label label = doc->Main(); 
 ~~~~
-@subsubsection occt_ocaf_4_3_2 Retrieving the document from a label in its framework
+<h4><a id="occt_ocaf_4_3_2">Retrieving the document from a label in its framework</a></h4>
 
 To retrieve the document from a label in its data framework, you use *TDocStd_Document::Get* as in the example below. The argument *label* passed to this method is an instantiation of *TDF_Label*. 
 ~~~~{.cpp}
 doc = TDocStd_Document::Get(label); 
 ~~~~
 
-@subsubsection occt_ocaf_4_3_format Defining storage format
+<h4><a id="occt_ocaf_4_3_format">Defining storage format</a></h4>
 
 OCAF uses a customizable mechanism for storage of the documents.
 In order to use OCAF persistence to save and read your documents to / from the file, you need to define one or several formats in your application.
@@ -692,7 +691,7 @@ The application can define several storage formats.
 On save, the format specified in the document (see *TDocStd_Document::StorageFormat()*) will be used (save will fail if that format is not defined in the application).
 On reading, the format identifier stored in the file is used and recorded in the document.
 
-@subsubsection occt_ocaf_4_3_plugins Defining storage format by resource files 
+<h4><a id="occt_ocaf_4_3_plugins">Defining storage format by resource files </a></h4>
 
 The alternative  method to define formats is via usage of resource files. 
 This  method was  used in earlier versions of OCCT and is considered as deprecated since version 7.1.0.
@@ -729,7 +728,7 @@ setenv CSF_PluginDefaults MyApplicationPath/MyResources
 setenv CSF_NewFormatDefaults MyApplicationPath/MyResources 
 ~~~~
 
-@subsubsection occt_ocaf_4_3_3 Saving a document
+<h4><a id="occt_ocaf_4_3_3">Saving a document</a></h4>
 
 To save the document, make sure that its parameter *StorageFormat()* corresponds to one of the formats defined in the application, and use method *TDocStd_Application::SaveAs*, for instance: 
 
@@ -737,7 +736,7 @@ To save the document, make sure that its parameter *StorageFormat()* corresponds
 app->SaveAs(doc, "/tmp/example.caf"); 
 ~~~~
 
-@subsubsection occt_ocaf_4_3_4 Opening the document from a file
+<h4><a id="occt_ocaf_4_3_4">Opening the document from a file</a></h4>
 
 To open the document from a file where it has been previously saved, you can use *TDocStd_Application::Open* as in the example below. The arguments are the path of the file and the document saved in this file. 
 
@@ -771,7 +770,7 @@ substitute the existing attributes, the reading mode *PCDM_ReaderFilter::AppendM
 Appending to the document content of already loaded file may be performed several times with the same or different parts of the document loaded. For that the filter reading mode must be *PCDM_ReaderFilter::AppendMode_Protect*
 or *PCDM_ReaderFilter::AppendMode_Overwrite*, which enables the "append" mode of document open. If the filter is empty or null or skipped in arguments, it opens document with "append" mode disabled and any loading limitations.
 
-@subsubsection occt_ocaf_4_3_5 Cutting, copying and pasting inside a document
+<h4><a id="occt_ocaf_4_3_5">Cutting, copying and pasting inside a document</a></h4>
 
 To cut, copy and paste inside a document, use the class *TDF_CopyLabel*.
 
@@ -808,15 +807,15 @@ The filter is used to forbid copying a specified type of attribute.
 
 You can also have a look at the class *TDF_Closure*, which can be useful to determine the dependencies of the part you want to cut from the document.
 
-@subsection occt_ocaf_4_4 External Links
+<h3><a id="occt_ocaf_4_4">External Links</a></h3>
 
 External links refer from one document to another. They allow you to update the copy of data  framework later on. 
 
-@figure{/user_guides/ocaf/images/ocaf_image012.png,"External links between documents",360}
+<img src="images/ocaf_image012.png" alt="External links between documents" width="360">
 
 Note that documents can be copied with or without a possibility of updating an external link. 
 
-@subsubsection occt_ocaf_4_4_1 Copying the document
+<h4><a id="occt_ocaf_4_4_1">Copying the document</a></h4>
 
 #### With the possibility of updating it later
 
@@ -851,8 +850,8 @@ XLinkTool.Copy(target, source);
 ~~~~
 
 
-@section occt_ocaf_5 OCAF Shape Attributes
-@subsection occt_ocaf_5_1 Overview
+<h2><a id="occt_ocaf_5">OCAF Shape Attributes</a></h2>
+<h3><a id="occt_ocaf_5_1">Overview</a></h3>
 
 A topological attribute can be seen as a hook into the topological structure. It is possible to attach data to define references to it.
 
@@ -862,9 +861,9 @@ The user can add the *TNaming_NamedShape* attribute to other labels. This attrib
 
 If a shape is newly created, then the old shape of a corresponding named shape is an empty shape. If a shape is deleted, then the new shape in this named shape is empty. 
 
-@figure{/user_guides/ocaf/images/ocaf_image013.png,"",455}
+<img src="images/ocaf_image013.png" alt="" width="455">
 
-@subsection occt_ocaf_5_2 Shape attributes in data framework. 
+<h3><a id="occt_ocaf_5_2">Shape attributes in data framework. </a></h3>
 
 Different algorithms may dispose sub-shapes of the result shape at the individual labels depending on whether it is necessary to do so: 
 
@@ -875,7 +874,7 @@ Different algorithms may dispose sub-shapes of the result shape at the individua
 
 Consider the following example. Two boxes (solids) are fused into one solid (the result one). Initially each box was placed to the result label as a named shape, which has evolution PRIMITIVE and refers to the corresponding shape of the *TNaming_UsedShapes* map. The box result label has a material attribute and six child labels containing named shapes of Box faces. 
 
-@figure{/user_guides/ocaf/images/ocaf_image014.png,"Resulting box",200}
+<img src="images/ocaf_image014.png" alt="Resulting box" width="200">
 
 After the fuse operation a modified result is placed to a separate label as a named shape, which refers to the old shape (one of the boxes) and to the new shape resulting from the fuse operation, and has evolution MODIFY (see the following figure). 
 
@@ -883,7 +882,7 @@ Named shapes, which contain information about modified faces, belong to the fuse
 * sub-label with tag 1 -- modified faces from box 1, 
 * sub-label with tag 2 -- modified faces from box 2. 
 
-@figure{/user_guides/ocaf/images/ocaf_image015.png,"",360}
+<img src="images/ocaf_image015.png" alt="" width="360">
 
 This is necessary and sufficient information for the functionality of the right naming mechanism: any sub-shape of the result can be identified unambiguously by name type and set of labels, which contain named shapes: 
 
@@ -894,7 +893,7 @@ This is necessary and sufficient information for the functionality of the right 
 
 After any modification of source boxes the application must automatically rebuild the naming entities: recompute the named shapes of the boxes (solids and faces) and fuse the resulting named shapes (solids and faces) that reference to the new named shapes. 
 
-@subsection occt_ocaf_5_3 Registering shapes and their evolution
+<h3><a id="occt_ocaf_5_3">Registering shapes and their evolution</a></h3>
 
 When using TNaming_NamedShape to create attributes, the following fields of an attribute are filled: 
 
@@ -908,7 +907,7 @@ When using TNaming_NamedShape to create attributes, the following fields of an a
 
 Only pairs of shapes with equal evolution can be stored in one named shape. 
 
-@subsection occt_ocaf_5_4 Using naming resources
+<h3><a id="occt_ocaf_5_4">Using naming resources</a></h3>
 
 The class *TNaming_Builder* allows creating a named shape attribute. It has a label of a future attribute as an argument of the constructor. Respective methods are used for the evolution and setting of shape pairs. If for the same TNaming_Builder object a lot of pairs of shapes with the same evolution are given, then these pairs would be placed in the resulting named shape. After the creation of a new object of the TNaming_Builder class, an empty named shape is created at the given label. 
 
@@ -923,7 +922,7 @@ builder.Generated(oldshape2,newshape2);
 Handle(TNaming_NamedShape) ns = builder.NamedShape(); 
 ~~~~
 
-@subsection occt_ocaf_5_5 Reading the contents of a named shape attribute
+<h3><a id="occt_ocaf_5_5">Reading the contents of a named shape attribute</a></h3>
 
 You can use the method <i>TNaming_NamedShape::Evolution()</i> to get the evolution of this named shape and the method <i>TNaming_NamedShape::Get()</i> to get a compound of new shapes of all pairs of this named shape.
   
@@ -951,7 +950,7 @@ iter.Next();
 ~~~~
 
 
-@subsection occt_ocaf_5_6 Topological naming
+<h3><a id="occt_ocaf_5_6">Topological naming</a></h3>
 
 The Topological Naming mechanism is based on 3 components:
 * History of the used modeling operation algorithm;
@@ -960,7 +959,7 @@ The Topological Naming mechanism is based on 3 components:
 
 To get the expected result the work of the three components should be synchronized and the rules of each component should be respected.
 
-@subsubsection occt_ocaf_5_6_1 Algorithm history
+<h4><a id="occt_ocaf_5_6_1">Algorithm history</a></h4>
 
 The "correct" history of a used modeling operation serves the basis of naming mechanism. It should be provided by the algorithm supporting the operation. The history content depends on the type of the topological result. The purpose of the history is to provide all entities for consistent and correct work of the Selection / Recomputation mechanism. The table below presents expected types of entities depending on the result type.
 
@@ -977,13 +976,13 @@ The history should return (and track) only elementary types of sub-shapes, i.e. 
 
 There are some simple exceptions for several cases. For example, if the Result contains a seam edge -- in conical, cylindrical or spherical surfaces -- this seam edge should be tracked by the history and in addition should be defined before the types. All degenerated entities should be filtered and excluded from consideration.
 
-@subsubsection occt_ocaf_5_6_2 Loading history in data framework
+<h4><a id="occt_ocaf_5_6_2">Loading history in data framework</a></h4>
 
 All elements returned by the used algorithm according to the aforementioned rules should be put in the Data Framework (or OCAF document in other words) consequently in linear order under the so-called **Result Label**. 
 
-The "Result Label" is *TDF_label* used to keep the algorithm result *Shape* from *TopoDS* in *NamedShape* attribute. During loading sub-shapes of the result in Data Framework should be used the rules of chapter @ref occt_ocaf_5_3.  These rules are also applicable for loading the main shape, i.e. the resulting shape produced by the modeling algorithm.
+The "Result Label" is *TDF_label* used to keep the algorithm result *Shape* from *TopoDS* in *NamedShape* attribute. During loading sub-shapes of the result in Data Framework should be used the rules of chapter [Link](#occt_ocaf_5_3).  These rules are also applicable for loading the main shape, i.e. the resulting shape produced by the modeling algorithm.
 
-@subsubsection occt_ocaf_5_6_3 Selection / re-computation mechanism
+<h4><a id="occt_ocaf_5_6_3">Selection / re-computation mechanism</a></h4>
 
 When the Data Framework is filled with all impacted entities (including the data structures resulting from the current modeling operation and the data structures resulting from the previous modeling operations, on which the current operation depends) any sub-shape of the current result can be **selected**, i.e. the corresponding new naming data structures, which support this functionality, can be produced and kept in the Data Framework.
 
@@ -999,7 +998,7 @@ The selector places a new named shape with evolution **SELECTED** to the given l
 
 After any modification of a context shape and update of the corresponding naming structure, it is necessary to call method *TNaming_Selector::Solve*. If the naming structure, i.e. the above mentioned **name**, is correct, the selector automatically updates the selected sub-shape in the corresponding named shape, else it fails.
 
-@subsection occt_ocaf_5_7 Exploring shape evolution
+<h3><a id="occt_ocaf_5_7">Exploring shape evolution</a></h3>
 
 The class *TNaming_Tool* provides a toolkit to read current data contained in the attribute. 
 
@@ -1020,13 +1019,13 @@ Standard_Boolean CafTest_MyClass::SameEdge (const Handle(CafTest_Line)& L1, cons
 ~~~~
 
 
-@subsection occt_ocaf_5_8 Example of topological naming usage
+<h3><a id="occt_ocaf_5_8">Example of topological naming usage</a></h3>
 
 **Topological naming** is a mechanism of Open CASCADE aimed to keep reference to the selected shape. If, for example, we select a vertex of a solid shape and “ask” the topological naming to keep reference to this vertex, it will refer to the vertex whatever happens with the shape (translations, scaling, fusion with another shape, etc.).
 
 Let us consider an example: imagine a wooden plate. The job is to drive several nails in it:
 
-@figure{/user_guides/ocaf/images/ocaf_image020.png,"A nail driven in a wooden plate",360}
+<img src="images/ocaf_image020.png" alt="A nail driven in a wooden plate" width="360">
 
 There may be several nails with different size and position. A **Hammer** should push each **Nail** exactly in the center point of the top surface. For this the user does the following:
 *	Makes several Nails of different height and diameter (according to the need),
@@ -1048,11 +1047,11 @@ The application contains 3 functions:
 Each function gives the topological naming some hints how to “re-solve” the selected sub-shapes:
 * The Nail constructs a solid shape and puts each face of the shape into sub-labels: 
 
-@figure{/user_guides/ocaf/images/ocaf_image021.png,"Distribution of faces through sub-labels of the Nail",185}
+<img src="images/ocaf_image021.png" alt="Distribution of faces through sub-labels of the Nail" width="185">
 
 * The **Translator** moves a shape and registers modification for each face: it puts a pair: “old” shape -- “new” shape at a sub-label of each moving Nail. The “old” shape represents a face of the Nail at the initial position. The “new” shape -- is the same face, but at a new position:
 
-@figure{/user_guides/ocaf/images/ocaf_image022.png,"Registration of relocation of faces of a Nail",240}
+<img src="images/ocaf_image022.png" alt="Registration of relocation of faces of a Nail" width="240">
 
 How does it work?
 * The Hammer selects a face of a Nail calling *TNaming_Selector::Select()*. This call makes a unique name for the selected shape. In our example, it will be a direct reference to the label of the top face of the Nail (Face 1).
@@ -1067,9 +1066,9 @@ The job is done.
 P.S. Let us say a few words about a little more complicated case -- selection of a wire of the top face. Its topological name is an “intersection” of two faces. We remember that the **Nail** puts only faces under its label. So, the selected wire will represent an “intersection” of the top face and the conic face keeping the “head” of the nail. Another example is a selected vertex. Its unique name may be represented as an “intersection” of three or even more faces (depends on the shape).
 
 
-@section occt_ocaf_6 Standard Attributes
+<h2><a id="occt_ocaf_6">Standard Attributes</a></h2>
 
-@subsection occt_ocaf_6_1 Overview
+<h3><a id="occt_ocaf_6_1">Overview</a></h3>
 
 Standard attributes are ready-to-use attributes, which allow creating and modifying attributes for many basic data types. They are available in the packages *TDataStd, TDataXtd* and *TDF*. Each attribute belongs to one of four types: 
 
@@ -1155,9 +1154,9 @@ The listed below attributes received this new feature:
 
 See for details paragraph 6.4.
 
-@subsection occt_ocaf_6_2 Services common to all attributes
+<h3><a id="occt_ocaf_6_2">Services common to all attributes</a></h3>
 
-@subsubsection occt_ocaf_6_2_1 Accessing GUIDs
+<h4><a id="occt_ocaf_6_2_1">Accessing GUIDs</a></h4>
 
 To access the GUID of an attribute, you can use two methods: 
   * Method *GetID* is the static method of a class. It returns the GUID of any attribute, which is an object of a specified class (for example, *TDataStd_Integer* returns the GUID of an integer attribute). Only two classes from the list of standard attributes do not support these methods: *TDataStd_TreeNode* and *TDataStd_Uattribute*, because the GUIDs of these attributes are variable.
@@ -1170,7 +1169,7 @@ To find an attribute attached to a specific label, you use the GUID of the attri
     Standard_Boolean HasAttribute = aLabel.Find(anID,anAttribute);
 ~~~~
 
-@subsubsection occt_ocaf_6_2_2 Conventional Interface of Standard Attributes
+<h4><a id="occt_ocaf_6_2_2">Conventional Interface of Standard Attributes</a></h4>
 
 It is usual to create standard named methods for the attributes: 
 
@@ -1178,7 +1177,7 @@ It is usual to create standard named methods for the attributes:
   * Method *Get()* returns the value of an attribute if it is characterized by one value.
   * Method *Dump(Standard_OStream)* outputs debug information about a given attribute to a given stream.
   
-@subsection occt_ocaf_6_3 The choice between standard and custom attributes
+<h3><a id="occt_ocaf_6_3">The choice between standard and custom attributes</a></h3>
 
 When you start to design an application  based on OCAF, usually it is necessary to choose, which attribute will be used for allocation of data in the OCAF document: standard or newly-created?
 
@@ -1195,7 +1194,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   Let us consider several boundary implementations of the same model in OCAF tree and analyze the advantages and disadvantages of each approach.  
 
   
-@subsubsection occt_ocaf_6_2_3 Comparison  and analysis of approaches
+<h4><a id="occt_ocaf_6_2_3">Comparison  and analysis of approaches</a></h4>
 
   Below are described two different model implementations:
   one is based on standard OCAF attributes and the other is based
@@ -1220,7 +1219,7 @@ It is possible to describe any model by means of standard OCAF attributes.
 
   Certainly, other variants are also possible.
 
-@figure{ocaf_tree_wp_image003.png,"Allocation of all data as one  array of double values",350}
+<img src="images/ocaf_tree_wp_image003.png" alt="Allocation of all data as one  array of double values" width="350">
  
   The first approach to allocation of all  data represented as one array of double values 
   saves initial memory and is easy to implement. 
@@ -1237,7 +1236,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   In this case we create 100  000 labels -- one label for each measurement point 
   and attach an array of double  values to these labels:  
  
-@figure{ocaf_tree_wp_image004.png,"Allocation of data of each  measurement point as arrays of double values",288}
+<img src="images/ocaf_tree_wp_image004.png" alt="Allocation of data of each  measurement point as arrays of double values" width="288">
  
   Now edition of data is safer as far as  memory usage is concerned. 
   Change of value for one measurement point (any  value: point coordinates, load, and so on) backs-up only one small array of double values.
@@ -1248,7 +1247,7 @@ It is possible to describe any model by means of standard OCAF attributes.
    
   The third case of allocation of data  through OCAF tree is represented below:  
 
-@figure{ocaf_tree_wp_image005.png,"Allocation of data into separate arrays of double values",354}
+<img src="images/ocaf_tree_wp_image005.png" alt="Allocation of data into separate arrays of double values" width="354">
 
   In this case sub-labels are involved and we  can easily access the values of each measurement point, 
   load or matrix. We don’t need an interface class with methods of access to the data 
@@ -1265,7 +1264,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   In this case we  implement the third variant of using the standard attributes (see picture 3), 
   but we use less memory (because we use only one attribute instead of three):  
  
-@figure{ocaf_tree_wp_image006.png,"Allocation of data into newly  created OCAF attribute",383}
+<img src="images/ocaf_tree_wp_image006.png" alt="Allocation of data into newly  created OCAF attribute" width="383">
 
   The second variant of using standard OCAF attributes still has drawbacks: 
   when data is edited, OCAF backs-up all values  of the measurement point.   
@@ -1274,7 +1273,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   It would be better for us to allocate this data separately from editable data. 
   Back-up will not affect non-editable data and memory will not increase so much during data edition.  
   
- @subsubsection occt_ocaf_6_2_4 Conclusion
+ <h4><a id="occt_ocaf_6_2_4">Conclusion</a></h4>
 
   When deciding which variant of data model implementation to choose, 
   it is necessary to take into account the application  response time, 
@@ -1284,7 +1283,7 @@ It is possible to describe any model by means of standard OCAF attributes.
   Some other models need special treatment and require implementation of new OCAF attributes.
 
 
- @subsection occt_ocaf_6_4 Standard Attributes with User Defined GUID
+ <h3><a id="occt_ocaf_6_4">Standard Attributes with User Defined GUID</a></h3>
 
  The listed above attributes allow to set at the same Label as many attributes of the same type as you want thanks to specific user's ID.
  Let's consider it on the example of the TDataStd_Real attribute. The previous version of the attribute allowed to set the attribute using 
@@ -1316,7 +1315,7 @@ Handle (TDataStd_Real) anAtt;
 aLabel.FindAttribute (DENSITY, anAtt);
 ~~~~
 
-  @subsection occt_ocaf_6_4_1  Creation Attributes with User Defined GUID.
+  <h3><a id="occt_ocaf_6_4_1">Creation Attributes with User Defined GUID.</a></h3>
 
  You can create a new instance of an attribute with user define GUID and add it to label in two ways.
  1. Using static method Set(). For example:
@@ -1338,15 +1337,15 @@ aLabel.FindAttribute (DENSITY, anAtt);
 ~~~~
 
     
-@section occt_ocaf_7 Visualization Attributes
+<h2><a id="occt_ocaf_7">Visualization Attributes</a></h2>
 
-@subsection occt_ocaf_7_1 Overview
+<h3><a id="occt_ocaf_7_1">Overview</a></h3>
 
-Standard visualization attributes implement the Application Interactive Services (see @ref occt_user_guides__visualization "Visualization User's Guide"). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
+Standard visualization attributes implement the Application Interactive Services (see [Visualization User's Guide](../visualization/visualization.md#occt_user_guides__visualization)). in the context of Open CASCADE Technology Application Framework. Standard visualization attributes are AISViewer and Presentation and belong to the TPrsStd package. 
 
-@subsection occt_ocaf_7_2 Services provided
+<h3><a id="occt_ocaf_7_2">Services provided</a></h3>
 
-@subsubsection occt_ocaf_7_2_1 Defining an interactive viewer attribute
+<h4><a id="occt_ocaf_7_2_1">Defining an interactive viewer attribute</a></h4>
 
 The class *TPrsStd_AISViewer* allows you to define an interactive viewer attribute. There may be only one such attribute per one data framework and it is always placed to the root label. So, it could be set or found by any label ("access label") of the data framework. Nevertheless the default architecture can be easily extended and the user can manage several Viewers per one framework by himself. 
 
@@ -1357,20 +1356,20 @@ To initialize the AIS viewer as in the example below, use method *Find*.
 Handle(TPrsStd_AISViewer) viewer = TPrsStd_AISViewer::Find(access) 
 ~~~~
 
-@subsection occt_ocaf_7_2_2 Defining a presentation attribute
+<h3><a id="occt_ocaf_7_2_2">Defining a presentation attribute</a></h3>
 
 The class *TPrsStd_AISPresentation* allows you to define the visual presentation of document labels contents. In addition to various visual fields (color, material, transparency, *isDisplayed*, etc.), this attribute contains its driver GUID. This GUID defines the functionality, which will update the presentation every time when needed. 
 
-@subsubsection occt_ocaf_7_2_3 Creating your own driver
+<h4><a id="occt_ocaf_7_2_3">Creating your own driver</a></h4>
 
 The abstract class TPrsStd_Driver allows you to define your own driver classes. Simply redefine the Update method in your new class, which will rebuild the presentation. 
 
 If your driver is placed to the driver table with the unique driver GUID, then every time the viewer updates presentations with a GUID identical to your driver’s GUID, the *Update* method of your driver for these presentations must be called: 
-@figure{/user_guides/ocaf/images/ocaf_image016.png,"",420}
+<img src="images/ocaf_image016.png" alt="" width="420">
 
 As usual, the GUID of a driver and the GUID of a displayed attribute are the same. 
 
-@subsubsection occt_ocaf_7_2_4 Using a container for drivers
+<h4><a id="occt_ocaf_7_2_4">Using a container for drivers</a></h4>
 
 You frequently need a container for different presentation drivers. The class *TPrsStd_DriverTable* provides this service. You can add a driver to the table, see if one is successfully added, and fill it with standard drivers. 
 
@@ -1385,17 +1384,17 @@ TPrsStd_AISPresentation::Set(NS};
 ~~~~
 
 
-@section occt_ocaf_8 Function Services
+<h2><a id="occt_ocaf_8">Function Services</a></h2>
 
 Function services aggregate data necessary for regeneration of a model. The function mechanism -- available in the package *TFunction* -- provides links between functions and any execution algorithms, which take their arguments from the data framework, and write their results inside the same framework. 
 
 When you edit any application model, you have to regenerate the model by propagating the modifications. Each propagation step calls various algorithms. To make these algorithms independent of your application model, you need to use function services. 
 
-@figure{/user_guides/ocaf/images/ocaf_image008.png,"Document structure",360}
+<img src="images/ocaf_image008.png" alt="Document structure" width="360">
 
 Take, for example, the case of a modeling sequence made up of a box with the application of a fillet on one of its edges. If you change the height of the box, the fillet will need to be regenerated as well. 
 
-@subsection occt_ocaf_8_1 Finding functions, their owners and roots
+<h3><a id="occt_ocaf_8_1">Finding functions, their owners and roots</a></h3>
 
 The class *TFunction_Function* is an attribute, which stores a link to a function driver in the data framework. In the static table *TFunction_DriverTable* correspondence links between function attributes and drivers are stored. 
 
@@ -1403,15 +1402,15 @@ You can write your function attribute, a driver for such attribute, which update
 
 Then the solver algorithm of a data model can find the *Function* attribute on a corresponding label and call the *Execute* driver method to update the result of the function. 
 
-@subsection occt_ocaf_8_2 Storing and accessing information about function status
+<h3><a id="occt_ocaf_8_2">Storing and accessing information about function status</a></h3>
 
 For updating algorithm optimization, each function driver has access to the *TFunction_Logbook* object that is a container for a set of touched, impacted and valid labels. Using this object a driver gets to know which arguments of the function were modified. 
 
-@subsection occt_ocaf_8_3 Propagating modifications
+<h3><a id="occt_ocaf_8_3">Propagating modifications</a></h3>
 
 An application must implement its functions, function drivers and the common solver for parametric model creation. For example, check the following model: 
 
-@figure{/user_guides/ocaf/images/ocaf_image017.png,"",360}
+<img src="images/ocaf_image017.png" alt="" width="360">
 
 The procedure of its creation is as follows:
   * create a rectangular planar face *F* with height 100 and width 200;
@@ -1430,14 +1429,14 @@ The procedure of its creation is as follows:
   * the solver calls the *L* function driver;
   * the driver rebuilds fillet *L* and adds the label of the fillet to the logbook as impacted.
   
- @section occt_ocaf_8a Example of Function Mechanism Usage
+ <h2><a id="occt_ocaf_8a">Example of Function Mechanism Usage</a></h2>
  
- @subsection occt_ocaf_8a_1 Introduction
+ <h3><a id="occt_ocaf_8a_1">Introduction</a></h3>
 
   Let us describe the usage of the Function Mechanism of Open CASCADE Application Framework on a simple example.  
   This example represents a "nail" composed by a cone and two cylinders of different radius and height:  
 
-@figure{ocaf_functionmechanism_wp_image003.png,"A nail",160}
+<img src="images/ocaf_functionmechanism_wp_image003.png" alt="A nail" width="160">
 
   These three objects (a cone and two cylinders) are  independent, 
   but the Function Mechanism makes them connected to each other and representing one object -- a nail.  
@@ -1460,7 +1459,7 @@ The procedure of its creation is as follows:
   and the change of the height of the cone shortens or  prolongates the nail.  
    It is suggested to examine the programming steps needed to create a 3D parametric model of the "nail".  
   
-@subsection occt_ocaf_8a_2 Step 1: Data Tree
+<h3><a id="occt_ocaf_8a_2">Step 1: Data Tree</a></h3>
 
   The first step consists in model data allocation in the OCAF tree. 
   In other words, it is necessary to decide where to put the data.  
@@ -1496,7 +1495,7 @@ The procedure of its creation is as follows:
   of the head cylinder through the height of the cone. 
   It means that the head cylinder depends on the cone and the long cylinder.  
 
-@subsection occt_ocaf_8a_3 Step 2: Interfaces
+<h3><a id="occt_ocaf_8a_3">Step 2: Interfaces</a></h3>
 
   The interfaces of the data model are responsible for dynamic creation 
   of the data tree of the represented at the previous step, data  modification and deletion.  
@@ -1504,7 +1503,7 @@ The procedure of its creation is as follows:
   The interface called *INail*  should contain the methods for creation 
   of the data tree for the nail, setting  and getting of its parameters, computation, visualization and removal.  
 
-@subsubsection occt_ocaf_8a_3_1 Creation of the nail
+<h4><a id="occt_ocaf_8a_3_1">Creation of the nail</a></h4>
 
   This method of the interface creates a data tree for the nail at a given leaf of OCAF data tree.
 
@@ -1520,7 +1519,7 @@ The procedure of its creation is as follows:
   The values of the position and the radius of the  nail are defined for the cone object data. 
   The height of the cone is recomputed  as 2 * heights of nail and divided by 9.  
 
-@subsubsection occt_ocaf_8a_3_2 Computation
+<h4><a id="occt_ocaf_8a_3_2">Computation</a></h4>
 
   The Function Mechanism is responsible for re-computation of  the nail. 
   It will be described in detail later in this document.  
@@ -1532,21 +1531,21 @@ The procedure of its creation is as follows:
   with coefficient 3. The data  leaf of the height of the long cylinder 
   should contain two attributes: a  reference to the height of cone and a real value equal to 3.  
 
-@subsubsection occt_ocaf_8a_3_3 Visualization
+<h4><a id="occt_ocaf_8a_3_3">Visualization</a></h4>
 
  The shape resulting of the nail function can be displayed using the standard OCAF visualization mechanism.  
 
-@subsubsection occt_ocaf_8a_3_4 Removal of the nail
+<h4><a id="occt_ocaf_8a_3_4">Removal of the nail</a></h4>
 
 To automatically erase the nail from the viewer and the data  tree it is enough to clean the nail leaf from attributes.  
 
-@subsection occt_ocaf_8a_4 Step 3: Functions
+<h3><a id="occt_ocaf_8a_4">Step 3: Functions</a></h3>
 
   The nail is defined by four functions: the cone, the two cylinders  and the nail function.  
   The function of the cone is independent. The functions of the cylinders depend on the cone function. 
   The nail function depends on the  results of all functions:  
 
-@figure{ocaf_functionmechanism_wp_image005.png,"A graph of dependencies between functions",232}
+<img src="images/ocaf_functionmechanism_wp_image005.png" alt="A graph of dependencies between functions" width="232">
 
   Computation of the model starts with the cone function, then the long cylinder, 
   after that the header cylinder and, finally, the result is generated  by the nail function at the end of function chain.  
@@ -1582,7 +1581,7 @@ To automatically erase the nail from the viewer and the data  tree it is enough 
   
   This way the data model using the Function Mechanism is  ready for usage.   Do not forget to introduce the function drivers for a function  driver table with the help of *TFunction_DriverTable* class.
 
-@subsection occt_ocaf_8a_5 Example 1: iteration and execution of functions. 
+<h3><a id="occt_ocaf_8a_5">Example 1: iteration and execution of functions. </a></h3>
 
   This is an example of the code for iteration and execution of functions.  
 
@@ -1630,7 +1629,7 @@ for (; anIterator.more(); anIterator.Next())
 
 ~~~~
 
-@subsection occt_ocaf_8a_6 Example 2: Cylinder function driver
+<h3><a id="occt_ocaf_8a_6">Example 2: Cylinder function driver</a></h3>
 
   This is an example of the code for a cylinder function driver. To make the things clearer, the methods <i>\::Arguments()</i>  and <i>\::Results()</i>  from the base class are also mentioned.   
 
@@ -1714,7 +1713,7 @@ for (; anIterator.more(); anIterator.Next())
  
   
 
-@section occt_ocaf_9 XML Support
+<h2><a id="occt_ocaf_9">XML Support</a></h2>
 
 Writing and reading XML files in OCCT is provided by LDOM package, which constitutes an integral part
 of XML OCAF persistence, which is the optional component provided on top of Open CASCADE Technology.
@@ -1739,7 +1738,7 @@ Both these requirements are important when XML files are processed by applicatio
 
 LDOM is dependent on Kernel OCCT classes only. Therefore, it can be used outside OCAF persistence in various algorithms where DOM/XML support may be required. 
 
-@subsection occt_ocaf_9_1 Document Drivers
+<h3><a id="occt_ocaf_9_1">Document Drivers</a></h3>
 
 The drivers for document storage and retrieval  manage  conversion between a transient OCAF
 Document in memory and its persistent reflection in a container (disk, memory, network). For XML Persistence, they are defined in the package XmlDrivers. 
@@ -1768,7 +1767,7 @@ Usually, the library containing document storage and retrieval drivers is loaded
 
 The application defines which GUID is needed for document storage or retrieval and in which library it should be found. This depends on document format and application resources. Resources for XML Persistence and also for standard persistence are found in the StdResource unit. They are written for the XmlOcaf document format. 
 
-@subsection occt_ocaf_9_2 Attribute Drivers
+<h3><a id="occt_ocaf_9_2">Attribute Drivers</a></h3>
 
 There is one attribute driver for XML persistence for each transient attribute from a set of standard OCAF attributes, with the exception of attribute types, which are never stored (pure transient). Standard OCAF attributes are collected in six packages, and their drivers also follow this distribution. Driver for attribute <i>T*_*</i> is called <i>XmlM*_*</i>. Conversion between transient and persistent form of attribute is performed by two methods *Paste()* of attribute driver. 
 
@@ -1780,7 +1779,7 @@ Every transient attribute is saved as a *DOM_Element* (root element of OCAF attr
 
 The basic class *XmlMDF_ADriver* supports errors reporting via the method *WriteMessage(const TCollection_ExtendedString&)*. It sends a message string to its message driver which is initialized in the constructor with a *Handle(CDM_MessageDriver)* passed from the application by Document Storage/Retrieval Driver. 
 
-@subsection occt_ocaf_9_3 XML Document Structure
+<h3><a id="occt_ocaf_9_3">XML Document Structure</a></h3>
 
 Every XML Document has one root element, which may have attributes and contain other nodes. In OCAF XML Documents the root element is named "document" and has attribute "format" with the name of the OCAF Schema used to generate the file. The standard XML format is "XmlOcaf". The following elements are sub-elements of \<document\> and should be unique entries as its sub-elements, in a specific order. The order is:
 * **Element info** -- contains strings identifying the format version and other parameters of the OCAF XML document. Normally, data under the element is used by persistence algorithms to correctly retrieve and initialize an OCAF document. The data also includes a copyright string. 
@@ -1828,7 +1827,7 @@ xsi:schemaLocation="http://www.opencascade.org/OCAF/XML http://www.opencascade.o
 
 ~~~~
 
-@subsection occt_ocaf_9_4 XML Schema
+<h3><a id="occt_ocaf_9_4">XML Schema</a></h3>
 
 The XML Schema defines the class of a document. 
 
@@ -1850,9 +1849,9 @@ Both the XML format and the XML OCAF persistence code are extensible in the sens
 * Add (in the new *DocumentStorageDriver*) the *targetNamespace* accompanied with its prefix, using method *XmlDrivers_DocumentStorageDriver::AddNamespace*. The same is done for all namespaces objects which are used by the new persistence, with the exception of the "ocaf" namespace. 
 * Pass (in every OCAF attribute driver) the namespace prefix of the *targetNamespace* to the constructor of *XmlMDF_ADriver*. 
 
-@section occt_tobj TObj Package
+<h2><a id="occt_tobj">TObj Package</a></h2>
 
-@subsection occt_tobj_1 Introduction
+<h3><a id="occt_tobj_1">Introduction</a></h3>
 
 This document describes the package TObj, which is an add-on 
 to the Open CASCADE Application Framework (OCAF).
@@ -1869,7 +1868,7 @@ This includes:
 This document describes basic principles of logical and physical organization 
 of TObj-based data models and typical approaches to implementation of classes representing model objects.
 
-@subsubsection occt_tobj_1_1 Applicability
+<h4><a id="occt_tobj_1_1">Applicability</a></h4>
 
 The main purpose of the *TObj* data model is rapid development 
 of the object-oriented data models for applications, using the existing 
@@ -1887,9 +1886,9 @@ a limited number of objects at each level of the data structure (typically less 
 A greater number of objects causes performance problems due to list-based organization of OCAF documents. Therefore, other methods of storage, such as arrays, are advisable for data models or their sub-parts containing a great number of uniform objects. However, these methods 
 can be combined with the usage of *TObj* to represent the high-level structure of the model.
 
-@subsection occt_tobj_2 TObj Model
+<h3><a id="occt_tobj_2">TObj Model</a></h3>
 
-@subsubsection occt_tobj_2_1 TObj Model structure
+<h4><a id="occt_tobj_2_1">TObj Model structure</a></h4>
 
 In the *TObj* data model the data are separated from the interfaces that manage them.
 
@@ -1897,7 +1896,7 @@ It should be emphasized that *TObj* package defines only the interfaces and the 
 
 Logically the *TObj* data model is represented as a tree of model objects, with upper-level objects typically being collections of other objects (called *partitions*, represented by the class *TObj_Partition*). The root object of the model is called the *Main partition* and is maintained by the model itself. This partition contains a list of sub-objects called its *children* each sub-object may contain its own children (according to its type), etc. 
 
-@figure{/user_guides/ocaf/images/tobj_image003.png,"TObj Data Model",240}
+<img src="images/tobj_image003.png" alt="TObj Data Model" width="240">
 
 As the *TObj* Data Model is based on OCAF (Open CASCADE Application Framework) technology, 
 it stores its data in the underlying OCAF document. The OCAF document consists of a tree of 
@@ -1910,7 +1909,7 @@ of the label, which uniquely identifies its position in the document.
 Generally the structure of the OCAF tree of the *TObj* data 
 model corresponds to the logical structure of the model and can be presented as in the following picture: 
 
-@figure{/user_guides/ocaf/images/tobj_image004.png,"TObj Data Model mapped on OCAF document",360}
+<img src="images/tobj_image004.png" alt="TObj Data Model mapped on OCAF document" width="360">
 
 All data of the model are stored in the root label (0:1) of the OCAF document. 
 An attribute *TObj_TModel* is located in this root label. It 
@@ -1927,7 +1926,7 @@ where the objects of the child models can refer to the objects of the parent
 models, not vice-versa. Provided that the correct order of loading and closing 
 of the models is ensured, the *TObj* classes will maintain references between the objects automatically.
 
-@subsubsection occt_tobj_2_2 Data Model basic features
+<h4><a id="occt_tobj_2_2">Data Model basic features</a></h4>
 
 The class *TObj_Model* describing the data model provides the following functionalities: 
 
@@ -1941,7 +1940,7 @@ The class *TObj_Model* describing the data model provides the following function
   * Interface to check and update the model if necessary (method *Update*)
   * Support of several data models in one application. For this feature use OCAF multi-transaction manager, unique names and GUIDs of the data model (methods *GetModelName*, *GetGUID*)
 
-@subsubsection occt_tobj_2_3 Model Persistence
+<h4><a id="occt_tobj_2_3">Model Persistence</a></h4>
 
 The persistent representation of any OCAF model is contained in an XML or a binary file, 
 which is defined by the format string returned by the method *GetFormat*. 
@@ -1993,7 +1992,7 @@ in some cases it can be reasonable to add specific OCAF attributes to
 facilitate the storage of the data specific to the application. 
 In this case the schema should be extended using the standard OCAF mechanism. 
 
-@subsubsection occt_tobj_2_4 Access to the objects in the model
+<h4><a id="occt_tobj_2_4">Access to the objects in the model</a></h4>
 
 All objects in the model are stored in the main partition and accessed by iterators.
 To access all model objects use: 
@@ -2048,7 +2047,7 @@ is turned on, the object can be found in the model by its unique name:
     Handle(TObj_Object) FindObject (const Handle(TCollection_HExtendedString)& theName, const Handle(TObj_TNameContainer)& theDictionary) const; 
 ~~~~
 
-@subsubsection occt_tobj_2_5 Own model data
+<h4><a id="occt_tobj_2_5">Own model data</a></h4>
 
 The model object can store its own data in the Data label 
 of its main partition, however, there is no standard API for 
@@ -2057,7 +2056,7 @@ their own data using standard OCAF methods. The enumeration DataTag is defined
 in *TObj_Model* to avoid conflict of data labels used by this class 
 and its descendants, similarly to objects (see below). 
 
-@subsubsection occt_tobj_2_6 Object naming
+<h4><a id="occt_tobj_2_6">Object naming</a></h4>
 
 The basic implementation of *TObj_Model* provides the default 
 naming mechanism: all objects must have unique names, 
@@ -2103,7 +2102,7 @@ If there are a necessity to have more than one dictionary for the model objects,
 it is recommended to redefine the corresponding virtual method of TObj_Object 
 that returns the dictionary where names of objects should be registered.
 
-@subsubsection occt_tobj_2_7 API for transaction mechanism
+<h4><a id="occt_tobj_2_7">API for transaction mechanism</a></h4>
 
 Class *TObj_Model* provides the API for transaction mechanism (supported by OCAF): 
 
@@ -2144,7 +2143,7 @@ Returns True if the model document has a modified status (has changes after the 
 Changes the modified status by force. For synchronization of transactions 
 within several *TObj_Model* documents use class *TDocStd_MultiTransactionManager*. 
 
-@subsubsection occt_tobj_28 Model format and version
+<h4><a id="occt_tobj_28">Model format and version</a></h4>
 
 Class *TObj_Model* provides the descendant classes with a means to control 
 the format of the persistent file by choosing the schema used to store or retrieve operations. 
@@ -2200,7 +2199,7 @@ for the changes of data stored in the model, not for the changes of
 low-level format of data files (such as the storage format of a specific OCAF attribute). 
 If the format of data files changes, a specific treatment on a case-by-case basis will be required. 
 
-@subsubsection occt_tobj_2_9 Model update
+<h4><a id="occt_tobj_2_9">Model update</a></h4>
 
 The following methods are used for model update to ensure its consistency 
 with respect to the other models in case of cross-model dependencies: 
@@ -2226,7 +2225,7 @@ This method is called from the previous method to update back references
 of the indicated object after the retrieval of the model from file 
 (see data model - object relationship chapter for more details) 
 
-@subsubsection occt_tobj_2_10 Model copying
+<h4><a id="occt_tobj_2_10">Model copying</a></h4>
 
 To copy the model between OCAF documents use the following methods: 
 
@@ -2250,7 +2249,7 @@ Redefines a pure virtual method to create a new empty instance of the model.
 
 Copies the references from the current model to the target model. 
 
-@subsubsection occt_tobj_2_11 Messaging
+<h4><a id="occt_tobj_2_11">Messaging</a></h4>
 
 The messaging is organised using Open CASCADE Messenger from the package Message. 
 The messenger is stored as the field of the model instance 
@@ -2270,16 +2269,16 @@ All message keys are stored in a special resource file TObj.msg.
 This file should be loaded at the start of the application 
 by call to the appropriate method of the class *Message_MsgFile*. 
 
-@subsection occt_tobj_3 Model object
+<h3><a id="occt_tobj_3">Model object</a></h3>
 
 Class *TObj_Object* provides basic interface and default implementation 
 of important features of *TObj* model objects. This implementation defines 
 basic approaches that are recommended for all descendants, 
 and provides tools to facilitate their usage. 
 
-@figure{/user_guides/ocaf/images/tobj_image005.png,"TObj objects hierarchy",170}
+<img src="images/tobj_image005.png" alt="TObj objects hierarchy" width="170">
 
-@subsubsection occt_tobj_3_1 Separation of data and interface
+<h4><a id="occt_tobj_3_1">Separation of data and interface</a></h4>
 
 In the *TObj* data model, the data are separated from the interfaces that manage them. 
 The data belonging to a model object are stored in its root label and sub-labels 
@@ -2298,10 +2297,10 @@ The special type of attribute *TObj_TObject* is used for storing instances of ob
 in the OCAF tree. *TObj_TObject* is a simple container for the object of type *TObj_Object*. 
 All objects (interfaces) of the data model  inherit this class. 
 
-@figure{/user_guides/ocaf/images/tobj_image006.png,"TObj object stored on OCAF label",360}
+<img src="images/tobj_image006.png" alt="TObj object stored on OCAF label" width="360">
 
 
-@subsubsection occt_tobj_3_2 Basic features
+<h4><a id="occt_tobj_3_2">Basic features</a></h4>
 
 The *TObj_Object* class provides some basic features that can be inherited (or, if necessary, redefined) by the descendants: 
 
@@ -2337,7 +2336,7 @@ Returns *True* if the object has been found in the indicated label (or in the up
 Returns the father object of the indicated type 
 for the current object (the direct father object if the type is NULL). 
 
-@subsubsection occt_tobj_3_3 Data layout and inheritance
+<h4><a id="occt_tobj_3_3">Data layout and inheritance</a></h4>
 
 As far as the data objects are separated from the interfaces and stored in the OCAF tree, 
 the functionality to support inheritance is required. Each object has its own data 
@@ -2396,7 +2395,7 @@ Note that while references to other objects should be defined by descendant clas
 individually according to the type of object, *TObj_Object* provides methods 
 to manipulate (check, remove, iterate) the existing references in the uniform way, as described below. 
 
-@subsubsection occt_tobj_3_4 Persistence
+<h4><a id="occt_tobj_3_4">Persistence</a></h4>
 
 The persistence of the *TObj* Data Model is implemented with the help 
 of standard OCAF mechanisms (a schema defining necessary plugins, drivers, etc.). 
@@ -2437,7 +2436,7 @@ its persistence handler stores the runtime type of the object class.
 When the type is restored the handler dynamically recognizes the type 
 and creates the corresponding object using mechanisms provided by *TObj_Persistence*. 
 
-@subsubsection occt_tobj_3_5 Names of objects
+<h4><a id="occt_tobj_3_5">Names of objects</a></h4>
 
 All *TObj* model objects  have names by which the user can refer to the object. 
 Upon creation, each object receives a default name, constructed 
@@ -2477,7 +2476,7 @@ Attributes a new name to the object and returns **True** if the name has been at
 Returns False if the name has been already attributed to another object. 
 The last two methods are short-cuts to the first one. 
 
-@subsubsection occt_tobj_3_6 References between objects 
+<h4><a id="occt_tobj_3_6">References between objects </a></h4>
 
 Class *TObj_Object* allows creating references to other objects in the model. 
 Such references describe relations among objects which are not adequately reflected 
@@ -2488,7 +2487,7 @@ This attribute is located in the sub-label of the referring object (called *mast
 and keeps reference to the main label of the referred object. 
 At the same time the referred object can maintain the back reference to the master object. 
 
-@figure{/user_guides/ocaf/images/tobj_image007.png,"Objects relationship",360}
+<img src="images/tobj_image007.png" alt="Objects relationship" width="360">
 
 
 
@@ -2559,7 +2558,7 @@ This affects the behaviour of objects removal from the model -- if the reference
 either the referred object will not be removed, or both the referred 
 and the master objects will be removed (depends on the deletion mode in the method **Detach**) 
 
-@subsubsection occt_tobj_3_7 Creation and deletion of objects
+<h4><a id="occt_tobj_3_7">Creation and deletion of objects</a></h4>
 
 It is recommended that all objects inheriting from *TObj_Object*
  should implement the same approach to creation and deletion. 
@@ -2608,7 +2607,7 @@ Removes the object from the document if possible
 Unlinks references from removed objects. 
 Returns **True** if the objects have been successfully deleted. 
 
-@subsubsection occt_tobj_3_8 Transformation and replication of object data
+<h4><a id="occt_tobj_3_8">Transformation and replication of object data</a></h4>
 
 *TObj_Object* provides a number of special virtual methods  to support replications of objects. These methods should be redefined by descendants when necessary. 
 
@@ -2641,7 +2640,7 @@ Adds to the copy of the original object its references.
 
 Copies the children of an object to the target child label. 
 
-@subsubsection occt_tobj_3_9 Object flags
+<h4><a id="occt_tobj_3_9">Object flags</a></h4>
 
 Each instance of *TObj_Object* stores a set of bit flags, 
 which facilitate the storage of auxiliary logical information assigned to the objects 
@@ -2676,7 +2675,7 @@ defined in the enumeration *TypeFlags*. This flag is used to define visibility
 of the object for the user browsing the model (see class *TObj_HiddenPartition*). 
 Other flags can be added by the applications. 
 
-@subsubsection occt_tobj_310 Partitions
+<h4><a id="occt_tobj_310">Partitions</a></h4>
 
 The special kind of objects defined by the class *TObj_Partition* 
 (and its descendant *TObj_HiddenPartition*) is provided for partitioning 
@@ -2723,7 +2722,7 @@ Returns the last reserved child index.
 
 Sets the last reserved index. 
 
-@subsection occt_tobj_4 Auxiliary classes
+<h3><a id="occt_tobj_4">Auxiliary classes</a></h3>
 
 Apart from the model and the object, package *TObj* provides a set of auxiliary classes: 
 
@@ -2742,10 +2741,10 @@ Apart from the model and the object, package *TObj* provides a set of auxiliary 
 
 The structure of *TObj* iterators hierarchy is presented below: 
 
-@figure{/user_guides/ocaf/images/tobj_image008.png,"Hierarchy of iterators",420}
+<img src="images/tobj_image008.png" alt="Hierarchy of iterators" width="420">
 
 
-@subsection occt_tobj_5 Packaging
+<h3><a id="occt_tobj_5">Packaging</a></h3>
 
 The *TObj* sources are distributed in the following packages: 
 
@@ -2756,7 +2755,7 @@ The *TObj* sources are distributed in the following packages:
   * *TKBinL, TKXmlL* -- toolkits of binary and XML persistence
 
 
-@section occt_ocaf_10 GLOSSARY
+<h2><a id="occt_ocaf_10">GLOSSARY</a></h2>
 
 * **Application** -- a document container holding all documents containing all application data. 
 * **Application data** -- the data produced by an application, as opposed to data referring to it. 

@@ -1,5 +1,4 @@
-﻿Contribution {#contribution}
-============
+﻿<h1><a id="contribution" class="anchor">Contribution</a></h1>
 
 This chapter contains the detailed information about contribution procedure:
 

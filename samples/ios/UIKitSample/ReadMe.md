@@ -8,7 +8,7 @@ The first and second buttons serve for import hardcoded STEP files. The third bu
 
 The viewer supports zoom, pan and rotate actions. The viewer supports selection of solids as well.
 
-@figure{sample_ios_uikit.png}
+<img src="image/sample_ios_uikit.png" alt="">
 
 Installation and configuration:
     1. Make sure you are running Mac OS version 10.12.1 or above and properly installed XCode version 8.1 or above.

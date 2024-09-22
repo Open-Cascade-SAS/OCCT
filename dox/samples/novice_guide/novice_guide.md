@@ -1,9 +1,8 @@
-Novice Guide {#samples__novice_guide}
-=======
+<h1><a id="samples__novice_guide" class="anchor">Novice Guide</a></h1>
 
 @tableofcontents
 
-@section diffs Modeling with OCCT: Key differences
+<h2><a id="diffs">Modeling with OCCT: Key differences</a></h2>
 
 Open CASCADE Technology (OCCT) is an object-oriented C++ framework designed for rapid production of sophisticated CAD/CAM/CAE applications.
 In other words, it provides endless possibilities for raw 2D and 3D modeling in C++ environment.
@@ -14,18 +13,18 @@ By using OCCT, users can create the objects of their desire (or edit already exi
 It is a more complicated process than using GUI-based software, but it provides much more flexibility than even script-based manipulations that are available within existing CAD/CAM/CAE applications.
 However, to fully grasp the possibilities of OCCT it is best for the user to have previous experience in C++ at least at a basic level.
 
-@section basics Understanding the principles
+<h2><a id="basics">Understanding the principles</a></h2>
 
 If you don't have any programming skills, grasping the full magnitude of OCCT workflow is still an option.
 The documentation for OCCT contains several entry points for new users.
 It will not explain all OCCT classes but will help to comprehend the workflow and help start thinking in terms of Open CASCADE Technology.
 
-The most basic workflow is described in the @ref occt__tutorial "OCCT Tutorial" - this is an excellent starting point for new users.
+The most basic workflow is described in the [OCCT Tutorial](../../tutorial/tutorial.md#occt__tutorial) - this is an excellent starting point for new users.
 In this tutorial you will create a solid model step-by-step using different classes and methods.
 Each step of the tutorial contains code snippets and images.
 
 The basics involved in the modeling process are explained.
-When the basics of OCCT are clear, the next logical step is to check out @ref samples "sample applications" and examine those that suit your needs.
+When the basics of OCCT are clear, the next logical step is to check out [sample applications](../../samples/samples.md#samples) and examine those that suit your needs.
 For these, the best starting point is **OCCTOverview** located in /samples/qt subfolder of OCCT installation.
 
 This sample provides code examples for several actions as well as visualization of these code snippets output.
@@ -33,7 +32,7 @@ The Overview interface is dynamically changing based on selected **Category** at
 Additional menu buttons will appear, providing users with subcategories and relevant commands to select one of the actions.
 The result will appear in the viewer window, the code will appear at the top right, and in several cases the output will be produced at the bottom right window.
 
-@figure{sample_overview_qt_viewers.png,"Comparison of 3D and 2D viewer windows",240} height=420px
+<img src="images/sample_overview_qt_viewers.png" alt="Comparison of 3D and 2D viewer windows" width="240"> height=420px
 
 The 3D viewer window has a row of preset interface buttons to customize the visual output.
 
@@ -55,16 +54,16 @@ The **Geometry** category of the Overview focuses on primitive objects like dots
 These objects will appear in the viewer after the subcategory is selected.
 This section will demonstrate these entities both in 2D and 3D view mode and provide basic examples of parametric creation and data analysis.
 
-@figure{sample_overview_qt_geometry.png,"",240} height=440px
+<img src="images/sample_overview_qt_geometry.png" alt="" width="240"> height=440px
 
-The usage of the functions shown in the Overview is described more thoroughly at the @ref occt_user_guides__modeling_data "Modeling data" section of the documentation.
-Additionally, @ref occt_user_guides__modeling_algos "Modeling Algorithms" are used in more complex cases.
+The usage of the functions shown in the Overview is described more thoroughly at the [Modeling data](../../user_guides/modeling_data/modeling_data.md#occt_user_guides__modeling_data) section of the documentation.
+Additionally, [Modeling Algorithms](../../user_guides/modeling_algos/modeling_algos.md#occt_user_guides__modeling_algos) are used in more complex cases.
 
 The **Topology** section of the Overview demonstrates the functions used in 3D operations.
 Multiple use cases are provided, including different object intersections, modifying and calculations.
-Some of these use cases are described in the documentation, such as @ref occt_user_guides__inspector "Inspector" usage.
+Some of these use cases are described in the documentation, such as [Inspector](../../user_guides/inspector/inspector.md#occt_user_guides__inspector) usage.
 
-@figure{sample_overview_qt_topology.png,"",240} height=440px
+<img src="images/sample_overview_qt_topology.png" alt="" width="240"> height=440px
 
 The subsections are grouped as shown on the screenshot before.
 Most shapes and primitive objects are introduced and then followed by a set of operations and interactions.
@@ -75,22 +74,22 @@ This may be inspected via [Poly_Triangulation Class Reference](https://dev.openc
 a part of the [Reference manual](https://dev.opencascade.org/doc/refman/html/index.html),
 an overall Open CASCADE code guide that may be used to inspect the key points in classes and their connections.
 
-@figure{sample_overview_qt_triangulation.png,"",240} height=440px
+<img src="images/sample_overview_qt_triangulation.png" alt="" width="240"> height=440px
 
-The triangulation uses some of Mesh-related classes - see full description at @ref occt_user_guides__mesh "Mesh" documentation section.
+The triangulation uses some of Mesh-related classes - see full description at [Mesh](../../user_guides/mesh/mesh.md#occt_user_guides__mesh) documentation section.
 
 The **Data exchange** section provides examples of how to export and import files of several different formats.
 
-@figure{sample_overview_qt_xde.png,"",240} height=440px
+<img src="images/sample_overview_qt_xde.png" alt="" width="240"> height=440px
 
-The **OCAF** section gives an introduction for the @ref intro_overview_ocaf "Open CASCADE Application Framework" functionality.
+The **OCAF** section gives an introduction for the [Open CASCADE Application Framework](../../user_guides/ocaf/ocaf.md#intro_overview_ocaf) functionality.
 To test these functions, create an object first (box or cylinder).
 After that, the object may be modified and saved. Actions are recorded and may be undone or redone.
 
-@figure{sample_overview_qt_ocaf.png,"",240} height=440px
+<img src="images/sample_overview_qt_ocaf.png" alt="" width="240"> height=440px
 
 **Viewers** section demonstrates examples of the 2D and 3D visualization outputs.
-Check @ref occt_user_guides__visualization "Visualization" section of the documentation for a detailed description.
+Check [Visualization](../../user_guides/visualization/visualization.md#occt_user_guides__visualization) section of the documentation for a detailed description.
 In addition to these two samples, there are much more that might be of use to a new user based on their particular use case.
 
 Check Readme files in the sample directories to learn more about samples compilation.
@@ -99,10 +98,10 @@ Check Readme files in the sample directories to learn more about samples compila
 and the source code files for examples presented in subsections are stored at 'samples/OCCTOverview/code folder'.
 Several utility classes that are not presented in the example window may be found in example source code files.
 
-The overall classes introduction may be found in the @ref occt_user_guides__foundation_classes "Foundation Classes" section of the documentation.
+The overall classes introduction may be found in the [Foundation Classes](../../user_guides/foundation_classes/foundation_classes.md#occt_user_guides__foundation_classes) section of the documentation.
 The "Introduction" section contains short descriptions of the most massive entries in the documentation.
 
-@section helps Additional assistance
+<h2><a id="helps">Additional assistance</a></h2>
 
 There are several places that may be of use for new users.
 The first one is [Training & E-learning](https://dev.opencascade.org/resources/trainings) page that lists available trainings and describes their specifics.

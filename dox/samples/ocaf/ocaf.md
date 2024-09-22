@@ -1,5 +1,4 @@
-﻿OCAF: Usage Tutorial {#samples__ocaf}
-========
+﻿<h1><a id="samples__ocaf" class="anchor">OCAF: Usage Tutorial</a></h1>
 
 ## Getting Started
 

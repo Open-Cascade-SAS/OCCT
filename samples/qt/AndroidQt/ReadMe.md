@@ -8,7 +8,7 @@ The connection between Qt/Qml and OCCT (C++) level is provided by proxy library,
 The proxy library contains single C++ class AndroidQt encapsulating OCCT viewer and providing functionality to manipulate this viewer
 and to import OCCT shapes from supported format of CAD file (BREP).
 
-@figure{samples_qml_android_occt.jpg}
+<img src="image/samples_qml_android_occt.jpg" alt="">
 
 Requirements for building sample:
 * Java Development Kit 1.7 or higher

@@ -1,13 +1,12 @@
-Inspector  {#occt_user_guides__inspector}
-===============================
+<h1><a id="occt_user_guides__inspector" class="anchor">Inspector </a></h1>
 
 @tableofcontents
  
-@section occt_inspector_1 Introduction
+<h2><a id="occt_inspector_1">Introduction</a></h2>
 
 This manual explains how to use the Inspector.
 
-@subsection occt_inspector_1_1 Overview
+<h3><a id="occt_inspector_1_1">Overview</a></h3>
 Inspector is a Qt-based library that provides functionality to interactively inspect low-level content of the OCAF data model, OCCT viewer and Modeling Data.
 This component is aimed to assist the developers of OCCT-based applications to debug the problematic situations that occur in their applications.
 
@@ -15,10 +14,10 @@ Inspector has a plugin-oriented architecture. The current release contains the f
 
 | Plugin | OCCT component | Root class of OCCT investigated component |
 | :----- | :----- | :----- |
-| @ref occt_inspector_2_2 "DFBrowser"| OCAF | *TDocStd_Application* |
-| @ref occt_inspector_2_3 "VInspector"| Visualization | *AIS_InteractiveContext* |
-| @ref occt_inspector_2_4 "ShapeView"| Modeling Data | *TopoDS_Shape* |
-| @ref occt_inspector_2_5 "MessageView"| Modeling Data | *Message_Report* |
+| [DFBrowser](#occt_inspector_2_2)| OCAF | *TDocStd_Application* |
+| [VInspector](#occt_inspector_2_3)| Visualization | *AIS_InteractiveContext* |
+| [ShapeView](#occt_inspector_2_4)| Modeling Data | *TopoDS_Shape* |
+| [MessageView](#occt_inspector_2_5)| Modeling Data | *Message_Report* |
 
 
 Each plugin implements logic of a corresponding OCCT component.
@@ -26,41 +25,41 @@ Each plugin implements logic of a corresponding OCCT component.
 Each of the listed plugins is embedded in the common framework, thus it is possible to manage, which plugins should be loaded by the Inspector, and to extend their number by implementing a new plugin.
 
 
-@subsection occt_inspector_1_3 Getting started
+<h3><a id="occt_inspector_1_3">Getting started</a></h3>
 
 There are two launch modes:
-1. Launch **TInspectorEXE** executable sample. For more details see @ref occt_inspector_4_1 "TInspectorEXE" section;
+1. Launch **TInspectorEXE** executable sample. For more details see [TInspectorEXE](#occt_inspector_4_1) section;
 2. Launch DRAW, load plugin INSPECTOR, and use *tinspector* command.
-   For more details, see @ref occt_inspector_4_2 "Launch in DRAW Test Harness" section.
+   For more details, see [Launch in DRAW Test Harness](#occt_inspector_4_2) section.
 
 
 **Note**. If you have no Inspector library in your build directory, make sure that OCCT is compiled with *BUILD_Inspector* 
-option ON. For more details see @ref occt_inspector_5 "Build procedure".
+option ON. For more details see [Build procedure](#occt_inspector_5).
 
 
-@section occt_inspector_2 Inspector Plugins
+<h2><a id="occt_inspector_2">Inspector Plugins</a></h2>
 
-@subsection occt_inspector_2_1 Overview
+<h3><a id="occt_inspector_2_1">Overview</a></h3>
 
 Inspector consists of the following components:
   * <b>buttons</b> to activate the corresponding plugin;
   * <b>view area</b> to visualize the plugin content.
 
-@figure{tinspector_elements.svg,"Plugins placement in Inspector",360}
+<img src="images/tinspector_elements.svg" alt="Plugins placement in Inspector" width="360">
 
-@subsection occt_inspector_2_2 DFBrowser Plugin
+<h3><a id="occt_inspector_2_2">DFBrowser Plugin</a></h3>
 
-@subsubsection occt_inspector_2_2_1 Overview
+<h4><a id="occt_inspector_2_2_1">Overview</a></h4>
 
-@figure{dfbrowser.png, "DFBrowser"}
+<img src="images/dfbrowser.png" alt="DFBrowser">
 
 This plugin visualizes the content of *TDocStd_Application* in a tree view. It shows application documents, 
 the hierarchy of *TDF_Labels*, the content of *TDF_Attributes* and interconnection between attributes (e.g. references).
 Additionally there is a 3D view to visualize *TopoDS_Shape* elements stored in the document.
 
-@subsubsection occt_inspector_2_2_2 Elements
+<h4><a id="occt_inspector_2_2_2">Elements</a></h4>
 
-@figure{dfbrowser_elements.svg, "DFBrowser Elements",360}
+<img src="images/dfbrowser_elements.svg" alt="DFBrowser Elements" width="360">
 
 <b>OCAF tree view</b>
 
@@ -108,7 +107,7 @@ Context pop-up menu:
 Property panel is used to display the result of <b>TDF_Attribute::Dump()</b> or <b>TDF_Label::Dump()</b> of the selected tree view item.
 The information is shown in one table.
 
-@figure{property_panel.png,"PropertyPanel",360}
+<img src="images/property_panel.png" alt="PropertyPanel" width="360">
 
 <b>Property Panel (custom)</b>
 
@@ -121,34 +120,34 @@ The information is usually shown in one or several tables.
 <tr><th>Type</th><th>Description</th><th>Content</th></tr>
 <tr><td><i>TDF_Label</i></td>
     <td> a table of [entry or attribute name, value]</td>
-    <td>@figure{property_panel_custom_label.png, "",140}</td></tr>
+    <td><img src="images/property_panel_custom_label.png" alt="" width="140"></td></tr>
 <tr><td><i>TDocStd_Owner</i>,<br> Simple type attributes, <br> List type attributes</td>
     <td>a table of [method name, value]</td>
-    <td>@figure{property_panel_custom_simple_type.png, "",140}</td></tr>
+    <td><img src="images/property_panel_custom_simple_type.png" alt="" width="140"></td></tr>
 <tr><td><i>TDataStd_BooleanArray</i>,<br> <i>TDataStd_ByteArray</i>,<br> other Array type attributes</td>
     <td>2 controls: <br> - a table of [array bound, value], <br> - a table of [method name, value] </td>
-    <td>@figure{property_panel_custom_array.png, "",140}</td></tr>
+    <td><img src="images/property_panel_custom_array.png" alt="" width="140"></td></tr>
 <tr><td><i>TDataStd_TreeNode</i></td>
     <td>2 controls: <br> - a table of [Tree ID, value] (visible only if Tree ID() != ID() ), <br> - a tree view of tree nodes starting from *Root()* of the tree node. The current tree node has <b>dark blue</b> text.</td>
-    <td>@figure{property_panel_custom_tree_node.png, "",140} </td></tr>
+    <td><img src="images/property_panel_custom_tree_node.png" alt="" width="140"> </td></tr>
 <tr><td><i>TDataStd_NamedData</i></td>
     <td>tab bar of attribute elements, each tab has a table of [name, value]</td>
-    <td>@figure{property_panel_custom_named_data.png, "",140}</td></tr>
+    <td><img src="images/property_panel_custom_named_data.png" alt="" width="140"></td></tr>
 <tr><td><i>TNaming_UsedShapes</i></td>
     <td>a table of all shapes handled by the framework</td>
-    <td>@figure{property_panel_custom_tnaming_used_shapes.png, "",140}</td></tr>
+    <td><img src="images/property_panel_custom_tnaming_used_shapes.png" alt="" width="140"></td></tr>
 <tr><td><i>TNaming_NamedShape</i></td>
-    <td>2 controls: <br> - a table of [method name, value] including CurrentShape/OriginalShape methods result of <i>TNaming_Tools</i>, <br> - an evolution table. <br> Tables contain buttons for @ref occt_shape_export "TopoDS_Shape export".</td>
-    <td>@figure{property_panel_custom_tnaming_named_shape.png, "",140}</td></tr>
+    <td>2 controls: <br> - a table of [method name, value] including CurrentShape/OriginalShape methods result of <i>TNaming_Tools</i>, <br> - an evolution table. <br> Tables contain buttons for [TopoDS_Shape export](#occt_shape_export).</td>
+    <td><img src="images/property_panel_custom_tnaming_named_shape.png" alt="" width="140"></td></tr>
 <tr><td><i>TNaming_Naming</i></td>
     <td>2 controls: <br> - a table of <i>TNaming_Name</i> values,<br> - a table of [method name, value]</td>
-    <td>@figure{property_panel_custom_tnaming_naming.png, "",140}</td></tr>
+    <td><img src="images/property_panel_custom_tnaming_naming.png" alt="" width="140"></td></tr>
 </table>
 
 
 <b>Dump view</b>
 
-@figure{dump_attribute.png, "Dump of TDF_Attribute",200}
+<img src="images/dump_attribute.png" alt="Dump of TDF_Attribute" width="200">
 
 Dump view shows the result of <b>TDF_Attribute::Dump()</b> or <b>TDF_Label::Dump()</b> of the selected tree view item.
 
@@ -163,11 +162,11 @@ DFBrowser creates two kinds of presentations depending on the selection place:
 <tr><td>Main presentation</td>
     <td>Tree view item:<br> *TPrsStd_AISPresentation*,<br> *TNaming_NamedShape*,<br> *TNaming_Naming*</td>
     <td>Color: a default color for shape type of the current *TopoDS_Shape*.</td>
-    <td>@figure{display_main_presentation.png, "",100}</td></tr>
+    <td><img src="images/display_main_presentation.png" alt="" width="100"></td></tr>
 <tr><td>Additional presentation</td>
     <td>References in Property panel</td>
     <td>Color: white</td>
-    <td>@figure{display_additional_presentation.png, "",100}</td></tr>
+    <td><img src="images/display_additional_presentation.png" alt="" width="100"></td></tr>
 </table>
 
 
@@ -192,13 +191,13 @@ The user can search OCAF element by typing:
   * *TDF_Attribute* name,
   * *TDataStd_Name* and *TDataStd_Comment* attributes value.
 
-@figure{search.png,"Search",360}
+<img src="images/search.png" alt="Search" width="360">
 
 As soon as the user confirms the typed criteria, the Property panel is filled by all satisfied values.
 The user can click a value to highlight the corresponding tree view item. By double click the item will be selected.
 
 
-@subsubsection occt_inspector_2_2_3 Elements cooperation
+<h4><a id="occt_inspector_2_2_3">Elements cooperation</a></h4>
 
 <b>Tree item selection</b>
 
@@ -208,7 +207,7 @@ Selection of tree view item updates content of the following controls:
   * 3D View (if it is possible to create an interactive presentation);
   * Dump View.
 
-@figure{dfbrowser_selection_in_tree_view.svg,"",360}
+<img src="images/dfbrowser_selection_in_tree_view.svg" alt="" width="360">
 
 <b>Property Panel (custom) item selection </b>
 
@@ -220,7 +219,7 @@ If the property panel (custom) shows content of *TDF_Attribute* that has referen
   * highlights the referenced item in the tree view,
   * displays additional presentation in the 3D view if it can be created.
 
-@figure{property_panel_custom_item_selection.svg,"",360}
+<img src="images/property_panel_custom_item_selection.svg" alt="" width="360">
 
 Attributes having references:
 
@@ -233,25 +232,25 @@ Attributes having references:
 | *TNaming_UsedShapes* | one or several *TNaming_NamedShape* | *TopoDS_Shapes* of the selected *TNaming_NamedShape*. |
 
 
-@subsubsection occt_shape_export TopoDS_Shape export
+<h4><a id="occt_shape_export">TopoDS_Shape export</a></h4>
 
 Property panel of *TNaming_NamedShape* attribute has controls to export *TopoDS_Shape* to:
   * BREP. **Save file** dialog is open to enter the result file name,
-  * @ref occt_inspector_2_4 "ShapeView" plugin. The dialog for exporting element to ShapeView allows activating this plugin immediately.
+  * [ShapeView](#occt_inspector_2_4) plugin. The dialog for exporting element to ShapeView allows activating this plugin immediately.
 
 
-@subsection occt_inspector_2_3 VInspector Plugin
+<h3><a id="occt_inspector_2_3">VInspector Plugin</a></h3>
 
-@subsubsection occt_inspector_2_3_1 Overview
+<h4><a id="occt_inspector_2_3_1">Overview</a></h4>
 
-@figure{vinspector.png, "VInspector",360}
+<img src="images/vinspector.png" alt="VInspector" width="360">
 
 This plugin visualizes interactive objects displayed in *AIS_InteractiveContext* in a tree view with computed selection
 components for each presentation. It shows the selected elements in the context and allows selecting these elements.
 
-@subsubsection occt_inspector_2_3_2 Elements
+<h4><a id="occt_inspector_2_3_2">Elements</a></h4>
 
-@figure{vinspector_elements.svg,"VInspector Elements",360}
+<img src="images/vinspector_elements.svg" alt="VInspector Elements" width="360">
 
 <b>Presentations tree view</b>
 
@@ -288,7 +287,7 @@ Context popup menu in tree view:
 
 This button synchronizes the plugin content with the current state of *AIS_InteractiveContext* and updates the presence of items and their current selection.
 
-@subsubsection occt_inspector_2_3_3 Elements cooperation
+<h4><a id="occt_inspector_2_3_3">Elements cooperation</a></h4>
 
 *VInspector* marks the presentations currently selected in *AIS_InteractiveContext* with a blue background in tree items. Use **Update** button to synchronize VInspector selected items state to the context.
 
@@ -301,36 +300,36 @@ Selection change:
 | *AIS_InteractiveContext* | VInspector | Performs selection in *AIS_InteractiveContext*. | Click **Update** button in VInspector and check **Selection** column: <br> *AIS_InteractiveContext* item contains some selected objects, <br> the value of some *AIS_InteractiveObject* is filled if they are selected for this presentation or its entity owner. |
 | VInspector | *AIS_InteractiveContext* | Activates one of Selection controls and selects one or several elements in the tree view. | The objects become selected in *AIS_InteractiveContext*. |
 
-@subsubsection occt_inspector_2_3_4 VInspector tree view columns
+<h4><a id="occt_inspector_2_3_4">VInspector tree view columns</a></h4>
 
 Use context pop-up menu on the tree view header to select, which columns should be displayed.
-@figure{vinspector_tree_columns.png, "Vinspector tree header context menu",360}
+<img src="images/vinspector_tree_columns.png" alt="Vinspector tree header context menu" width="360">
 
 Use the setting Lights (position, color) in the view.
-@figure{vinspector_light_setting.png, "Vinspector light setting",360}
+<img src="images/vinspector_light_setting.png" alt="Vinspector light setting" width="360">
 
-@subsubsection occt_inspector_2_3_5 VInspector property panel
+<h4><a id="occt_inspector_2_3_5">VInspector property panel</a></h4>
 
 Property panel shows the result of <b>AIS_InteractiveContext::Dump()</b> or <b>AIS_InteractiveObject::Dump()</b>.
-@figure{vinspector_property_panel.png, "Vinspector property panel",360}
+<img src="images/vinspector_property_panel.png" alt="Vinspector property panel" width="360">
 
-@subsection occt_inspector_2_4 ShapeView Plugin
+<h3><a id="occt_inspector_2_4">ShapeView Plugin</a></h3>
 
-@subsubsection occt_inspector_2_4_1 Overview
+<h4><a id="occt_inspector_2_4_1">Overview</a></h4>
 
-@figure{shapeview.png, "ShapeView",360}
+<img src="images/shapeview.png" alt="ShapeView" width="360">
 
 This plugin visualizes content of *TopoDS_Shape* in a tree view.
 
-@subsubsection occt_inspector_2_4_2 Property panel
+<h4><a id="occt_inspector_2_4_2">Property panel</a></h4>
 
 Property panel shows properties for TopoDS_Shape based on DumpJson.
 
-@figure{shapeview_property_panel.png, "ShapeView Property panel",360}
+<img src="images/shapeview_property_panel.png" alt="ShapeView Property panel" width="360">
 
-@subsubsection occt_inspector_2_4_3 Elements
+<h4><a id="occt_inspector_2_4_3">Elements</a></h4>
 
-@figure{shapeview_elements.svg,"ShapeView Elements",360}
+<img src="images/shapeview_elements.svg" alt="ShapeView Elements" width="360">
 
 <b>TopoDS_Shape View</b>
 
@@ -351,20 +350,20 @@ Context pop-up menu in tree view:
 | Close All BREP views | Closes all opened text views. |
 | BREP directory | Displays the folder, where temporary BREP files have been stored. |
 
-@subsubsection occt_inspector_2_4_4 Elements cooperation
+<h4><a id="occt_inspector_2_4_4">Elements cooperation</a></h4>
 
 Selection of one or several items in *TopoDS_Shape* View creates its *AIS_Shape* presentation and displays it in the 3D View.
 
-@subsubsection occt_inspector_2_4_5 ShapeView tree view columns
+<h4><a id="occt_inspector_2_4_5">ShapeView tree view columns</a></h4>
 
 Use context pop-up menu on the tree view header to select, which columns should be displayed.
-@figure{shapeview_tree_columns.png, "ShapeView tree header context menu",360}
+<img src="images/shapeview_tree_columns.png" alt="ShapeView tree header context menu" width="360">
 
-@subsection occt_inspector_2_5 MessageView Plugin
+<h3><a id="occt_inspector_2_5">MessageView Plugin</a></h3>
 
 MessageView plugin is used to display content of Message_Report.
 
-@subsubsection occt_inspector_2_5_1 Message report tree view
+<h4><a id="occt_inspector_2_5_1">Message report tree view</a></h4>
 
 Message report tree view shows the content of the Message_Report.
 
@@ -382,63 +381,63 @@ Context pop-up menu in message report tree view:
 | Test Message_Messenger | Sends several alerts to check property panel/presentations of messenger-alert-tool mechanism. |
 | Test Tree of messages | Sends several alerts to check tree of alerts. |
 
-@figure{messageview_pop_up_menu.png, "MessageView pop-up menu",360}
+<img src="images/messageview_pop_up_menu.png" alt="MessageView pop-up menu" width="360">
 
-@subsubsection occt_inspector_2_5_2 3D View
+<h4><a id="occt_inspector_2_5_2">3D View</a></h4>
 
 3D View shows the selected item (TopoDS_Shape) in message report tree view.
-@figure{messageview_view.png, "MessageView 3D View",360}
+<img src="images/messageview_view.png" alt="MessageView 3D View" width="360">
 
-@subsubsection occt_inspector_2_5_3 Dump panel
+<h4><a id="occt_inspector_2_5_3">Dump panel</a></h4>
 
 Shows Dump() information of the selected item if the item has Dump().
-@figure{messageview_dump_panel.png, "MessageView 3D View",360}
+<img src="images/messageview_dump_panel.png" alt="MessageView 3D View" width="360">
 
-@subsubsection occt_inspector_2_5_4 Property panel (custom)
+<h4><a id="occt_inspector_2_5_4">Property panel (custom)</a></h4>
 
 Shows the table for WallClock Metric statistic option.
-@figure{messageview_property_panel_custom.png, "MessageView 3D View",360}
+<img src="images/messageview_property_panel_custom.png" alt="MessageView 3D View" width="360">
 
-@subsubsection occt_inspector_2_5_5 Elements
-@figure{messageview_elements.svg, "MessageView elements",360}
+<h4><a id="occt_inspector_2_5_5">Elements</a></h4>
+<img src="images/messageview_elements.svg" alt="MessageView elements" width="360">
 
-@section occt_inspector_3 Common controls
+<h2><a id="occt_inspector_3">Common controls</a></h2>
 
-@subsection occt_inspector_3_1 Tree View
+<h3><a id="occt_inspector_3_1">Tree View</a></h3>
 
-This control shows presentation hierarchy of the investigated OCCT element, e.g. *TDocStd_Application* for DFBrowser, see @ref occt_inspector_1_1 "Overview".
+This control shows presentation hierarchy of the investigated OCCT element, e.g. *TDocStd_Application* for DFBrowser, see [Overview](#occt_inspector_1_1).
 The first column contains the name, other columns are informative.
 
 The tree view has a context menu with plugin-specific actions.
 
-@subsubsection occt_inspector_3_1_1 Tree View preferences
+<h4><a id="occt_inspector_3_1_1">Tree View preferences</a></h4>
 
 It is possible to define visibility and width of columns.
 This option is available in a view that contains more than one column,
- e.g. @ref occt_inspector_2_3_4 "VInspector tree view columns"
- and @ref occt_inspector_2_4_4 "ShapeView tree view columns".
+ e.g. [VInspector tree view columns](#occt_inspector_2_3_4)
+ and [ShapeView tree view columns](#occt_inspector_2_4_4).
 
-@figure{treeview_preferences.svg, "Preferences schema",360}
+<img src="images/treeview_preferences.svg" alt="Preferences schema" width="360">
 
 
-@subsection occt_inspector_3_2 3D View
+<h3><a id="occt_inspector_3_2">3D View</a></h3>
 
-@subsubsection occt_inspector_3_2_1 Overview
+<h4><a id="occt_inspector_3_2_1">Overview</a></h4>
 
-@figure{3DView.png, "3D View",360}
+<img src="images/3DView.png" alt="3D View" width="360">
 
 This control for OCCT 3D viewer creates visualization view components and allows performing some user actions in the view.
 
 
-@subsubsection occt_inspector_3_2_2 Elements
+<h4><a id="occt_inspector_3_2_2">Elements</a></h4>
 
-@figure{3DView_elements.svg,"3DView Elements",360}
+<img src="images/3DView_elements.svg" alt="3DView Elements" width="360">
 
 3D View contains the following elements:
 | Element | Functionality |
 | :----- | :----- |
 | 3D view | V3d viewer with mouse events processing. |
-| Context | Allows choosing another context that should be used in the plugin. The following contexts are available:<br> **Own** - the context of this view, <br> **External** - the context of the @ref occt_inspector_4_3 "external application", which initializes the plugin, <br> **None** - the visualization is not performed at all (useful if the presentation is too complex). |
+| Context | Allows choosing another context that should be used in the plugin. The following contexts are available:<br> **Own** - the context of this view, <br> **External** - the context of the [external application](#occt_inspector_4_3), which initializes the plugin, <br> **None** - the visualization is not performed at all (useful if the presentation is too complex). |
 | Multi/Single | The buttons define what to do with the previously displayed objects: <br> **Multi** displays new presentations together with already displayed ones, <br> **Single** removes all previously displayed presentations. |
 | Clean | Removes all displayed presentations. |
 | Trihedron display | Shows the trihedron. |
@@ -451,14 +450,14 @@ Context popup menu:
 | :----- | :----- |
 | Set View Orientation | Shows the list of available *V3d_View* projections. Selection of an item with change the view. |
 
-@figure{3DView_set_orientation.png,"Set view orientation",360}
+<img src="images/3DView_set_orientation.png" alt="Set view orientation" width="360">
 
-@subsubsection occt_inspector_3_2_3 3D View preferences.
+<h4><a id="occt_inspector_3_2_3">3D View preferences.</a></h4>
 View preferences store the current view orientation.
 
-@subsection occt_inspector_3_3 Preferences context menu
+<h3><a id="occt_inspector_3_3">Preferences context menu</a></h3>
 
-@figure{preferences.png,"Plugin preferences",360}
+<img src="images/preferences.png" alt="Plugin preferences" width="360">
 
 Context menu contains:
 | Element | Functionality |
@@ -472,12 +471,12 @@ The following controls have store/restore preferences:
 | Element | Preferences |
 | :----- | :----- |
 | Geometry| Inspector window size and position. <br>State of dockable widgets : visibility, position, size.|
-| @ref occt_inspector_3_1_1 "Tree View preferences"| Columns visible in the tree view and their width. |
-| @ref occt_inspector_3_2_3 "3D View preferences"| 3D view camera direction. |
+| [Tree View preferences](#occt_inspector_3_1_1)| Columns visible in the tree view and their width. |
+| [3D View preferences](#occt_inspector_3_2_3)| 3D view camera direction. |
 
-@section occt_inspector_4 Getting Started
+<h2><a id="occt_inspector_4">Getting Started</a></h2>
 
-@subsection occt_inspector_4_1 TInspectorEXE sample
+<h3><a id="occt_inspector_4_1">TInspectorEXE sample</a></h3>
 
 This sample allows trying Inspector functionality.
 
@@ -486,10 +485,10 @@ Use *inspector.bat* script file placed in a binary directory of OCCT to launch i
 This script accepts the names of plugin's DLL that should be loaded. By default it loads all plugins described above.
 
 
-@figure{TStandaloneEXE.png, "TStandaloneEXE",360}
+<img src="images/TStandaloneEXE.png" alt="TStandaloneEXE" width="360">
 
 Click on the Open button shows the dialog to select a file.
-@figure{TStandaloneEXE_open.png, "",360}
+<img src="images/TStandaloneEXE_open.png" alt="" width="360">
 
 Depending on the active plugin, it is possible to select the following files in the dialog:<br>
 - DFBRowser: OCAF document or STEP files;
@@ -507,18 +506,18 @@ By default, TInspectorEXE opens the following files for plugins:
 
 These files are found relatively to *CSF_OCCTDataPath*.
 
-@subsubsection occt_inspector_4_1_1 TInspectorEXE preferences
+<h4><a id="occt_inspector_4_1_1">TInspectorEXE preferences</a></h4>
 The application stores recently loaded files. On the application start, the last file is activated.
 **Open file** dialog contains recently loaded files.
 Selection of a new file updates the container of recently loaded files and rewrites preferences.
 
-Source code of *TIspectorEXE* is a good sample for @ref occt_inspector_4_3 "using the Inspector in a custom application".
+Source code of *TIspectorEXE* is a good sample for [using the Inspector in a custom application](#occt_inspector_4_3).
 
-@subsection occt_inspector_4_2 How to launch the Inspector in DRAW Test Harness
+<h3><a id="occt_inspector_4_2">How to launch the Inspector in DRAW Test Harness</a></h3>
 
-*TKToolsDraw* plugin provides DRAW commands for Qt tools. Use *INSPECTOR* parameter of @ref occt_draw_1_3_3 "pload" 
+*TKToolsDraw* plugin provides DRAW commands for Qt tools. Use *INSPECTOR* parameter of [pload](../draw_test_harness/draw_test_harness.md#occt_draw_1_3_3) 
 command to download the commands of this library. It contains *tinspector* command to start Inspector under DRAW.
-See more detailed description of the @ref occt_draw_13_1 "tinspector" command.
+See more detailed description of the [tinspector](../draw_test_harness/draw_test_harness.md#occt_draw_13_1) command.
 
 The simple code to start Inspector with all plugins loaded:
 
@@ -527,20 +526,20 @@ pload INSPECTOR
 tinspector
 ~~~~
 
-@figure{drawexe_tinspector.png,"tinspector",360}
+<img src="images/drawexe_tinspector.png" alt="tinspector" width="360">
 
 This command does the following:
-- all available Plugins are presented in the Inspector. These are @ref occt_inspector_2_2 "DFBrowser", @ref occt_inspector_2_3 "VInspector", @ref occt_inspector_2_4 "ShapeView" and  @ref occt_inspector_2_5 "MessageView";
+- all available Plugins are presented in the Inspector. These are [DFBrowser](#occt_inspector_2_2), [VInspector](#occt_inspector_2_3), [ShapeView](#occt_inspector_2_4) and  [MessageView](#occt_inspector_2_5);
 - DFBrowser is the active plugin;
 - OCAF tree is empty.
 
 After this, we should create objects in DRAW and update *tinspector*.
 The examples of using Inspector in DRAW can be found in OCCT source directory /tests/tools.
 
-@subsection occt_inspector_4_3 How to use the Inspector in a custom application
+<h3><a id="occt_inspector_4_3">How to use the Inspector in a custom application</a></h3>
 
 The example of using the Inspector in a custom application is presented in OCCT qt sample - <b>FuncDemo</b>.
-For building qt samples, switch on *BUILD_SAMPLES_QT* variable in @ref build_cmake_conf "Configuration process".
+For building qt samples, switch on *BUILD_SAMPLES_QT* variable in [Configuration process](../../build/build_occt/building_occt.md#build_cmake_conf).
 
 In general, the following steps should be taken:
 * Set dependencies to OCCT and Qt in the application (Header and Link);
@@ -589,20 +588,20 @@ Give one the following objects for a plugin using a container of parameters:
 | *TKMessageView* | *Message_Report* |
 
 
-@section occt_inspector_5 Build procedure
+<h2><a id="occt_inspector_5">Build procedure</a></h2>
 
 
-@subsection occt_inspector_5_1 Building with CMake within OCCT
+<h3><a id="occt_inspector_5_1">Building with CMake within OCCT</a></h3>
 
 By default the Inspector compilation is off.
-To compile it, set the *BUILD_Inspector* flag to "ON". See @ref build_cmake_conf "Configuration process".
+To compile it, set the *BUILD_Inspector* flag to "ON". See [Configuration process](../../build/build_occt/building_occt.md#build_cmake_conf).
 
 When this option is switched ON, MS Visual Studio project has an additional tree of folders:
 
-@figure{VStudio_projects.png,"Inspector packages in MS Visual Studio",160}
+<img src="images/VStudio_projects.png" alt="Inspector packages in MS Visual Studio" width="160">
 
 
-@section occt_inspector_6 Sources and packaging
+<h2><a id="occt_inspector_6">Sources and packaging</a></h2>
 
 OCCT sources are extended by the /tools directory.
 
@@ -627,7 +626,7 @@ Other packages:
 
 In MSVC studio, a separate folder contains Inspector projects.
 
-@section occt_inspector_7 Glossary
+<h2><a id="occt_inspector_7">Glossary</a></h2>
 * **Component** -- a part of OCCT , e.g. OCAF, VISUALIZATION, MODELING and others. 
 * **Plugin** -- a library that is loaded in some executable/library. Here, the plugins are:
   * DFBrowser,

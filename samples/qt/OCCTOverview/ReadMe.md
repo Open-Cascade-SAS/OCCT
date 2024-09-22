@@ -1,5 +1,4 @@
-Qt: OCCT Overview (C++|Qt Widgets) {#samples_qt_overview}
-==========
+<h1><a id="samples_qt_overview" class="anchor">Qt: OCCT Overview (C++|Qt Widgets)</a></h1>
 
 The Overview Qt application provides code snippets for basic usage of C++ API of various OCCT functionality.
 The samples are organized in several categories according to relevant module of OCCT:
@@ -13,9 +12,9 @@ The samples are organized in several categories according to relevant module of 
  * Viewer 3d
 
 Each sample presents geometry view, C++ code fragment and sample output window.
-This sample is described in the @ref samples__novice_guide "Novice guide" for new users.
+This sample is described in the [Novice guide](#samples__novice_guide) for new users.
 
-@figure{sample_overview_qt.png}
+<img src="image/sample_overview_qt.png" alt="">
 
 1. Contents
 -----------------------

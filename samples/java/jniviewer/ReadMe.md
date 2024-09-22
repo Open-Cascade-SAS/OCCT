@@ -14,7 +14,7 @@ and the code can be programmed on Java level similarly to C++ one.
 See description of OCCT Java Wrapper in Advanced Samples and Tools on OCCT web site at 
 https://www.opencascade.com/content/advanced-samples-and-tools
 
-@figure{samples_java_android_occt.jpg}
+<img src="image/samples_java_android_occt.jpg" alt="">
 
 Install Android Studio 4.0+ and install building tools (check Tools -> SDK Manager):
 - Android SDK (API level 21 or higher).

@@ -1,20 +1,19 @@
-Build OCCT {#build_upgrade__building_occt}
-===================
+<h1><a id="build_upgrade__building_occt" class="anchor">Build OCCT</a></h1>
 
 @tableofcontents
 
 Before building OCCT, make sure to have all required third-party libraries installed.
 The list of required libraries depends on what OCCT modules will be used, and your preferences.
 The typical minimum is **FreeType** (necessary for Visualization) and **Tcl/Tk** (for DRAW).
-See @ref intro_req "requirements on 3rdparty libraries" for a full list.
+See [requirements on 3rdparty libraries](#intro_req) for a full list.
 
 The easiest way to install third-party libraries is to download archive with pre-built binaries, corresponding to your target configuration,
 from [Development Portal](https://dev.opencascade.org/resources/download/3rd-party-components).
-You can also build third-party libraries from their sources, see @ref build_upgrade_building_3rdparty for instructions.
+You can also build third-party libraries from their sources, see [Link](#build_upgrade_building_3rdparty) for instructions.
 
 On Linux and macOS we recommend to use libraries maintained by distributive developers, when possible.
 
-@section build_occt_win_cmake Building with CMake tool
+<h2><a id="build_occt_win_cmake">Building with CMake tool</a></h2>
 
 This chapter describes the [CMake](https://cmake.org/download/)-based build process, which is now suggested as a standard way to produce the binaries of Open CASCADE Technology from sources.
 OCCT requires CMake version 3.1 or later.
@@ -39,7 +38,7 @@ It is however possible to choose one installation directory for several configur
     d:/occt-install            - the installation directory that is
                                  able to contain several OCCT configurations
 
-@subsection build_cmake_conf Configuration process
+<h3><a id="build_cmake_conf">Configuration process</a></h3>
 
 For unexperienced users we recommend to start with *cmake-gui* -- a cross-platform GUI tool provided by CMake on Windows, Mac and Linux.
 A command-line alternative, *ccmake* can also be used.
@@ -49,11 +48,11 @@ If the command-line tool is used, run the tool from the build directory with a s
     cd d:/tmp/occt-build-vc10-x64
     ccmake d:/occt
 
-@figure{/build/build_occt/images/cmake_image000.png}
+<img src="images/cmake_image000.png" alt="">
 
 If the GUI tool is used, run this tool without additional arguments and after that specify the source directory by clicking **Browse Source** and the build (binary) one by clicking **Browse Build**:
 
-@figure{/build/build_occt/images/cmake_image001.png}
+<img src="images/cmake_image001.png" alt="">
 
 @note Each configuration of the project should be built in its own directory.
 When building multiple configurations it is suggested to indicate in the name of build directories the system, bitness and compiler (e.g., <i>d:/occt/build/win32-vc10</i>).
@@ -61,7 +60,7 @@ When building multiple configurations it is suggested to indicate in the name of
 Once the source and build directories are selected, "Configure" button should be pressed in order to start manual configuration process.
 It begins with selection of a target configurator. It is "Visual Studio 10 2010 Win64" in our example.
 
-@figure{/build/build_occt/images/cmake_image002.png}
+<img src="images/cmake_image002.png" alt="">
 
 @note To build OCCT for **Universal Windows Platform (UWP)** specify the path to toolchain file for cross-compiling <i>d:/occt/adm/templates/uwp.toolchain.config.cmake</i>.
 Alternatively, if you are using CMake from the command line add options `-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0`.
@@ -71,7 +70,7 @@ File `CASROOT/samples/xaml/ReadMe.md` describes the building procedure of XAML (
 Once "Finish" button is pressed, the first pass of the configuration process is executed.
 At the end of the process, CMake outputs the list of environment variables, which have to be properly specified for successful configuration.
 
-@figure{/build/build_occt/images/cmake_image003.png}
+<img src="images/cmake_image003.png" alt="">
 
 The error message provides some information about these variables.
 This message will appear after each pass of the process until all required variables are specified correctly.
@@ -95,14 +94,14 @@ The following table gives the full list of environment variables used at the con
 | USE_DRACO     | Boolean | Indicates whether Draco     product should be used in OCCT Data Exchange module for support of Draco compression in glTF mesh file format |
 | USE_TK        | Boolean | Indicates whether Tcl/Tk product should be used in OCCT Draw Harness module for user interface (in addition to Tcl, which is mandatory for Draw Harness) |
 | USE_TBB       | Boolean | Indicates whether TBB (Threading Building Blocks) 3rd party is used or not. Note that OCCT remains parallel even without TBB product |
-| USE_VTK       | Boolean | Indicates whether VTK 3rd party is used or not. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3rd party unless you are planning to use VTK visualization for OCCT geometry. See the official documentation @ref occt_user_guides__vis for the details on VIS |
+| USE_VTK       | Boolean | Indicates whether VTK 3rd party is used or not. OCCT comes with a bridge between CAD data representation and VTK by means of its dedicated VIS component (VTK Integration Services). You may skip this 3rd party unless you are planning to use VTK visualization for OCCT geometry. See the official documentation [Link](#occt_user_guides__vis) for the details on VIS |
 | 3RDPARTY_DIR | Path | Defines the root directory where all required 3rd party products will be searched. Once you define this path it is very convenient to click "Configure" button in order to let CMake automatically detect all necessary products|
 | 3RDPARTY_FREETYPE_* | Path | Path to FreeType binaries |
 | 3RDPARTY_TCL_* 3RDPARTY_TK_* | Path | Path to Tcl/Tk binaries |
 | 3RDPARTY_FREEIMAGE* | Path | Path to FreeImage binaries |
 | 3RDPARTY_TBB*  | Path | Path to TBB binaries |
 | 3RDPARTY_VTK_* | Path | Path to VTK binaries |
-| BUILD_MODULE_<MODULE>| Boolean | Indicates whether the corresponding OCCT module should be built or not. It should be noted that some toolkits of a module can be built even if this module is not checked (this happens if some other modules depend on these toolkits). The main modules and their descriptions can be found in @ref user_guides |
+| BUILD_MODULE_<MODULE>| Boolean | Indicates whether the corresponding OCCT module should be built or not. It should be noted that some toolkits of a module can be built even if this module is not checked (this happens if some other modules depend on these toolkits). The main modules and their descriptions can be found in [Link](#user_guides) |
 | BUILD_LIBRARY_TYPE | String |  Specifies the type of library to be created. "Shared" libraries are linked dynamically and loaded at runtime. "Static" libraries are archives of object files used when linking other targets. Note that Draw Harness plugin system is incompatible with "Static" builds, and therefore it is disabled for these builds.|
 | BUILD_ADDITIONAL_TOOLKITS | String | Semicolon-separated individual toolkits to include into build process. If you want to build some particular libraries (toolkits) only, then you may uncheck all modules in the corresponding *BUILD_MODUE_\<MODULE\>* options and provide the list of necessary libraries here. Of course, all dependencies will be resolved automatically |
 | BUILD_YACCLEX | Boolean | Enables Flex/Bison lexical analyzers. OCCT source files relating to STEP reader and ExprIntrp functionality are generated automatically with Flex/Bison. Checking this option leads to automatic search of Flex/Bison binaries and regeneration of the mentioned files |
@@ -136,7 +135,7 @@ The following table gives the full list of environment variables used at the con
 
 @note Only the forward slashes ("/") are acceptable in the CMake options defining paths.
 
-@subsubsection build_cmake_3rdparty 3rd party search mechanism
+<h4><a id="build_cmake_3rdparty">3rd party search mechanism</a></h4>
 
 If `3RDPARTY_DIR` directory is defined, then required 3rd party binaries are sought in it, and default system folders are ignored.
 The procedure expects to find binary and header files of each 3rd party product in its own sub-directory: *bin*, *lib* and *include*.
@@ -179,16 +178,16 @@ During the configuration process the related variables (`3RDPARTY_FREETYPE_DLL_D
 If there is the need to change their names, change appropriate CMake variables (edit CMakeCache.txt file or edit in cmake-gui in advance mode) without reconfiguration:
 `3RDPARTY_<PRODUCT>_INCLUDE` for include, `3RDPARTY_<PRODUCT>_LIB` for library and `3RDPARTY_<PRODUCT>_DLL` for shared library.
 
-@subsection build_cmake_gen Projects generation
+<h3><a id="build_cmake_gen">Projects generation</a></h3>
 
 Once the configuration process is done, the "Generate" button is used to prepare project files for the target IDE.
 In our exercise the Visual Studio solution will be automatically created in the build directory.
 
-@subsection build_cmake_build Building
+<h3><a id="build_cmake_build">Building</a></h3>
 
 Go to the build folder, start the Visual Studio solution *OCCT.sln* and build it by clicking **Build -> Build Solution**.
 
-@figure{/build/build_occt/images/cmake_image004.png}
+<img src="images/cmake_image004.png" alt="">
 
 By default, the build solution process skips the building of the INSTALL and Overview projects.
 When the building process is finished build:
@@ -197,7 +196,7 @@ When the building process is finished build:
 
 For this, right-click on the *Overview/INSTALL* project and select **Project Only -> Build Only** -> *Overview/INSTALL* in the solution explorer.
 
-@subsection build_cmake_install Installation
+<h3><a id="build_cmake_install">Installation</a></h3>
 
 Installation is a process of extracting redistributable resources (binaries, include files etc) from the build directory into the installation one.
 The installation directory will be free of project files, intermediate object files and any other information related to the build routines.
@@ -229,7 +228,7 @@ Such organization of libraries can be especially helpful if your OCCT-based soft
 
 The installation folder contains the scripts to run *DRAWEXE* (*draw.bat* or *draw.sh*), samples (if they were installed) and overview.html (short-cut for installed OCCT overview documentation).
 
-@subsection build_occt_crossplatform_cmake Cross-compiling (Android)
+<h3><a id="build_occt_crossplatform_cmake">Cross-compiling (Android)</a></h3>
 
 This section describes the steps to build OCCT libraries for Android from a complete source package with GNU make (makefiles).
 The steps on Windows 7 and Ubuntu 15.10 are similar. There is the only one difference: makefiles are built with mingw32-make on Windows and native GNU make on Ubuntu.
@@ -244,31 +243,31 @@ Run GUI tool provided by CMake and:
   - Specify the root folder of OCCT (`$CASROOT`, which contains *CMakelists.txt* file) by clicking **Browse Source**.
   - Specify the location (build folder) for CMake generated project files by clicking **Browse Build**.
 
-@figure{/build/build_occt/images/android_image001.png}
+<img src="images/android_image001.png" alt="">
 
 Click **Configure** button. It opens the window with a drop-down list of generators supported by CMake project.
 Select "MinGW MakeFiles" item from the list
   - Choose "Specify toolchain file for cross-compiling", and click "Next".
-@figure{/build/build_occt/images/android_image002.png}
+<img src="images/android_image002.png" alt="">
 
   - Specify a toolchain file at the next dialog to `android.toolchain.cmake`, and click "Finish".
-@figure{/build/build_occt/images/android_image003.png}
+<img src="images/android_image003.png" alt="">
 
 If `ANDROID_NDK` environment variable is not defined in current OS, add cache entry `ANDROID_NDK` (entry type is `PATH`) -- path to the NDK folder ("Add Entry" button):
-@figure{/build/build_occt/images/android_image004.png}
+<img src="images/android_image004.png" alt="">
 
 If on Windows the message is appeared:
   "CMake Error: CMake was unable to find a build program corresponding to "MinGW Makefiles" CMAKE_MAKE_PROGRAM is not set. You probably need to select a different build tool.",
 specify `CMAKE_MAKE_PROGRAM` to mingw32-make executable.
-@figure{/build/build_occt/images/android_image005.png}
+<img src="images/android_image005.png" alt="">
 
-How to configure OCCT, see @ref build_cmake_conf "Configure" section taking into account the specific configuration variables for Android:
+How to configure OCCT, see [Configure](#build_cmake_conf) section taking into account the specific configuration variables for Android:
   - `ANDROID_ABI` = `armeabi-v7a`
   - `ANDROID_NATIVE_API_LEVEL` = `15`
   - `ANDROID_NDK_LAYOUT` is equal to `CMAKE_BUILD_TYPE` variable
   - `BUILD_MODULE_Draw` = `OFF`
 
-@figure{/build/build_occt/images/android_image006.png}
+<img src="images/android_image006.png" alt="">
 
 Click **Generate** button and wait until the generation process is finished.
 Then makefiles will appear in the build folder (e.g. <i> D:/tmp/occt-android </i>).
@@ -288,7 +287,7 @@ Type "mingw32-make/make" with argument "install" to place the libraries to the i
 or
 > make install
 
-@section build_occt_genproj Building with Genproj tool
+<h2><a id="build_occt_genproj">Building with Genproj tool</a></h2>
 
 **genproj** is a legacy tool (originated from command "wgenproj" in WOK) for generation of Visual Studio, Code::Blocks, Qt Creator (qmake), and XCode project files for building Open CASCADE Technology.
 These project files are placed inside OCCT directory (in *adm* subfolder) and use relative paths, thus can be moved together with sources.
@@ -296,9 +295,9 @@ The project files included in official distribution of OCCT are generated by thi
 
 @note If you have official distribution with project files included, you can use them directly without a need to call **genproj**.
 
-**genproj** is a less flexible alternative to use of CMake build system (see @ref build_occt_win_cmake), but still has some small features useful for OCCT development.
+**genproj** is a less flexible alternative to use of CMake build system (see [Link](#build_occt_win_cmake)), but still has some small features useful for OCCT development.
 
-@subsection build_genproj Configuration process
+<h3><a id="build_genproj">Configuration process</a></h3>
 
 The environment is defined in the file *custom.sh* (on Linux and macOS) or *custom.bat* (on Windows) which can be edited directly:
 
@@ -338,12 +337,12 @@ That tool will analyze your environment and propose you to choose available opti
 * Generation of PDB files within Release build ("Release with Debug info", false by default).
 
 Below are screenshots of **genconf** tool on various platforms (Windows and Linux):
-@figure{/build/build_occt/images/genconf_windows.png}
-@figure{/build/build_occt/images/genconf_linux.png}
+<img src="images/genconf_windows.png" alt="">
+<img src="images/genconf_linux.png" alt="">
 
 Click "Save" to store the specified configuration in *custom.bat* (Windows) or *custom.sh* (other systems) file.
 
-@subsection build_genproj_generate Projects generation
+<h3><a id="build_genproj_generate">Projects generation</a></h3>
 
 Launch **genproj** to update content of *inc* folder and generate project files after changes in OCCT code affecting layout or composition of source files.
 
@@ -356,9 +355,9 @@ If Tcl is not found, the tool may prompt you to enter the path to directory wher
 
 Note that if *custom.bat* is not present, **genproj** will start **genconf** to configure environment.
 
-@subsection build_genproj_build Building
+<h3><a id="build_genproj_build">Building</a></h3>
 
-@subsubsection build_msvc_build Visual Studio
+<h4><a id="build_msvc_build">Visual Studio</a></h4>
 
 Launch *msvc.bat* to start Visual Studio with all necessary environment variables defined, and build the whole solution or required toolkits.
 
@@ -367,7 +366,7 @@ Binaries are produced in *win32* or *win64* folders.
 
 To start DRAW, launch *draw.bat*.
 
-@subsubsection build_codeblocks_build Code::Blocks
+<h4><a id="build_codeblocks_build">Code::Blocks</a></h4>
 
 Code::Blocks is a cross-platform IDE which can be used for building OCCT on Linux, macOS and Windows platforms.
 The generated Code::Blocks project could be found within subfolder *adm/&lt;OS&gt;/cbp*.
@@ -381,7 +380,7 @@ To start *DRAWEXE*, which has been built with **Code::Blocks** on Mac OS X, run 
 ~~~~
 Option *d* is used if OCCT has been built in **Debug** mode.
 
-@subsubsection build_occt_macos_xcode XCode
+<h4><a id="build_occt_macos_xcode">XCode</a></h4>
 
 XCode is an IDE for development on macOS platform and targeting macOS and iOS platforms.
 **genproj** tool comes with a legacy XCode project files generator, but CMake is a preferred way for building OCCT on macOS platform.
@@ -401,7 +400,7 @@ To start *DRAWEXE*, which has been built with XCode on Mac OS X, perform the fol
 1.Open Terminal application
 2.Enter `<OCCT_ROOT_DIR>`:
 ~~~~
-   cd \<OCCT_ROOT_DIR\>
+   cd <OCCT_ROOT_DIR>
 ~~~~
 3.Run the script
 ~~~~

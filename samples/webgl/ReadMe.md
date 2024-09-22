@@ -8,7 +8,7 @@ Sample consists of the Open CASCADE 3D Viewer with a button for opening a model 
 The sample requires a WebGL 2.0 capable browser supporting WebAssembly 1.0 (Wasm).
 The sample could be found within OCCT repository in folder `/samples/webgl/`.
 
-@figure{sample_webgl.png,"",240} height=408px
+<img src="images/sample_webgl.png" alt="" width="240"> height=408px
 
 Installation and configuration:
  1. Install Emscripten SDK and activate minimal configuration (Python, Java and CLang) following *emsdk* documentation. Activate also MinGW when building sample on Windows host.

@@ -1,5 +1,4 @@
-﻿OCAF: Function Mechanism {#samples__ocaf_func}
-========================
+﻿<h1><a id="samples__ocaf_func" class="anchor">OCAF: Function Mechanism</a></h1>
 
 Let us describe the usage of the "Function Mechanism" of Open CASCADE Application Framework on a simple example.  
 This example represents a "nail" composed by a cone and two cylinders of different radius and height:  

@@ -1,9 +1,8 @@
- Documentation System {#occt_contribution__documentation}
-======================
+<h1><a id="occt_contribution__documentation" class="anchor"> Documentation System</a></h1>
 
 @tableofcontents
 
-@section  OCCT_DM_SECTION_1 Introduction
+<h2><a id="OCCT_DM_SECTION_1">Introduction</a></h2>
 
 OCCT documentation is provided in several forms:
 
@@ -23,7 +22,7 @@ OCCT documentation is provided in several forms:
 
 This document provides practical guidelines for generation and editing of OCCT user documentation.
 
-@section  OCCT_DM_SECTION_2 Prerequisites
+<h2><a id="OCCT_DM_SECTION_2">Prerequisites</a></h2>
 
 You need to have the following software installed to generate the documentation.
 
@@ -46,7 +45,7 @@ You can use *custom.bat* file to add necessary paths to the *PATH* variable.
 Note that in the process of PDF generation MiKTeX may need some packages not installed by default.
 We recommend setting option "Install missing packages on-the-fly" to "Ask me first" (default) during MiKTeX installation:
 
-@figure{/contribution/documentation/images/documentation_miktex.png,"",320}
+<img src="images
 
 On the first run of **pdflatex** it will open a dialog window prompting for installation of missing packages.
 Follow the instructions to proceed (define proxy settings if needed, select a mirror site to download from, etc.).
@@ -57,7 +56,7 @@ By default MathJAX scripts and fonts work on-line and no installation of MathJAX
 If you need to use OCCT documentation while off-line, you can install a local copy of MatJAX, see https://docs.mathjax.org/en/v2.7-latest/start.html#installing-your-own-copy-of-mathjax.
 See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressions. 
 
-@section OCCT_DM_SECTION_2_1 Documentation Generation
+<h2><a id="OCCT_DM_SECTION_2_1">Documentation Generation</a></h2>
 
 Run command *gendoc* from command prompt (with OCCT directory as current one) to generate OCCT documentation.
 The synopsis is:
@@ -107,18 +106,18 @@ To generate Reference Manual for Foundation Classes and Modeling Data modules on
     > gendoc -refman -m=FoundationClasses,ModelingData,ModelingAlgorithms -s=local
 ~~~~
 
-@section  OCCT_DM_SECTION_3 Documentation Conventions
+<h2><a id="OCCT_DM_SECTION_3">Documentation Conventions</a></h2>
 
 This section contains information about file format conventions, directories structure, etc.
 
-@subsection  OCCT_DM_SECTION_3_1 File Format
+<h3><a id="OCCT_DM_SECTION_3_1">File Format</a></h3>
 
 The format used for documentation is MarkDown with Doxygen extensions. 
 The MarkDown files have a <i>*.md</i> extension and are based on rules described in \ref OCCT_DM_SECTION_A section.
 
-@subsection  OCCT_DM_SECTION_3_2 Directory Structure
+<h3><a id="OCCT_DM_SECTION_3_2">Directory Structure</a></h3>
 
-@figure{/contribution/documentation/images/documentation_folders.png,"",160}
+<img src="/images/documentation_folders.png" alt="" witdth="160">
 
 Each document has its own folder if there are any images used in it. These images are stored in *images* subfolder.
 
@@ -127,16 +126,16 @@ If you want to use the same image for several documents, you can place it in *do
 **Note**: To avoid incorrect image display, use a relative path to the image (starting from *dox* folder). For instance:
 
 
-@verbatim
-@figure{/contribution/documentation/images/documentation_test_image.svg,"",420}
-@endverbatim
+```
+<img src="images/documentation_test_image.svg" alt="" width="420">
+```
 
 
 The documentation is generated in subfolder *doc* :
 * *html* -- a directory for generated HTML pages;
 * *pdf* -- a directory for generated PDF files.
 
-@section  OCCT_DM_SECTION_4 Adding a New Document
+<h2><a id="OCCT_DM_SECTION_4">Adding a New Document</a></h2>
 
 Place a new document in the folder taking into account its logical position in the documentation hierarchy. For instance, the document *svn.md* about the use of SVN to work with OCCT source code can be placed into <i>/dox/contribution/</i>. 
 
@@ -146,15 +145,15 @@ If there are images in the document, it should be placed in its own folder conta
 
 Add a relative path to *svn.md* in file <i>dox/FILES.txt</i>. For instance
 
-@verbatim
+```
 contribution/svn/svn.md
-@endverbatim
+```
 
 **Note** that the order of paths to documents in *FILES.txt* is reproduced in the Table of Contents in the HTML output, thus they need to be placed logically.
 
-**Note** that you should specify a file tag, not the document name. See @ref OCCT_DM_SECTION_A_1 "Header and hierarchic document structure" section for details.
+**Note** that you should specify a file tag, not the document name. See [Header and hierarchic document structure](#OCCT_DM_SECTION_A_1) section for details.
 
-@section  OCCT_DOC_SECTION_5 Additional Resources
+<h2><a id="OCCT_DOC_SECTION_5">Additional Resources</a></h2>
 
 More information about OCCT can be found at http://www.opencascade.com and <br> http://dev.opencascade.org sites. 
 
@@ -165,14 +164,13 @@ http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 More information on MarkDown and Doxygen syntax can be found at: <br>
 http://www.stack.nl/~dimitri/doxygen/manual
 
-@section  OCCT_DM_SECTION_A Appendix 1: Document Syntax
+<h2><a id="OCCT_DM_SECTION_A">Appendix 1: Document Syntax</a></h2>
 
 A document file in *.md format must start with a proper header defining a caption and a unique tag.
 
-@verbatim
-Documentation System {#contribution__documentation}
-=====================
-@endverbatim
+```
+<h1><a id="contribution__documentation" class="anchor">Documentation System</a></h1>
+```
 
 The document structure is formed by sections that must be defined consistently.
 
@@ -181,7 +179,7 @@ Any specific text elements can be introduced by Markdown language tags or by usu
 
 The table of contents, page numbers (in PDF), and figure numbers (in PDF) are generated automatically.  
 
-@subsection  OCCT_DM_SECTION_A_1 Headers and hierarchic document structure
+<h3><a id="OCCT_DM_SECTION_A_1">Headers and hierarchic document structure</a></h3>
 
 Headers of different levels can be specified with the following tags:
 * <i>\@section</i> -- for the first-level headers; 
@@ -190,11 +188,11 @@ Headers of different levels can be specified with the following tags:
 
 For example:
 
-@verbatim
-  @section occt_ocaf_1 Basic Concepts
-  @subsection occt_ocaf_1_1 Applications and Documents
-  @subsubsection occt_ocaf_1_1_1 The document and the data framework
-@endverbatim
+```
+  <h2><a id="occt_ocaf_1">Basic Concepts</a></h2>
+  <h3><a id="occt_ocaf_1_1">Applications and Documents</a></h3>
+  <h4><a id="occt_ocaf_1_1_1">The document and the data framework</a></h4>
+```
 
 **Note** that section names can be used for references within the document and in other documents, so it is necessary to use the common prefix indicative of the document name for all section names in the given document. 
 For example,  *occt_ocaf* for sections in Open CASCADE Application Framework manual.
@@ -211,7 +209,7 @@ However, the fourth and fifth level headers can be tagged with  <i>####</i> and 
 
 It is also possible to use tags <i>##</i> and <i>###</i> for second and third level headers if you do not wish to show them in the table of contents or make references to them. 
 
-@subsection OCCT_DM_SECTION_A_2 Plain Text
+<h3><a id="OCCT_DM_SECTION_A_2">Plain Text</a></h3>
 
 A plain text is organized in paragraphs, separated by empty lines in MarkDown source.
 The length of lines is not restricted; it is recommended to put each sentence on a separate line -- this is optimal for easier comparison of different versions of the same document.
@@ -222,18 +220,18 @@ To emphasize a word or a group of words, wrap the text with one pair of asterisk
 **Note** that if your emphasized text starts or ends with a special symbol, the asterisks may not work. Use explicit HTML tags \<i\>\</i\>  and \<b\>\</b\>  instead.
 
 
-@subsection OCCT_DM_SECTION_A_3 Lists
+<h3><a id="OCCT_DM_SECTION_A_3">Lists</a></h3>
 
 To create a bulleted list, start each line with a hyphen or an asterisk, 
 followed by a space. List items can be nested. This code:
 
-@verbatim
+```
 * Bullet 1
 * Bullet 2
   - Bullet 2a
   - Bullet 2b
 * Bullet 3
-@endverbatim
+```
 
 produces this list:
 
@@ -246,13 +244,13 @@ produces this list:
 To create a numbered list, start each line with number and a period, 
 then a space. Numbered lists can also be nested. Thus this code 
 
-@verbatim
+```
 1. List item 1
    1. Sub-item 1
    2. Sub-item 2
 2. List item 2
 4. List item 3
-@endverbatim
+```
 
 produces this list:
 
@@ -299,17 +297,17 @@ Example of a complex nested list:
 2. List item 2
 
 
-@subsection  OCCT_DM_SECTION_A_4 Tables
+<h3><a id="OCCT_DM_SECTION_A_4">Tables</a></h3>
 
 A table consists of a header line, a separator line, and at least one row line. 
 Table columns are separated by the pipe (|) character. The following example: 
 
-@verbatim
+```
 First Header  | Second Header
 ------------- | -------------
 Content Cell  | Content Cell 
 Content Cell  | Content Cell 
-@endverbatim
+```
 
   will produce the following table:
 
@@ -320,12 +318,12 @@ Content Cell | Content Cell
 
 Column alignment can be controlled via one or two colons at the header separator line: 
 
-@verbatim
+```
 | Right | Center | Left  |
 | ----: | :----: | :---- |
 | 10    | 10     | 10    |
 | 1000  | 1000   | 1000  |
-@endverbatim
+```
 
 which will looks as follows:
 
@@ -336,7 +334,7 @@ which will looks as follows:
 
 Note that each table row should be contained in one line of text; complex tables can be created using HTML tags.
 
-@subsection  OCCT_DM_SECTION_A_5 Code Blocks
+<h3><a id="OCCT_DM_SECTION_A_5">Code Blocks</a></h3>
 
 Paragraphs indented with 4 or more spaces are considered as code fragments and rendered using Courier font.
 Example:
@@ -353,11 +351,11 @@ To highlight the code, the developer has to indicate the typical file extension,
 which corresponds to the programming language, after the opening fence. 
 For highlighting according to the C++ language, for instance,  write the following code (the curly braces and dot are optional): 
 
-@verbatim
+```
 ~~~{.cpp}
 int func(int a,int b) { return a*b; }
 ~~~
-@endverbatim
+```
 
 which will produce:
 ~~~{.cpp} 
@@ -368,13 +366,13 @@ Smaller code blocks can be inserted by wrapping with tags <i>\@code</i> and <i>\
 
 Verbatim content (same as code but without syntax highlighting) can be inserted by wrapping with tags <i>\@verbatim</i> and <i>\@endverbatim</i>.
 
-@subsection  OCCT_DM_SECTION_A_5a Quotes
+<h3><a id="OCCT_DM_SECTION_A_5a">Quotes</a></h3>
 
 Text quoted from other sources can be indented using ">" tag. For example:
 
-@verbatim
+```
 > [Regression in 6.9.0] *IGES - Export of a reversed face leads to wrong data*
-@endverbatim
+```
 
 will produce 
 
@@ -383,25 +381,25 @@ will produce
 Note that this tag should prefix each line of the quoted text.
 Empty lines in the quoted text, if any, should not have trailing spaces after the ">" (lines with trailing spaces will break the quote block).
 
-@subsection  OCCT_DM_SECTION_A_6 References
+<h3><a id="OCCT_DM_SECTION_A_6">References</a></h3>
 
 To insert a reference to a website, it is sufficient to write an URL.
 For example: http://en.wikipedia.org
 
 To insert a reference to a document or its subsection, use command <i>\@ref</i> followed by the document or section tag name.
-For instance, @code @ref OCCT_DM_SECTION_A @endcode will be rendered as @ref OCCT_DM_SECTION_A.
+For instance, @code [Link](#OCCT_DM_SECTION_A) @endcode will be rendered as [Link](#OCCT_DM_SECTION_A).
 
 Note that links between documents will not work in PDF output if each document is generated independently.
 Hence it is recommended to add a name of the referenced section after the tag name in the <i>\@ref</i> command (in quotes): this will guarantee that the reference is recognizable for the reader even if the cross-link is not instantiated. 
-For instance: @code @ref occt_modat_1 "Geometry Utilities" @endcode will be rendered as @ref occt_modat_1 "Geometry Utilities".
+For instance: @code [Geometry Utilities](#occt_modat_1) @endcode will be rendered as [Geometry Utilities](#occt_modat_1).
 
-@subsection  OCCT_DM_SECTION_A_7 Images
+<h3><a id="OCCT_DM_SECTION_A_7">Images</a></h3>
 
-For inserting images into the document use the command <i>\@figure</i>, as follows:
+For inserting images into the document use the HTML command <i>img</i>, as follows:
 
-@verbatim
-  @figure{/relative/path/to/image/image_file_name.png,"Image caption"}
-@endverbatim
+```
+  <img src="/relative/path/to/image/image_file_name.png" alt="Image caption">
+```
 
 The first argument is a path to the image file, relative to the *dox* folder.
 The supported formats for images are PNG, JPG, and SVG.
@@ -414,13 +412,13 @@ Captions are included below the image; in PDF output the images with caption are
 
 Example:
 
-@verbatim
-  @figure{/contribution/documentation/images/documentation_test_image.svg,"Test SVG image"}
-@endverbatim
+```
+  <img src="images/documentation_test_image.svg" alt="Test SVG image">
+```
 
 is rendered as:
 
-@figure{/contribution/documentation/images/documentation_test_image.svg,"Test SVG image",320}
+<img src="images/documentation_test_image.svg" alt="Test SVG image" width="320">
 
 We recommend using **Inkscape** for creation and edition of vector graphics.
 The graphics created in MS Word Draw and some other vector editors can be copy-pasted to Inkscape and saved as SVG images.
@@ -429,19 +427,19 @@ Note that the image that will be included in documentation is the whole page of 
 
 Note that the *figure* command is an alias to the standard Doxygen command *image* repeated twice: once for HTML and then for Latex output (used for PDF generation). Thus if HTML and PDF outputs should include different images or captions, command "image" can be used:
 
-@verbatim
+```
   @image html /relative/path/to/image/occ_logo_for_html.png
   @image latex /relative/path/to/image/occ_logo_for_pdf.png
-@endverbatim
+```
 
-@subsection  OCCT_DM_SECTION_A_8 Table Of Contents
+<h3><a id="OCCT_DM_SECTION_A_8">Table Of Contents</a></h3>
 
 Use \@tableofcontents tag to get the table of contents at the beginning of the document. 
   
 Actually, it is not strictly necessary now because TreeView option for HTML is used.
 The TOC in the PDF document will be generated automatically.
 
-@subsection  OCCT_DM_SECTION_A_9 Formulas
+<h3><a id="OCCT_DM_SECTION_A_9">Formulas</a></h3>
 
 Formulas within MarkDown documents can be defined using LaTeX syntax.
 
@@ -450,66 +448,63 @@ Equations can be written by several ways:
 1.Unnumbered displayed formulas that are centered on a separate line. 
 These formulas should be put between \@f\[ and \@f\] tags. An example: 
 
-@verbatim
-@f[
+```
+$$
     |I_2|=\left| \int_{0}^T \psi(t)
-            \left\{ 
+            \lbrace 
                 u(a,t)-
                 \int_{\gamma(t)}^a 
                 \frac{d\theta}{k(\theta,t)}
                 \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
-            \right\} dt
+            \rbrace dt
         \right|
-@f]
-@endverbatim
+$$
+```
 
 gives the following result:
 
-   @f$
+$$
        |I_2|=\left| \int_{0}^T \psi(t)
-               \left\{ 
+               \lbrace 
                    u(a,t)-
                    \int_{\gamma(t)}^a 
                    \frac{d\theta}{k(\theta,t)}
                    \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
-               \right\} dt
+               \rbrace dt
            \right|
-   @f$
-   
+$$
+
 2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. 
 
   For example: 
-  
-@verbatim
+```
+$$
   \begin{align}
   \dot{x} & = \sigma(y-x) \\
   \dot{y} & = \rho x - y - xz \\
   \dot{z} & = -\beta z + xy
   \end{align}
-@endverbatim
-
+$$
+```
   gives the following result:
-@latexonly
-  \begin{align}
-  \dot{x} & = \sigma(y-x) \\
-  \dot{y} & = \rho x - y - xz \\
-  \dot{z} & = -\beta z + xy
-  \end{align}
-@endlatexonly
 
-@htmlonly
+$$
   \begin{align}
   \dot{x} & = \sigma(y-x) \\
   \dot{y} & = \rho x - y - xz \\
   \dot{z} & = -\beta z + xy
   \end{align}
-@endhtmlonly
+$$
 
 3.Inline formulas can be specified using this syntax:
 
-@verbatim
-  @f$ \sqrt{3x-1}+(1+x)^2 @f$
-@endverbatim
+```
+$$
+\sqrt{3x-1}+(1+x)^2
+$$
+```
+that leads to the following result:
 
-  that leads to the following result: @f$ \sqrt{3x-1}+(1+x)^2 @f$
-  
+$$
+\sqrt{3x-1}+(1+x)^2
+$$
