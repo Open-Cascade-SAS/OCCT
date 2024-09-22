@@ -34,11 +34,11 @@ jobs:
 
     - name: Configure OCCT
       run: |
-        mkdir build
-        cd build
-        cmake -T host=x64 -D USE_FREETYPE=OFF -D BUILD_MODULE_Draw=OFF -D CMAKE_BUILD_TYPE=Release ..
-
+          mkdir build
+          cd build
+          cmake -T host=x64 -D USE_FREETYPE=OFF -D BUILD_MODULE_Draw=OFF -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_FLAGS="/WX" -D CMAKE_CXX_FLAGS="/WX" ..
+  
     - name: Build OCCT
       run: |
-        cd build
-        cmake --build . --config Release -- /m
+          cd build
+          cmake --build . --config Release -- /m

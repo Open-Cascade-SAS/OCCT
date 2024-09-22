@@ -32,7 +32,9 @@ jobs:
               -D CMAKE_C_COMPILER=gcc \
               -D CMAKE_CXX_COMPILER=g++ \
               -D USE_FREETYPE=OFF \
-              -D CMAKE_BUILD_TYPE=Release ..
+              -D CMAKE_BUILD_TYPE=Release \
+              -D CMAKE_C_FLAGS="-Werror" \
+              -D CMAKE_CXX_FLAGS="-Werror" ..
 
     - name: Build OCCT
       run: |
