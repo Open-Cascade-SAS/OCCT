@@ -2013,7 +2013,7 @@ static Standard_Integer OCC24889 (Draw_Interpretor& theDI,
   DrawTrSurf::Set("c_2", aTrim[1]);
 
   // Intersection
-  const Standard_Real aTol = Precision::Confusion();
+  constexpr Standard_Real aTol = Precision::Confusion();
   Geom2dAPI_InterCurveCurve aIntTool( aTrim[0], aTrim[1], aTol );
 
   const IntRes2d_IntersectionPoint& aIntPnt =
@@ -3871,7 +3871,7 @@ Standard_Integer OCC26446 (Draw_Interpretor& di,
   TColGeom_Array1OfBSplineCurve          aCurves     (0, 1);
   TColStd_Array1OfReal                   aTolerances (0, 0);
   Standard_Real                          aTolConf    = 1.e-3;
-  Standard_Real                          aTolClosure = Precision::Confusion();
+  constexpr Standard_Real                aTolClosure = Precision::Confusion();
   Handle(TColGeom_HArray1OfBSplineCurve) aConcatCurves;
   Handle(TColStd_HArray1OfInteger)       anIndices;
 

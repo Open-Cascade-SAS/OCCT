@@ -621,7 +621,7 @@ Standard_Boolean
     ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(Standard_True);
   }
 
-  const Standard_Real SqTol3d = Precision::SquareConfusion();
+  constexpr Standard_Real SqTol3d = Precision::SquareConfusion();
   math_Vector tolerance(1,2);
   tolerance(1) = tolerance(2) = 1.e-8;
   

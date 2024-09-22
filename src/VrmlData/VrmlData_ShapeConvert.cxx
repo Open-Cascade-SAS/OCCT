@@ -414,7 +414,7 @@ Handle(VrmlData_Geometry) VrmlData_ShapeConvert::triToIndexedFaceSet
   Poly_Connect PC(theTri);
   // Create the Normals node (if UV- values are available)
   TopLoc_Location aLoc;
-  const Standard_Real aConf2 = Precision::SquareConfusion();
+  constexpr Standard_Real aConf2 = Precision::SquareConfusion();
   const Handle(Geom_Surface) aSurface = BRep_Tool::Surface (theFace, aLoc);
   if (theTri->HasUVNodes() && aSurface.IsNull() == Standard_False)
   {

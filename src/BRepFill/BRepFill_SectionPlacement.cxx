@@ -125,7 +125,8 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
       Ex.Next();
       
       if( Ex.More() ) {
-	Standard_Real tolrac, epsV, tol = Precision::Confusion();
+	Standard_Real tolrac, epsV;
+	constexpr Standard_Real tol = Precision::Confusion();
 	GeomConvert_CompCurveToBSplineCurve Conv(TC);
 	for (; Ex.More(); Ex.Next()) {
 	  E = TopoDS::Edge(Ex.Current());
@@ -289,8 +290,8 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
   
   Place.Perform(adpPath, Precision::Confusion());
   
-  Standard_Real theParam = Place.ParameterOnPath(), 
-                eps = Precision::PConfusion();
+  Standard_Real theParam = Place.ParameterOnPath();
+  constexpr Standard_Real eps = Precision::PConfusion();
 
 #ifdef OCCT_DEBUG
   if (myDebug) {

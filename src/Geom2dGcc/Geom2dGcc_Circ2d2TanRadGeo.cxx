@@ -855,7 +855,7 @@ pararg2(1,aNbSolMAX)
         Intp.Perform(C1,C2,Tol,Tol);
         if (Intp.IsDone()) {
           if (!Intp.IsEmpty()) {
-            const Standard_Real aSQApproxTol = Precision::Approximation() *
+            constexpr Standard_Real aSQApproxTol = Precision::Approximation() *
                                                 Precision::Approximation();
             for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
             {

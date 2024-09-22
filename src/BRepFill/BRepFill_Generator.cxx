@@ -907,7 +907,7 @@ void BRepFill_Generator::Perform()
       }
 
       // set the pcurves
-      Standard_Real T = Precision::Confusion();
+      constexpr Standard_Real T = Precision::Confusion();
 
       if (IType != 4) //not plane
 	{

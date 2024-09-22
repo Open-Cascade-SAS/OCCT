@@ -1144,8 +1144,8 @@ static void ComputeSphere (const gp_Sphere& Sphere,
   zmin = P.Z() - R;
   zmax = P.Z() + R;
   
-  Standard_Real uper = 2. * M_PI - Precision::PConfusion();
-  Standard_Real vper = M_PI - Precision::PConfusion();
+  constexpr Standard_Real uper = 2. * M_PI - Precision::PConfusion();
+  constexpr Standard_Real vper = M_PI - Precision::PConfusion();
   if (UMax - UMin >= uper && VMax - VMin >= vper)
   {
     // a whole sphere
@@ -1244,7 +1244,7 @@ static void computeDegeneratedTorus (const gp_Torus& theTorus,
 
   Standard_Real aPhi = ACos (-aRa / aRi);
   
-  Standard_Real anUper = 2. * M_PI - Precision::PConfusion();
+  constexpr Standard_Real anUper = 2. * M_PI - Precision::PConfusion();
   Standard_Real aVper = 2. * aPhi - Precision::PConfusion();
   if (theUMax - theUMin >= anUper && theVMax - theVMin >= aVper)
   {

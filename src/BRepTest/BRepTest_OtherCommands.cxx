@@ -533,7 +533,7 @@ TopoDS_Face NextFaceForPrism (const TopoDS_Shape& shape,
     if (ASI.IsDone()) {
       Standard_Integer no=1, IndFrom, IndTo;
       TopAbs_Orientation theOr;
-      Standard_Real min = 1.e-04, Tol = -Precision::Confusion();
+      constexpr Standard_Real min = 1.e-04, Tol = -Precision::Confusion();
       if (ASI.LocalizeAfter (no, min, Tol, theOr, IndFrom, IndTo))  {
 	nextFace = ASI.Point(no, IndFrom).Face();  
 	break;

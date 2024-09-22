@@ -96,7 +96,7 @@ void BRepLib_MakeShell::Init(const Handle(Geom_Surface)& S,
     BS = RTS->BasisSurface();
   }
   myError = BRepLib_EmptyShell;
-  Standard_Real tol = Precision::Confusion();
+  constexpr Standard_Real tol = Precision::Confusion();
 
   // Make a shell from a surface
   GeomAdaptor_Surface GS(BS,UMin,UMax,VMin,VMax);
@@ -358,7 +358,7 @@ void BRepLib_MakeShell::Init(const Handle(Geom_Surface)& S,
   // Additional checking for degenerated edges
   Standard_Boolean isDegenerated;
   Standard_Real aFirst, aLast;
-  Standard_Real aTol = Precision::Confusion();
+  constexpr Standard_Real aTol = Precision::Confusion();
   Standard_Real anActTol;
   TopExp_Explorer anExp(myShape, TopAbs_EDGE);
   for ( ; anExp.More(); anExp.Next())

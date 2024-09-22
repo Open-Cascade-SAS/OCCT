@@ -419,7 +419,7 @@ BRepMesh_GeomTool::IntFlag BRepMesh_GeomTool::IntSegSeg(
 
   // Cross
   // Intersection is out of segments ranges
-  const Standard_Real aPrec    = Precision::PConfusion();
+  constexpr Standard_Real aPrec = Precision::PConfusion();
   const Standard_Real aEndPrec = 1 - aPrec;
   for (Standard_Integer i = 0; i < 2; ++i)
   {
@@ -492,7 +492,7 @@ Standard_Integer BRepMesh_GeomTool::classifyPoint(
   gp_XY aP1 = thePoint2       - thePoint1;
   gp_XY aP2 = thePointToCheck - thePoint1;
   
-  const Standard_Real aPrec   = Precision::PConfusion();
+  constexpr Standard_Real aPrec = Precision::PConfusion();
   const Standard_Real aSqPrec = aPrec * aPrec;
   Standard_Real aDist = Abs(aP1 ^ aP2);
   if (aDist > aPrec)

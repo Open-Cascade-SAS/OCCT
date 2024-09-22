@@ -259,7 +259,7 @@ void  GeomFill_BSplineCurves::Init
   // On ordonne les courbes
   Handle(Geom_BSplineCurve) CC1, CC2, CC3, CC4;
   
-  Standard_Real Tol = Precision::Confusion();
+  constexpr Standard_Real Tol = Precision::Confusion();
 #ifndef No_Exception
   Standard_Boolean IsOK =
 #endif
@@ -517,7 +517,7 @@ void  GeomFill_BSplineCurves::Init
     }
   }
   else {
-    Standard_Real Eps = Precision::Confusion();
+    constexpr Standard_Real Eps = Precision::Confusion();
     Standard_Boolean IsOK = Standard_False;
     if ( CC1->StartPoint().IsEqual(CC2->StartPoint(),Eps)) {
       IsOK = Standard_True;

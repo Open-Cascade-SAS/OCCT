@@ -49,8 +49,8 @@ Standard_Real IntPatch_PointLine::
                                             const Handle(Adaptor3d_Surface)& theS2,
                                             const IntSurf_PntOn2S& theUVPoint)
 {
-  const Standard_Real aSmallValue = 1.0/Precision::Infinite();
-  const Standard_Real aSqSmallValue = aSmallValue*aSmallValue;
+  constexpr Standard_Real aSmallValue = 1.0/Precision::Infinite();
+  constexpr Standard_Real aSqSmallValue = aSmallValue*aSmallValue;
 
   Standard_Real aU1 = 0.0, aV1 = 0.0, aU2 = 0.0, aV2 = 0.0;
   theUVPoint.Parameters(aU1, aV1, aU2, aV2);

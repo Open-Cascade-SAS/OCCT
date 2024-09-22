@@ -286,7 +286,7 @@ void GCPnts_TangentialDeflection::EvaluateDu (const TheCurve& theC,
   gp_Vec T, N;
   D2 (theC, theU, theP, T, N);
   Standard_Real Lt   = T.Magnitude();
-  Standard_Real LTol = Precision::Confusion();
+  constexpr Standard_Real LTol = Precision::Confusion();
   if (Lt > LTol && N.Magnitude () > LTol)
   {
     Standard_Real Lc = N.CrossMagnitude (T);
@@ -434,7 +434,7 @@ Standard_Integer GCPnts_TangentialDeflection::AddPoint
   const Standard_Real theParam,
   const Standard_Boolean theIsReplace)
 {
-  const Standard_Real tol = Precision::PConfusion();
+  constexpr Standard_Real tol = Precision::PConfusion();
   Standard_Integer index = -1;
   const Standard_Integer nb = myParameters.Length();
   for ( Standard_Integer i = 1; index == -1 && i <= nb; i++ )
@@ -477,7 +477,7 @@ Standard_Real GCPnts_TangentialDeflection::ArcAngularStep(
 {
   Standard_ConstructionError_Raise_if(theRadius < 0.0, "Negative radius");
 
-  const Standard_Real aPrecision = Precision::Confusion();
+  constexpr Standard_Real aPrecision = Precision::Confusion();
 
   Standard_Real Du = 0.0, aMinSizeAng = 0.0;
   if (theRadius > aPrecision)
@@ -506,7 +506,7 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& theC)
   Standard_Real Du, Dusave, MiddleU, L1, L2;
 
   Standard_Real U1   = myFirstu;
-  Standard_Real LTol = Precision::Confusion(); // protection longueur nulle
+  constexpr Standard_Real LTol = Precision::Confusion(); // protection longueur nulle
   Standard_Real ATol = 1.e-2 * myAngularDeflection;
   if (ATol > 1.e-2)
   {

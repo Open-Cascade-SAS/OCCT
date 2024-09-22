@@ -91,7 +91,7 @@ public:
     myNbPnt2d = 0;
     Standard_Real U = myCurve->FirstParameter();
     gp_Pnt P = myCurve->Value(U);
-    Standard_Real Tol = Precision::PConfusion();
+    constexpr Standard_Real Tol = Precision::PConfusion();
     myExtPS = new Extrema_ExtPS (P, *S, Tol, Tol);
   }
 

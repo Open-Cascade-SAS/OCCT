@@ -356,7 +356,8 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   }
 
 
-  Standard_Real ww, EpsW = 10*Precision::PConfusion();
+  Standard_Real ww;
+  constexpr Standard_Real EpsW = 10*Precision::PConfusion();
   Standard_Boolean NullWeight = Standard_False;
   if (!rational) DWeights.Init(0.);
   Standard_Integer indice = 1, ii;
@@ -449,7 +450,8 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
   }
 
 
-  Standard_Real ww, EpsW = 10*Precision::PConfusion();
+  Standard_Real ww;
+  constexpr Standard_Real EpsW = 10*Precision::PConfusion();
   Standard_Boolean NullWeight = Standard_False;
   if (!rational) D2Weights.Init(0.);
   Standard_Integer indice = 1, ii;

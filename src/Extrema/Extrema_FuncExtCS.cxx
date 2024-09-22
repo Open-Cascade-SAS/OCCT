@@ -206,7 +206,7 @@ Standard_Integer Extrema_FuncExtCS::GetStateNumber()
   std::cout <<"F(1)= "<<Sol(1)<<" F(2)= "<<Sol(2)<<" F(3)= "<<Sol(3)<<std::endl;
 #endif
   //comparison of solution with previous solutions
-  Standard_Real tol2d = Precision::SquarePConfusion();
+  constexpr Standard_Real tol2d = Precision::SquarePConfusion();
   Standard_Integer i = 1, nbSol = mySqDist.Length();
   for( ; i <=  nbSol; i++)
   {

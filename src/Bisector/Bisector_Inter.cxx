@@ -324,7 +324,7 @@ void Bisector_Inter::NeighbourPerform(const Handle(Bisector_BisecCC)&  Bis1,
 {
   Standard_Real USol,U1,U2,Dist;
   Standard_Real UMin =0.,UMax =0.;  
-  Standard_Real Eps = Precision::PConfusion();
+  constexpr Standard_Real Eps = Precision::PConfusion();
   gp_Pnt2d PSol;
   
   Handle(Geom2d_Curve)     Guide;

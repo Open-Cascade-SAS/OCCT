@@ -2665,9 +2665,9 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
   }
   
   const Standard_Real aDeltaUmax = M_PI_2;
-  const Standard_Real aTOL3D = 1.e-10, 
-                      aTOL2D = Precision::PConfusion(),
-                      aTOL2DS = Precision::PConfusion();
+  constexpr Standard_Real aTOL3D = 1.e-10,
+                          aTOL2D = Precision::PConfusion(),
+                          aTOL2DS = Precision::PConfusion();
 
   const Handle(IntSurf_LineOn2S)& aSLine = theLine->Curve();
 
@@ -2801,7 +2801,7 @@ static Standard_Boolean DecomposeResult(const Handle(IntPatch_PointLine)& theLin
         ////
         const IntSurf_PntOn2S& aRefPt = aSSLine->Value(aBindex-1);
 
-        Standard_Real aCompareTol3D = Precision::Confusion();
+        constexpr Standard_Real aCompareTol3D = Precision::Confusion();
         Standard_Real aCompareTol2D = Precision::PConfusion();
 
         IntSurf_PntOn2S aNewPoint = aRefPt;

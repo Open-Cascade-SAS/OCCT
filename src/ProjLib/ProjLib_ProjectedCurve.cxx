@@ -191,7 +191,7 @@ static void ExtendC2d (Handle(Geom2d_BSplineCurve)& aRes,
   gp_Dir2d                              aDBnd;
   Handle(Geom2d_TrimmedCurve)           aSegment;
   Geom2dConvert_CompCurveToBSplineCurve aCompCurve(aRes, Convert_RationalC1);
-  Standard_Real                         aTol = Precision::Confusion();
+  constexpr Standard_Real               aTol = Precision::Confusion();
 
   aRes->D1(theParam, aPBnd, aVBnd);
   aDBnd.SetXY(aVBnd.XY());

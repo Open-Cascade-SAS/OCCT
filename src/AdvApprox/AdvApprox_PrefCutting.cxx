@@ -30,7 +30,7 @@ Standard_Boolean AdvApprox_PrefCutting::Value(const Standard_Real a,
 {
 //  longueur minimum d'un intervalle parametrique : PConfusion()
 //                                    pour F(U,V) : EPS1=1.e-9 (cf.MMEPS1)
-  Standard_Real lgmin = 10 * Precision::PConfusion();
+  constexpr Standard_Real lgmin = 10 * Precision::PConfusion();
   Standard_Integer i;
   Standard_Real cut, mil=(a+b)/2,
                 dist = Abs((a-b)/2);

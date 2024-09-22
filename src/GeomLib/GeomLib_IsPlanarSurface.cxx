@@ -40,7 +40,7 @@ static Standard_Boolean Controle(const TColgp_Array1OfPnt& Poles,
   Standard_Real gx,gy,gz;
   gp_Pnt Bary;
   gp_Dir DX, DY;
-  Standard_Real aTolSingular = Precision::Confusion();
+  constexpr Standard_Real aTolSingular = Precision::Confusion();
 
     
   GeomLib::Inertia(Poles, Bary, DX, DY, gx, gy, gz);

@@ -750,7 +750,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
 
   if (Context().IsNull()) SetContext(new ShapeBuild_ReShape);
 
-  Standard_Real preci = ::Precision::PConfusion();
+  constexpr Standard_Real preci = ::Precision::PConfusion();
   //Standard_Real preci = Precision();
   //GeomAdaptor_Surface& SA = Analyzer().Surface()->Adaptor()->ChangeSurface();
   //preci = Max(SA.UResolution(preci), SA.VResolution(preci));
@@ -1024,7 +1024,7 @@ static Standard_Real AdjustOnPeriodic2d (const Handle(Geom2d_Curve)& pc,
       Standard_Real ipar1 = clast1, ipar2 = cfirst2;
 
       Geom2dInt_GInter Inter;
-      Standard_Real tolint = ::Precision::PConfusion();
+      constexpr Standard_Real tolint = ::Precision::PConfusion();
 
       Geom2dAdaptor_Curve AC1(pc1), AC2(pc2);
 

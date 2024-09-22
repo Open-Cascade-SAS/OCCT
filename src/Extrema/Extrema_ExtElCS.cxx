@@ -459,7 +459,7 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
     Standard_Integer aNbExt   = anExtC.NbExt();
     Standard_Integer i;
     Standard_Integer aCurI    = 1;
-    Standard_Real    aTolConf = Precision::Confusion();
+    constexpr Standard_Real aTolConf = Precision::Confusion();
     Standard_Real    aCylRad  = S.Radius();
 
     // Check whether two objects have intersection points

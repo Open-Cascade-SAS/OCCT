@@ -2648,7 +2648,7 @@ static Standard_Integer OCC8169 (Draw_Interpretor& di, Standard_Integer argc, co
 
   Handle(Geom_Surface) thePlane = BRep_Tool::Surface(theFace);
 
-  Standard_Real aConfusion = Precision::Confusion();
+  constexpr Standard_Real aConfusion = Precision::Confusion();
   Standard_Real aP1first, aP1last, aP2first, aP2last;
 
   Handle(Geom_Curve) aCurve1 = BRep_Tool::Curve(theEdge1, aP1first, aP1last);
@@ -4680,7 +4680,7 @@ Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const ch
   gp_Trsf2d Tcomp;
   Tcomp = M2.Multiplied(M1);
 
-  Standard_Real aTol = Precision::Confusion();
+  constexpr Standard_Real aTol = Precision::Confusion();
   Standard_Integer aStatus = 0;
 
   //After applying two times the same mirror the point is located on the same location OK

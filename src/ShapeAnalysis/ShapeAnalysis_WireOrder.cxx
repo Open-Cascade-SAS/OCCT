@@ -262,8 +262,8 @@ void ShapeAnalysis_WireOrder::Perform (const Standard_Boolean /*closed*/)
   TColStd_Array1OfBoolean isEdgeUsed (1, aNbEdges);
   isEdgeUsed.Init (Standard_False);
 
-  Standard_Real aTol2 = Precision::SquareConfusion();
-  Standard_Real aTolP2 = Precision::SquarePConfusion();
+  constexpr Standard_Real aTol2 = Precision::SquareConfusion();
+  constexpr Standard_Real aTolP2 = Precision::SquarePConfusion();
 
   // take the first edge to the constructed chain
   isEdgeUsed (1) = Standard_True;

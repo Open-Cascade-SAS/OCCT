@@ -2940,7 +2940,7 @@ void BRepLib::ExtendFace(const TopoDS_Face& theF,
 
     // Check if the periodic surface should become closed.
     // In this case, use the basis surface with basis bounds.
-    const Standard_Real anEps = Precision::PConfusion();
+    constexpr Standard_Real anEps = Precision::PConfusion();
     if (isUPeriodic && Abs(aFUMax - aFUMin - anUPeriod) < anEps)
     {
       aFUMin = aSUMin;

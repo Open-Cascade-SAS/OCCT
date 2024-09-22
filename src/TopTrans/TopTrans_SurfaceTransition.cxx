@@ -213,7 +213,7 @@ void TopTrans_SurfaceTransition::Reset(const gp_Dir& Tgt,
 {
   STATIC_DEFINED = Standard_True;
 
-  Standard_Real tola = Precision::Angular();
+  constexpr Standard_Real tola = Precision::Angular();
   Standard_Boolean curismax = (Abs(MaxD.Dot(myTgt)) < tola);
   Standard_Boolean curismin = (Abs(MinD.Dot(myTgt)) < tola);
 
@@ -284,7 +284,7 @@ void TopTrans_SurfaceTransition::Compare
 
   Standard_Real Curv=0.; 
   // ------
-  Standard_Real tola = Precision::Angular();
+  constexpr Standard_Real tola = Precision::Angular();
   Standard_Boolean curismax = (Abs(MaxD.Dot(myTgt)) < tola);
   Standard_Boolean curismin = (Abs(MinD.Dot(myTgt)) < tola);
   if (!curismax && !curismin) {
@@ -365,7 +365,7 @@ void TopTrans_SurfaceTransition::Compare
   // oriented Ang(beafter,dironF), 
   // dironF normal to the curve, oriented INSIDE F, the added oriented support
   Standard_Real Ang = ::FUN_Ang(myNorm,beafter,myTgt,Norm,O);
-  Standard_Real tola = Precision::Angular(); // nyi in arg
+  constexpr Standard_Real tola = Precision::Angular(); // nyi in arg
     
   // i = 0,1,2 : cos = 0,>0,<0
   // j = 0,1,2 : sin = 0,>0,<0

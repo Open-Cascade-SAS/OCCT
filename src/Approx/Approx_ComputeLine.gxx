@@ -139,7 +139,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
     return Standard_True;
 
   const Standard_Real MinScalProd = -0.9;
-  const Standard_Real SqTol3d = Precision::SquareConfusion();
+  constexpr Standard_Real SqTol3d = Precision::SquareConfusion();
 
   theIndbad = 0;
   Standard_Integer indbads [4];

@@ -130,7 +130,7 @@ Standard_Integer Extrema_FuncPSNorm::GetStateNumber ()
   if (!myPinit || !mySinit) throw Standard_TypeMismatch();
   //comparison of solution with previous solutions
   Standard_Integer i = 1, nbSol = mySqDist.Length();
-  Standard_Real tol2d = Precision::PConfusion() * Precision::PConfusion();
+  constexpr Standard_Real tol2d = Precision::PConfusion() * Precision::PConfusion();
    
   for( ; i <=  nbSol; i++)
   {

@@ -194,7 +194,7 @@ static Standard_Boolean ArePolesPlanar (const TColgp_Array1OfPnt& Poles,
   for ( i = 1; i < Poles.Length(); i++) 
     Normal += Poles ( i ).XYZ() ^ Poles ( i + 1 ).XYZ();
 
-  Standard_Real tol = Precision::Confusion();
+  constexpr Standard_Real tol = Precision::Confusion();
   Standard_Real nrm = Normal.Modulus();
   if ( nrm < tol ) {
     Normal.SetCoord ( 0, 0, 1 );

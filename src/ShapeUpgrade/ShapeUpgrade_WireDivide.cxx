@@ -172,7 +172,7 @@ static void CorrectSplitValues(const Handle(TColStd_HSequenceOfReal)& orig3d,
 			       Handle(TColStd_HSequenceOfReal) new2d,
 			       Handle(TColStd_HSequenceOfReal) new3d)
 {
-  Standard_Real preci = Precision::PConfusion();
+  constexpr Standard_Real preci = Precision::PConfusion();
   Standard_Integer len3d = orig3d->Length();
   Standard_Integer len2d = orig2d->Length();
   TColStd_Array1OfBoolean fixNew2d (1, len3d);

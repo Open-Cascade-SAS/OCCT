@@ -390,7 +390,7 @@ static Handle(Geom2d_Curve) TranslatePCurve (const Handle(Geom_Surface)& aSurf,
 	    Standard_Real oldFirstCurve1 = oldFirst, oldLastCurve1 = oldLast;
 	    if(Curve2dPtr->IsKind(STANDARD_TYPE(Geom2d_BezierCurve))) {
 	      
-	      Standard_Real preci = Precision::PConfusion();
+	      constexpr Standard_Real preci = Precision::PConfusion();
 	      if ( Abs(oldFirst) > preci || Abs(oldLast-1) > preci ) {
 		Handle(Geom2d_BezierCurve) bezier = Handle(Geom2d_BezierCurve)::DownCast(Curve2dPtr->Copy());
 		bezier->Segment(oldFirst,oldLast);
@@ -412,7 +412,7 @@ static Handle(Geom2d_Curve) TranslatePCurve (const Handle(Geom_Surface)& aSurf,
 	    
 	    if(Curve2dPtr2->IsKind(STANDARD_TYPE(Geom2d_BezierCurve))) {
 	      
-	      Standard_Real preci = Precision::PConfusion();
+	      constexpr Standard_Real preci = Precision::PConfusion();
 	      if ( Abs(oldFirst) > preci || Abs(oldLast-1) > preci ) {
 		Handle(Geom2d_BezierCurve) bezier = Handle(Geom2d_BezierCurve)::DownCast(Curve2dPtr2->Copy());
 		bezier->Segment(oldFirst,oldLast);
