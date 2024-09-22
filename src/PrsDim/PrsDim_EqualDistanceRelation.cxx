@@ -449,7 +449,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Pr
     SecondAttach = ElCLib::Value(ElCLib::Parameter(l2,Position),l2);
   }
 
-  Standard_Real confusion(Precision::Confusion());
+  constexpr Standard_Real confusion(Precision::Confusion());
   if (arrsize < confusion) arrsize = Val*0.1;
   if (Abs(Val) <= confusion) {arrsize = 0.;}
 
@@ -482,7 +482,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Pr
     gp_Circ aCirc2 = aCir2->Circ();
 
     //To avoid circles with different orientation
-    Standard_Real aTol = Precision::Confusion();
+    constexpr Standard_Real aTol = Precision::Confusion();
     if(aCirc2.Axis().IsOpposite(aCirc1.Axis(), aTol) ||
        aCirc2.XAxis().IsOpposite(aCirc1.XAxis(), aTol) || 
        aCirc2.YAxis().IsOpposite(aCirc1.YAxis(), aTol) )
@@ -594,7 +594,7 @@ void PrsDim_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d
   PrsDim::ComputeGeometry( FirstVertex, FirstAttach, Plane, isOnPlane1);
   PrsDim::ComputeGeometry( SecondVertex, SecondAttach, Plane, isOnPlane2);
 
-  Standard_Real confusion(Precision::Confusion());
+  constexpr Standard_Real confusion(Precision::Confusion());
   Standard_Boolean samePoint(FirstAttach.IsEqual(SecondAttach,confusion));
 
   if (TypeDist == PrsDim_TypeOfDist_Vertical) DirAttach =  Plane->Pln().XAxis().Direction();

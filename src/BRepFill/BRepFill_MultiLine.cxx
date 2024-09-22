@@ -109,8 +109,8 @@ BRepFill_MultiLine::BRepFill_MultiLine(const TopoDS_Face&     Face1,
   myKPart(0)
 {
   //
-  const Standard_Real mult = 5.;
-  const Standard_Real eps = mult * Precision::Confusion();
+  constexpr Standard_Real mult = 5.;
+  constexpr Standard_Real eps = mult * Precision::Confusion();
   //
   myNbPnt2d = 2;
   myNbPnt = 1;
@@ -585,8 +585,8 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
   }
 #endif
   //
-  const Standard_Real mult = 5.;
-  const Standard_Real eps = mult * Precision::Confusion();
+  constexpr Standard_Real mult = 5.;
+  constexpr Standard_Real eps = mult * Precision::Confusion();
   //
   Standard_Real UU =0., Dist = Precision::Infinite(), D1, D2;
 
@@ -627,7 +627,7 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
     }
   }
 
-  const Standard_Real Tol = Precision::Confusion();
+  constexpr Standard_Real Tol = Precision::Confusion();
   Standard_Real VV;
 
   gp_Pnt2d PF = TheV.Value(TheV.FirstParameter());

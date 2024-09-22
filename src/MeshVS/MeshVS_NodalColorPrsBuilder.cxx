@@ -79,7 +79,8 @@ public:
 static inline Standard_Integer getNearestPow2( Standard_Integer theValue )
 {
   // Precaution against overflow
-  Standard_Integer aHalfMax = IntegerLast() >> 1, aRes = 1;
+  constexpr Standard_Integer aHalfMax = IntegerLast() >> 1;
+  Standard_Integer aRes = 1;
   if ( theValue > aHalfMax ) theValue = aHalfMax;
   while ( aRes < theValue ) aRes <<= 1;
   return aRes;

@@ -2004,7 +2004,7 @@ void AppDef_Variational::InitSmoothCriterion()
 void AppDef_Variational::InitParameters(Standard_Real& Length)
 {
 
-  const Standard_Real Eps1 = Precision::Confusion() * .01;
+  constexpr Standard_Real Eps1 = Precision::Confusion() * .01;
 
   Standard_Real aux, dist;
   Standard_Integer i, i0, i1 = 0, ipoint;
@@ -2052,7 +2052,7 @@ void AppDef_Variational::InitCriterionEstimations(const Standard_Real Length,
 {
   E1 = Length * Length;
 
-  const Standard_Real Eps1 = Precision::Confusion() * .01;
+  constexpr Standard_Real Eps1 = Precision::Confusion() * .01;
 
   math_Vector VTang1(1, myDimension), VTang2(1, myDimension), VTang3(1, myDimension),
     VScnd1(1, myDimension), VScnd2(1, myDimension), VScnd3(1, myDimension);
@@ -2180,7 +2180,7 @@ void AppDef_Variational::EstTangent(const Standard_Integer ipnt,
 
 {
   Standard_Integer i ;
-  const Standard_Real Eps1 = Precision::Confusion() * .01;
+  constexpr Standard_Real Eps1 = Precision::Confusion() * .01;
   const Standard_Real EpsNorm = 1.e-9;
 
   Standard_Real Wpnt = 1.;

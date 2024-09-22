@@ -2928,7 +2928,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
   Poly_Connect pc (polyTriangulation);
 
   Standard_Integer index[3];
-  Standard_Real Tol = Precision::Confusion();
+  constexpr Standard_Real Tol = Precision::Confusion();
 
   gp_Dir Nor;
   for (i = 1; i <= polyTriangulation->NbNodes(); i++)

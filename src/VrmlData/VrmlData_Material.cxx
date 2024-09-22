@@ -273,7 +273,7 @@ VrmlData_ErrorStatus VrmlData_Material::Write (const char * thePrefix) const
     char buf[128];
     Standard_Real val[3];
     const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
-    const Standard_Real aConf (0.001 * Precision::Confusion());
+    constexpr Standard_Real aConf (0.001 * Precision::Confusion());
 
     if (OK(aStatus) && fabs(myAmbientIntensity - 0.2) > aConf) {
       Sprintf (buf, "%.6g", myAmbientIntensity);
@@ -324,7 +324,7 @@ VrmlData_ErrorStatus VrmlData_Material::Write (const char * thePrefix) const
 
 Standard_Boolean VrmlData_Material::IsDefault () const
 {
-  const Standard_Real aConf (0.001 * Precision::Confusion());
+  constexpr Standard_Real aConf (0.001 * Precision::Confusion());
   Standard_Boolean aResult (Standard_False);
   if (fabs(myAmbientIntensity - 0.2) < aConf &&
       fabs(myShininess - 0.2)        < aConf &&

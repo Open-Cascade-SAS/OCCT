@@ -142,11 +142,7 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
         res = ApplyModifier (shape, M, context, MD, aRange, aReShape);
       }
 
-      if ( !res.IsSame (shape) )
-      {
-        context.Bind (aShapeNoLoc, res.Located (TopLoc_Location()));
-        locModified = Standard_True;
-      }
+      locModified |= !res.IsSame (shape);
 
       B.Add (C, res);
     }
@@ -162,10 +158,18 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
       return S;
     }
 
-    context.Bind ( SF, C );
+    SF.Orientation (S.Orientation());
+    C .Orientation (S.Orientation());
 
-    C.Orientation (S.Orientation());
-    C.Location    (S.Location(), Standard_False);
+    context.Bind (SF, C);
+
+    C.Location (S.Location(), Standard_False);
+    
+    if (!aReShape.IsNull())
+    {
+      aReShape->Replace (S, C);
+    }
+
     return C;
   }
 
@@ -175,12 +179,21 @@ TopoDS_Shape ShapeCustom::ApplyModifier (const TopoDS_Shape &S,
   MD.Perform(M, aPS.Next());
   
   if ( !aPS.More() || !MD.IsDone() ) return S;
+
+  TopoDS_Shape aResult = MD.ModifiedShape (SF);
+  aResult.Orientation (S.Orientation());
+
+  if (!SF.IsSame (aResult))
+  {
+    context.Bind (S.Located (TopLoc_Location()), aResult.Located (TopLoc_Location()));
+  }
+
   if ( !aReShape.IsNull() )
   {
     UpdateShapeBuild ( SF, MD, aReShape );
   }
 
-  return MD.ModifiedShape(SF).Oriented(S.Orientation());
+  return aResult;
 }
   
 

@@ -214,7 +214,7 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
   Standard_Real    DotProd;
   Standard_Real    ProVec = CrossProd (Geom1,Geom2,DotProd);
   Standard_Integer NbTest = 1;
-  Standard_Real    DU = Precision::Confusion();
+  constexpr Standard_Real DU = Precision::Confusion();
   Handle(Geom2d_TrimmedCurve) C1,C2;
 
   C1= Handle(Geom2d_TrimmedCurve)::DownCast(Geom1);
@@ -255,7 +255,7 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     // Si pas dintersection => saillant.
     // Sinon                => rentrant.
     Standard_Real D ;
-    Standard_Real Tol   = Precision::Confusion();
+    constexpr Standard_Real Tol = Precision::Confusion();
     Standard_Real MilC1 = (C1->LastParameter() + C1->FirstParameter())*0.5;
     Standard_Real MilC2 = (C2->LastParameter() + C2->FirstParameter())*0.5;
     gp_Pnt2d      P     = C1->Value(C1->LastParameter());

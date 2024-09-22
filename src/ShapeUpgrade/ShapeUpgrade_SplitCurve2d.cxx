@@ -63,7 +63,7 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
   Handle(Geom2d_Curve) CopyOfC = Handle(Geom2d_Curve)::DownCast(C->Copy());
   myCurve = CopyOfC;
   
-  Standard_Real precision = Precision::PConfusion();
+  constexpr Standard_Real precision = Precision::PConfusion();
   Standard_Real firstPar = First;
   Standard_Real lastPar = Last;
   Handle (Geom2d_Curve) aCurve = myCurve;

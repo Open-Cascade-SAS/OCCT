@@ -400,7 +400,7 @@ Standard_Boolean BRepExtrema_ProximityValueTool::getFaceAdditionalVertices (
   BVH_Array3d& theAddVertices,
   NCollection_Vector<ProxPnt_Status>& theAddStatuses)
 {
-  Standard_Real aTol = Precision::Confusion();
+  constexpr Standard_Real aTol = Precision::Confusion();
 
   TopLoc_Location aLocation;
   Handle(Poly_Triangulation) aTr = BRep_Tool::Triangulation (theFace, aLocation);

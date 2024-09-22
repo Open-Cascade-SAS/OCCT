@@ -252,7 +252,7 @@ static void Function_SetUVBounds(Standard_Real& myU1,
 
     case GeomAbs_Cone:    {
       Standard_Real tol = Epsilon(1.);
-      Standard_Real ptol = Precision::PConfusion();
+      constexpr Standard_Real ptol = Precision::PConfusion();
       gp_Cone Cone = mySurface->Cone();
       VCouture = Standard_False;
       //Calculation of cone parameters for P == ConeApex often produces wrong

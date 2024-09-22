@@ -50,6 +50,81 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshPrsBuilder,MeshVS_PrsBuilder)
 
+namespace
+{
+  //================================================================
+  // Function : ProcessFace
+  // Purpose  : Fill array with triangles for the face
+  //================================================================
+  static void ProcessFace(const TColStd_SequenceOfInteger& theFaceNodes,
+                          const TColStd_Array1OfReal& theNodes,
+                          const Standard_Real* theCenter,
+                          const Standard_Real theShrinkCoef,
+                          const Standard_Boolean theIsShrinked,
+                          const Standard_Boolean theIsShaded,
+                          Handle(Graphic3d_ArrayOfPrimitives) theArray)
+  {
+    const Standard_Integer aNbPolyNodes = theFaceNodes.Length();
+
+    Standard_Real* aPolyNodesBuf = (Standard_Real*)alloca((3 * aNbPolyNodes + 1) * sizeof(Standard_Real));
+    TColStd_Array1OfReal aPolyNodes(*aPolyNodesBuf, 0, 3 * aNbPolyNodes);
+
+    for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes; ++aNodeIdx)
+    {
+      Standard_Integer anIdx = theFaceNodes.Value(aNodeIdx + 1);
+
+      Standard_Real aX = theNodes.Value(theNodes.Lower() + 3 * anIdx + 0);
+      Standard_Real aY = theNodes.Value(theNodes.Lower() + 3 * anIdx + 1);
+      Standard_Real aZ = theNodes.Value(theNodes.Lower() + 3 * anIdx + 2);
+
+      if (theIsShrinked)
+      {
+        aX = theCenter[0] + theShrinkCoef * (aX - theCenter[0]);
+        aY = theCenter[1] + theShrinkCoef * (aY - theCenter[1]);
+        aZ = theCenter[2] + theShrinkCoef * (aZ - theCenter[2]);
+      }
+
+      aPolyNodes.SetValue(3 * aNodeIdx + 1, aX);
+      aPolyNodes.SetValue(3 * aNodeIdx + 2, aY);
+      aPolyNodes.SetValue(3 * aNodeIdx + 3, aZ);
+    }
+
+    gp_Vec aNorm;
+
+    if (theIsShaded)
+    {
+      aPolyNodes.SetValue(0, aNbPolyNodes);
+
+      if (!MeshVS_Tool::GetAverageNormal(aPolyNodes, aNorm))
+      {
+        aNorm.SetCoord(0.0, 0.0, 1.0);
+      }
+    }
+
+    for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes - 2; ++aNodeIdx) // triangulate polygon
+    {
+      for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
+      {
+        if (theIsShaded)
+        {
+          theArray->AddVertex(aPolyNodes.Value(3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                              aPolyNodes.Value(3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                              aPolyNodes.Value(3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3),
+                              aNorm.X(),
+                              aNorm.Y(),
+                              aNorm.Z());
+        }
+        else
+        {
+          theArray->AddVertex(aPolyNodes.Value(3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
+                              aPolyNodes.Value(3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
+                              aPolyNodes.Value(3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3));
+        }
+      }
+    }
+  }
+}
+
 //================================================================
 // Function : Constructor MeshVS_MeshPrsBuilder
 // Purpose  :
@@ -838,67 +913,9 @@ void MeshVS_MeshPrsBuilder::AddVolumePrs (const Handle(MeshVS_HArray1OfSequenceO
 
   if (aIsPolygons)
   {
-    for (Standard_Integer aFaceIdx = theTopo->Lower(), topoup = theTopo->Upper(); aFaceIdx <= topoup; ++aFaceIdx)
+    for (Standard_Integer aFaceIdx = theTopo->Lower(); aFaceIdx <= theTopo->Upper(); ++aFaceIdx)
     {
-      const TColStd_SequenceOfInteger& aFaceNodes = theTopo->Value (aFaceIdx);
-      const Standard_Integer aNbPolyNodes = aFaceNodes.Length();
-      
-      Standard_Real* aPolyNodesBuf = (Standard_Real*) alloca ((3 * aNbPolyNodes + 1) * sizeof (Standard_Real));
-      TColStd_Array1OfReal aPolyNodes (*aPolyNodesBuf, 0, 3 * aNbPolyNodes);
-
-      for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes; ++aNodeIdx)
-      {
-        Standard_Integer anIdx = aFaceNodes.Value (aNodeIdx + 1);
-
-        Standard_Real aX = theNodes.Value (aLow + 3 * anIdx + 0);
-        Standard_Real aY = theNodes.Value (aLow + 3 * anIdx + 1);
-        Standard_Real aZ = theNodes.Value (aLow + 3 * anIdx + 2);
-
-        if (theIsShrinked)
-        {
-          aX = aCenter[0] + theShrinkCoef * (aX - aCenter[0]);
-          aY = aCenter[1] + theShrinkCoef * (aY - aCenter[1]);
-          aZ = aCenter[2] + theShrinkCoef * (aZ - aCenter[2]);
-        }
-
-        aPolyNodes.SetValue (3 * aNodeIdx + 1, aX);
-        aPolyNodes.SetValue (3 * aNodeIdx + 2, aY);
-        aPolyNodes.SetValue (3 * aNodeIdx + 3, aZ);
-      }
-      
-      gp_Vec aNorm;
-
-      if (theIsShaded)
-      {
-        aPolyNodes.SetValue (0, aNbPolyNodes);
-        
-        if (!MeshVS_Tool::GetAverageNormal (aPolyNodes, aNorm))
-        {
-          aNorm.SetCoord (0.0, 0.0, 1.0);
-        }
-      }
-
-      for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes - 2; ++aNodeIdx) // triangulate polygon
-      {
-        for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
-        {
-          if (theIsShaded)
-          {
-            theArray->AddVertex (aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
-                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
-                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3),
-                                 aNorm.X(),
-                                 aNorm.Y(),
-                                 aNorm.Z());
-          }
-          else
-          {
-            theArray->AddVertex (aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 1),
-                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 2),
-                                 aPolyNodes.Value (3 * (aSubIdx == 0 ? 0 : (aNodeIdx + aSubIdx)) + 3));
-          }
-        }
-      }
+      ProcessFace(theTopo->Value(aFaceIdx), theNodes, aCenter, theShrinkCoef, theIsShrinked, theIsShaded, theArray);
     }
   }
   else if (theIsSelected)

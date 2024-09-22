@@ -213,7 +213,7 @@ static Standard_Integer OCC486(Draw_Interpretor& di, Standard_Integer argc, cons
       if (GS.IsNull()) { di << "OCC486 FAULTY. Null surface /n";return 1;}
       gp_Pnt P3D( Draw::Atof(argv[2]),Draw::Atof(argv[3]),Draw::Atof(argv[4]) );
 
-      Standard_Real Tol = Precision::PConfusion();
+      constexpr Standard_Real Tol = Precision::PConfusion();
       Extrema_ExtPS myExtPS;
       if (argc > 5) du = Draw::Atof(argv[5]);
       if (argc > 6) dv = Draw::Atof(argv[6]);

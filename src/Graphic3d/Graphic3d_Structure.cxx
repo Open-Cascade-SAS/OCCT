@@ -668,8 +668,8 @@ Bnd_Box Graphic3d_Structure::MinMaxValues (const Standard_Boolean theToIgnoreInf
   aResult.Update (aBox.CornerMin().x(), aBox.CornerMin().y(), aBox.CornerMin().z(),
                   aBox.CornerMax().x(), aBox.CornerMax().y(), aBox.CornerMax().z());
 
-  Standard_Real aLimMin = ShortRealFirst() + 1.0;
-  Standard_Real aLimMax = ShortRealLast()  - 1.0;
+  constexpr Standard_Real aLimMin = ShortRealFirst() + 1.0;
+  constexpr Standard_Real aLimMax = ShortRealLast()  - 1.0;
   gp_Pnt aMin = aResult.CornerMin();
   gp_Pnt aMax = aResult.CornerMax();
   if (aMin.X() < aLimMin && aMin.Y() < aLimMin && aMin.Z() < aLimMin
@@ -847,8 +847,8 @@ void Graphic3d_Structure::Transforms (const gp_Trsf& theTrsf,
                                       const Standard_Real theX,    const Standard_Real theY,    const Standard_Real theZ,
                                       Standard_Real&      theNewX, Standard_Real&      theNewY, Standard_Real&      theNewZ)
 {
-  const Standard_Real aRL = RealLast();
-  const Standard_Real aRF = RealFirst();
+  constexpr Standard_Real aRL = RealLast();
+  constexpr Standard_Real aRF = RealFirst();
   theNewX = theX;
   theNewY = theY;
   theNewZ = theZ;

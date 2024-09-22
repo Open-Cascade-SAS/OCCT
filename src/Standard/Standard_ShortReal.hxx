@@ -60,9 +60,8 @@ constexpr Standard_ShortReal  ShortRealEpsilon()
 //-------------------------------------------------------------------
 // ShortRealFirst : Returns the minimum negative value of a ShortReal
 //-------------------------------------------------------------------
-inline Standard_ShortReal     ShortRealFirst() 
-{ Standard_ShortReal MaxFloatTmp = -FLT_MAX;
-  return MaxFloatTmp; }
+constexpr Standard_ShortReal     ShortRealFirst() 
+{ return -FLT_MAX; }
   
 //-------------------------------------------------------------------
 // ShortRealFirst10Exp : Returns the minimum value of exponent(base 10) of

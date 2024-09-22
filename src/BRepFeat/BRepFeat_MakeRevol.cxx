@@ -834,8 +834,8 @@ Standard_Boolean ToFuse(const TopoDS_Face& F1,
   Handle(Geom_Surface) S1,S2;
   TopLoc_Location loc1, loc2;
   Handle(Standard_Type) typS1,typS2;
-  const Standard_Real tollin = Precision::Confusion();
-  const Standard_Real tolang = Precision::Angular();
+  constexpr Standard_Real tollin = Precision::Confusion();
+  constexpr Standard_Real tolang = Precision::Angular();
 
   S1 = BRep_Tool::Surface(F1,loc1);
   S2 = BRep_Tool::Surface(F2,loc2);

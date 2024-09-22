@@ -41,6 +41,7 @@
 #include <math_Matrix.hxx>
 #include <math_Gauss.hxx>
 
+#include <array>
 
 GeomConvert_CurveToAnaCurve::GeomConvert_CurveToAnaCurve():
   myGap(Precision::Infinite()),
@@ -481,7 +482,7 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeEllipse(const Handle(Geom
   }
 
   Handle(Geom_Curve) res;
-  Standard_Real prec = Precision::PConfusion();
+  constexpr Standard_Real prec = Precision::PConfusion();
   
   Standard_Real AF,BF,CF,DF,EF,Q1,Q2,Q3,c2n;
   Standard_Integer i;
@@ -650,15 +651,15 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCurve(const Handle(Geom_C
   const GeomConvert_ConvType theConvType, const GeomAbs_CurveType theTarget)
 {
   cf = c1;  cl = c2;
-  Handle(Geom_Curve) c3d, newc3d[3];
-  Standard_Integer i, imin = -1;
-  c3d = theC3d;
-  if (c3d.IsNull()) return newc3d[imin];
+  std::array<Handle(Geom_Curve), 3> newc3d = {};
+  Handle(Geom_Curve) c3d = theC3d;
+  if (c3d.IsNull()) return c3d;
   gp_Pnt P1 = c3d->Value(c1);
   gp_Pnt P2 = c3d->Value(c2);
   gp_Pnt P3 = c3d->Value(c1 + (c2 - c1) / 2);
-  Standard_Real d[3] = { RealLast(), RealLast(), RealLast() };
-  Standard_Real fp[3], lp[3];
+  std::array<Standard_Real, 3> d = { RealLast(), RealLast(), RealLast() };
+  std::array<Standard_Real, 3> fp = {};
+  std::array<Standard_Real, 3> lp = {};
 
   if (c3d->IsKind(STANDARD_TYPE(Geom_TrimmedCurve))) {
     Handle(Geom_TrimmedCurve) aTc = Handle(Geom_TrimmedCurve)::DownCast(c3d);
@@ -723,7 +724,7 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCurve(const Handle(Geom_C
 
   //  theConvType == GeomConvert_MinGap
   // recognition in case of small curve
-  imin = -1;
+  Standard_Integer imin = -1;
   if((P1.Distance(P2) < 2*tolerance) && (P1.Distance(P3) < 2*tolerance)) {
     newc3d[1] = ComputeCircle(c3d, tolerance, c1, c2, fp[1], lp[1], d[1]);  
     newc3d[0] = ComputeLine(c3d, tolerance, c1, c2, fp[0], lp[0], d[0]);
@@ -746,7 +747,7 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCurve(const Handle(Geom_C
       newc3d[2] = ComputeEllipse(c3d, tol, c1, c2, fp[2], lp[2], d[2]);
     }
     Standard_Real dd = RealLast();
-    for (i = 0; i < 3; ++i)
+    for (Standard_Integer i = 0; i < 3; ++i)
     {
       if (newc3d[i].IsNull()) continue;
       if (d[i] < dd)

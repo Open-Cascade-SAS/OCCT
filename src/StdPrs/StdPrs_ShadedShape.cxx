@@ -147,7 +147,7 @@ namespace
     Standard_Integer aNbVertices  = 0;
 
     // Precision for compare square distances
-    const Standard_Real aPreci = Precision::SquareConfusion();
+    constexpr Standard_Real aPreci = Precision::SquareConfusion();
 
     TopExp_Explorer aFaceIt(theShape, TopAbs_FACE);
     for (; aFaceIt.More(); aFaceIt.Next())

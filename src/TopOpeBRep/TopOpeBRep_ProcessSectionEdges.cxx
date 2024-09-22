@@ -312,7 +312,7 @@ void TopOpeBRep_FacesFiller::ProcessSectionEdges()
   
   // ajout des aretes de section dans la DS de shape,connaissant leur rank
   for (itLES.Initialize(LES),itLOI.Initialize(LOI);
-       itLES.More(),itLOI.More();
+       itLES.More() && itLOI.More();
        itLES.Next(),itLOI.Next()) {
     const TopoDS_Shape& E1 = itLES.Value();
     Standard_Integer rE1 = itLOI.Value();

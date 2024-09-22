@@ -67,7 +67,7 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
     return;
   }
 //  Modified by Sergey KHROMOV - Wed Jan 22 12:06:45 2003 Begin
-  Standard_Real aFTol = RealEpsilon();
+  constexpr Standard_Real aFTol = RealEpsilon();
 
 //   if(fl * fh >= 0.0) {
   if(fl * fh > aFTol*aFTol) {

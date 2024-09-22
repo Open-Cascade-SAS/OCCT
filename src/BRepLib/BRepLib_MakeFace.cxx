@@ -559,7 +559,7 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
      
   // adjust periodical surface or reordonate
   // check if the values are in the natural range
-  Standard_Real epsilon = Precision::PConfusion();
+  constexpr Standard_Real epsilon = Precision::PConfusion();
   
   BS->Bounds(umin,umax,vmin,vmax);
 

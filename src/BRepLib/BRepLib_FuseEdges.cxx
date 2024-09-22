@@ -778,8 +778,8 @@ Standard_Boolean BRepLib_FuseEdges::SameSupport(const TopoDS_Edge& E1,
   }
 
   // On a presomption de confusion
-  const Standard_Real tollin = Precision::Confusion();
-  const Standard_Real tolang = Precision::Angular();
+  constexpr Standard_Real tollin = Precision::Confusion();
+  constexpr Standard_Real tolang = Precision::Angular();
   if (typC1 == STANDARD_TYPE(Geom_Line)) {
     gp_Lin li1( Handle(Geom_Line)::DownCast (C1)->Lin());
     gp_Lin li2( Handle(Geom_Line)::DownCast (C2)->Lin());

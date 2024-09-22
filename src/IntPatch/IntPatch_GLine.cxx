@@ -347,7 +347,7 @@ void IntPatch_GLine::AddVertex (const IntPatch_Point& Pnt)
         while(par<pf) par+=M_PI+M_PI;
         while(par>pl) par-=M_PI+M_PI;
         if(par<pf) { 
-          const Standard_Real PrecisionPConfusion ( Precision::PConfusion()*1000.0 );
+          constexpr Standard_Real PrecisionPConfusion ( Precision::PConfusion()*1000.0 );
           if((pf-par)>PrecisionPConfusion) {
             return;
           }
@@ -396,7 +396,7 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
   
   Standard_Integer nbvtx = NbVertex();
 
-  const Standard_Real PrecisionPConfusion ( Precision::PConfusion()*1000.0 );
+  constexpr Standard_Real PrecisionPConfusion ( Precision::PConfusion()*1000.0 );
 
   do { 
     APointDeleted = Standard_False;

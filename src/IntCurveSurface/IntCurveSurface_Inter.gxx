@@ -956,7 +956,7 @@ void IntCurveSurface_Inter::PerformConicSurf(const gp_Lin&   Line,
     }
   case GeomAbs_Cone:
     {
-      const Standard_Real correction = 1.E+5*Precision::Angular();
+      constexpr Standard_Real correction = 1.E+5*Precision::Angular();
       gp_Cone cn = TheSurfaceTool::Cone(surface);
       if(Abs(cn.SemiAngle()) < M_PI/2.0 - correction) {
         IntAna_IntConicQuad LinCone(Line, cn);
@@ -1790,7 +1790,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
   Handle(Adaptor3d_Curve) aBasisCurve = TheSurfaceTool::BasisCurve(surface);
   gp_Ax1 aRevAx = TheSurfaceTool::AxeOfRevolution(surface);
   gp_Vec aXVec = aRevAx.Direction();
-  Standard_Real aTolAng = Precision::Angular();
+  constexpr Standard_Real aTolAng = Precision::Angular();
 
   // make plane to project a basis curve
   gp_Pnt O = aRevAx.Location();

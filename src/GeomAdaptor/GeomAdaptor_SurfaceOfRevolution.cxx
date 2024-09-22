@@ -307,7 +307,7 @@ void GeomAdaptor_SurfaceOfRevolution::VIntervals(TColStd_Array1OfReal& T,
 
 Handle(Adaptor3d_Surface) GeomAdaptor_SurfaceOfRevolution::UTrim (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol) const
 {
-  const Standard_Real Eps = Precision::PConfusion();
+  constexpr Standard_Real Eps = Precision::PConfusion();
   (void )Eps; (void )First; (void )Last; (void )Tol;
   Standard_OutOfRange_Raise_if
     (  Abs(First) > Eps || Abs(Last - 2.*M_PI) > Eps,
@@ -425,9 +425,9 @@ Standard_Real GeomAdaptor_SurfaceOfRevolution::VResolution
 
 GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const 
 {
-  Standard_Real TolConf = Precision::Confusion();
-  Standard_Real TolAng  = Precision::Angular();
-  Standard_Real TolConeSemiAng = Precision::Confusion();
+  constexpr Standard_Real TolConf = Precision::Confusion();
+  constexpr Standard_Real TolAng  = Precision::Angular();
+  constexpr Standard_Real TolConeSemiAng = Precision::Confusion();
 
   switch (myBasisCurve->GetType()) {
   case GeomAbs_Line:    {

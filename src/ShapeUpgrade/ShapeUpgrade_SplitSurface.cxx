@@ -102,7 +102,7 @@ void ShapeUpgrade_SplitSurface::Init(const Handle(Geom_Surface)& S,
 
   Standard_Real U1,U2,V1,V2;
   mySurface->Bounds(U1,U2,V1,V2);
-  Standard_Real precision = Precision::PConfusion();
+  constexpr Standard_Real precision = Precision::PConfusion();
   if ( mySurface->IsUPeriodic() && 
        ULast - UFirst <= U2 - U1 + precision ) { U1 = UFirst; U2 = U1 + mySurface->UPeriod(); }
   if ( mySurface->IsVPeriodic() && 
@@ -168,7 +168,7 @@ void ShapeUpgrade_SplitSurface::Init(const Handle(Geom_Surface)& S,
 void ShapeUpgrade_SplitSurface::SetUSplitValues(const Handle(TColStd_HSequenceOfReal)& UValues)
 {
   if(UValues.IsNull()) return;
-  Standard_Real precision = Precision::PConfusion();
+  constexpr Standard_Real precision = Precision::PConfusion();
   Standard_Real UFirst = myUSplitValues->Value(1),
   ULast = myUSplitValues->Value(myUSplitValues->Length()); 
   Standard_Integer i =1;
@@ -193,7 +193,7 @@ void ShapeUpgrade_SplitSurface::SetUSplitValues(const Handle(TColStd_HSequenceOf
 void ShapeUpgrade_SplitSurface::SetVSplitValues(const Handle(TColStd_HSequenceOfReal)& VValues) 
 {
   if(VValues.IsNull()) return;
-  Standard_Real precision = Precision::PConfusion();
+  constexpr Standard_Real precision = Precision::PConfusion();
   Standard_Real VFirst = myVSplitValues->Value(1), 
   VLast = myVSplitValues->Value(myVSplitValues->Length()); 
   Standard_Integer i =1;

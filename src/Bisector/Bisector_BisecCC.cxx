@@ -121,7 +121,7 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
   Standard_Real    U,UC1,UC2,Dist,dU,USol;  
   gp_Pnt2d         P;
   Standard_Integer NbPnts    = 21;
-  Standard_Real    EpsMin    = 10*Precision::Confusion();
+  constexpr  Standard_Real EpsMin = 10*Precision::Confusion();
   Standard_Boolean YaPoly    = Standard_True;
   Standard_Boolean OriInPoly = Standard_False;
   //---------------------------------------------
@@ -1626,8 +1626,8 @@ Standard_Real Bisector_BisecCC::SearchBound (const Standard_Real U1,
   Standard_Real UMid,Dist1,Dist2,DistMid,U11,U22;
   Standard_Real UC1,UC2;
   gp_Pnt2d PBis,PBisPrec;
-  Standard_Real TolPnt   = Precision::Confusion();
-  Standard_Real TolPar   = Precision::PConfusion();
+  constexpr Standard_Real TolPnt = Precision::Confusion();
+  constexpr Standard_Real TolPar = Precision::PConfusion();
   U11 = U1; U22 = U2;
   PBisPrec = ValueByInt(U11,UC1,UC2,Dist1);
   PBis     = ValueByInt(U22,UC1,UC2,Dist2);

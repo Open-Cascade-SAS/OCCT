@@ -988,8 +988,8 @@ Standard_Integer ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
   Standard_Real VF = vf - dv, VL = vl + dv;
 
   //Standard_Integer fail = 0;
-  Standard_Real Tol = Precision::Confusion();
-  Standard_Real Tol2 = Tol * Tol;//, rs2p=1e10;
+  constexpr Standard_Real Tol = Precision::Confusion();
+  constexpr Standard_Real Tol2 = Tol * Tol;//, rs2p=1e10;
   Standard_Real U = p2dPrev.X(), V = p2dPrev.Y();
   gp_Vec rsfirst = P3D.XYZ() - Value(U, V).XYZ(); //pdn
   for (Standard_Integer i = 0; i < 25; i++) {
@@ -1225,7 +1225,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
             du = Min(myUDelt, SurfAdapt.UResolution(preci));
             dv = Min(myVDelt, SurfAdapt.VResolution(preci));
           }
-          Standard_Real Tol = Precision::PConfusion();
+          constexpr Standard_Real Tol = Precision::PConfusion();
           myExtPS.SetFlag(Extrema_ExtFlag_MIN);
           myExtPS.Initialize(SurfAdapt, uf - du, ul + du, vf - dv, vl + dv, Tol, Tol);
           myExtOK = Standard_True;
@@ -1273,7 +1273,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
             }
             if (disSurf < 10 * preci)
               if (mySurf->Continuity() != GeomAbs_C0) {
-                Standard_Real Tol = Precision::Confusion();
+                constexpr Standard_Real Tol = Precision::Confusion();
                 gp_Vec D1U, D1V;
                 gp_Pnt pnt;
                 SurfAdapt.D1(UU, VV, pnt, D1U, D1V);

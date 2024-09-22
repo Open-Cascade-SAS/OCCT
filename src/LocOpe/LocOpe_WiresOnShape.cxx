@@ -810,7 +810,7 @@ void PutPCurve(const TopoDS_Edge& Edg,
   if (!V2.IsNull())
     TolLast = BRep_Tool::Tolerance(V2);
   
-  Standard_Real tol2d = Precision::Confusion();
+  constexpr Standard_Real tol2d = Precision::Confusion();
   Handle(Geom2d_Curve) C2d;
   ShapeConstruct_ProjectCurveOnSurface aToolProj;
   aToolProj.Init(S, tol2d);
@@ -855,7 +855,7 @@ void PutPCurve(const TopoDS_Edge& Edg,
 
   if (S->IsUPeriodic()) {
     Standard_Real up   = S->UPeriod();
-    Standard_Real tolu = Precision::PConfusion();// Epsilon(up);
+    constexpr Standard_Real tolu = Precision::PConfusion();// Epsilon(up);
     Standard_Integer nbtra = 0;
     Standard_Real theUmin = Min(pf.X(),pl.X());
     Standard_Real theUmax = Max(pf.X(),pl.X());
@@ -880,7 +880,7 @@ void PutPCurve(const TopoDS_Edge& Edg,
 
   if (S->IsVPeriodic()) {
     Standard_Real vp   = S->VPeriod();
-    Standard_Real tolv = Precision::PConfusion();// Epsilon(vp);
+    constexpr Standard_Real tolv = Precision::PConfusion();// Epsilon(vp);
     Standard_Integer nbtra = 0;
     Standard_Real theVmin = Min(pf.Y(),pl.Y());
     Standard_Real theVmax = Max(pf.Y(),pl.Y());
@@ -998,7 +998,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
       
       if (S->IsUPeriodic()) {
 	Standard_Real up   = S->UPeriod();
-	Standard_Real tolu = Precision::PConfusion();// Epsilon(up);
+	constexpr Standard_Real tolu = Precision::PConfusion();// Epsilon(up);
 	Standard_Integer nbtra = 0;
 	Standard_Real theUmin = Min(pf.X(),pl.X());
 	Standard_Real theUmax = Max(pf.X(),pl.X());
@@ -1036,7 +1036,7 @@ void PutPCurves(const TopoDS_Edge& Efrom,
       
       if (S->IsVPeriodic()) {
 	Standard_Real vp   = S->VPeriod();
-	Standard_Real tolv = Precision::PConfusion();// Epsilon(vp);
+	constexpr Standard_Real tolv = Precision::PConfusion();// Epsilon(vp);
 	Standard_Integer nbtra = 0;
 	Standard_Real theVmin = Min(pf.Y(),pl.Y());
 	Standard_Real theVmax = Max(pf.Y(),pl.Y());
@@ -1276,7 +1276,7 @@ void FindInternalIntersections(const TopoDS_Edge& theEdge,
                                TopTools_IndexedDataMapOfShapeListOfShape& Splits,
                                Standard_Boolean& isOverlapped)
 {
-  Standard_Real TolExt = Precision::PConfusion();
+  constexpr Standard_Real TolExt = Precision::PConfusion();
   Standard_Integer i, j;
 
   BRepAdaptor_Surface anAdSurf(theFace, Standard_False);

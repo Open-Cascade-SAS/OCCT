@@ -124,7 +124,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
 {
   Standard_Integer i,nbvtx;
   Standard_Real firstp,lastp;
-  const Standard_Real Tol = Precision::PConfusion() * 35.0;
+  constexpr Standard_Real Tol = Precision::PConfusion() * 35.0;
   
   const IntPatch_IType typl = L->ArcType();
   if(typl == IntPatch_Analytic)  {
@@ -862,7 +862,7 @@ void RejectDuplicates(NCollection_Array1<GeomInt_Vertex>& theVtxArr)
   // About the value aTolPC=1000.*Precision::PConfusion(),
   // see IntPatch_GLine::ComputeVertexParameters(...)
   // for more details;
-  const Standard_Real aTolPC = 1000.*Precision::PConfusion();
+  constexpr Standard_Real aTolPC = 1000.*Precision::PConfusion();
 
   //Find duplicates in a slice of the array [LowerBound, UpperBound-1].
   //If a duplicate has been found, the element with greater index will be rejected.

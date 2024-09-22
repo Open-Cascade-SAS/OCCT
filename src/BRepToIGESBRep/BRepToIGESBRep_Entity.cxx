@@ -234,7 +234,7 @@ Standard_Integer BRepToIGESBRep_Entity::AddEdge(const TopoDS_Edge& myedge,
   Standard_Integer index = myEdges.FindIndex(E);
   if (index == 0) {
     index = myEdges.Add(E);
-    myCurves.Add(C);
+    myCurves.Append(C);
   }
   
   return index;

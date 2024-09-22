@@ -195,7 +195,7 @@ TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec,
   TopoDS_Vertex V1, V2, V1new, V2new;
   TopExp::Vertices(anEdge, V1, V2);
 
-  Standard_Real Tol = Precision::PConfusion();
+  constexpr Standard_Real Tol = Precision::PConfusion();
   if (Abs(fpar - U1) <= Tol)
     V1new = V1;
   else

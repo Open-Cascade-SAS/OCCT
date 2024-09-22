@@ -458,8 +458,8 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP,
 {
   const Standard_Real aPIpPI = M_PI + M_PI,
     anEpsAng = 1.e-8,
-    InternalPrecision = 1.e-8, //precision of internal algorithm of values computation
-    aSqTolPrecision = Precision::SquareConfusion(); //for boundary points to check their coincidence with others
+    InternalPrecision = 1.e-8; //precision of internal algorithm of values computation
+  constexpr Standard_Real aSqTolPrecision = Precision::SquareConfusion(); //for boundary points to check their coincidence with others
   
   Standard_Real aTheta = 0.0;
   //

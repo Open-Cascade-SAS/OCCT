@@ -2143,7 +2143,7 @@ DistanceMinimizeByGradient( const Handle(Adaptor3d_Surface)& theASurf1,
 {
   const Standard_Integer aNbIterMAX = 60;
   const Standard_Real aTol = 1.0e-14;
-  const Standard_Real aTolNul = 1.0 / Precision::Infinite();
+  constexpr Standard_Real aTolNul = 1.0 / Precision::Infinite();
 
   // I.e. if theU1 = 0.0 then Epsilon(theU1) = DBL_MIN (~1.0e-308).
   // Work with this number is impossible: there is a dangerous to 
@@ -2676,7 +2676,7 @@ Standard_Boolean IntWalk_PWalking::
 PutToBoundary(const Handle(Adaptor3d_Surface)& theASurf1,
               const Handle(Adaptor3d_Surface)& theASurf2)
 {
-  const Standard_Real aTolMin = Precision::Confusion();
+  constexpr Standard_Real aTolMin = Precision::Confusion();
 
   Standard_Boolean hasBeenAdded = Standard_False;
 

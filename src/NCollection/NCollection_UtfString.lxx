@@ -95,7 +95,7 @@ NCollection_UtfString<Type>::NCollection_UtfString (const NCollection_UtfString&
 // purpose  :
 // =======================================================================
 template<typename Type> inline
-NCollection_UtfString<Type>::NCollection_UtfString (NCollection_UtfString&& theOther)
+NCollection_UtfString<Type>::NCollection_UtfString (NCollection_UtfString&& theOther) noexcept
 : myString(theOther.myString),
   mySize  (theOther.mySize),
   myLength(theOther.myLength)
