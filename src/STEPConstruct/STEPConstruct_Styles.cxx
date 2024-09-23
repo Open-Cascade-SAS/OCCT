@@ -71,6 +71,176 @@
 #include <StepVisual_ContextDependentOverRidingStyledItem.hxx>
 #include <StepShape_ShapeRepresentation.hxx>
 
+namespace
+{
+  //=======================================================================
+  //function : ProcessAsSurfaceStyleRendering
+  //purpose  : Process StepVisual_SurfaceStyleElementSelect to extract a
+  //           render color and render trnasparency from it. Returns true,
+  //           if theSSES was of type StepVisual_SurfaceStyleRendering
+  //           (even if color and transparency data couldn't be extracted
+  //           for some reason), otherwise returns false.
+  //=======================================================================
+  Standard_Boolean ProcessAsSurfaceStyleRendering(
+    const StepVisual_SurfaceStyleElementSelect& theSSES,
+    Handle(StepVisual_Colour)&                  theRenderColour,
+    Standard_Real&                              theRenderTransparency)
+  {
+    const Handle(StepVisual_SurfaceStyleRendering) aSSR = theSSES.SurfaceStyleRendering();
+    if (aSSR.IsNull())
+    {
+      return Standard_False;
+    }
+    theRenderColour       = aSSR->SurfaceColour();
+    theRenderTransparency = 0.0;
+    const Handle(StepVisual_SurfaceStyleRenderingWithProperties) aSSRWP =
+      Handle(StepVisual_SurfaceStyleRenderingWithProperties)::DownCast(aSSR);
+    if (aSSRWP.IsNull())
+    {
+      return Standard_True;
+    }
+    const Handle(StepVisual_HArray1OfRenderingPropertiesSelect) aHARP = aSSRWP->Properties();
+    if (aHARP.IsNull())
+    {
+      return Standard_True;
+    }
+
+    for (Standard_Integer aPropIndex = 1; aPropIndex <= aHARP->Length(); ++aPropIndex)
+    {
+      const Handle(StepVisual_SurfaceStyleTransparent) aSST =
+        aHARP->Value(aPropIndex).SurfaceStyleTransparent();
+      if (!aSST.IsNull())
+      {
+        theRenderTransparency = aSST->Transparency();
+      }
+    }
+    return Standard_True;
+  }
+
+  //=======================================================================
+  //function : ProcessAsSurfaceStyleBoundary
+  //purpose  : Process StepVisual_SurfaceStyleElementSelect to extract a
+  //           boundary color from it. Returns true,
+  //           if theSSES was of type StepVisual_SurfaceStyleBoundary
+  //           (even if boundary color data couldn't be extracted
+  //           for some reason), otherwise returns false.
+  //=======================================================================
+  Standard_Boolean ProcessAsSurfaceStyleBoundary(
+    const StepVisual_SurfaceStyleElementSelect& theSSES,
+    Handle(StepVisual_Colour)&                  theBoundaryColour)
+  {
+    const Handle(StepVisual_SurfaceStyleBoundary) aSSB = theSSES.SurfaceStyleBoundary();
+    if (aSSB.IsNull())
+    {
+      return Standard_False;
+    }
+    const Handle(StepVisual_CurveStyle) aCS = aSSB->StyleOfBoundary();
+    if (aCS.IsNull())
+    {
+      return Standard_True;
+    }
+    theBoundaryColour = aCS->CurveColour();
+    return Standard_True;
+  }
+
+  //=======================================================================
+  //function : ProcessAsSurfaceStyleFillArea
+  //purpose  : Process StepVisual_SurfaceStyleElementSelect to extract a
+  //           surface color from it. Doesn't return color for negative
+  //           side. Returns true, if theSSES was of type
+  //           StepVisual_SurfaceStyleFillArea (even if surface color data
+  //           couldn't be extracted or some reason), otherwise returns
+  //           false.
+  //=======================================================================
+  Standard_Boolean ProcessAsSurfaceStyleFillArea(
+    const StepVisual_SurfaceStyleElementSelect& theSSES,
+    const StepVisual_SurfaceSide                theSide,
+    Handle(StepVisual_Colour)&                  theSurfaceColour)
+  {
+    const Handle(StepVisual_SurfaceStyleFillArea) aSSFA = theSSES.SurfaceStyleFillArea();
+    if (aSSFA.IsNull())
+    {
+      return Standard_False;
+    }
+    const Handle(StepVisual_FillAreaStyle) aFAS = aSSFA->FillArea();
+    if (aFAS.IsNull())
+    {
+      return Standard_True;
+    }
+
+    for (Standard_Integer aFSSIndex = 1; aFSSIndex <= aFAS->NbFillStyles(); aFSSIndex++)
+    {
+      const StepVisual_FillStyleSelect             aFSS  = aFAS->FillStylesValue(aFSSIndex);
+      const Handle(StepVisual_FillAreaStyleColour) aFASC = aFSS.FillAreaStyleColour();
+      if (!aFASC.IsNull()
+          // If current surface color is null, we will use negative side color.
+          // Otherwise negative side color is ignored.
+          && (theSurfaceColour.IsNull()
+              || theSide != StepVisual_ssNegative)) //abv 30 Mar 00: trj3_s1-pe.stp
+      {
+        theSurfaceColour = aFASC->FillColour();
+      }
+    }
+    return Standard_True;
+  }
+
+  //=======================================================================
+  //function : ProcessAsSurfaceStyleUsage
+  //purpose  : Process StepVisual_PresentationStyleSelect to extract
+  //           following data from it: surface color, boundary color,
+  //           render color, render transparency. Returns true,
+  //           if thePSS was of type StepVisual_SurfaceStyleUsage
+  //           (even if no data at all could be extracted for some reason),
+  //           otherwise returns false.
+  //=======================================================================
+  Standard_Boolean ProcessAsSurfaceStyleUsage(const StepVisual_PresentationStyleSelect& thePSS,
+                                              Handle(StepVisual_Colour)& theSurfaceColour,
+                                              Handle(StepVisual_Colour)& theBoundaryColour,
+                                              Handle(StepVisual_Colour)& theRenderColour,
+                                              Standard_Real&             theRenderTransparency)
+  {
+    const Handle(StepVisual_SurfaceStyleUsage) aSSU = thePSS.SurfaceStyleUsage();
+    if (aSSU.IsNull())
+    {
+      return Standard_False;
+    }
+
+    const Handle(StepVisual_SurfaceSideStyle) aSSS = aSSU->Style();
+    for (Standard_Integer aSSESIndex = 1; aSSESIndex <= aSSS->NbStyles(); ++aSSESIndex)
+    {
+      const StepVisual_SurfaceStyleElementSelect aSSES = aSSS->StylesValue(aSSESIndex);
+      // SurfaceStyleElementSelect can be of only one of the following types:
+      // SurfaceStyleFillArea, SurfaceStyleBoundary, SurfaceStyleRendering.
+      // So we're using && operator to stop as soon as this type is processed.
+      ProcessAsSurfaceStyleFillArea(aSSES, aSSU->Side(), theSurfaceColour)
+        || ProcessAsSurfaceStyleBoundary(aSSES, theBoundaryColour)
+        || ProcessAsSurfaceStyleRendering(aSSES, theRenderColour, theRenderTransparency);
+    }
+    return Standard_True;
+  }
+
+  //=======================================================================
+  //function : ProcessAsCurveStyle
+  //purpose  : Process StepVisual_PresentationStyleSelect to extract a
+  //           curve color from it. Returns true,
+  //           if thePSS was of type StepVisual_SurfaceStyleRendering
+  //           (even if curve color data couldn't be extracted
+  //           for some reason), otherwise returns false.
+  //=======================================================================
+  Standard_Boolean ProcessAsCurveStyle(const StepVisual_PresentationStyleSelect& thePSS,
+                                       Handle(StepVisual_Colour)&                theCurveColour)
+  {
+    const Handle(StepVisual_CurveStyle) aCS = thePSS.CurveStyle();
+    if (aCS.IsNull())
+    {
+      return Standard_False;
+    }
+
+    theCurveColour = aCS->CurveColour();
+    return Standard_True;
+  }
+}
+
 //=======================================================================
 //function : STEPConstruct_Styles
 //purpose  : 
@@ -590,95 +760,51 @@ Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::GetColorPSA
   }
   return PSA;
 }
-  
 
 //=======================================================================
 //function : GetColors
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean STEPConstruct_Styles::GetColors (const Handle(StepVisual_StyledItem) &style,
-						  Handle(StepVisual_Colour) &SurfCol,
-						  Handle(StepVisual_Colour) &BoundCol,
-						  Handle(StepVisual_Colour) &CurveCol,
-                                                  Handle(StepVisual_Colour) &RenderCol,
-                                                  Standard_Real& RenderTransp,
-                                                  Standard_Boolean& IsComponent) const
+Standard_Boolean STEPConstruct_Styles::GetColors(const Handle(StepVisual_StyledItem)& theStyle,
+                                                 Handle(StepVisual_Colour)& theSurfaceColour,
+                                                 Handle(StepVisual_Colour)& theBoundaryColour,
+                                                 Handle(StepVisual_Colour)& theCurveColour,
+                                                 Handle(StepVisual_Colour)& theRenderColour,
+                                                 Standard_Real&             theRenderTransparency,
+                                                 Standard_Boolean&          theIsComponent) const
 {
-  SurfCol.Nullify();
-  BoundCol.Nullify();
-  CurveCol.Nullify();
-  RenderCol.Nullify();
-    
+  theSurfaceColour.Nullify();
+  theBoundaryColour.Nullify();
+  theCurveColour.Nullify();
+  theRenderColour.Nullify();
+
   // parse on styles
-  for(Standard_Integer j=1; j<=style->NbStyles(); j++ ) {
-    Handle(StepVisual_PresentationStyleAssignment) PSA = style->StylesValue ( j );
-    if(PSA.IsNull() || PSA->Styles().IsNull()) continue;
-    IsComponent = Standard_True;
-    
-    for(Standard_Integer k=1; k<=PSA->NbStyles(); k++ ) {
-      StepVisual_PresentationStyleSelect PSS = PSA->StylesValue(k);
+  for (Standard_Integer aPSAIndex = 1; aPSAIndex <= theStyle->NbStyles(); ++aPSAIndex)
+  {
+    const Handle(StepVisual_PresentationStyleAssignment) aPSA = theStyle->StylesValue(aPSAIndex);
+    if (aPSA.IsNull() || aPSA->Styles().IsNull())
+    {
+      continue;
+    }
+    theIsComponent = Standard_True;
 
-      // try surface_style_usage
-      Handle(StepVisual_SurfaceStyleUsage) SSU = PSS.SurfaceStyleUsage();
-      if( !SSU.IsNull() ) {
-	Handle(StepVisual_SurfaceSideStyle) SSS = SSU->Style();
-	for(Standard_Integer l=1; l<=SSS->NbStyles(); l++ ) {
-	  StepVisual_SurfaceStyleElementSelect SSES = SSS->StylesValue(l);
-	  // try fill color
-	  Handle(StepVisual_SurfaceStyleFillArea) SSFA = SSES.SurfaceStyleFillArea();
-	  if ( !SSFA.IsNull() ) {
-	    Handle(StepVisual_FillAreaStyle) FAS = SSFA->FillArea();
-      if (FAS.IsNull())
-        continue;
-	    for ( Standard_Integer m=1; m <= FAS->NbFillStyles(); m++ ) {
-	      StepVisual_FillStyleSelect FSS = FAS->FillStylesValue ( m );
-	      Handle(StepVisual_FillAreaStyleColour) FASC = FSS.FillAreaStyleColour();
-	      if ( SurfCol.IsNull() || SSU->Side() != StepVisual_ssNegative ) //abv 30 Mar 00: trj3_s1-pe.stp
-		SurfCol = FASC->FillColour();
-	    }
-	    continue;
-	  }
-	  // try boundary color
-	  Handle(StepVisual_SurfaceStyleBoundary) SSB = SSES.SurfaceStyleBoundary();
-	  if(!SSB.IsNull()) {
-	    Handle(StepVisual_CurveStyle) CS = SSB->StyleOfBoundary();
-	    if ( ! CS.IsNull() ) BoundCol = CS->CurveColour();
-	    continue;
-	  }
-      // try rendering color and transparency
-      Handle(StepVisual_SurfaceStyleRendering) SSR = SSES.SurfaceStyleRendering();
-      if (!SSR.IsNull()) {
-          RenderCol = SSR->SurfaceColour();
-          RenderTransp = 0.0;
-          Handle(StepVisual_SurfaceStyleRenderingWithProperties) SSRWP =
-              Handle(StepVisual_SurfaceStyleRenderingWithProperties)::DownCast(SSR);
-          if (!SSRWP.IsNull()) {
-              Handle(StepVisual_HArray1OfRenderingPropertiesSelect) HARP = SSRWP->Properties();
-              if (!HARP.IsNull())
-              {
-                  for (Standard_Integer aPropIndex = 1; aPropIndex <= HARP->Length(); ++aPropIndex) {
-                      Handle(StepVisual_SurfaceStyleTransparent) SST = HARP->Value(aPropIndex).SurfaceStyleTransparent();
-                      if (!SST.IsNull()) {
-                          RenderTransp = SST->Transparency();
-                      }
-                  }
-               }
-          }
-      }
-
-	}
-	continue;
-      }
-      
-      // try curve_style
-      Handle(StepVisual_CurveStyle) CS = PSS.CurveStyle();
-      if ( ! CS.IsNull() ) CurveCol = CS->CurveColour();
+    for (Standard_Integer aPSSIndex = 1; aPSSIndex <= aPSA->NbStyles(); ++aPSSIndex)
+    {
+      const StepVisual_PresentationStyleSelect aPSS = aPSA->StylesValue(aPSSIndex);
+      // PresentationStyleSelect can be of only one of the following types:
+      // SurfaceStyleUsage, CurveStyle.
+      // So we're using && operator to stop as soon as this type is processed.
+      ProcessAsSurfaceStyleUsage(aPSS,
+                                 theSurfaceColour,
+                                 theBoundaryColour,
+                                 theRenderColour,
+                                 theRenderTransparency)
+        || ProcessAsCurveStyle(aPSS, theCurveColour);
     }
   }
-  return ! SurfCol.IsNull() || ! BoundCol.IsNull() || ! CurveCol.IsNull() || ! RenderCol.IsNull();
+  return !theSurfaceColour.IsNull() || !theBoundaryColour.IsNull() || !theCurveColour.IsNull()
+      || !theRenderColour.IsNull();
 }
-
 
 //=======================================================================
 //function : EncodeColor

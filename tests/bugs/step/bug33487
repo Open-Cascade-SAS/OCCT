@@ -1,0 +1,37 @@
+puts "# ====================================================================="
+puts "# 0033487: Data Exchange, Step Import - Unresolved reference crashes"
+puts "# ====================================================================="
+
+# This test checks if crash happens when reading step file with missing
+# FILL_AREA_STYLE_COLOUR entities.
+
+# Read original file as plain text.
+set aSourceFilePath [locate_data_file trj6_as1-hc-214.stp]
+set aSourceFileChannel [open $aSourceFilePath r]
+set aSourceTextData [read $aSourceFileChannel]
+close $aSourceFileChannel
+
+# Create a 'broken' text data for step file by removing all FILL_AREA_STYLE_COLOUR entities.
+set aBrokenStepTextData ""
+set aToRemove "FILL_AREA_STYLE_COLOUR"
+set aSourceFileLines [split $aSourceTextData ";"]
+foreach aCurrentLine $aSourceFileLines {
+  if {[string first $aToRemove $aCurrentLine] == -1} {
+    # Add all strings from source file, except for strings that contain FILL_AREA_STYLE_COLOUR,
+    # to the new file.
+    append aBrokenStepTextData $aCurrentLine ";"
+  }
+}
+
+# Write 'broken' plain text data into temporary step file.
+set aTmpFilePath "$imagedir/${casename}.stp"
+set aTmpFileChannel [open $aTmpFilePath w]
+puts $aTmpFileChannel $aBrokenStepTextData
+close $aTmpFileChannel
+
+# Read temporary file and delete it.
+# If something is wrong with step reader, crash will occur while executing ReadFile command.
+# If step reader works correctly, we expect just 'Unresolved Reference' message.
+puts {REQUIRED All: ERR StepReaderData : Unresolved Reference : Fails Count : 39}
+ReadFile aDoc $aTmpFilePath
+file delete $aTmpFilePath
