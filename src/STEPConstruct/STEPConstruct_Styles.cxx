@@ -213,8 +213,8 @@ namespace
       // SurfaceStyleFillArea, SurfaceStyleBoundary, SurfaceStyleRendering.
       // So we're using && operator to stop as soon as this type is processed.
       ProcessAsSurfaceStyleFillArea(aSSES, aSSU->Side(), theSurfaceColour)
-        && ProcessAsSurfaceStyleBoundary(aSSES, theBoundaryColour)
-        && ProcessAsSurfaceStyleRendering(aSSES, theRenderColour, theRenderTransparency);
+        || ProcessAsSurfaceStyleBoundary(aSSES, theBoundaryColour)
+        || ProcessAsSurfaceStyleRendering(aSSES, theRenderColour, theRenderTransparency);
     }
     return Standard_True;
   }
@@ -799,7 +799,7 @@ Standard_Boolean STEPConstruct_Styles::GetColors(const Handle(StepVisual_StyledI
                                  theBoundaryColour,
                                  theRenderColour,
                                  theRenderTransparency)
-        && ProcessAsCurveStyle(aPSS, theCurveColour);
+        || ProcessAsCurveStyle(aPSS, theCurveColour);
     }
   }
   return !theSurfaceColour.IsNull() || !theBoundaryColour.IsNull() || !theCurveColour.IsNull()
