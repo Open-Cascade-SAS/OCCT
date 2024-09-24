@@ -162,10 +162,6 @@ namespace
     {
       return Standard_False;
     }
-    if (theSide == StepVisual_ssNegative)
-    {
-      return Standard_True;
-    }
     const Handle(StepVisual_FillAreaStyle) aFAS = aSSFA->FillArea();
     if (aFAS.IsNull())
     {
@@ -176,7 +172,11 @@ namespace
     {
       const StepVisual_FillStyleSelect             aFSS  = aFAS->FillStylesValue(aFSSIndex);
       const Handle(StepVisual_FillAreaStyleColour) aFASC = aFSS.FillAreaStyleColour();
-      if (!aFASC.IsNull() && theSurfaceColour.IsNull()) //abv 30 Mar 00: trj3_s1-pe.stp
+      if (!aFASC.IsNull()
+          // If current surface color is null, we will use negative side color.
+          // Otherwise negative side color is ignored.
+          && (theSurfaceColour.IsNull()
+              || theSide != StepVisual_ssNegative)) //abv 30 Mar 00: trj3_s1-pe.stp
       {
         theSurfaceColour = aFASC->FillColour();
       }
