@@ -78,8 +78,12 @@ int igesread (char* nomfic, int lesect[6], int modefnes)
         str[0] = sects[i0];
         IGESFile_Check2 (0,"XSTEP_18",numl,str); /* //gka 15 Sep 98: str instead of sects[i0]); */
       }
-    
-      if (i0 == 0) return -1;
+
+      if (i0 == 0)
+      {
+        fclose(lefic);
+        return -1;
+      }
       lesect[i0] ++;
       continue;
     }
