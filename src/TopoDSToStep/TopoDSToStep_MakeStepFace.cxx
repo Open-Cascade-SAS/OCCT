@@ -98,7 +98,6 @@ TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace
 // Method  : Init
 // Purpose :
 // ----------------------------------------------------------------------------
-
 void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
                                      TopoDSToStep_Tool& aTool,
                                      const Handle(Transfer_FinderProcess)& FP,
@@ -116,9 +115,8 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
     new TransferBRep_ShapeMapper(aFace);  // on ne sait jamais
 
   // [BEGIN] Processing non-manifold topology (another approach) (ssv; 10.11.2010)
-  Standard_Boolean isNMMode =
-    Handle(StepData_StepModel)::DownCast(FP->Model())->InternalParameters.WriteNonmanifold != 0;
-  if (isNMMode) {
+  if (Handle(StepData_StepModel)::DownCast(FP->Model())->InternalParameters.WriteNonmanifold != 0)
+  {
     Handle(StepShape_AdvancedFace) anAF;
     Handle(TransferBRep_ShapeMapper) aSTEPMapper = TransferBRep::ShapeMapper(FP, aFace);
     if ( FP->FindTypedTransient(aSTEPMapper, STANDARD_TYPE(StepShape_AdvancedFace), anAF) ) {
@@ -144,10 +142,6 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
     return;
   }
   
-  Standard_Integer i;
-  
-  //BRepAdaptor_Surface SA = BRepAdaptor_Surface(ForwardFace);  
-
   if (aFace.Orientation() == TopAbs_INTERNAL ||
       aFace.Orientation() == TopAbs_EXTERNAL ) {
     FP->AddWarning(errShape, " Face from Non Manifold Topology");
@@ -159,13 +153,8 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   // ------------------    
   // Get the Outer Wire
   // ------------------
-  
   const TopoDS_Wire theOuterWire = BRepTools::OuterWire(ForwardFace);
-  
   if (theOuterWire.IsNull()) {
-#ifdef OCCT_DEBUG
-    std::cout<< "Warning : Face without wire not mapped";
-#endif
     FP->AddWarning(errShape, " Face without wire not mapped");
     myError = TopoDSToStep_InfiniteFace;
     done    = Standard_False;
@@ -177,14 +166,9 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   // -----------------
   // Translate Surface
   // -----------------
-  
   Handle(Geom_Surface) Su = BRep_Tool::Surface(ForwardFace);
-
   if (Su.IsNull()) 
   {
-#ifdef OCCT_DEBUG
-    std::cout << "Warning : Face without geometry not mapped";
-#endif
     FP->AddWarning(errShape, " Face without geometry not mapped");
     myError = TopoDSToStep_FaceOther;
     done = Standard_False;
@@ -198,14 +182,7 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
     Handle(Geom_RectangularTrimmedSurface)::DownCast(Su);
   if (!aRTS.IsNull()) Su = aRTS->BasisSurface();
 
-  //Handle(Geom_Surface) Su = SA.Surface().Surface();
-  //Su = Handle(Geom_Surface)::DownCast(Su->Copy());
-  //gp_Trsf Tr1 = SA.Trsf();
-  //Su->Transform(Tr1);
-
 // Surfaces with indirect Axes are already reversed
-// (see TopoDSToStepAct_Actor)
-  //Standard_Boolean ReverseSurfaceOrientation = Standard_False; //szv#4:S4163:12Mar99 unused
   aTool.SetSurfaceReversed(Standard_False);
 
   GeomToStep_MakeSurface MkSurface(Su, theLocalFactors);
@@ -249,7 +226,6 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
       if (VL - VF - 2 * M_PI < -Precision::PConfusion())
         BasisCurve = ShapeAlgo::AlgoContainer()->ConvertCurveToBSpline(BasisCurve, VF, VL, Precision::Approximation(),
                                                                        GeomAbs_C1, 100, 9);
-      //BasisCurve = new Geom_TrimmedCurve ( BasisCurve, VF, VL );
 
       // create surface of revolution
       gp_Ax1 Axis = Ax3.Axis();
@@ -275,41 +251,26 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   // ----------------
   // Translates Wires
   // ----------------
+  Handle(StepShape_Loop) Loop;
   
-  Handle(StepShape_Loop)                          Loop;
-  Handle(StepShape_FaceBound)                     FaceBound;
-
   TopoDSToStep_MakeStepWire MkWire;
   TColStd_SequenceOfTransient mySeq;
 
   // Initialize the Wire Explorer with the forward face
-
   TopExp_Explorer WireExp;
   for (WireExp.Init(ForwardFace,TopAbs_WIRE);WireExp.More();WireExp.Next()) {
 
     const TopoDS_Wire CurrentWire = TopoDS::Wire(WireExp.Current());
     if (!CurrentWire.IsNull()) {
-
-      //szv#4:S4163:12Mar99 SGI warns
-      //TopoDS_Shape ssh = CurrentWire.Oriented(TopAbs_FORWARD);
-      //const TopoDS_Wire ForwardWire = TopoDS::Wire(ssh);
-
-      //MkWire.Init(ForwardWire, aTool, FP);
       MkWire.Init(CurrentWire, aTool, FP, theLocalFactors);
       if (MkWire.IsDone()) Loop = Handle(StepShape_Loop)::DownCast(MkWire.Value());
       else {
-#ifdef OCCT_DEBUG
-	std::cout << TopoDSToStep::DecodeWireError(MkWire.Error())->String() << std::endl;
-#endif
 	FP->AddWarning(errShape, " a Wire not mapped");
 	continue;
       }
     }
 
-    //if (theOuterWire.IsEqual(CurrentWire))
-    //FaceBound = new StepShape_FaceOuterBound();
-    //else
-    FaceBound = new StepShape_FaceBound();
+    Handle(StepShape_FaceBound) FaceBound = new StepShape_FaceBound();
 
     // ----------------------------------------------------
     // When the geometric normal of a Surface is reversed : 
@@ -343,44 +304,34 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   // ----------------------------------------
   // Translate the Edge 2D Geometry (pcurves)
   // ----------------------------------------
-  
-  if ( ! aTool.Faceted() && aTool.PCurveMode() != 0 ) {
+  if ( !aTool.Faceted() && aTool.PCurveMode() != 0 ) {
     
     TopExp_Explorer Ex(ForwardFace, TopAbs_EDGE);
 
     // ------------------------------------------------
     // Exploration of all the Edges in the current face
     // ------------------------------------------------
-    
     for (;Ex.More(); Ex.Next()) {
       TopoDS_Edge E = TopoDS::Edge(Ex.Current());
       Standard_Real cf, cl;
       Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(E, ForwardFace, cf, cl);
+      if (BRep_Tool::Degenerated(E) || C2d.IsNull())
+      {
+        // The edge 2D Geometry degenerates in 3D
+        // The edge 2D geometry is not mapped onto any Step entity
+        // (ProStep agreement)
+        continue;
+      }
+      // Copy the Curve2d which might be changed
+      C2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
 
-      //CA = BRepAdaptor_Curve(E, ForwardFace);
-      //GeomAbs_CurveType typCOnS = CA.CurveOnSurface().GetCurve().GetType();
-      
-      //if (typCOnS == GeomAbs_Line && BRep_Tool::Degenerated(E) ) {
-      if ( //:abv 26Jan00, CAX-IF TRJ3: C2d->IsKind(STANDARD_TYPE(Geom2d_Line)) && 
-	   BRep_Tool::Degenerated(E)) {
-	// The edge 2D Geometry degenerates in 3D
-	// The edge 2D geometry is not mapped onto any Step entity
-	// (ProStep agreement)
-	continue;
-      }
-      else { // Copy the Curve2d which might be changed
-	//C2d = CA.CurveOnSurface().GetCurve().Curve();
-	//C2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
-	C2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
-      }
-      
       // for writing VERTEX_LOOP
       if(!aTool.IsBound(E)) continue;      
       Handle(StepGeom_Curve) Cpms = 
 	Handle(StepShape_EdgeCurve)::DownCast(aTool.Find(E))->EdgeGeometry();
       if ( Cpms.IsNull() ) continue;
       
-      if ( !C2d.IsNull() && aTool.IsBound(E) ) {
+      if (aTool.IsBound(E)) {
 	if (C2d->IsKind(STANDARD_TYPE(Geom2d_Hyperbola)) || 
 	    C2d->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
 	  if(Su->IsKind(STANDARD_TYPE(Geom_SphericalSurface))  ||
@@ -418,7 +369,6 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
 	// --------------------
 	// Translate the Pcurve
 	// --------------------
-	
 	Handle(StepGeom_Pcurve) Pc = new StepGeom_Pcurve;
 	Handle(StepRepr_DefinitionalRepresentation) DRI = 
 	  new StepRepr_DefinitionalRepresentation;
@@ -463,20 +413,16 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
   // ------------------
   // Translate the Face
   // ------------------
-  
   Standard_Integer nbWires = mySeq.Length();
   if ( nbWires ) {
     Handle(StepShape_HArray1OfFaceBound) aBounds =
       new StepShape_HArray1OfFaceBound(1,nbWires);
-    for ( i=1; i<=nbWires; i++ ) {
+    for (Standard_Integer i = 1; i <= nbWires; i++)
+    {
       aBounds->SetValue(i, Handle(StepShape_FaceBound)::DownCast(mySeq.Value(i)));
     }
     Handle(StepShape_AdvancedFace) Fpms = new StepShape_AdvancedFace;
-
-    // ---------------------------------------------------------------
     // The underlying surface has always a direct axis (see above)
-    // ---------------------------------------------------------------
-
     Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString("");
 
     Fpms->Init(aName, aBounds, Spms, aFace.Orientation() == TopAbs_FORWARD);
@@ -487,11 +433,9 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
     done     = Standard_True;
   }
   else {
-
     // ----------------------------
     // MakeFace Face Error Handling
     // ----------------------------
-
     FP->AddWarning(errShape, " No Wires of this Face were mapped");
     myError = TopoDSToStep_NoWireMapped;
     done    = Standard_False;
@@ -504,7 +448,6 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
     done    = Standard_False;
   }
 }
-
   
 // ----------------------------------------------------------------------------
 // Method  : Value
