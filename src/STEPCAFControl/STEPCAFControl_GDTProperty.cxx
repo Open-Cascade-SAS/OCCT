@@ -29,12 +29,270 @@
 #include <StepDimTol_StraightnessTolerance.hxx>
 #include <StepDimTol_SurfaceProfileTolerance.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>
+#include <StepVisual_ComplexTriangulatedSurfaceSet.hxx>
 #include <StepVisual_TessellatedCurveSet.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XCAFDimTolObjects_DatumModifiersSequence.hxx>
 #include <XCAFDimTolObjects_DatumModifWithValue.hxx>
+
+namespace
+{
+  //=======================================================================
+  //function : GenerateCoordinateList
+  //purpose  : Generates a coordinate_list by filling it with coordinates
+  //           of the nodes of theTriangulation. Each node will be
+  //           transformed with theTransformation.
+  //=======================================================================
+  Handle(StepVisual_CoordinatesList) GenerateCoordinateList(
+    const Handle(Poly_Triangulation)& theTriangulation,
+    const gp_Trsf&                    theTransformation)
+  {
+    Handle(TColgp_HArray1OfXYZ) thePoints = new TColgp_HArray1OfXYZ(1, theTriangulation->NbNodes());
+    for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
+    {
+      const gp_Pnt aCurrentNode = theTriangulation->Node(aNodeIndex).Transformed(theTransformation);
+      thePoints->SetValue(aNodeIndex, aCurrentNode.XYZ());
+    }
+    Handle(StepVisual_CoordinatesList) aCoordinatesList = new StepVisual_CoordinatesList;
+    aCoordinatesList->Init(new TCollection_HAsciiString(), thePoints);
+    return aCoordinatesList;
+  }
+
+  //=======================================================================
+  //function : CountNormals
+  //purpose  : Returns a number of normals that theTriangulation contains
+  //           for the purpose of generating
+  //           StepVisual_ComplexTriangulatedSurfaceSet.
+  //           Possible outputs are:
+  //           0, if theTriangulation has no normals.
+  //           1, if all normals contained in theTriangulation are equal.
+  //             Note that Poly_Triangulation supports only 2 options:
+  //             either no normals or a normal assosciated with each node.
+  //             So when source complex_triangulated_surface_set has just
+  //             one normal, it will be just associated with every node in
+  //             Poly_Triangulation. Return value of one indicates that
+  //             that's what probably happen during reading.
+  //           theTriangulation->NbNodes(), if each vertex has a unique
+  //             node ossociated with it.
+  //=======================================================================
+  Standard_Integer CountNormals(const Handle(Poly_Triangulation)& theTriangulation)
+  {
+    if (!theTriangulation->HasNormals())
+    {
+      return 0;
+    }
+
+    // Function to compare normal coordinates values.
+    auto isEqual = [](const Standard_Real theVal1, const Standard_Real theVal2)
+    {
+      return std::abs(theVal1 - theVal2) < Precision::Confusion();
+    };
+    // Checking if all normals are equal.
+    const gp_Dir aReferenceNormal = theTriangulation->Normal(1);
+    for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
+    {
+      const gp_Dir aCurrentNormal = theTriangulation->Normal(aNodeIndex);
+      if (!isEqual(aReferenceNormal.X(), aCurrentNormal.X())
+          || !isEqual(aReferenceNormal.Y(), aCurrentNormal.Y())
+          || !isEqual(aReferenceNormal.Z(), aCurrentNormal.Z()))
+      {
+        return theTriangulation->NbNodes();
+      }
+    }
+
+    // All normals were equal, so we can use just one normal.
+    return 1;
+  }
+
+  //=======================================================================
+  //function : GenerateNormalsArray
+  //purpose  : Generates array of normals from theTriangulation. Normals
+  //           wiil be transformed with theTransformation.
+  //           IMPORTANT: Output will be nullptr if theTriangulation has
+  //           no normals.
+  //=======================================================================
+  Handle(TColStd_HArray2OfReal) GenerateNormalsArray(
+    const Handle(Poly_Triangulation)& theTriangulation,
+    const gp_Trsf&                    theTransformation)
+  {
+    const Standard_Integer aNormalCount = CountNormals(theTriangulation);
+    if (aNormalCount == 0)
+    {
+      return nullptr;
+    }
+    else if (aNormalCount == 1)
+    {
+      Handle(TColStd_HArray2OfReal) aNormals = new TColStd_HArray2OfReal(1, 1, 1, 3);
+      const gp_Dir aNormal = theTriangulation->Normal(1).Transformed(theTransformation);
+      aNormals->SetValue(1, 1, aNormal.X());
+      aNormals->SetValue(1, 2, aNormal.Y());
+      aNormals->SetValue(1, 3, aNormal.Z());
+      return aNormals;
+    }
+    else
+    {
+      Handle(TColStd_HArray2OfReal) aNormals =
+        new TColStd_HArray2OfReal(1, theTriangulation->NbNodes(), 1, 3);
+
+      for (Standard_Integer aNodeIndex = 1; aNodeIndex <= theTriangulation->NbNodes(); ++aNodeIndex)
+      {
+        const gp_Dir aCurrentNormal =
+          theTriangulation->Normal(aNodeIndex).Transformed(theTransformation);
+        aNormals->SetValue(aNodeIndex, 1, aCurrentNormal.X());
+        aNormals->SetValue(aNodeIndex, 2, aCurrentNormal.Y());
+        aNormals->SetValue(aNodeIndex, 3, aCurrentNormal.Z());
+      }
+      return aNormals;
+    }
+  }
+
+  //=======================================================================
+  //function : GenerateTriangleStrips
+  //purpose  : Generates an array of triangle strips from theTriangulation.
+  //           Since Poly_Triangulation doesn't support triangle strips,
+  //           all triangles from it would just be imported as tringle
+  //           strips of one triangle.
+  //=======================================================================
+  Handle(TColStd_HArray1OfTransient) GenerateTriangleStrips(
+    const Handle(Poly_Triangulation)& theTriangulation)
+  {
+    Handle(TColStd_HArray1OfTransient) aTriangleStrips =
+      new TColStd_HArray1OfTransient(1, theTriangulation->NbTriangles());
+    for (Standard_Integer aTriangleIndex = 1; aTriangleIndex <= theTriangulation->NbTriangles();
+         ++aTriangleIndex)
+    {
+      // Since Poly_Triangulation doesn't support triangle strips or triangle fans,
+      // we just write each thriangle as triangle strip.
+      const Poly_Triangle& aCurrentTriangle           = theTriangulation->Triangle(aTriangleIndex);
+      Handle(TColStd_HArray1OfInteger) aTriangleStrip = new TColStd_HArray1OfInteger(1, 3);
+      aTriangleStrip->SetValue(1, aCurrentTriangle.Value(1));
+      aTriangleStrip->SetValue(2, aCurrentTriangle.Value(2));
+      aTriangleStrip->SetValue(3, aCurrentTriangle.Value(3));
+      aTriangleStrips->SetValue(aTriangleIndex, aTriangleStrip);
+    }
+    return aTriangleStrips;
+  }
+
+  //=======================================================================
+  //function : GenerateComplexTriangulatedSurfaceSet
+  //purpose  : Generates complex_triangulated_surface_set from theFace.
+  //           Returns nullptr if face has no triangulation.
+  //=======================================================================
+  Handle(StepVisual_ComplexTriangulatedSurfaceSet) GenerateComplexTriangulatedSurfaceSet(
+    const TopoDS_Face& theFace)
+  {
+    TopLoc_Location                  aFaceLoc;
+    const Handle(Poly_Triangulation) aTriangulation = BRep_Tool::Triangulation(theFace, aFaceLoc);
+    if (aTriangulation.IsNull())
+    {
+      return nullptr;
+    }
+    const gp_Trsf aFaceTransform = aFaceLoc.Transformation();
+
+    // coordinates
+    Handle(StepVisual_CoordinatesList) aCoordinatesList = GenerateCoordinateList(aTriangulation,
+                                                                                 aFaceTransform);
+    // pnmax
+    Standard_Integer aPnmax = aTriangulation->NbNodes();
+    // normals
+    Handle(TColStd_HArray2OfReal) aNormals = GenerateNormalsArray(aTriangulation, aFaceTransform);
+    // pnindex
+    // From "Recommended Practices Recommended Practices for 3D Tessellated Geometry", Release 1.1:
+    // "pnindex is the table of indices of the points used in the definition of the triangles.
+    //  It is an index to the coordinates_list. Its size may be:
+    //  pnmax: this is the size of normals when each point has a normal.
+    //  0: no indirection."
+    // In our case there is no indirection, so it's always empty.
+    Handle(TColStd_HArray1OfInteger) aPnindex = new TColStd_HArray1OfInteger;
+    // triangle_strips
+    Handle(TColStd_HArray1OfTransient) aTriangleStrips = GenerateTriangleStrips(aTriangulation);
+    // triangle_fans
+    // All triangles were already written as triangle strips.
+    Handle(TColStd_HArray1OfTransient) aTriangleFans = new TColStd_HArray1OfTransient;
+
+    // Initialization of complex_triangulated_surface_set.
+    Handle(StepVisual_ComplexTriangulatedSurfaceSet) aCTSS =
+      new StepVisual_ComplexTriangulatedSurfaceSet;
+    aCTSS->Init(new TCollection_HAsciiString(),
+                aCoordinatesList,
+                aPnmax,
+                aNormals,
+                aPnindex,
+                aTriangleStrips,
+                aTriangleFans);
+    return aCTSS;
+  }
+
+  //=======================================================================
+  //function : GenerateTessellatedCurveSet
+  //purpose  : Generates tesselated_curve_set from theShape.
+  //           If no valid curves were found, return nullptr.
+  //=======================================================================
+  Handle(StepVisual_TessellatedCurveSet) GenerateTessellatedCurveSet(const TopoDS_Shape& theShape)
+  {
+    NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aLineStrips =
+      new StepVisual_VectorOfHSequenceOfInteger;
+    // Temporary contanier for points. We need points in TColgp_HArray1OfXYZ type of
+    // container, however in order to create it we need to know it's size.
+    // Currently number of points is unknown, so we will put all the points in a
+    // temporary container and then just copy them after all edges will be processed.
+    NCollection_Vector<gp_XYZ> aTmpPointsContainer;
+    for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next())
+    {
+      // Find out type of edge curve
+      Standard_Real            aFirstParam = 0, aLastParam = 0;
+      const Handle(Geom_Curve) anEdgeCurve = BRep_Tool::Curve(TopoDS::Edge(aCurveIt.Current()),
+                                                              aFirstParam,
+                                                              aLastParam);
+      if (anEdgeCurve.IsNull())
+      {
+        continue;
+      }
+      Handle(TColStd_HSequenceOfInteger) aCurrentCurve = new TColStd_HSequenceOfInteger;
+      if (anEdgeCurve->IsKind(STANDARD_TYPE(Geom_Line))) // Line
+      {
+        for (TopExp_Explorer aVertIt(aCurveIt.Current(), TopAbs_VERTEX); aVertIt.More();
+             aVertIt.Next())
+        {
+          aTmpPointsContainer.Append(BRep_Tool::Pnt(TopoDS::Vertex(aVertIt.Current())).XYZ());
+          aCurrentCurve->Append(aTmpPointsContainer.Size());
+        }
+      }
+      else // BSpline
+      {
+        ShapeConstruct_Curve      aSCC;
+        Handle(Geom_BSplineCurve) aBSCurve =
+          aSCC.ConvertToBSpline(anEdgeCurve, aFirstParam, aLastParam, Precision::Confusion());
+        for (Standard_Integer aPoleIndex = 1; aPoleIndex <= aBSCurve->NbPoles(); ++aPoleIndex)
+        {
+          aTmpPointsContainer.Append(aBSCurve->Pole(aPoleIndex).XYZ());
+          aCurrentCurve->Append(aTmpPointsContainer.Size());
+        }
+      }
+      aLineStrips->Append(aCurrentCurve);
+    }
+
+    if (aTmpPointsContainer.IsEmpty())
+    {
+      return Handle(StepVisual_TessellatedCurveSet){};
+    }
+
+    Handle(TColgp_HArray1OfXYZ) aPoints = new TColgp_HArray1OfXYZ(1, aTmpPointsContainer.Size());
+    for (Standard_Integer aPointIndex = 1; aPointIndex <= aPoints->Size(); ++aPointIndex)
+    {
+      aPoints->SetValue(aPointIndex, aTmpPointsContainer.Value(aPointIndex - 1));
+    }
+    // STEP entities
+    Handle(StepVisual_CoordinatesList) aCoordinates = new StepVisual_CoordinatesList();
+    aCoordinates->Init(new TCollection_HAsciiString(), aPoints);
+    Handle(StepVisual_TessellatedCurveSet) aTCS = new StepVisual_TessellatedCurveSet();
+    aTCS->Init(new TCollection_HAsciiString(), aCoordinates, aLineStrips);
+    return aTCS;
+  }
+}
 
 //=======================================================================
 //function : STEPCAFControl_GDTProperty
@@ -1305,61 +1563,33 @@ Handle(TCollection_HAsciiString) STEPCAFControl_GDTProperty::GetTolValueType(con
 
 //=======================================================================
 //function : GetTessellation
-//purpose  : 
+//purpose  :
 //=======================================================================
-Handle(StepVisual_TessellatedGeometricSet) STEPCAFControl_GDTProperty::GetTessellation(const TopoDS_Shape& theShape)
+Handle(StepVisual_TessellatedGeometricSet) STEPCAFControl_GDTProperty::GetTessellation(
+  const TopoDS_Shape& theShape)
 {
-  Handle(StepVisual_TessellatedGeometricSet) aGeomSet;
-  // Build coordinate list and curves
-  NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> aCurves = new StepVisual_VectorOfHSequenceOfInteger;
-  NCollection_Vector<gp_XYZ> aCoords;
-  Standard_Integer aPntNb = 1;
-  for (TopExp_Explorer aCurveIt(theShape, TopAbs_EDGE); aCurveIt.More(); aCurveIt.Next()) {
-    Handle(TColStd_HSequenceOfInteger) aCurve = new TColStd_HSequenceOfInteger;
-    // Find out type of edge curve
-    Standard_Real aFirst = 0, aLast = 0;
-    Handle(Geom_Curve) anEdgeCurve = BRep_Tool::Curve(TopoDS::Edge(aCurveIt.Current()), aFirst, aLast);
-    if (anEdgeCurve.IsNull())
-      continue;
-    // Line
-    if (anEdgeCurve->IsKind(STANDARD_TYPE(Geom_Line))) {
-      for (TopExp_Explorer aVertIt(aCurveIt.Current(), TopAbs_VERTEX); aVertIt.More(); aVertIt.Next()) {
-        aCoords.Append(BRep_Tool::Pnt(TopoDS::Vertex(aVertIt.Current())).XYZ());
-        aCurve->Append(aPntNb);
-        aPntNb++;
-      }
-    }
-    // BSpline
-    else {
-      ShapeConstruct_Curve aSCC;
-      Handle(Geom_BSplineCurve) aBSCurve = aSCC.ConvertToBSpline(anEdgeCurve,
-          aFirst, aLast, Precision::Confusion());
-      for (Standard_Integer i = 1; i <= aBSCurve->NbPoles(); i++) {
-        aCoords.Append(aBSCurve->Pole(i).XYZ());
-        aCurve->Append(aPntNb);
-        aPntNb++;
-      }
-    }
-    aCurves->Append(aCurve);
-  }
-
-  if (!aCoords.Length())
+  // Build complex_triangulated_surface_set.
+  std::vector<Handle(StepVisual_ComplexTriangulatedSurfaceSet)> aCTSSs;
+  for (TopExp_Explorer aFaceIt(theShape, TopAbs_FACE); aFaceIt.More(); aFaceIt.Next())
   {
-    return aGeomSet;
+    const TopoDS_Face aFace = TopoDS::Face(aFaceIt.Current());
+    aCTSSs.emplace_back(GenerateComplexTriangulatedSurfaceSet(aFace));
   }
 
-  Handle(TColgp_HArray1OfXYZ) aPoints = new TColgp_HArray1OfXYZ(1, aCoords.Length());
-  for (Standard_Integer i = 1; i <= aPoints->Length(); i++) {
-    aPoints->SetValue(i, aCoords.Value(i - 1));
+  // Build tesselated_curve_set.
+  Handle(StepVisual_TessellatedCurveSet) aTCS = GenerateTessellatedCurveSet(theShape);
+  
+  // Fill the container of tesselated items.
+  NCollection_Handle<StepVisual_Array1OfTessellatedItem> aTesselatedItems =
+    new StepVisual_Array1OfTessellatedItem(1, static_cast<Standard_Integer>(aCTSSs.size()) + 1);
+  aTesselatedItems->SetValue(1, aTCS);
+  for (size_t aCTSSIndex = 0; aCTSSIndex < aCTSSs.size(); ++aCTSSIndex)
+  {
+    aTesselatedItems->SetValue(static_cast<Standard_Integer>(aCTSSIndex) + 2, aCTSSs[aCTSSIndex]);
   }
-  // STEP entities
-  Handle(StepVisual_CoordinatesList) aCoordList = new StepVisual_CoordinatesList();
-  aCoordList->Init(new TCollection_HAsciiString(), aPoints);
-  Handle(StepVisual_TessellatedCurveSet) aCurveSet = new StepVisual_TessellatedCurveSet();
-  aCurveSet->Init(new TCollection_HAsciiString(), aCoordList, aCurves);
-  NCollection_Handle<StepVisual_Array1OfTessellatedItem> aTessItems = new StepVisual_Array1OfTessellatedItem(1, 1);
-  aTessItems->SetValue(1, aCurveSet);
-  aGeomSet = new StepVisual_TessellatedGeometricSet();
-  aGeomSet->Init(new TCollection_HAsciiString(), aTessItems);
-  return aGeomSet;
+  
+  // Build tessellated_geometric_set.
+  Handle(StepVisual_TessellatedGeometricSet) aTGS = new StepVisual_TessellatedGeometricSet();
+  aTGS->Init(new TCollection_HAsciiString(), aTesselatedItems);
+  return aTGS;
 }

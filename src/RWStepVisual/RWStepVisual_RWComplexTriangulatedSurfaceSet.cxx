@@ -180,16 +180,23 @@ void RWStepVisual_RWComplexTriangulatedSurfaceSet::WriteStep(
   theSW.Send(theEnt->Pnmax());
 
   theSW.OpenSub();
-  for (Standard_Integer i3 = 1; i3 <= theEnt->Normals()->RowLength(); i3++)
+  // According to "Recommended Practices Recommended Practices for 3D Tessellated Geometry", Release 1.1:
+  // "...The size of the list of normals may be:
+  //    0: no normals are defined..."
+  // In OCC this situation is reflected by nullptr normals container.
+  if (theEnt->NbNormals() != 0)
   {
-    theSW.NewLine(Standard_False);
-    theSW.OpenSub();
-    for (Standard_Integer j3 = 1; j3 <= theEnt->Normals()->ColLength(); j3++)
+    for (Standard_Integer i3 = 1; i3 <= theEnt->Normals()->NbRows(); i3++)
     {
-      Standard_Real Var0 = theEnt->Normals()->Value(i3,j3);
-      theSW.Send(Var0);
+      theSW.NewLine(Standard_False);
+      theSW.OpenSub();
+      for (Standard_Integer j3 = 1; j3 <= theEnt->Normals()->NbColumns(); j3++)
+      {
+        Standard_Real Var0 = theEnt->Normals()->Value(i3, j3);
+        theSW.Send(Var0);
+      }
+      theSW.CloseSub();
     }
-    theSW.CloseSub();
   }
   theSW.CloseSub();
 
