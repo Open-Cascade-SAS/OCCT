@@ -30,8 +30,8 @@
 // ------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two characters have the same value
 // ------------------------------------------------------------------
-inline Standard_Boolean IsEqual(const Standard_Character One,
-				const Standard_Character Two)
+constexpr Standard_Boolean IsEqual(const Standard_Character One,
+                                   const Standard_Character Two)
 { return One == Two; }
 
 // ===============================================
