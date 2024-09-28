@@ -182,16 +182,10 @@ inline Standard_Real     Cos (const Standard_Real Value)
 //           If 'Value' is 0 then returns minimal positive value
 //           of Standard_Real type.
 //-------------------------------------------------------------------
-inline Standard_Real     Epsilon (const Standard_Real Value) 
+inline Standard_Real     Epsilon (const Standard_Real Value)
 {
-  Standard_Real aEpsilon;
-
-  if (Value>=0.0){
-    aEpsilon = NextAfter(Value, RealLast()) - Value;
-  } else {
-    aEpsilon = Value - NextAfter(Value, RealFirst());
-  }
-  return aEpsilon;
+  return Value >= 0.0 ? (NextAfter(Value, RealLast()) - Value)
+                      : (Value - NextAfter(Value, RealFirst()));
 }
 
 //-------------------------------------------------------------------
@@ -222,7 +216,7 @@ inline Standard_Real     Log10 (const Standard_Real Value)
 //-------------------------------------------------------------------
 // Max : Returns the maximum value of two reals
 //-------------------------------------------------------------------
-inline Standard_Real     Max (const Standard_Real Val1, 
+constexpr Standard_Real  Max (const Standard_Real Val1, 
                               const Standard_Real Val2) 
 {
   return Val1 >= Val2 ? Val1 : Val2;
@@ -231,7 +225,7 @@ inline Standard_Real     Max (const Standard_Real Val1,
 //-------------------------------------------------------------------
 // Min : Returns the minimum value of two reals
 //-------------------------------------------------------------------
-inline Standard_Real     Min (const Standard_Real Val1, 
+constexpr Standard_Real  Min (const Standard_Real Val1, 
                               const Standard_Real Val2)
 {
   return Val1 <= Val2 ? Val1 : Val2;
@@ -254,7 +248,7 @@ inline  Standard_Real    RealPart (const Standard_Real Value)
 //             If input value is out of valid range for integers,
 //             minimal or maximal possible integer is returned.
 //-------------------------------------------------------------------
-inline Standard_Integer RealToInt (const Standard_Real theValue)
+constexpr Standard_Integer RealToInt (const Standard_Real theValue)
 { 
   // Note that on WNT under MS VC++ 8.0 conversion of double value less 
   // than INT_MIN or greater than INT_MAX to integer will cause signal 
@@ -273,7 +267,7 @@ inline Standard_Integer RealToInt (const Standard_Real theValue)
 //            for Standard_ShortReal, minimal or maximal
 //            Standard_ShortReal is returned.
 // =======================================================================
-inline Standard_ShortReal RealToShortReal (const Standard_Real theVal)
+constexpr Standard_ShortReal RealToShortReal (const Standard_Real theVal)
 {
   return theVal < -FLT_MAX ? -FLT_MAX
     : theVal > FLT_MAX ? FLT_MAX
@@ -306,7 +300,7 @@ inline Standard_Real     ASinh(const Standard_Real Value)
 //-------------------------------------------------------------------
 // Square : Returns a real to the power 2
 //-------------------------------------------------------------------
-inline Standard_Real     Square(const Standard_Real Value) 
+constexpr Standard_Real     Square(const Standard_Real Value) 
 { return Value * Value; }
 
 //-------------------------------------------------------------------

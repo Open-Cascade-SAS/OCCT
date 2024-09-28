@@ -172,8 +172,8 @@ static int HardwareLowBitsOfDouble()
   }
 }
 
-static int HighBitsOfDouble = HardwareHighBitsOfDouble();
-static int LowBitsOfDouble = HardwareLowBitsOfDouble();
+static const int HighBitsOfDouble = HardwareHighBitsOfDouble();
+static const int LowBitsOfDouble = HardwareLowBitsOfDouble();
 
 double NextAfter(const double x, const double y)
 {

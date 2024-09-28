@@ -27,7 +27,7 @@
 // ------------------------------------------------------------------
 // Abs : Returns the absolute value of an Integer
 // ------------------------------------------------------------------
-inline  Standard_Integer Abs (const Standard_Integer Value)
+constexpr  Standard_Integer Abs (const Standard_Integer Value)
 {
   return Value >= 0 ? Value : -Value;
 }
@@ -35,20 +35,20 @@ inline  Standard_Integer Abs (const Standard_Integer Value)
 // ------------------------------------------------------------------
 // IsEven : Returns Standard_True if an integer is even
 // ------------------------------------------------------------------
-inline Standard_Boolean IsEven (const Standard_Integer Value)
+constexpr Standard_Boolean IsEven (const Standard_Integer Value)
 { return Value % 2 == 0; }
 
 
 // ------------------------------------------------------------------
 // IsOdd : Returns Standard_True if an integer is odd
 // ------------------------------------------------------------------
-inline Standard_Boolean IsOdd (const Standard_Integer Value)
+constexpr Standard_Boolean IsOdd (const Standard_Integer Value)
 { return Value % 2 == 1; }
 
 // ------------------------------------------------------------------
 // Max : Returns the maximum integer between two integers
 // ------------------------------------------------------------------
-inline Standard_Integer  Max (const Standard_Integer Val1,
+constexpr Standard_Integer  Max (const Standard_Integer Val1,
 			      const Standard_Integer Val2)
 {
   return Val1 >= Val2 ? Val1 : Val2;
@@ -57,7 +57,7 @@ inline Standard_Integer  Max (const Standard_Integer Val1,
 // ------------------------------------------------------------------
 // Min : Returns the minimum integer between two integers
 // ------------------------------------------------------------------
-inline Standard_Integer  Min (const Standard_Integer Val1,
+constexpr Standard_Integer  Min (const Standard_Integer Val1,
 			      const Standard_Integer Val2)
 {
   return Val1 <= Val2 ? Val1 : Val2;
@@ -66,14 +66,14 @@ inline Standard_Integer  Min (const Standard_Integer Val1,
 // ------------------------------------------------------------------
 // Modulus : Returns the remainder of division between two integers
 // ------------------------------------------------------------------
-inline Standard_Integer  Modulus (const Standard_Integer Value,
+constexpr Standard_Integer  Modulus (const Standard_Integer Value,
 				  const Standard_Integer Divisor)
 { return Value % Divisor; }
 
 // ------------------------------------------------------------------
 // Square : Returns the square of an integer
 // ------------------------------------------------------------------
-inline Standard_Integer Square(const Standard_Integer Value)
+constexpr Standard_Integer Square(const Standard_Integer Value)
 { return Value * Value; }
 
 // ------------------------------------------------------------------

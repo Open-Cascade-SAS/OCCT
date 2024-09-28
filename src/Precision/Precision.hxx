@@ -210,7 +210,7 @@ public:
   //! length of the tangent of the curve or the surface.
   //!
   //! Value is P / T
-  static inline Standard_Real Parametric (const Standard_Real P, const Standard_Real T) { return P / T; }
+  static constexpr Standard_Real Parametric (const Standard_Real P, const Standard_Real T) { return P / T; }
 
   //! Returns a precision value in parametric space, which may be used :
   //! -   to test the coincidence of two points in the real space,
@@ -256,7 +256,7 @@ public:
   //! 2.Pi without impacting on the resulting point.
   //! Therefore, take great care when adjusting a parametric
   //! tolerance to your own algorithm.
-  static inline Standard_Real PConfusion (const Standard_Real T) { return Parametric (Confusion(), T); }
+  static constexpr Standard_Real PConfusion (const Standard_Real T) { return Parametric (Confusion(), T); }
 
   //! Returns square of PConfusion.
   //! Created for speed and convenience.
@@ -275,7 +275,7 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Intersection() / 100., or Precision::Intersection() / T.
-  static inline Standard_Real PIntersection (const Standard_Real T) { return Parametric(Intersection(),T); }
+  static constexpr Standard_Real PIntersection (const Standard_Real T) { return Parametric(Intersection(),T); }
 
   //! Returns a precision value in parametric space, which may
   //! be used by approximation algorithms. The purpose of this
@@ -290,13 +290,13 @@ public:
   //! segment whose length is equal to 100. (default value), or T.
   //! The parametric tolerance of intersection is equal to :
   //! -   Precision::Approximation() / 100., or Precision::Approximation() / T.
-  static inline Standard_Real PApproximation (const Standard_Real T) { return Parametric(Approximation(),T); }
+  static constexpr Standard_Real PApproximation (const Standard_Real T) { return Parametric(Approximation(),T); }
 
   //! Convert a real  space precision  to  a  parametric
   //! space precision on a default curve.
   //!
   //! Value is Parametric(P,1.e+2)
-  static inline Standard_Real Parametric (const Standard_Real P) { return P * 0.01; }
+  static constexpr Standard_Real Parametric (const Standard_Real P) { return P * 0.01; }
 
   //! Used  to test distances  in parametric  space on a
   //! default curve.
@@ -322,11 +322,11 @@ public:
 
   //! Returns True if R may be considered as  a positive
   //! infinite number. Currently R > 1e100
-  static inline Standard_Boolean IsPositiveInfinite (const Standard_Real R) { return R >= (0.5 * Precision::Infinite()); }
+  static constexpr Standard_Boolean IsPositiveInfinite (const Standard_Real R) { return R >= (0.5 * Precision::Infinite()); }
 
   //! Returns True if R may  be considered as a negative
   //! infinite number. Currently R < -1e100
-  static inline Standard_Boolean IsNegativeInfinite (const Standard_Real R) { return R <= -(0.5 * Precision::Infinite()); }
+  static constexpr Standard_Boolean IsNegativeInfinite (const Standard_Real R) { return R <= -(0.5 * Precision::Infinite()); }
 
   //! Returns a  big number that  can  be  considered as
   //! infinite. Use -Infinite() for a negative big number.

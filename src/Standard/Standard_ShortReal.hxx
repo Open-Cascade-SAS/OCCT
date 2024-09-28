@@ -105,27 +105,19 @@ constexpr Standard_Integer  ShortRealSize()
 //-------------------------------------------------------------------
 // Max : Returns the maximum value of two ShortReals
 //-------------------------------------------------------------------
-inline Standard_ShortReal     Max (const Standard_ShortReal Val1, 
-				   const Standard_ShortReal Val2) 
+constexpr Standard_ShortReal Max(const Standard_ShortReal Val1,
+                                 const Standard_ShortReal Val2)
 {
-  if (Val1 >= Val2) {
-    return Val1;
-  } else {
-    return Val2;
-  }
+  return Val1 >= Val2 ? Val1 : Val2;
 }
 
 //-------------------------------------------------------------------
 // Min : Returns the minimum value of two ShortReals
 //-------------------------------------------------------------------
-inline Standard_ShortReal     Min (const Standard_ShortReal Val1, 
-				   const Standard_ShortReal Val2)
+constexpr Standard_ShortReal Min(const Standard_ShortReal Val1,
+                                 const Standard_ShortReal Val2)
 {
-  if (Val1 <= Val2) {
-    return Val1;
-  } else {
-    return Val2;
-  }
+  return Val1 <= Val2 ? Val1 : Val2;
 }
 
 #endif
