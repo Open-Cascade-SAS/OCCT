@@ -27,12 +27,15 @@
     case-insensitive    enable case insensitive parsing(any ?i: and other case setting will be ignored)
 */
 %option c++
-%option 8bit warn nodefault
+%option 8bit
+%option warn
 %option noyywrap
 %option noinput
 %option yyclass="step::scanner"
 %option noyyalloc noyyfree noyyrealloc
 %option case-insensitive
+%option nounistd
+%option never-interactive
 
 %top{
 // This file is part of Open CASCADE Technology software library.

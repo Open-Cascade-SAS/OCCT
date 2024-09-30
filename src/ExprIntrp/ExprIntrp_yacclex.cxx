@@ -23,16 +23,16 @@ static int ExprIntrp_degree;
 #ifndef _WIN32
 extern char* ExprIntrptext;
 #else
-extern "C" char* ExprIntrptext;
+char* ExprIntrptext;
 #endif  // _WIN32
 
 
-extern "C" void ExprIntrp_SetResult()
+void ExprIntrp_SetResult()
 {
   ExprIntrp_curres = ExprIntrptext;
 }
 
-extern "C" void ExprIntrp_SetDegree()
+void ExprIntrp_SetDegree()
 {
   ExprIntrp_degree = (int)strlen(ExprIntrptext);
 }
