@@ -2162,6 +2162,9 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
 // =======================================================================
 void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData)
 {
+#ifdef HAVE_RAPIDJSON
+  Standard_ProgramError_Raise_if(myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeExtrasAttributes()");
+
   if (theNamedData.IsNull())
     return;
   theNamedData->LoadDeferredData();
@@ -2246,6 +2249,9 @@ void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& t
       myWriter->EndArray();
     }
   }
+#else
+  (void)theNamedData;
+#endif
 }
 
 // =======================================================================
