@@ -1978,6 +1978,8 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeNodes()");
 
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(theDocument->Main());
+
   // Prepare full indexed map of scene nodes in correct order.
   RWGltf_GltfSceneNodeMap aSceneNodeMapWithChildren; // indexes starting from 1
   for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_None);
@@ -2130,6 +2132,18 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
         myWriter->String (aNodeName.ToCString());
       }
     }
+    {
+      Handle(TDataStd_NamedData) aNamedData = aShapeTool->GetNamedProperties(aDocNode.Label);
+      Handle(TDataStd_NamedData) aRefNamedData = aShapeTool->GetNamedProperties(aDocNode.RefLabel);
+      if (!aNamedData.IsNull() || !aRefNamedData.IsNull())
+      {
+        myWriter->Key("extras");
+        myWriter->StartObject();
+        writeExtrasAttributes(aNamedData);
+        writeExtrasAttributes(aRefNamedData);
+        myWriter->EndObject();
+      }
+    }
     myWriter->EndObject();
   }
   myWriter->EndArray();
@@ -2139,6 +2153,104 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
   (void )theLabelFilter;
   (void )theSceneNodeMap;
   (void )theSceneRootNodeInds;
+#endif
+}
+
+// =======================================================================
+// function : writeExtrasAttributes
+// purpose  :
+// =======================================================================
+void RWGltf_CafWriter::writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData)
+{
+#ifdef HAVE_RAPIDJSON
+  Standard_ProgramError_Raise_if(myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeExtrasAttributes()");
+
+  if (theNamedData.IsNull())
+    return;
+  theNamedData->LoadDeferredData();
+  if (theNamedData->HasIntegers())
+  {
+    const TColStd_DataMapOfStringInteger& anIntProperties = theNamedData->GetIntegersContainer();
+    for (TColStd_DataMapIteratorOfDataMapOfStringInteger anIter(anIntProperties);
+         anIter.More(); anIter.Next())
+    {
+      TCollection_AsciiString aKey(anIter.Key());
+      myWriter->Key(aKey.ToCString());
+      myWriter->Int(anIter.Value());
+    }
+  }
+  if (theNamedData->HasReals())
+  {
+    const TDataStd_DataMapOfStringReal& aRealProperties = theNamedData->GetRealsContainer();
+    for (TDataStd_DataMapIteratorOfDataMapOfStringReal anIter(aRealProperties);
+         anIter.More(); anIter.Next())
+    {
+      TCollection_AsciiString aKey(anIter.Key());
+      myWriter->Key(aKey.ToCString());
+      myWriter->Double(anIter.Value());
+    }
+  }
+  if (theNamedData->HasStrings())
+  {
+    const TDataStd_DataMapOfStringString& aStringProperties = theNamedData->GetStringsContainer();
+    for (TDataStd_DataMapIteratorOfDataMapOfStringString anIter(aStringProperties);
+         anIter.More(); anIter.Next())
+    {
+      TCollection_AsciiString aKey(anIter.Key());
+      TCollection_AsciiString aValue(anIter.Value());
+      myWriter->Key(aKey.ToCString());
+      myWriter->String(aValue.ToCString());
+    }
+  }
+  if (theNamedData->HasBytes())
+  {
+    const TDataStd_DataMapOfStringByte& aByteProperties = theNamedData->GetBytesContainer();
+    for (TDataStd_DataMapOfStringByte::Iterator anIter(aByteProperties);
+         anIter.More(); anIter.Next())
+    {
+      TCollection_AsciiString aKey(anIter.Key());
+      myWriter->Key(aKey.ToCString());
+      myWriter->Int(anIter.Value());
+    }
+  }
+  if (theNamedData->HasArraysOfIntegers())
+  {
+    const TDataStd_DataMapOfStringHArray1OfInteger& anArrayIntegerProperties =
+      theNamedData->GetArraysOfIntegersContainer();
+    for (TDataStd_DataMapOfStringHArray1OfInteger::Iterator anIter(anArrayIntegerProperties);
+         anIter.More(); anIter.Next())
+    {
+      TCollection_AsciiString aKey(anIter.Key());
+      myWriter->Key(aKey.ToCString());
+      myWriter->StartArray();
+      for (TColStd_HArray1OfInteger::Iterator anSubIter(anIter.Value()->Array1());
+           anSubIter.More(); anSubIter.Next())
+      {
+        myWriter->Int(anSubIter.Value());
+      }
+      myWriter->EndArray();
+    }
+  }
+  if (theNamedData->HasArraysOfReals())
+  {
+    const TDataStd_DataMapOfStringHArray1OfReal& anArrayRealsProperties =
+      theNamedData->GetArraysOfRealsContainer();
+    for (TDataStd_DataMapOfStringHArray1OfReal::Iterator anIter(anArrayRealsProperties);
+         anIter.More(); anIter.Next())
+    {
+      TCollection_AsciiString aKey(anIter.Key());
+      myWriter->Key(aKey.ToCString());
+      myWriter->StartArray();
+      for (TColStd_HArray1OfReal::Iterator anSubIter(anIter.Value()->Array1());
+        anSubIter.More(); anSubIter.Next())
+      {
+        myWriter->Double(anSubIter.Value());
+      }
+      myWriter->EndArray();
+    }
+  }
+#else
+  (void)theNamedData;
 #endif
 }
 
