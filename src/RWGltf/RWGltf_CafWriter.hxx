@@ -34,6 +34,7 @@ class RWMesh_FaceIterator;
 class RWGltf_GltfOStreamWriter;
 class RWGltf_GltfMaterialMap;
 class RWGltf_GltfSceneNodeMap;
+class TDataStd_NamedData;
 class TDocStd_Document;
 
 //! glTF writer context from XCAF document.
@@ -348,6 +349,10 @@ protected:
   //! @param theSceneNodeMap [in] ordered map of scene nodes
   //! @param theMaterialMap [out] map of materials, filled with textures
   Standard_EXPORT virtual void writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
+
+  //! Write nodes.extras section with key-value attributes.
+  //! @param theNamedData [in] attributes map to process.
+  Standard_EXPORT virtual void writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData);
 
 protected:
 
