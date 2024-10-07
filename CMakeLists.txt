@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.5 FATAL_ERROR)
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/adm/cmake")
 
@@ -148,24 +148,16 @@ if (NOT DEFINED BUILD_USE_PCH)
   set (BUILD_USE_PCH OFF CACHE BOOL "${BUILD_USE_PCH_DESCR}")
 endif()
 
-if (BUILD_USE_PCH)
+if (CMAKE_VERSION VERSION_LESS "3.16")
+  OCCT_CHECK_AND_UNSET (BUILD_USE_PCH)
+endif()
 
-  # Load Cotire tool for accelerating build procedure
-  include(cotire)
+if (NOT DEFINED BUILD_INCLUDE_SYMLINK)
+  set (BUILD_INCLUDE_SYMLINK OFF CACHE BOOL "${BUILD_INCLUDE_SYMLINK_DESCR}")
+endif()
 
-  # Set Cotire to ignore lxx, pxx, gxx
-  set (COTIRE_ADDITIONAL_PREFIX_HEADER_IGNORE_EXTENSIONS "lxx;pxx;gxx" CACHE STRING "Set Cotire to ignore OCCT specific files that can be #included" FORCE)
-
-  # Set priority for inclusion of system headers in PCH to reduce problems
-  # due to incomplete inclusion or wrong order.
-  if (WIN32)
-    # on Windows, assume that SDK (windows.h) is in default location
-    set(ProgramFilesX86 "ProgramFiles(x86)")
-    file(TO_CMAKE_PATH "$ENV{${ProgramFilesX86}}" ProgramFilesX86)
-    set_property (DIRECTORY PROPERTY COTIRE_PREFIX_HEADER_INCLUDE_PRIORITY_PATH "${ProgramFilesX86}")
-    unset(ProgramFilesX86)
-  endif()
-
+if (CMAKE_VERSION VERSION_LESS "3.14")
+  OCCT_CHECK_AND_UNSET (BUILD_INCLUDE_SYMLINK)
 endif()
 
 # copy samples to install directory
@@ -503,12 +495,16 @@ endforeach()
 # accumulate all used toolkits
 list (REMOVE_DUPLICATES BUILD_TOOLKITS)
 set (RAW_BUILD_TOOLKITS)
+set (OCCT_FULL_LIST_OF_INCLUDES)
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
-  OCCT_TOOLKIT_FULL_DEP (${BUILD_TOOLKIT} TOOLKIT_FULL_DEPS)
+  EXCTRACT_TOOLKIT_FULL_DEPS ("src" ${BUILD_TOOLKIT} TOOLKIT_FULL_DEPS TOOLKIT_INCLUDES)
+  list (APPEND OCCT_FULL_LIST_OF_INCLUDES ${TOOLKIT_INCLUDES})
   list (APPEND RAW_BUILD_TOOLKITS ${BUILD_TOOLKIT} ${TOOLKIT_FULL_DEPS})
 endforeach()
 
 list (REMOVE_DUPLICATES RAW_BUILD_TOOLKITS)
+list (REMOVE_DUPLICATES OCCT_FULL_LIST_OF_INCLUDES)
+
 set (BUILD_TOOLKITS ${RAW_BUILD_TOOLKITS})
 
 # include the patched or original list of definitions and flags
@@ -875,6 +871,9 @@ if (3RDPARTY_INCLUDE_DIRS)
   include_directories (${3RDPARTY_INCLUDE_DIRS})
 endif()
 
+# Ensure the include directory exists
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}")
+
 # include <cmake binary folder>/inc
 include_directories (${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE})
 
@@ -932,7 +931,7 @@ string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT header files into ${CMAKE_BINARY_DIR}/inc ...")
 
 # collect all the headers to <binary dir>/inc folder
-COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "${CMAKE_SOURCE_DIR}/src" "${INSTALL_DIR_INCLUDE}")
+COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}" "src" "${INSTALL_DIR_INCLUDE}")
 
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
@@ -964,7 +963,7 @@ if (BUILD_Inspector)
   # collect all the headers to <binary dir>/inc/inspector folder
   string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
   message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/inc/inspector ...")
-  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "${CMAKE_SOURCE_DIR}/tools" "${INSTALL_DIR_INCLUDE}/inspector")
+  COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "tools" "${INSTALL_DIR_INCLUDE}/inspector")
 endif()
 
 # OCCT samples

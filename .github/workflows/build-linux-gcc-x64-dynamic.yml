@@ -32,6 +32,8 @@ jobs:
               -D CMAKE_C_COMPILER=gcc \
               -D CMAKE_CXX_COMPILER=g++ \
               -D USE_FREETYPE=OFF \
+              -D BUILD_USE_PCH=ON \
+              -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
               -D CMAKE_C_FLAGS="-Werror -Wno-clobbered -Wmaybe-uninitialized -Wodr -Wno-alloc-size-larger-than" \
               -D CMAKE_CXX_FLAGS="-Werror -Wno-clobbered -Wno-dangling-pointer" ..
