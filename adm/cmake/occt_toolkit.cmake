@@ -23,7 +23,7 @@ if ("${OCCT_TOOLKITS_NAME_SUFFIX}" STREQUAL "")
 endif()
 
 # parse PACKAGES file
-FILE_TO_LIST ("${RELATIVE_SOURCES_DIR}/${PROJECT_NAME}/PACKAGES" USED_PACKAGES)
+EXTRACT_TOOLKIT_PACKAGES (${RELATIVE_SOURCES_DIR} ${PROJECT_NAME} USED_PACKAGES)
 if ("${USED_PACKAGES}" STREQUAL "")
   set (USED_PACKAGES ${PROJECT_NAME})
 endif()
@@ -47,7 +47,6 @@ endif()
 # Get all used packages from toolkit
 UNSET(RESOURCE_FILES)
 foreach (OCCT_PACKAGE ${USED_PACKAGES})
-
   #remove part after "/" in the OCCT_PACKAGE variable if exists
   string (FIND "${OCCT_PACKAGE}" "/" _index)
   if (_index GREATER -1)
@@ -64,142 +63,27 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
   set (SOURCE_FILES)
   set (HEADER_FILES)
 
-  # Generate Flex and Bison files
-  if (${BUILD_YACCLEX})
-    # flex files
-    OCCT_ORIGIN_AND_PATCHED_FILES ("${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}" "*[.]lex" SOURCE_FILES_FLEX)
-    list (LENGTH SOURCE_FILES_FLEX SOURCE_FILES_FLEX_LEN)
+  EXTRACT_PACKAGE_FILES (${RELATIVE_SOURCES_DIR} ${OCCT_PACKAGE} ALL_FILES INCLUDE_FOLDER)
 
-    # remove old general version of FlexLexer
-    if (EXISTS ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h)
-      message (STATUS "Info: remove old FLEX header file: ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h")
-      file(REMOVE ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h)
-    endif()
-    # install copy of FlexLexer.h locally to allow further building without flex
-    if (FLEX_INCLUDE_DIR AND EXISTS "${FLEX_INCLUDE_DIR}/FlexLexer.h")
-      configure_file("${FLEX_INCLUDE_DIR}/FlexLexer.h" "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/FlexLexer/FlexLexer.h" @ONLY NEWLINE_STYLE LF)
-    endif()
-
-    # bison files
-    OCCT_ORIGIN_AND_PATCHED_FILES ("${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}" "*[.]yacc" SOURCE_FILES_BISON)
-    list (LENGTH SOURCE_FILES_BISON SOURCE_FILES_BISON_LEN)
-
-    if (${SOURCE_FILES_FLEX_LEN} EQUAL ${SOURCE_FILES_BISON_LEN} AND NOT ${SOURCE_FILES_FLEX_LEN} EQUAL 0)
-      
-      list (SORT SOURCE_FILES_FLEX)
-      list (SORT SOURCE_FILES_BISON)
-
-      math (EXPR SOURCE_FILES_FLEX_LEN "${SOURCE_FILES_FLEX_LEN} - 1")
-      foreach (FLEX_FILE_INDEX RANGE ${SOURCE_FILES_FLEX_LEN})
-
-        list (GET SOURCE_FILES_FLEX ${FLEX_FILE_INDEX} CURRENT_FLEX_FILE)
-        get_filename_component (CURRENT_FLEX_FILE_NAME ${CURRENT_FLEX_FILE} NAME_WE)
-
-        list (GET SOURCE_FILES_BISON ${FLEX_FILE_INDEX} CURRENT_BISON_FILE)
-        get_filename_component (CURRENT_BISON_FILE_NAME ${CURRENT_BISON_FILE} NAME_WE)
-          
-        string (COMPARE EQUAL ${CURRENT_FLEX_FILE_NAME} ${CURRENT_BISON_FILE_NAME} ARE_FILES_EQUAL)
-
-        if (EXISTS "${CURRENT_FLEX_FILE}" AND EXISTS "${CURRENT_BISON_FILE}" AND ${ARE_FILES_EQUAL})
-
-          # Note: files are generated in original source directory (not in patch!)
-          set (FLEX_BISON_TARGET_DIR "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}")
-
-          # choose appropriate extension for generated files: "cxx" if source file contains
-          # instruction to generate C++ code, "c" otherwise
-          set (BISON_OUTPUT_FILE_EXT "c")
-          set (FLEX_OUTPUT_FILE_EXT "c")
-          file (STRINGS "${CURRENT_BISON_FILE}" FILE_BISON_CONTENT)
-          foreach (FILE_BISON_CONTENT_LINE ${FILE_BISON_CONTENT})
-            string (REGEX MATCH "%language \"C\\+\\+\"" CXX_BISON_LANGUAGE_FOUND ${FILE_BISON_CONTENT_LINE})
-            if (CXX_BISON_LANGUAGE_FOUND)
-              set (BISON_OUTPUT_FILE_EXT "cxx")
-            endif()
-          endforeach()
-
-          file (STRINGS "${CURRENT_FLEX_FILE}" FILE_FLEX_CONTENT)
-          foreach (FILE_FLEX_CONTENT_LINE ${FILE_FLEX_CONTENT})
-            string (REGEX MATCH "%option c\\+\\+" CXX_FLEX_LANGUAGE_FOUND ${FILE_FLEX_CONTENT_LINE})
-            if (CXX_FLEX_LANGUAGE_FOUND)
-              set (FLEX_OUTPUT_FILE_EXT "cxx")
-            endif()
-          endforeach()
-          set (BISON_OUTPUT_FILE ${CURRENT_BISON_FILE_NAME}.tab.${BISON_OUTPUT_FILE_EXT})
-          set (FLEX_OUTPUT_FILE lex.${CURRENT_FLEX_FILE_NAME}.${FLEX_OUTPUT_FILE_EXT})
-
-          if (EXISTS ${FLEX_BISON_TARGET_DIR}/${CURRENT_BISON_FILE_NAME}.tab.${BISON_OUTPUT_FILE_EXT})
-            message (STATUS "Info: remove old output BISON file: ${FLEX_BISON_TARGET_DIR}/${CURRENT_BISON_FILE_NAME}.tab.${BISON_OUTPUT_FILE_EXT}")
-            file(REMOVE ${FLEX_BISON_TARGET_DIR}/${CURRENT_BISON_FILE_NAME}.tab.${BISON_OUTPUT_FILE_EXT})
-          endif()
-          if (EXISTS ${FLEX_BISON_TARGET_DIR}/${CURRENT_BISON_FILE_NAME}.tab.hxx)
-            message (STATUS "Info: remove old output BISON file: ${FLEX_BISON_TARGET_DIR}/${CURRENT_BISON_FILE_NAME}.tab.hxx")
-            file(REMOVE ${FLEX_BISON_TARGET_DIR}/${CURRENT_BISON_FILE_NAME}.tab.hxx)
-          endif()
-          if (EXISTS ${FLEX_BISON_TARGET_DIR}/${FLEX_OUTPUT_FILE})
-            message (STATUS "Info: remove old output FLEX file: ${FLEX_BISON_TARGET_DIR}/${FLEX_OUTPUT_FILE}")
-            file(REMOVE ${FLEX_BISON_TARGET_DIR}/${FLEX_OUTPUT_FILE})
-          endif()
-
-          BISON_TARGET (Parser_${CURRENT_BISON_FILE_NAME} ${CURRENT_BISON_FILE} "${FLEX_BISON_TARGET_DIR}/${BISON_OUTPUT_FILE}"
-                        COMPILE_FLAGS "-p ${CURRENT_BISON_FILE_NAME} -l -M ${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/=")
-          FLEX_TARGET  (Scanner_${CURRENT_FLEX_FILE_NAME} ${CURRENT_FLEX_FILE} "${FLEX_BISON_TARGET_DIR}/${FLEX_OUTPUT_FILE}"
-                        COMPILE_FLAGS "-P${CURRENT_FLEX_FILE_NAME} -L")
-          ADD_FLEX_BISON_DEPENDENCY (Scanner_${CURRENT_FLEX_FILE_NAME} Parser_${CURRENT_BISON_FILE_NAME})
-           
-          list (APPEND SOURCE_FILES ${BISON_OUTPUT_FILE} ${FLEX_OUTPUT_FILE})
-        endif()
-      endforeach()
-    endif()
-  endif()
-
-  # header files
-  if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES")
-    file (STRINGS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES" HEADER_FILES_M   REGEX ".+[.]h")
-    file (STRINGS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES" HEADER_FILES_LXX REGEX ".+[.]lxx")
-    file (STRINGS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES" HEADER_FILES_GXX REGEX ".+[.]gxx")
-
-    file (STRINGS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES" SOURCE_FILES_C REGEX ".+[.]c")
-    if(APPLE)
-      file (STRINGS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES" SOURCE_FILES_M REGEX ".+[.]mm")
-    endif()
-  else()
-    file (STRINGS "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES"     HEADER_FILES_M   REGEX ".+[.]h")
-    file (STRINGS "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES"     HEADER_FILES_LXX REGEX ".+[.]lxx")
-    file (STRINGS "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES"     HEADER_FILES_GXX REGEX ".+[.]gxx")
-
-    file (STRINGS "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES"     SOURCE_FILES_C REGEX ".+[.]c")
-    if(APPLE)
-      file (STRINGS "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/FILES"   SOURCE_FILES_M REGEX ".+[.]mm")
-    endif()
-  endif()
-    
-  list (APPEND HEADER_FILES ${HEADER_FILES_M} ${HEADER_FILES_LXX} ${SOURCE_FILES_GXX})
-  list (APPEND SOURCE_FILES ${SOURCE_FILES_C})
+  set (HEADER_FILES_FILTERING ${ALL_FILES})
+  set (SOURCE_FILES_FILTERING ${ALL_FILES})
+  
+  list (FILTER HEADER_FILES_FILTERING INCLUDE REGEX ".+[.](h|lxx|gxx)")
+  
   if(APPLE)
-    list (APPEND SOURCE_FILES ${SOURCE_FILES_M})
+    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c|mm)")
+  else()
+    list (FILTER SOURCE_FILES_FILTERING INCLUDE REGEX ".+[.](c)")
   endif()
 
-  foreach(HEADER_FILE ${HEADER_FILES})
-    if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${HEADER_FILE}")
-      message (STATUS "Info: consider patched file: ${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${HEADER_FILE}")
-      list (APPEND USED_INCFILES "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${HEADER_FILE}")
-      SOURCE_GROUP ("Header Files\\${OCCT_PACKAGE_NAME}" FILES "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${HEADER_FILE}")
-    else()
-      list (APPEND USED_INCFILES "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${HEADER_FILE}")
-      SOURCE_GROUP ("Header Files\\${OCCT_PACKAGE_NAME}" FILES "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${HEADER_FILE}")
-    endif()
-  endforeach()
+  list (APPEND HEADER_FILES ${HEADER_FILES_FILTERING})
+  list (APPEND SOURCE_FILES ${SOURCE_FILES_FILTERING})
 
-  foreach(SOURCE_FILE ${SOURCE_FILES})
-    if (BUILD_PATCH AND EXISTS "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${SOURCE_FILE}")
-      message (STATUS "Info: consider patched file: ${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${SOURCE_FILE}")
-      list (APPEND USED_SRCFILES "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${SOURCE_FILE}")
-      SOURCE_GROUP ("Source Files\\${OCCT_PACKAGE_NAME}" FILES "${BUILD_PATCH}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${SOURCE_FILE}")
-    else()
-      list (APPEND USED_SRCFILES "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${SOURCE_FILE}")
-      SOURCE_GROUP ("Source Files\\${OCCT_PACKAGE_NAME}" FILES "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}/${SOURCE_FILE}")
-    endif()
-  endforeach()
+  SOURCE_GROUP ("Header Files\\${OCCT_PACKAGE_NAME}" FILES "${HEADER_FILES_FILTERING}")
+  SOURCE_GROUP ("Source Files\\${OCCT_PACKAGE_NAME}" FILES "${SOURCE_FILES_FILTERING}")
+
+  list (APPEND USED_INCFILES ${HEADER_FILES})
+  list (APPEND USED_SRCFILES ${SOURCE_FILES})
 
   if (USE_QT)
     FIND_AND_INSTALL_QT_RESOURCES (${OCCT_PACKAGE} RESOURCE_FILES)
@@ -245,18 +129,6 @@ endif (USE_QT)
 if (EXECUTABLE_PROJECT)
   add_executable (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE} ${RESOURCE_FILES} ${${PROJECT_NAME}_MOC_FILES})
 
-  if (DEFINED ${PROJECT_NAME}_DISABLE_COTIRE AND ${PROJECT_NAME}_DISABLE_COTIRE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-  else()
-    # To avoid excluding of PROJECT_NAME from cotire tool, we may use cotire
-    # COTIRE_PREFIX_HEADER_IGNORE_PATH instead. But, practically it causes many 'undefined symbols' error.
-    # So, we just exclude PROJECT_NAME from cotire list.
-    # if (DEFINED ${PROJECT_NAME}_COTIRE_IGNORE_PATH)
-    #   set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_PREFIX_HEADER_IGNORE_PATH "${${PROJECT_NAME}_COTIRE_IGNORE_PATH}")
-    # endif()
-  endif()
-
   install (TARGETS ${PROJECT_NAME}
            DESTINATION "${INSTALL_DIR_BIN}\${OCCT_INSTALL_BIN_LETTER}")
 
@@ -265,18 +137,6 @@ if (EXECUTABLE_PROJECT)
   endif()
 else()
   add_library (${PROJECT_NAME} ${USED_SRCFILES} ${USED_INCFILES} ${USED_RCFILE} ${RESOURCE_FILES} ${${PROJECT_NAME}_MOC_FILES})
-
-  if (DEFINED ${PROJECT_NAME}_DISABLE_COTIRE AND ${PROJECT_NAME}_DISABLE_COTIRE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_ENABLE_PRECOMPILED_HEADER FALSE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-  else()
-    # To avoid excluding of PROJECT_NAME from cotire tool, we may use cotire
-    # COTIRE_PREFIX_HEADER_IGNORE_PATH instead. But, practically it causes many 'undefined symbols' error.
-    # So, we just exclude PROJECT_NAME from cotire list.
-    # if (DEFINED ${PROJECT_NAME}_COTIRE_IGNORE_PATH)
-    #   set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_PREFIX_HEADER_IGNORE_PATH "${${PROJECT_NAME}_COTIRE_IGNORE_PATH}")
-    # endif()
-  endif()
 
   if (MSVC)
     if (BUILD_FORCE_RelWithDebInfo)
@@ -343,102 +203,78 @@ set_target_properties (${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${PRECOMPILED_D
                                                   VERSION       "${OCC_VERSION_MAJOR}.${OCC_VERSION_MINOR}.${OCC_VERSION_MAINTENANCE}")
 
 set (USED_TOOLKITS_BY_CURRENT_PROJECT)
-set (USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT)
+set (USED_EXTERNLIB_AND_TOOLKITS)
 
-# parse EXTERNLIB file
+# SOME EXECUTABLE PROJECTS MAY USE CUSTOM TOOLKITS AND EXTERNAL LIBRARIES
 if (CUSTOM_EXTERNLIB)
   set (USED_EXTERNLIB_AND_TOOLKITS ${CUSTOM_EXTERNLIB})
+  foreach (EXTERNAL_LIB ${CUSTOM_EXTERNLIB})
+    string (REGEX MATCH "^TK" TK_FOUND ${EXTERNAL_LIB})
+    if (TK_FOUND)
+      list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT ${EXTERNAL_LIB})
+    endif()
+  endforeach()
 else()
-  FILE_TO_LIST ("${RELATIVE_SOURCES_DIR}/${PROJECT_NAME}/EXTERNLIB" USED_EXTERNLIB_AND_TOOLKITS)
+  EXTRACT_TOOLKIT_EXTERNLIB ("${RELATIVE_SOURCES_DIR}" "${PROJECT_NAME}" USED_EXTERNLIB_AND_TOOLKITS)
+  EXCTRACT_TOOLKIT_DEPS ("${RELATIVE_SOURCES_DIR}" "${PROJECT_NAME}" USED_TOOLKITS_BY_CURRENT_PROJECT _)
+  list (REMOVE_ITEM USED_TOOLKITS_BY_CURRENT_PROJECT ${PROJECT_NAME})
 endif()
+
 foreach (USED_ITEM ${USED_EXTERNLIB_AND_TOOLKITS})
   string (REGEX MATCH "^ *#" COMMENT_FOUND ${USED_ITEM})
-  if (NOT COMMENT_FOUND)
-    string (REGEX MATCH "^TK" TK_FOUND ${USED_ITEM})
-    string (REGEX MATCH "^vtk" VTK_FOUND ${USED_ITEM})
-    
-    if (NOT "${TK_FOUND}" STREQUAL "" OR NOT "${VTK_FOUND}" STREQUAL "")
-      list (APPEND USED_TOOLKITS_BY_CURRENT_PROJECT ${USED_ITEM})
-      if (NOT "${VTK_FOUND}" STREQUAL "" AND BUILD_SHARED_LIBS AND INSTALL_VTK AND COMMAND OCCT_INSTALL_VTK)
-        OCCT_INSTALL_VTK(${USED_ITEM})
-      endif()
-    else()
-      string (REGEX MATCH "^CSF_" CSF_FOUND ${USED_ITEM})
-      if ("${CSF_FOUND}" STREQUAL "")
-        message (STATUS "Info: ${USED_ITEM} from ${PROJECT_NAME} skipped due to it is empty")
-      else() # get CSF_ value
-        set (CURRENT_CSF ${${USED_ITEM}})
-        if (NOT "x${CURRENT_CSF}" STREQUAL "x")
-          if ("${CURRENT_CSF}" STREQUAL "${CSF_OpenGlLibs}")
-            add_definitions (-DHAVE_OPENGL)
-          endif()
-          if ("${CURRENT_CSF}" STREQUAL "${CSF_OpenGlesLibs}")
-            add_definitions (-DHAVE_GLES2)
-          endif()
+  if (COMMENT_FOUND)
+    continue()
+  endif()
 
-          if ("${CURRENT_CSF}" STREQUAL "${CSF_Draco}")
-            set (CURRENT_CSF "")
-            set (USED_DRACO 1)
-          endif()
-          set (LIBRARY_FROM_CACHE 0)
-          separate_arguments (CURRENT_CSF)
-          foreach (CSF_LIBRARY ${CURRENT_CSF})
-            string (TOLOWER "${CSF_LIBRARY}" CSF_LIBRARY)
-            string (REPLACE "+" "[+]" CSF_LIBRARY "${CSF_LIBRARY}")
-            string (REPLACE "." "" CSF_LIBRARY "${CSF_LIBRARY}")
-            get_cmake_property(ALL_CACHE_VARIABLES CACHE_VARIABLES)
-            string (REGEX MATCHALL "(^|;)3RDPARTY_[^;]+_LIBRARY[^;]*" ALL_CACHE_VARIABLES "${ALL_CACHE_VARIABLES}")
-            foreach (CACHE_VARIABLE ${ALL_CACHE_VARIABLES})
-              set (CURRENT_CACHE_LIBRARY ${${CACHE_VARIABLE}})
-              string (TOLOWER "${CACHE_VARIABLE}" CACHE_VARIABLE)
+  string (REGEX MATCH "^CSF_" CSF_FOUND ${USED_ITEM})
+  string (REGEX MATCH "^vtk" VTK_FOUND ${USED_ITEM})
 
-              if (EXISTS "${CURRENT_CACHE_LIBRARY}" AND NOT IS_DIRECTORY "${CURRENT_CACHE_LIBRARY}")
-                string (REGEX MATCH "_${CSF_LIBRARY}$" IS_ENDING "${CACHE_VARIABLE}")
-                string (REGEX MATCH "^([a-z]+)" CSF_WO_VERSION "${CSF_LIBRARY}")
-                string (REGEX MATCH "_${CSF_WO_VERSION}$" IS_ENDING_WO_VERSION "${CACHE_VARIABLE}")
-                if ("3rdparty_${CSF_LIBRARY}_library" STREQUAL "${CACHE_VARIABLE}" OR
-                    "3rdparty_${CSF_WO_VERSION}_library" STREQUAL "${CACHE_VARIABLE}" OR
-                    NOT "x${IS_ENDING}" STREQUAL "x" OR
-                    NOT "x${IS_ENDING_WO_VERSION}" STREQUAL "x")
-                  list (APPEND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT "${CURRENT_CACHE_LIBRARY}")
-                  set (LIBRARY_FROM_CACHE 1)
-                endif()
-              endif()
-            endforeach()
-          endforeach()
-
-          if (NOT ${LIBRARY_FROM_CACHE} AND NOT "${CURRENT_CSF}" STREQUAL "")
-            # prepare a list from a string with whitespaces
-            separate_arguments (CURRENT_CSF)
-            list (APPEND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT ${CURRENT_CSF})
-          endif()
+  if (NOT "${VTK_FOUND}" STREQUAL "" AND BUILD_SHARED_LIBS AND INSTALL_VTK AND COMMAND OCCT_INSTALL_VTK)
+    OCCT_INSTALL_VTK(${USED_ITEM})
+    continue()
+  endif()
+  # Search for 3rd-party libraries as a dependency
+  set (CURRENT_CSF ${${USED_ITEM}})
+  if ("x${CURRENT_CSF}" STREQUAL "x")
+    continue()
+  endif()
+  if ("${CURRENT_CSF}" STREQUAL "${CSF_OpenGlLibs}")
+    add_definitions (-DHAVE_OPENGL)
+  endif()
+  if ("${CURRENT_CSF}" STREQUAL "${CSF_OpenGlesLibs}")
+    add_definitions (-DHAVE_GLES2)
+  endif()
+  set (LIBRARY_FROM_CACHE 0)
+  separate_arguments (CURRENT_CSF)
+  foreach (CSF_LIBRARY ${CURRENT_CSF})
+    string (TOLOWER "${CSF_LIBRARY}" CSF_LIBRARY)
+    string (REPLACE "+" "[+]" CSF_LIBRARY "${CSF_LIBRARY}")
+    string (REPLACE "." "" CSF_LIBRARY "${CSF_LIBRARY}")
+    get_cmake_property(ALL_CACHE_VARIABLES CACHE_VARIABLES)
+    string (REGEX MATCHALL "(^|;)3RDPARTY_[^;]+_LIBRARY[^;]*" ALL_CACHE_VARIABLES "${ALL_CACHE_VARIABLES}")
+    foreach (CACHE_VARIABLE ${ALL_CACHE_VARIABLES})
+      set (CURRENT_CACHE_LIBRARY ${${CACHE_VARIABLE}})
+      string (TOLOWER "${CACHE_VARIABLE}" CACHE_VARIABLE)
+      if (EXISTS "${CURRENT_CACHE_LIBRARY}" AND NOT IS_DIRECTORY "${CURRENT_CACHE_LIBRARY}")
+        string (REGEX MATCH "_${CSF_LIBRARY}$" IS_ENDING "${CACHE_VARIABLE}")
+        string (REGEX MATCH "^([a-z]+)" CSF_WO_VERSION "${CSF_LIBRARY}")
+        string (REGEX MATCH "_${CSF_WO_VERSION}$" IS_ENDING_WO_VERSION "${CACHE_VARIABLE}")
+        if ("3rdparty_${CSF_LIBRARY}_library" STREQUAL "${CACHE_VARIABLE}" OR
+            "3rdparty_${CSF_WO_VERSION}_library" STREQUAL "${CACHE_VARIABLE}" OR
+            NOT "x${IS_ENDING}" STREQUAL "x" OR
+            NOT "x${IS_ENDING_WO_VERSION}" STREQUAL "x")
+          list (APPEND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT "${CURRENT_CACHE_LIBRARY}")
+          set (LIBRARY_FROM_CACHE 1)
         endif()
       endif()
-    endif()
+    endforeach()
+  endforeach()
+  if (NOT ${LIBRARY_FROM_CACHE} AND NOT "${CURRENT_CSF}" STREQUAL "")
+    # prepare a list from a string with whitespaces
+    separate_arguments (CURRENT_CSF)
+    list (APPEND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT ${CURRENT_CSF})
   endif()
 endforeach()
-
-if (USE_DRACO)
-  if (USED_DRACO)
-    set (USED_LIB_RELEASE ${3RDPARTY_DRACO_LIBRARY})
-    if (WIN32)
-      set (USED_LIB_DEBUG ${3RDPARTY_DRACO_LIBRARY_DEBUG})
-    else()
-      set (USED_LIB_DEBUG ${3RDPARTY_DRACO_LIBRARY})
-    endif()
-    set (USED_LIB_CONF)
-    if (EXISTS ${USED_LIB_DEBUG})
-      set (USED_LIB_CONF "$<$<CONFIG:DEBUG>:${USED_LIB_DEBUG}>;${USED_LIB_CONF}")
-    endif()
-    if (EXISTS ${USED_LIB_RELEASE})
-      set (USED_LIB_CONF "$<$<CONFIG:RELEASE>:${USED_LIB_RELEASE}>;${USED_LIB_CONF}")
-      set (USED_LIB_CONF "$<$<CONFIG:RELWITHDEBINFO>:${USED_LIB_RELEASE}>;${USED_LIB_CONF}")
-    endif()
-    if (DEFINED USED_LIB_CONF)
-      set_property (TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_LIBRARIES "${USED_LIB_CONF}")
-    endif()
-  endif()
-endif()
 
 if (APPLE)
   list (FIND USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT X11 IS_X11_FOUND)
@@ -497,36 +333,4 @@ if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-DOCCT_NO_DEPRECATED")
     message (STATUS "Warning: internal deprecation warnings by Standard_DEPRECATED have been disabled due to old gcc version being used")
   endif()
-endif()
-
-# use Cotire to accelerate build via usage of precompiled headers
-if (BUILD_USE_PCH)
-  if (WIN32)
-    # prevent definition of min and max macros through inclusion of Windows.h
-    # (for cotire builds)
-    add_definitions("-DNOMINMAX")
-    # avoid warnings on deprecated names from standard C library (see strsafe.h)
-    add_definitions("-DSTRSAFE_NO_DEPRECATE")
-    # avoid "std::Equal1" warning in QANCollection_Stl.cxx in debug mode
-    # suggesting using msvc "Checked Iterators"
-    add_definitions("-D_SCL_SECURE_NO_WARNINGS")
-  endif()
-
-  # Exclude system-provided glext.h.
-  # These macros are already defined within OpenGl_GlFunctions.hxx,
-  # however we have to duplicate them here for building TKOpenGl with PCH.
-  add_definitions("-DGL_GLEXT_LEGACY")
-  add_definitions("-DGLX_GLXEXT_LEGACY")
-
-  # workaround for old gcc
-  if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-D__STDC_CONSTANT_MACROS")
-    add_definitions("-D__STDC_FORMAT_MACROS")
-  endif()
-
-  # unity builds are not used since they do not add speed but cause conflicts
-  # in TKV3d
-  set_target_properties(${PROJECT_NAME} PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
-
-  cotire(${PROJECT_NAME})
 endif()

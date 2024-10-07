@@ -48,6 +48,11 @@ set (BUILD_USE_PCH_DESCR
 "Use precompiled headers to accelerate the build.
 Precompiled headers are generated automatically by Cotire tool.")
 
+set (BUILD_INCLUDE_SYMLINK_DESCR
+"Include symbolic links to the source files in the build directory.
+OFF - using a reference file with direct include to the origin,
+ON - symbolic link to the origin file are created")
+
 # install variables
 set (INSTALL_DIR_DESCR 
 "The place where built OCCT libraries, headers, test cases (INSTALL_TEST_CASES variable),
