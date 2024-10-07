@@ -13,7 +13,6 @@
 
 #include <STEPCAFControl_Provider.hxx>
 
-#include <BinXCAFDrivers.hxx>
 #include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <StepData_StepModel.hxx>

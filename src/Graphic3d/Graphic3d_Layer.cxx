@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Layer, Standard_Transient)
 // purpose  :
 // =======================================================================
 Graphic3d_Layer::Graphic3d_Layer (Graphic3d_ZLayerId theId,
-                                  const Handle(Select3D_BVHBuilder3d)& theBuilder)
+                                  const Handle(BVH_Builder3d)& theBuilder)
 : myNbStructures              (0),
   myNbStructuresNotCulled     (0),
   myLayerId                   (theId),
