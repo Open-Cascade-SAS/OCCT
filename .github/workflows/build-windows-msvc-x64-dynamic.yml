@@ -36,7 +36,7 @@ jobs:
       run: |
           mkdir build
           cd build
-          cmake -T host=x64 -D USE_FREETYPE=OFF -D BUILD_MODULE_Draw=OFF -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_FLAGS="/WX" -D CMAKE_CXX_FLAGS="/WX" ..
+          cmake -T host=x64 -D USE_FREETYPE=OFF -D BUILD_USE_PCH=ON -D BUILD_INCLUDE_SYMLINK=ON -D BUILD_MODULE_Draw=OFF -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_FLAGS="/WX" -D CMAKE_CXX_FLAGS="/WX" ..
   
     - name: Build OCCT
       run: |
