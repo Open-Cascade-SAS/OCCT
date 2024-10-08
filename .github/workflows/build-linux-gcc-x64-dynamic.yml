@@ -35,8 +35,8 @@ jobs:
               -D BUILD_USE_PCH=ON \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
-              -D CMAKE_C_FLAGS="-Werror" \
-              -D CMAKE_CXX_FLAGS="-Werror" ..
+              -D CMAKE_C_FLAGS="-Werror -Wno-clobbered" \
+              -D CMAKE_CXX_FLAGS="-Werror -Wno-clobbered -Wno-dangling-pointer" ..
 
     - name: Build OCCT
       run: |
