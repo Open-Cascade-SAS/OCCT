@@ -13,7 +13,6 @@
 
 #include <Vrml_Provider.hxx>
 
-#include <BinXCAFDrivers.hxx>
 #include <Message.hxx>
 #include <OSD_Path.hxx>
 #include <TDocStd_Document.hxx>

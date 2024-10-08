@@ -21,7 +21,7 @@
 // function : Graphic3d_BvhCStructureSetTrsfPers
 // purpose  :
 // =======================================================================
-Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+Graphic3d_BvhCStructureSetTrsfPers::Graphic3d_BvhCStructureSetTrsfPers (const Handle(BVH_Builder3d)& theBuilder)
 : myIsDirty (Standard_False),
   myBVH (new BVH_Tree<Standard_Real, 3>()),
   myBuilder (theBuilder)

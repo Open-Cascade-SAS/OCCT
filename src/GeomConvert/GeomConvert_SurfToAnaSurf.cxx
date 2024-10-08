@@ -17,7 +17,6 @@
 //abv 06.01.99 fix of misprint
 //:p6 abv 26.02.99: make ConvertToPeriodic() return Null if nothing done
 
-#include <BRepTopAdaptor_TopolTool.hxx>
 #include <ElSLib.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_BezierSurface.hxx>

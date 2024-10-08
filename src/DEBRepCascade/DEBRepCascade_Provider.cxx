@@ -14,7 +14,6 @@
 #include <DEBRepCascade_Provider.hxx>
 
 #include <BinTools.hxx>
-#include <BinXCAFDrivers.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <DEBRepCascade_ConfigurationNode.hxx>

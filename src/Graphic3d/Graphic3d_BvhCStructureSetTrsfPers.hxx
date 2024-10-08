@@ -21,7 +21,7 @@
 #include <Graphic3d_WorldViewProjState.hxx>
 #include <NCollection_Shared.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <Select3D_BVHBuilder3d.hxx>
+#include <BVH_Builder3d.hxx>
 
 class Graphic3d_Camera;
 class Graphic3d_CStructure;
@@ -39,7 +39,7 @@ private:
 public:
 
   //! Creates an empty primitive set for BVH clipping.
-  Standard_EXPORT Graphic3d_BvhCStructureSetTrsfPers (const Handle(Select3D_BVHBuilder3d)& theBuilder);
+  Standard_EXPORT Graphic3d_BvhCStructureSetTrsfPers (const Handle(BVH_Builder3d)& theBuilder);
 
   //! Returns total number of structures.
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
@@ -87,10 +87,10 @@ public:
                                                                                const Graphic3d_WorldViewProjState& theWVPState);
 
   //! Returns builder for bottom-level BVH.
-  const Handle(Select3D_BVHBuilder3d)& Builder() const { return myBuilder; }
+  const Handle(BVH_Builder3d)& Builder() const { return myBuilder; }
 
   //! Assigns builder for bottom-level BVH.
-  void SetBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myBuilder = theBuilder; }
+  void SetBuilder (const Handle(BVH_Builder3d)& theBuilder) { myBuilder = theBuilder; }
 
 private:
 
@@ -101,7 +101,7 @@ private:
   opencascade::handle<BVH_Tree<Standard_Real, 3> > myBVH;
 
   //! Builder for bottom-level BVH.
-  Handle(Select3D_BVHBuilder3d) myBuilder;
+  Handle(BVH_Builder3d) myBuilder;
 
   //! Indexed map of structures.
   NCollection_IndexedMap<const Graphic3d_CStructure*> myStructs;

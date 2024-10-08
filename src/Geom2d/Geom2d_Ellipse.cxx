@@ -32,7 +32,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_Ellipse,Geom2d_Conic)
 
-typedef Geom2d_Ellipse         Ellipse;
 typedef gp_Ax2d   Ax2d;
 typedef gp_Dir2d  Dir2d;
 typedef gp_Pnt2d  Pnt2d;
@@ -48,7 +47,7 @@ typedef gp_XY     XY;
 Handle(Geom2d_Geometry) Geom2d_Ellipse::Copy() const 
 {
   Handle(Geom2d_Ellipse) E;
-  E = new Ellipse (pos, majorRadius, minorRadius);
+  E = new Geom2d_Ellipse (pos, majorRadius, minorRadius);
   return E;
 }
 

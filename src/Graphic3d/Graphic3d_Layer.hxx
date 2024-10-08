@@ -41,7 +41,7 @@ public:
 
   //! Initializes associated priority list and layer properties
   Standard_EXPORT Graphic3d_Layer (Graphic3d_ZLayerId theId,
-                                   const Handle(Select3D_BVHBuilder3d)& theBuilder);
+                                   const Handle(BVH_Builder3d)& theBuilder);
 
   //! Destructor.
   Standard_EXPORT virtual ~Graphic3d_Layer();
@@ -50,10 +50,10 @@ public:
   Graphic3d_ZLayerId LayerId() const { return myLayerId; }
 
   //! Returns BVH tree builder for frustum culling.
-  const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHPrimitivesTrsfPers.Builder(); }
+  const Handle(BVH_Builder3d)& FrustumCullingBVHBuilder() const { return myBVHPrimitivesTrsfPers.Builder(); }
 
   //! Assigns BVH tree builder for frustum culling.
-  void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myBVHPrimitivesTrsfPers.SetBuilder (theBuilder); }
+  void SetFrustumCullingBVHBuilder (const Handle(BVH_Builder3d)& theBuilder) { myBVHPrimitivesTrsfPers.SetBuilder (theBuilder); }
 
   //! Return true if layer was marked with immediate flag.
   Standard_Boolean IsImmediate() const  { return myLayerSettings.IsImmediate(); }

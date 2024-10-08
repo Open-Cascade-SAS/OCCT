@@ -191,7 +191,7 @@ OpenGl_LayerList::~OpenGl_LayerList()
 //function : SetFrustumCullingBVHBuilder
 //purpose  :
 //=======================================================================
-void OpenGl_LayerList::SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder)
+void OpenGl_LayerList::SetFrustumCullingBVHBuilder (const Handle(BVH_Builder3d)& theBuilder)
 {
   myBVHBuilder = theBuilder;
   for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayerIter (myLayers); aLayerIter.More(); aLayerIter.Next())

@@ -112,8 +112,6 @@
 #include <XDEDRAW_GDTs.hxx>
 #include <XDEDRAW_Views.hxx>
 #include <XDEDRAW_Notes.hxx>
-#include <XSDRAWIGES.hxx>
-#include <XSDRAWSTEP.hxx>
 #include <UnitsMethods.hxx>
 
 #include <BinXCAFDrivers.hxx>

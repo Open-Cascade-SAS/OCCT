@@ -13,7 +13,6 @@
 
 #include <RWGltf_Provider.hxx>
 
-#include <BinXCAFDrivers.hxx>
 #include <Message.hxx>
 #include <RWGltf_CafWriter.hxx>
 #include <TDocStd_Document.hxx>

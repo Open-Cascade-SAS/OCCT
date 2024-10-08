@@ -13,7 +13,6 @@
 
 #include <RWObj_Provider.hxx>
 
-#include <BinXCAFDrivers.hxx>
 #include <BRep_Builder.hxx>
 #include <RWObj_ConfigurationNode.hxx>
 #include <RWObj_CafReader.hxx>

@@ -121,10 +121,10 @@ public:
   Standard_Size ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
 
   //! Returns BVH tree builder for frustum culling.
-  const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
+  const Handle(BVH_Builder3d)& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
 
   //! Assigns BVH tree builder for frustum culling.
-  Standard_EXPORT void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
+  Standard_EXPORT void SetFrustumCullingBVHBuilder (const Handle(BVH_Builder3d)& theBuilder);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
@@ -207,7 +207,7 @@ protected:
 
   NCollection_List<Handle(Graphic3d_Layer)> myLayers;
   NCollection_DataMap<Graphic3d_ZLayerId, Handle(Graphic3d_Layer)> myLayerIds;
-  Handle(Select3D_BVHBuilder3d) myBVHBuilder;      //!< BVH tree builder for frustum culling
+  Handle(BVH_Builder3d) myBVHBuilder;      //!< BVH tree builder for frustum culling
 
   Standard_Integer        myNbStructures;
   Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
