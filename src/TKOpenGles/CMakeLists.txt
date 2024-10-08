@@ -1,6 +1,7 @@
 project(TKOpenGles)
 
-set (TKOpenGles_DISABLE_COTIRE ON)
-
 OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
-#add_definitions("-DOCCT_OPENGL")
+
+if (APPLE AND BUILD_USE_PCH)
+  set_target_properties(TKOpenGles PROPERTIES DISABLE_PRECOMPILE_HEADERS ON)
+endif()
