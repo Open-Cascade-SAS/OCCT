@@ -19,6 +19,8 @@
 #include <IVtk_Types.hxx>
 #include <vtkSmartPointer.h>
 
+#include <limits>
+
 class vtkLookupTable;
 class vtkMapper;
 

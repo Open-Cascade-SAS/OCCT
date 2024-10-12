@@ -24,6 +24,8 @@
 #include <Standard_Integer.hxx>
 #include <vtkType.h>
 
+#include <limits>
+
 #ifdef VTK_USE_64BIT_IDS
 #if defined(_WIN32) && !defined(_WIN64)
 #error "64-bit VTK library can not be linked for 32-bit target platform"
