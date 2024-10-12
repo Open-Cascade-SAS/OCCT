@@ -135,8 +135,15 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   // compiler does not keep temporary object referenced by local variable of base type;
   // here compiler does not recognize that it should keep the temporary object because handle
   // classes do not inherit each other and they use hard cast for references to simulate inheritance
+#if defined(__GNUC__) && (__GNUC__ > 12)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdangling-reference"
+#endif
   const Handle(Geom_Curve)& aTmpRefBase (Handle(Geom_Line)::DownCast (aCurve2));
   CHECK(theDI, aTmpRefBase.get() != aCurve2.get(),  "local reference to temporary handle object (base type)");
+#if defined(__GNUC__) && (__GNUC__ > 12)
+#pragma GCC diagnostic pop
+#endif
 
   // check operations with Handle_* classes
   Handle(Geom_Line) hLine = aLine;
@@ -174,11 +181,18 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   Handle_Geom_Line qhLine = cpLine; // constructor from const pointer -- could be made explicit...
 
   // check that compiler keeps temporary object referenced by local variable
+#if defined(__GNUC__) && (__GNUC__ > 12)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdangling-reference"
+#endif
   const Handle_Geom_Line& hTmpRef (Handle(Geom_Line)::DownCast (aCurve2));
   CHECK(theDI, hTmpRef.get() == aCurve2.get(),  "local reference to temporary object (Handle_)");
 
   // check lifetime of temporary object referenced by local variable (base type)
   const Handle_Geom_Curve& hTmpRefBase (Handle(Geom_Line)::DownCast (aCurve2));
+  #if defined(__GNUC__) && (__GNUC__ > 11)
+#pragma GCC diagnostic pop
+#endif
   // here we have different behavior for MSVC 2013+ where Handle_ is a class
   // (compiler creates temporary object of approprtiate type and keeps it living
   // until the reference is valid) and other compilers where Handle_ is

@@ -1042,9 +1042,9 @@ static Standard_Integer veriftriangles(Draw_Interpretor& di, Standard_Integer n,
         else 
           T->Triangle (i).Get (n1,n2,n3);
 
-        const gp_XY& xy1 = T->UVNode (n1).XY();
-        const gp_XY& xy2 = T->UVNode (n2).XY();
-        const gp_XY& xy3 = T->UVNode (n3).XY();
+        const gp_Pnt2d xy1 = T->UVNode (n1);
+        const gp_Pnt2d xy2 = T->UVNode (n2);
+        const gp_Pnt2d xy3 = T->UVNode (n3);
 
         mi2d1.SetCoord((xy2.X()+xy3.X())*0.5, 
           (xy2.Y()+xy3.Y())*0.5);

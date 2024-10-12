@@ -678,7 +678,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     Handle(TopOpeBRepBuild_Pave) PV = new TopOpeBRepBuild_Pave(VPV,par,vofe);
     if (hasVSD) {
       PV->HasSameDomain(Standard_True);
-      const TopoDS_Shape& VSD = myDataStructure->SameDomain(VPV).Value();
+      const TopoDS_Shape& VSD = myDataStructure->DS().ShapeSameDomain(VPV).First();
       Standard_Integer iVSD = myDataStructure->Shape(VSD);
       if (iVSD == iVRE) PV->SameDomain(VIG);
       else              PV->SameDomain(VSD);
@@ -712,7 +712,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     Handle(TopOpeBRepBuild_Pave) PVF = new TopOpeBRepBuild_Pave(VPV,parf,vfofe);
     if (hasVSD) {
       PVF->HasSameDomain(Standard_True);
-      const TopoDS_Shape& VSD = myDataStructure->SameDomain(VPV).Value();
+      const TopoDS_Shape& VSD = myDataStructure->DS().ShapeSameDomain(VPV).First();
       Standard_Integer iVSD = myDataStructure->Shape(VSD);
       if (iVSD == iVRE) PVF->SameDomain(VIG);
       else              PVF->SameDomain(VSD);
@@ -733,7 +733,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     Handle(TopOpeBRepBuild_Pave) PVR = new TopOpeBRepBuild_Pave(VPV,parl,vrofe);
     if (hasVSD) {
       PVR->HasSameDomain(Standard_True);
-      const TopoDS_Shape& VSD = myDataStructure->SameDomain(VPV).Value();
+      const TopoDS_Shape& VSD = myDataStructure->DS().ShapeSameDomain(VPV).First();
       Standard_Integer iVSD = myDataStructure->Shape(VSD);
       if (iVSD == iVRE) PVR->SameDomain(VIG);
       else              PVR->SameDomain(VSD);

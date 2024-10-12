@@ -1303,7 +1303,7 @@ static Standard_Boolean IsOverriden(const Interface_Graph& theGraph,
         return Standard_True;
       }
       // for root style returns true only if it is overridden by other root style
-      const Handle(Standard_Transient)& anItem = anOverRidingStyle->ItemAP242().Value();
+      const Handle(Standard_Transient) anItem = anOverRidingStyle->ItemAP242().Value();
       if(!anItem.IsNull() && anItem->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)))
       {
         return Standard_True;

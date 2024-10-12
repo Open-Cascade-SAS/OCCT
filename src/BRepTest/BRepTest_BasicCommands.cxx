@@ -961,7 +961,7 @@ static Standard_Integer findplane(Draw_Interpretor& di,Standard_Integer n,const 
   if (a_plane_finder.Found()) {
     //std::cout << " a plane is found "   ;
     di << " a plane is found \n";
-    const Handle(Geom_Geometry)& aSurf = a_plane_finder.Plane(); // to avoid ambiguity
+    const Handle(Geom_Geometry) aSurf = a_plane_finder.Plane(); // to avoid ambiguity
     DrawTrSurf::Set(a[2],aSurf) ;
   }
   return 0 ;
