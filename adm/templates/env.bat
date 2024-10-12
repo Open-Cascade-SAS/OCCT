@@ -131,6 +131,8 @@ if not "%DevEnvDir%" == "" (
   )
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
+) else if /I "%VCFMT%" == "clang" (
+  rem clang
 ) else (
   echo Error: first argument ^(%VCVER%^) should specify supported version of Visual C++, 
   echo one of: 
@@ -184,6 +186,8 @@ if /I "%VCFMT%" == "vc9" (
   set "VCPlatformToolSet=ClangCL"
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
+) else if /I "%VCFMT%" == "clang" (
+  rem clang
 ) else (
   echo Error: wrong VS identifier
   exit /B
