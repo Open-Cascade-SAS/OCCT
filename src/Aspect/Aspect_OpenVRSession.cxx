@@ -168,7 +168,7 @@ struct Aspect_OpenVRSession::VRContext
   vr::IVRSystem*          System; //!< OpenVR session object
 
   //! Empty constructor.
-  Aspect_OpenVRSession::VRContext() : System (NULL)
+  VRContext() : System (NULL)
   {
     memset (TrackedPoses, 0, sizeof(TrackedPoses));
   }
