@@ -448,12 +448,22 @@ else()
 endif()
 
 # OpenGL
-if (ANDROID OR IOS OR EMSCRIPTEN OR "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-  set (USE_OPENGL OFF)
-  set (USE_GLES2 ON)
-else()
-  set (USE_OPENGL ON CACHE BOOL "${USE_OPENGL_DESCR}")
-  set (USE_GLES2 OFF CACHE BOOL "${USE_GLES2_DESCR}")
+# Try to find OpenGL package
+find_package(OpenGL)
+if(NOT USE_D3D AND OPENGL_FOUND AND (NOT USE_GLES2 OR USE_OPENGL) )
+  set(USE_OPENGL ON)
+  set(USE_GLES2 OFF)
+  message(STATUS "OpenGL found, using OpenGL")
+  include_directories(${OPENGL_INCLUDE_DIRS})
+  list(APPEND EXTRA_LIBS ${OPENGL_LIBRARIES})
+  set(USE_OPENGL ${USE_OPENGL} CACHE BOOL "${USE_OPENGL_DESCR}")
+elseif( find_package(OpenGLES2) )
+  set(USE_OPENGL OFF)
+  set(USE_GLES2 ON)
+  message(STATUS "OpenGL ES 2 found, using GLES2")
+  include_directories(${OPENGLES2_INCLUDE_DIRS})
+  list(APPEND EXTRA_LIBS ${OPENGLES2_LIBRARIES})
+  set(USE_GLES2 ${USE_GLES2} CACHE BOOL "${USE_GLES2_DESCR}")
 endif()
 
 # include the patched or original list of modules
