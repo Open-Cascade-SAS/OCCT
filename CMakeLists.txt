@@ -460,7 +460,7 @@ if (NOT USE_D3D)
   find_package(OpenGL QUIET)
   find_package(OpenGLES2 QUIET)
   # If GLES is not found, or we enforced GLES but not OpenGL, setup OpenGL
-  if(OPENGL_FOUND AND (NOT USE_GLES2 OR USE_OPENGL) )
+  if(OPENGL_FOUND AND (NOT USE_GLES2 OR USE_OPENGL OR NOT OpenGLES2_FOUND) )
     message(FATAL_ERROR "OPENGL USE_GLES2=${USE_GLES2} USE_OPENGL=${USE_OPENGL} GLES_FOUND=${OpenGLES2_FOUND}")
     set(USE_OPENGL ON)
     set(USE_GLES2 OFF)
