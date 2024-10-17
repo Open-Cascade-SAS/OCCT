@@ -40,7 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
   #include <Aspect_NeutralWindow.hxx>
 #endif
 
-#if defined(HAVE_XLIB))
+#if defined(HAVE_XLIB)
   #include <X11/Xlib.h> // XOpenDisplay()
   #include <GL/glx.h>
 #endif
