@@ -40,7 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
   #include <Aspect_NeutralWindow.hxx>
 #endif
 
-#if !defined(_WAYLAND) && !defined(_WIN32) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(HAVE_XLIB))
+#if defined(HAVE_XLIB))
   #include <X11/Xlib.h> // XOpenDisplay()
   #include <GL/glx.h>
 #endif
