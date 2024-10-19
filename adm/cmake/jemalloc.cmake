@@ -125,10 +125,15 @@ if (NOT 3RDPARTY_JEMALLOC_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_JEMALLOC_INCLUDE
   
   if (3RDPARTY_JEMALLOC_DIR AND EXISTS "${3RDPARTY_JEMALLOC_DIR}")
     find_path (3RDPARTY_JEMALLOC_INCLUDE_DIR NAMES ${HEADER_NAMES}
-                                                 PATHS ${3RDPARTY_JEMALLOC_DIR}
-                                                 PATH_SUFFIXES include/jemalloc
-                                                 CMAKE_FIND_ROOT_PATH_BOTH
-                                                 NO_DEFAULT_PATH)
+                                               PATHS ${3RDPARTY_JEMALLOC_DIR}
+                                               PATH_SUFFIXES include/jemalloc
+                                               CMAKE_FIND_ROOT_PATH_BOTH
+                                               NO_DEFAULT_PATH)
+  else()
+    find_path (3RDPARTY_JEMALLOC_INCLUDE_DIR NAMES ${HEADER_NAMES}
+                                               PATHS ${3RDPARTY_JEMALLOC_DIR}
+                                               PATH_SUFFIXES include/jemalloc
+                                               CMAKE_FIND_ROOT_PATH_BOTH)
   endif()
 endif()
 
