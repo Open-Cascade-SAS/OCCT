@@ -1,0 +1,36 @@
+# This workflow will build OCCT refman documentation.
+
+name: Build Refman Documentation
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.1
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev doxygen graphviz
+
+    - name: Build documentation
+      run: bash gendoc -refman
+
+    - name: Upload refman documentation
+      uses: actions/upload-artifact@v4.4.3
+      id: artifact-upload-step
+      with:
+        name: refman-doc
+        path: doc/refman
+        retention-days: 90
+
+    - name: Upload generation log
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: dogygen.log
+        path: doc/html_doxygen_err.log
