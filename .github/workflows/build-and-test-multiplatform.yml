@@ -382,7 +382,7 @@ jobs:
 
     # Step: Download and extract install directory
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.7
       with:
         name: install-windows-x64
         path: install
@@ -442,7 +442,7 @@ jobs:
 
     # Step: Download and extract install directory
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.7
       with:
         name: install-windows-clang-x64
         path: install
@@ -492,7 +492,7 @@ jobs:
 
     # Step: Download and extract install directory
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.7
       with:
         name: install-macos-x64
         path: install
@@ -552,7 +552,7 @@ jobs:
 
     # Step: Download and extract install directory
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.7
       with:
         name: install-macos-gcc-x64
         path: install
@@ -624,7 +624,7 @@ jobs:
 
     # Step: Download and extract install directory
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.7
       with:
         name: install-linux-clang-x64
         path: install
@@ -697,7 +697,7 @@ jobs:
 
     # Step: Download and extract install directory
     - name: Download and extract install directory
-      uses: actions/download-artifact@v4.1.0
+      uses: actions/download-artifact@v4.1.7
       with:
         name: install-linux-gcc-x64
         path: install
@@ -745,42 +745,42 @@ jobs:
   
       # Step: Download all test results (Windows x64)
       - name: Download all test results (Windows x64)
-        uses: actions/download-artifact@v4.1.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-x64
           path: results/windows-x64
   
       # Step: Download all test results (Windows Clang x64)
       - name: Download all test results (Windows Clang x64)
-        uses: actions/download-artifact@v4.1.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-clang-x64
           path: results/windows-clang-x64
   
       # Step: Download all test results (macOS x64)
       - name: Download all test results (macOS x64)
-        uses: actions/download-artifact@v4.1.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-macos-x64
           path: results/macos-x64
   
       # Step: Download all test results (macOS GCC x64)
       - name: Download all test results (macOS GCC x64)
-        uses: actions/download-artifact@v4.1.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-macos-gcc-x64
           path: results/macos-gcc-x64
   
       # Step: Download all test results (Linux Clang x64)
       - name: Download all test results (Linux Clang x64)
-        uses: actions/download-artifact@v4.1.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-linux-clang-x64
           path: results/linux-clang-x64
   
       # Step: Download all test results (Linux GCC x64)
       - name: Download all test results (Linux GCC x64)
-        uses: actions/download-artifact@v4.1.0
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-linux-gcc-x64
           path: results/linux-gcc-x64
