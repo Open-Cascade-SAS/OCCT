@@ -1,0 +1,45 @@
+# This workflow builds the OCCT reference manual documentation.
+# It is triggered on pushes to the 'master' branch.
+# The workflow includes steps to checkout the repository, install dependencies, build the documentation, and upload the generated documentation and logs as artifacts.
+
+name: Build Documentation
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    name: Build Refman Documentation
+    runs-on: ubuntu-24.04
+
+    steps:
+    # Step: Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.1
+
+    # Step: Install necessary dependencies for building the documentation
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev doxygen graphviz
+
+    # Step: Build the reference manual documentation
+    - name: Build documentation
+      run: bash gendoc -refman
+
+    # Step: Upload the generated reference manual documentation as an artifact
+    - name: Upload refman documentation
+      uses: actions/upload-artifact@v4.4.3
+      id: artifact-upload-step
+      with:
+        name: refman-doc
+        path: doc/refman
+        retention-days: 90
+
+    # Step: Upload the documentation generation log as an artifact
+    - name: Upload generation log
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: doxygen.log
+        path: doc/html_doxygen_err.log
+        retention-days: 90
