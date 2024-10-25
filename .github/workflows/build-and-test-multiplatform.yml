@@ -81,6 +81,7 @@ jobs:
       with:
         name: install-windows-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-windows-clang-x64:
     name: Prepare and Build on Windows with Clang (x64)
@@ -150,6 +151,7 @@ jobs:
       with:
         name: install-windows-clang-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-macos-x64:
     name: Prepare and Build on macOS with Clang (x64)
@@ -211,6 +213,7 @@ jobs:
       with:
         name: install-macos-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-macos-gcc-x64:
     name: Prepare and Build on macOS with GCC (x64)
@@ -272,6 +275,7 @@ jobs:
       with:
         name: install-macos-gcc-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-linux-clang-x64:
     name: Prepare and Build on Ubuntu with Clang (x64)
@@ -336,6 +340,7 @@ jobs:
       with:
         name: install-linux-clang-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-linux-gcc-x64:
     name: Prepare and Build on Ubuntu with GCC (x64)
@@ -400,6 +405,7 @@ jobs:
       with:
         name: install-linux-gcc-x64
         path: install
+        retention-days: 7
 
   test-windows-x64:
     name: Test on Windows (x64)
