@@ -101,8 +101,9 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
                                                       CMAKE_FIND_ROOT_PATH_BOTH
                                                       NO_DEFAULT_PATH)
     else()
+      string(TOLOWER ${PRODUCT_NAME} LOW_CASE_PRODUCT_NAME)
       find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
-                                                      PATH_SUFFIXES include inc headers
+                                                      PATH_SUFFIXES include inc headers ${LOW_CASE_PRODUCT_NAME}
                                                       CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
   endif()
