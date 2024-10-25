@@ -166,7 +166,13 @@ jobs:
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew
+                     glew freetype freeimage draco glfw
+
+    # Step: Install repidjson from github
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
 
     # Step: Configure OCCT with CMake
     - name: Configure OCCT
@@ -176,11 +182,16 @@ jobs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=clang \
               -D CMAKE_CXX_COMPILER=clang++ \
-              -D USE_FREETYPE=OFF \
               -D BUILD_USE_PCH=ON \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install ..
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_RAPIDJSON=ON \
+              -D USE_DRACO=ON \
+              -D USE_FREETYPE=ON \
+              -D USE_OPENGL=ON \
+              -D USE_FREEIMAGE=ON ..
 
     # Step: Build OCCT
     - name: Build OCCT
@@ -216,7 +227,13 @@ jobs:
         brew update
         brew install gcc tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew
+                     glew freetype freeimage draco glfw
+
+    # Step: Install repidjson from github
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
 
     # Step: Configure OCCT with CMake
     - name: Configure OCCT
@@ -226,11 +243,16 @@ jobs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=gcc \
               -D CMAKE_CXX_COMPILER=g++ \
-              -D USE_FREETYPE=OFF \
               -D BUILD_USE_PCH=ON \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install ..
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_RAPIDJSON=ON \
+              -D USE_DRACO=ON \
+              -D USE_FREETYPE=ON \
+              -D USE_OPENGL=ON \
+              -D USE_FREEIMAGE=ON ..
 
     # Step: Build OCCT
     - name: Build OCCT
@@ -262,7 +284,7 @@ jobs:
 
     # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
     # Step: Install repidjson from github
     - name: Install rapidjson
@@ -282,10 +304,10 @@ jobs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=Production \
               -D USE_TK=OFF \
-              -D USE_FREETYPE=OFF \
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=OFF \
               -D USE_FREEIMAGE=ON \
@@ -326,7 +348,7 @@ jobs:
 
     # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
     # Step: Install repidjson from github
     - name: Install rapidjson
@@ -346,10 +368,10 @@ jobs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=Production \
               -D USE_TK=OFF \
-              -D USE_FREETYPE=OFF \
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=OFF \
               -D USE_FREEIMAGE=ON \
@@ -509,11 +531,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies for headless OpenGL
-    - name: Install dependencies for headless OpenGL
+    # Step: Install dependencies using Homebrew
+    - name: Install dependencies
       run: |
         brew update
-        brew install mesalib-glw
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freetype mesalib-glw freeimage draco glfw
 
     # Step: Download test data
     - name: Download test data
@@ -569,11 +593,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies for headless OpenGL
-    - name: Install dependencies for headless OpenGL
+    # Step: Install dependencies using Homebrew
+    - name: Install dependencies
       run: |
         brew update
-        brew install mesalib-glw
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freetype mesalib-glw freeimage draco glfw
 
     # Step: Download test data
     - name: Download test data
@@ -631,7 +657,7 @@ jobs:
 
     # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
     # Step: Install Xvfb and Mesa
     - name: Install Xvfb and Mesa
@@ -704,7 +730,7 @@ jobs:
 
     # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
     # Step: Install Xvfb and Mesa
     - name: Install Xvfb and Mesa
