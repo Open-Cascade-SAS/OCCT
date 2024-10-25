@@ -902,27 +902,85 @@ jobs:
       # Step: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
-  
+
+      - name: Get latest workflow run ID from master
+        id: get_run_id
+        run: |
+          workflow_name="Build and Test OCCT on Multiple Platforms"
+          latest_run_id=$(curl -s \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=master&status=success&event=pull_request" \
+            | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+          echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+
+      # Step: Download all test results (Windows x64) from master
+      - name: Download all test results (Windows x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-windows-x64
+          path: results/master/windows-x64
+          run-id: ${{ env.latest_run_id }}
+
+      # Step: Download all test results (Windows Clang x64) from master
+      - name: Download all test results (Windows Clang x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-windows-clang-x64
+          path: results/master/windows-clang-x64
+          run-id: ${{ env.latest_run_id }}
+
+      # Step: Download all test results (macOS x64) from master
+      - name: Download all test results (macOS x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-macos-x64
+          path: results/master/macos-x64
+          run-id: ${{ env.latest_run_id }}
+
+      # Step: Download all test results (macOS GCC x64) from master
+      - name: Download all test results (macOS GCC x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-macos-gcc-x64
+          path: results/master/macos-gcc-x64
+          run-id: ${{ env.latest_run_id }}
+
+      # Step: Download all test results (Linux Clang x64) from master
+      - name: Download all test results (Linux Clang x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-linux-clang-x64
+          path: results/master/linux-clang-x64
+          run-id: ${{ env.latest_run_id }}
+
+      # Step: Download all test results (Linux GCC x64) from master
+      - name: Download all test results (Linux GCC x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-linux-gcc-x64
+          path: results/master/linux-gcc-x64
+          run-id: ${{ env.latest_run_id }}
+
       # Step: Download all test results (Windows x64)
       - name: Download all test results (Windows x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-x64
           path: results/windows-x64
-  
-      # Step: Download all test results (Windows Clang x64)
+
+      # Step: Download all test results (Windows Clang x64) from current workflow
       - name: Download all test results (Windows Clang x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-clang-x64
-          path: results/windows-clang-x64
-  
-      # Step: Download all test results (macOS x64)
+          path: results/current/windows-clang-x64
+
+      # Step: Download all test results (macOS x64) from current workflow
       - name: Download all test results (macOS x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-macos-x64
-          path: results/macos-x64
+          path: results/current/macos-x64
   
       # Step: Download all test results (macOS GCC x64)
       - name: Download all test results (macOS GCC x64)
@@ -930,20 +988,20 @@ jobs:
         with:
           name: results-macos-gcc-x64
           path: results/macos-gcc-x64
-  
-      # Step: Download all test results (Linux Clang x64)
+
+      # Step: Download all test results (Linux Clang x64) from current workflow
       - name: Download all test results (Linux Clang x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-linux-clang-x64
-          path: results/linux-clang-x64
-  
-      # Step: Download all test results (Linux GCC x64)
+          path: results/current/linux-clang-x64
+
+      # Step: Download all test results (Linux GCC x64) from current workflow
       - name: Download all test results (Linux GCC x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-linux-gcc-x64
-          path: results/linux-gcc-x64
+          path: results/current/linux-gcc-x64
   
       # Step: Summarize results
       - name: Summarize results
