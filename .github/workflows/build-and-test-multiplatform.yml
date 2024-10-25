@@ -124,7 +124,7 @@ jobs:
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=OFF `
+                -D USE_GLES2=ON `
                 -D USE_OPENVR=ON `
                 -D USE_VTK=OFF `
                 -D USE_TBB=ON `
