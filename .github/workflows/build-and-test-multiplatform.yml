@@ -28,11 +28,14 @@ jobs:
         id: get_run_id
         run: |
           workflow_name="Build and Test OCCT on Multiple Platforms"
-          latest_run_id=$(curl -s \
+          echo "Fetching latest run ID for workflow: $workflow_name"
+          response=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=master&status=success&event=pull_request" \
-            | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=master&status=success&event=pull_request")
+          echo "API response: $response"
+          latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
           echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+          echo "Latest run ID: $latest_run_id"
 
       # Step: Download all test results (Windows x64) from master
       - name: Download all test results (Windows x64) from master
