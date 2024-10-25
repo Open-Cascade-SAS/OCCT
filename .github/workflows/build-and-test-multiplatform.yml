@@ -575,7 +575,7 @@ jobs:
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew freetype mesalib-glw freeimage draco glfw
+                     glew freetype freeimage draco glfw
 
     # Step: Download test data
     - name: Download test data
@@ -653,7 +653,7 @@ jobs:
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew freetype mesalib-glw freeimage draco glfw
+                     glew freetype freeimage draco glfw
 
     # Step: Download test data
     - name: Download test data
