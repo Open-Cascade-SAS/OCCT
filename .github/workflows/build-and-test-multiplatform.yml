@@ -961,12 +961,12 @@ jobs:
           path: results/master/linux-gcc-x64
           run-id: ${{ env.latest_run_id }}
 
-      # Step: Download all test results (Windows x64)
+      # Step: Download all test results (Windows x64) from current workflow
       - name: Download all test results (Windows x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-x64
-          path: results/windows-x64
+          path: results/current/windows-x64
 
       # Step: Download all test results (Windows Clang x64) from current workflow
       - name: Download all test results (Windows Clang x64)
@@ -982,12 +982,12 @@ jobs:
           name: results-macos-x64
           path: results/current/macos-x64
   
-      # Step: Download all test results (macOS GCC x64)
+      # Step: Download all test results (macOS GCC x64) from current workflow
       - name: Download all test results (macOS GCC x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-macos-gcc-x64
-          path: results/macos-gcc-x64
+          path: results/current/macos-gcc-x64
 
       # Step: Download all test results (Linux Clang x64) from current workflow
       - name: Download all test results (Linux Clang x64)
