@@ -52,11 +52,11 @@ jobs:
       - name: Download all test results (Windows x64) from master
         uses: actions/download-artifact@v4.1.7
         with:
-          name: results-windows-x64
-          path: results/master/windows-x64
           run-id: ${{ env.latest_run_id }}
-          merge-multiple: false
           repository: Open-Cascade-SAS/OCCT
+      
+      - name: Print all folder content
+        run: ls -R
 
       # Step: Download all test results (Windows Clang x64) from master
       - name: Download all test results (Windows Clang x64) from master
