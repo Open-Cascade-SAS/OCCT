@@ -33,7 +33,7 @@ jobs:
         shell: pwsh
       
       - name: Download test results from target branch
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-x64
           path: install/results-target
@@ -71,7 +71,7 @@ jobs:
       - name: Download test results from target branch
         uses: actions/download-artifact@v4.1.7
         with:
-          name: results-linux-clang-x64
+          name: results-windows-x64
           path: install/bin/results-target
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ env.latest_run_id }}
