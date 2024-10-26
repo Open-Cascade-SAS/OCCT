@@ -20,17 +20,15 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Set up MSVC environment
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
 
-    # Step: Download and extract 3rdparty dependencies
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -38,7 +36,6 @@ jobs:
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
 
-    # Step: Configure OCCT with CMake
     - name: Configure OCCT
       run: |
           mkdir build
@@ -63,41 +60,37 @@ jobs:
                 -D USE_OPENGL=ON ..
       shell: pwsh
 
-    # Step: Build OCCT
     - name: Build OCCT
       run: |
           cd build
           cmake --build . --config Release -- /m
 
-    # Step: Install OCCT
     - name: Install OCCT
       run: |
           cd build
           cmake --install . --config Release
 
-    # Step: Upload install directory
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: install-windows-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-windows-clang-x64:
     name: Prepare and Build on Windows with Clang (x64)
     runs-on: windows-2022
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Set up MSVC environment
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
 
-    # Step: Download and extract 3rdparty dependencies
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -105,7 +98,6 @@ jobs:
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
 
-    # Step: Configure OCCT with CMake
     - name: Configure OCCT
       run: |
           mkdir build
@@ -124,7 +116,7 @@ jobs:
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
-                -D USE_GLES2=OFF `
+                -D USE_GLES2=ON `
                 -D USE_OPENVR=ON `
                 -D USE_VTK=OFF `
                 -D USE_TBB=ON `
@@ -132,43 +124,44 @@ jobs:
                 -D USE_OPENGL=ON ..
       shell: pwsh
 
-    # Step: Build OCCT
     - name: Build OCCT
       run: |
           cd build
           cmake --build . --config Release
 
-    # Step: Install OCCT
     - name: Install OCCT
       run: |
           cd build
           cmake --install . --config Release
 
-    # Step: Upload install directory
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: install-windows-clang-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-macos-x64:
     name: Prepare and Build on macOS with Clang (x64)
     runs-on: macos-15
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies using Homebrew
     - name: Install dependencies
       run: |
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew
+                     glew freetype freeimage draco glfw
 
-    # Step: Configure OCCT with CMake
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+
     - name: Configure OCCT
       run: |
         mkdir -p build
@@ -176,49 +169,55 @@ jobs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=clang \
               -D CMAKE_CXX_COMPILER=clang++ \
-              -D USE_FREETYPE=OFF \
               -D BUILD_USE_PCH=ON \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install ..
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_RAPIDJSON=ON \
+              -D USE_DRACO=ON \
+              -D USE_FREETYPE=ON \
+              -D USE_OPENGL=ON \
+              -D USE_FREEIMAGE=ON ..
 
-    # Step: Build OCCT
     - name: Build OCCT
       run: |
         cd build
         make -j$(sysctl -n hw.logicalcpu)
 
-    # Step: Install OCCT
     - name: Install OCCT
       run: |
         cd build
         make install
 
-    # Step: Upload install directory
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: install-macos-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-macos-gcc-x64:
     name: Prepare and Build on macOS with GCC (x64)
     runs-on: macos-15
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies using Homebrew
     - name: Install dependencies
       run: |
         brew update
         brew install gcc tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew
+                     glew freetype freeimage draco glfw
 
-    # Step: Configure OCCT with CMake
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+
     - name: Configure OCCT
       run: |
         mkdir -p build
@@ -226,45 +225,51 @@ jobs:
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=gcc \
               -D CMAKE_CXX_COMPILER=g++ \
-              -D USE_FREETYPE=OFF \
               -D BUILD_USE_PCH=ON \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install ..
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_RAPIDJSON=ON \
+              -D USE_DRACO=ON \
+              -D USE_FREETYPE=ON \
+              -D USE_OPENGL=ON \
+              -D USE_FREEIMAGE=ON ..
 
-    # Step: Build OCCT
     - name: Build OCCT
       run: |
         cd build
         make -j$(sysctl -n hw.logicalcpu)
 
-    # Step: Install OCCT
     - name: Install OCCT
       run: |
         cd build
         make install
 
-    # Step: Upload install directory
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: install-macos-gcc-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-linux-clang-x64:
     name: Prepare and Build on Ubuntu with Clang (x64)
     runs-on: ubuntu-24.04
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
-    # Step: Configure OCCT with CMake
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+
     - name: Configure OCCT
       run: |
         mkdir -p build
@@ -276,43 +281,54 @@ jobs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=Production \
               -D USE_TK=OFF \
-              -D USE_FREETYPE=OFF \
               -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install ..
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=ON \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON ..
 
-    # Step: Build OCCT
     - name: Build OCCT
       run: |
         cd build
         make -j"$(nproc)"
 
-    # Step: Install OCCT
     - name: Install OCCT
       run: |
         cd build
         make install
 
-    # Step: Upload install directory
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: install-linux-clang-x64
         path: install
+        retention-days: 7
 
   prepare-and-build-linux-gcc-x64:
     name: Prepare and Build on Ubuntu with GCC (x64)
     runs-on: ubuntu-24.04
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
-    # Step: Configure OCCT with CMake
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+
     - name: Configure OCCT
       run: |
         mkdir -p build
@@ -324,28 +340,36 @@ jobs:
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=Production \
               -D USE_TK=OFF \
-              -D USE_FREETYPE=OFF \
               -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install ..
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=ON \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON ..
 
-    # Step: Build OCCT
     - name: Build OCCT
       run: |
         cd build
         make -j"$(nproc)"
 
-    # Step: Install OCCT
     - name: Install OCCT
       run: |
         cd build
         make install
 
-    # Step: Upload install directory
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
       with:
         name: install-linux-gcc-x64
         path: install
+        retention-days: 7
 
   test-windows-x64:
     name: Test on Windows (x64)
@@ -353,17 +377,14 @@ jobs:
     needs: prepare-and-build-windows-x64
 
     steps:
-    # Step: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Set up MSVC environment
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
 
-    # Step: Download and extract 3rdparty dependencies
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -371,7 +392,6 @@ jobs:
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
 
-    # Step: Download and extract test data
     - name: Download and extract test data
       run: |
         cd data
@@ -380,14 +400,12 @@ jobs:
         Remove-Item opencascade-dataset-7.8.0.zip
       shell: pwsh
 
-    # Step: Download and extract install directory
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
         name: install-windows-x64
         path: install
 
-    # Step: Run tests
     - name: Run tests
       run: |
         cd install
@@ -398,7 +416,6 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    # Step: Upload test results
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -413,17 +430,15 @@ jobs:
     needs: prepare-and-build-windows-clang-x64
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Set up MSVC environment
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
 
-    # Step: Download and extract 3rdparty dependencies
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -431,7 +446,6 @@ jobs:
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
 
-    # Step: Download and extract test data
     - name: Download and extract test data
       run: |
         cd data
@@ -440,14 +454,12 @@ jobs:
         Remove-Item opencascade-dataset-7.8.0.zip
       shell: pwsh
 
-    # Step: Download and extract install directory
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
         name: install-windows-clang-x64
         path: install
 
-    # Step: Run tests
     - name: Run tests
       run: |
         cd install
@@ -458,7 +470,6 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    # Step: Upload test results
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -473,39 +484,34 @@ jobs:
     needs: prepare-and-build-macos-x64
 
     steps:
-    # Step: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies for headless OpenGL
-    - name: Install dependencies for headless OpenGL
+    - name: Install dependencies
       run: |
         brew update
-        brew install mesalib-glw
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freetype freeimage draco glfw
 
-    # Step: Download test data
     - name: Download test data
       run: |
         cd data
         curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
         tar -xf opencascade-dataset-7.8.0.tar.xz
 
-    # Step: Download and extract install directory
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
         name: install-macos-x64
         path: install
 
-    # Step: Set LIBGL_ALWAYS_SOFTWARE environment variable
     - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
       run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
-    # Step: Set execute permissions on DRAWEXE
     - name: Set execute permissions on DRAWEXE
       run: chmod +x install/bin/DRAWEXE
 
-    # Step: Run tests
     - name: Run tests
       run: |
          cd install
@@ -518,7 +524,6 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    # Step: Upload test results
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -533,39 +538,35 @@ jobs:
     needs: prepare-and-build-macos-gcc-x64
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies for headless OpenGL
-    - name: Install dependencies for headless OpenGL
+    - name: Install dependencies
       run: |
         brew update
-        brew install mesalib-glw
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freetype freeimage draco glfw
 
-    # Step: Download test data
     - name: Download test data
       run: |
         cd data
         curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
         tar -xf opencascade-dataset-7.8.0.tar.xz
 
-    # Step: Download and extract install directory
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
         name: install-macos-gcc-x64
         path: install
 
-    # Step: Set LIBGL_ALWAYS_SOFTWARE environment variable
     - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
       run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
-    # Step: Set execute permissions on DRAWEXE
     - name: Set execute permissions on DRAWEXE
       run: chmod +x install/bin/DRAWEXE
 
-    # Step: Run tests
     - name: Run tests
       run: |
          cd install
@@ -578,7 +579,6 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    # Step: Upload test results
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -593,51 +593,42 @@ jobs:
     needs: prepare-and-build-linux-clang-x64
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
-    # Step: Install Xvfb and Mesa
     - name: Install Xvfb and Mesa
       run: |
         sudo apt-get update
         sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
 
-    # Step: Start Xvfb
     - name: Start Xvfb
       run: Xvfb :99 -screen 0 1920x1080x24 &
 
-    # Step: Set DISPLAY environment variable
     - name: Set DISPLAY environment variable
       run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
-    # Step: Download test data
     - name: Download test data
       run: |
         cd data
         wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
         tar -xf opencascade-dataset-7.8.0.tar.xz
 
-    # Step: Download and extract install directory
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
         name: install-linux-clang-x64
         path: install
 
-    # Step: Set LIBGL_ALWAYS_SOFTWARE environment variable
     - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
       run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
-    # Step: Set execute permissions on DRAWEXE
     - name: Set execute permissions on DRAWEXE
       run: chmod +x install/bin/DRAWEXE
 
-    # Step: Run tests
     - name: Run tests
       run: |
          cd install
@@ -651,7 +642,6 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    # Step: Upload test results
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -666,51 +656,42 @@ jobs:
     needs: prepare-and-build-linux-gcc-x64
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install dependencies using apt-get
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
-    # Step: Install Xvfb and Mesa
     - name: Install Xvfb and Mesa
       run: |
         sudo apt-get update
         sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
 
-    # Step: Start Xvfb
     - name: Start Xvfb
       run: Xvfb :99 -screen 0 1920x1080x24 &
 
-    # Step: Set DISPLAY environment variable
     - name: Set DISPLAY environment variable
       run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
-    # Step: Download test data
     - name: Download test data
       run: |
         cd data
         wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
         tar -xf opencascade-dataset-7.8.0.tar.xz
 
-    # Step: Download and extract install directory
     - name: Download and extract install directory
       uses: actions/download-artifact@v4.1.7
       with:
         name: install-linux-gcc-x64
         path: install
 
-    # Step: Set LIBGL_ALWAYS_SOFTWARE environment variable
     - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
       run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
-    # Step: Set execute permissions on DRAWEXE
     - name: Set execute permissions on DRAWEXE
       run: chmod +x install/bin/DRAWEXE
 
-    # Step: Run tests
     - name: Run tests
       run: |
          cd install
@@ -724,7 +705,6 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
-    # Step: Upload test results
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -739,58 +719,216 @@ jobs:
       needs: [test-windows-x64, test-windows-clang-x64, test-macos-x64, test-macos-gcc-x64, test-linux-clang-x64, test-linux-gcc-x64]
   
       steps:
-      # Step: Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
   
-      # Step: Download all test results (Windows x64)
+      - name: Install Xvfb and Mesa
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
+  
+      - name: Start Xvfb
+        run: Xvfb :99 -screen 0 1920x1080x24 &
+  
+      - name: Set DISPLAY environment variable
+        run: echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
+        run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+
+      - name: Download and extract install directory
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: install-linux-gcc-x64
+          path: install
+
+      - name: Set execute permissions on DRAWEXE
+        run: chmod +x install/bin/DRAWEXE
+
+      - name: Get latest workflow run ID from target branch
+        id: get_run_id
+        run: |
+          workflow_name="Build and Test OCCT on Multiple Platforms"
+          target_branch="${{ github.event.pull_request.base.ref }}"
+          echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
+          response=$(curl -s \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+          latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+          echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+
+      - name: Download all test results (Windows x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-windows-x64
+          path: install/bin/results/master/windows-x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.latest_run_id }}
+
+      - name: Download all test results (Windows Clang x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-windows-clang-x64
+          path: install/bin/results/master/windows-clang-x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.latest_run_id }}
+
+      - name: Download all test results (macOS x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-macos-x64
+          path: install/bin/results/master/macos-x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.latest_run_id }}
+
+      - name: Download all test results (macOS GCC x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-macos-gcc-x64
+          path: install/bin/results/master/macos-gcc-x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.latest_run_id }}
+
+      - name: Download all test results (Linux Clang x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-linux-clang-x64
+          path: install/bin/results/master/linux-clang-x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.latest_run_id }}
+
+      - name: Download all test results (Linux GCC x64) from master
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: results-linux-gcc-x64
+          path: install/bin/results/master/linux-gcc-x64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ env.latest_run_id }}
+
       - name: Download all test results (Windows x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-x64
-          path: results/windows-x64
-  
-      # Step: Download all test results (Windows Clang x64)
+          path: install/bin/results/current/windows-x64
+
       - name: Download all test results (Windows Clang x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-clang-x64
-          path: results/windows-clang-x64
-  
-      # Step: Download all test results (macOS x64)
+          path: install/bin/results/current/windows-clang-x64
+
       - name: Download all test results (macOS x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-macos-x64
-          path: results/macos-x64
-  
-      # Step: Download all test results (macOS GCC x64)
+          path: install/bin/results/current/macos-x64
+
       - name: Download all test results (macOS GCC x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-macos-gcc-x64
-          path: results/macos-gcc-x64
-  
-      # Step: Download all test results (Linux Clang x64)
+          path: install/bin/results/current/macos-gcc-x64
+
       - name: Download all test results (Linux Clang x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-linux-clang-x64
-          path: results/linux-clang-x64
-  
-      # Step: Download all test results (Linux GCC x64)
+          path: install/bin/results/current/linux-clang-x64
+
       - name: Download all test results (Linux GCC x64)
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-linux-gcc-x64
-          path: results/linux-gcc-x64
-  
-      # Step: Summarize results
+          path: install/bin/results/current/linux-gcc-x64
+
+      - name: Run tests
+        run: |
+          echo "Comparing test results..."
+          cd install
+          cd bin
+          source env.sh
+          for dir in results/current/windows-x64/*; do RESULTS_CURRENT_WINDOWS_X64=$dir; done
+          for dir in results/master/windows-x64/*; do RESULTS_MASTER_WINDOWS_X64=$dir; done
+          for dir in results/current/windows-clang-x64/*; do RESULTS_CURRENT_WINDOWS_CLANG_X64=$dir; done
+          for dir in results/master/windows-clang-x64/*; do RESULTS_MASTER_WINDOWS_CLANG_X64=$dir; done
+          for dir in results/current/macos-x64/*; do RESULTS_CURRENT_MACOS_X64=$dir; done
+          for dir in results/master/macos-x64/*; do RESULTS_MASTER_MACOS_X64=$dir; done
+          for dir in results/current/macos-gcc-x64/*; do RESULTS_CURRENT_MACOS_GCC_X64=$dir; done
+          for dir in results/master/macos-gcc-x64/*; do RESULTS_MASTER_MACOS_GCC_X64=$dir; done
+          for dir in results/current/linux-clang-x64/*; do RESULTS_CURRENT_LINUX_CLANG_X64=$dir; done
+          for dir in results/master/linux-clang-x64/*; do RESULTS_MASTER_LINUX_CLANG_X64=$dir; done
+          for dir in results/current/linux-gcc-x64/*; do RESULTS_CURRENT_LINUX_GCC_X64=$dir; done
+          for dir in results/master/linux-gcc-x64/*; do RESULTS_MASTER_LINUX_GCC_X64=$dir; done
+          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_WINDOWS_X64 $RESULTS_MASTER_WINDOWS_X64 & 
+          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_WINDOWS_CLANG_X64 $RESULTS_MASTER_WINDOWS_CLANG_X64 &
+          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_MACOS_X64 $RESULTS_MASTER_MACOS_X64 &
+          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_MACOS_GCC_X64 $RESULTS_MASTER_MACOS_GCC_X64 &
+          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_LINUX_CLANG_X64 $RESULTS_MASTER_LINUX_CLANG_X64 &
+          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_LINUX_GCC_X64 $RESULTS_MASTER_LINUX_GCC_X64 &
+          wait
+        shell: bash
+        env:
+          DISPLAY: :99
+          LIBGL_ALWAYS_SOFTWARE: 1
+
+      - name: Upload updated test results (Windows x64)
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: results-windows-x64
+          overwrite: true
+          path: install/bin/results/current/windows-x64
+
+      - name: Upload updated test results (Windows Clang x64)
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: results-windows-clang-x64
+          overwrite: true
+          path: install/bin/results/current/windows-clang-x64
+
+      - name: Upload updated test results (macOS x64)
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: results-macos-x64
+          overwrite: true
+          path: install/bin/results/current/macos-x64
+
+      - name: Upload updated test results (macOS GCC x64)
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: results-macos-gcc-x64
+          overwrite: true
+          path: install/bin/results/current/macos-gcc-x64
+
+      - name: Upload updated test results (Linux Clang x64)
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: results-linux-clang-x64
+          overwrite: true
+          path: install/bin/results/current/linux-clang-x64
+
+      - name: Upload updated test results (Linux GCC x64)
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: results-linux-gcc-x64
+          overwrite: true
+          path: install/bin/results/current/linux-gcc-x64
+
+      - name: Upload test compare result logs
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: test-compare-results
+          overwrite: true
+          path: |
+            install/bin/results/current/**/diff-*.html
+            install/bin/results/current/**/diff-*.log
+            install/bin/results/current/**/summary.html
+            install/bin/results/current/**/tests.log
+
       - name: Summarize results
         run: |
           echo "Summarizing results..."
-  
-      # Step: Send PR message
+
       - name: Send PR message
         run: |
           echo "Sending PR message..."
