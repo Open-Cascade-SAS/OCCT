@@ -410,7 +410,7 @@ jobs:
       run: |
         cd install
         call env.bat vc14 win64 release
-        DRAWEXE.exe -v -c testgrid
+        DRAWEXE.exe -v -c testgrid xcaf
       shell: cmd
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
@@ -478,7 +478,7 @@ jobs:
       run: |
         cd install
         call env.bat clang win64 release
-        DRAWEXE.exe -v -c testgrid
+        DRAWEXE.exe -v -c testgrid xcaf
       shell: cmd
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
@@ -545,7 +545,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid xcaf
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -614,7 +614,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid xcaf
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -690,7 +690,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid xcaf
       shell: bash
       env:
         DISPLAY: :99
@@ -767,7 +767,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid xcaf
       shell: bash
       env:
         DISPLAY: :99
