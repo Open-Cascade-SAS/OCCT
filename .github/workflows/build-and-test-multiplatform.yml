@@ -429,6 +429,22 @@ jobs:
         latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
         echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
 
+    - name: Download test results from target branch
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-windows-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ env.latest_run_id }}
+
+    - name: Compare test results
+      run: |
+        cd install
+        call env.bat vc14 win64 release
+        for /d %%i in (results\*) do set RESULTS_SUBFOLDER=%%i
+        for /d %%j in (results-windows-x64\*) do set RESULTS_WINDOWS_SUBFOLDER=%%j
+        DRAWEXE.exe -v -c testdiff %RESULTS_SUBFOLDER% %RESULTS_WINDOWS_SUBFOLDER%
+      shell: cmd
+
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -498,6 +514,34 @@ jobs:
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Get latest workflow run ID from target branch
+      id: get_run_id
+      run: |
+        workflow_name="Build and Test OCCT on Multiple Platforms"
+        target_branch="${{ github.event.pull_request.base.ref }}"
+        echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+        latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+    
+    - name: Download test results from target branch
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-windows-clang-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ env.latest_run_id }}
+    
+    - name: Compare test results
+      run: |
+        cd install
+        call env.bat vc14 win64 release
+        for /d %%i in (results\*) do set RESULTS_SUBFOLDER=%%i
+        for /d %%j in (results-windows-clang-x64\*) do set RESULTS_WINDOWS_SUBFOLDER=%%j
+        DRAWEXE.exe -v -c testdiff %RESULTS_SUBFOLDER% %RESULTS_WINDOWS_SUBFOLDER%
+      shell: cmd
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
@@ -570,6 +614,33 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
+    - name: Get latest workflow run ID from target branch
+      id: get_run_id
+      run: |
+        workflow_name="Build and Test OCCT on Multiple Platforms"
+        target_branch="${{ github.event.pull_request.base.ref }}"
+        echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+        latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+    
+    - name: Download test results from target branch
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-macos-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ env.latest_run_id }}
+    
+    - name: Compare test results
+      run: |
+        cd install
+        for dir in results/*; do export RESULTS_SUBFOLDER=$dir; done
+        for dir in results-macos-x64/*; do export RESULTS_MACOS_SUBFOLDER=$dir; done
+        ./DRAWEXE -v -c testdiff $RESULTS_SUBFOLDER $RESULTS_MACOS_SUBFOLDER
+      shell: bash
+
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -641,6 +712,33 @@ jobs:
         LIBGL_ALWAYS_SOFTWARE: 1
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Get latest workflow run ID from target branch
+      id: get_run_id
+      run: |
+        workflow_name="Build and Test OCCT on Multiple Platforms"
+        target_branch="${{ github.event.pull_request.base.ref }}"
+        echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+        latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+    
+    - name: Download test results from target branch
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-macos-gcc-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ env.latest_run_id }}
+    
+    - name: Compare test results
+      run: |
+        cd install
+        for dir in results/*; do export RESULTS_SUBFOLDER=$dir; done
+        for dir in results-macos-gcc-x64/*; do export RESULTS_MACOS_GCC_SUBFOLDER=$dir; done
+        ./DRAWEXE -v -c testdiff $RESULTS_SUBFOLDER $RESULTS_MACOS_GCC_SUBFOLDER
+      shell: bash
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
@@ -723,6 +821,33 @@ jobs:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
+    - name: Get latest workflow run ID from target branch
+      id: get_run_id
+      run: |
+        workflow_name="Build and Test OCCT on Multiple Platforms"
+        target_branch="${{ github.event.pull_request.base.ref }}"
+        echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+        latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+    
+    - name: Download test results from target branch
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-linux-clang-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ env.latest_run_id }}
+    
+    - name: Compare test results
+      run: |
+        cd install
+        for dir in results/*; do export RESULTS_SUBFOLDER=$dir; done
+        for dir in results-linux-clang-x64/*; do export RESULTS_LINUX_CLANG_SUBFOLDER=$dir; done
+        ./DRAWEXE -v -c testdiff $RESULTS_SUBFOLDER $RESULTS_LINUX_CLANG_SUBFOLDER
+      shell: bash
+
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -803,6 +928,33 @@ jobs:
         LIBGL_ALWAYS_SOFTWARE: 1
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Get latest workflow run ID from target branch
+      id: get_run_id
+      run: |
+        workflow_name="Build and Test OCCT on Multiple Platforms"
+        target_branch="${{ github.event.pull_request.base.ref }}"
+        echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
+        response=$(curl -s \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+        latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+    
+    - name: Download test results from target branch
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-linux-gcc-x64
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        run-id: ${{ env.latest_run_id }}
+    
+    - name: Compare test results
+      run: |
+        cd install
+        for dir in results/*; do export RESULTS_SUBFOLDER=$dir; done
+        for dir in results-linux-gcc-x64/*; do export RESULTS_LINUX_GCC_SUBFOLDER=$dir; done
+        ./DRAWEXE -v -c testdiff $RESULTS_SUBFOLDER $RESULTS_LINUX_GCC_SUBFOLDER
+      shell: bash
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
