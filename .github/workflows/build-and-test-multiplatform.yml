@@ -424,20 +424,6 @@ jobs:
         path: install/results
         retention-days: 7
 
-    - name: Upload summary.html
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: summary-windows-x64
-        path: install/results/summary.html
-        retention-days: 7
-
-    - name: Upload tests.log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: tests-log-windows-x64
-        path: install/results/tests.log
-        retention-days: 7
-
   test-windows-clang-x64:
     name: Test on Windows with Clang (x64)
     runs-on: windows-2022
@@ -490,20 +476,6 @@ jobs:
       with:
         name: results-windows-clang-x64
         path: install/results
-        retention-days: 7
-
-    - name: Upload summary.html
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: summary-windows-clang-x64
-        path: install/results/summary.html
-        retention-days: 7
-
-    - name: Upload tests.log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: tests-log-windows-clang-x64
-        path: install/results/tests.log
         retention-days: 7
 
   test-macos-x64:
@@ -560,20 +532,6 @@ jobs:
         path: install/bin/results
         retention-days: 7
 
-    - name: Upload summary.html
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: summary-macos-x64
-        path: install/bin/results/summary.html
-        retention-days: 7
-
-    - name: Upload tests.log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: tests-log-macos-x64
-        path: install/bin/results/tests.log
-        retention-days: 7
-
   test-macos-gcc-x64:
     name: Test on macOS with GCC (x64)
     runs-on: macos-15
@@ -627,20 +585,6 @@ jobs:
       with:
         name: results-macos-gcc-x64
         path: install/bin/results
-        retention-days: 7
-
-    - name: Upload summary.html
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: summary-macos-gcc-x64
-        path: install/bin/results/summary.html
-        retention-days: 7
-
-    - name: Upload tests.log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: tests-log-macos-gcc-x64
-        path: install/bin/results/tests.log
         retention-days: 7
 
   test-linux-clang-x64:
@@ -706,20 +650,6 @@ jobs:
         path: install/bin/results
         retention-days: 7
 
-    - name: Upload summary.html
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: summary-linux-clang-x64
-        path: install/bin/results/summary.html
-        retention-days: 7
-
-    - name: Upload tests.log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: tests-log-linux-clang-x64
-        path: install/bin/results/tests.log
-        retention-days: 7
-
   test-linux-gcc-x64:
     name: Test on Linux with GCC (x64)
     runs-on: ubuntu-24.04
@@ -783,22 +713,6 @@ jobs:
         path: install/bin/results
         retention-days: 7
 
-    # Step: Upload summary.html
-    - name: Upload summary.html
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: summary-linux-gcc-x64
-        path: install/bin/results/summary.html
-        retention-days: 7
-
-    # Step: Upload tests.log
-    - name: Upload tests.log
-      uses: actions/upload-artifact@v4.4.3
-      with:
-        name: tests-log-linux-gcc-x64
-        path: install/bin/results/tests.log
-        retention-days: 7
-
   summarize:
       name: Summarize and Send PR Message
       runs-on: ubuntu-24.04
@@ -820,10 +734,15 @@ jobs:
       - name: Set DISPLAY environment variable
         run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
-
       - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
         run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
-  
+
+      - name: Download and extract install directory
+        uses: actions/download-artifact@v4.1.7
+        with:
+          name: install-linux-gcc-x64
+          path: install
+
       - name: Set execute permissions on DRAWEXE
         run: chmod +x install/bin/DRAWEXE
 
@@ -986,6 +905,17 @@ jobs:
           name: results-linux-gcc-x64
           overwrite: true
           path: install/bin/results/current/linux-gcc-x64
+
+      - name: Upload test compare result logs
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: test-compare-results
+          overwrite: true
+          path: |
+            install/bin/results/current/**/diff-*.html
+            install/bin/results/current/**/diff-*.log
+            install/bin/results/current/**/summary.html
+            install/bin/results/current/**/tests.log
 
       - name: Summarize results
         run: |
