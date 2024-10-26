@@ -51,6 +51,11 @@ if (NOT 3RDPARTY_DRACO_INCLUDE_DIR OR NOT EXISTS "${3RDPARTY_DRACO_INCLUDE_DIR}"
                                                  PATH_SUFFIXES "include"
                                                  CMAKE_FIND_ROOT_PATH_BOTH
                                                  NO_DEFAULT_PATH)
+  else()
+    find_path (3RDPARTY_DRACO_INCLUDE_DIR NAMES ${HEADER_NAMES}
+                                                 PATHS ${3RDPARTY_DRACO_DIR}
+                                                 PATH_SUFFIXES "include"
+                                                 CMAKE_FIND_ROOT_PATH_BOTH)
   endif()
 endif()
 
