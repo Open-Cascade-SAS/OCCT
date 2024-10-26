@@ -38,7 +38,7 @@ jobs:
           name: results-windows-x64
           path: install/results-target
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.get_run_id.outputs.latest_run_id }}
+          run-id: ${{ env.latest_run_id }}
 
       - name: Compare test results
         run: |
