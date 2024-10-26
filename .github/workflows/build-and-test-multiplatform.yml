@@ -425,7 +425,8 @@ jobs:
         Write-Host "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
         $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request" -Headers @{Accept = "application/vnd.github.v3+json"}
         $latest_run_id = ($response.workflow_runs | Where-Object { $_.name -eq $workflow_name } | Select-Object -First 1).id
-        Write-Host "latest_run_id=$latest_run_id" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "Latest run ID: $latest_run_id"
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
       shell: pwsh
 
     - name: Download test results from target branch
@@ -523,7 +524,8 @@ jobs:
         Write-Host "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
         $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request" -Headers @{Accept = "application/vnd.github.v3+json"}
         $latest_run_id = ($response.workflow_runs | Where-Object { $_.name -eq $workflow_name } | Select-Object -First 1).id
-        Write-Host "latest_run_id=$latest_run_id" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "Latest run ID: $latest_run_id"
+        echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
       shell: pwsh
     
     - name: Download test results from target branch
