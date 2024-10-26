@@ -433,6 +433,7 @@ jobs:
       uses: actions/download-artifact@v4.1.7
       with:
         name: results-windows-x64
+        path: install
         github-token: ${{ secrets.GITHUB_TOKEN }}
         run-id: ${{ env.latest_run_id }}
 
@@ -531,6 +532,7 @@ jobs:
       uses: actions/download-artifact@v4.1.7
       with:
         name: results-windows-clang-x64
+        path: install
         github-token: ${{ secrets.GITHUB_TOKEN }}
         run-id: ${{ env.latest_run_id }}
     
@@ -630,6 +632,7 @@ jobs:
       uses: actions/download-artifact@v4.1.7
       with:
         name: results-macos-x64
+        path: install
         github-token: ${{ secrets.GITHUB_TOKEN }}
         run-id: ${{ env.latest_run_id }}
     
@@ -729,6 +732,7 @@ jobs:
       uses: actions/download-artifact@v4.1.7
       with:
         name: results-macos-gcc-x64
+        path: install
         github-token: ${{ secrets.GITHUB_TOKEN }}
         run-id: ${{ env.latest_run_id }}
     
@@ -837,6 +841,7 @@ jobs:
       uses: actions/download-artifact@v4.1.7
       with:
         name: results-linux-clang-x64
+        path: install
         github-token: ${{ secrets.GITHUB_TOKEN }}
         run-id: ${{ env.latest_run_id }}
     
@@ -945,6 +950,7 @@ jobs:
       uses: actions/download-artifact@v4.1.7
       with:
         name: results-linux-gcc-x64
+        path: install
         github-token: ${{ secrets.GITHUB_TOKEN }}
         run-id: ${{ env.latest_run_id }}
     
