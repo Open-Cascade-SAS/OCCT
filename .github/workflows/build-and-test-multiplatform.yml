@@ -29,23 +29,23 @@ jobs:
           $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request" -Headers @{Accept = "application/vnd.github.v3+json"}
           $latest_run_id = ($response.workflow_runs | Where-Object { $_.name -eq $workflow_name } | Select-Object -First 1).id
           Write-Host "Latest run ID: $latest_run_id"
-          echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
+          echo "latest_run_id=$latest_run_id" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         shell: pwsh
       
       - name: Download test results from target branch
         uses: actions/download-artifact@v4.1.7
         with:
           name: results-windows-x64
-          path: install
+          path: install/results-target
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
+          run-id: ${{ steps.get_run_id.outputs.latest_run_id }}
 
       - name: Compare test results
         run: |
           cd install
           dir /S
           for /d %%i in (results\*) do set RESULTS_SUBFOLDER=%%i
-          for /d %%j in (results-windows-x64\*) do set RESULTS_WINDOWS_SUBFOLDER=%%j
+          for /d %%j in (results-target\*) do set RESULTS_WINDOWS_SUBFOLDER=%%j
           echo %RESULTS_SUBFOLDER%
           echo %RESULTS_WINDOWS_SUBFOLDER%
         shell: cmd
