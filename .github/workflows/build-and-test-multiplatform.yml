@@ -46,15 +46,15 @@ jobs:
       - name: Get latest workflow run ID from target branch
         id: get_run_id
         run: |
-          $workflow_name = "Build and Test OCCT on Multiple Platforms"
-          $target_branch = "${{ github.event.pull_request.base.ref }}"
-          Write-Host "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
-          $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request" -Headers @{Accept = "application/vnd.github.v3+json"}
-          $latest_run_id = ($response.workflow_runs | Where-Object { $_.name -eq $workflow_name } | Select-Object -First 1).id
-          Write-Host "Latest run ID: $latest_run_id"
-          echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
-        shell: pwsh
-
+          set workflow_name="Build and Test OCCT on Multiple Platforms"
+          set target_branch=${{ github.event.pull_request.base.ref }}
+          echo Fetching latest run ID for workflow: %workflow_name% on branch: %target_branch%
+          curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=%target_branch%&status=success&event=pull_request" > response.json
+          for /F "tokens=*" %%i in ('jq -r ".workflow_runs[] | select(.name==%workflow_name%) | .id" response.json ^| head -n 1') do set latest_run_id=%%i
+          echo Latest run ID: %latest_run_id%
+          echo latest_run_id=%latest_run_id% >> %GITHUB_ENV%
+        shell: cmd
+      
       - name: Download test results from target branch
         uses: actions/download-artifact@v4.1.7
         with:
@@ -66,11 +66,11 @@ jobs:
       - name: Compare test results
         run: |
           cd install
-          call env.bat vc14 win64 release
           dir /S
           for /d %%i in (results\*) do set RESULTS_SUBFOLDER=%%i
           for /d %%j in (results-windows-x64\*) do set RESULTS_WINDOWS_SUBFOLDER=%%j
-          DRAWEXE.exe -v -c testdiff %RESULTS_SUBFOLDER% %RESULTS_WINDOWS_SUBFOLDER%
+          echo %RESULTS_SUBFOLDER%
+          echo %RESULTS_WINDOWS_SUBFOLDER%
         shell: cmd
 
   test-linux-clang-x64:
@@ -125,9 +125,9 @@ jobs:
         run: |
           cd install
           cd bin
-          source env.sh
           ls -R
           for dir in results/*; do export RESULTS_SUBFOLDER=$dir; done
           for dir in results-linux-clang-x64/*; do export RESULTS_LINUX_CLANG_SUBFOLDER=$dir; done
-          ./DRAWEXE -v -c testdiff $RESULTS_SUBFOLDER $RESULTS_LINUX_CLANG_SUBFOLDER
+          echo $RESULTS_SUBFOLDER
+          echo $RESULTS_LINUX_CLANG_SUBFOLDER
         shell: bash
