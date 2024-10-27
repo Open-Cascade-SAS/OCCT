@@ -27,8 +27,7 @@ jobs:
       - name: Comment on PR with artifact link
         run: |
            # Use GitHub API to create a comment on the PR
-           PR_NUMBER=${{ github.event.pull_request.number }}
            COMMENT="Test results are available [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})."
-           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-           COMMENT_URL="https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments"
-           curl -s -H "Authorization: token ${GITHUB_TOKEN}" -X POST $COMMENT_URL -d "{\"body\":\"$COMMENT\"}"
+           COMMENT_URL="https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST $COMMENT_URL -d "{\"body\":\"$COMMENT\"}"
+
