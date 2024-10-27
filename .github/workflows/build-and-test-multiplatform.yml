@@ -29,11 +29,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const artifactUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`
-            const prNumber = ${{ github.event.pull_request.number }}
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: prNumber,
-              body: `Test results are available [here](${artifactUrl}).`
+              issue_number: context.issue.number
+              body: `Test results are available [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).`
             });
