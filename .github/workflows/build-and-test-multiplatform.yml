@@ -9,6 +9,9 @@ on:
   pull_request:
     branches:
       - '**'
+  push:
+    branches:
+      - 'master'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -422,7 +425,7 @@ jobs:
       with:
         name: results-windows-x64
         path: install/results
-        retention-days: 7
+        retention-days: 15
 
   test-windows-clang-x64:
     name: Test on Windows with Clang (x64)
@@ -476,7 +479,7 @@ jobs:
       with:
         name: results-windows-clang-x64
         path: install/results
-        retention-days: 7
+        retention-days: 15
 
   test-macos-x64:
     name: Test on macOS (x64)
@@ -530,7 +533,7 @@ jobs:
       with:
         name: results-macos-x64
         path: install/bin/results
-        retention-days: 7
+        retention-days: 15
 
   test-macos-gcc-x64:
     name: Test on macOS with GCC (x64)
@@ -585,7 +588,7 @@ jobs:
       with:
         name: results-macos-gcc-x64
         path: install/bin/results
-        retention-days: 7
+        retention-days: 15
 
   test-linux-clang-x64:
     name: Test on Linux with Clang (x64)
@@ -648,7 +651,7 @@ jobs:
       with:
         name: results-linux-clang-x64
         path: install/bin/results
-        retention-days: 7
+        retention-days: 15
 
   test-linux-gcc-x64:
     name: Test on Linux with GCC (x64)
@@ -711,7 +714,7 @@ jobs:
       with:
         name: results-linux-gcc-x64
         path: install/bin/results
-        retention-days: 7
+        retention-days: 15
 
   summarize:
       name: Summarize and Send PR Message
@@ -754,7 +757,7 @@ jobs:
           echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
           response=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch&status=success&event=pull_request")
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch")
           latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
           echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
 
@@ -924,11 +927,3 @@ jobs:
             install/bin/results/current/**/diff-*.log
             install/bin/results/current/**/summary.html
             install/bin/results/current/**/tests.log
-
-      - name: Summarize results
-        run: |
-          echo "Summarizing results..."
-
-      - name: Send PR message
-        run: |
-          echo "Sending PR message..."
