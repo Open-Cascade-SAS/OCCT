@@ -49,6 +49,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_MMGR_TYPE=JEMALLOC `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
@@ -113,6 +114,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
                 -D INSTALL_DIR=${{ github.workspace }}/install `
+                -D USE_MMGR_TYPE=JEMALLOC `
                 -D USE_DRACO=ON `
                 -D USE_FFMPEG=ON `
                 -D USE_FREEIMAGE=ON `
@@ -263,7 +265,7 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev libjemalloc-dev
 
     - name: Install rapidjson
       run: |
@@ -284,6 +286,7 @@ jobs:
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_MMGR_TYPE=JEMALLOC \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=OFF \
@@ -322,7 +325,7 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev libjemalloc-dev
 
     - name: Install rapidjson
       run: |
@@ -343,6 +346,7 @@ jobs:
               -D CMAKE_BUILD_TYPE=Release \
               -D INSTALL_DIR=${{ github.workspace }}/install \
               -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_MMGR_TYPE=JEMALLOC \
               -D USE_FREETYPE=ON \
               -D USE_DRACO=ON \
               -D USE_FFMPEG=OFF \
@@ -598,7 +602,7 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev libjemalloc-dev
 
     - name: Install Xvfb and Mesa
       run: |
@@ -661,7 +665,7 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev libjemalloc-dev
 
     - name: Install Xvfb and Mesa
       run: |
@@ -721,7 +725,7 @@ jobs:
       steps:
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
+        run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev libjemalloc-dev
   
       - name: Install Xvfb and Mesa
         run: |
