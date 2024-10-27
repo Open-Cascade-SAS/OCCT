@@ -30,8 +30,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
+              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: "Test results are available [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})."
-            });
+              body: 'Test results are available [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).'
+            })
