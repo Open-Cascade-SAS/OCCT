@@ -925,10 +925,16 @@ jobs:
             install/bin/results/current/**/summary.html
             install/bin/results/current/**/tests.log
 
-      - name: Summarize results
-        run: |
-          echo "Summarizing results..."
-
-      - name: Send PR message
-        run: |
-          echo "Sending PR message..."
+      - name: Comment on PR with artifact link
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const artifactUrl = `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`
+            const prNumber = ${{ github.event.pull_request.number }}
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: `Test results are available [here](${artifactUrl}).`
+            })
