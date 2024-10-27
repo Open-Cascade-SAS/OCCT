@@ -22,12 +22,16 @@ jobs:
   comment:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v7
+      - name: Post message if unauthorized
+        uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }} # Use the PAT here
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const issue_number = context.issue.number;
+            const message = `It appears that you have not signed our Contributor License Agreement (CLA). Please sign the CLA to proceed. You can find the CLA and instructions on how to sign it on our [DevPortal](https://dev.opencascade.org/get_involved). If you have already signed the CLA, please provide your CLA number and Github profile's ID(s) in the "Contact Us" form. Thank you for your contribution!`;
+            github.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
+              issue_number: issue_number,
+              body: message
+            });
