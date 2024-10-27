@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Collaborative development portal
+    url: https://dev.opencascade.org/forums
+    about: You can also use the collaborative development portal to ask questions and discuss the problem you are seeing
+  - name: GitHub discussions
+    url: https://github.com/Open-Cascade-SAS/OCCT/discussions
+    about: You can also use GitHub discussions to ask questions and discuss the problem you are seeing
+  - name: Mantis bug tracker
+    url: https://tracker.dev.opencascade.org/
+    about: You can also use the Mantis bug tracker to report bugs and issues
+  - name: Contact US form
+    url: https://dev.opencascade.org/webform/contact_us
+    about: You can also use the Contact US form to ask questions and discuss the problem you are seeing
