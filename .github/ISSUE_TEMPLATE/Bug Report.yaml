@@ -1,11 +1,46 @@
-name: "Modeling Bug Report"
-description: "Report a bug related to Modeling"
-labels: ["1. Modeling", "2. Bug"]
+name: "Bug Report"
+description: "Report a bug related to the OCCT"
+labels: ["2. Bug"]
 body:
   - type: markdown
     attributes:
       value: |
         **Please provide the following information:**
+  - type: dropdown
+    attributes:
+      label: Category
+      description: "Select the bug category"
+      options:
+        - Application Framework
+        - Build
+        - Coding
+        - Configuration
+        - Data Exchange
+        - Documentation
+        - DRAW
+        - Foundation Classes
+        - Mesh
+        - Modeling
+        - Samples
+        - Shape Healing
+        - Testing
+        - Visualization
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: "Select the bug severity"
+      options:
+        - Crash
+        - Critical
+        - Major
+        - Minor
+        - Trivial
+      default: 2
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
@@ -43,6 +78,7 @@ body:
         - Linux
         - Windows
         - macOS
+      default: 0
     validations:
       required: true
   - type: dropdown
@@ -54,6 +90,7 @@ body:
         - GCC
         - Clang
         - MSVC
+      default: 0
     validations:
       required: true
   - type: input
@@ -69,6 +106,7 @@ body:
       options:
         - 32-bit
         - 64-bit
+      default: 1
     validations:
       required: true
   - type: dropdown
@@ -80,9 +118,11 @@ body:
         - 7.4
         - 7.5
         - 7.6
+        - 7.7
         - 7.8
         - 7.9
         - latest
+      default: 6
     validations:
       required: true
   - type: input
