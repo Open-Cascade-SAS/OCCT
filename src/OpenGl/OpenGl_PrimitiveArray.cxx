@@ -932,7 +932,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       {
         aShadingModel = aCtx->ShaderManager()->ChooseMarkerShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
         aCtx->ShaderManager()->BindMarkerProgram (aTextureSet,
-                                                  aShadingModel, Graphic3d_AlphaMode_Opaque,
+                                                  aShadingModel, Graphic3d_AlphaMode_Opaque, anAspectFace->Aspect()->MarkerPhysical(),
                                                   hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
         break;
       }

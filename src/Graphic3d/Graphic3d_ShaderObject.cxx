@@ -101,7 +101,9 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
                                                                          const ShaderVariableList& theStageInOuts,
                                                                          const TCollection_AsciiString& theInName,
                                                                          const TCollection_AsciiString& theOutName,
-                                                                         Standard_Integer theNbGeomInputVerts)
+                                                                         Standard_Integer theNbGeomInputVerts,
+                                                                         Standard_Integer theNbGeomOutputVerts,
+                                                                         Graphic3d_TypeOfPrimitiveArray theGeometryInputType)
 {
   if (theSource.IsEmpty())
   {
@@ -135,7 +137,7 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
       continue;
     }
 
-    const Standard_Boolean hasGeomStage = theNbGeomInputVerts > 0
+    const Standard_Boolean hasGeomStage = theNbGeomOutputVerts > 0
                                        && aStageLower <  Graphic3d_TOS_GEOMETRY
                                        && aStageUpper >= Graphic3d_TOS_GEOMETRY;
     const Standard_Boolean isAllStagesVar = aStageLower == Graphic3d_TOS_VERTEX
@@ -192,9 +194,21 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
 
   if (theType == Graphic3d_TOS_GEOMETRY)
   {
+    TCollection_AsciiString aGeomShaderInput;
+
+    switch (theGeometryInputType) {
+      case Graphic3d_TOPA_POINTS:
+        aGeomShaderInput = "points";
+        break;
+      case Graphic3d_TOPA_TRIANGLES:
+      default:
+        aGeomShaderInput = "triangles";
+        break;
+    }
+
     aSrcUniforms.Prepend (TCollection_AsciiString()
-                        + "\nlayout (triangles) in;"
-                          "\nlayout (triangle_strip, max_vertices = " + theNbGeomInputVerts + ") out;");
+                        + "\nlayout (" + aGeomShaderInput + ") in;"
+                          "\nlayout (triangle_strip, max_vertices = " + theNbGeomOutputVerts + ") out;");
   }
   if (!aSrcInStructs.IsEmpty()
    && theType == Graphic3d_TOS_GEOMETRY)
@@ -223,5 +237,10 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
   }
 
   theSource.Prepend (aSrcUniforms + aSrcInStructs + aSrcOutStructs + aSrcInOuts);
+
+  if (theType == Graphic3d_TOS_GEOMETRY) {
+    std::cout << theSource << std::endl;
+  }
+
   return Graphic3d_ShaderObject::CreateFromSource (theType, theSource);
 }

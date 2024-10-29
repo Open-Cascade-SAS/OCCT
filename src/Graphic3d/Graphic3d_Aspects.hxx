@@ -324,6 +324,14 @@ public:
     myMarkerScale = theScale;
   }
 
+  //! Whether the marker is rendered as a physical sphere in view space
+  Standard_Boolean MarkerPhysical() const { return myMarkerPhysical; }
+
+  void SetMarkerPhysical (const Standard_Boolean theMarkerPhysical)
+  {
+    myMarkerPhysical = theMarkerPhysical;
+  }
+
   //! Returns marker's image texture.
   //! Could be null handle if marker aspect has been initialized as default type of marker.
   const Handle(Graphic3d_MarkerImage)& MarkerImage() const { return myMarkerImage; }
@@ -509,6 +517,7 @@ public:
         && myLinePattern == theOther.myLinePattern
         && myMarkerType == theOther.myMarkerType
         && myMarkerScale == theOther.myMarkerScale
+        && myMarkerPhysical == theOther.myMarkerPhysical
         && myHatchStyle == theOther.myHatchStyle
         && myTextFont == theOther.myTextFont
         && myPolygonOffset == theOther.myPolygonOffset
@@ -580,6 +589,7 @@ protected:
 
   Aspect_TypeOfMarker          myMarkerType;
   Standard_ShortReal           myMarkerScale;
+  Standard_Boolean             myMarkerPhysical;
 
   Aspect_TypeOfStyleText   myTextStyle;
   Aspect_TypeOfDisplayText myTextDisplayType;

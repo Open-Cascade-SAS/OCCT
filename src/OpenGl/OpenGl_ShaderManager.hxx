@@ -157,6 +157,7 @@ public:
   Standard_EXPORT Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)& theTextures,
                                                       Graphic3d_TypeOfShadingModel theShadingModel,
                                                       Graphic3d_AlphaMode theAlphaMode,
+                                                      Standard_Boolean theRenderPhysicalCircle,
                                                       Standard_Boolean theHasVertColor,
                                                       const Handle(OpenGl_ShaderProgram)& theCustomProgram);
 
