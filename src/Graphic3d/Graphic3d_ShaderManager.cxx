@@ -53,7 +53,7 @@ namespace
   }
 
   //! Number of points used for rendering points rendered as physical circles
-  const Standard_Integer THE_NB_POINT_CIRCLE_SEGMENTS = 5;
+  const Standard_Integer THE_NB_POINT_CIRCLE_SEGMENTS = 7;
 
 #define EOL "\n"
 
@@ -943,26 +943,30 @@ static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::Shader
   {
     aSrcMainGeom += TCollection_AsciiString()
     + EOL"  vec4 center = gl_in[0].gl_Position;"
-    + EOL"  float pSize = occPointSize / 2.0;"
+    + EOL"  float pRadius = occPointSize / 2.0;"
     + genGeomPassthroughCode(theStageInOuts, 0)
     + EOL""
-    + EOL"  int nbSegments = " + THE_NB_POINT_CIRCLE_SEGMENTS + ";"
+    + EOL"  const int nbSegments = " + THE_NB_POINT_CIRCLE_SEGMENTS + ";"
     + EOL""
-    + EOL"  for (int i = 0; i < nbSegments; ++i) {"
+    + EOL"  gl_Position = occProjectionMatrix * (center + vec4(pRadius, 0.0, 0.0, 0.0));"
+    + EOL"  EmitVertex();"
+    + EOL"  for (int i = (nbSegments - 2); i >= 1; --i) {"
     + EOL"    float phi = -PI_DIV_2 + (i / float(nbSegments - 1)) * PI;"
     + EOL""
-    + EOL"    float x = pSize * sin(phi);"
-    + EOL"    float y = pSize * cos(phi);"
+    + EOL"    float x = pRadius * sin(phi);"
+    + EOL"    float y = pRadius * cos(phi);"
     + EOL""
     + EOL"    gl_Position = occProjectionMatrix * (center + vec4(x, y, 0.0, 0.0));"
     + EOL"    EmitVertex();"
     + EOL"    gl_Position = occProjectionMatrix * (center + vec4(x, -y, 0.0, 0.0));"
     + EOL"    EmitVertex();"
     + EOL"  }"
+    + EOL"  gl_Position = occProjectionMatrix * (center + vec4(-pRadius, 0.0, 0.0, 0.0));"
+    + EOL"  EmitVertex();"
     + EOL""
     + EOL"  EndPrimitive();";
 
-    theNbOutputPoints = THE_NB_POINT_CIRCLE_SEGMENTS * 2;
+    theNbOutputPoints = THE_NB_POINT_CIRCLE_SEGMENTS * 2 - 2;
     theInputArrayType = Graphic3d_TOPA_POINTS;
     theNbInputPoints = 1;
   }
