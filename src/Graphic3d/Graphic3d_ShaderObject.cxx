@@ -238,9 +238,5 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
 
   theSource.Prepend (aSrcUniforms + aSrcInStructs + aSrcOutStructs + aSrcInOuts);
 
-  if (theType == Graphic3d_TOS_GEOMETRY) {
-    std::cout << theSource << std::endl;
-  }
-
   return Graphic3d_ShaderObject::CreateFromSource (theType, theSource);
 }
