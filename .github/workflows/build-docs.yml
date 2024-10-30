@@ -12,22 +12,23 @@ on:
 jobs:
   build:
     name: Build Refman Documentation
-    runs-on: ubuntu-24.04
+    runs-on: windows-2022
 
     steps:
-    # Step: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v4.2.1
 
-    # Step: Install necessary dependencies for building the documentation
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev doxygen graphviz
+      run: |
+        choco install -y graphviz
+        choco install -y doxygen.install
 
-    # Step: Build the reference manual documentation
     - name: Build documentation
-      run: bash gendoc -refman
+      run: |
+        set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
+        bash gendoc -refman
+      shell: cmd
 
-    # Step: Upload the generated reference manual documentation as an artifact
     - name: Upload refman documentation
       uses: actions/upload-artifact@v4.4.3
       id: artifact-upload-step
@@ -36,7 +37,6 @@ jobs:
         path: doc/refman
         retention-days: 90
 
-    # Step: Upload the documentation generation log as an artifact
     - name: Upload generation log
       uses: actions/upload-artifact@v4.4.3
       with:
