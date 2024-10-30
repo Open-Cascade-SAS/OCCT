@@ -147,8 +147,8 @@ elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPIL
     # /GL (whole program optimization) is similar to -flto (Link Time Optimization) in GCC/Clang.
     # /GF (eliminate duplicate strings) doesn't have a direct equivalent in GCC/Clang, but the compilers do string pooling automatically.
     # /Gy (enable function-level linking) is similar to -ffunction-sections in GCC/Clang.
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -fomit-frame-pointer -flto -ffunction-sections")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 -fomit-frame-pointer -flto -ffunction-sections")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -fomit-frame-pointer -flto -ffunction-sections")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -fomit-frame-pointer -flto -ffunction-sections")
 
     # Link-Time Code Generation(LTCG) is requared for Whole Program Optimisation(GL)
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto")
