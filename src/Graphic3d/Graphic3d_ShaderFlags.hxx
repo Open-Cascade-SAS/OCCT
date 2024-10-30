@@ -36,12 +36,13 @@ enum Graphic3d_ShaderFlags
   Graphic3d_ShaderFlags_WriteOit        = 0x0800, //!< write coverage buffer for Blended Order-Independent Transparency
   Graphic3d_ShaderFlags_OitDepthPeeling = 0x1000, //!< handle Depth Peeling OIT
   Graphic3d_ShaderFlags_PointCircle     = 0x2000, //!< output points as circle billboards with diameter (gl_PointSize) instead
+  Graphic3d_ShaderFlags_LineWidth       = 0x4000, //!< expand line primitives in screen space using triangles
   //
-  Graphic3d_ShaderFlags_NB              = 0x4000, //!< overall number of combinations
+  Graphic3d_ShaderFlags_NB              = 0x8000, //!< overall number of combinations
   Graphic3d_ShaderFlags_IsPoint         = Graphic3d_ShaderFlags_PointSimple|Graphic3d_ShaderFlags_PointSprite|
                                           Graphic3d_ShaderFlags_PointSpriteA|Graphic3d_ShaderFlags_PointCircle,
   Graphic3d_ShaderFlags_HasTextures     = Graphic3d_ShaderFlags_TextureRGB|Graphic3d_ShaderFlags_TextureEnv,
-  Graphic3d_ShaderFlags_NeedsGeomShader = Graphic3d_ShaderFlags_MeshEdges|Graphic3d_ShaderFlags_PointCircle,
+  Graphic3d_ShaderFlags_NeedsGeomShader = Graphic3d_ShaderFlags_MeshEdges|Graphic3d_ShaderFlags_PointCircle|Graphic3d_ShaderFlags_LineWidth,
 };
 
 #endif // _Graphic3d_ShaderFlags_HeaderFile

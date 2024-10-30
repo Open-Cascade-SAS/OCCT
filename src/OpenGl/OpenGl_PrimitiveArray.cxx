@@ -501,7 +501,7 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
   if (aGlContext->core20fwd != NULL)
   {
     aGlContext->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), anAspect->Aspect()->EdgeLineType(),
-                                                  Graphic3d_TypeOfShadingModel_Unlit, Graphic3d_AlphaMode_Opaque, Standard_False,
+                                                  Graphic3d_TypeOfShadingModel_Unlit, Graphic3d_AlphaMode_Opaque, Standard_False, Standard_False,
                                                   anAspect->ShaderProgramRes (aGlContext));
   }
   aGlContext->SetSampleAlphaToCoverage (aGlContext->ShaderManager()->MaterialState().HasAlphaCutoff());
@@ -847,7 +847,18 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   bool toDrawArray = true, toSetLinePolygMode = false;
+
   int toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
+  int toDrawLineGeometry = 1; // 1 - render using FFP, 2 - render using glsl
+
+  if (myDrawMode == GL_LINES || myDrawMode == GL_LINE_STRIP)
+  {
+    if (aCtx->hasGeometryStage != OpenGl_FeatureNotAvailable)
+    {
+      toDrawLineGeometry = 2;
+    }
+  }
+
   if (myIsFillType)
   {
     toDrawArray = anAspectFace->Aspect()->InteriorStyle() != Aspect_IS_EMPTY;
@@ -945,7 +956,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
                                                 aShadingModel,
                                                 Graphic3d_AlphaMode_Opaque,
                                                 hasVertColor,
+                                                toDrawLineGeometry == 2,
                                                 anAspectFace->ShaderProgramRes (aCtx));
+
+        if (toDrawLineGeometry == 2)
+        {
+          aCtx->ShaderManager()->PushInteriorState (aCtx->ActiveProgram(), anAspectFace->Aspect());
+        }
+
         break;
       }
       default:

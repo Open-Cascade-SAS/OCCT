@@ -971,6 +971,51 @@ static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::Shader
     theNbInputPoints = 1;
   }
 
+  if ((theBits & Graphic3d_ShaderFlags_LineWidth) != 0)
+  {
+    theUnifoms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 occViewport",       Graphic3d_TOS_GEOMETRY));
+    theUnifoms.Append (Graphic3d_ShaderObject::ShaderVariable ("float occLineWidth",     Graphic3d_TOS_GEOMETRY));
+
+    aSrcMainGeom = TCollection_AsciiString()
+    + EOL"vec3 ToViewPortTransform (vec4 theVec)"
+      EOL"{"
+      EOL"  vec3 aWinCoord = theVec.xyz / theVec.w;"
+      EOL"  aWinCoord    = aWinCoord * 0.5 + 0.5;"
+      EOL"  aWinCoord.xy = aWinCoord.xy * occViewport.zw + occViewport.xy;"
+      EOL"  return aWinCoord;"
+      EOL"}"
+    + EOL"vec4 FromViewPortTransform (vec3 theVec)"
+      EOL"{"
+      EOL"  vec3 aNdcCoord = vec3(theVec.xy / (occViewport.zw + occViewport.xy), theVec.z);"
+      EOL"  aNdcCoord      = aNdcCoord * 2.0 - 1.0;"
+      EOL"  return vec4(aNdcCoord, 1.0);"
+      EOL"}"
+    + aSrcMainGeom
+    + EOL"  vec3 aLineA = ToViewPortTransform(gl_in[0].gl_Position);"
+    + EOL"  vec3 aLineB = ToViewPortTransform(gl_in[1].gl_Position);"
+    + EOL""
+    + EOL"  vec3 aLineDir = normalize(aLineB - aLineA);"
+    + EOL"  vec3 aLinePerpPosDir = vec3(-aLineDir.y, aLineDir.x, 0.0);"
+    + EOL""
+    + EOL"  float aLineSideWidth = occLineWidth / 2.0;"
+    + genGeomPassthroughCode(theStageInOuts, 0)
+    + EOL"  gl_Position = FromViewPortTransform(aLineA + aLineSideWidth * aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + EOL"  gl_Position = FromViewPortTransform(aLineA + aLineSideWidth * -aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + genGeomPassthroughCode(theStageInOuts, 1)
+    + EOL"  gl_Position = FromViewPortTransform(aLineB + aLineSideWidth * aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + EOL"  gl_Position = FromViewPortTransform(aLineB + aLineSideWidth * -aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + EOL""
+    + EOL"  EndPrimitive();";
+
+    theNbOutputPoints = 4;
+    theInputArrayType = Graphic3d_TOPA_POLYLINES;
+    theNbInputPoints = 2;
+  }
+
   aSrcMainGeom += EOL"}";
 
   return aSrcMainGeom;

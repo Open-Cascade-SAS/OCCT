@@ -197,6 +197,14 @@ Handle(Graphic3d_ShaderObject) Graphic3d_ShaderObject::CreateFromSource (TCollec
     TCollection_AsciiString aGeomShaderInput;
 
     switch (theGeometryInputType) {
+      case Graphic3d_TOPA_POLYLINES:
+      case Graphic3d_TOPA_SEGMENTS:
+        aGeomShaderInput = "lines";
+        break;
+      case Graphic3d_TOPA_LINE_STRIP_ADJACENCY:
+      case Graphic3d_TOPA_LINES_ADJACENCY:
+        aGeomShaderInput = "lines_adjacency";
+        break;
       case Graphic3d_TOPA_POINTS:
         aGeomShaderInput = "points";
         break;
