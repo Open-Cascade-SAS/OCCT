@@ -853,7 +853,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
 
   if (myDrawMode == GL_LINES || myDrawMode == GL_LINE_STRIP)
   {
-    if (aCtx->hasGeometryStage != OpenGl_FeatureNotAvailable)
+    if (aCtx->hasGeometryStage != OpenGl_FeatureNotAvailable && !aCtx->caps->lineGeomDisable)
     {
       toDrawLineGeometry = 2;
     }
