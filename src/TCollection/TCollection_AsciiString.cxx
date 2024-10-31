@@ -924,20 +924,23 @@ Standard_OStream& operator << (Standard_OStream& astream,
 // ----------------------------------------------------------------------------
 void TCollection_AsciiString::RemoveAll(const Standard_Character what,
                                         const Standard_Boolean CaseSensitive)
-{   
-  if (mylength == 0) return;
-  int c = 0;
-  if (CaseSensitive) {
-    for (int i=0; i < mylength; i++)
-      if (mystring[i] != what) mystring[c++] = mystring[i];
+{
+  if (mylength == 0)
+  {
+    return;
   }
-  else {
-    Standard_Character upperwhat = ::UpperCase(what);
-    for (int i=0; i < mylength; i++) { 
-      if (::UpperCase(mystring[i]) != upperwhat) mystring[c++] = mystring[i];
+  const Standard_Character aTargetChar = CaseSensitive ? what : ::UpperCase(what);
+  int aNewLength = 0;
+  for (int i = 0; i < mylength; ++i)
+  {
+    const Standard_Character aCurrentChar = CaseSensitive ? mystring[i] : ::UpperCase(mystring[i]);
+    if (aCurrentChar != aTargetChar)
+    {
+      mystring[aNewLength++] = mystring[i];
     }
   }
-  mylength = c;
+  mylength = aNewLength;
+  mystring[mylength] = '\0';
 }
 
 // ----------------------------------------------------------------------------
@@ -945,11 +948,7 @@ void TCollection_AsciiString::RemoveAll(const Standard_Character what,
 // ----------------------------------------------------------------------------
 void TCollection_AsciiString::RemoveAll(const Standard_Character what)
 {
-  if (mylength == 0) return;
-  int c = 0;
-  for (int i=0; i < mylength; i++)
-    if (mystring[i] != what) mystring[c++] = mystring[i];
-  mylength = c;
+  RemoveAll(what, Standard_True);
 }
 
 // ----------------------------------------------------------------------------
