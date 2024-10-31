@@ -719,6 +719,7 @@ jobs:
   summarize:
       name: Summarize and Send PR Message
       runs-on: ubuntu-24.04
+      if: github.event_name == 'pull_request'
       needs: [test-windows-x64, test-windows-clang-x64, test-macos-x64, test-macos-gcc-x64, test-linux-clang-x64, test-linux-gcc-x64]
   
       steps:
