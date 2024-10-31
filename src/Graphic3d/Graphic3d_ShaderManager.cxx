@@ -946,6 +946,16 @@ static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::Shader
   {
     aSrcMainGeom += TCollection_AsciiString()
     + EOL"  vec4 center = gl_in[0].gl_Position;"
+    + EOL"  vec4 centerNdc = occProjectionMatrix * center;"
+    + EOL"  vec3 normNdc = centerNdc.xyz / centerNdc.w;"
+    + EOL""
+    + EOL"  if (!((normNdc.x >= -1.0 && normNdc.x <= 1.0) &&"
+    + EOL"        (normNdc.y >= -1.0 && normNdc.y <= 1.0) &&"
+    + EOL"        (normNdc.z >= -1.0 && normNdc.z <= 1.0))) {"
+    + EOL"    EndPrimitive();"
+    + EOL"    return;"
+    + EOL"  }"
+    + EOL""
     + EOL"  float pRadius = occPointSize / 2.0;"
     + genGeomPassthroughCode(theStageInOuts, 0)
     + EOL""
