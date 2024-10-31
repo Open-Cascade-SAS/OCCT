@@ -1002,7 +1002,7 @@ static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::Shader
     + EOL""
     + EOL"  const int nbSegments = " + THE_LINE_END_CAP_SEGMENTS + ";"
     + genGeomPassthroughCode(theStageInOuts, 0)
-    + EOL"  float aLineSideWidth = occLineWidth;"
+    + EOL"  float aLineSideWidth = occLineWidth / 2.0;"
     + EOL"  gl_Position = FromViewPortTransform(aLineA - aLineDir * aLineSideWidth);"
     + EOL"  EmitVertex();"
     + EOL"  for (int i = 1; i < nbSegments - 1; ++i) {"
