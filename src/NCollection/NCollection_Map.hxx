@@ -69,19 +69,19 @@ public:
     //! Constructor with 'Next'
     MapNode (const TheKeyType& theKey, 
              NCollection_ListNode* theNext,
-             MapNode* theNextSeq,
-             MapNode* thePrevSeq)
+             MapNode* thePrevSeq,
+             MapNode* theNextSeq)
       : NCollection_TListNode<TheKeyType> (theKey, theNext),
-        myNext(theNextSeq),
-        myPrevious(thePrevSeq) {}
+        myPrevious(thePrevSeq),
+        myNext(theNextSeq) {}
     //! Constructor with 'Next'
     MapNode (TheKeyType&& theKey,
              NCollection_ListNode* theNext,
-             MapNode* theNextSeq,
-             MapNode* thePrevSeq)
+             MapNode* thePrevSeq,
+             MapNode* theNextSeq)
       : NCollection_TListNode<TheKeyType> (std::forward<TheKeyType>(theKey), theNext),
-        myNext(theNextSeq),
-        myPrevious(thePrevSeq) {}
+        myPrevious(thePrevSeq),
+        myNext(theNextSeq) {}
     //! Duplicate the value interface for the set
     const TheKeyType& Key (void) { return this->Value(); }
     //! Sequence node access
@@ -91,8 +91,8 @@ public:
     void SetNextSeq (MapNode* theNext) { myNext = theNext; }
     void SetPrevSeq (MapNode* thePrev) { myPrevious = thePrev; }
   private:
-    MapNode* myNext;
     MapNode* myPrevious;
+    MapNode* myNext;
   };
 
  public:
@@ -346,7 +346,8 @@ public:
         else
         {
           myFirst = aCurNode->NextSeq();
-          myFirst->SetPrevSeq(nullptr);
+          if (myFirst)
+            myFirst->SetPrevSeq(nullptr);
         }
         if (aCurNode->NextSeq())
         {
@@ -355,7 +356,8 @@ public:
         else
         {
           myLast = aCurNode->PrevSeq();
-          myLast->SetNextSeq(nullptr);
+          if (myLast)
+            myLast->SetNextSeq(nullptr);
         }
         aCurNode->~MapNode();
         this->myAllocator->Free(aCurNode);
@@ -726,8 +728,8 @@ protected:
     if (myLast)
     {
       myLast->SetNextSeq(theNode);
-      myLast = theNode;
       theNode->SetPrevSeq(myLast);
+      myLast = theNode;
     }
     else
     {
