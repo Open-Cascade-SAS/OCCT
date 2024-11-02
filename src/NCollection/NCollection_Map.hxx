@@ -68,48 +68,79 @@ public:
   public:
     //! Constructor with 'Next'
     MapNode (const TheKeyType& theKey, 
-             NCollection_ListNode* theNext) :
-      NCollection_TListNode<TheKeyType> (theKey, theNext) {}
+             NCollection_ListNode* theNext,
+             MapNode* theNextSeq,
+             MapNode* thePrevSeq)
+      : NCollection_TListNode<TheKeyType> (theKey, theNext),
+        myNext(theNextSeq),
+        myPrevious(thePrevSeq) {}
     //! Constructor with 'Next'
     MapNode (TheKeyType&& theKey,
-             NCollection_ListNode* theNext) :
-      NCollection_TListNode<TheKeyType> (std::forward<TheKeyType>(theKey), theNext) {}
-    //! Key
-    const TheKeyType& Key (void)
-    { return this->Value(); }
-
+             NCollection_ListNode* theNext,
+             MapNode* theNextSeq,
+             MapNode* thePrevSeq)
+      : NCollection_TListNode<TheKeyType> (std::forward<TheKeyType>(theKey), theNext),
+        myNext(theNextSeq),
+        myPrevious(thePrevSeq) {}
+    //! Duplicate the value interface for the set
+    const TheKeyType& Key (void) { return this->Value(); }
+    //! Sequence node access
+    MapNode* CurSeq () const { return this; }
+    MapNode* NextSeq () const { return myNext; }
+    MapNode* PrevSeq () const { return myPrevious; }
+    void SetNextSeq (MapNode* theNext) { myNext = theNext; }
+    void SetPrevSeq (MapNode* thePrev) { myPrevious = thePrev; }
+  private:
+    MapNode* myNext;
+    MapNode* myPrevious;
   };
 
  public:
   //!   Implementation of the Iterator interface.
-  class Iterator : public NCollection_BaseMap::Iterator
+  class Iterator
   {
   public:
-    //! Empty constructor
-    Iterator (void) :
-      NCollection_BaseMap::Iterator() {}
     //! Constructor
     Iterator (const NCollection_Map& theMap) :
-      NCollection_BaseMap::Iterator(theMap) {}
+      myFirst(theMap.myFirst),
+      myLast(theMap.myLast),
+      myNode(myFirst) {}
+
+    Iterator() = default;
+
+    void Initialize (const NCollection_Map& theMap)
+    {
+      myFirst = theMap.myFirst;
+      myLast = theMap.myLast;
+      myNode = myFirst;
+    }
+    //! Performs comparison of two iterators.
+    Standard_Boolean IsEqual (const Iterator& theOther) const
+    {
+      return myFirst == theOther.myFirst && myLast == theOther.myLast && myNode == theOther.myNode;
+    }
     //! Query if the end of collection is reached by iterator
     Standard_Boolean More(void) const
-    { return PMore(); }
+    { return myNode != nullptr && myNode != myLast; }
     //! Make a step along the collection
     void Next(void)
-    { PNext(); }
+    { myNode = myNode == nullptr? nullptr : myNode->NextSeq(); }
     //! Value inquiry
     const TheKeyType& Value(void) const
     {
       Standard_NoSuchObject_Raise_if (!More(), "NCollection_Map::Iterator::Value");  
-      return ((MapNode *) myNode)->Value();
+      return myNode->Value();
     }
-
     //! Key
     const TheKeyType& Key (void) const
     { 
       Standard_NoSuchObject_Raise_if (!More(), "NCollection_Map::Iterator::Key");  
-      return ((MapNode *) myNode)->Value();
+      return myNode->Value();
     }
+  private:
+    MapNode* myFirst = nullptr;
+    MapNode* myLast = nullptr;
+    MapNode* myNode = nullptr;
   };
   
   //! Shorthand for a constant iterator type.
@@ -191,34 +222,22 @@ public:
   }
 
   //! ReSize
-  void ReSize (const Standard_Integer N)
+  void ReSize (const Standard_Integer theLength)
   {
-    NCollection_ListNode** newdata = 0L;
-    NCollection_ListNode** dummy = 0L;
-    Standard_Integer newBuck;
-    if (BeginResize (N, newBuck, newdata, dummy))
+    if (Reallocate(theLength))
     {
-      if (myData1) 
+      MapNode* aNode = myFirst;
+      while (aNode)
       {
-        MapNode** olddata = (MapNode**) myData1;
-        MapNode *p, *q;
-        for (int i = 0; i <= NbBuckets(); i++) 
+        const size_t aHashCode = HashCode(((MapNode*)aNode)->Key(), NbBuckets());
+        NCollection_ListNode* aNodePlacement = myData1[aHashCode];
+        myData1[aHashCode] = aNode;
+        if (aNodePlacement)
         {
-          if (olddata[i]) 
-          {
-            p = olddata[i];
-            while (p) 
-            {
-              const size_t k = HashCode(p->Key(),newBuck);
-              q = (MapNode*) p->Next();
-              p->Next() = newdata[k];
-              newdata[k] = p;
-              p = q;
-            }
-          }
+          aNode->Next() = aNodePlacement;
         }
+        aNode = aNode->NextSeq();
       }
-      EndResize (N, newBuck, newdata, dummy);
     }
   }
 
@@ -227,15 +246,15 @@ public:
   {
     if (Resizable()) 
       ReSize(Extent());
-    MapNode* aNode;
+    MapNode* aTempNode;
     size_t aHash;
-    if (lookup(theKey, aNode, aHash))
+    if (lookup(theKey, aTempNode, aHash))
     {
       return Standard_False;
     }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(theKey,data[aHash]);
-    Increment();
+    MapNode*& aNode = (MapNode*&)myData1[aHash];
+    aNode = new (this->myAllocator) MapNode(theKey, aNode, myLast, nullptr);
+    Increment(aNode);
     return Standard_True;
   }
 
@@ -244,15 +263,15 @@ public:
   {
     if (Resizable()) 
       ReSize(Extent());
-    MapNode* aNode;
+    MapNode* aTempNode;
     size_t aHash;
-    if (lookup(theKey, aNode, aHash))
+    if (lookup(theKey, aTempNode, aHash))
     {
       return Standard_False;
     }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey),data[aHash]);
-    Increment();
+    MapNode*& aNode = (MapNode*&)myData1[aHash];
+    aNode = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey), aNode, myLast, nullptr);
+    Increment(aNode);
     return Standard_True;
   }
 
@@ -262,16 +281,16 @@ public:
   {
     if (Resizable()) 
       ReSize(Extent());
-    MapNode* aNode;
+    MapNode* aTempNode;
     size_t aHash;
-    if (lookup(theKey, aNode, aHash))
+    if (lookup(theKey, aTempNode, aHash))
     {
-      return aNode->Key();
+      return aTempNode->Key();
     }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(theKey,data[aHash]);
-    Increment();
-    return data[aHash]->Key();
+    MapNode*& aNode = (MapNode*&)myData1[aHash];
+    aNode = new (this->myAllocator) MapNode(theKey, aNode, myLast, nullptr);
+    Increment(aNode);
+    return aNode->Key();
   }
 
   //! Added: add a new key if not yet in the map, and return 
@@ -280,16 +299,16 @@ public:
   {
     if (Resizable()) 
       ReSize(Extent());
-    MapNode* aNode;
+    MapNode* aTempNode;
     size_t aHash;
-    if (lookup(theKey, aNode, aHash))
+    if (lookup(theKey, aTempNode, aHash))
     {
-      return aNode->Key();
+      return aTempNode->Key();
     }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash] = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey),data[aHash]);
-    Increment();
-    return data[aHash]->Key();
+    MapNode*& aNode = (MapNode*&)myData1[aHash];
+    aNode = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey), aNode, myLast, nullptr);
+    Increment(aNode);
+    return aNode->Key();
   }
 
   //! Contains
@@ -300,29 +319,41 @@ public:
   }
 
   //! Remove
-  Standard_Boolean Remove(const TheKeyType& K)
+  Standard_Boolean Remove(const TheKeyType& theKey)
   {
     if (IsEmpty()) 
       return Standard_False;
-    MapNode** data = (MapNode**) myData1;
-    const size_t k = HashCode(K,NbBuckets());
-    MapNode* p = data[k];
-    MapNode* q = NULL;
-    while (p) 
+    const size_t aHashCode = HashCode(theKey, NbBuckets());
+    MapNode* aCurNode = (MapNode*)myData1[aHashCode];
+    MapNode* aPrevNode = nullptr;
+    while (aCurNode) 
     {
-      if (IsEqual(p->Key(),K)) 
+      if (IsEqual(aCurNode->Key(), theKey))
       {
         Decrement();
-        if (q) 
-          q->Next() = p->Next();
+        if (aPrevNode)
+        {
+          aPrevNode->Next() = aCurNode->Next();
+          aPrevNode->SetNextSeq(aCurNode->NextSeq());
+        }
         else
-          data[k] = (MapNode*) p->Next();
-        p->~MapNode();
-        this->myAllocator->Free(p);
+        {
+          myData1[aHashCode] = aCurNode->Next();
+        }
+        if (aCurNode == myFirst)
+        {
+          myFirst = aCurNode->NextSeq();
+        }
+        if (aCurNode == myLast)
+        {
+          myLast = aCurNode->PrevSeq();
+        }
+        aCurNode->~MapNode();
+        this->myAllocator->Free(aCurNode);
         return Standard_True;
       }
-      q = p;
-      p = (MapNode*) p->Next();
+      aPrevNode = aCurNode;
+      aCurNode = (MapNode*)aCurNode->Next();
     }
     return Standard_False;
   }
@@ -330,7 +361,7 @@ public:
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
   void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
-  { Destroy (MapNode::delNode, doReleaseMemory); }
+  { Destroy (MapNode::delNode, doReleaseMemory); myFirst = myLast = nullptr; }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
@@ -665,17 +696,8 @@ protected:
   //! @return true if key is found
   Standard_Boolean lookup(const TheKeyType& theKey, MapNode*& theNode) const
   {
-    if (IsEmpty())
-      return Standard_False; // Not found
-    for (theNode = (MapNode*)myData1[HashCode(theKey, NbBuckets())];
-         theNode; theNode = (MapNode*)theNode->Next())
-    {
-      if (IsEqual(theNode->Key(), theKey))
-      {
-        return Standard_True;
-      }
-    }
-    return Standard_False; // Not found
+    size_t aHash;
+    return lookup(theKey, theNode, aHash);
   }
 
   bool IsEqual(const TheKeyType& theKey1,
@@ -689,9 +711,24 @@ protected:
   {
     return myHasher(theKey) % theUpperBound + 1;
   }
-protected:
 
+  void Increment (MapNode* theNode)
+  {
+    if (myLast)
+    {
+      myLast->SetNextSeq(theNode);
+    }
+    if (!myFirst)
+    {
+      myFirst = theNode;
+    }
+    NCollection_BaseMap::Increment();
+  }
+
+protected:
   Hasher myHasher;
+  MapNode* myFirst = nullptr;
+  MapNode* myLast = nullptr;
 };
 
 #endif

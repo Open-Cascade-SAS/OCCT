@@ -16,7 +16,7 @@
 // Purpose:     Implementation of the BaseMap class
 
 #include <NCollection_BaseMap.hxx>
-#include <TCollection.hxx>
+#include <NCollection_Primes.hxx>
 
 //=======================================================================
 //function : BeginResize
@@ -30,7 +30,7 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
    NCollection_ListNode**& data2) const 
 {
   // get next size for the buckets array
-  N = NextPrimeForMap(NbBuckets);
+  N = NCollection_Primes::NextPrimeForMap(NbBuckets);
   if (N <= myNbBuckets)
   {
     if (!myData1)
@@ -46,7 +46,7 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
       Standard::Allocate((N+1)*sizeof(NCollection_ListNode *));
   }
   else
-    data2 = NULL;
+    data2 = nullptr;
   return Standard_True;
 }
 
@@ -71,14 +71,47 @@ void  NCollection_BaseMap::EndResize
   myData2 = data2;
 }
 
-
 //=======================================================================
-//function : Destroy
-//purpose  : 
+//function : Reallocate
+//purpose  :
 //=======================================================================
+Standard_Boolean NCollection_BaseMap::Reallocate(const Standard_Integer theNbBuckets)
+{
+  // get next size for the buckets array
+  Standard_Integer aNewBuckets = NCollection_Primes::NextPrimeForMap(theNbBuckets);
+  if (aNewBuckets <= myNbBuckets)
+  {
+    if (!myData1)
+    {
+      aNewBuckets = myNbBuckets;
+    }
+    else
+    {
+      return Standard_False;
+    }
+  }
+  myNbBuckets = aNewBuckets;
+  const size_t aSize = myNbBuckets + 1;
+  myData1 = (NCollection_ListNode**)Standard::Reallocate(myData1, aSize * sizeof(NCollection_ListNode*));
+  memset(myData1, 0, aSize * sizeof(NCollection_ListNode*));
+  if (isDouble)
+  {
+    myData2 = (NCollection_ListNode**)Standard::Reallocate(myData2, aSize * sizeof(NCollection_ListNode*));
+    memset(myData2, 0, aSize * sizeof(NCollection_ListNode*));
+  }
+  else
+  {
+    myData2 = nullptr;
+  }
+  return Standard_True;
+}
 
-void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
-                                    Standard_Boolean doReleaseMemory)
+  //=======================================================================
+  //function : Destroy
+  //purpose  :
+  //=======================================================================
+
+  void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, Standard_Boolean doReleaseMemory)
 {
   if (!IsEmpty()) 
   {
@@ -94,23 +127,22 @@ void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
           fDel (aCur, myAllocator);
           aCur = aNext;
         }
-        myData1[anInd] = nullptr;
+          myData1[anInd] = nullptr;
       }
     }
     if (myData2)
     {
       memset(myData2, 0, (aNbBuckets + 1) * sizeof(NCollection_ListNode*));
     }
+    mySize = 0;
   }
-
-  mySize = 0;
   if (doReleaseMemory)
   {
     if (myData1)
       Standard::Free(myData1);
     if (myData2)
       Standard::Free(myData2);
-    myData1 = myData2 = NULL;
+    myData1 = myData2 = nullptr;
   }
 }
 
@@ -166,15 +198,3 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
 
   delete [] sizes;
 }
-
-//=======================================================================
-//function : NextPrimeForMap
-//purpose  : 
-//=======================================================================
-
-Standard_Integer NCollection_BaseMap::NextPrimeForMap
-  (const Standard_Integer N) const
-{
-  return TCollection::NextPrimeForMap ( N );
-}
-

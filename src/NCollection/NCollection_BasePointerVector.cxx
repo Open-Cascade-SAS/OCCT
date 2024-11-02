@@ -13,7 +13,6 @@
 
 #include <NCollection_BasePointerVector.hxx>
 
-#include <TCollection.hxx>
 #include <cstring>
 
 //=======================================================================
