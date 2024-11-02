@@ -236,6 +236,10 @@ public:
         {
           aNode->Next() = aNodePlacement;
         }
+        else
+        {
+          aNode->Next() = nullptr;
+        }
         aNode = aNode->NextSeq();
       }
     }
