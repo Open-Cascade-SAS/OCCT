@@ -334,19 +334,28 @@ public:
         if (aPrevNode)
         {
           aPrevNode->Next() = aCurNode->Next();
-          aPrevNode->SetNextSeq(aCurNode->NextSeq());
         }
         else
         {
           myData1[aHashCode] = aCurNode->Next();
         }
-        if (aCurNode == myFirst)
+        if (aCurNode->PrevSeq())
+        {
+          aCurNode->PrevSeq()->SetNextSeq(aCurNode->NextSeq());
+        }
+        else
         {
           myFirst = aCurNode->NextSeq();
+          myFirst->SetPrevSeq(nullptr);
         }
-        if (aCurNode == myLast)
+        if (aCurNode->NextSeq())
+        {
+          aCurNode->NextSeq()->SetPrevSeq(aCurNode->PrevSeq());
+        }
+        else
         {
           myLast = aCurNode->PrevSeq();
+          myLast->SetNextSeq(nullptr);
         }
         aCurNode->~MapNode();
         this->myAllocator->Free(aCurNode);
@@ -717,10 +726,13 @@ protected:
     if (myLast)
     {
       myLast->SetNextSeq(theNode);
+      myLast = theNode;
+      theNode->SetPrevSeq(myLast);
     }
-    if (!myFirst)
+    else
     {
       myFirst = theNode;
+      myLast = theNode;
     }
     NCollection_BaseMap::Increment();
   }
