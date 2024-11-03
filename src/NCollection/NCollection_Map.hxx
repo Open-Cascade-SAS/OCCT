@@ -378,7 +378,7 @@ public:
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
   void Clear(const Standard_Boolean doReleaseMemory = Standard_False)
-  { Destroy (MapNode::delNode, doReleaseMemory); myFirst = myLast = nullptr; }
+  { Destroy (MapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear (const Handle(NCollection_BaseAllocator)& theAllocator)
@@ -386,6 +386,29 @@ public:
     Clear(theAllocator != this->myAllocator);
     this->myAllocator = ( ! theAllocator.IsNull() ? theAllocator :
                     NCollection_BaseAllocator::CommonBaseAllocator() );
+  }
+
+  //! Deallocate all node elements
+  void Destroy(NCollection_DelMapNode fDel, Standard_Boolean doReleaseMemory)
+  {
+    if (!IsEmpty()) 
+    {
+      MapNode* aNode = myFirst;
+      while (aNode)
+      {
+        MapNode* aCurNode = aNode;
+        aNode = aNode->NextSeq();
+        fDel (aCurNode, myAllocator);
+      }
+      myFirst = myLast = nullptr;
+      memset(myData1, 0, (NbBuckets() + 1) * sizeof(NCollection_ListNode*));
+      resetSize();
+    }
+    if (doReleaseMemory)
+    {
+      Standard::Free(myData1);
+      myData1 = myData2 = nullptr;
+    }
   }
 
   //! Destructor

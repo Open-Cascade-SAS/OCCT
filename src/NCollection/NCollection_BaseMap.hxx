@@ -245,6 +245,8 @@ public:
   NCollection_ListNode ** myData1;
   NCollection_ListNode ** myData2;
 
+  void resetSize() { mySize = 0; }
+
  private: 
   // ---------- PRIVATE FIELDS ------------
   Standard_Integer myNbBuckets;
