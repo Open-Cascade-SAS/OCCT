@@ -39,6 +39,17 @@ jobs:
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
 
+    - name: Download and extract Mesa3D
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+      shell: cmd
+
     - name: Configure OCCT
       run: |
           mkdir build
@@ -100,6 +111,17 @@ jobs:
           Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
           Remove-Item 3rdparty-vc14-64.zip
       shell: pwsh
+
+    - name: Download and extract Mesa3D
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+      shell: cmd
 
     - name: Configure OCCT
       run: |
@@ -409,6 +431,17 @@ jobs:
         name: install-windows-x64
         path: install
 
+    - name: Download and extract Mesa3D
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+      shell: cmd
+
     - name: Run tests
       run: |
         cd install
@@ -462,6 +495,17 @@ jobs:
       with:
         name: install-windows-clang-x64
         path: install
+
+    - name: Download and extract Mesa3D
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+      shell: cmd
 
     - name: Run tests
       run: |
