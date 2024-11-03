@@ -185,6 +185,8 @@ public:
   void Exchange (NCollection_Map& theOther)
   {
     this->exchangeMapsData (theOther);
+    std::swap(myLast, theOther.myLast);
+    std::swap(myFirst, theOther.myFirst);
   }
 
   //! Assign.
@@ -217,7 +219,7 @@ public:
   {
     if (this == &theOther)
       return *this;
-    exchangeMapsData(theOther);
+    Exchange(theOther);
     return *this;
   }
 
