@@ -121,7 +121,7 @@ public:
     }
     //! Query if the end of collection is reached by iterator
     Standard_Boolean More(void) const
-    { return myNode != nullptr && myNode != myLast; }
+    { return myNode != nullptr; }
     //! Make a step along the collection
     void Next(void)
     { myNode = myNode == nullptr? nullptr : myNode->NextSeq(); }
