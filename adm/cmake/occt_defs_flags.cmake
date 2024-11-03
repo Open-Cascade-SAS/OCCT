@@ -175,17 +175,15 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]")
   endif()
   # Optimize size of binaries
   set (CMAKE_SHARED_LINKER_FLAGS_RELEASE "-Wl,-s ${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
-elseif(MINGW)
+endif()
+if(MINGW)
   add_definitions(-D_WIN32_WINNT=0x0601)
   # _WIN32_WINNT=0x0601 (use Windows 7 SDK)
   #set (CMAKE_SYSTEM_VERSION "6.1")
   # workaround bugs in mingw with vtable export
   set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols")
-
-  # Optimize size of binaries
-  set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
-  set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
-elseif (DEFINED CMAKE_COMPILER_IS_GNUCXX)
+endif()
+if (DEFINED CMAKE_COMPILER_IS_GNUCXX)
   # Optimize size of binaries
   set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
   set (CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -s")
