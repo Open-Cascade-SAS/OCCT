@@ -3,7 +3,7 @@ puts "CR23407: Draw face outlines for XDE objects"
 puts "============"
 puts ""
 
-pload XDEDRAW VISUALIZATION STEP
+pload VISUALIZATION XDEDRAW STEP
 
 XNewDoc Doc1
 ReadStep Doc1 [locate_data_file screw.step]

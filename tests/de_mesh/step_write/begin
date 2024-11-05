@@ -1,4 +1,4 @@
-pload XDE OCAF MODELING
+pload VISUALIZATION XDE OCAF MODELING
 
 # enable reading/writing tessellated STEP geometry
 param write.step.schema AP242DIS

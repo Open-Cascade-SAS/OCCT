@@ -1,5 +1,6 @@
 # File: begin
 
+pload VISUALIZATION
 pload XDE
 pload OCAF
 pload TOPTEST

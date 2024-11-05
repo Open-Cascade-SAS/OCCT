@@ -3,7 +3,7 @@ puts "0029303: Data Exchange - add RWObj_CafWriter tool for wavefront OBJ file"
 puts "Write as1 STEP model into OBJ file"
 puts "========"
 
-pload XDE OCAF MODELING VISUALIZATION
+pload VISUALIZATION XDE OCAF MODELING
 Close D  -silent
 Close D1 -silent
 ReadStep D1 [locate_data_file as1-oc-214-mat.stp]

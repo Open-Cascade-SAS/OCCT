@@ -3,7 +3,7 @@ puts "0029303: Data Exchange - add RWObj_CafWriter tool for wavefront OBJ file"
 puts "Write textured plane OBJ model into OBJ file"
 puts "========"
 
-pload XDE OCAF MODELING VISUALIZATION
+pload VISUALIZATION XDE OCAF MODELING
 Close D  -silent
 Close D1 -silent
 

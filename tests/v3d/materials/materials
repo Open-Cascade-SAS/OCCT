@@ -3,7 +3,7 @@ puts "0030930: Draw Harness, ViewerTest - add commands vlistcolors and vlistmate
 puts "Generate a table of predefined Materials (Graphic3d_NameOfMaterial enumeration)"
 puts "========"
 
-pload XDE OCAF MODELING VISUALIZATION
+pload VISUALIZATION XDE OCAF MODELING
 
 Close D -silent
 vclear

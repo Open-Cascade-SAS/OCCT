@@ -7,7 +7,7 @@ puts ""
 # test change of highlight and selection properties for particular objects
 ####################################################################################
 
-pload QAcommands VISUALIZATION
+pload VISUALIZATION QAcommands
 
 vinit View1
 OCC27818
