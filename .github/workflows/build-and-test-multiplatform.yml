@@ -77,12 +77,7 @@ jobs:
     - name: Build OCCT
       run: |
           cd build
-          cmake --build . --config Release -- /m
-
-    - name: Install OCCT
-      run: |
-          cd build
-          cmake --install . --config Release
+          cmake --build . --target install --config Release
 
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
@@ -152,12 +147,7 @@ jobs:
     - name: Build OCCT
       run: |
           cd build
-          cmake --build . --config Release
-
-    - name: Install OCCT
-      run: |
-          cd build
-          cmake --install . --config Release
+          cmake --build . --target install --config Release
 
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
@@ -208,12 +198,7 @@ jobs:
     - name: Build OCCT
       run: |
         cd build
-        make -j$(sysctl -n hw.logicalcpu)
-
-    - name: Install OCCT
-      run: |
-        cd build
-        make install
+        make install -j$(sysctl -n hw.logicalcpu)
 
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
@@ -264,12 +249,7 @@ jobs:
     - name: Build OCCT
       run: |
         cd build
-        make -j$(sysctl -n hw.logicalcpu)
-
-    - name: Install OCCT
-      run: |
-        cd build
-        make install
+        make install -j$(sysctl -n hw.logicalcpu)
 
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
@@ -323,12 +303,7 @@ jobs:
     - name: Build OCCT
       run: |
         cd build
-        make -j"$(nproc)"
-
-    - name: Install OCCT
-      run: |
-        cd build
-        make install
+        cmake --build . --target install --config Release -- -j
 
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
@@ -382,12 +357,7 @@ jobs:
     - name: Build OCCT
       run: |
         cd build
-        make -j"$(nproc)"
-
-    - name: Install OCCT
-      run: |
-        cd build
-        make install
+        cmake --build . --target install --config Release -- -j
 
     - name: Upload install directory
       uses: actions/upload-artifact@v4.4.3
@@ -564,7 +534,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid caf basic
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -619,7 +589,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid caf basic
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
