@@ -3,7 +3,7 @@ puts "0029854: XCAF GD&T: Clear contents of reserved labels only"
 puts "============"
 puts ""
 
-pload DCAF
+pload OCAF
 
 box b 10 10 10
 

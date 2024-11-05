@@ -6,7 +6,7 @@ puts ""
 # vviewlist draw command does not added name of viewer created by XShow draw command
 #######################################################################################
 
-pload DCAF
+pload OCAF
 NewDocument D XmlXCAF
 ReadIges D [locate_data_file bug23921_case2.igs]
 

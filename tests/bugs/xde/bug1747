@@ -10,7 +10,7 @@ puts ""
 
 set BugNumber OCC1747
 
-catch {pload DCAF}
+catch {pload OCAF}
 
 XNewDoc SA
 

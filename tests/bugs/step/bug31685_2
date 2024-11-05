@@ -3,7 +3,7 @@ puts " 0031685: Data Exchange, STEPCAFControl_Reader - NULL dereference on trans
 puts "==================================================="
 puts ""
 
-pload DCAF
+pload OCAF
 
 # Read file
 ReadStep D [locate_data_file bug31685_2.stp] 

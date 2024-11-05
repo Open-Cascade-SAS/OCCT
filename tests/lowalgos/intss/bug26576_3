@@ -6,7 +6,7 @@ puts ""
 ## Wrong result obtained by intersection algorithm.
 ###############################
 
-pload DCAF
+pload OCAF
 
 Open [locate_data_file bug26576_study1_new_geom.cbf] D
 

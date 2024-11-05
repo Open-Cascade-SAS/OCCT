@@ -6,7 +6,7 @@ puts ""
 # Writing dimensions with inches produced invalid file
 #########################################################
 
-pload DCAF
+pload OCAF
 
 ReadStep D [locate_data_file bug26689_nist_ctc_01_asme1_ap242.stp]
 param write.step.unit 1

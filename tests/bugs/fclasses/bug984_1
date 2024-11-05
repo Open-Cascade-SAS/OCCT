@@ -6,7 +6,7 @@ puts ""
 ## LDOM hangs-up attempting to read a file which contains a reference to "*dtd"file
 ####################################################
 
-pload DCAF
+pload OCAF
 set BugNumber OCC984
 cpulimit 60
 

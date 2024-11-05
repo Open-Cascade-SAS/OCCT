@@ -6,7 +6,7 @@ puts ""
 # Suspitious behavior of importing names during STEP import
 ########################################################################
 
-pload DCAF
+pload OCAF
 
 ReadStep D [locate_data_file bug27169_robot01.step]
 

@@ -3,7 +3,7 @@ puts "0032310: Data Exchange - Invalid STEP export/import of backslashes in name
 puts "===================================="
 puts ""
 
-pload DCAF
+pload OCAF
 Close D -silent
 
 XNewDoc D

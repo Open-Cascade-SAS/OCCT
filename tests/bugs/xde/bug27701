@@ -3,7 +3,7 @@ puts "OCC27701: C r a s h when export empty solid to STEP"
 puts "========"
 puts ""
 
-pload DCAF
+pload OCAF
 
 restore [locate_data_file bug27701.brep] s
 

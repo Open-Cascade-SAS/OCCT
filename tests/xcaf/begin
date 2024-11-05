@@ -2,7 +2,7 @@
 # and expression "set AddToDocument COLORS_LAYERS" means initializing colors and layers
 #
 if { [array get Draw_Groups "TOPOLOGY Feature commands"] == "" } {
-    pload DCAF
+    pload OCAF
     pload TOPTEST
     pload XDE
 }

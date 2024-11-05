@@ -6,7 +6,7 @@ puts ""
 # OSD_Path interprets unc paths incorrectly
 #######################################################################
 
-pload DCAF
+pload OCAF
 
 set BugNumber OCC23852
 

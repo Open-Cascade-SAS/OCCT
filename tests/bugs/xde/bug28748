@@ -6,7 +6,7 @@ puts ""
 # XCAFDoc_GraphNode does not restore child on Undo
 ###########################################################
 
-pload DCAF
+pload OCAF
 
 ReadStep d [locate_data_file bug21802_as1-oc-214.stp]
 UndoLimit d 1

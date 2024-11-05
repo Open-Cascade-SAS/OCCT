@@ -6,7 +6,7 @@ puts ""
 ## Crash on Pipe creation
 ###############################################
 
-pload DCAF
+pload OCAF
 
 Open [locate_data_file bug24849_Study1_GEOM.cbf] D
 

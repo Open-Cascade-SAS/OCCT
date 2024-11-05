@@ -7,7 +7,7 @@ puts ""
 # No materials are read from STEP
 #######################################################################
 
-pload DCAF
+pload OCAF
 
 ReadStep D [locate_data_file OCC23251-dm1-oc-214.stp]
 

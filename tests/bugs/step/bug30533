@@ -3,7 +3,7 @@ puts " 0030533: Data Exchange - Crash during STEP import."
 puts "==================================================="
 puts ""
 
-pload DCAF
+pload OCAF
 
 param read.stepcaf.subshapes.name On
 

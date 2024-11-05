@@ -5,7 +5,7 @@ puts ""
 ######################################################################################
 # Can not read names in STEP file
 ######################################################################################
-pload DCAF
+pload OCAF
 
 ReadStep d1 [locate_data_file bug23773_2012-or-136-004-014-izzi-asm_PCAM.stp]
 set info1 [GetName d1 0:1:1:1:9]

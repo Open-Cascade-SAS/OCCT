@@ -6,7 +6,7 @@ puts ""
 # IGES reader cannot map subshapes colors inside nested assemblies
 #################################################################
 
-pload DCAF
+pload OCAF
 
 NewDocument D XmlXCAF
 

@@ -2,7 +2,7 @@ puts "# ========================================================================
 puts "# 0031382: Data Exchange - BinXCAF should preserve length unit information"
 puts "# =============================================================================="
 
-pload DCAF
+pload OCAF
 
 box b 10 20 30
 

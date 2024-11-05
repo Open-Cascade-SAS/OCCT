@@ -9,7 +9,7 @@ puts ""
 ##################################################################
 
 set BugNumber OCC22982
-pload DCAF
+pload OCAF
 
 NewDocument D11 BinXCAF
 UndoLimit D11 100

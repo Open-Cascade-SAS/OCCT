@@ -6,7 +6,7 @@ puts ""
 # XShow raises an exception
 #######################################################################
 
-pload DCAF
+pload OCAF
 
 set BugNumber OCC21046
 

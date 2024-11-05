@@ -2,7 +2,7 @@ puts "================================================================="
 puts "0031568: Data Exchange - invalid model produced after STEP import"
 puts "================================================================="
 
-pload DCAF
+pload OCAF
 
 ReadStep D [locate_data_file bug31568_Konecranes_Sample_3D.stp]
 set ref [XGetReferredShape D 0:1:1:41:11]

@@ -3,7 +3,7 @@ puts "	0031466: Data Exchange - Cannot import layers from STeP file (7.4.0 regre
 puts "================================================================================="
 puts ""
 
-pload DCAF
+pload OCAF
 
 XNewDoc D
 box b 1 1 1

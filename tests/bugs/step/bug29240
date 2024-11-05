@@ -3,7 +3,7 @@ puts "	0029240: Data Exchange - Crash during reading STEP file"
 puts "=========="
 puts ""
 
-pload DCAF
+pload OCAF
 
 ReadStep D_First [locate_data_file nist_ctc_05_asme1_ap242-1.stp]
 XGetOneShape result D_First 

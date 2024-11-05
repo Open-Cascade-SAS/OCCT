@@ -3,7 +3,7 @@ puts "OCC26657: STEP OCAF writers should keep hierarchy and colors when saving n
 puts "========"
 puts ""
 
-pload DCAF TOPTEST XDE XDEDRAW
+pload OCAF TOPTEST XDE XDEDRAW
 ReadStep D1 [locate_data_file bug26657.stp]
 
 set aTmpFile ${imagedir}/${casename}_temp.stp

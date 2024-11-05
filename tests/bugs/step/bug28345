@@ -3,7 +3,7 @@ puts "# 0028345: Data Exchange - Reading STEP model using STEPCAF crashes"
 puts "# ====================================================================="
 puts ""
 
-pload DCAF
+pload OCAF
 ReadStep D_1 [locate_data_file bug28345_30338.stp]
 
 # Check imported names

@@ -6,7 +6,7 @@ puts ""
 param read.stepcaf.subshapes.name 1
 param write.stepcaf.subshapes.name 1
 
-pload DCAF
+pload OCAF
 
 ReadStep doc [locate_data_file bug29403_ECOR030312.stp]
 set info1 [XStat doc]

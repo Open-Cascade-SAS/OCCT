@@ -6,7 +6,7 @@ puts ""
 # Add the possibility in OCAF to open/save a document from/to a stream object (XmlOcaf format)
 ###################################################################################################
 
-pload DCAF
+pload OCAF
 
 NewDocument D XmlOcaf
 

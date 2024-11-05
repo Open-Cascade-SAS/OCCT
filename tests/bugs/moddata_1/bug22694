@@ -7,7 +7,7 @@ puts "==========="
 
 set BugNumber OCC22694
 
-catch {pload DCAF}
+catch {pload OCAF}
 catch {pload XDE}
 
 # Create a new document and set UndoLimit

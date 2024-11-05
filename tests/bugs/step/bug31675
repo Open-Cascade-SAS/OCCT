@@ -3,7 +3,7 @@ puts "0031675: Er-ror opening the STEP-file"
 puts "===================================="
 puts ""
 
-pload DCAF
+pload OCAF
 
 # Read file
 ReadStep D [locate_data_file bug31675.stp]

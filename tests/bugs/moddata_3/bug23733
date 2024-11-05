@@ -6,7 +6,7 @@ puts ""
 ## PCurve for edge on face creation failure
 ###############################################
 
-pload DCAF TOPTEST
+pload OCAF TOPTEST
 
 Open [locate_data_file bug_glue_edges_GEOM.cbf] D
 

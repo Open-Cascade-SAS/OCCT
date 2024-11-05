@@ -2,7 +2,7 @@ puts "============"
 puts "0033327: Data Exchange, IGES Import - SubfigureDef can't read string"
 puts "============"
 
-pload DCAF
+pload OCAF
 
 Close D -silent
 

@@ -2,7 +2,7 @@ puts "========================"
 puts "0030856: Wrong colors after STEP file import"
 puts "========================"
 
-pload DCAF
+pload OCAF
 
 ReadStep D1 [locate_data_file bug30856_SOT223-4P230_700X190L65X72.step]
 WriteStep D1 $imagedir/${casename}.stp

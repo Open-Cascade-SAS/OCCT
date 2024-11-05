@@ -6,7 +6,7 @@ puts ""
 ## SIGSEGV in BRepFeat_MakeDPrism::Perform()
 ###############################################
 
-pload DCAF
+pload OCAF
 
 Open [locate_data_file bug26588_Study1_new_GEOM.cbf] D
 

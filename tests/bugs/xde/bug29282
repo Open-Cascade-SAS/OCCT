@@ -6,7 +6,7 @@ puts ""
 # UpdateAssemblies is not worked for located root assemblies
 ###########################################################
 
-pload DCAF
+pload OCAF
 
 # create test Document
 box b 1 1 1

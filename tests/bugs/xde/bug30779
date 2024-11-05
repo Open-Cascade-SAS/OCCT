@@ -3,7 +3,7 @@ puts "0030779: Data Exchange - Problems with located subshapes in expand compoun
 puts "============================================================================"
 puts ""
 
-pload DCAF
+pload OCAF
 
 XOpen [locate_data_file bug30779.xbf] D
 XExpand D 1

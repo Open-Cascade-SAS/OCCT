@@ -6,7 +6,7 @@ puts ""
 # XCAFPrs_AISObject does not support transparency
 ######################################################################################
 
-catch {pload DCAF}
+catch {pload OCAF}
 pload QAcommands
 
 NewDocument D BinXCAF

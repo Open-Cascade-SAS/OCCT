@@ -3,7 +3,7 @@ puts "OCC25910: The material with 0-density causes e r r o r s during writing ST
 puts "========"
 puts ""
 
-pload DCAF
+pload OCAF
 
 NewDocument D
 box b 10 10 10

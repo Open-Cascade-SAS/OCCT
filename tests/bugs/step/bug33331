@@ -3,7 +3,7 @@ puts "0033331: Data Exchange, Step Import - Unsupported Representation Items"
 puts "===================================="
 puts ""
 
-pload DCAF
+pload OCAF
 catch {Close D}
 
 param "read.stepcaf.subshapes.name" 1

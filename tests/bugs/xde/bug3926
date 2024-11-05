@@ -6,7 +6,7 @@ puts ""
 # Exception during reading file using XDEDRAWEXE
 ######################################################
 
-pload DCAF
+pload OCAF
 
 NewDocument D BinXCAF
 UndoLimit D 100

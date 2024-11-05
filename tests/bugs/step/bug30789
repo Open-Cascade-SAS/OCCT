@@ -5,7 +5,7 @@ puts ""
 
 # Load file
 
-pload DCAF
+pload OCAF
 ReadStep D [locate_data_file bug30789.stp]
 
 # Check several names came from problematic entities

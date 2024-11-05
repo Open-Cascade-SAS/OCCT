@@ -6,7 +6,7 @@ puts ""
 ## Wrong result obtained by 2d classifier algorithm.
 ###############################################
 
-pload DCAF
+pload OCAF
 
 Open [locate_data_file bug25969_pal22851.sgd] D
 

@@ -9,7 +9,7 @@ puts ""
 set BugNumber OCC8228
 
 catch {pload XDE}
-catch {pload DCAF}
+catch {pload OCAF}
 
 # Create a new document and set UndoLimit
 

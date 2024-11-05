@@ -1,4 +1,4 @@
-pload DCAF
+pload OCAF
 
 set BugNumber OCC24164
 if { [info exists imagedir] == 0 } {

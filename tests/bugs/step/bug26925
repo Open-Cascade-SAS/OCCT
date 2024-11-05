@@ -3,7 +3,7 @@ puts "# 0026925: Data Exchange - Exceptions can be raised if assembly is empty"
 puts "# ====================================================================="
 puts ""
 
-pload DCAF
+pload OCAF
 XNewDoc D
 XNewShape D
 box a 0 0 0 10 10 10

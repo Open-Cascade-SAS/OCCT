@@ -3,7 +3,7 @@ puts "0030727: Data Exchange - Problems in Shape Tool"
 puts "==============================================="
 puts ""
 
-pload DCAF
+pload OCAF
 
 box b 1 1 1
 copy b bb

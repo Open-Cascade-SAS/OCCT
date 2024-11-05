@@ -1,6 +1,6 @@
 # Original bug : 23384
 # Date : 16 Aug 2012
-pload DCAF
+pload OCAF
 XOpen [locate_data_file bug23384-doc_subshapes_plain.xbf] doc
 set info1 [XStat doc]
 regexp {level N 0 +: +([-0-9.+eE]+)} $info1 full l0

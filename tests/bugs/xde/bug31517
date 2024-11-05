@@ -3,7 +3,7 @@ puts "0031517: Data Exchange - wrong result of ShapeTool::UpdateAssemblies()"
 puts "======================================================================"
 puts ""
 
-pload DCAF
+pload OCAF
 
 # make structure with two assemblies linked to one original assembly (2 * 3 boxes)
 box b1 1 1 1
