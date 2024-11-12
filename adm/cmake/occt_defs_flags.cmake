@@ -141,6 +141,11 @@ if (MSVC)
 elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]"))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
+  if (BUILD_DEBUG_SYMBOLS)
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fno-limit-debug-info -glldb")
+    set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -fno-limit-debug-info -glldb")
+  endif()
+
   if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
     # /Ot (favor speed over size) is similar to -O2 or -O3 in GCC/Clang.
     # /Oy (omit frame pointers) is similar to -fomit-frame-pointer in GCC/Clang.

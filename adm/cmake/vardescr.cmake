@@ -25,6 +25,11 @@ set (BUILD_WITH_DEBUG_DESCR
 These include messages on internal errors and special cases encountered, timing etc.
 Applies only for Debug configuration.")
 
+set (BUILD_DEBUG_SYMBOLS_DESCR
+"Enables extended debug information in the OCCT libraries. This option change the
+compiler flags to produce more debug symbols. It is recommended to enable this option
+in case of deep debugging of OCCT algorithms or applications.")
+
 set (BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR
 "Append the postfix to names of output libraries")
 

@@ -43,6 +43,11 @@ set_property(CACHE USE_MMGR_TYPE PROPERTY STRINGS "NATIVE" "FLEXIBLE" "TBB" "JEM
 set (BUILD_OPT_PROFILE "Default" CACHE STRING "Select profile for compiler and linker.")
 set_property(CACHE BUILD_OPT_PROFILE PROPERTY STRINGS "Default" "Production")
 
+# set setting flag to enable or disable the extended debug information for the compiler
+if (NOT MSVC)
+  set (BUILD_DEBUG_SYMBOLS OFF CACHE BOOL "${BUILD_DEBUG_SYMBOLS_DESCR}")
+endif()
+
 # include variable description
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vardescr")
 
