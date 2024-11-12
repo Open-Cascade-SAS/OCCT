@@ -421,11 +421,16 @@ function (COLLECT_AND_INSTALL_OCCT_HEADER_FILES THE_ROOT_TARGET_OCCT_DIR THE_OCC
 
   foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES_COMPLETE})
     get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
-    if (BUILD_INCLUDE_SYMLINK)
-      file (CREATE_LINK "${OCCT_HEADER_FILE}" "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${HEADER_FILE_NAME}" SYMBOLIC)
-    else()
-      set (OCCT_HEADER_FILE_CONTENT "#include \"${OCCT_HEADER_FILE}\"")
-      configure_file ("${TEMPLATE_HEADER_PATH}" "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${HEADER_FILE_NAME}" @ONLY)
+    set(TARGET_FILE "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${HEADER_FILE_NAME}")
+
+    # Check if the file already exists in the target directory
+    if (NOT EXISTS "${TARGET_FILE}")
+      if (BUILD_INCLUDE_SYMLINK)
+        file (CREATE_LINK "${OCCT_HEADER_FILE}" "${TARGET_FILE}" COPY_ON_ERROR SYMBOLIC)
+      else()
+        set (OCCT_HEADER_FILE_CONTENT "#include \"${OCCT_HEADER_FILE}\"")
+        configure_file ("${TEMPLATE_HEADER_PATH}" "${TARGET_FILE}" @ONLY)
+      endif()
     endif()
   endforeach()
 
