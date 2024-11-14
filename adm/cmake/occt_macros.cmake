@@ -419,13 +419,37 @@ function (COLLECT_AND_INSTALL_OCCT_HEADER_FILES THE_ROOT_TARGET_OCCT_DIR THE_OCC
     endforeach()
   endforeach()
 
+  # Check that copying is done and match the include installation type.
+  # Check by first file in list.
+  list(GET OCCT_HEADER_FILES_COMPLETE 0 FIRST_OCCT_HEADER_FILE)
+  get_filename_component (FIRST_OCCT_HEADER_FILE ${FIRST_OCCT_HEADER_FILE} NAME)
+  set (TO_FORCE_COPY FALSE)
+  if (NOT EXISTS "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${FIRST_OCCT_HEADER_FILE}")
+    set (TO_FORCE_COPY TRUE)
+  else()
+    # get content and check the number of lines inside file.
+    # If more then 1 then it is a symlink.
+    file (STRINGS "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${FIRST_OCCT_HEADER_FILE}" FIRST_OCCT_HEADER_FILE_CONTENT)
+    list (LENGTH FIRST_OCCT_HEADER_FILE_CONTENT FIRST_OCCT_HEADER_FILE_CONTENT_LEN)
+    if (${FIRST_OCCT_HEADER_FILE_CONTENT_LEN} EQUAL 1 AND BUILD_INCLUDE_SYMLINK)
+      set (TO_FORCE_COPY TRUE)
+    elseif(${FIRST_OCCT_HEADER_FILE_CONTENT_LEN} GREATER 1 AND NOT BUILD_INCLUDE_SYMLINK)
+      set (TO_FORCE_COPY TRUE)
+    endif()
+  endif()
+  
   foreach (OCCT_HEADER_FILE ${OCCT_HEADER_FILES_COMPLETE})
     get_filename_component (HEADER_FILE_NAME ${OCCT_HEADER_FILE} NAME)
-    if (BUILD_INCLUDE_SYMLINK)
-      file (CREATE_LINK "${OCCT_HEADER_FILE}" "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${HEADER_FILE_NAME}" SYMBOLIC)
-    else()
-      set (OCCT_HEADER_FILE_CONTENT "#include \"${OCCT_HEADER_FILE}\"")
-      configure_file ("${TEMPLATE_HEADER_PATH}" "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${HEADER_FILE_NAME}" @ONLY)
+    set(TARGET_FILE "${THE_ROOT_TARGET_OCCT_DIR}/${THE_OCCT_INSTALL_DIR_PREFIX}/${HEADER_FILE_NAME}")
+
+    # Check if the file already exists in the target directory
+    if (TO_FORCE_COPY OR NOT EXISTS "${TARGET_FILE}")
+      if (BUILD_INCLUDE_SYMLINK)
+        file (CREATE_LINK "${OCCT_HEADER_FILE}" "${TARGET_FILE}" SYMBOLIC)
+      else()
+        set (OCCT_HEADER_FILE_CONTENT "#include \"${OCCT_HEADER_FILE}\"")
+        configure_file ("${TEMPLATE_HEADER_PATH}" "${TARGET_FILE}" @ONLY)
+      endif()
     endif()
   endforeach()
 
