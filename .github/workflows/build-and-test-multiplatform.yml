@@ -412,6 +412,12 @@ jobs:
         .\systemwidedeploy.cmd 1
       shell: cmd
 
+    - name: Install Visual C++ 2010 Redistributable
+      run: |
+        choco install -y vcredist2010
+        refreshenv
+      shell: cmd
+
     - name: Run tests
       run: |
         cd install
@@ -475,6 +481,12 @@ jobs:
       run: |
         cd mesa3d
         .\systemwidedeploy.cmd 1
+      shell: cmd
+
+    - name: Install Visual C++ 2010 Redistributable
+      run: |
+        choco install -y vcredist2010
+        refreshenv
       shell: cmd
 
     - name: Run tests
