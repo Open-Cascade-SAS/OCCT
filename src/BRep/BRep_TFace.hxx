@@ -92,8 +92,8 @@ public:
   Standard_EXPORT const Handle(Poly_Triangulation)& Triangulation (const Poly_MeshPurpose thePurpose = Poly_MeshPurpose_NONE) const;
 
   //! Sets input triangulation for this face.
-  //! @param theTriangulation [in] triangulation to be set
-  //! @param theToReset [in] flag to reset triangulations list to new list with only one input triangulation.
+  //! @param[in] theTriangulation  triangulation to be set
+  //! @param[in] theToReset  flag to reset triangulations list to new list with only one input triangulation.
   //! If theTriangulation is NULL internal list of triangulations will be cleared and active triangulation will be nullified.
   //! If theToReset is TRUE internal list of triangulations will be reset
   //! to new list with only one input triangulation that will be active.

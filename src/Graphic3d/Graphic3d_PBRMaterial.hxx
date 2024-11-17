@@ -108,20 +108,20 @@ public:
 
   //! Generates 2D look up table of scale and bias for fresnell zero coefficient.
   //! It is needed for calculation reflectance part of environment lighting.
-  //! @param [out] theLUT table storage (must be Image_Format_RGF).
-  //! @param [in] theNbIntegralSamples number of importance samples in hemisphere integral calculation for every table item.
+  //! @param[out]  theLUT table storage (must be Image_Format_RGF).
+  //! @param[in]  theNbIntegralSamples number of importance samples in hemisphere integral calculation for every table item.
   Standard_EXPORT static void GenerateEnvLUT (const Handle(Image_PixMap)& theLUT,
                                               unsigned int                theNbIntegralSamples = 1024);
 
   //! Compute material roughness from common material (specular color + shininess).
-  //! @param theSpecular [in] specular color
-  //! @param theShiness  [in] normalized shininess coefficient within [0..1] range
+  //! @param[in] theSpecular  specular color
+  //! @param[in] theShiness   normalized shininess coefficient within [0..1] range
   //! @return roughness within [0..1] range
   Standard_EXPORT static Standard_ShortReal RoughnessFromSpecular (const Quantity_Color& theSpecular,
                                                                    const Standard_Real theShiness);
 
   //! Compute material metallicity from common material (specular color).
-  //! @param theSpecular [in] specular color
+  //! @param[in] theSpecular  specular color
   //! @return metallicity within [0..1] range
   static Standard_ShortReal MetallicFromSpecular (const Quantity_Color& theSpecular)
   {

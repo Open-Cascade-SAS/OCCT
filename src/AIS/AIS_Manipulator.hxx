@@ -157,12 +157,12 @@ public:
 
 public:
   //! Drag object in the viewer.
-  //! @param theCtx      [in] interactive context
-  //! @param theView     [in] active View
-  //! @param theOwner    [in] the owner of detected entity
-  //! @param theDragFrom [in] drag start point
-  //! @param theDragTo   [in] drag end point
-  //! @param theAction   [in] drag action
+  //! @param[in] theCtx       interactive context
+  //! @param[in] theView      active View
+  //! @param[in] theOwner     the owner of detected entity
+  //! @param[in] theDragFrom  drag start point
+  //! @param[in] theDragTo    drag end point
+  //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
   Standard_EXPORT virtual Standard_Boolean ProcessDragging (const Handle(AIS_InteractiveContext)& theCtx,
                                                             const Handle(V3d_View)& theView,
@@ -187,7 +187,7 @@ public:
   Standard_EXPORT void Transform (const gp_Trsf& aTrsf);
 
   //! Reset start (reference) transformation.
-  //! @param theToApply [in] option to apply or to cancel the started transformation.
+  //! @param[in] theToApply  option to apply or to cancel the started transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
   //! and is used only for custom transform set.
   Standard_EXPORT void StopTransform (const Standard_Boolean theToApply = Standard_True);
@@ -319,7 +319,7 @@ public: //! @name Presentation computation
                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
   //! Computes selection sensitive zones (triangulation) for manipulator.
-  //! @param theNode [in] Selection mode that is treated as transformation mode.
+  //! @param[in] theNode  Selection mode that is treated as transformation mode.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 

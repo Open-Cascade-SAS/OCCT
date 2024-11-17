@@ -208,9 +208,9 @@ public:
   //! Example: IN  theFilePath ='/media/cdrom/image.jpg'
   //!          OUT theFolder   ='/media/cdrom/'
   //!          OUT theFileName ='image.jpg'
-  //! @param theFilePath [in]  file path
-  //! @param theFolder   [out] folder path (with trailing separator)
-  //! @param theFileName [out] file name
+  //! @param[in] theFilePath   file path
+  //! @param[out] theFolder    folder path (with trailing separator)
+  //! @param[out] theFileName  file name
   Standard_EXPORT static void FolderAndFileFromPath (const TCollection_AsciiString& theFilePath,
                                                      TCollection_AsciiString&       theFolder,
                                                      TCollection_AsciiString&       theFileName);
@@ -220,9 +220,9 @@ public:
   //! Example: IN  theFilePath ='Image.sbs.JPG'
   //!          OUT theName     ='Image.sbs'
   //!          OUT theFileName ='jpg'
-  //! @param theFilePath  [in]  file path
-  //! @param theName      [out] file name without extension
-  //! @param theExtension [out] file extension in lower case and without dot
+  //! @param[in] theFilePath    file path
+  //! @param[out] theName       file name without extension
+  //! @param[out] theExtension  file extension in lower case and without dot
   Standard_EXPORT static void FileNameAndExtension (const TCollection_AsciiString& theFilePath,
                                                     TCollection_AsciiString&       theName,
                                                     TCollection_AsciiString&       theExtension);

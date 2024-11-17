@@ -218,7 +218,7 @@ public:
 public:
 
   //! Constructor with default parameters values.
-  //! @param theType [in] the type of dimension.
+  //! @param[in] theType  the type of dimension.
   Standard_EXPORT PrsDim_Dimension (const PrsDim_KindOfDimension theType);
 
   //! Gets dimension measurement value. If the value to display is not
@@ -240,12 +240,12 @@ public:
   //! Sets user-defined dimension value.
   //! The user-defined dimension value is specified in model space,
   //! and affect by unit conversion during the display.
-  //! @param theValue [in] the user-defined value to display.
+  //! @param[in] theValue  the user-defined value to display.
   Standard_EXPORT void SetCustomValue (const Standard_Real theValue);
 
   //! Sets user-defined dimension value.
   //! Unit conversion during the display is not applied.
-  //! @param theValue [in] the user-defined value to display.
+  //! @param[in] theValue  the user-defined value to display.
   Standard_EXPORT void SetCustomValue (const TCollection_ExtendedString& theValue);
 
   //! Gets user-defined dimension value.
@@ -286,7 +286,7 @@ public:
   //! Fixes the absolute text position and adjusts flyout, plane and text alignment
   //! according to it. Updates presentation if the text position is valid.
   //! ATTENTION! It does not change vertical text alignment.
-  //! @param theTextPos [in] the point of text position.
+  //! @param[in] theTextPos  the point of text position.
   virtual void SetTextPosition (const gp_Pnt& /*theTextPos*/) { }
 
   //! Computes absolute text position from dimension parameters
@@ -388,22 +388,22 @@ protected:
   Standard_EXPORT Standard_Real ValueToDisplayUnits() const;
 
   //! Get formatted value string and its model space width.
-  //! @param theWidth [out] the model space with of the string.
+  //! @param[out] theWidth  the model space with of the string.
   //! @return formatted dimension value string.
   Standard_EXPORT TCollection_ExtendedString GetValueString (Standard_Real& theWidth) const;
 
   //! Performs drawing of 2d or 3d arrows on the working plane
-  //! @param theLocation [in] the location of the arrow tip.
-  //! @param theDirection [in] the direction from the tip to the bottom of the arrow.
+  //! @param[in] theLocation  the location of the arrow tip.
+  //! @param[in] theDirection  the direction from the tip to the bottom of the arrow.
   Standard_EXPORT void DrawArrow (const Handle(Prs3d_Presentation)& thePresentation,
                                   const gp_Pnt& theLocation,
                                   const gp_Dir& theDirection);
 
   //! Performs drawing of 2d or 3d text on the working plane
-  //! @param theTextPos [in] the position of the text label.
-  //! @param theTestDir [in] the direction of the text label.
-  //! @param theText [in] the text label string.
-  //! @param theLabelPosition [in] the text label vertical and horizontal positioning option
+  //! @param[in] theTextPos  the position of the text label.
+  //! @param[in] theTestDir  the direction of the text label.
+  //! @param[in] theText  the text label string.
+  //! @param[in] theLabelPosition  the text label vertical and horizontal positioning option
   //! respectively to the main dimension line. 
   //! @return text width relative to the dimension working plane. For 2d text this value will be zero.
   Standard_EXPORT void drawText (const Handle(Prs3d_Presentation)& thePresentation,
@@ -413,14 +413,14 @@ protected:
                                  const Standard_Integer theLabelPosition);
 
   //! Performs computing of dimension linear extension with text
-  //! @param thePresentation [in] the presentation to fill with graphical primitives.
-  //! @param theExtensionSize [in] the size of extension line.
-  //! @param theExtensionStart [in] the point where extension line connects to dimension.
-  //! @param theExtensionDir [in] the direction of extension line.
-  //! @param theLabelString [in] the string with value.
-  //! @param theLabelWidth [in] the geometrical width computed for value string.
-  //! @param theMode [in] the display mode.
-  //! @param theLabelPosition [in] position flags for the text label.
+  //! @param[in] thePresentation  the presentation to fill with graphical primitives.
+  //! @param[in] theExtensionSize  the size of extension line.
+  //! @param[in] theExtensionStart  the point where extension line connects to dimension.
+  //! @param[in] theExtensionDir  the direction of extension line.
+  //! @param[in] theLabelString  the string with value.
+  //! @param[in] theLabelWidth  the geometrical width computed for value string.
+  //! @param[in] theMode  the display mode.
+  //! @param[in] theLabelPosition  position flags for the text label.
   Standard_EXPORT void DrawExtension (const Handle(Prs3d_Presentation)& thePresentation,
                                       const Standard_Real theExtensionSize,
                                       const gp_Pnt& theExtensionStart,
@@ -433,11 +433,11 @@ protected:
   //! Performs computing of linear dimension (for length, diameter, radius and so on).
   //! Please note that this method uses base dimension properties, like working plane
   //! flyout length, drawer attributes.
-  //! @param thePresentation [in] the presentation to fill with primitives.
-  //! @param theMode [in] the presentation compute mode.
-  //! @param theFirstPoint [in] the first attach point of linear dimension.
-  //! @param theSecondPoint [in] the second attach point of linear dimension.
-  //! @param theIsOneSide [in] specifies whether the dimension has only one flyout line.
+  //! @param[in] thePresentation  the presentation to fill with primitives.
+  //! @param[in] theMode  the presentation compute mode.
+  //! @param[in] theFirstPoint  the first attach point of linear dimension.
+  //! @param[in] theSecondPoint  the second attach point of linear dimension.
+  //! @param[in] theIsOneSide  specifies whether the dimension has only one flyout line.
   Standard_EXPORT void DrawLinearDimension (const Handle(Prs3d_Presentation)& thePresentation,
                                             const Standard_Integer theMode,
                                             const gp_Pnt& theFirstPoint,
@@ -445,19 +445,19 @@ protected:
                                             const Standard_Boolean theIsOneSide = Standard_False);
 
   //! Computes points bounded the flyout line for linear dimension.
-  //! @param theFirstPoint [in] the first attach point of linear dimension.
-  //! @param theSecondPoint [in] the second attach point of linear dimension.
-  //! @param theLineBegPoint [out] the first attach point of linear dimension.
-  //! @param theLineEndPoint [out] the second attach point of linear dimension.
+  //! @param[in] theFirstPoint  the first attach point of linear dimension.
+  //! @param[in] theSecondPoint  the second attach point of linear dimension.
+  //! @param[out] theLineBegPoint  the first attach point of linear dimension.
+  //! @param[out] theLineEndPoint  the second attach point of linear dimension.
   Standard_EXPORT virtual void ComputeFlyoutLinePoints (const gp_Pnt& theFirstPoint, const gp_Pnt& theSecondPoint,
                                                         gp_Pnt& theLineBegPoint, gp_Pnt& theLineEndPoint);
 
   //! Compute selection sensitives for linear dimension flyout lines (length, diameter, radius).
   //! Please note that this method uses base dimension properties: working plane and flyout length.
-  //! @param theSelection [in] the selection structure to fill with selection primitives.
-  //! @param theOwner [in] the selection entity owner.
-  //! @param theFirstPoint [in] the first attach point of linear dimension.
-  //! @param theSecondPoint [in] the second attach point of linear dimension.
+  //! @param[in] theSelection  the selection structure to fill with selection primitives.
+  //! @param[in] theOwner  the selection entity owner.
+  //! @param[in] theFirstPoint  the first attach point of linear dimension.
+  //! @param[in] theSecondPoint  the second attach point of linear dimension.
   Standard_EXPORT void ComputeLinearFlyouts (const Handle(SelectMgr_Selection)& theSelection,
                                              const Handle(SelectMgr_EntityOwner)& theOwner,
                                              const gp_Pnt& theFirstPoint,
@@ -466,10 +466,10 @@ protected:
 
   //! Performs initialization of circle and middle arc point from the passed
   //! shape which is assumed to contain circular geometry.
-  //! @param theShape [in] the shape to explore.
-  //! @param theCircle [out] the circle geometry.
-  //! @param theMiddleArcPoint [out] the middle point of the arc.
-  //! @param theIsClosed [out] returns TRUE if the geometry is closed circle.
+  //! @param[in] theShape  the shape to explore.
+  //! @param[out] theCircle  the circle geometry.
+  //! @param[out] theMiddleArcPoint  the middle point of the arc.
+  //! @param[out] theIsClosed  returns TRUE if the geometry is closed circle.
   //! @return TRUE if the circle is successfully returned from the input shape.
   Standard_EXPORT Standard_Boolean InitCircularDimension (const TopoDS_Shape& theShape,
                                                           gp_Circ& theCircle,
@@ -477,13 +477,13 @@ protected:
                                                           Standard_Boolean& theIsClosed);
  
   //! Produce points for triangular arrow face.
-  //! @param thePeakPnt [in] the arrow peak position.
-  //! @param theDirection [in] the arrow direction.
-  //! @param thePlane [in] the face plane.
-  //! @param theArrowLength [in] the length of arrow.
-  //! @param theArrowAngle [in] the angle of arrow.
-  //! @param theSidePnt1 [out] the first side point.
-  //! @param theSidePnt2 [out] the second side point.
+  //! @param[in] thePeakPnt  the arrow peak position.
+  //! @param[in] theDirection  the arrow direction.
+  //! @param[in] thePlane  the face plane.
+  //! @param[in] theArrowLength  the length of arrow.
+  //! @param[in] theArrowAngle  the angle of arrow.
+  //! @param[out] theSidePnt1  the first side point.
+  //! @param[out] theSidePnt2  the second side point.
   Standard_EXPORT void PointsForArrow (const gp_Pnt& thePeakPnt,
                                        const gp_Dir& theDirection,
                                        const gp_Dir& thePlane,
@@ -499,13 +499,13 @@ protected:
                                                    const Standard_Boolean theIsOneSide = Standard_False) const;
 
   //! Fits text alignment relatively to the dimension line.
-  //! @param theFirstPoint [in] the first attachment point.
-  //! @param theSecondPoint [in] the second attachment point.
-  //! @param theIsOneSide [in] is the arrow displayed only on the one side of the dimension.
-  //! @param theHorizontalTextPos [in] the text horizontal position (alignment).
-  //! @param theLabelPosition [out] the label position, contains bits that defines
+  //! @param[in] theFirstPoint  the first attachment point.
+  //! @param[in] theSecondPoint  the second attachment point.
+  //! @param[in] theIsOneSide  is the arrow displayed only on the one side of the dimension.
+  //! @param[in] theHorizontalTextPos  the text horizontal position (alignment).
+  //! @param[out] theLabelPosition  the label position, contains bits that defines
   //! vertical and horizontal alignment. (for internal usage in count text position)
-  //! @param theIsArrowExternal [out] is the arrows external,
+  //! @param[out] theIsArrowExternal  is the arrows external,
   //! if arrow orientation in the dimension aspect is Prs3d_DAO_Fit, it fits arrow
   //! orientation automatically.
   Standard_EXPORT void FitTextAlignmentForLinear (const gp_Pnt& theFirstPoint,
@@ -517,14 +517,14 @@ protected:
 
   //! Adjusts aspect parameters according the text position:
   //! extension size, vertical text alignment and flyout.
-  //! @param theTextPos [in] the user defined 3d point of text position
-  //! @param theFirstPoint [in] the first point of linear measurement.
-  //! @param theSecondPoint [in] the second point of linear measurement.
-  //! @param theExtensionSize [out] the adjusted extension size
-  //! @param theAlignment [out] the horizontal label alignment.
-  //! @param theFlyout [out] the adjusted value of flyout.
-  //! @param thePlane [out] the new plane that contains theTextPos and attachment points.
-  //! @param theIsPlaneOld [out] shows if new plane is computed.
+  //! @param[in] theTextPos  the user defined 3d point of text position
+  //! @param[in] theFirstPoint  the first point of linear measurement.
+  //! @param[in] theSecondPoint  the second point of linear measurement.
+  //! @param[out] theExtensionSize  the adjusted extension size
+  //! @param[out] theAlignment  the horizontal label alignment.
+  //! @param[out] theFlyout  the adjusted value of flyout.
+  //! @param[out] thePlane  the new plane that contains theTextPos and attachment points.
+  //! @param[out] theIsPlaneOld  shows if new plane is computed.
   Standard_EXPORT Standard_Boolean AdjustParametersForLinear (const gp_Pnt& theTextPos,
                                                               const gp_Pnt& theFirstPoint,
                                                               const gp_Pnt& theSecondPoint,
@@ -537,10 +537,10 @@ protected:
 protected: //! @name Static auxilliary methods for geometry extraction
 
   //! If it is possible extracts circle from planar face.
-  //! @param theFace        [in] the planar face
-  //! @param theCurve       [out] the circular curve
-  //! @param theFirstPoint  [out] the point of the first parameter of the circlular curve
-  //! @param theSecondPoint [out] the point of the last parameter of the circlular curve
+  //! @param[in] theFace         the planar face
+  //! @param[out] theCurve        the circular curve
+  //! @param[out] theFirstPoint   the point of the first parameter of the circlular curve
+  //! @param[out] theSecondPoint  the point of the last parameter of the circlular curve
   //! @return TRUE in case of successful circle extraction
   static Standard_Boolean CircleFromPlanarFace (const TopoDS_Face&  theFace,
                                                 Handle(Geom_Curve)& theCurve,
@@ -548,10 +548,10 @@ protected: //! @name Static auxilliary methods for geometry extraction
                                                 gp_Pnt&             theLastPoint);
 
   //! If it is possible extracts circle from the edge.
-  //! @param theEdge        [in] input edge to extract circle from
-  //! @param theCircle      [out] circle
-  //! @param theFirstPoint  [out] the point of the first parameter of the circlular curve
-  //! @param theSecondPoint [out] the point of the last parameter of the circlular curve
+  //! @param[in] theEdge         input edge to extract circle from
+  //! @param[out] theCircle       circle
+  //! @param[out] theFirstPoint   the point of the first parameter of the circlular curve
+  //! @param[out] theSecondPoint  the point of the last parameter of the circlular curve
   //! @return TRUE in case of successful circle extraction.
   static Standard_Boolean CircleFromEdge (const TopoDS_Edge& theEdge,
                                           gp_Circ&           theCircle,
@@ -562,7 +562,7 @@ protected: //! @name Behavior to implement
 
   //! Override this method to check if user-defined plane
   //! is valid for the dimension geometry.
-  //! @param thePlane [in] the working plane for positioning every
+  //! @param[in] thePlane  the working plane for positioning every
   //! dimension in the application.
   //! @return true is the plane is suitable for building dimension
   //! with computed dimension geometry.
@@ -584,8 +584,8 @@ protected: //! @name Behavior to implement
 
 
   //! Base procedure of computing selection (based on selection geometry data).
-  //! @param theSelection [in] the selection structure to will with primitives.
-  //! @param theMode [in] the selection mode.
+  //! @param[in] theSelection  the selection structure to will with primitives.
+  //! @param[in] theMode  the selection mode.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
@@ -619,7 +619,7 @@ protected: //! @name Selection geometry
   public:
 
     //! Clear geometry of sensitives for the specified compute mode.
-    //! @param theMode [in] the compute mode to clear.
+    //! @param[in] theMode  the compute mode to clear.
     void Clear (const Standard_Integer theMode)
     {
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)

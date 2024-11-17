@@ -90,7 +90,7 @@ public:
   NCollection_List<Handle(AIS_InteractiveObject)> SelectedPresentations (QItemSelectionModel* theModel);
 
   //! Returns selected shapes
-  //! \param [out] container of shapes
+  //! \param[out]  container of shapes
   void SelectedShapes (NCollection_List<Handle(Standard_Transient)>& theSelPresentations);
 
 private:

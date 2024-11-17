@@ -54,43 +54,43 @@ public:
   DEFINE_STANDARD_RTTIEXT(IVtkVTK_ShapeData,IVtk_IShapeData)
 
   //! Insert a coordinate
-  //! @param [in] thePnt  point position
-  //! @param [in] theNorm point normal
+  //! @param[in]  thePnt  point position
+  //! @param[in]  theNorm point normal
   //! @return id of added point
   Standard_EXPORT virtual IVtk_PointId InsertPoint (const gp_Pnt& thePnt,
                                                     const NCollection_Vec3<float>& theNorm) Standard_OVERRIDE;
 
   //! Insert a vertex.
-  //! @param [in] theShapeID id of the subshape to which the vertex belongs.
-  //! @param [in] thePointId id of the point that defines the coordinates of the vertex
-  //! @param [in] theMeshType mesh type of the subshape (MT_Undefined by default)
+  //! @param[in]  theShapeID id of the subshape to which the vertex belongs.
+  //! @param[in]  thePointId id of the point that defines the coordinates of the vertex
+  //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
   Standard_EXPORT virtual void InsertVertex (const IVtk_IdType   theShapeID,
                                              const IVtk_PointId  thePointId,
                                              const IVtk_MeshType theMeshType) Standard_OVERRIDE;
 
   //! Insert a line.
-  //! @param [in] theShapeID id of the subshape to which the line belongs.
-  //! @param [in] thePointId1 id of the first point
-  //! @param [in] thePointId2 id of the second point
-  //! @param [in] theMeshType mesh type of the subshape (MT_Undefined by default)
+  //! @param[in]  theShapeID id of the subshape to which the line belongs.
+  //! @param[in]  thePointId1 id of the first point
+  //! @param[in]  thePointId2 id of the second point
+  //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
   Standard_EXPORT virtual void InsertLine (const IVtk_IdType   theShapeID,
                                            const IVtk_PointId  thePointId1,
                                            const IVtk_PointId  thePointId2,
                                            const IVtk_MeshType theMeshType) Standard_OVERRIDE;
 
   //! Insert a poly-line.
-  //! @param [in] theShapeID id of the subshape to which the polyline belongs.
-  //! @param [in] thePointIds vector of point ids
-  //! @param [in] theMeshType mesh type of the subshape (MT_Undefined by default)
+  //! @param[in]  theShapeID id of the subshape to which the polyline belongs.
+  //! @param[in]  thePointIds vector of point ids
+  //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
   Standard_EXPORT virtual void InsertLine (const IVtk_IdType       theShapeID, 
                                            const IVtk_PointIdList* thePointIds,
                                            const IVtk_MeshType     theMeshType) Standard_OVERRIDE;
   //! Insert a triangle
-  //! @param [in] theShapeID id of the subshape to which the triangle belongs.
-  //! @param [in] thePointId1 id of the first point
-  //! @param [in] thePointId2 id of the second point
-  //! @param [in] thePointId3 id of the third point
-  //! @param [in] theMeshType mesh type of the subshape (MT_Undefined by default)
+  //! @param[in]  theShapeID id of the subshape to which the triangle belongs.
+  //! @param[in]  thePointId1 id of the first point
+  //! @param[in]  thePointId2 id of the second point
+  //! @param[in]  thePointId3 id of the third point
+  //! @param[in]  theMeshType mesh type of the subshape (MT_Undefined by default)
   Standard_EXPORT virtual void InsertTriangle (const IVtk_IdType   theShapeID,
                                                const IVtk_PointId  thePointId1,
                                                const IVtk_PointId  thePointId2,

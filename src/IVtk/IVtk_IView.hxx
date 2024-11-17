@@ -86,8 +86,8 @@ public:
                              Standard_Boolean& theIsOrtho) const = 0;
 
   //! Converts 3D display coordinates into 3D world coordinates.
-  //! @param [in] theDisplayPnt 2d point of display coordinates
-  //! @param [out] theWorldPnt 3d point of world coordinates
+  //! @param[in]  theDisplayPnt 2d point of display coordinates
+  //! @param[out]  theWorldPnt 3d point of world coordinates
   //! @return true if conversion was successful, false otherwise
   virtual bool    DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const = 0;
 

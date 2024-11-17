@@ -39,69 +39,69 @@ public:
 
   
   //! Make a sphere.
-  //! @param R [in] sphere radius
+  //! @param[in] R  sphere radius
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R);
 
   //! Make a sphere (spherical wedge).
-  //! @param R     [in] sphere radius
-  //! @param angle [in] angle between the radii lying within the bounding semidisks
+  //! @param[in] R      sphere radius
+  //! @param[in] angle  angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle);
 
   //! Make a sphere (spherical segment).
-  //! @param R [in] sphere radius
-  //! @param angle1 [in] first angle defining a spherical segment
-  //! @param angle2 [in] second angle defining a spherical segment
+  //! @param[in] R  sphere radius
+  //! @param[in] angle1  first angle defining a spherical segment
+  //! @param[in] angle2  second angle defining a spherical segment
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2);
 
   //! Make a sphere (spherical segment).
-  //! @param R      [in] sphere radius
-  //! @param angle1 [in] first angle defining a spherical segment
-  //! @param angle2 [in] second angle defining a spherical segment
-  //! @param angle3 [in] angle between the radii lying within the bounding semidisks
+  //! @param[in] R       sphere radius
+  //! @param[in] angle1  first angle defining a spherical segment
+  //! @param[in] angle2  second angle defining a spherical segment
+  //! @param[in] angle3  angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2, const Standard_Real angle3);
 
   //! Make a sphere.
-  //! @param Center [in] sphere center coordinates
-  //! @param R      [in] sphere radius
+  //! @param[in] Center  sphere center coordinates
+  //! @param[in] R       sphere radius
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R);
   
   //! Make a sphere (spherical wedge).
-  //! @param Center [in] sphere center coordinates
-  //! @param R      [in] sphere radius
-  //! @param angle  [in] angle between the radii lying within the bounding semidisks
+  //! @param[in] Center  sphere center coordinates
+  //! @param[in] R       sphere radius
+  //! @param[in] angle   angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R, const Standard_Real angle);
 
   //! Make a sphere (spherical segment).
-  //! @param Center [in] sphere center coordinates
-  //! @param R      [in] sphere radius
-  //! @param angle1 [in] first angle defining a spherical segment
-  //! @param angle2 [in] second angle defining a spherical segment
+  //! @param[in] Center  sphere center coordinates
+  //! @param[in] R       sphere radius
+  //! @param[in] angle1  first angle defining a spherical segment
+  //! @param[in] angle2  second angle defining a spherical segment
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2);
 
   //! Make a sphere (spherical segment).
-  //! @param Center [in] sphere center coordinates
-  //! @param R      [in] sphere radius
-  //! @param angle1 [in] first angle defining a spherical segment
-  //! @param angle2 [in] second angle defining a spherical segment
-  //! @param angle3 [in] angle between the radii lying within the bounding semidisks
+  //! @param[in] Center  sphere center coordinates
+  //! @param[in] R       sphere radius
+  //! @param[in] angle1  first angle defining a spherical segment
+  //! @param[in] angle2  second angle defining a spherical segment
+  //! @param[in] angle3  angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2, const Standard_Real angle3);
 
   //! Make a sphere.
-  //! @param Axis [in] coordinate system for the construction of the sphere
-  //! @param R    [in] sphere radius
+  //! @param[in] Axis  coordinate system for the construction of the sphere
+  //! @param[in] R     sphere radius
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const Standard_Real R);
 
   //! Make a sphere (spherical wedge).
-  //! @param Axis  [in] coordinate system for the construction of the sphere
-  //! @param R     [in] sphere radius
-  //! @param angle [in] angle between the radii lying within the bounding semidisks
+  //! @param[in] Axis   coordinate system for the construction of the sphere
+  //! @param[in] R      sphere radius
+  //! @param[in] angle  angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const Standard_Real R, const Standard_Real angle);
 
   //! Make a sphere (spherical segment).
-  //! @param Axis   [in] coordinate system for the construction of the sphere
-  //! @param R      [in] sphere radius
-  //! @param angle1 [in] first angle defining a spherical segment
-  //! @param angle2 [in] second angle defining a spherical segment
+  //! @param[in] Axis    coordinate system for the construction of the sphere
+  //! @param[in] R       sphere radius
+  //! @param[in] angle1  first angle defining a spherical segment
+  //! @param[in] angle2  second angle defining a spherical segment
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2);
 
   //! Make a sphere of radius R.

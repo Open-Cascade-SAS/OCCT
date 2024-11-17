@@ -60,12 +60,12 @@ public: //! @name Constructors
 
   //! Constructor for checking single shape.
   //!
-  //! @param theS [in] - the shape to check;
-  //! @param bTestSE [in] - flag which specifies whether to check the shape
+  //! @param[in] theS  - the shape to check;
+  //! @param[in] bTestSE  - flag which specifies whether to check the shape
   //!                       on small edges or not; by default it is set to TRUE;
-  //! @param bTestSI [in] - flag which specifies whether to check the shape
+  //! @param[in] bTestSI  - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
-  //! @param theRange [in] - parameter to use progress indicator
+  //! @param[in] theRange  - parameter to use progress indicator
   Standard_EXPORT BRepAlgoAPI_Check(const TopoDS_Shape& theS,
                                     const Standard_Boolean bTestSE = Standard_True,
                                     const Standard_Boolean bTestSI = Standard_True,
@@ -76,15 +76,15 @@ public: //! @name Constructors
   //! the types of the given shapes will be checked on validity
   //! for Boolean operation of given type.
   //!
-  //! @param theS1 [in] - the first shape to check;
-  //! @param theS2 [in] - the second shape to check;
-  //! @param theOp [in] - the type of Boolean Operation for which the validity
+  //! @param[in] theS1  - the first shape to check;
+  //! @param[in] theS2  - the second shape to check;
+  //! @param[in] theOp  - the type of Boolean Operation for which the validity
   //!                     of given shapes should be checked.
-  //! @param bTestSE [in] - flag which specifies whether to check the shape
+  //! @param[in] bTestSE  - flag which specifies whether to check the shape
   //!                       on small edges or not; by default it is set to TRUE;
-  //! @param bTestSI [in] - flag which specifies whether to check the shape
+  //! @param[in] bTestSI  - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
-  //! @param theRange [in] - parameter to use progress indicator
+  //! @param[in] theRange  - parameter to use progress indicator
   Standard_EXPORT BRepAlgoAPI_Check(const TopoDS_Shape& theS1,
                                     const TopoDS_Shape& theS2,
                                     const BOPAlgo_Operation theOp = BOPAlgo_UNKNOWN,
@@ -97,10 +97,10 @@ public: //! @name Initializing the algorithm
 
   //! Initializes the algorithm with single shape.
   //!
-  //! @param theS [in] - the shape to check;
-  //! @param bTestSE [in] - flag which specifies whether to check the shape
+  //! @param[in] theS  - the shape to check;
+  //! @param[in] bTestSE  - flag which specifies whether to check the shape
   //!                       on small edges or not; by default it is set to TRUE;
-  //! @param bTestSI [in] - flag which specifies whether to check the shape
+  //! @param[in] bTestSI  - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
   void SetData(const TopoDS_Shape& theS,
                const Standard_Boolean bTestSE = Standard_True,
@@ -118,13 +118,13 @@ public: //! @name Initializing the algorithm
   //! the types of the given shapes will be checked on validity
   //! for Boolean operation of given type.
   //!
-  //! @param theS1 [in] - the first shape to check;
-  //! @param theS2 [in] - the second shape to check;
-  //! @param theOp [in] - the type of Boolean Operation for which the validity
+  //! @param[in] theS1  - the first shape to check;
+  //! @param[in] theS2  - the second shape to check;
+  //! @param[in] theOp  - the type of Boolean Operation for which the validity
   //!                     of given shapes should be checked.
-  //! @param bTestSE [in] - flag which specifies whether to check the shape
+  //! @param[in] bTestSE  - flag which specifies whether to check the shape
   //!                       on small edges or not; by default it is set to TRUE;
-  //! @param bTestSI [in] - flag which specifies whether to check the shape
+  //! @param[in] bTestSI  - flag which specifies whether to check the shape
   //!                       on self-interference or not; by default it is set to TRUE;
   void SetData(const TopoDS_Shape& theS1,
                const TopoDS_Shape& theS2,

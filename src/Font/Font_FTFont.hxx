@@ -300,8 +300,8 @@ public:
 public:
 
   //! Computes outline contour for the symbol.
-  //! @param theUChar    [in] the character to be loaded as current one
-  //! @param theOutline  [out] outline contour
+  //! @param[in] theUChar     the character to be loaded as current one
+  //! @param[out] theOutline   outline contour
   //! @return true on success
   Standard_EXPORT const FT_Outline* renderGlyphOutline(const Standard_Utf32Char theChar);
 

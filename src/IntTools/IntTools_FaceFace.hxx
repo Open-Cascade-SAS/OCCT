@@ -76,7 +76,7 @@ public:
   Standard_EXPORT Standard_Boolean TangentFaces() const;
 
   //! Provides post-processing the result lines.
-  //! @param bToSplit [in] split the closed 3D-curves on parts when TRUE,
+  //! @param[in] bToSplit  split the closed 3D-curves on parts when TRUE,
   //!                      remain untouched otherwise
   Standard_EXPORT void PrepareLines3D (const Standard_Boolean bToSplit = Standard_True);
 

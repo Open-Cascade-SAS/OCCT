@@ -272,24 +272,24 @@ public:
 
   //! Dumps the graphical contents of a shadowmap framebuffer into an image.
   //! @param theImage the image to store the shadow map.
-  //! @param theLightName [in] name of the light used to generate the shadow map.
+  //! @param[in] theLightName  name of the light used to generate the shadow map.
   virtual Standard_Boolean ShadowMapDump (Image_PixMap& theImage, const TCollection_AsciiString& theLightName) = 0;
 
   //! Marks BVH tree and the set of BVH primitives of correspondent priority list with id theLayerId as outdated.
   virtual void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId) = 0;
 
   //! Add a layer to the view.
-  //! @param theNewLayerId [in] id of new layer, should be > 0 (negative values are reserved for default layers).
-  //! @param theSettings   [in] new layer settings
-  //! @param theLayerAfter [in] id of layer to append new layer before
+  //! @param[in] theNewLayerId  id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param[in] theSettings    new layer settings
+  //! @param[in] theLayerAfter  id of layer to append new layer before
   virtual void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
                                   const Graphic3d_ZLayerSettings& theSettings,
                                   const Graphic3d_ZLayerId theLayerAfter) = 0;
 
   //! Add a layer to the view.
-  //! @param theNewLayerId  [in] id of new layer, should be > 0 (negative values are reserved for default layers).
-  //! @param theSettings    [in] new layer settings
-  //! @param theLayerBefore [in] id of layer to append new layer after
+  //! @param[in] theNewLayerId   id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param[in] theSettings     new layer settings
+  //! @param[in] theLayerBefore  id of layer to append new layer after
   virtual void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
                                  const Graphic3d_ZLayerSettings& theSettings,
                                  const Graphic3d_ZLayerId theLayerBefore) = 0;
@@ -383,9 +383,9 @@ public:
   const Handle(Graphic3d_CubeMap)& IBLCubeMap() const { return myCubeMapIBL; }
 
   //! Sets image texture or environment cubemap as background.
-  //! @param theTextureMap [in] source to set a background;
+  //! @param[in] theTextureMap  source to set a background;
   //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
-  //! @param theToUpdatePBREnv [in] defines whether IBL maps will be generated or not
+  //! @param[in] theToUpdatePBREnv  defines whether IBL maps will be generated or not
   //!                               (see GeneratePBREnvironment())
   virtual void SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTextureMap,
                                    Standard_Boolean theToUpdatePBREnv = Standard_True) = 0;
@@ -497,7 +497,7 @@ public:
   void SetBaseXRCamera (const Handle(Graphic3d_Camera)& theCamera) { myBaseXRCamera = theCamera; }
 
   //! Convert XR pose to world space.
-  //! @param thePoseXR [in] transformation defined in VR local coordinate system,
+  //! @param[in] thePoseXR  transformation defined in VR local coordinate system,
   //!                       oriented as Y-up, X-right and -Z-forward
   //! @return transformation defining orientation of XR pose in world space
   gp_Trsf PoseXRToWorld (const gp_Trsf& thePoseXR) const
@@ -511,7 +511,7 @@ public:
   }
 
   //! Returns view direction in the world space based on XR pose.
-  //! @param thePoseXR [in] transformation defined in VR local coordinate system,
+  //! @param[in] thePoseXR  transformation defined in VR local coordinate system,
   //!                       oriented as Y-up, X-right and -Z-forward
   gp_Ax1 ViewAxisInWorld (const gp_Trsf& thePoseXR) const
   {
@@ -548,8 +548,8 @@ public: //! @name obsolete Graduated Trihedron functionality
   virtual void GraduatedTrihedronErase() {}
 
   //! Sets minimum and maximum points of scene bounding box for Graduated Trihedron stored in graphic view object.
-  //! @param theMin [in] the minimum point of scene.
-  //! @param theMax [in] the maximum point of scene.
+  //! @param[in] theMin  the minimum point of scene.
+  //! @param[in] theMax  the maximum point of scene.
   virtual void GraduatedTrihedronMinMaxValues (const Graphic3d_Vec3 theMin, const Graphic3d_Vec3 theMax)
   {
     (void )theMin;

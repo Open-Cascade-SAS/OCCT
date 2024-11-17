@@ -104,12 +104,12 @@ public:
   void ClearOwner() { myOwner.Nullify(); }
 
   //! Drag object in the viewer.
-  //! @param theCtx      [in] interactive context
-  //! @param theView     [in] active View
-  //! @param theOwner    [in] the owner of detected entity
-  //! @param theDragFrom [in] drag start point
-  //! @param theDragTo   [in] drag end point
-  //! @param theAction   [in] drag action
+  //! @param[in] theCtx       interactive context
+  //! @param[in] theView      active View
+  //! @param[in] theOwner     the owner of detected entity
+  //! @param[in] theDragFrom  drag start point
+  //! @param[in] theDragTo    drag end point
+  //! @param[in] theAction    drag action
   //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
   Standard_EXPORT virtual Standard_Boolean ProcessDragging (const Handle(AIS_InteractiveContext)& theCtx,
                                                             const Handle(V3d_View)& theView,

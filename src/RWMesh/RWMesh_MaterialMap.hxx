@@ -58,9 +58,9 @@ public:
   Standard_EXPORT virtual bool CreateTextureFolder();
 
   //! Copy and rename texture file to the new location.
-  //! @param theResTexture [out] result texture file path (relative to the model)
-  //! @param theTexture [in] original texture
-  //! @param theKey [in] material key
+  //! @param[out] theResTexture  result texture file path (relative to the model)
+  //! @param[in] theTexture  original texture
+  //! @param[in] theKey  material key
   Standard_EXPORT virtual bool CopyTexture (TCollection_AsciiString& theResTexture,
                                             const Handle(Image_Texture)& theTexture,
                                             const TCollection_AsciiString& theKey);

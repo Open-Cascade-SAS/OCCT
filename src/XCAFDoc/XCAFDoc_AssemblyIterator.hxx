@@ -28,14 +28,14 @@ class XCAFDoc_AssemblyIterator
 public:
 
   //! Constructs iterator starting from assembly roots.
-  //! \param [in]      theDoc   - document to iterate.
+  //! \param[in]       theDoc   - document to iterate.
   //! \param [in, opt] theLevel - max level of hierarchy to reach (INT_MAX is for no limit).
   Standard_EXPORT XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
                                            const Standard_Integer          theLevel = INT_MAX);
 
   //! Constructs iterator starting from the specified position in the assembly tree.
-  //! \param [in]      theDoc   - document to iterate.
-  //! \param [in]      theRoot  - assembly item to start iterating from.
+  //! \param[in]       theDoc   - document to iterate.
+  //! \param[in]       theRoot  - assembly item to start iterating from.
   //! \param [in, opt] theLevel - max level of hierarchy to reach (INT_MAX is for no limit).
   Standard_EXPORT XCAFDoc_AssemblyIterator(const Handle(TDocStd_Document)& theDoc,
                                            const XCAFDoc_AssemblyItemId&   theRoot,

@@ -244,9 +244,9 @@ public:
 public:
 
   //! Find scale value based on the camera position and view dimensions
-  //! @param theCamera [in] camera definition
-  //! @param theViewportWidth [in] the width of viewport.
-  //! @param theViewportHeight [in] the height of viewport.
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theViewportWidth  the width of viewport.
+  //! @param[in] theViewportHeight  the height of viewport.
   virtual Standard_Real persistentScale (const Handle(Graphic3d_Camera)& theCamera,
                                          const Standard_Integer theViewportWidth,
                                          const Standard_Integer theViewportHeight) const
@@ -265,9 +265,9 @@ public:
   //! Create orientation matrix based on camera and view dimensions.
   //! Default implementation locks rotation by nullifying rotation component.
   //! Camera and view dimensions are not used, by default.
-  //! @param theCamera [in] camera definition
-  //! @param theViewportWidth [in] the width of viewport
-  //! @param theViewportHeight [in] the height of viewport
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theViewportWidth  the width of viewport
+  //! @param[in] theViewportHeight  the height of viewport
   virtual NCollection_Mat3<Standard_Real> persistentRotationMatrix (const Handle(Graphic3d_Camera)& theCamera,
                                                                     const Standard_Integer theViewportWidth,
                                                                     const Standard_Integer theViewportHeight) const
@@ -281,11 +281,11 @@ public:
   }
 
   //! Apply transformation to bounding box of presentation.
-  //! @param theCamera [in] camera definition
-  //! @param theProjection [in] the projection transformation matrix.
-  //! @param theWorldView [in] the world view transformation matrix.
-  //! @param theViewportWidth [in] the width of viewport (for 2d persistence).
-  //! @param theViewportHeight [in] the height of viewport (for 2d persistence).
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theProjection  the projection transformation matrix.
+  //! @param[in] theWorldView  the world view transformation matrix.
+  //! @param[in] theViewportWidth  the width of viewport (for 2d persistence).
+  //! @param[in] theViewportHeight  the height of viewport (for 2d persistence).
   //! @param theBoundingBox [in/out] the bounding box to transform.
   template<class T>
   void Apply (const Handle(Graphic3d_Camera)& theCamera,
@@ -296,11 +296,11 @@ public:
               Bnd_Box& theBoundingBox) const;
 
   //! Apply transformation to bounding box of presentation
-  //! @param theCamera [in] camera definition
-  //! @param theProjection [in] the projection transformation matrix.
-  //! @param theWorldView [in] the world view transformation matrix.
-  //! @param theViewportWidth [in] the width of viewport (for 2d persistence).
-  //! @param theViewportHeight [in] the height of viewport (for 2d persistence).
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theProjection  the projection transformation matrix.
+  //! @param[in] theWorldView  the world view transformation matrix.
+  //! @param[in] theViewportWidth  the width of viewport (for 2d persistence).
+  //! @param[in] theViewportHeight  the height of viewport (for 2d persistence).
   //! @param theBoundingBox [in/out] the bounding box to transform.
   template<class T>
   void Apply (const Handle(Graphic3d_Camera)& theCamera,
@@ -313,12 +313,12 @@ public:
   //! Compute transformation.
   //! Computed matrix can be applied to model world transformation
   //! of an object to implement effect of transformation persistence.
-  //! @param theCamera [in] camera definition
-  //! @param theProjection [in] the projection transformation matrix.
-  //! @param theWorldView [in] the world view transformation matrix.
-  //! @param theViewportWidth [in] the width of viewport (for 2d persistence).
-  //! @param theViewportHeight [in] the height of viewport (for 2d persistence).
-  //! @param theToApplyProjPers [in] if should apply projection persistence to matrix (for orthographic persistence).
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theProjection  the projection transformation matrix.
+  //! @param[in] theWorldView  the world view transformation matrix.
+  //! @param[in] theViewportWidth  the width of viewport (for 2d persistence).
+  //! @param[in] theViewportHeight  the height of viewport (for 2d persistence).
+  //! @param[in] theToApplyProjPers  if should apply projection persistence to matrix (for orthographic persistence).
   //! @return transformation matrix to be applied to model world transformation of an object.
   template<class T>
   NCollection_Mat4<T> Compute (const Handle(Graphic3d_Camera)& theCamera,
@@ -329,13 +329,13 @@ public:
                                const Standard_Boolean theToApplyProjPers = false) const;
 
   //! Apply transformation persistence on specified matrices.
-  //! @param theCamera [in] camera definition
-  //! @param theProjection [in] projection matrix to modify
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theProjection  projection matrix to modify
   //! @param theWorldView [in/out]  world-view matrix to modify
-  //! @param theViewportWidth [in]  viewport width
-  //! @param theViewportHeight [in] viewport height
-  //! @param theAnchor [in] if not NULL, overrides anchor point
-  //! @param theToApplyProjPers [in] if should apply projection persistence to matrix (for orthographic persistence).
+  //! @param[in] theViewportWidth   viewport width
+  //! @param[in] theViewportHeight  viewport height
+  //! @param[in] theAnchor  if not NULL, overrides anchor point
+  //! @param[in] theToApplyProjPers  if should apply projection persistence to matrix (for orthographic persistence).
   template<class T>
   void Apply (const Handle(Graphic3d_Camera)& theCamera,
               const NCollection_Mat4<T>& theProjection,
@@ -346,10 +346,10 @@ public:
               const Standard_Boolean theToApplyProjPers = true) const;
 
   //! Perform computations for applying transformation persistence on specified matrices.
-  //! @param theCamera [in] camera definition
-  //! @param theViewportWidth [in]  viewport width
-  //! @param theViewportHeight [in] viewport height
-  //! @param theAnchor [in] if not NULL, overrides anchor point
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theViewportWidth   viewport width
+  //! @param[in] theViewportHeight  viewport height
+  //! @param[in] theAnchor  if not NULL, overrides anchor point
   virtual NCollection_Mat4<Standard_Real> ComputeApply (Handle(Graphic3d_Camera)& theCamera,
                                                         const Standard_Integer theViewportWidth,
                                                         const Standard_Integer theViewportHeight,

@@ -144,8 +144,8 @@ public:
   //! triangulations and polygons 3d of the edges.
   //! In case polygonal representation is the only available representation
   //! for the shape (shape does not have geometry) it is not removed.
-  //! @param theShape  [in] the shape to clean
-  //! @param theForce  [in] allows removing all polygonal representations from the shape,
+  //! @param[in] theShape   the shape to clean
+  //! @param[in] theForce   allows removing all polygonal representations from the shape,
   //!                       including polygons on triangulations irrelevant for the faces of the given shape.
   Standard_EXPORT static void Clean (const TopoDS_Shape& theShape, const Standard_Boolean theForce = Standard_False);
   
@@ -160,9 +160,9 @@ public:
 
   //! Verifies that each Face from the shape has got a triangulation with a deflection smaller or equal to specified one
   //! and the Edges a discretization on this triangulation.
-  //! @param theShape   [in] shape to verify
-  //! @param theLinDefl [in] maximum allowed linear deflection
-  //! @param theToCheckFreeEdges [in] if TRUE, then free Edges are required to have 3D polygon
+  //! @param[in] theShape    shape to verify
+  //! @param[in] theLinDefl  maximum allowed linear deflection
+  //! @param[in] theToCheckFreeEdges  if TRUE, then free Edges are required to have 3D polygon
   //! @return FALSE if input Shape contains Faces without triangulation,
   //!               or that triangulation has worse (greater) deflection than specified one,
   //!               or Edges in Shape lack polygons on triangulation
@@ -173,13 +173,13 @@ public:
 
   //! Loads triangulation data for each face of the shape
   //! from some deferred storage using specified shared input file system
-  //! @param theShape            [in] shape to load triangulations
-  //! @param theTriangulationIdx [in] index defining what triangulation should be loaded. Starts from 0.
+  //! @param[in] theShape             shape to load triangulations
+  //! @param[in] theTriangulationIdx  index defining what triangulation should be loaded. Starts from 0.
   //!        -1 is used in specific case to load currently already active triangulation.
   //!        If some face doesn't contain triangulation with this index, nothing will be loaded for it.
   //!        Exception will be thrown in case of invalid negative index
-  //! @param theToSetAsActive    [in] flag to activate triangulation after its loading
-  //! @param theFileSystem       [in] shared file system
+  //! @param[in] theToSetAsActive     flag to activate triangulation after its loading
+  //! @param[in] theFileSystem        shared file system
   //! @return TRUE if at least one triangulation is loaded.
   Standard_EXPORT static Standard_Boolean LoadTriangulation (const TopoDS_Shape& theShape,
                                                              const Standard_Integer theTriangulationIdx = -1,
@@ -187,8 +187,8 @@ public:
                                                              const Handle(OSD_FileSystem)& theFileSystem = Handle(OSD_FileSystem)());
 
   //! Releases triangulation data for each face of the shape if there is deferred storage to load it later
-  //! @param theShape            [in] shape to unload triangulations
-  //! @param theTriangulationIdx [in] index defining what triangulation should be unloaded. Starts from 0.
+  //! @param[in] theShape             shape to unload triangulations
+  //! @param[in] theTriangulationIdx  index defining what triangulation should be unloaded. Starts from 0.
   //!        -1 is used in specific case to unload currently already active triangulation.
   //!        If some face doesn't contain triangulation with this index, nothing will be unloaded for it.
   //!        Exception will be thrown in case of invalid negative index
@@ -198,10 +198,10 @@ public:
 
   //! Activates triangulation data for each face of the shape
   //! from some deferred storage using specified shared input file system
-  //! @param theShape              [in] shape to activate triangulations
-  //! @param theTriangulationIdx   [in] index defining what triangulation should be activated. Starts from 0.
+  //! @param[in] theShape               shape to activate triangulations
+  //! @param[in] theTriangulationIdx    index defining what triangulation should be activated. Starts from 0.
   //!        Exception will be thrown in case of invalid negative index
-  //! @param theToActivateStrictly [in] flag to activate exactly triangulation with defined theTriangulationIdx index.
+  //! @param[in] theToActivateStrictly  flag to activate exactly triangulation with defined theTriangulationIdx index.
   //!        In TRUE case if some face doesn't contain triangulation with this index, active triangulation
   //!        will not be changed for it. Else the last available triangulation will be activated.
   //! @return TRUE if at least one active triangulation was changed.
@@ -211,14 +211,14 @@ public:
 
   //! Loads all available triangulations for each face of the shape
   //! from some deferred storage using specified shared input file system
-  //! @param theShape      [in] shape to load triangulations
-  //! @param theFileSystem [in] shared file system
+  //! @param[in] theShape       shape to load triangulations
+  //! @param[in] theFileSystem  shared file system
   //! @return TRUE if at least one triangulation is loaded.
   Standard_EXPORT static Standard_Boolean LoadAllTriangulations (const TopoDS_Shape& theShape,
                                                                  const Handle(OSD_FileSystem)& theFileSystem = Handle(OSD_FileSystem)());
 
   //! Releases all available triangulations for each face of the shape if there is deferred storage to load them later
-  //! @param theShape      [in] shape to unload triangulations
+  //! @param[in] theShape       shape to unload triangulations
   //! @return TRUE if at least one triangulation is unloaded.
   Standard_EXPORT static Standard_Boolean UnloadAllTriangulations (const TopoDS_Shape& theShape);
 
@@ -255,8 +255,8 @@ public:
 
   //! Writes the shape to the stream in an ASCII format TopTools_FormatVersion_VERSION_1.
   //! This alias writes shape with triangulation data.
-  //! @param theShape [in]       the shape to write
-  //! @param theStream [in][out] the stream to output shape into
+  //! @param[in] theShape        the shape to write
+  //! @param[in][out] theStream  the stream to output shape into
   //! @param theRange            the range of progress indicator to fill in
   static void Write (const TopoDS_Shape& theShape,
                      Standard_OStream& theStream,
@@ -267,13 +267,13 @@ public:
   }
 
   //! Writes the shape to the stream in an ASCII format of specified version.
-  //! @param theShape [in]         the shape to write
-  //! @param theStream [in][out]   the stream to output shape into
-  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //! @param[in] theShape          the shape to write
+  //! @param[in][out] theStream    the stream to output shape into
+  //! @param[in] theWithTriangles  flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
   //!                              has no effect on triangulation-only geometry
-  //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
+  //! @param[in] theWithNormals    flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
   //!                              has no effect on triangulation-only geometry
-  //! @param theVersion [in]       the TopTools format version
+  //! @param[in] theVersion        the TopTools format version
   //! @param theProgress the range of progress indicator to fill in
   Standard_EXPORT static void Write (const TopoDS_Shape& theShape,
                                      Standard_OStream& theStream,
@@ -289,8 +289,8 @@ public:
 
   //! Writes the shape to the file in an ASCII format TopTools_FormatVersion_VERSION_1.
   //! This alias writes shape with triangulation data.
-  //! @param theShape [in] the shape to write
-  //! @param theFile [in]  the path to file to output shape into
+  //! @param[in] theShape  the shape to write
+  //! @param[in] theFile   the path to file to output shape into
   //! @param theProgress the range of progress indicator to fill in
   static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                  const Standard_CString theFile,
@@ -301,13 +301,13 @@ public:
   }
 
   //! Writes the shape to the file in an ASCII format of specified version.
-  //! @param theShape [in]         the shape to write
-  //! @param theFile [in]          the path to file to output shape into
-  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //! @param[in] theShape          the shape to write
+  //! @param[in] theFile           the path to file to output shape into
+  //! @param[in] theWithTriangles  flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
   //!                              has no effect on triangulation-only geometry
-  //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
+  //! @param[in] theWithNormals    flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
   //!                              has no effect on triangulation-only geometry
-  //! @param theVersion [in]       the TopTools format version
+  //! @param[in] theVersion        the TopTools format version
   //! @param theProgress the range of progress indicator to fill in
   Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                                  const Standard_CString theFile,

@@ -34,7 +34,7 @@ public:
   typedef Handle(IVtkOCC_SelectableObject) Handle;
 
   //! Constructs a selectable object initialized by the given shape
-  //! @param [in] theShape Selectable shape
+  //! @param[in]  theShape Selectable shape
   IVtkOCC_SelectableObject (const IVtkOCC_Shape::Handle& theShape);
 
   //! Constructs uninitialized selectable object.
@@ -44,7 +44,7 @@ public:
   virtual ~IVtkOCC_SelectableObject();
 
   //! Sets the selectable shape
-  //! @param [in] theShape Selectable shape
+  //! @param[in]  theShape Selectable shape
   Standard_EXPORT void SetShape (const IVtkOCC_Shape::Handle& theShape);
 
   const IVtkOCC_Shape::Handle&  GetShape() const { return myShape; };
@@ -58,8 +58,8 @@ private:
 
   //! Internal method, computes selection data for viewer selector
   //! Inspired by AIS_Shape::ComputeSelection() from OCCT 6.5.1
-  //! @param [in] selection container for sensitive primitives
-  //! @param [in] mode Selection mode
+  //! @param[in]  selection container for sensitive primitives
+  //! @param[in]  mode Selection mode
   virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                  const Standard_Integer theMode) Standard_OVERRIDE;
 

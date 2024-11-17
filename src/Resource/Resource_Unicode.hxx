@@ -111,9 +111,9 @@ public:
   }
 
   //! Converts the non-ASCII C string in specified format to the Unicode string of extended characters.
-  //! @param theFormat  [in] source encoding
-  //! @param theFromStr [in] text to convert
-  //! @param theToStr  [out] destination string
+  //! @param[in] theFormat   source encoding
+  //! @param[in] theFromStr  text to convert
+  //! @param[out] theToStr   destination string
   Standard_EXPORT static void ConvertFormatToUnicode (const Resource_FormatType theFormat,
                                                       const Standard_CString theFromStr,
                                                       TCollection_ExtendedString& theToStr);
@@ -121,19 +121,19 @@ public:
   //! Converts the Unicode string of extended characters to the non-ASCII string according to specified format.
   //! You need more than twice the length of the source string to complete the conversion.
   //! The function returns true if conversion is complete, i.e. the maximum number of characters is not reached before the end of conversion.
-  //! @param theFormat  [in] destination encoding
-  //! @param theFromStr [in] text to convert
-  //! @param theToStr  [out] destination buffer
-  //! @param theMaxSize [in] destination buffer length
+  //! @param[in] theFormat   destination encoding
+  //! @param[in] theFromStr  text to convert
+  //! @param[out] theToStr   destination buffer
+  //! @param[in] theMaxSize  destination buffer length
   Standard_EXPORT static Standard_Boolean ConvertUnicodeToFormat (const Resource_FormatType theFormat,
                                                                   const TCollection_ExtendedString& theFromStr,
                                                                   Standard_PCharacter& theToStr,
                                                                   const Standard_Integer theMaxSize);
 
   //! Converts the Unicode string of extended characters to the non-ASCII string according to the format returned by the function GetFormat.
-  //! @param theFromStr [in] text to convert
-  //! @param theToStr  [out] destination buffer
-  //! @param theMaxSize [in] destination buffer length
+  //! @param[in] theFromStr  text to convert
+  //! @param[out] theToStr   destination buffer
+  //! @param[in] theMaxSize  destination buffer length
   static Standard_Boolean ConvertUnicodeToFormat (const TCollection_ExtendedString& theFromStr,
                                                   Standard_PCharacter& theToStr,
                                                   const Standard_Integer theMaxSize)

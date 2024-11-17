@@ -95,8 +95,8 @@ public: //! @name Constructors for History creation
 
   //! Template constructor for History creation from the algorithm having
   //! standard history methods such as IsDeleted(), Modified() and Generated().
-  //! @param theArguments [in] Arguments of the algorithm;
-  //! @param theAlgo [in] The algorithm.
+  //! @param[in] theArguments  Arguments of the algorithm;
+  //! @param[in] theAlgo  The algorithm.
   template <class TheAlgo>
   BRepTools_History(const TopTools_ListOfShape& theArguments,
                     TheAlgo& theAlgo)
@@ -216,8 +216,8 @@ public: //! A method to merge a next history to this history.
   //! Template method for merging history of the algorithm having standard
   //! history methods such as IsDeleted(), Modified() and Generated()
   //! into current history object.
-  //! @param theArguments [in] Arguments of the algorithm;
-  //! @param theAlgo [in] The algorithm.
+  //! @param[in] theArguments  Arguments of the algorithm;
+  //! @param[in] theAlgo  The algorithm.
   template<class TheAlgo>
   void Merge(const TopTools_ListOfShape& theArguments,
              TheAlgo& theAlgo)

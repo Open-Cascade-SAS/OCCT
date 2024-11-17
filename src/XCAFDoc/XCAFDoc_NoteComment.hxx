@@ -31,10 +31,10 @@ public:
   Standard_EXPORT static Handle(XCAFDoc_NoteComment) Get(const TDF_Label& theLabel);
 
   //! Create (if not exist) a comment note on the given label.
-  //! \param [in] theLabel     - note label.
-  //! \param [in] theUserName  - the name of the user, who created the note.
-  //! \param [in] theTimeStamp - creation timestamp of the note.
-  //! \param [in] theComment   - comment text.
+  //! \param[in]  theLabel     - note label.
+  //! \param[in]  theUserName  - the name of the user, who created the note.
+  //! \param[in]  theTimeStamp - creation timestamp of the note.
+  //! \param[in]  theComment   - comment text.
   Standard_EXPORT static Handle(XCAFDoc_NoteComment) Set(const TDF_Label&                  theLabel,
                                                          const TCollection_ExtendedString& theUserName,
                                                          const TCollection_ExtendedString& theTimeStamp,

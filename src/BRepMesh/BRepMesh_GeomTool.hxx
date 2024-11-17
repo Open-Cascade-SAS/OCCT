@@ -110,9 +110,9 @@ public:
   //! @param theIndex index of discretization point.
   //! @param theIsoParam parameter on surface to be used as second coordinate 
   //! of resulting 2d point.
-  //! @param theParam[out] parameter of the point on the iso curve.
-  //! @param thePoint[out] discretization point.
-  //! @param theUV[out] discretization point in parametric space of the surface.
+  //! @param[out] theParam parameter of the point on the iso curve.
+  //! @param[out] thePoint discretization point.
+  //! @param[out] theUV discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
   Standard_EXPORT Standard_Boolean Value(const Standard_Integer theIndex,
                                          const Standard_Real    theIsoParam,
@@ -123,9 +123,9 @@ public:
   //! Gets parameters of discretization point with the given index.
   //! @param theIndex index of discretization point.
   //! @param theSurface surface the curve is lying onto.
-  //! @param theParam[out] parameter of the point on the curve.
-  //! @param thePoint[out] discretization point.
-  //! @param theUV[out] discretization point in parametric space of the surface.
+  //! @param[out] theParam parameter of the point on the curve.
+  //! @param[out] thePoint discretization point.
+  //! @param[out] theUV discretization point in parametric space of the surface.
   //! @return TRUE on success, FALSE elsewhere.
   Standard_EXPORT Standard_Boolean Value(const Standard_Integer              theIndex,
                                          const Handle(BRepAdaptor_Surface)& theSurface,

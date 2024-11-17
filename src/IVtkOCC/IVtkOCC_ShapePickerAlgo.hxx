@@ -44,7 +44,7 @@ public:
   Standard_EXPORT virtual int  NbPicked() Standard_OVERRIDE;
 
   //! Get activated selection modes for a shape.
-  //! @param [in] theShape a shape with activated selection mode(s)
+  //! @param[in]  theShape a shape with activated selection mode(s)
   //! @return list of active selection modes
   Standard_EXPORT virtual IVtk_SelectionModeList 
     GetSelectionModes (const IVtk_IShape::Handle& theShape) const Standard_OVERRIDE;
@@ -54,9 +54,9 @@ public: //! @name Set selectable shapes and selection modes
   //! Activates/deactivates the given selection mode for the shape.
   //! If mode == SM_None, the shape becomes non-selectable and 
   //! is removed from the internal selection data.
-  //! @param [in] theShape Shape for which the selection mode should be activated
-  //! @param [in] theMode Selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theShape Shape for which the selection mode should be activated
+  //! @param[in]  theMode Selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   Standard_EXPORT virtual void SetSelectionMode (const IVtk_IShape::Handle& theShape,
                                                  const IVtk_SelectionMode theMode,
                                                  const bool theIsTurnOn = true) Standard_OVERRIDE;
@@ -64,9 +64,9 @@ public: //! @name Set selectable shapes and selection modes
   //! Activates/deactivates the given selection mode for the shape.
   //! If mode == SM_None, the shape becomes non-selectable and 
   //! is removed from the internal selection data.
-  //! @param [in] theShapes List of shapes for which the selection mode should be activated
-  //! @param [in] theMode Selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theShapes List of shapes for which the selection mode should be activated
+  //! @param[in]  theMode Selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   Standard_EXPORT virtual void SetSelectionMode (const IVtk_ShapePtrList& theShapes,
                                                  const IVtk_SelectionMode theMode,
                                                  const bool theIsTurnOn = true) Standard_OVERRIDE;
@@ -89,15 +89,15 @@ public: //! @name Obtain picking results
   //! is the first in the list)
   Standard_EXPORT virtual const IVtk_ShapeIdList& ShapesPicked() const Standard_OVERRIDE;
 
-  //! @param [in] theId Top-level shape ID
-  //! @param [out] theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
+  //! @param[in]  theId Top-level shape ID
+  //! @param[out]  theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
   //! in the order of increasing depth (the ID of the sub-shape closest to the eye 
   //! is the first in the list)
   Standard_EXPORT virtual void 
     SubShapesPicked (const IVtk_IdType theId, IVtk_ShapeIdList& theShapeList) const Standard_OVERRIDE;
 
   //! Remove selectable object from the picker (from internal maps).
-  //! @param [in] theShape the selectable shape
+  //! @param[in]  theShape the selectable shape
   Standard_EXPORT virtual void RemoveSelectableObject(const IVtk_IShape::Handle& theShape);
 
   //! Return topmost picked 3D point or (Inf, Inf, Inf) if undefined.

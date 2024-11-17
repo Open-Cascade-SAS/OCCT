@@ -104,8 +104,8 @@ public:
 protected:
 
   //! Generate map key for light sources configuration.
-  //! @param theLights [in] list of light sources
-  //! @param theHasShadowMap [in] flag indicating shadow maps usage
+  //! @param[in] theLights  list of light sources
+  //! @param[in] theHasShadowMap  flag indicating shadow maps usage
   Standard_EXPORT TCollection_AsciiString genLightKey (const Handle(Graphic3d_LightSet)& theLights,
                                                        const bool theHasShadowMap) const;
 
@@ -113,23 +113,23 @@ protected:
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramFont() const;
 
   //! Prepare standard GLSL program without lighting.
-  //! @param theBits      [in] program bits
-  //! @param theIsOutline [in] draw silhouette
+  //! @param[in] theBits       program bits
+  //! @param[in] theIsOutline  draw silhouette
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramUnlit (Standard_Integer theBits,
                                                                       Standard_Boolean theIsOutline = false) const;
 
   //! Prepare standard GLSL program with per-vertex lighting.
-  //! @param theLights [in] list of light sources
-  //! @param theBits   [in] program bits
+  //! @param[in] theLights  list of light sources
+  //! @param[in] theBits    program bits
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramGouraud (const Handle(Graphic3d_LightSet)& theLights,
                                                                         Standard_Integer theBits) const;
 
   //! Prepare standard GLSL program with per-pixel lighting.
-  //! @param theLights [in] list of light sources
-  //! @param theBits   [in] program bits
-  //! @param theIsFlatNormal [in] when TRUE, the Vertex normals will be ignored and Face normal will be computed instead
-  //! @param theIsPBR  [in] when TRUE, the PBR pipeline will be activated
-  //! @param theNbShadowMaps [in] number of shadow maps
+  //! @param[in] theLights  list of light sources
+  //! @param[in] theBits    program bits
+  //! @param[in] theIsFlatNormal  when TRUE, the Vertex normals will be ignored and Face normal will be computed instead
+  //! @param[in] theIsPBR   when TRUE, the PBR pipeline will be activated
+  //! @param[in] theNbShadowMaps  number of shadow maps
   Standard_EXPORT Handle(Graphic3d_ShaderProgram) getStdProgramPhong (const Handle(Graphic3d_LightSet)& theLights,
                                                                       const Standard_Integer theBits,
                                                                       const Standard_Boolean theIsFlatNormal,
@@ -173,10 +173,10 @@ protected:
   Standard_EXPORT bool hasGlslBitwiseOps() const;
 
   //! Prepare GLSL version header.
-  //! @param theProgram [in] [out] program to set version header
-  //! @param theName [in] program id suffix
-  //! @param theBits [in] program bits
-  //! @param theUsesDerivates [in] program uses standard derivatives functions or not
+  //! @param[in][out] theProgram   program to set version header
+  //! @param[in] theName  program id suffix
+  //! @param[in] theBits  program bits
+  //! @param[in] theUsesDerivates  program uses standard derivatives functions or not
   //! @return filtered program bits with unsupported features disabled
   Standard_EXPORT Standard_Integer defaultGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
                                                        const TCollection_AsciiString& theName,
@@ -184,9 +184,9 @@ protected:
                                                        bool theUsesDerivates = false) const;
 
   //! Prepare GLSL version header for OIT composition programs.
-  //! @param theProgram [in] [out] program to set version header
-  //! @param theName [in] program id suffix
-  //! @param theMsaa [in] multisampling flag
+  //! @param[in][out] theProgram   program to set version header
+  //! @param[in] theName  program id suffix
+  //! @param[in] theMsaa  multisampling flag
   Standard_EXPORT void defaultOitGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
                                               const TCollection_AsciiString& theName,
                                               bool theMsaa) const;
@@ -199,12 +199,12 @@ protected:
                                                                  Standard_Integer theBits) const;
 
   //! Define computeLighting GLSL function depending on current lights configuration
-  //! @param theNbLights     [out] number of defined light sources
-  //! @param theLights       [in]  light sources list
-  //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
-  //! @param theIsPBR        [in]  flag to activate PBR pipeline
-  //! @param theHasTexColor  [in]  flag to include color texturing
-  //! @param theNbShadowMaps [in]  flag to include shadow map
+  //! @param[out] theNbLights      number of defined light sources
+  //! @param[in] theLights         light sources list
+  //! @param[in] theHasVertColor   flag to use getVertColor() instead of Ambient and Diffuse components of active material
+  //! @param[in] theIsPBR          flag to activate PBR pipeline
+  //! @param[in] theHasTexColor    flag to include color texturing
+  //! @param[in] theNbShadowMaps   flag to include shadow map
   Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
                                                               const Handle(Graphic3d_LightSet)& theLights,
                                                               Standard_Boolean  theHasVertColor,

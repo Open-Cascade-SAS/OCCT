@@ -79,7 +79,7 @@ public:
                                           Standard_Integer& theLastPos) const Standard_OVERRIDE;
 
   //! Returns presentation of the attribute to be visualized in the view
-  //! \thePresentations [out] container of presentation handles to be visualized
+  //! \thePresentations[out]  container of presentation handles to be visualized
   virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations) Standard_OVERRIDE
   { TreeModel_ItemBase::Presentations (thePresentations); thePresentations.Append (myPresentation); }
 

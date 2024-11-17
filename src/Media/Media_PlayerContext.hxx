@@ -36,16 +36,16 @@ class Media_PlayerContext : public Standard_Transient
 public:
 
   //! Dump first video frame.
-  //! @param theSrcVideo [in] path to the video
-  //! @param theMediaInfo [out] video description
+  //! @param[in] theSrcVideo  path to the video
+  //! @param[out] theMediaInfo  video description
   Standard_EXPORT static Handle(Media_Frame) DumpFirstFrame (const TCollection_AsciiString& theSrcVideo,
                                                              TCollection_AsciiString& theMediaInfo);
 
   //! Dump first video frame.
-  //! @param theSrcVideo [in] path to the video
-  //! @param theOutImage [in] path to make a screenshot
-  //! @param theMediaInfo [out] video description
-  //! @param theMaxSize [in] when positive - downscales image to specified size
+  //! @param[in] theSrcVideo  path to the video
+  //! @param[in] theOutImage  path to make a screenshot
+  //! @param[out] theMediaInfo  video description
+  //! @param[in] theMaxSize  when positive - downscales image to specified size
   Standard_EXPORT static bool DumpFirstFrame (const TCollection_AsciiString& theSrcVideo,
                                               const TCollection_AsciiString& theOutImage,
                                               TCollection_AsciiString& theMediaInfo,

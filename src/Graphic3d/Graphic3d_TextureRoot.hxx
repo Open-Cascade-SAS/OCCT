@@ -83,7 +83,7 @@ public:
 
   //! This method will be called by graphic driver each time when texture resource should be created.
   //! It is called in front of GetImage() for uploading compressed image formats natively supported by GPU.
-  //! @param theSupported [in] the list of supported compressed texture formats;
+  //! @param[in] theSupported  the list of supported compressed texture formats;
   //!                          returning image in unsupported format will result in texture upload failure
   //! @return compressed pixmap or NULL if image is not in supported compressed format
   Standard_EXPORT virtual Handle(Image_CompressedPixMap) GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported);

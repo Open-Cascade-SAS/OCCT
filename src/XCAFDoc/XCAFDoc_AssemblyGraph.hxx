@@ -59,8 +59,8 @@ public:
 
     //! \brief Accepting the assembly graph and starting node to iterate.
     //! Iteration starts from the specified node.
-    //! \param [in] theGraph - assembly graph to iterate.
-    //! \param [in] theNode  - graph node ID.
+    //! \param[in]  theGraph - assembly graph to iterate.
+    //! \param[in]  theNode  - graph node ID.
     Standard_EXPORT Iterator(const Handle(XCAFDoc_AssemblyGraph)& theGraph,
                              const Standard_Integer               theNode = 1);
 
@@ -94,14 +94,14 @@ public:
 
   //! \brief Constructs graph from XCAF document.
   //! Construction of a formal graph will be done immediately.
-  //! \param [in] theDoc - document to iterate.
+  //! \param[in]  theDoc - document to iterate.
   Standard_EXPORT XCAFDoc_AssemblyGraph(const Handle(TDocStd_Document)& theDoc);
 
   //! \brief Constructs graph from XCAF label.
   //! Construction of a formal graph will be done immediately. The specified
   //! label is used as a starting position.
-  //! \param [in] theDoc   - document to iterate.
-  //! \param [in] theLabel - starting position.
+  //! \param[in]  theDoc   - document to iterate.
+  //! \param[in]  theLabel - starting position.
   Standard_EXPORT XCAFDoc_AssemblyGraph(const TDF_Label& theLabel);
 
   //! \return Document shape tool.
@@ -118,14 +118,14 @@ public:
   }
 
   //! \brief Checks whether the assembly graph contains (n1, n2) directed link.
-  //! \param [in] theNode1 - one-based ID of the first node.
-  //! \param [in] theNode2 - one-based ID of the second node.
+  //! \param[in]  theNode1 - one-based ID of the first node.
+  //! \param[in]  theNode2 - one-based ID of the second node.
   //! \return true/false.
   Standard_EXPORT Standard_Boolean IsDirectLink(const Standard_Integer theNode1,
                                                 const Standard_Integer theNode2) const;
 
   //! \brief Checks whether direct children exist for the given node.
-  //! \param [in] theNode - one-based node ID.
+  //! \param[in]  theNode - one-based node ID.
   //! \return true/false.
   Standard_Boolean HasChildren(const Standard_Integer theNode) const
   {
@@ -133,7 +133,7 @@ public:
   }
 
   //! \brief Returns IDs of child nodes for the given node.
-  //! \param [in] theNode - one-based node ID.
+  //! \param[in]  theNode - one-based node ID.
   //! \return set of child IDs.
   const TColStd_PackedMapOfInteger& GetChildren(const Standard_Integer theNode) const
   {
@@ -141,13 +141,13 @@ public:
   }
 
   //! \brief Returns the node type from \ref NodeType enum.
-  //! \param [in] theNode - one-based node ID.
+  //! \param[in]  theNode - one-based node ID.
   //! \return node type.
   //! \sa NodeType
   Standard_EXPORT NodeType GetNodeType(const Standard_Integer theNode) const;
 
   //! \brief returns object ID by node ID.
-  //! \param [in] theNode - one-based node ID.
+  //! \param[in]  theNode - one-based node ID.
   //! \return persistent ID.
   const TDF_Label& GetNode(const Standard_Integer theNode) const
   {
@@ -180,27 +180,27 @@ public:
   Standard_EXPORT Standard_Integer NbLinks() const;
 
   //! Returns quantity of part usage occurrences.
-  //! \param [in] theNode - one-based part ID.
+  //! \param[in]  theNode - one-based part ID.
   //! \return usage occurrence quantity.
   Standard_EXPORT Standard_Integer NbOccurrences(const Standard_Integer theNode) const;
 
 private:
 
   //! Builds graph out of OCAF XDE structure.
-  //! \param [in] theLabel - optional starting position.
+  //! \param[in]  theLabel - optional starting position.
   Standard_EXPORT void buildGraph(const TDF_Label& theLabel);
 
   //! Adds components for the given parent to the graph structure.
-  //! \param [in] theParent   - OCAF label of the parent object.
-  //! \param [in] theParentId - ID of the already registered node representing
+  //! \param[in]  theParent   - OCAF label of the parent object.
+  //! \param[in]  theParentId - ID of the already registered node representing
   //!                           the parent object in the assembly graph
   //!                           being populated.
   Standard_EXPORT void addComponents(const TDF_Label&       theParent,
                                      const Standard_Integer theParentId);
 
   //! Adds node into the graph.
-  //! \param [in] theLabel    - label at insertion level.
-  //! \param [in] theParentId - parent one-based node IDS.
+  //! \param[in]  theLabel    - label at insertion level.
+  //! \param[in]  theParentId - parent one-based node IDS.
   //! \return one-based internal ID of the node.
   Standard_EXPORT Standard_Integer addNode(const TDF_Label&       theLabel,
                                            const Standard_Integer theParentId);

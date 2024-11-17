@@ -94,11 +94,11 @@ public:
   //! If the requested family name not found -> search for any font family with given aspect and height.
   //! If the font is still not found, returns any font available in the system.
   //! Returns NULL in case when the fonts are not found in the system.
-  //! @param theFontName    [in]       font family to find or alias name
-  //! @param theStrictLevel [in]       search strict level for using aliases and fallback
-  //! @param theFontAspect  [in] [out] font aspect to find (considered only if family name is not found);
+  //! @param[in] theFontName           font family to find or alias name
+  //! @param[in] theStrictLevel        search strict level for using aliases and fallback
+  //! @param[in][out] theFontAspect    font aspect to find (considered only if family name is not found);
   //!                                  can be modified if specified font alias refers to another style (compatibility with obsolete aliases)
-  //! @param theDoFailMsg   [in]       put error message on failure into default messenger
+  //! @param[in] theDoFailMsg          put error message on failure into default messenger
   Standard_EXPORT Handle(Font_SystemFont) FindFont (const TCollection_AsciiString& theFontName,
                                                     Font_StrictLevel theStrictLevel,
                                                     Font_FontAspect& theFontAspect,
@@ -113,8 +113,8 @@ public:
 
   //! Tries to find fallback font for specified Unicode subset.
   //! Returns NULL in case when fallback font is not found in the system.
-  //! @param theSubset     [in] Unicode subset
-  //! @param theFontAspect [in] font aspect to find
+  //! @param[in] theSubset      Unicode subset
+  //! @param[in] theFontAspect  font aspect to find
   Standard_EXPORT Handle(Font_SystemFont) FindFallbackFont (Font_UnicodeSubset theSubset,
                                                             Font_FontAspect theFontAspect) const;
 
@@ -153,12 +153,12 @@ public:
   void SetTraceAliases (Standard_Boolean theToTrace) { myToTraceAliases = theToTrace; }
 
   //! Return font names with defined aliases.
-  //! @param theAliases [out] alias names
+  //! @param[out] theAliases  alias names
   Standard_EXPORT void GetAllAliases (TColStd_SequenceOfHAsciiString& theAliases) const;
 
   //! Return aliases to specified font name.
-  //! @param theFontNames [out] font names associated with alias name
-  //! @param theAliasName [in]  alias name
+  //! @param[out] theFontNames  font names associated with alias name
+  //! @param[in] theAliasName   alias name
   Standard_EXPORT void GetFontAliases (TColStd_SequenceOfHAsciiString& theFontNames,
                                        const TCollection_AsciiString& theAliasName) const;
 
@@ -173,16 +173,16 @@ public:
   //! Aliases are defined "in advance", so that they could point to non-existing fonts,
   //! and they are resolved dynamically on request - first existing font is returned in case of multiple aliases to the same name.
   //!
-  //! @param theAliasName [in] alias name or name of another font to be used as alias
-  //! @param theFontName  [in] font to be used as substitution for alias
+  //! @param[in] theAliasName  alias name or name of another font to be used as alias
+  //! @param[in] theFontName   font to be used as substitution for alias
   //! @return FALSE if alias has been already registered
   Standard_EXPORT bool AddFontAlias (const TCollection_AsciiString& theAliasName,
                                      const TCollection_AsciiString& theFontName);
 
   //! Unregister font alias.
-  //! @param theAliasName [in] alias name or name of another font to be used as alias;
+  //! @param[in] theAliasName  alias name or name of another font to be used as alias;
   //!                          all aliases will be removed in case of empty name
-  //! @param theFontName  [in] font to be used as substitution for alias;
+  //! @param[in] theFontName   font to be used as substitution for alias;
   //!                          all fonts will be removed in case of empty name
   //! @return TRUE if alias has been removed
   Standard_EXPORT bool RemoveFontAlias (const TCollection_AsciiString& theAliasName,
@@ -231,7 +231,7 @@ private:
     Font_FontMap() {}
 
     //! Try finding font with specified parameters or the closest one.
-    //! @param theFontName [in] font family to find (or empty string if family name can be ignored)
+    //! @param[in] theFontName  font family to find (or empty string if family name can be ignored)
     //! @return best match font or NULL if not found
     Handle(Font_SystemFont) Find (const TCollection_AsciiString& theFontName) const;
   };

@@ -166,10 +166,10 @@ public:
   //! This transformation might be not in line with user expectations.
   //! In this case, application might define intermediate camera positions for interpolation or implement own interpolation logic.
   //!
-  //! @param theStart  [in] initial camera position
-  //! @param theEnd    [in] final   camera position
-  //! @param theT      [in] step between initial and final positions within [0,1] range
-  //! @param theCamera [out] interpolation result
+  //! @param[in] theStart   initial camera position
+  //! @param[in] theEnd     final   camera position
+  //! @param[in] theT       step between initial and final positions within [0,1] range
+  //! @param[out] theCamera  interpolation result
   Standard_EXPORT static void Interpolate (const Handle(Graphic3d_Camera)& theStart,
                                            const Handle(Graphic3d_Camera)& theEnd,
                                            const double theT,
@@ -186,7 +186,7 @@ public:
   Standard_EXPORT Graphic3d_Camera();
 
   //! Copy constructor.
-  //! @param theOther [in] the camera to copy from.
+  //! @param[in] theOther  the camera to copy from.
   Standard_EXPORT Graphic3d_Camera (const Handle(Graphic3d_Camera)& theOther);
 
   //! Initialize mapping related parameters from other camera handle.
@@ -196,7 +196,7 @@ public:
   Standard_EXPORT void CopyOrientationData (const Handle(Graphic3d_Camera)& theOtherCamera);
 
   //! Copy properties of another camera.
-  //! @param theOther [in] the camera to copy from.
+  //! @param[in] theOther  the camera to copy from.
   Standard_EXPORT void Copy (const Handle(Graphic3d_Camera)& theOther);
 
 //! @name Public camera properties
@@ -208,12 +208,12 @@ public:
 
   //! Sets camera look direction preserving the current Eye() position.
   //! WARNING! This method does NOT verify that the current Up() vector is orthogonal to the new Direction.
-  //! @param theDir [in] the direction.
+  //! @param[in] theDir  the direction.
   Standard_EXPORT void SetDirectionFromEye (const gp_Dir& theDir);
 
   //! Sets camera look direction and computes the new Eye position relative to current Center.
   //! WARNING! This method does NOT verify that the current Up() vector is orthogonal to the new Direction.
-  //! @param theDir [in] the direction.
+  //! @param[in] theDir  the direction.
   Standard_EXPORT void SetDirection (const gp_Dir& theDir);
 
   //! Get camera Up direction vector.
@@ -222,7 +222,7 @@ public:
 
   //! Sets camera Up direction vector, orthogonal to camera direction.
   //! WARNING! This method does NOT verify that the new Up vector is orthogonal to the current Direction().
-  //! @param theUp [in] the Up direction vector.
+  //! @param[in] theUp  the Up direction vector.
   //! @sa OrthogonalizeUp().
   Standard_EXPORT void SetUp (const gp_Dir& theUp);
 
@@ -244,20 +244,20 @@ public:
 
   //! Sets camera Eye position.
   //! Unlike SetEye(), this method only changes Eye point and preserves camera direction.
-  //! @param theEye [in] the location of camera's Eye.
+  //! @param[in] theEye  the location of camera's Eye.
   //! @sa SetEye()
   Standard_EXPORT void MoveEyeTo (const gp_Pnt& theEye);
 
   //! Sets camera Eye and Center positions.
-  //! @param theEye    [in] the location of camera's Eye
-  //! @param theCenter [in] the location of camera's Center
+  //! @param[in] theEye     the location of camera's Eye
+  //! @param[in] theCenter  the location of camera's Center
   Standard_EXPORT void SetEyeAndCenter (const gp_Pnt& theEye,
                                         const gp_Pnt& theCenter);
 
   //! Sets camera Eye position.
   //! WARNING! For backward compatibility reasons, this method also changes view direction,
   //! so that the new direction is computed from new Eye position to old Center position.
-  //! @param theEye [in] the location of camera's Eye.
+  //! @param[in] theEye  the location of camera's Eye.
   //! @sa MoveEyeTo(), SetEyeAndCenter()
   Standard_EXPORT void SetEye (const gp_Pnt& theEye);
 
@@ -272,7 +272,7 @@ public:
   //! Sets Center of the camera, e.g. the point where camera looks at.
   //! This methods changes camera direction, so that the new direction is computed
   //! from current Eye position to specified Center position.
-  //! @param theCenter [in] the point where the camera looks at.
+  //! @param[in] theCenter  the point where the camera looks at.
   Standard_EXPORT void SetCenter (const gp_Pnt& theCenter);
 
   //! Get distance of Eye from camera Center.
@@ -280,7 +280,7 @@ public:
   Standard_Real Distance() const { return myDistance; }
 
   //! Set distance of Eye from camera Center.
-  //! @param theDistance [in] the distance.
+  //! @param[in] theDistance  the distance.
   Standard_EXPORT void SetDistance (const Standard_Real theDistance);
 
   //! Get camera scale.
@@ -294,7 +294,7 @@ public:
   //! both dimensions assuming that the aspect is 1.0. The projection height
   //! and width are specified with the scale and correspondingly multiplied
   //! by the aspect.
-  //! @param theScale [in] the scale factor.
+  //! @param[in] theScale  the scale factor.
   Standard_EXPORT void SetScale (const Standard_Real theScale);
 
   //! Get camera axial scale.
@@ -302,7 +302,7 @@ public:
   const gp_XYZ& AxialScale() const { return myAxialScale; }
 
   //! Set camera axial scale.
-  //! @param theAxialScale [in] the axial scale vector.
+  //! @param[in] theAxialScale  the axial scale vector.
   Standard_EXPORT void SetAxialScale (const gp_XYZ& theAxialScale);
 
   //! Change camera projection type.
@@ -338,7 +338,7 @@ public:
 
   //! Set Field Of View (FOV) in y axis for perspective projection.
   //! Field of View in x axis is automatically scaled from view aspect ratio.
-  //! @param theFOVy [in] the FOV in degrees.
+  //! @param[in] theFOVy  the FOV in degrees.
   Standard_EXPORT void SetFOVy (const Standard_Real theFOVy);
 
   //! Get Field Of View (FOV) in y axis.
@@ -394,8 +394,8 @@ public:
   //! For perspective projection, only positive values are allowed.
   //! Program error exception is raised if non-positive values are
   //! specified for perspective projection or theZNear >= theZFar.
-  //! @param theZNear [in] the distance of the plane from the Eye.
-  //! @param theZFar [in] the distance of the plane from the Eye.
+  //! @param[in] theZNear  the distance of the plane from the Eye.
+  //! @param[in] theZFar  the distance of the plane from the Eye.
   Standard_EXPORT void SetZRange (const Standard_Real theZNear, const Standard_Real theZFar);
 
   //! Get the Near Z-clipping plane position.
@@ -427,7 +427,7 @@ public:
   }
 
   //! Changes width / height display ratio.
-  //! @param theAspect [in] the display ratio.
+  //! @param[in] theAspect  the display ratio.
   Standard_EXPORT void SetAspect (const Standard_Real theAspect);
 
   //! Get camera display ratio.
@@ -438,10 +438,10 @@ public:
   }
 
   //! Sets stereographic focus distance.
-  //! @param theType [in] the focus definition type. Focus can be defined
+  //! @param[in] theType  the focus definition type. Focus can be defined
   //! as absolute value or relatively to (as coefficient of) coefficient of
   //! camera focal length.
-  //! @param theZFocus [in] the focus absolute value or coefficient depending
+  //! @param[in] theZFocus  the focus absolute value or coefficient depending
   //! on the passed definition type.
   Standard_EXPORT void SetZFocus (const FocusType theType, const Standard_Real theZFocus);
 
@@ -461,9 +461,9 @@ public:
   }
 
   //! Sets Intraocular distance.
-  //! @param theType [in] the IOD definition type. IOD can be defined as
+  //! @param[in] theType  the IOD definition type. IOD can be defined as
   //! absolute value or relatively to (as coefficient of) camera focal length.
-  //! @param theIOD [in] the Intraocular distance.
+  //! @param[in] theIOD  the Intraocular distance.
   Standard_EXPORT void SetIOD (const IODType theType, const Standard_Real theIOD);
 
   //! Get Intraocular distance value.
@@ -496,7 +496,7 @@ public:
 
   //! Transform orientation components of the camera:
   //! Eye, Up and Center points.
-  //! @param theTrsf [in] the transformation to apply.
+  //! @param[in] theTrsf  the transformation to apply.
   Standard_EXPORT void Transform (const gp_Trsf& theTrsf);
 
   //! Calculate view plane size at center (target) point
@@ -509,7 +509,7 @@ public:
 
   //! Calculate view plane size at center point with specified Z offset
   //! and distance between ZFar and ZNear planes.
-  //! @param theZValue [in] the distance from the eye in eye-to-center direction
+  //! @param[in] theZValue  the distance from the eye in eye-to-center direction
   //! @return values in form of gp_Pnt (Width, Height, Depth).
   Standard_EXPORT gp_XYZ ViewDimensions (const Standard_Real theZValue) const;
 
@@ -537,12 +537,12 @@ public:
   //! The frustum planes are usually used as inputs for camera algorithms.
   //! Thus, if any changes to projection matrix calculation are necessary,
   //! the frustum planes calculation should be also touched.
-  //! @param theLeft [out] the frustum plane for left side of view.
-  //! @param theRight [out] the frustum plane for right side of view.
-  //! @param theBottom [out] the frustum plane for bottom side of view.
-  //! @param theTop [out] the frustum plane for top side of view.
-  //! @param theNear [out] the frustum plane for near side of view.
-  //! @param theFar [out] the frustum plane for far side of view.
+  //! @param[out] theLeft  the frustum plane for left side of view.
+  //! @param[out] theRight  the frustum plane for right side of view.
+  //! @param[out] theBottom  the frustum plane for bottom side of view.
+  //! @param[out] theTop  the frustum plane for top side of view.
+  //! @param[out] theNear  the frustum plane for near side of view.
+  //! @param[out] theFar  the frustum plane for far side of view.
   Standard_EXPORT void Frustum (gp_Pln& theLeft,
                                 gp_Pln& theRight,
                                 gp_Pln& theBottom,
@@ -555,37 +555,37 @@ public:
 
   //! Project point from world coordinate space to
   //! normalized device coordinates (mapping).
-  //! @param thePnt [in] the 3D point in WCS.
+  //! @param[in] thePnt  the 3D point in WCS.
   //! @return mapped point in NDC.
   Standard_EXPORT gp_Pnt Project (const gp_Pnt& thePnt) const;
 
   //! Unproject point from normalized device coordinates
   //! to world coordinate space.
-  //! @param thePnt [in] the NDC point.
+  //! @param[in] thePnt  the NDC point.
   //! @return 3D point in WCS.
   Standard_EXPORT gp_Pnt UnProject (const gp_Pnt& thePnt) const;
 
   //! Convert point from view coordinate space to
   //! projection coordinate space.
-  //! @param thePnt [in] the point in VCS.
+  //! @param[in] thePnt  the point in VCS.
   //! @return point in NDC.
   Standard_EXPORT gp_Pnt ConvertView2Proj (const gp_Pnt& thePnt) const;
 
   //! Convert point from projection coordinate space
   //! to view coordinate space.
-  //! @param thePnt [in] the point in NDC.
+  //! @param[in] thePnt  the point in NDC.
   //! @return point in VCS.
   Standard_EXPORT gp_Pnt ConvertProj2View (const gp_Pnt& thePnt) const;
 
   //! Convert point from world coordinate space to
   //! view coordinate space.
-  //! @param thePnt [in] the 3D point in WCS.
+  //! @param[in] thePnt  the 3D point in WCS.
   //! @return point in VCS.
   Standard_EXPORT gp_Pnt ConvertWorld2View (const gp_Pnt& thePnt) const;
 
   //! Convert point from view coordinate space to
   //! world coordinates.
-  //! @param thePnt [in] the 3D point in VCS.
+  //! @param[in] thePnt  the 3D point in VCS.
   //! @return point in WCS.
   Standard_EXPORT gp_Pnt ConvertView2World (const gp_Pnt& thePnt) const;
 
@@ -659,20 +659,20 @@ public:
 public:
 
   //! Get stereo projection matrices.
-  //! @param theProjL      [out] left  eye projection matrix
-  //! @param theHeadToEyeL [out] left  head to eye translation matrix
-  //! @param theProjR      [out] right eye projection matrix
-  //! @param theHeadToEyeR [out] right head to eye translation matrix
+  //! @param[out] theProjL       left  eye projection matrix
+  //! @param[out] theHeadToEyeL  left  head to eye translation matrix
+  //! @param[out] theProjR       right eye projection matrix
+  //! @param[out] theHeadToEyeR  right head to eye translation matrix
   Standard_EXPORT void StereoProjection (Graphic3d_Mat4d& theProjL,
                                          Graphic3d_Mat4d& theHeadToEyeL,
                                          Graphic3d_Mat4d& theProjR,
                                          Graphic3d_Mat4d& theHeadToEyeR) const;
 
   //! Get stereo projection matrices.
-  //! @param theProjL      [out] left  eye projection matrix
-  //! @param theHeadToEyeL [out] left  head to eye translation matrix
-  //! @param theProjR      [out] right eye projection matrix
-  //! @param theHeadToEyeR [out] right head to eye translation matrix
+  //! @param[out] theProjL       left  eye projection matrix
+  //! @param[out] theHeadToEyeL  left  head to eye translation matrix
+  //! @param[out] theProjR       right eye projection matrix
+  //! @param[out] theHeadToEyeR  right head to eye translation matrix
   Standard_EXPORT void StereoProjectionF (Graphic3d_Mat4& theProjL,
                                           Graphic3d_Mat4& theHeadToEyeL,
                                           Graphic3d_Mat4& theProjR,
@@ -693,10 +693,10 @@ public:
   bool IsCustomStereoProjection() const { return myIsCustomProjMatLR; }
 
   //! Set custom stereo projection matrices.
-  //! @param theProjL      [in] left  eye projection matrix
-  //! @param theHeadToEyeL [in] left  head to eye translation matrix
-  //! @param theProjR      [in] right eye projection matrix
-  //! @param theHeadToEyeR [in] right head to eye translation matrix
+  //! @param[in] theProjL       left  eye projection matrix
+  //! @param[in] theHeadToEyeL  left  head to eye translation matrix
+  //! @param[in] theProjR       right eye projection matrix
+  //! @param[in] theHeadToEyeR  right head to eye translation matrix
   Standard_EXPORT void SetCustomStereoProjection (const Graphic3d_Mat4d& theProjL,
                                                   const Graphic3d_Mat4d& theHeadToEyeL,
                                                   const Graphic3d_Mat4d& theProjR,
@@ -715,10 +715,10 @@ public:
 private:
 
   //! Get stereo projection matrices.
-  //! @param theProjL      [out] left  eye projection matrix
-  //! @param theHeadToEyeL [out] left  head to eye translation matrix
-  //! @param theProjR      [out] right eye projection matrix
-  //! @param theHeadToEyeR [out] right head to eye translation matrix
+  //! @param[out] theProjL       left  eye projection matrix
+  //! @param[out] theHeadToEyeL  left  head to eye translation matrix
+  //! @param[out] theProjR       right eye projection matrix
+  //! @param[out] theHeadToEyeR  right head to eye translation matrix
   template <typename Elem_t>
   Standard_EXPORT void stereoProjection (NCollection_Mat4<Elem_t>& theProjL,
                                          NCollection_Mat4<Elem_t>& theHeadToEyeL,
@@ -726,10 +726,10 @@ private:
                                          NCollection_Mat4<Elem_t>& theHeadToEyeR) const;
 
   //! Compute projection matrices.
-  //! @param theProjM [out] mono projection matrix
-  //! @param theProjL [out] left  eye projection matrix
-  //! @param theProjR [out] right eye projection matrix
-  //! @param theToAddHeadToEye [in] flag to pre-multiply head-to-eye translation
+  //! @param[out] theProjM  mono projection matrix
+  //! @param[out] theProjL  left  eye projection matrix
+  //! @param[out] theProjR  right eye projection matrix
+  //! @param[in] theToAddHeadToEye  flag to pre-multiply head-to-eye translation
   template <typename Elem_t>
   Standard_EXPORT void computeProjection (NCollection_Mat4<Elem_t>& theProjM,
                                           NCollection_Mat4<Elem_t>& theProjL,
@@ -737,7 +737,7 @@ private:
                                           bool theToAddHeadToEye) const;
 
   //! Compute projection matrices.
-  //! @param theMatrices [in] the matrices data container.
+  //! @param[in] theMatrices  the matrices data container.
   template <typename Elem_t>
   TransformMatrices<Elem_t>& UpdateProjection (TransformMatrices<Elem_t>& theMatrices) const
   {
@@ -750,7 +750,7 @@ private:
   }
 
   //! Compute orientation matrix.
-  //! @param theMatrices [in] the matrices data container.
+  //! @param[in] theMatrices  the matrices data container.
   template <typename Elem_t>
   Standard_EXPORT
     TransformMatrices<Elem_t>& UpdateOrientation (TransformMatrices<Elem_t>& theMatrices) const;
@@ -758,10 +758,10 @@ private:
 private:
 
   //! Compose orthographic projection matrix for the passed camera volume mapping.
-  //! @param theOutMx [out] the projection matrix
-  //! @param theLRBT [in] the left/right/bottom/top mapping (clipping) coordinates
-  //! @param theNear [in] the near mapping (clipping) coordinate
-  //! @param theFar [in] the far mapping (clipping) coordinate
+  //! @param[out] theOutMx  the projection matrix
+  //! @param[in] theLRBT  the left/right/bottom/top mapping (clipping) coordinates
+  //! @param[in] theNear  the near mapping (clipping) coordinate
+  //! @param[in] theFar  the far mapping (clipping) coordinate
   template <typename Elem_t>
   void orthoProj (NCollection_Mat4<Elem_t>& theOutMx,
                   const Aspect_FrustumLRBT<Elem_t>& theLRBT,
@@ -769,10 +769,10 @@ private:
                   const Elem_t theFar) const;
 
   //! Compose perspective projection matrix for the passed camera volume mapping.
-  //! @param theOutMx [out] the projection matrix
-  //! @param theLRBT [in] the left/right/bottom/top mapping (clipping) coordinates
-  //! @param theNear [in] the near mapping (clipping) coordinate
-  //! @param theFar [in] the far mapping (clipping) coordinate
+  //! @param[out] theOutMx  the projection matrix
+  //! @param[in] theLRBT  the left/right/bottom/top mapping (clipping) coordinates
+  //! @param[in] theNear  the near mapping (clipping) coordinate
+  //! @param[in] theFar  the far mapping (clipping) coordinate
   template <typename Elem_t>
   void perspectiveProj (NCollection_Mat4<Elem_t>& theOutMx,
                         const Aspect_FrustumLRBT<Elem_t>& theLRBT,
@@ -780,13 +780,13 @@ private:
                         const Elem_t theFar) const;
 
   //! Compose projection matrix for L/R stereo eyes.
-  //! @param theOutMx [out] the projection matrix
-  //! @param theLRBT [in] the left/right/bottom/top mapping (clipping) coordinates
-  //! @param theNear [in] the near mapping (clipping) coordinate
-  //! @param theFar [in] the far mapping (clipping) coordinate
-  //! @param theIOD [in] the Intraocular distance
-  //! @param theZFocus [in] the z coordinate of off-axis projection plane with zero parallax
-  //! @param theEyeIndex [in] choose between L/R eyes
+  //! @param[out] theOutMx  the projection matrix
+  //! @param[in] theLRBT  the left/right/bottom/top mapping (clipping) coordinates
+  //! @param[in] theNear  the near mapping (clipping) coordinate
+  //! @param[in] theFar  the far mapping (clipping) coordinate
+  //! @param[in] theIOD  the Intraocular distance
+  //! @param[in] theZFocus  the z coordinate of off-axis projection plane with zero parallax
+  //! @param[in] theEyeIndex  choose between L/R eyes
   template <typename Elem_t>
   void stereoEyeProj (NCollection_Mat4<Elem_t>& theOutMx,
                       const Aspect_FrustumLRBT<Elem_t>& theLRBT,
@@ -799,10 +799,10 @@ private:
   //! Construct "look at" orientation transformation.
   //! Reference point differs for perspective and ortho modes 
   //! (made for compatibility, to be improved..).
-  //! @param theEye [in] the eye coordinates in 3D space.
-  //! @param theFwdDir [in] view direction
-  //! @param theUpDir [in] the up direction vector.
-  //! @param theAxialScale [in] the axial scale vector.
+  //! @param[in] theEye  the eye coordinates in 3D space.
+  //! @param[in] theFwdDir  view direction
+  //! @param[in] theUpDir  the up direction vector.
+  //! @param[in] theAxialScale  the axial scale vector.
   //! @param theOutMx [in/out] the orientation matrix.
   template <typename Elem_t>
   static void

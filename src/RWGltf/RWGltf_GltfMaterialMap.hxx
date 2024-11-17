@@ -35,8 +35,8 @@ public:
 public:
 
   //! Add material images into GLB stream.
-  //! @param theBinFile [in] [out] output file stream
-  //! @param theStyle   [in] material images to add
+  //! @param[in][out] theBinFile   output file stream
+  //! @param[in] theStyle    material images to add
   Standard_EXPORT void AddGlbImages (std::ostream& theBinFile,
                                      const XCAFPrs_Style& theStyle);
 
@@ -84,8 +84,8 @@ protected:
                                  Standard_Boolean& theIsStarted);
 
   //! Add texture image into GLB stream.
-  //! @param theBinFile [in] [out] output file stream
-  //! @param theTexture [in] texture image to add
+  //! @param[in][out] theBinFile   output file stream
+  //! @param[in] theTexture  texture image to add
   Standard_EXPORT void addGlbImage (std::ostream& theBinFile,
                                     const Handle(Image_Texture)& theTexture);
 

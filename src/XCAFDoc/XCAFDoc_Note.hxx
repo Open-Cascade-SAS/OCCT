@@ -38,8 +38,8 @@ public:
   Standard_EXPORT static Handle(XCAFDoc_Note) Get(const TDF_Label& theLabel);
 
   //! Sets the user name and the timestamp of the note.
-  //! \param [in] theUserName  - the user associated with the note.
-  //! \param [in] theTimeStamp - timestamp of the note.
+  //! \param[in]  theUserName  - the user associated with the note.
+  //! \param[in]  theTimeStamp - timestamp of the note.
   //! \return A handle to the attribute instance.
   Standard_EXPORT void Set(const TCollection_ExtendedString& theUserName,
                            const TCollection_ExtendedString& theTimeStamp);

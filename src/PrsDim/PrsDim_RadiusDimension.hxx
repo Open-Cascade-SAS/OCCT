@@ -43,19 +43,19 @@ class PrsDim_RadiusDimension : public PrsDim_Dimension
 public:
 
   //! Create radius dimension for the circle geometry.
-  //! @param theCircle [in] the circle to measure.
+  //! @param[in] theCircle  the circle to measure.
   Standard_EXPORT PrsDim_RadiusDimension (const gp_Circ& theCircle);
 
   //! Create radius dimension for the circle geometry and define its
   //! orientation by location of the first point on that circle.
-  //! @param theCircle [in] the circle to measure.
-  //! @param theAnchorPoint [in] the point to define the position
+  //! @param[in] theCircle  the circle to measure.
+  //! @param[in] theAnchorPoint  the point to define the position
   //!        of the dimension attachment on the circle.
   Standard_EXPORT PrsDim_RadiusDimension (const gp_Circ& theCircle,
                                          const gp_Pnt& theAnchorPoint);
 
   //! Create radius dimension for the arbitrary shape (if possible).
-  //! @param theShape [in] the shape to measure.
+  //! @param[in] theShape  the shape to measure.
   Standard_EXPORT PrsDim_RadiusDimension (const TopoDS_Shape& theShape);
 
 public:
@@ -74,16 +74,16 @@ public:
   //! Measure radius of the circle.
   //! The dimension will become invalid if the radius of the circle
   //! is less than Precision::Confusion().
-  //! @param theCircle [in] the circle to measure.
+  //! @param[in] theCircle  the circle to measure.
   void SetMeasuredGeometry (const gp_Circ& theCircle) { SetMeasuredGeometry (theCircle, gp_Pnt(), Standard_False); }
 
   //! Measure radius of the circle and orient the dimension so
   //! the dimension lines attaches to anchor point on the circle.
   //! The dimension will become invalid if the radius of the circle
   //! is less than Precision::Confusion().
-  //! @param theCircle [in] the circle to measure.
-  //! @param theAnchorPoint [in] the point to attach the dimension lines, should be on the circle
-  //! @param theHasAnchor   [in] should be set TRUE if theAnchorPoint should be used
+  //! @param[in] theCircle  the circle to measure.
+  //! @param[in] theAnchorPoint  the point to attach the dimension lines, should be on the circle
+  //! @param[in] theHasAnchor    should be set TRUE if theAnchorPoint should be used
   Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle,
                                             const gp_Pnt& theAnchorPoint,
                                             const Standard_Boolean theHasAnchor = Standard_True);
@@ -91,15 +91,15 @@ public:
   //! Measure radius on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
   //! measurable or if measured diameter value is less than Precision::Confusion().
-  //! @param theShape [in] the shape to measure.
+  //! @param[in] theShape  the shape to measure.
   void SetMeasuredGeometry (const TopoDS_Shape& theShape) { SetMeasuredGeometry (theShape, gp_Pnt(), Standard_False); }
 
   //! Measure radius on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
   //! measurable or if measured diameter value is less than Precision::Confusion().
-  //! @param theShape [in] the shape to measure.
-  //! @param theAnchorPoint [in] the point to attach the dimension lines, should be on the circle
-  //! @param theHasAnchor   [in] should be set TRUE if theAnchorPoint should be used
+  //! @param[in] theShape  the shape to measure.
+  //! @param[in] theAnchorPoint  the point to attach the dimension lines, should be on the circle
+  //! @param[in] theHasAnchor    should be set TRUE if theAnchorPoint should be used
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape,
                                             const gp_Pnt& theAnchorPoint,
                                             const Standard_Boolean theHasAnchor = Standard_True);

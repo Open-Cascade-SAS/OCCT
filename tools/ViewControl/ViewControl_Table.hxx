@@ -72,7 +72,7 @@ public:
   QTableView* TableView() const { return myTableView; }
 
   //! Returns model indices of the selected cells in table view
-  //! \param theSelectedIndices [out] a container of indices: row to list of columns
+  //! \param[out] theSelectedIndices  a container of indices: row to list of columns
   Standard_EXPORT void SelectedIndices (QMap<int, QList<int>>& aSelectedIndices) const;
 
   //! Returns pointers from selected cells

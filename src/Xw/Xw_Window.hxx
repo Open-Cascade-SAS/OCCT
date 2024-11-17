@@ -116,8 +116,8 @@ public:
   Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp) Standard_OVERRIDE;
 
   //! Process a single window message.
-  //! @param theListener [in][out] listener to redirect message
-  //! @param theMsg [in][out] message to process
+  //! @param[in][out] theListener  listener to redirect message
+  //! @param[in][out] theMsg message to process
   //! @return TRUE if message has been processed
   Standard_EXPORT virtual bool ProcessMessage (Aspect_WindowInputListener& theListener,
                                                XEvent& theMsg);

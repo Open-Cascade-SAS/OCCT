@@ -33,8 +33,8 @@ public:
   typedef Handle(IVtkOCC_Shape) Handle;
 
   //! Constructor for OCC IShape implementation.
-  //! @param theShape [in] shape to display
-  //! @param theDrawerLink [in] default attributes to link
+  //! @param[in] theShape  shape to display
+  //! @param[in] theDrawerLink  default attributes to link
   Standard_EXPORT IVtkOCC_Shape (const TopoDS_Shape& theShape,
                                  const Handle(Prs3d_Drawer)& theDrawerLink = Handle(Prs3d_Drawer)());
 
@@ -58,7 +58,7 @@ public:
   //! Returns unique ID of the given sub-shape within the top-level shape.
   //! Note that the sub-shape ID remains unchanged until the top-level is 
   //! modified by some operation.
-  //! @param [in] subShape sub-shape whose ID is returned
+  //! @param[in]  subShape sub-shape whose ID is returned
   //! @return local ID of the sub-shape.
   Standard_EXPORT IVtk_IdType GetSubShapeId (const TopoDS_Shape& theSubShape) const;
 
@@ -67,7 +67,7 @@ public:
 
   //! @brief Get a sub-shape by its local ID.
   //!
-  //! @param [in] id local ID of a sub-shape
+  //! @param[in]  id local ID of a sub-shape
   //! @return TopoDS_Shape& a sub-shape
   Standard_EXPORT const TopoDS_Shape& GetSubShape (const IVtk_IdType theId) const;
 
@@ -75,7 +75,7 @@ public:
   //! in a data field. This object internally caches selection data
   //! so it should be stored until the shape is no longer selectable.
   //! Note that the selectable object keeps a pointer to OccShape.
-  //! @param [in] selObj Handle to the selectable object
+  //! @param[in]  selObj Handle to the selectable object
   void SetSelectableObject (const Handle(SelectMgr_SelectableObject)& theSelObj)
   {
     mySelectable = theSelObj;

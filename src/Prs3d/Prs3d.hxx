@@ -49,9 +49,9 @@ public:
   Standard_EXPORT static Standard_Boolean MatchSegment (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const gp_Pnt& p1, const gp_Pnt& p2, Standard_Real& dist);
 
   //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
-  //! @param theBndMin [in] bounding box min corner
-  //! @param theBndMax [in] bounding box max corner
-  //! @param theDeviationCoefficient [in] relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
+  //! @param[in] theBndMin  bounding box min corner
+  //! @param[in] theBndMax  bounding box max corner
+  //! @param[in] theDeviationCoefficient  relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
   //! @return absolute deflection coefficient based on bounding box dimensions
   static Standard_Real GetDeflection (const Graphic3d_Vec3d& theBndMin,
                                       const Graphic3d_Vec3d& theBndMax,
@@ -62,9 +62,9 @@ public:
   }
 
   //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
-  //! @param theBndBox [in] bounding box
-  //! @param theDeviationCoefficient [in] relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
-  //! @param theMaximalChordialDeviation [in] absolute deflection coefficient from Prs3d_Drawer::MaximalChordialDeviation()
+  //! @param[in] theBndBox  bounding box
+  //! @param[in] theDeviationCoefficient  relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
+  //! @param[in] theMaximalChordialDeviation  absolute deflection coefficient from Prs3d_Drawer::MaximalChordialDeviation()
   //! @return absolute deflection coefficient based on bounding box dimensions or theMaximalChordialDeviation if bounding box is Void or Infinite
   static Standard_Real GetDeflection (const Bnd_Box& theBndBox,
                                       const Standard_Real theDeviationCoefficient,
@@ -91,7 +91,7 @@ public:
   }
 
   //! Assembles array of primitives for sequence of polylines.
-  //! @param thePoints [in] the polylines sequence
+  //! @param[in] thePoints  the polylines sequence
   //! @return array of primitives
   Standard_EXPORT static Handle(Graphic3d_ArrayOfPrimitives) PrimitivesFromPolylines (const Prs3d_NListOfSequenceOfPnt& thePoints);
 
@@ -101,9 +101,9 @@ public:
                                                   Prs3d_NListOfSequenceOfPnt&       thePolylines);
 
   //! Add triangulation free edges into sequence of line segments.
-  //! @param theSegments [out] sequence of line segments to fill
-  //! @param thePolyTri   [in] triangulation to process
-  //! @param theLocation  [in] transformation to apply
+  //! @param[out] theSegments  sequence of line segments to fill
+  //! @param[in] thePolyTri    triangulation to process
+  //! @param[in] theLocation   transformation to apply
   Standard_EXPORT static void AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
                                             const Handle(Poly_Triangulation)& thePolyTri,
                                             const gp_Trsf& theLocation);

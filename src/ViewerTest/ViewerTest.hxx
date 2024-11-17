@@ -223,8 +223,8 @@ public:
                                                              Graphic3d_TypeOfShadingModel& theModel);
 
   //! Parses ZLayer name.
-  //! @param theArg [in] layer name or enumeration alias
-  //! @param theLayer [out] layer index
+  //! @param[in] theArg  layer name or enumeration alias
+  //! @param[out] theLayer  layer index
   //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
   static Standard_Boolean ParseZLayerName (Standard_CString theArg,
                                            Graphic3d_ZLayerId& theLayer)
@@ -233,8 +233,8 @@ public:
   }
 
   //! Parses ZLayer name.
-  //! @param theArg [in] layer name, enumeration alias or index (of existing Layer)
-  //! @param theLayer [out] layer index
+  //! @param[in] theArg  layer name, enumeration alias or index (of existing Layer)
+  //! @param[out] theLayer  layer index
   //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
   static Standard_Boolean ParseZLayer (Standard_CString theArg,
                                        Graphic3d_ZLayerId& theLayer)
@@ -273,9 +273,9 @@ public: //! @name deprecated methods
 private:
 
   //! Parses ZLayer name.
-  //! @param theArg [in] layer name, enumeration alias or index (of existing Layer)
-  //! @param theToAllowInteger [in] when TRUE, the argument will be checked for existing layer index
-  //! @param theLayer [out] layer index
+  //! @param[in] theArg  layer name, enumeration alias or index (of existing Layer)
+  //! @param[in] theToAllowInteger  when TRUE, the argument will be checked for existing layer index
+  //! @param[out] theLayer  layer index
   //! @return TRUE if layer has been identified, note that Graphic3d_ZLayerId_UNKNOWN is also valid value
   Standard_EXPORT static Standard_Boolean parseZLayer (Standard_CString theArg,
                                                        Standard_Boolean theToAllowInteger,

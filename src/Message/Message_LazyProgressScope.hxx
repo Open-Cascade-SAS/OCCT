@@ -28,11 +28,11 @@ class Message_LazyProgressScope : protected Message_ProgressScope
 public:
 
   //! Main constructor.
-  //! @param theRange [in] progress range to scope
-  //! @param theName  [in] name of this scope
-  //! @param theMax   [in] number of steps within this scope
-  //! @param thePatchStep [in] number of steps to update progress
-  //! @param theIsInf [in] infinite flag
+  //! @param[in] theRange  progress range to scope
+  //! @param[in] theName   name of this scope
+  //! @param[in] theMax    number of steps within this scope
+  //! @param[in] thePatchStep  number of steps to update progress
+  //! @param[in] theIsInf  infinite flag
   Message_LazyProgressScope (const Message_ProgressRange& theRange,
                              const char* theName,
                              const Standard_Real theMax,

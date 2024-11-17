@@ -81,21 +81,21 @@ public:
 
   //! Loads a file and returns the read status
   //! Provided for use like single-file reader.
-  //! @param theFileName [in] file to open
+  //! @param[in] theFileName  file to open
   //! @return read status
   Standard_EXPORT IFSelect_ReturnStatus ReadFile (const Standard_CString theFileName);
 
   //! Loads a file and returns the read status
   //! Provided for use like single-file reader.
-  //! @param theFileName [in] file to open
-  //! @param theParams [in] default configuration parameters
+  //! @param[in] theFileName  file to open
+  //! @param[in] theParams  default configuration parameters
   //! @return read status
   Standard_EXPORT IFSelect_ReturnStatus ReadFile(const Standard_CString theFileName,
                                                  const StepData_ConfParameters& theParams);
 
   //! Loads a file from stream and returns the read status.
-  //! @param theName [in] auxiliary stream name
-  //! @param theIStream [in] stream to read from
+  //! @param[in] theName  auxiliary stream name
+  //! @param[in] theIStream  stream to read from
   //! @return read status
   Standard_EXPORT IFSelect_ReturnStatus ReadStream (const Standard_CString theName,
                                                     std::istream& theIStream);

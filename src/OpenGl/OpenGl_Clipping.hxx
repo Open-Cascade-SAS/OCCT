@@ -140,7 +140,7 @@ protected: //! @name clipping state modification commands
                             const Standard_Integer theStartIndex);
 
   //! Remove the passed set of clipping planes from the context state.
-  //! @param thePlanes [in] the planes to remove from list.
+  //! @param[in] thePlanes  the planes to remove from list.
   Standard_EXPORT void remove (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes,
                                const Standard_Integer theStartIndex);
 

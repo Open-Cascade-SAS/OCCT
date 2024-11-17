@@ -373,11 +373,11 @@ public:
 public:
 
   //! Returns the width of text.
-  //! @param theText [in] the text of which to calculate width.
+  //! @param[in] theText  the text of which to calculate width.
   Standard_EXPORT Standard_Integer TextWidth (const TCollection_ExtendedString& theText) const;
 
   //! Returns the height of text.
-  //! @param theText [in] the text of which to calculate height.
+  //! @param[in] theText  the text of which to calculate height.
   Standard_EXPORT Standard_Integer TextHeight (const TCollection_ExtendedString& theText) const;
 
   Standard_EXPORT void TextSize (const TCollection_ExtendedString& theText,
@@ -403,17 +403,17 @@ public:
 private:
 
   //! Returns the size of color scale.
-  //! @param theWidth [out] the width of color scale.
-  //! @param theHeight [out] the height of color scale.
+  //! @param[out] theWidth  the width of color scale.
+  //! @param[out] theHeight  the height of color scale.
   void SizeHint (Standard_Integer& theWidth, Standard_Integer& theHeight) const;
 
   //! Returns the upper value of given interval, or minimum for theIndex = 0.
   Standard_Real GetIntervalValue (const Standard_Integer theIndex) const;
 
   //! Returns the color for the given value in the given interval.
-  //! @param theValue [in] the current value of interval
-  //! @param theMin   [in] the min value of interval
-  //! @param theMax   [in] the max value of interval
+  //! @param[in] theValue  the current value of interval
+  //! @param[in] theMin    the min value of interval
+  //! @param[in] theMax    the max value of interval
   Quantity_Color colorFromValue (const Standard_Real theValue,
                                  const Standard_Real theMin,
                                  const Standard_Real theMax) const;
@@ -422,11 +422,11 @@ private:
   void updateTextAspect();
 
   //! Simple alias for Prs3d_Text::Draw().
-  //! @param theGroup [in] presentation group
-  //! @param theText  [in] text to draw
-  //! @param theX     [in] X coordinate of text position
-  //! @param theY     [in] Y coordinate of text position
-  //! @param theVertAlignment [in] text vertical alignment
+  //! @param[in] theGroup  presentation group
+  //! @param[in] theText   text to draw
+  //! @param[in] theX      X coordinate of text position
+  //! @param[in] theY      Y coordinate of text position
+  //! @param[in] theVertAlignment  text vertical alignment
   void drawText (const Handle(Graphic3d_Group)& theGroup,
                  const TCollection_ExtendedString& theText,
                  const Standard_Integer theX, const Standard_Integer theY,
@@ -451,11 +451,11 @@ private:
                      const Standard_Integer theColorBreadth);
 
   //! Draw a frame.
-  //! @param theX [in] the X coordinate of frame position.
-  //! @param theY [in] the Y coordinate of frame position.
-  //! @param theWidth [in] the width of frame.
-  //! @param theHeight [in] the height of frame.
-  //! @param theColor [in] the color of frame.
+  //! @param[in] theX  the X coordinate of frame position.
+  //! @param[in] theY  the Y coordinate of frame position.
+  //! @param[in] theWidth  the width of frame.
+  //! @param[in] theHeight  the height of frame.
+  //! @param[in] theColor  the color of frame.
   void drawFrame (const Handle(Prs3d_Presentation)& thePrs,
                   const Standard_Integer theX, const Standard_Integer theY,
                   const Standard_Integer theWidth, const Standard_Integer theHeight,

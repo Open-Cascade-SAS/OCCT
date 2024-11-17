@@ -53,8 +53,8 @@ public:
   };
 
   //! Main constructor.
-  //! @param theFile     [in] path to output glTF file
-  //! @param theIsBinary [in] flag to write into binary glTF format (.glb)
+  //! @param[in] theFile      path to output glTF file
+  //! @param[in] theIsBinary  flag to write into binary glTF format (.glb)
   Standard_EXPORT RWGltf_CafWriter (const TCollection_AsciiString& theFile,
                                     Standard_Boolean theIsBinary);
 
@@ -140,14 +140,14 @@ public:
 
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
-  //! @param theDocument    [in] input document
-  //! @param theRootLabels  [in] list of root shapes to export
-  //! @param theLabelFilter [in] optional filter with document nodes to export,
+  //! @param[in] theDocument     input document
+  //! @param[in] theRootLabels   list of root shapes to export
+  //! @param[in] theLabelFilter  optional filter with document nodes to export,
   //!                            with keys defined by XCAFPrs_DocumentExplorer::DefineChildId() and filled recursively
   //!                            (leaves and parent assembly nodes at all levels);
   //!                            when not NULL, all nodes not included into the map will be ignored
-  //! @param theFileInfo    [in] map with file metadata to put into glTF header section
-  //! @param theProgress    [in] optional progress indicator
+  //! @param[in] theFileInfo     map with file metadata to put into glTF header section
+  //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
   Standard_EXPORT virtual bool Perform (const Handle(TDocStd_Document)& theDocument,
                                         const TDF_LabelSequence& theRootLabels,
@@ -157,9 +157,9 @@ public:
 
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
-  //! @param theDocument    [in] input document
-  //! @param theFileInfo    [in] map with file metadata to put into glTF header section
-  //! @param theProgress    [in] optional progress indicator
+  //! @param[in] theDocument     input document
+  //! @param[in] theFileInfo     map with file metadata to put into glTF header section
+  //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
   Standard_EXPORT virtual bool Perform (const Handle(TDocStd_Document)& theDocument,
                                         const TColStd_IndexedDataMapOfStringString& theFileInfo,
@@ -169,10 +169,10 @@ protected:
 
   //! Write binary data file with triangulation data.
   //! Triangulation data should be precomputed within shapes!
-  //! @param theDocument    [in] input document
-  //! @param theRootLabels  [in] list of root shapes to export
-  //! @param theLabelFilter [in] optional filter with document nodes to export
-  //! @param theProgress    [in] optional progress indicator
+  //! @param[in] theDocument     input document
+  //! @param[in] theRootLabels   list of root shapes to export
+  //! @param[in] theLabelFilter  optional filter with document nodes to export
+  //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
   Standard_EXPORT virtual bool writeBinData (const Handle(TDocStd_Document)& theDocument,
                                              const TDF_LabelSequence& theRootLabels,
@@ -180,11 +180,11 @@ protected:
                                              const Message_ProgressRange& theProgress);
 
   //! Write JSON file with glTF structure (should be called after writeBinData()).
-  //! @param theDocument    [in] input document
-  //! @param theRootLabels  [in] list of root shapes to export
-  //! @param theLabelFilter [in] optional filter with document nodes to export
-  //! @param theFileInfo    [in] map with file metadata to put into glTF header section
-  //! @param theProgress    [in] optional progress indicator
+  //! @param[in] theDocument     input document
+  //! @param[in] theRootLabels   list of root shapes to export
+  //! @param[in] theLabelFilter  optional filter with document nodes to export
+  //! @param[in] theFileInfo     map with file metadata to put into glTF header section
+  //! @param[in] theProgress     optional progress indicator
   //! @return FALSE on file writing failure
   Standard_EXPORT virtual bool writeJson (const Handle(TDocStd_Document)& theDocument,
                                           const TDF_LabelSequence& theRootLabels,
@@ -206,11 +206,11 @@ protected:
                                                               const TDF_Label& theRefLabel) const;
 
   //! Write mesh nodes into binary file.
-  //! @param theGltfFace [out] glTF face definition
-  //! @param theBinFile  [out] output file to write into
-  //! @param theFaceIter [in]  current face to write
-  //! @param theAccessorNb [in] [out] last accessor index
-  //! @param theMesh [in] [out] mesh
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theAccessorNb   last accessor index
+  //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveNodes (RWGltf_GltfFace& theGltfFace,
                                           std::ostream& theBinFile,
                                           const RWMesh_FaceIterator& theFaceIter,
@@ -218,11 +218,11 @@ protected:
                                           const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh normals into binary file.
-  //! @param theGltfFace [out] glTF face definition
-  //! @param theBinFile  [out] output file to write into
-  //! @param theFaceIter [in]  current face to write
-  //! @param theAccessorNb [in] [out] last accessor index
-  //! @param theMesh [in] [out] mesh
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theAccessorNb   last accessor index
+  //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveNormals (RWGltf_GltfFace& theGltfFace,
                                             std::ostream& theBinFile,
                                             RWMesh_FaceIterator& theFaceIter,
@@ -230,11 +230,11 @@ protected:
                                             const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh texture UV coordinates into binary file.
-  //! @param theGltfFace [out] glTF face definition
-  //! @param theBinFile  [out] output file to write into
-  //! @param theFaceIter [in]  current face to write
-  //! @param theAccessorNb [in] [out] last accessor index
-  //! @param theMesh [in] [out] mesh
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theAccessorNb   last accessor index
+  //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveTextCoords (RWGltf_GltfFace& theGltfFace,
                                                std::ostream& theBinFile,
                                                const RWMesh_FaceIterator& theFaceIter,
@@ -242,11 +242,11 @@ protected:
                                                const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
   //! Write mesh indexes into binary file.
-  //! @param theGltfFace [out] glTF face definition
-  //! @param theBinFile  [out] output file to write into
-  //! @param theFaceIter [in]  current face to write
-  //! @param theAccessorNb [in] [out] last accessor index
-  //! @param theMesh [in] [out] mesh
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theAccessorNb   last accessor index
+  //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveIndices (RWGltf_GltfFace& theGltfFace,
                                             std::ostream& theBinFile,
                                             const RWMesh_FaceIterator& theFaceIter,
@@ -256,36 +256,36 @@ protected:
 protected:
 
   //! Write bufferView for vertex positions within RWGltf_GltfRootElement_Accessors section
-  //! @param theGltfFace [in] face definition to write
+  //! @param[in] theGltfFace  face definition to write
   Standard_EXPORT virtual void writePositions (const RWGltf_GltfFace& theGltfFace);
 
   //! Write bufferView for vertex normals within RWGltf_GltfRootElement_Accessors section
-  //! @param theGltfFace [in] face definition to write
+  //! @param[in] theGltfFace  face definition to write
   Standard_EXPORT virtual void writeNormals (const RWGltf_GltfFace& theGltfFace);
 
   //! Write bufferView for vertex texture coordinates within RWGltf_GltfRootElement_Accessors section
-  //! @param theGltfFace [in] face definition to write
+  //! @param[in] theGltfFace  face definition to write
   Standard_EXPORT virtual void writeTextCoords (const RWGltf_GltfFace& theGltfFace);
 
   //! Write bufferView for triangle indexes within RWGltf_GltfRootElement_Accessors section.
-  //! @param theGltfFace [in] face definition to write
+  //! @param[in] theGltfFace  face definition to write
   Standard_EXPORT virtual void writeIndices (const RWGltf_GltfFace& theGltfFace);
 
 protected:
 
   //! Write RWGltf_GltfRootElement_Accessors section.
-  //! @param theSceneNodeMap [in] ordered map of scene nodes
+  //! @param[in] theSceneNodeMap  ordered map of scene nodes
   Standard_EXPORT virtual void writeAccessors (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write RWGltf_GltfRootElement_Animations section (reserved).
   Standard_EXPORT virtual void writeAnimations();
 
   //! Write RWGltf_GltfRootElement_Asset section.
-  //! @param theFileInfo [in] optional metadata to write into file header
+  //! @param[in] theFileInfo  optional metadata to write into file header
   Standard_EXPORT virtual void writeAsset (const TColStd_IndexedDataMapOfStringString& theFileInfo);
 
   //! Write RWGltf_GltfRootElement_BufferViews section.
-  //! @param theBinDataBufferId [in] index of binary buffer with vertex data
+  //! @param[in] theBinDataBufferId  index of binary buffer with vertex data
   Standard_EXPORT virtual void writeBufferViews (const Standard_Integer theBinDataBufferId);
 
   //! Write RWGltf_GltfRootElement_Buffers section.
@@ -295,18 +295,18 @@ protected:
   Standard_EXPORT virtual void writeExtensions();
 
   //! Write RWGltf_GltfRootElement_Images section.
-  //! @param theSceneNodeMap [in] ordered map of scene nodes
-  //! @param theMaterialMap [out] map of materials, filled with image files used by textures
+  //! @param[in] theSceneNodeMap  ordered map of scene nodes
+  //! @param[out] theMaterialMap  map of materials, filled with image files used by textures
   Standard_EXPORT virtual void writeImages (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write RWGltf_GltfRootElement_Materials section.
-  //! @param theSceneNodeMap [in] ordered map of scene nodes
-  //! @param theMaterialMap [out] map of materials, filled with materials
+  //! @param[in] theSceneNodeMap  ordered map of scene nodes
+  //! @param[out] theMaterialMap  map of materials, filled with materials
   Standard_EXPORT virtual void writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write RWGltf_GltfRootElement_Meshes section.
-  //! @param theSceneNodeMap [in] ordered map of scene nodes
-  //! @param theMaterialMap  [in] map of materials
+  //! @param[in] theSceneNodeMap  ordered map of scene nodes
+  //! @param[in] theMaterialMap   map of materials
   Standard_EXPORT virtual void writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write a primitive array to RWGltf_GltfRootElement_Meshes section.
@@ -320,11 +320,11 @@ protected:
                                                bool& theToStartPrims);
 
   //! Write RWGltf_GltfRootElement_Nodes section.
-  //! @param theDocument     [in] input document
-  //! @param theRootLabels   [in] list of root shapes to export
-  //! @param theLabelFilter  [in] optional filter with document nodes to export
-  //! @param theSceneNodeMap [in] ordered map of scene nodes
-  //! @param theSceneRootNodeInds [out] sequence of scene nodes pointing to root shapes (to be used for writeScenes())
+  //! @param[in] theDocument      input document
+  //! @param[in] theRootLabels    list of root shapes to export
+  //! @param[in] theLabelFilter   optional filter with document nodes to export
+  //! @param[in] theSceneNodeMap  ordered map of scene nodes
+  //! @param[out] theSceneRootNodeInds  sequence of scene nodes pointing to root shapes (to be used for writeScenes())
   Standard_EXPORT virtual void writeNodes (const Handle(TDocStd_Document)&  theDocument,
                                            const TDF_LabelSequence&         theRootLabels,
                                            const TColStd_MapOfAsciiString*  theLabelFilter,
@@ -335,23 +335,23 @@ protected:
   Standard_EXPORT virtual void writeSamplers();
 
   //! Write RWGltf_GltfRootElement_Scene section.
-  //! @param theDefSceneId [in] index of default scene (0)
+  //! @param[in] theDefSceneId  index of default scene (0)
   Standard_EXPORT virtual void writeScene (const Standard_Integer theDefSceneId);
 
   //! Write RWGltf_GltfRootElement_Scenes section.
-  //! @param theSceneRootNodeInds [in] sequence of scene nodes pointing to root shapes
+  //! @param[in] theSceneRootNodeInds  sequence of scene nodes pointing to root shapes
   Standard_EXPORT virtual void writeScenes (const NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds);
 
   //! Write RWGltf_GltfRootElement_Skins section (reserved).
   Standard_EXPORT virtual void writeSkins();
 
   //! Write RWGltf_GltfRootElement_Textures section.
-  //! @param theSceneNodeMap [in] ordered map of scene nodes
-  //! @param theMaterialMap [out] map of materials, filled with textures
+  //! @param[in] theSceneNodeMap  ordered map of scene nodes
+  //! @param[out] theMaterialMap  map of materials, filled with textures
   Standard_EXPORT virtual void writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write nodes.extras section with key-value attributes.
-  //! @param theNamedData [in] attributes map to process.
+  //! @param[in] theNamedData  attributes map to process.
   Standard_EXPORT virtual void writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData);
 
 protected:

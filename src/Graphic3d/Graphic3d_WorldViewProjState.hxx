@@ -32,9 +32,9 @@ public:
   }
 
   //! Constructor for custom projector type.
-  //! @param theProjectionState [in] the projection state.
-  //! @param theWorldViewState [in] the world view state.
-  //! @param theCamera [in] the pointer to the class supplying projection and
+  //! @param[in] theProjectionState  the projection state.
+  //! @param[in] theWorldViewState  the world view state.
+  //! @param[in] theCamera  the pointer to the class supplying projection and
   //!                       world view matrices (camera).
   Graphic3d_WorldViewProjState (const Standard_Size theProjectionState,
                                 const Standard_Size theWorldViewState,

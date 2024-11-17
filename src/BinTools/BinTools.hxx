@@ -56,8 +56,8 @@ public:
 
   //! Writes the shape to the stream in binary format BinTools_FormatVersion_CURRENT.
   //! This alias writes shape with triangulation data.
-  //! @param theShape [in]       the shape to write
-  //! @param theStream [in][out] the stream to output shape into
+  //! @param[in] theShape        the shape to write
+  //! @param[in][out] theStream  the stream to output shape into
   //! @param theRange            the range of progress indicator to fill in
   static void Write (const TopoDS_Shape& theShape,
                      Standard_OStream& theStream,
@@ -68,13 +68,13 @@ public:
   }
 
   //! Writes the shape to the stream in binary format of specified version.
-  //! @param theShape [in]         the shape to write
-  //! @param theStream [in][out]   the stream to output shape into
-  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //! @param[in] theShape          the shape to write
+  //! @param[in][out] theStream    the stream to output shape into
+  //! @param[in] theWithTriangles  flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
   //!                              has no effect on triangulation-only geometry
-  //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
+  //! @param[in] theWithNormals    flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
   //!                              has no effect on triangulation-only geometry
-  //! @param theVersion [in]       the BinTools format version
+  //! @param[in] theVersion        the BinTools format version
   //! @param theRange              the range of progress indicator to fill in
   Standard_EXPORT static void Write(const TopoDS_Shape& theShape, Standard_OStream& theStream,
                                     const Standard_Boolean theWithTriangles,
@@ -87,8 +87,8 @@ public:
                                     const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Writes the shape to the file in binary format BinTools_FormatVersion_CURRENT.
-  //! @param theShape [in] the shape to write
-  //! @param theFile [in]  the path to file to output shape into
+  //! @param[in] theShape  the shape to write
+  //! @param[in] theFile   the path to file to output shape into
   //! @param theRange      the range of progress indicator to fill in
   static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                  const Standard_CString theFile,
@@ -99,13 +99,13 @@ public:
   }
 
   //! Writes the shape to the file in binary format of specified version.
-  //! @param theShape [in]         the shape to write
-  //! @param theFile [in]          the path to file to output shape into
-  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //! @param[in] theShape          the shape to write
+  //! @param[in] theFile           the path to file to output shape into
+  //! @param[in] theWithTriangles  flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
   //!                              has no effect on triangulation-only geometry
-  //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
+  //! @param[in] theWithNormals    flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
   //!                              has no effect on triangulation-only geometry
-  //! @param theVersion [in]       the BinTools format version
+  //! @param[in] theVersion        the BinTools format version
   //! @param theRange              the range of progress indicator to fill in
   Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                                  const Standard_CString theFile,

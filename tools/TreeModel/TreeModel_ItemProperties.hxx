@@ -115,7 +115,7 @@ public:
                                 int theRole = Qt::DisplayRole);
 
   //! Returns presentation of the attribute to be visualized in the view
-  //! \thePresentations [out] container of presentation handles to be visualized
+  //! \thePresentations[out]  container of presentation handles to be visualized
   Standard_EXPORT void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Returns flags for the item: ItemIsEnabled | Qt::ItemIsSelectable.

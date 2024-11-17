@@ -47,14 +47,14 @@ public:
                                                       const Handle(Prs3d_Drawer)& theDrawer);
 
   //! Checks whether the shape is properly triangulated for a given display settings.
-  //! @param theShape [in] the shape.
-  //! @param theDrawer [in] the display settings.
+  //! @param[in] theShape  the shape.
+  //! @param[in] theDrawer  the display settings.
   Standard_EXPORT static Standard_Boolean IsTessellated (const TopoDS_Shape& theShape,
                                                          const Handle(Prs3d_Drawer)& theDrawer);
 
   //! Validates triangulation within the shape and performs tessellation if necessary.
-  //! @param theShape [in] the shape.
-  //! @param theDrawer [in] the display settings.
+  //! @param[in] theShape  the shape.
+  //! @param[in] theDrawer  the display settings.
   //! @return true if tessellation was recomputed and false otherwise.
   Standard_EXPORT static Standard_Boolean Tessellate (const TopoDS_Shape& theShape,
                                                       const Handle(Prs3d_Drawer)& theDrawer);
@@ -63,9 +63,9 @@ public:
   //! function will compare actual coefficients with previous values and will clear triangulation on their change
   //! (regardless actual tessellation quality).
   //! Function is placed here for compatibility reasons - new code should avoid using IsAutoTriangulation().
-  //! @param theShape  [in] the shape
-  //! @param theDrawer [in] the display settings
-  //! @param theToResetCoeff [in] updates coefficients in theDrawer to actual state to avoid redundant recomputations
+  //! @param[in] theShape   the shape
+  //! @param[in] theDrawer  the display settings
+  //! @param[in] theToResetCoeff  updates coefficients in theDrawer to actual state to avoid redundant recomputations
   Standard_EXPORT static void ClearOnOwnDeflectionChange (const TopoDS_Shape& theShape,
                                                           const Handle(Prs3d_Drawer)& theDrawer,
                                                           const Standard_Boolean theToResetCoeff);

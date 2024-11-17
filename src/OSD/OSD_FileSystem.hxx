@@ -50,11 +50,11 @@ public:
 
   //! Opens stream for specified file URL for reading operations (std::istream).
   //! Default implementation create a stream from file buffer returned by OSD_FileSystem::OpenFileBuffer().
-  //! @param theUrl       [in] path to open
-  //! @param theMode      [in] flags describing the requested input mode for the stream (std::ios_base::in will be implicitly added)
-  //! @param theOffset    [in] expected stream position from the beginning of the file (beginning of the stream by default);
+  //! @param[in] theUrl        path to open
+  //! @param[in] theMode       flags describing the requested input mode for the stream (std::ios_base::in will be implicitly added)
+  //! @param[in] theOffset     expected stream position from the beginning of the file (beginning of the stream by default);
   //!                          -1 would keep seek position undefined (in case of re-using theOldStream)
-  //! @param theOldStream [in] a pointer to existing stream pointing to theUrl to be reused (without re-opening)
+  //! @param[in] theOldStream  a pointer to existing stream pointing to theUrl to be reused (without re-opening)
   //! @return pointer to newly created opened stream, to theOldStream if it can be reused or NULL in case of failure.
   Standard_EXPORT virtual std::shared_ptr<std::istream> OpenIStream
                           (const TCollection_AsciiString& theUrl,
@@ -64,17 +64,17 @@ public:
 
   //! Opens stream for specified file URL for writing operations (std::ostream).
   //! Default implementation create a stream from file buffer returned by OSD_FileSystem::OpenFileBuffer().
-  //! @param theUrl       [in] path to open
-  //! @param theMode      [in] flags describing the requested output mode for the stream (std::ios_base::out will be implicitly added)
+  //! @param[in] theUrl        path to open
+  //! @param[in] theMode       flags describing the requested output mode for the stream (std::ios_base::out will be implicitly added)
   //! @return pointer to newly created opened stream or NULL in case of failure.
   Standard_EXPORT virtual std::shared_ptr<std::ostream> OpenOStream (const TCollection_AsciiString& theUrl,
                                                                      const std::ios_base::openmode theMode);
 
   //! Opens stream buffer for specified file URL.
-  //! @param theUrl        [in]  path to open
-  //! @param theMode       [in]  flags describing the requested input mode for the stream
-  //! @param theOffset     [in]  expected stream position from the beginning of the buffer (beginning of the stream buffer by default)
-  //! @param theOutBufSize [out] total buffer size (only if buffer is opened for read)
+  //! @param[in] theUrl          path to open
+  //! @param[in] theMode         flags describing the requested input mode for the stream
+  //! @param[in] theOffset       expected stream position from the beginning of the buffer (beginning of the stream buffer by default)
+  //! @param[out] theOutBufSize  total buffer size (only if buffer is opened for read)
   //! @return pointer to newly created opened stream buffer or NULL in case of failure.
   virtual std::shared_ptr<std::streambuf> OpenStreamBuffer (const TCollection_AsciiString& theUrl,
                                                             const std::ios_base::openmode theMode,

@@ -69,7 +69,7 @@ public:
   //! Returns preferences: previous opened documents.
   //! \param thePluginName name of the plugin
   //! \param theCommunicator source of preferences
-  //! \param theFileNames [out] container of recently opened file names
+  //! \param[out] theFileNames  container of recently opened file names
   Standard_EXPORT static void GetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
                                                             TInspector_Communicator* theCommunicator,
                                                             QStringList& theFileNames);

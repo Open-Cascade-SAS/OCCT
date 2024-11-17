@@ -38,12 +38,12 @@ public:
   Standard_EXPORT Standard_Failure (const Standard_Failure& f);
 
   //! Creates a status object of type "Failure".
-  //! @param theDesc [in] exception description
+  //! @param[in] theDesc  exception description
   Standard_EXPORT Standard_Failure (const Standard_CString theDesc);
 
   //! Creates a status object of type "Failure" with stack trace.
-  //! @param theDesc [in] exception description
-  //! @param theStackTrace [in] associated stack trace
+  //! @param[in] theDesc  exception description
+  //! @param[in] theStackTrace  associated stack trace
   Standard_EXPORT Standard_Failure (const Standard_CString theDesc,
                                     const Standard_CString theStackTrace);
 

@@ -24,11 +24,11 @@ class Prs3d_ToolTorus : public Prs3d_ToolQuadric
 public:
 
   //! Generate primitives for 3D quadric surface (complete torus).
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
-  //! @param theTrsf     [in] optional transformation to apply
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
+  //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
   static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theMajorRad,
                                                     const Standard_Real    theMinorRad,
@@ -40,12 +40,12 @@ public:
   }
 
   //! Generate primitives for 3D quadric surface (torus segment).
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle    [in] angle to create a torus pipe segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
-  //! @param theTrsf     [in] optional transformation to apply
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle     angle to create a torus pipe segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
+  //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
   static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theMajorRad,
                                                     const Standard_Real    theMinorRad,
@@ -58,13 +58,13 @@ public:
   }
 
   //! Generate primitives for 3D quadric surface (torus ring segment).
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle1   [in] first  angle to create a torus ring segment
-  //! @param theAngle2   [in] second angle to create a torus ring segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
-  //! @param theTrsf     [in] optional transformation to apply
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle1    first  angle to create a torus ring segment
+  //! @param[in] theAngle2    second angle to create a torus ring segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
+  //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
   static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theMajorRad,
                                                     const Standard_Real    theMinorRad,
@@ -78,14 +78,14 @@ public:
   }
 
   //! Generate primitives for 3D quadric surface (segment of the torus ring segment).
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle1   [in] first  angle to create a torus ring segment
-  //! @param theAngle2   [in] second angle to create a torus ring segment
-  //! @param theAngle    [in] angle to create a torus pipe segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
-  //! @param theTrsf     [in] optional transformation to apply
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle1    first  angle to create a torus ring segment
+  //! @param[in] theAngle2    second angle to create a torus ring segment
+  //! @param[in] theAngle     angle to create a torus pipe segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
+  //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
   Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theMajorRad,
                                                                     const Standard_Real    theMinorRad,
@@ -99,10 +99,10 @@ public:
 public:
 
   //! Initializes the algorithm creating a complete torus.
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
   Prs3d_ToolTorus (const Standard_Real    theMajorRad,
                    const Standard_Real    theMinorRad,
                    const Standard_Integer theNbSlices,
@@ -112,11 +112,11 @@ public:
   }
 
   //! Initializes the algorithm creating a torus pipe segment.
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle    [in] angle to create a torus pipe segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle     angle to create a torus pipe segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
   Prs3d_ToolTorus (const Standard_Real    theMajorRad,
                    const Standard_Real    theMinorRad,
                    const Standard_Real    theAngle,
@@ -127,12 +127,12 @@ public:
   }
 
   //! Initializes the algorithm creating a torus ring segment.
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle1   [in] first  angle to create a torus ring segment
-  //! @param theAngle2   [in] second angle to create a torus ring segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle1    first  angle to create a torus ring segment
+  //! @param[in] theAngle2    second angle to create a torus ring segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
   Prs3d_ToolTorus (const Standard_Real    theMajorRad,
                    const Standard_Real    theMinorRad,
                    const Standard_Real    theAngle1,
@@ -144,13 +144,13 @@ public:
   }
 
   //! Initializes the algorithm creating a torus ring segment.
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle1   [in] first  angle to create a torus ring segment
-  //! @param theAngle2   [in] second angle to create a torus ring segment
-  //! @param theAngle    [in] angle to create a torus pipe segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle1    first  angle to create a torus ring segment
+  //! @param[in] theAngle2    second angle to create a torus ring segment
+  //! @param[in] theAngle     angle to create a torus pipe segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
   Prs3d_ToolTorus (const Standard_Real    theMajorRad,
                    const Standard_Real    theMinorRad,
                    const Standard_Real    theAngle1,
@@ -165,13 +165,13 @@ public:
 private:
 
   //! Initialisation
-  //! @param theMajorRad [in] distance from the center of the pipe to the center of the torus
-  //! @param theMinorRad [in] radius of the pipe
-  //! @param theAngle1   [in] first  angle to create a torus ring segment
-  //! @param theAngle2   [in] second angle to create a torus ring segment
-  //! @param theAngle    [in] angle to create a torus pipe segment
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
+  //! @param[in] theMajorRad  distance from the center of the pipe to the center of the torus
+  //! @param[in] theMinorRad  radius of the pipe
+  //! @param[in] theAngle1    first  angle to create a torus ring segment
+  //! @param[in] theAngle2    second angle to create a torus ring segment
+  //! @param[in] theAngle     angle to create a torus pipe segment
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
   Standard_EXPORT void init (const Standard_Real    theMajorRad,
                              const Standard_Real    theMinorRad,
                              const Standard_Real    theAngle1,

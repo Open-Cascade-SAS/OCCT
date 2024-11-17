@@ -217,10 +217,10 @@ public: //! @name Preparation methods
   //! The topmost scope is created and owned by Message_ProgressIndicator
   //! and its pointer is contained in the Message_ProgressRange returned by the Start() method of progress indicator.
   //!
-  //! @param theRange [in][out] range to fill (will be disarmed)
-  //! @param theName  [in]      new scope name
-  //! @param theMax   [in]      number of steps in scope
-  //! @param isInfinite [in]    infinite flag
+  //! @param[in][out] theRange  range to fill (will be disarmed)
+  //! @param[in] theName        new scope name
+  //! @param[in] theMax         number of steps in scope
+  //! @param[in] isInfinite     infinite flag
   Message_ProgressScope (const Message_ProgressRange& theRange,
                          const TCollection_AsciiString& theName,
                          Standard_Real theMax,
@@ -233,10 +233,10 @@ public: //! @name Preparation methods
   //! The topmost scope is created and owned by Message_ProgressIndicator
   //! and its pointer is contained in the Message_ProgressRange returned by the Start() method of progress indicator.
   //!
-  //! @param theRange [in][out] range to fill (will be disarmed)
-  //! @param theName  [in]      new scope name constant (will be stored by pointer with no deep copy)
-  //! @param theMax   [in]      number of steps in scope
-  //! @param isInfinite [in]    infinite flag
+  //! @param[in][out] theRange  range to fill (will be disarmed)
+  //! @param[in] theName        new scope name constant (will be stored by pointer with no deep copy)
+  //! @param[in] theMax         number of steps in scope
+  //! @param[in] isInfinite     infinite flag
   template<size_t N>
   Message_ProgressScope (const Message_ProgressRange& theRange,
                          const char (&theName)[N],
@@ -250,10 +250,10 @@ public: //! @name Preparation methods
   //! The topmost scope is created and owned by Message_ProgressIndicator
   //! and its pointer is contained in the Message_ProgressRange returned by the Start() method of progress indicator.
   //!
-  //! @param theRange [in][out] range to fill (will be disarmed)
-  //! @param theName  [in]      empty scope name (only NULL is accepted as argument)
-  //! @param theMax   [in]      number of steps in scope
-  //! @param isInfinite [in]    infinite flag
+  //! @param[in][out] theRange  range to fill (will be disarmed)
+  //! @param[in] theName        empty scope name (only NULL is accepted as argument)
+  //! @param[in] theMax         number of steps in scope
+  //! @param[in] isInfinite     infinite flag
   Message_ProgressScope (const Message_ProgressRange& theRange,
                          const NullString* theName,
                          Standard_Real theMax,

@@ -43,25 +43,25 @@ public:
   //! @{
 
   //! Create (if not exist) a reference to an assembly item.
-  //! \param [in] theLabel  - label to add the attribute.
-  //! \param [in] theItemId - assembly item ID.
+  //! \param[in]  theLabel  - label to add the attribute.
+  //! \param[in]  theItemId - assembly item ID.
   //! \return A handle to the attribute instance.
   Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Set(const TDF_Label&              theLabel,
                                                              const XCAFDoc_AssemblyItemId& theItemId);
 
   //! Create (if not exist) a reference to an assembly item's label attribute.
-  //! \param [in] theLabel  - label to add the attribute.
-  //! \param [in] theItemId - assembly item ID.
-  //! \param [in] theGUID   - assembly item's label attribute ID.
+  //! \param[in]  theLabel  - label to add the attribute.
+  //! \param[in]  theItemId - assembly item ID.
+  //! \param[in]  theGUID   - assembly item's label attribute ID.
   //! \return A handle to the attribute instance.
   Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Set(const TDF_Label&              theLabel,
                                                              const XCAFDoc_AssemblyItemId& theItemId,
                                                              const Standard_GUID&          theGUID);
 
   //! Create (if not exist) a reference to an assembly item's subshape.
-  //! \param [in] theLabel      - label to add the attribute.
-  //! \param [in] theItemId     - assembly item ID.
-  //! \param [in] theShapeIndex - assembly item's subshape index.
+  //! \param[in]  theLabel      - label to add the attribute.
+  //! \param[in]  theItemId     - assembly item ID.
+  //! \param[in]  theShapeIndex - assembly item's subshape index.
   //! \return A handle to the attribute instance.
   Standard_EXPORT static Handle(XCAFDoc_AssemblyItemRef) Set(const TDF_Label&              theLabel,
                                                              const XCAFDoc_AssemblyItemId& theItemId,

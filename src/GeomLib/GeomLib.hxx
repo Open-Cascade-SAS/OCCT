@@ -155,13 +155,13 @@ public:
   Standard_EXPORT static void DensifyArray1OfReal (const Standard_Integer MinNumPoints, const TColStd_Array1OfReal& InParameters, Handle(TColStd_HArray1OfReal)& OutParameters);
   
   //! This method fuse intervals Interval1 and Interval2 with specified Confusion
-  //! @param Interval1 [in] first interval to fuse 
-  //! @param Interval2 [in] second interval to fuse
-  //! @param Confision [in] tolerance to compare intervals
-  //! @param IsAdjustToFirstInterval [in] flag to set method of fusion, if intervals are close
+  //! @param[in] Interval1  first interval to fuse 
+  //! @param[in] Interval2  second interval to fuse
+  //! @param[in] Confision  tolerance to compare intervals
+  //! @param[in] IsAdjustToFirstInterval  flag to set method of fusion, if intervals are close
   //!                               if false, intervals are fusing by half-division methdod
   //!                               if true, intervals are fusing by selecting value from Interval1
-  //! @param Fusion [out] output interval 
+  //! @param[out] Fusion  output interval 
   Standard_EXPORT static void FuseIntervals (const TColStd_Array1OfReal& Interval1, 
                                              const TColStd_Array1OfReal& Interval2, 
                                              TColStd_SequenceOfReal& Fusion,

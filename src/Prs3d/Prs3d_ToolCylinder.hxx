@@ -24,12 +24,12 @@ class Prs3d_ToolCylinder : public Prs3d_ToolQuadric
 public:
 
   //! Generate primitives for 3D quadric surface and return a filled array.
-  //! @param theBottomRad [in] cylinder bottom radius
-  //! @param theTopRad    [in] cylinder top radius
-  //! @param theHeight    [in] cylinder height
-  //! @param theNbSlices  [in] number of slices within U parameter
-  //! @param theNbStacks  [in] number of stacks within V parameter
-  //! @param theTrsf      [in] optional transformation to apply
+  //! @param[in] theBottomRad  cylinder bottom radius
+  //! @param[in] theTopRad     cylinder top radius
+  //! @param[in] theHeight     cylinder height
+  //! @param[in] theNbSlices   number of slices within U parameter
+  //! @param[in] theNbStacks   number of stacks within V parameter
+  //! @param[in] theTrsf       optional transformation to apply
   //! @return generated triangulation
   Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theBottomRad,
                                                                     const Standard_Real    theTopRad,
@@ -40,11 +40,11 @@ public:
 public:
 
   //! Initializes the algorithm creating a cylinder.
-  //! @param theBottomRad [in] cylinder bottom radius
-  //! @param theTopRad    [in] cylinder top radius
-  //! @param theHeight    [in] cylinder height
-  //! @param theNbSlices  [in] number of slices within U parameter
-  //! @param theNbStacks  [in] number of stacks within V parameter
+  //! @param[in] theBottomRad  cylinder bottom radius
+  //! @param[in] theTopRad     cylinder top radius
+  //! @param[in] theHeight     cylinder height
+  //! @param[in] theNbSlices   number of slices within U parameter
+  //! @param[in] theNbStacks   number of stacks within V parameter
   Standard_EXPORT Prs3d_ToolCylinder (const Standard_Real    theBottomRad,
                                       const Standard_Real    theTopRad,
                                       const Standard_Real    theHeight,

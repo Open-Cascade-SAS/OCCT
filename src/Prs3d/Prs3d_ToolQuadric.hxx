@@ -45,21 +45,21 @@ public:
 public:
 
   //! Generate primitives for 3D quadric surface presentation.
-  //! @param theTrsf [in] optional transformation to apply
+  //! @param[in] theTrsf  optional transformation to apply
   //! @return generated triangulation
   Standard_EXPORT Handle(Graphic3d_ArrayOfTriangles) CreateTriangulation (const gp_Trsf& theTrsf) const;
 
   //! Generate primitives for 3D quadric surface presentation.
-  //! @param theTrsf [in] optional transformation to apply
+  //! @param[in] theTrsf  optional transformation to apply
   //! @return generated triangulation
   Standard_EXPORT Handle(Poly_Triangulation) CreatePolyTriangulation (const gp_Trsf& theTrsf) const;
 
   //! Generate primitives for 3D quadric surface and fill the given array.
-  //! @param theArray [in][out] the array of vertices;
+  //! @param[in][out] theArray  the array of vertices;
   //!                           when NULL, function will create an indexed array;
   //!                           when not NULL, triangles will be appended to the end of array
   //!                           (will raise an exception if reserved array size is not large enough)
-  //! @param theTrsf [in] optional transformation to apply
+  //! @param[in] theTrsf  optional transformation to apply
   Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
                                   const gp_Trsf& theTrsf) const;
 
@@ -77,9 +77,9 @@ public:
 public:
 
   //! Generate primitives for 3D quadric surface presentation.
-  //! @param theArray [out] generated array of triangles
-  //! @param theTriangulation [out] generated triangulation
-  //! @param theTrsf [in] optional transformation to apply
+  //! @param[out] theArray  generated array of triangles
+  //! @param[out] theTriangulation  generated triangulation
+  //! @param[in] theTrsf  optional transformation to apply
   Standard_DEPRECATED("Deprecated method, CreateTriangulation() and CreatePolyTriangulation() should be used instead")
   Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
                                   Handle(Poly_Triangulation)& theTriangulation,

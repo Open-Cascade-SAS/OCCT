@@ -187,11 +187,11 @@ protected:
   //! Additional accumulation framebuffer is used for blended order-independent
   //! transparency algorithm. It should support floating-point color components
   //! and share depth with main reading/drawing framebuffer.
-  //! @param theWorkspace [in] the currently used workspace for rendering.
+  //! @param[in] theWorkspace  the currently used workspace for rendering.
   //! @param theLayerIter [in/out] the current iterator of transparent layers to process.
-  //! @param theGlobalSettings [in] the set of global settings used for rendering.
-  //! @param theReadDrawFbo [in] the framebuffer for reading depth and writing final color.
-  //! @param theOitAccumFbo [in] the framebuffer for accumulating color and coverage for OIT process.
+  //! @param[in] theGlobalSettings  the set of global settings used for rendering.
+  //! @param[in] theReadDrawFbo  the framebuffer for reading depth and writing final color.
+  //! @param[in] theOitAccumFbo  the framebuffer for accumulating color and coverage for OIT process.
   Standard_EXPORT void renderTransparent (const Handle(OpenGl_Workspace)&   theWorkspace,
                                           OpenGl_LayerStack::iterator&      theLayerIter,
                                           const OpenGl_GlobalLayerSettings& theGlobalSettings,

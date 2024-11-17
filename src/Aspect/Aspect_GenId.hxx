@@ -64,7 +64,7 @@ public:
   Standard_EXPORT Standard_Integer Next();
 
   //! Generates the next available identifier.
-  //! @param theId [out] generated identifier
+  //! @param[out] theId  generated identifier
   //! @return FALSE if all identifiers are busy.
   Standard_EXPORT Standard_Boolean Next (Standard_Integer& theId);
   

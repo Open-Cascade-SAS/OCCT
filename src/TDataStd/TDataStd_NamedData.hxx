@@ -148,8 +148,8 @@ public:
   Standard_EXPORT const Handle(TColStd_HArray1OfInteger)& GetArrayOfIntegers (const TCollection_ExtendedString& theName);
 
   //! Defines a named array of integer values.
-  //! @param theName [in] key
-  //! @param theArrayOfIntegers [in] new value, overrides existing (passed array will be copied by value!)
+  //! @param[in] theName  key
+  //! @param[in] theArrayOfIntegers  new value, overrides existing (passed array will be copied by value!)
   void SetArrayOfIntegers (const TCollection_ExtendedString& theName,
                            const Handle(TColStd_HArray1OfInteger)& theArrayOfIntegers)
   {
@@ -226,7 +226,7 @@ public: //! @name late-load deferred data interface
 
   //! Load data from deferred storage, without calling Backup().
   //! As result, the content of the object will be overridden by data from deferred storage (which is normally read-only).
-  //! @param theToKeepDeferred [in] when TRUE, the link to deferred storage will be preserved
+  //! @param[in] theToKeepDeferred  when TRUE, the link to deferred storage will be preserved
   //!                               so that it will be possible calling UnloadDeferredData() afterwards for releasing memory
   //! @return FALSE if deferred storage is unavailable or deferred data has been already loaded
   virtual Standard_Boolean LoadDeferredData (Standard_Boolean theToKeepDeferred = false)

@@ -161,7 +161,7 @@ public: //! @name Constructors
 public: //! @name Setting input data for the algorithm
 
   //! Sets the shape for processing.
-  //! @param theShape [in] The shape to remove the faces from.
+  //! @param[in] theShape  The shape to remove the faces from.
   //!                      It should either be the SOLID, COMPSOLID or COMPOUND of Solids.
   void SetShape(const TopoDS_Shape& theShape)
   {
@@ -175,14 +175,14 @@ public: //! @name Setting input data for the algorithm
   }
 
   //! Adds the face to remove from the input shape.
-  //! @param theFace [in] The shape to extract the faces for removal.
+  //! @param[in] theFace  The shape to extract the faces for removal.
   void AddFaceToRemove(const TopoDS_Shape& theFace)
   {
     myFacesToRemove.Append(theFace);
   }
 
   //! Adds the faces to remove from the input shape.
-  //! @param theFaces [in] The list of shapes to extract the faces for removal.
+  //! @param[in] theFaces  The list of shapes to extract the faces for removal.
   void AddFacesToRemove(const TopTools_ListOfShape& theFaces)
   {
     TopTools_ListIteratorOfListOfShape it(theFaces);
@@ -238,14 +238,14 @@ protected: //! @name Protected methods performing the removal
   Standard_EXPORT void RemoveFeatures(const Message_ProgressRange& theRange);
 
   //! Remove the single feature from the shape.
-  //! @param theFeature [in] The feature to remove;
-  //! @param theSolids [in] The solids to be reconstructed after feature removal;
-  //! @param theFeatureFacesMap [in] The map of feature faces;
-  //! @param theHasAdjacentFaces [in] Shows whether the adjacent faces have been
+  //! @param[in] theFeature  The feature to remove;
+  //! @param[in] theSolids  The solids to be reconstructed after feature removal;
+  //! @param[in] theFeatureFacesMap  The map of feature faces;
+  //! @param[in] theHasAdjacentFaces  Shows whether the adjacent faces have been
   //!                                 found for the feature or not;
-  //! @param theAdjFaces [in] The reconstructed adjacent faces covering the feature;
-  //! @param theAdjFacesHistory [in] The history of the adjacent faces reconstruction;
-  //! @param theSolidsHistoryNeeded [in] Defines whether the history of solids
+  //! @param[in] theAdjFaces  The reconstructed adjacent faces covering the feature;
+  //! @param[in] theAdjFacesHistory  The history of the adjacent faces reconstruction;
+  //! @param[in] theSolidsHistoryNeeded  Defines whether the history of solids
   //!                                    modifications should be tracked or not.
   Standard_EXPORT void RemoveFeature(const TopoDS_Shape& theFeature,
                                      const TopTools_IndexedMapOfShape& theSolids,

@@ -32,9 +32,9 @@ public:
 
   //! Find scale value based on the camera position and view dimensions
   //! If the camera scale value less than the persistence scale, zoom persistence is not applied.
-  //! @param theCamera [in] camera definition
-  //! @param theViewportWidth [in] the width of viewport.
-  //! @param theViewportHeight [in] the height of viewport.
+  //! @param[in] theCamera  camera definition
+  //! @param[in] theViewportWidth  the width of viewport.
+  //! @param[in] theViewportHeight  the height of viewport.
   Standard_EXPORT virtual Standard_Real persistentScale (const Handle(Graphic3d_Camera)& theCamera,
                                                          const Standard_Integer theViewportWidth,
                                                          const Standard_Integer theViewportHeight) const Standard_OVERRIDE;

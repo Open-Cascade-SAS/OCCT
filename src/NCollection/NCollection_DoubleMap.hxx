@@ -408,8 +408,8 @@ public:
   }
 
   //! Find the Key1 and return Key2 value (by copying its value).
-  //! @param [in]  theKey1 Key1 to find
-  //! @param [out] theKey2 Key2 to return
+  //! @param[in]   theKey1 Key1 to find
+  //! @param[out]  theKey2 Key2 to return
   //! @return TRUE if Key1 has been found
   Standard_Boolean Find1 (const TheKey1Type& theKey1,
                           TheKey2Type& theKey2) const
@@ -423,7 +423,7 @@ public:
   }
 
   //! Find the Key1 and return pointer to Key2 or NULL if Key1 is not bound.
-  //! @param [in]  theKey1 Key1 to find
+  //! @param[in]   theKey1 Key1 to find
   //! @return pointer to Key2 or NULL if Key1 is not found
   const TheKey2Type* Seek1 (const TheKey1Type& theKey1) const
   {
@@ -450,8 +450,8 @@ public:
   }
 
   //! Find the Key2 and return Key1 value (by copying its value).
-  //! @param [in]  theKey2 Key2 to find
-  //! @param [out] theKey1 Key1 to return
+  //! @param[in]   theKey2 Key2 to find
+  //! @param[out]  theKey1 Key1 to return
   //! @return TRUE if Key2 has been found
   Standard_Boolean Find2 (const TheKey2Type& theKey2,
                           TheKey1Type& theKey1) const
@@ -465,7 +465,7 @@ public:
   }
 
   //! Find the Key2 and return pointer to Key1 or NULL if not bound.
-  //! @param [in] theKey2 Key2 to find
+  //! @param[in]  theKey2 Key2 to find
   //! @return pointer to Key1 if Key2 has been found
   const TheKey1Type* Seek2 (const TheKey2Type& theKey2) const
   {

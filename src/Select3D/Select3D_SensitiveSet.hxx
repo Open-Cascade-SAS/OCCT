@@ -115,10 +115,10 @@ protected:
                                             Standard_Boolean theToCheckAllInside);
 
   //! Checks whether the entity with index theIdx (partially) overlaps the current selecting volume.
-  //! @param thePickResult [OUT] picking result, should update minimum depth
-  //! @param theMgr [IN] selection manager
-  //! @param theElemIdx [IN] element index within BVH tree to check
-  //! @param theIsFullInside [IN] when TRUE indicates that entire BVH node is already inside selection volume (in case of rectangle selection);
+  //! @param[out] thePickResult  picking result, should update minimum depth
+  //! @param[in] theMgr  selection manager
+  //! @param[in] theElemIdx  element index within BVH tree to check
+  //! @param[in] theIsFullInside  when TRUE indicates that entire BVH node is already inside selection volume (in case of rectangle selection);
   //!                             in this case algorithm might skip checking the element and just register it as detected
   virtual Standard_Boolean overlapsElement (SelectBasics_PickResult& thePickResult,
                                             SelectBasics_SelectingVolumeManager& theMgr,
@@ -126,9 +126,9 @@ protected:
                                             Standard_Boolean theIsFullInside) = 0;
 
   //! Checks whether the entity with index theIdx is (fully) inside the current selecting volume
-  //! @param theMgr [IN] selection manager
-  //! @param theElemIdx [IN] element index within BVH tree to check
-  //! @param theIsFullInside [IN] when TRUE indicates that entire BVH node is already inside selection volume (in case of rectangle selection);
+  //! @param[in] theMgr  selection manager
+  //! @param[in] theElemIdx  element index within BVH tree to check
+  //! @param[in] theIsFullInside  when TRUE indicates that entire BVH node is already inside selection volume (in case of rectangle selection);
   //!                             in this case algorithm might skip checking the element and just register it as detected
   virtual Standard_Boolean elementIsInside (SelectBasics_SelectingVolumeManager& theMgr,
                                             Standard_Integer theElemIdx,
@@ -142,8 +142,8 @@ protected:
   //! @param theFirstElem index of the first element
   //! @param theLastElem index of the last element
   //! @param theIsFullInside when TRUE indicates that entire BVH node is already inside selection volume
-  //! @param thePickResult [OUT] picking result (for picking by ray)
-  //! @param theMatchesNb [OUT] number of processed elements
+  //! @param[out] thePickResult  picking result (for picking by ray)
+  //! @param[out] theMatchesNb  number of processed elements
   //! @return FALSE if some element is outside the selection volume (if IsOverlapAllowed is FALSE); TRUE otherwise
   Standard_EXPORT Standard_Boolean processElements (SelectBasics_SelectingVolumeManager& theMgr,
                                                     Standard_Integer theFirstElem,

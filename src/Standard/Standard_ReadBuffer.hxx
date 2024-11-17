@@ -39,9 +39,9 @@ public:
   }
 
   //! Initialize the buffer.
-  //! @param theDataLen  [in] the full length of input data to read from stream.
-  //! @param theChunkLen [in] the length of single chunk to read
-  //! @param theIsPartialPayload [in] when FALSE, theDataLen will be automatically aligned to the multiple of theChunkLen;
+  //! @param[in] theDataLen   the full length of input data to read from stream.
+  //! @param[in] theChunkLen  the length of single chunk to read
+  //! @param[in] theIsPartialPayload  when FALSE, theDataLen will be automatically aligned to the multiple of theChunkLen;
   //!                                 when TRUE, last chunk will be read from stream exactly till theDataLen
   //!                                 allowing portion of chunk to be uninitialized (useful for interleaved data)
   void Init (int64_t theDataLen,

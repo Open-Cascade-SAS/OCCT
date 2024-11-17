@@ -127,18 +127,18 @@ public:
   //! Compute the sample-points for the intersections algorithms by adaptive algorithm for BSpline surfaces.
   //! For other surfaces algorithm is the same as in method ComputeSamplePoints(),
   //! but only fill arrays of U and V sample parameters;
-  //! @param theDefl  [in] a required deflection
-  //! @param theNUmin [in] minimal nb points for U
-  //! @param theNVmin [in] minimal nb points for V
+  //! @param[in] theDefl   a required deflection
+  //! @param[in] theNUmin  minimal nb points for U
+  //! @param[in] theNVmin  minimal nb points for V
   Standard_EXPORT virtual void SamplePnts (const Standard_Real theDefl,
                                            const Standard_Integer theNUmin,
                                            const Standard_Integer theNVmin);
 
   //! Compute the sample-points for the intersections algorithms
   //! by adaptive algorithm for BSpline surfaces - is used in SamplePnts
-  //! @param theDefl  [in] required deflection
-  //! @param theNUmin [in] minimal nb points for U
-  //! @param theNVmin [in] minimal nb points for V
+  //! @param[in] theDefl   required deflection
+  //! @param[in] theNUmin  minimal nb points for U
+  //! @param[in] theNVmin  minimal nb points for V
   Standard_EXPORT virtual void BSplSamplePnts (const Standard_Real theDefl,
                                                const Standard_Integer theNUmin,
                                                const Standard_Integer theNVmin);

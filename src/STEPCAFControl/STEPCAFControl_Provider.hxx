@@ -47,7 +47,7 @@ public:
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theDocument document to save result
   //! @param[in] theWS current work session
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT virtual bool Read(const TCollection_AsciiString& thePath,
                                     const Handle(TDocStd_Document)& theDocument,
@@ -58,7 +58,7 @@ public:
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theDocument document to export
   //! @param[in] theWS current work session
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT virtual bool Write(const TCollection_AsciiString& thePath,
                                      const Handle(TDocStd_Document)& theDocument,
@@ -68,7 +68,7 @@ public:
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theDocument document to save result
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT virtual bool Read(const TCollection_AsciiString& thePath,
                                     const Handle(TDocStd_Document)& theDocument,
@@ -77,7 +77,7 @@ public:
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theDocument document to export
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT virtual bool Write(const TCollection_AsciiString& thePath,
                                      const Handle(TDocStd_Document)& theDocument,
@@ -87,7 +87,7 @@ public:
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
   //! @param[in] theWS current work session
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT virtual bool Read(const TCollection_AsciiString& thePath,
                                     TopoDS_Shape& theShape,
@@ -98,7 +98,7 @@ public:
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theShape shape to export
   //! @param[in] theWS current work session
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT virtual bool Write(const TCollection_AsciiString& thePath,
                                      const TopoDS_Shape& theShape,
@@ -108,7 +108,7 @@ public:
   //! Reads a CAD file, according internal configuration
   //! @param[in] thePath path to the import CAD file
   //! @param[out] theShape shape to save result
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Read operation has ended correctly
   Standard_EXPORT virtual bool Read(const TCollection_AsciiString& thePath,
                                     TopoDS_Shape& theShape,
@@ -117,7 +117,7 @@ public:
   //! Writes a CAD file, according internal configuration
   //! @param[in] thePath path to the export CAD file
   //! @param[out] theShape shape to export
-  //! @param theProgress[in] progress indicator
+  //! @param[in] theProgress progress indicator
   //! @return true if Write operation has ended correctly
   Standard_EXPORT virtual bool Write(const TCollection_AsciiString& thePath,
                                      const TopoDS_Shape& theShape,

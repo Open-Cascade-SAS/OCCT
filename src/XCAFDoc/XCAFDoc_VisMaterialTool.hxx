@@ -82,8 +82,8 @@ public:
   Standard_EXPORT Standard_Boolean IsSetShapeMaterial (const TDF_Label& theLabel) const;
 
   //! Returns label with material assigned to shape label.
-  //! @param theShapeLabel [in] shape label
-  //! @param theMaterialLabel [out] material label
+  //! @param[in] theShapeLabel  shape label
+  //! @param[out] theMaterialLabel  material label
   //! @return FALSE if no material is assigned
   Standard_EXPORT static Standard_Boolean GetShapeMaterial (const TDF_Label& theShapeLabel, TDF_Label& theMaterialLabel);
 
@@ -91,8 +91,8 @@ public:
   Standard_EXPORT static Handle(XCAFDoc_VisMaterial) GetShapeMaterial (const TDF_Label& theShapeLabel);
 
   //! Sets a link with GUID XCAFDoc::VisMaterialRefGUID() from shape label to material label.
-  //! @param theShape [in] shape
-  //! @param theMaterialLabel [in] material label
+  //! @param[in] theShape  shape
+  //! @param[in] theMaterialLabel  material label
   //! @return FALSE if cannot find a label for shape
   Standard_EXPORT Standard_Boolean SetShapeMaterial (const TopoDS_Shape& theShape,
                                                      const TDF_Label& theMaterialLabel);
@@ -105,8 +105,8 @@ public:
   Standard_EXPORT Standard_Boolean IsSetShapeMaterial (const TopoDS_Shape& theShape);
 
   //! Returns label with material assigned to shape.
-  //! @param theShape [in] shape
-  //! @param theMaterialLabel [out] material label
+  //! @param[in] theShape  shape
+  //! @param[out] theMaterialLabel  material label
   //! @return FALSE if no material is assigned
   Standard_EXPORT Standard_Boolean GetShapeMaterial (const TopoDS_Shape& theShape, TDF_Label& theMaterialLabel);
 

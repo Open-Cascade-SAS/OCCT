@@ -61,11 +61,11 @@ public:
   //! Constructs a triangulation from a set of triangles.
   //! The triangulation is initialized without a triangle or a node,
   //! but capable of containing specified number of nodes and triangles.
-  //! @param theNbNodes     [in] number of nodes to allocate
-  //! @param theNbTriangles [in] number of triangles to allocate
-  //! @param theHasUVNodes  [in] indicates whether 2D nodes will be associated with 3D ones,
+  //! @param[in] theNbNodes      number of nodes to allocate
+  //! @param[in] theNbTriangles  number of triangles to allocate
+  //! @param[in] theHasUVNodes   indicates whether 2D nodes will be associated with 3D ones,
   //!                            (i.e. to enable a 2D representation)
-  //! @param theHasNormals  [in] indicates whether normals will be given and associated with nodes
+  //! @param[in] theHasNormals   indicates whether normals will be given and associated with nodes
   Standard_EXPORT Poly_Triangulation (const Standard_Integer theNbNodes,
                                       const Standard_Integer theNbTriangles,
                                       const Standard_Boolean theHasUVNodes,
@@ -237,9 +237,9 @@ public:
   //! - input transformation theTrsf has no rotation part;
   //! - theIsAccurate is set to FALSE;
   //! - no triangulation data available (e.g. it is deferred and not loaded).
-  //! @param theBox [in] [out] bounding box to extend by this triangulation
-  //! @param theTrsf [in] optional transformation
-  //! @param theIsAccurate [in] when FALSE, allows using a cached min - max range of this triangulation
+  //! @param[in][out] theBox   bounding box to extend by this triangulation
+  //! @param[in] theTrsf  optional transformation
+  //! @param[in] theIsAccurate  when FALSE, allows using a cached min - max range of this triangulation
   //!                           even for non-identity transformation.
   //! @return FALSE if there is no any data to extend the passed box (no both triangulation and cached min - max range).
   Standard_EXPORT Standard_Boolean MinMax (Bnd_Box& theBox, const gp_Trsf& theTrsf, const bool theIsAccurate = false) const;
@@ -257,14 +257,14 @@ public:
   Standard_EXPORT void SetDoublePrecision (bool theIsDouble);
 
   //! Method resizing internal arrays of nodes (synchronously for all attributes).
-  //! @param theNbNodes   [in] new number of nodes
-  //! @param theToCopyOld [in] copy old nodes into the new array
+  //! @param[in] theNbNodes    new number of nodes
+  //! @param[in] theToCopyOld  copy old nodes into the new array
   Standard_EXPORT void ResizeNodes (Standard_Integer theNbNodes,
                                     Standard_Boolean theToCopyOld);
 
   //! Method resizing an internal array of triangles.
-  //! @param theNbTriangles [in] new number of triangles
-  //! @param theToCopyOld   [in] copy old triangles into the new array
+  //! @param[in] theNbTriangles  new number of triangles
+  //! @param[in] theToCopyOld    copy old triangles into the new array
   Standard_EXPORT void ResizeTriangles (Standard_Integer theNbTriangles,
                                         Standard_Boolean theToCopyOld);
 
@@ -385,7 +385,7 @@ protected:
   Standard_EXPORT void unsetCachedMinMax();
 
   //! Calculates bounding box of nodal data.
-  //! @param theTrsf [in] optional transformation.
+  //! @param[in] theTrsf  optional transformation.
   Standard_EXPORT virtual Bnd_Box computeBoundingBox (const gp_Trsf& theTrsf) const;
 
 protected:

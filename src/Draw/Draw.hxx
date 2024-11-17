@@ -33,12 +33,12 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! (Re)Load a Draw Harness plugin.
-  //! @param theDI  [in] [out] Tcl interpretor to append loaded commands
-  //! @param theKey [in] plugin code name to be resolved in resource file
-  //! @param theResourceFileName   [in] description file name
-  //! @param theDefaultsDirectory  [in] default folder for looking description file
-  //! @param theUserDefaultsDirectory [in] user folder for looking description file
-  //! @param theIsVerbose [in] print verbose messages
+  //! @param[in][out] theDI    Tcl interpretor to append loaded commands
+  //! @param[in] theKey  plugin code name to be resolved in resource file
+  //! @param[in] theResourceFileName    description file name
+  //! @param[in] theDefaultsDirectory   default folder for looking description file
+  //! @param[in] theUserDefaultsDirectory  user folder for looking description file
+  //! @param[in] theIsVerbose  print verbose messages
   Standard_EXPORT static void Load (Draw_Interpretor& theDI,
                                     const TCollection_AsciiString& theKey,
                                     const TCollection_AsciiString& theResourceFileName,
@@ -128,9 +128,9 @@ public: //! @name argument parsing tools
   //!   }
   //! @endcode
   //!
-  //! @param theArgNb  [in] number of available arguments in theArgVec (array limits)
-  //! @param theArgVec [in] argument list
-  //! @param theColor [out] retrieved color
+  //! @param[in] theArgNb   number of available arguments in theArgVec (array limits)
+  //! @param[in] theArgVec  argument list
+  //! @param[out] theColor  retrieved color
   //! @return number of handled arguments (1, 2, 3 or 4) or 0 on syntax error
   static Standard_Integer ParseColor (const Standard_Integer   theArgNb,
                                       const char* const* const theArgVec,
@@ -140,9 +140,9 @@ public: //! @name argument parsing tools
   }
 
   //! Parses RGB color argument(s).
-  //! @param theArgNb  [in] number of available arguments in theArgVec (array limits)
-  //! @param theArgVec [in] argument list
-  //! @param theColor [out] retrieved color
+  //! @param[in] theArgNb   number of available arguments in theArgVec (array limits)
+  //! @param[in] theArgVec  argument list
+  //! @param[out] theColor  retrieved color
   //! @return number of handled arguments (1 or 3) or 0 on syntax error.
   static Standard_Integer ParseColor (const Standard_Integer   theArgNb,
                                       const char* const* const theArgVec,
@@ -177,8 +177,8 @@ public: //! @name argument parsing tools
   //!   }
   //! @endcode
   //!
-  //! @param theArg   [in] argument value
-  //! @param theIsOn [out] decoded Boolean flag
+  //! @param[in] theArg    argument value
+  //! @param[out] theIsOn  decoded Boolean flag
   //! @return FALSE on syntax error
   Standard_EXPORT static Standard_Boolean ParseOnOff (Standard_CString  theArg,
                                                       Standard_Boolean& theIsOn);
@@ -197,9 +197,9 @@ public: //! @name argument parsing tools
   //!   }
   //! @endcode
   //!
-  //! @param theArgsNb [in] overall number of arguments
-  //! @param theArgVec [in] vector of arguments
-  //! @param theArgIter [in] [out] argument position to parse
+  //! @param[in] theArgsNb  overall number of arguments
+  //! @param[in] theArgVec  vector of arguments
+  //! @param[in][out] theArgIter   argument position to parse
   //! @return flag value
   Standard_EXPORT static Standard_Boolean ParseOnOffIterator (Standard_Integer  theArgsNb,
                                                               const char**      theArgVec,
@@ -208,9 +208,9 @@ public: //! @name argument parsing tools
   //! Parses boolean argument at specified iterator position with optional on/off coming next.
   //! Similar to ParseOnOffIterator() but also reverses returned value if argument name starts with "no" prefix.
   //! E.g. if nominal argument is "cmd -usefeature [on|off|1|0]=on", then "-nousefeature" argument will return FALSE.
-  //! @param theArgsNb [in] overall number of arguments
-  //! @param theArgVec [in] vector of arguments
-  //! @param theArgIter [in] [out] argument position to parse
+  //! @param[in] theArgsNb  overall number of arguments
+  //! @param[in] theArgVec  vector of arguments
+  //! @param[in][out] theArgIter   argument position to parse
   //! @return flag value
   Standard_EXPORT static Standard_Boolean ParseOnOffNoIterator (Standard_Integer  theArgsNb,
                                                                 const char**      theArgVec,
@@ -256,8 +256,8 @@ public: //! @name methods loading standard command sets
 protected:
 
   //! Returns a variable value.
-  //! @param theName [in] [out] variable name, or "." to activate picking
-  //! @param theToAllowPick [in] when TRUE, "." name will activate picking
+  //! @param[in][out] theName   variable name, or "." to activate picking
+  //! @param[in] theToAllowPick  when TRUE, "." name will activate picking
   Standard_EXPORT static Handle(Draw_Drawable3D) getDrawable (Standard_CString& theName,
                                                               Standard_Boolean theToAllowPick);
 

@@ -500,11 +500,11 @@ public:
 
   //! Pick closest point under mouse cursor.
   //! This method is expected to be called from rendering thread.
-  //! @param thePnt   [out] result point
-  //! @param theCtx    [in] interactive context
-  //! @param theView   [in] active view
-  //! @param theCursor [in] mouse cursor
-  //! @param theToStickToPickRay [in] when TRUE, the result point will lie on picking ray
+  //! @param[out] thePnt    result point
+  //! @param[in] theCtx     interactive context
+  //! @param[in] theView    active view
+  //! @param[in] theCursor  mouse cursor
+  //! @param[in] theToStickToPickRay  when TRUE, the result point will lie on picking ray
   //! @return TRUE if result has been found
   Standard_EXPORT virtual bool PickPoint (gp_Pnt& thePnt,
                                           const Handle(AIS_InteractiveContext)& theCtx,
@@ -514,10 +514,10 @@ public:
 
   //! Pick closest point by axis.
   //! This method is expected to be called from rendering thread.
-  //! @param theTopPnt [out] result point
-  //! @param theCtx    [in] interactive context
-  //! @param theView   [in] active view
-  //! @param theAxis   [in] selection axis
+  //! @param[out] theTopPnt  result point
+  //! @param[in] theCtx     interactive context
+  //! @param[in] theView    active view
+  //! @param[in] theAxis    selection axis
   //! @return TRUE if result has been found
   Standard_EXPORT virtual bool PickAxis (gp_Pnt& theTopPnt,
                                          const Handle(AIS_InteractiveContext)& theCtx,
@@ -668,8 +668,8 @@ protected:
 
   //! Return current and previously fetched event times.
   //! This callback is intended to compute delta between sequentially processed events.
-  //! @param thePrevTime [out] events time fetched previous time by this method
-  //! @param theCurrTime [out] actual events time
+  //! @param[out] thePrevTime  events time fetched previous time by this method
+  //! @param[out] theCurrTime  actual events time
   void updateEventsTime (double& thePrevTime,
                          double& theCurrTime)
   {

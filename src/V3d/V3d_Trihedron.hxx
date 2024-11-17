@@ -81,7 +81,7 @@ public:
   Standard_EXPORT void SetNbFacets (const Standard_Integer theNbFacets);
 
   //! Return text aspect for specified axis.
-  //! @param theAxis [in] axis index
+  //! @param[in] theAxis  axis index
   //! @return text aspect
   const Handle(Prs3d_TextAspect)& LabelAspect (V3d_TypeOfAxe theAxis) const { return myTextAspects[theAxis]; }
 
@@ -94,7 +94,7 @@ public:
   Standard_EXPORT void SetLabelsColor (const Quantity_Color& theColor);
 
   //! Return shading aspect for specified axis.
-  //! @param theAxis [in] axis index
+  //! @param[in] theAxis  axis index
   //! @return shading aspect
   const Handle(Prs3d_ShadingAspect)& ArrowAspect (V3d_TypeOfAxe theAxis) const { return myArrowShadingAspects[theAxis]; }
 
@@ -107,7 +107,7 @@ public:
   const Handle(Prs3d_ShadingAspect)& OriginAspect() const { return mySphereShadingAspect; }
 
   //! Return axis text.
-  //! @param theAxis [in] axis index
+  //! @param[in] theAxis  axis index
   //! @return text of the label
   const TCollection_AsciiString& Label (V3d_TypeOfAxe theAxis) const { return myLabels[theAxis]; }
 

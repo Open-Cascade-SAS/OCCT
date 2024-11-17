@@ -85,8 +85,8 @@ public:
   Standard_EXPORT void Close();
 
   //! Open output stream - initialize recorder.
-  //! @param theFileName [in] video filename
-  //! @param theParams   [in] video parameters
+  //! @param[in] theFileName  video filename
+  //! @param[in] theParams    video parameters
   Standard_EXPORT Standard_Boolean Open (const char* theFileName,
                                          const Image_VideoParams& theParams);
 
@@ -109,8 +109,8 @@ protected:
   Standard_EXPORT TCollection_AsciiString formatAvError (const int theError) const;
 
   //! Append video stream.
-  //! theParams     [in] video parameters
-  //! theDefCodecId [in] identifier of codec managed by FFmpeg library (AVCodecID enum)
+  //! theParams[in]      video parameters
+  //! theDefCodecId[in]  identifier of codec managed by FFmpeg library (AVCodecID enum)
   Standard_EXPORT Standard_Boolean addVideoStream (const Image_VideoParams& theParams,
                                                    const Standard_Integer   theDefCodecId);
 

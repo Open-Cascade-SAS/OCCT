@@ -204,11 +204,11 @@ public:
 protected:
 
   //! Main constructor.
-  //! @param theTitle  [in] window title
-  //! @param theXY     [in] top-left position
-  //! @param theSize   [in] window dimensions
-  //! @param theParent [in] optional native parent window
-  //! @param theWin    [in] optional native window
+  //! @param[in] theTitle   window title
+  //! @param[in] theXY      top-left position
+  //! @param[in] theSize    window dimensions
+  //! @param[in] theParent  optional native parent window
+  //! @param[in] theWin     optional native window
   Standard_EXPORT Draw_Window (const char* theTitle,
                                const NCollection_Vec2<int>& theXY,
                                const NCollection_Vec2<int>& theSize,

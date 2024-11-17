@@ -117,7 +117,7 @@ public: //! @name Constructors
 public: //! @name Setting input data for the algorithm
 
   //! Sets the shape for processing.
-  //! @param theShape [in] The shape to remove the features from.
+  //! @param[in] theShape  The shape to remove the features from.
   //!                      It should either be the SOLID, COMPSOLID or COMPOUND of Solids.
   void SetShape(const TopoDS_Shape& theShape)
   {
@@ -131,14 +131,14 @@ public: //! @name Setting input data for the algorithm
   }
 
   //! Adds the features to remove from the input shape.
-  //! @param theFace [in] The shape to extract the faces for removal.
+  //! @param[in] theFace  The shape to extract the faces for removal.
   void AddFaceToRemove(const TopoDS_Shape& theFace)
   {
     myFacesToRemove.Append(theFace);
   }
 
   //! Adds the faces to remove from the input shape.
-  //! @param theFaces [in] The list of shapes to extract the faces for removal.
+  //! @param[in] theFaces  The list of shapes to extract the faces for removal.
   void AddFacesToRemove(const TopTools_ListOfShape& theFaces)
   {
     TopTools_ListIteratorOfListOfShape it(theFaces);

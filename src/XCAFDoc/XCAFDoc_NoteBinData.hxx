@@ -37,12 +37,12 @@ public:
   //! @{
 
   //! Create (if not exist) a binary note with data loaded from a binary file.
-  //! \param [in] theLabel     - label to add the attribute.
-  //! \param [in] theUserName  - the name of the user, who created the note.
-  //! \param [in] theTimeStamp - creation timestamp of the note.
-  //! \param [in] theTitle     - file title.
-  //! \param [in] theMIMEtype  - MIME type of the file.
-  //! \param [in] theFile      - input binary file.
+  //! \param[in]  theLabel     - label to add the attribute.
+  //! \param[in]  theUserName  - the name of the user, who created the note.
+  //! \param[in]  theTimeStamp - creation timestamp of the note.
+  //! \param[in]  theTitle     - file title.
+  //! \param[in]  theMIMEtype  - MIME type of the file.
+  //! \param[in]  theFile      - input binary file.
   //! \return A handle to the attribute instance.
   Standard_EXPORT static Handle(XCAFDoc_NoteBinData) Set(const TDF_Label&                  theLabel,
                                                          const TCollection_ExtendedString& theUserName,
@@ -52,12 +52,12 @@ public:
                                                          OSD_File&                         theFile);
 
   //! Create (if not exist) a binary note byte data array.
-  //! \param [in] theLabel     - label to add the attribute.
-  //! \param [in] theUserName  - the name of the user, who created the note.
-  //! \param [in] theTimeStamp - creation timestamp of the note.
-  //! \param [in] theTitle     - data title.
-  //! \param [in] theMIMEtype  - MIME type of data.
-  //! \param [in] theData      - byte data array.
+  //! \param[in]  theLabel     - label to add the attribute.
+  //! \param[in]  theUserName  - the name of the user, who created the note.
+  //! \param[in]  theTimeStamp - creation timestamp of the note.
+  //! \param[in]  theTitle     - data title.
+  //! \param[in]  theMIMEtype  - MIME type of data.
+  //! \param[in]  theData      - byte data array.
   //! \return A handle to the attribute instance.
   Standard_EXPORT static Handle(XCAFDoc_NoteBinData) Set(const TDF_Label&                     theLabel,
                                                          const TCollection_ExtendedString&    theUserName,
@@ -75,17 +75,17 @@ public:
   //! @{
 
   //! Sets title, MIME type and data from a binary file.
-  //! \param [in] theTitle     - file title.
-  //! \param [in] theMIMEtype  - MIME type of the file.
-  //! \param [in] theFile      - input binary file.
+  //! \param[in]  theTitle     - file title.
+  //! \param[in]  theMIMEtype  - MIME type of the file.
+  //! \param[in]  theFile      - input binary file.
   Standard_EXPORT Standard_Boolean Set(const TCollection_ExtendedString& theTitle,
                                        const TCollection_AsciiString&    theMIMEtype,
                                        OSD_File&                         theFile);
 
   //! Sets title, MIME type and data from a byte array.
-  //! \param [in] theTitle     - data title.
-  //! \param [in] theMIMEtype  - MIME type of data.
-  //! \param [in] theData      - byte data array.
+  //! \param[in]  theTitle     - data title.
+  //! \param[in]  theMIMEtype  - MIME type of data.
+  //! \param[in]  theData      - byte data array.
   Standard_EXPORT void Set(const TCollection_ExtendedString&    theTitle,
                            const TCollection_AsciiString&       theMIMEtype,
                            const Handle(TColStd_HArray1OfByte)& theData);

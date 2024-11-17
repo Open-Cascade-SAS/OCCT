@@ -28,8 +28,8 @@ public:
   OSD_FileSystemSelector() {}
 
   //! Registers file system within this selector.
-  //! @param theFileSystem  [in] file system to register
-  //! @param theIsPreferred [in] add to the beginning of the list when TRUE, or add to the end otherwise
+  //! @param[in] theFileSystem   file system to register
+  //! @param[in] theIsPreferred  add to the beginning of the list when TRUE, or add to the end otherwise
   Standard_EXPORT void AddProtocol (const Handle(OSD_FileSystem)& theFileSystem, bool theIsPreferred = false);
 
   //! Unregisters file system within this selector.

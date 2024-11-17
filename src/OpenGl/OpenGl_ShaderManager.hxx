@@ -74,9 +74,9 @@ public:
   }
 
   //! Creates new shader program or re-use shared instance.
-  //! @param theProxy    [IN]  program definition
-  //! @param theShareKey [OUT] sharing key
-  //! @param theProgram  [OUT] OpenGL program
+  //! @param[in] theProxy      program definition
+  //! @param[out] theShareKey  sharing key
+  //! @param[out] theProgram   OpenGL program
   //! @return true on success
   Standard_EXPORT Standard_Boolean Create (const Handle(Graphic3d_ShaderProgram)& theProxy,
                                            TCollection_AsciiString&               theShareKey,
@@ -185,8 +185,8 @@ public:
   }
 
   //! Bind program for FBO blit operation.
-  //! @param theNbSamples       [in] number of samples within source MSAA texture
-  //! @param theIsFallback_sRGB [in] flag indicating that destination buffer is not sRGB-ready
+  //! @param[in] theNbSamples        number of samples within source MSAA texture
+  //! @param theIsFallback_sRGB[in]  flag indicating that destination buffer is not sRGB-ready
   Standard_EXPORT Standard_Boolean BindFboBlitProgram (Standard_Integer theNbSamples,
                                                        Standard_Boolean theIsFallback_sRGB);
 
@@ -262,7 +262,7 @@ public:
                                                  const Handle(OpenGl_ShadowMapArray)& theShadowMaps);
 
   //! Updates state of OCCT light sources to dynamically enable/disable shadowmap.
-  //! @param theToCast [in] flag to enable/disable shadowmap
+  //! @param[in] theToCast  flag to enable/disable shadowmap
   //! @return previous flag state
   bool SetCastShadows (const bool theToCast)
   {
@@ -426,7 +426,7 @@ public:
   }
 
   //! Set the state of OIT rendering pass (only on state change).
-  //! @param theMode [in] flag indicating whether the special output should be written for OIT algorithm
+  //! @param[in] theMode  flag indicating whether the special output should be written for OIT algorithm
   void SetOitState (Graphic3d_RenderTransparentMethod theMode)
   {
     myOitState.Set (theMode, 0.0f);
@@ -434,7 +434,7 @@ public:
   }
 
   //! Set the state of weighed OIT rendering pass (only on state change).
-  //! @param theDepthFactor [in] the scalar factor of depth influence to the fragment's coverage
+  //! @param[in] theDepthFactor  the scalar factor of depth influence to the fragment's coverage
   void SetWeighedOitState (float theDepthFactor)
   {
     myOitState.Set (Graphic3d_RTM_BLEND_OIT, theDepthFactor);

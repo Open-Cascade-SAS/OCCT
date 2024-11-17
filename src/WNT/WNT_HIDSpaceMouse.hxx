@@ -109,8 +109,8 @@ public:
   }
 
   //! Return new translation values.
-  //! @param theIsIdle [out] flag indicating idle state (no translation)
-  //! @param theIsQuadric [in] flag to apply non-linear scale factor
+  //! @param[out] theIsIdle  flag indicating idle state (no translation)
+  //! @param[in] theIsQuadric  flag to apply non-linear scale factor
   //! @return vector of 3 elements defining translation values within [-1..1] range, 0 meaning idle,
   //!         .x defining left/right slide, .y defining forward/backward and .z defining up/down slide.
   Standard_EXPORT Graphic3d_Vec3d Translation (bool& theIsIdle,
@@ -124,8 +124,8 @@ public:
   }
 
   //! Return new rotation values.
-  //! @param theIsIdle [out] flag indicating idle state (no rotation)
-  //! @param theIsQuadric [in] flag to apply non-linear scale factor
+  //! @param[out] theIsIdle  flag indicating idle state (no rotation)
+  //! @param[in] theIsQuadric  flag to apply non-linear scale factor
   //! @return vector of 3 elements defining rotation values within [-1..1] range, 0 meaning idle,
   //!         .x defining tilt, .y defining roll and .z defining spin.
   Standard_EXPORT Graphic3d_Vec3d Rotation (bool& theIsIdle,

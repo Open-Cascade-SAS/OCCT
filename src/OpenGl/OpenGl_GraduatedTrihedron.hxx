@@ -130,22 +130,22 @@ private:
 private:
 
   //! Initialize or update GL resources for rendering trihedron.
-  //! @param theContext [in] the GL context.
+  //! @param[in] theContext  the GL context.
   void initGlResources (const Handle(OpenGl_Context)& theContext) const;
 
   //! Gets normal of the view out of user.
-  //! @param theContext [in] OpenGL Context
-  //! @param theNormal [out] normal of the view out of user
+  //! @param[in] theContext  OpenGL Context
+  //! @param[out] theNormal  normal of the view out of user
   //! @return distance corresponding to 1 pixel
   Standard_ShortReal getNormal (const Handle(OpenGl_Context)& theContext,
                                 OpenGl_Vec3& theNormal) const;
 
   //! Gets distance to point (theX, theY, theZ) of bounding box along the normal
-  //! @param theNormal [in] normal of the view out of user
-  //! @param theCenter [in] geometry center of bounding box
-  //! @param theX [in] x of target point
-  //! @param theY [in] y of target point
-  //! @param theZ [in] z of terget point
+  //! @param[in] theNormal  normal of the view out of user
+  //! @param[in] theCenter  geometry center of bounding box
+  //! @param[in] theX  x of target point
+  //! @param[in] theY  y of target point
+  //! @param[in] theZ  z of terget point
   Standard_ShortReal getDistanceToCorner (const OpenGl_Vec3& theNormal,
                                           const OpenGl_Vec3& theCenter,
                                           const Standard_ShortReal theX,
@@ -153,14 +153,14 @@ private:
                                           const Standard_ShortReal theZ) const;
 
   //! Gets axes of grid
-  //! @param theCorners [in] the corners of grid
-  //! @param theGridAxes [out] grid axes, the base of graduated trihedron grid.
+  //! @param[in] theCorners  the corners of grid
+  //! @param[out] theGridAxes  grid axes, the base of graduated trihedron grid.
   Standard_ExtCharacter getGridAxes (const Standard_ShortReal theCorners[8],
                                      GridAxes& theGridAxes) const;
 
   //! Render line from the transformed primitive array myLine
-  //! @param theWorkspace [in] the OpenGl Workspace
-  //! @param theMat [in] theMat that contains base transformation and is used for applying
+  //! @param[in] theWorkspace  the OpenGl Workspace
+  //! @param[in] theMat  theMat that contains base transformation and is used for applying
   //!        translation and rotation
   //! @param thaTx the X for vector of translation
   //! @param thaTy the Y for vector of translation
@@ -173,10 +173,10 @@ private:
                    const Standard_ShortReal        theZt) const;
 
   //! Render grid lines perpendecular the axis of input index
-  //! @param theWorkspace [in] the OpenGl Workspace
-  //! @param theIndex [in] index of axis
-  //! @param theGridAxes [in] grid axes
-  //! @param theMat [in] theMat that contains base transformation and is used for applying
+  //! @param[in] theWorkspace  the OpenGl Workspace
+  //! @param[in] theIndex  index of axis
+  //! @param[in] theGridAxes  grid axes
+  //! @param[in] theMat  theMat that contains base transformation and is used for applying
   //!        translation and rotation
   void renderGridPlane (const Handle(OpenGl_Workspace)& theWorkspace,
                         const Standard_Integer& theIndex,
@@ -185,21 +185,21 @@ private:
 
 
   //! Render the axis of input index
-  //! @param theWorkspace [in] the OpenGl Workspace
-  //! @param theIndex [in] index of axis
-  //! @param theMat [in] theMat that contains base transformation and is used for applying
+  //! @param[in] theWorkspace  the OpenGl Workspace
+  //! @param[in] theIndex  index of axis
+  //! @param[in] theMat  theMat that contains base transformation and is used for applying
   //!        translation and rotation
   void renderAxis (const Handle(OpenGl_Workspace)& theWorkspace,
                    const Standard_Integer& theIndex,
                    const OpenGl_Mat4& theMat) const;
 
   //! Render grid labels, tickmark lines and labels
-  //! @param theWorkspace [in] the OpenGl Workspace
-  //! @param theMat [in] theMat that contains base transformation and is used for applying
+  //! @param[in] theWorkspace  the OpenGl Workspace
+  //! @param[in] theMat  theMat that contains base transformation and is used for applying
   //!        translation and rotation
-  //! @param theIndex [in] index of axis
-  //! @param theGridAxes [in] grid axes
-  //! @param theDpix [in] distance corresponding to 1 pixel
+  //! @param[in] theIndex  index of axis
+  //! @param[in] theGridAxes  grid axes
+  //! @param[in] theDpix  distance corresponding to 1 pixel
   void renderTickmarkLabels (const Handle(OpenGl_Workspace)& theWorkspace,
                              const OpenGl_Mat4& theMat,
                              const Standard_Integer theIndex,

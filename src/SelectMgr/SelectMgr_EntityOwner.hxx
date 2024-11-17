@@ -137,7 +137,7 @@ public:
   Standard_Boolean IsSelected() const { return myIsSelected; }
 
   //! Set the state of the owner.
-  //! @param theIsSelected [in] shows if owner is selected.
+  //! @param[in] theIsSelected  shows if owner is selected.
   void SetSelected (const Standard_Boolean theIsSelected) { myIsSelected = theIsSelected; }
 
   //! If the object needs to be selected, it returns true.

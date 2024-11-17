@@ -126,8 +126,8 @@ public:
   Standard_Real DepthTolerance() const { return myDepthTolerance; }
 
   //! Set the tolerance for considering two entities having a similar depth (distance from eye to entity).
-  //! @param theType [in] type of tolerance value
-  //! @param theTolerance [in] tolerance value in 3D scale (SelectMgr_TypeOfDepthTolerance_Uniform)
+  //! @param[in] theType  type of tolerance value
+  //! @param[in] theTolerance  tolerance value in 3D scale (SelectMgr_TypeOfDepthTolerance_Uniform)
   //!                          or in pixels (SelectMgr_TypeOfDepthTolerance_UniformPixels);
   //!                          value is ignored in case of SelectMgr_TypeOfDepthTolerance_SensitivityFactor
   void SetDepthTolerance (SelectMgr_TypeOfDepthTolerance theType,
@@ -325,10 +325,10 @@ protected:
 
   //! Internal function that checks if there is possible overlap between some entity of selectable object theObject and
   //! current selecting volume.
-  //! @param theObject [in] the selectable object for traversal.
-  //! @param theMgr [in] the (un)transformed copy of the selecting volume manager representing active selection frustum.
-  //! @param theCamera, theProjectionMat, theWorldViewMat [in] the source camera and matrices for theMgr given.
-  //! @param theWinSize [in] viewport (window) dimensions for evaluating 
+  //! @param[in] theObject  the selectable object for traversal.
+  //! @param[in] theMgr  the (un)transformed copy of the selecting volume manager representing active selection frustum.
+  //! @param theCamera, theProjectionMat, theWorldViewMat[in]  the source camera and matrices for theMgr given.
+  //! @param[in] theWinSize  viewport (window) dimensions for evaluating 
   //!        object's transformation persistence.
   Standard_EXPORT void traverseObject (const Handle(SelectMgr_SelectableObject)& theObject,
                                        const SelectMgr_SelectingVolumeManager& theMgr,

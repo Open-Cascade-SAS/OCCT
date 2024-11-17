@@ -41,8 +41,8 @@ public:
   //!   return Standard_True;
   //! }
   //! ~~~~~
-  //! \param [in] theIterator - starting position in the assembly tree.
-  //! \param [in] theFunc     - user function called for each assembly tree node.
+  //! \param[in]  theIterator - starting position in the assembly tree.
+  //! \param[in]  theFunc     - user function called for each assembly tree node.
   template <typename Func>
   static void Traverse(XCAFDoc_AssemblyIterator theIterator,
                        Func                     theFunc)
@@ -69,10 +69,10 @@ public:
   //! ~~~~~
   //! User function theFunc takes the assembly graph passed for traversing, current
   //! graph node ID and returns true/false to continue/break.
-  //! \param [in] theGraph  - assembly graph.
-  //! \param [in] theFilter - user filtering function called for each assembly graph node.
-  //! \param [in] theFunc   - user function called for accepted assembly graph node.
-  //! \param [in] theNode   - starting positive one-based graph node ID.
+  //! \param[in]  theGraph  - assembly graph.
+  //! \param[in]  theFilter - user filtering function called for each assembly graph node.
+  //! \param[in]  theFunc   - user function called for accepted assembly graph node.
+  //! \param[in]  theNode   - starting positive one-based graph node ID.
   template <typename Func, typename Filter>
   static void Traverse(const Handle(XCAFDoc_AssemblyGraph)& theGraph,
                        Filter                               theFilter,

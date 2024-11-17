@@ -45,7 +45,7 @@ public:
   //! - visibility of columns,
   //! - columns width
   //! \param theTreeView a view instance
-  //! \param theItems [out] properties
+  //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
   static void SaveState (View_PreviewParameters* theParameters,
                          QMap<QString, QString>& theItems,

@@ -65,12 +65,12 @@ public:
   Standard_EXPORT virtual void ProcessEvents() Standard_OVERRIDE;
 
   //! Submit texture eye to XR Composer.
-  //! @param theTexture     [in] texture handle
-  //! @param theGraphicsLib [in] graphics library in which texture handle is defined
-  //! @param theColorSpace  [in] texture color space;
+  //! @param[in] theTexture      texture handle
+  //! @param[in] theGraphicsLib  graphics library in which texture handle is defined
+  //! @param[in] theColorSpace   texture color space;
   //!                            sRGB means no color conversion by composer;
   //!                            Linear means to sRGB color conversion by composer
-  //! @param theEye [in] eye to display
+  //! @param[in] theEye  eye to display
   //! @return FALSE on error
   Standard_EXPORT virtual bool SubmitEye (void* theTexture,
                                           Aspect_GraphicsLibrary theGraphicsLib,

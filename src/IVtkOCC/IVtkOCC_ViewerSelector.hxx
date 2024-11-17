@@ -33,15 +33,15 @@ public:
   virtual ~IVtkOCC_ViewerSelector();
 
   //! Implements point picking
-  //! @param [in] theXPix, theYPix Display coordinates of the point
-  //! @param [in] theView  ICamera interface to update the projection parameters.
+  //! @param[in]  theXPix, theYPix Display coordinates of the point
+  //! @param[in]  theView  ICamera interface to update the projection parameters.
   void Pick (const Standard_Integer    theXPix,
              const Standard_Integer    theYPix,
              const IVtk_IView::Handle& theView);
 
   //! Picking by rectangle
-  //! @param [in] theXMin, theYMin, theXMax, theYMax Rectangle coords
-  //! @param [in] theView ICamera interface to calculate projections
+  //! @param[in]  theXMin, theYMin, theXMax, theYMax Rectangle coords
+  //! @param[in]  theView ICamera interface to calculate projections
   void Pick (const Standard_Integer    theXMin,
              const Standard_Integer    theYMin,
              const Standard_Integer    theXMax,

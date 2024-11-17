@@ -64,41 +64,41 @@ public:
 
   //! Constructs minimum angle dimension between two linear edges (where possible).
   //! These two edges should be intersected by each other. Otherwise the geometry is not valid.
-  //! @param theFirstEdge [in] the first edge.
-  //! @param theSecondEdge [in] the second edge.
+  //! @param[in] theFirstEdge  the first edge.
+  //! @param[in] theSecondEdge  the second edge.
   Standard_EXPORT PrsDim_AngleDimension (const TopoDS_Edge& theFirstEdge,
                                          const TopoDS_Edge& theSecondEdge);
 
   //! Constructs the angle display object defined by three points.
-  //! @param theFirstPoint [in] the first point (point on first angle flyout).
-  //! @param theSecondPoint [in] the center point of angle dimension.
-  //! @param theThirdPoint [in] the second point (point on second angle flyout).
+  //! @param[in] theFirstPoint  the first point (point on first angle flyout).
+  //! @param[in] theSecondPoint  the center point of angle dimension.
+  //! @param[in] theThirdPoint  the second point (point on second angle flyout).
   Standard_EXPORT PrsDim_AngleDimension (const gp_Pnt& theFirstPoint,
                                          const gp_Pnt& theSecondPoint,
                                          const gp_Pnt& theThirdPoint);
 
   //! Constructs the angle display object defined by three vertices.
-  //! @param theFirstVertex [in] the first vertex (vertex for first angle flyout).
-  //! @param theSecondVertex [in] the center vertex of angle dimension.
-  //! @param theThirdPoint [in] the second vertex (vertex for second angle flyout).
+  //! @param[in] theFirstVertex  the first vertex (vertex for first angle flyout).
+  //! @param[in] theSecondVertex  the center vertex of angle dimension.
+  //! @param[in] theThirdPoint  the second vertex (vertex for second angle flyout).
   Standard_EXPORT PrsDim_AngleDimension (const TopoDS_Vertex& theFirstVertex,
                                          const TopoDS_Vertex& theSecondVertex,
                                          const TopoDS_Vertex& theThirdVertex);
 
   //! Constructs angle dimension for the cone face.
-  //! @param theCone [in] the conical face.
+  //! @param[in] theCone  the conical face.
   Standard_EXPORT PrsDim_AngleDimension (const TopoDS_Face& theCone);
 
   //! Constructs angle dimension between two planar faces.
-  //! @param theFirstFace [in] the first face.
-  //! @param theSecondFace [in] the second face.
+  //! @param[in] theFirstFace  the first face.
+  //! @param[in] theSecondFace  the second face.
   Standard_EXPORT PrsDim_AngleDimension (const TopoDS_Face& theFirstFace,
                                          const TopoDS_Face& theSecondFace);
 
   //! Constructs angle dimension between two planar faces.
-  //! @param theFirstFace [in] the first face.
-  //! @param theSecondFace [in] the second face.
-  //! @param thePoint [in] the point which the dimension plane should pass through.
+  //! @param[in] theFirstFace  the first face.
+  //! @param[in] theSecondFace  the second face.
+  //! @param[in] thePoint  the point which the dimension plane should pass through.
   //! This point can lay on the one of the faces or not.
   Standard_EXPORT PrsDim_AngleDimension (const TopoDS_Face& theFirstFace,
                                          const TopoDS_Face& theSecondFace,
@@ -128,41 +128,41 @@ public:
 
   //! Measures minimum angle dimension between two linear edges.
   //! These two edges should be intersected by each other. Otherwise the geometry is not valid.
-  //! @param theFirstEdge [in] the first edge.
-  //! @param theSecondEdge [in] the second edge.
+  //! @param[in] theFirstEdge  the first edge.
+  //! @param[in] theSecondEdge  the second edge.
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Edge& theFirstEdge,
                                             const TopoDS_Edge& theSecondEdge);
 
   //! Measures angle defined by three points.
-  //! @param theFirstPoint [in] the first point (point on first angle flyout).
-  //! @param theSecondPoint [in] the center point of angle dimension.
-  //! @param theThirdPoint [in] the second point (point on second angle flyout).
+  //! @param[in] theFirstPoint  the first point (point on first angle flyout).
+  //! @param[in] theSecondPoint  the center point of angle dimension.
+  //! @param[in] theThirdPoint  the second point (point on second angle flyout).
   Standard_EXPORT void SetMeasuredGeometry (const gp_Pnt& theFirstPoint,
                                             const gp_Pnt& theSecondPoint,
                                             const gp_Pnt& theThridPoint);
 
   //! Measures angle defined by three vertices.
-  //! @param theFirstVertex [in] the first vertex (vertex for first angle flyout).
-  //! @param theSecondVertex [in] the center vertex of angle dimension.
-  //! @param theThirdPoint [in] the second vertex (vertex for second angle flyout).
+  //! @param[in] theFirstVertex  the first vertex (vertex for first angle flyout).
+  //! @param[in] theSecondVertex  the center vertex of angle dimension.
+  //! @param[in] theThirdPoint  the second vertex (vertex for second angle flyout).
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Vertex& theFirstVertex,
                                             const TopoDS_Vertex& theSecondVertex,
                                             const TopoDS_Vertex& theThirdVertex);
 
   //! Measures angle of conical face.
-  //! @param theCone [in] the shape to measure.
+  //! @param[in] theCone  the shape to measure.
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Face& theCone);
 
   //! Measures angle between two planar faces.
-  //! @param theFirstFace [in] the first face.
-  //! @param theSecondFace [in] the second face..
+  //! @param[in] theFirstFace  the first face.
+  //! @param[in] theSecondFace  the second face..
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Face& theFirstFace,
                                             const TopoDS_Face& theSecondFace);
 
   //! Measures angle between two planar faces.
-  //! @param theFirstFace [in] the first face.
-  //! @param theSecondFace [in] the second face.
-  //! @param thePoint [in] the point which the dimension plane should pass through.
+  //! @param[in] theFirstFace  the first face.
+  //! @param[in] theSecondFace  the second face.
+  //! @param[in] thePoint  the point which the dimension plane should pass through.
   //! This point can lay on the one of the faces or not.
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Face& theFirstFace,
                                             const TopoDS_Face& theSecondFace,
@@ -189,14 +189,14 @@ public:
   Standard_EXPORT virtual gp_Pnt GetTextPosition () const Standard_OVERRIDE;
 
   //! Sets angle type.
-  //! @param theType [in] the type value.
+  //! @param[in] theType  the type value.
   void SetType (const PrsDim_TypeOfAngle theType) { myType = theType; }
 
   //! @return the current angle type.
   PrsDim_TypeOfAngle GetType() const { return myType; }
 
   //! Sets visible arrows type
-  //! @param theType [in] the type of visibility of arrows.
+  //! @param[in] theType  the type of visibility of arrows.
   void SetArrowsVisibility (const PrsDim_TypeOfAngleArrowVisibility& theType) { myArrowsVisibility = theType; }
 
   //! @return the type of visibility of arrows.
@@ -212,21 +212,21 @@ protected:
   //! Based on this normal angle arc, arrows and extensions are constructed.
   gp_Dir GetNormalForMinAngle() const;
 
-  //! @param theFirstAttach [in] the first attachment point.
-  //! @param theSecondAttach [in] the second attachment point.
-  //! @param theCenter [in] the center point (center point of the angle).  
+  //! @param[in] theFirstAttach  the first attachment point.
+  //! @param[in] theSecondAttach  the second attachment point.
+  //! @param[in] theCenter  the center point (center point of the angle).  
   //! @return the center of the dimension arc (the main dimension line in case of angle). 
   Standard_EXPORT gp_Pnt GetCenterOnArc (const gp_Pnt& theFirstAttach,
                                          const gp_Pnt& theSecondAttach,
                                          const gp_Pnt& theCenter) const;
 
   //! Draws main dimension line (arc).
-  //! @param thePresentation [in] the dimension presentation.
-  //! @param theFirstAttach [in] the first attachment point.
-  //! @param theSecondAttach [in] the second attachment point.
-  //! @param theCenter [in] the center point (center point of the angle).
-  //! @param theRadius [in] the radius of the dimension arc.
-  //! @param theMode [in] the display mode.
+  //! @param[in] thePresentation  the dimension presentation.
+  //! @param[in] theFirstAttach  the first attachment point.
+  //! @param[in] theSecondAttach  the second attachment point.
+  //! @param[in] theCenter  the center point (center point of the angle).
+  //! @param[in] theRadius  the radius of the dimension arc.
+  //! @param[in] theMode  the display mode.
   Standard_EXPORT void DrawArc (const Handle(Prs3d_Presentation)& thePresentation,
                                 const gp_Pnt& theFirstAttach,
                                 const gp_Pnt& theSecondAttach,
@@ -235,14 +235,14 @@ protected:
                                 const Standard_Integer theMode);
 
   //! Draws main dimension line (arc) with text.
-  //! @param thePresentation [in] the dimension presentation.
-  //! @param theFirstAttach [in] the first attachment point.
-  //! @param theSecondAttach [in] the second attachment point.
-  //! @param theCenter [in] the center point (center point of the angle).
-  //! @param theText [in] the text label string.
-  //! @param theTextWidth [in] the text label width. 
-  //! @param theMode [in] the display mode.
-  //! @param theLabelPosition [in] the text label vertical and horizontal positioning option
+  //! @param[in] thePresentation  the dimension presentation.
+  //! @param[in] theFirstAttach  the first attachment point.
+  //! @param[in] theSecondAttach  the second attachment point.
+  //! @param[in] theCenter  the center point (center point of the angle).
+  //! @param[in] theText  the text label string.
+  //! @param[in] theTextWidth  the text label width. 
+  //! @param[in] theMode  the display mode.
+  //! @param[in] theLabelPosition  the text label vertical and horizontal positioning option
   //! respectively to the main dimension line. 
   Standard_EXPORT void DrawArcWithText (const Handle(Prs3d_Presentation)& thePresentation,
                                         const gp_Pnt& theFirstAttach,
@@ -256,10 +256,10 @@ protected:
   //! Fits text alignment relatively to the dimension line;
   //! it computes the value of label position and arrow orientation
   //! according set in the aspect and dimension properties.
-  //! @param theHorizontalTextPos [in] the horizontal alignment for text position.
-  //! @param theLabelPosition [out] the label position, contains bits that defines
+  //! @param[in] theHorizontalTextPos  the horizontal alignment for text position.
+  //! @param[out] theLabelPosition  the label position, contains bits that defines
   //! vertical and horizontal alignment. (for internal usage in count text position).
-  //! @param theIsArrowExternal [out] is the arrows external,
+  //! @param[out] theIsArrowExternal  is the arrows external,
   //! if arrow orientation in the dimension aspect is Prs3d_DAO_Fit, it fits arrow
   //! orientation automatically.
   Standard_EXPORT void FitTextAlignment (const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
@@ -268,10 +268,10 @@ protected:
 
   //! Adjusts aspect parameters according the text position:
   //! extension size, vertical text alignment and flyout.
-  //! @param theTextPos [in] the user defined 3d point of text position.
-  //! @param theExtensionSize [out] the adjusted extension size.
-  //! @param theAlignment [out] the horizontal label alignment.
-  //! @param theFlyout [out] the adjusted value of flyout.
+  //! @param[in] theTextPos  the user defined 3d point of text position.
+  //! @param[out] theExtensionSize  the adjusted extension size.
+  //! @param[out] theAlignment  the horizontal label alignment.
+  //! @param[out] theFlyout  the adjusted value of flyout.
   Standard_EXPORT void AdjustParameters (const gp_Pnt& theTextPos,
                                          Standard_Real& theExtensionSize,
                                          Prs3d_DimensionTextHorizontalPosition& theAlignment,
@@ -308,7 +308,7 @@ protected:
   Standard_EXPORT Standard_Boolean InitTwoFacesAngle();
 
   //! Init angular dimension to measure angle between two planar faces.
-  //! @param thePointOnFirstFace [in] the point which the dimension plane should pass through.
+  //! @param[in] thePointOnFirstFace  the point which the dimension plane should pass through.
   //! This point can lay on the one of the faces or not.
   //! It will be projected on the first face and this point will be set
   //! as the first point attach point.

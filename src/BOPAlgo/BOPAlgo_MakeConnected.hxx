@@ -146,14 +146,14 @@ public: //! @name Constructor
 public: //! @name Setters for the shapes to make connected
 
   //! Sets the shape for making them connected.
-  //! @param theArgs [in] The arguments for the operation.
+  //! @param[in] theArgs  The arguments for the operation.
   void SetArguments(const TopTools_ListOfShape& theArgs)
   {
     myArguments = theArgs;
   }
 
   //! Adds the shape to the arguments.
-  //! @param theS [in] One of the argument shapes.
+  //! @param[in] theS  One of the argument shapes.
   void AddArgument(const TopoDS_Shape& theS)
   {
     myArguments.Append(theS);
@@ -176,13 +176,13 @@ public: //! @name Shape periodicity & repetition
   //! Makes the connected shape periodic.
   //! Repeated calls of this method overwrite the previous calls
   //! working with the basis connected shape.
-  //! @param theParams [in] Periodic options.
+  //! @param[in] theParams  Periodic options.
   Standard_EXPORT void MakePeriodic(const BOPAlgo_MakePeriodic::PeriodicityParams& theParams);
 
   //! Performs repetition of the periodic shape in specified direction
   //! required number of times.
-  //! @param theDirectionID [in] The direction's ID (0 for X, 1 for Y, 2 for Z);
-  //! @param theTimes [in] Requested number of repetitions (sign of the value defines
+  //! @param[in] theDirectionID  The direction's ID (0 for X, 1 for Y, 2 for Z);
+  //! @param[in] theTimes  Requested number of repetitions (sign of the value defines
   //!                      the side of the repetition direction (positive or negative)).
   Standard_EXPORT void RepeatShape(const Standard_Integer theDirectionID,
                                    const Standard_Integer theTimes);
@@ -202,7 +202,7 @@ public: //! @name Material transitions
 
   //! Returns the original shapes which images contain the
   //! the given shape with FORWARD orientation.
-  //! @param theS [in] The shape for which the materials are necessary.
+  //! @param[in] theS  The shape for which the materials are necessary.
   const TopTools_ListOfShape& MaterialsOnPositiveSide(const TopoDS_Shape& theS)
   {
     const TopTools_ListOfShape* pLM = myMaterials.Seek(theS.Oriented(TopAbs_FORWARD));
@@ -211,7 +211,7 @@ public: //! @name Material transitions
 
   //! Returns the original shapes which images contain the
   //! the given shape with REVERSED orientation.
-  //! @param theS [in] The shape for which the materials are necessary.
+  //! @param[in] theS  The shape for which the materials are necessary.
   const TopTools_ListOfShape& MaterialsOnNegativeSide(const TopoDS_Shape& theS)
   {
     const TopTools_ListOfShape* pLM = myMaterials.Seek(theS.Oriented(TopAbs_REVERSED));
@@ -228,14 +228,14 @@ public: //! @name History methods
   }
 
   //! Returns the list of shapes modified from the given shape.
-  //! @param theS [in] The shape for which the modified shapes are necessary.
+  //! @param[in] theS  The shape for which the modified shapes are necessary.
   const TopTools_ListOfShape& GetModified(const TopoDS_Shape& theS)
   {
     return (myHistory.IsNull() ? EmptyList() : myHistory->Modified(theS));
   }
 
   //! Returns the list of original shapes from which the current shape has been created.
-  //! @param theS [in] The shape for which the origins are necessary.
+  //! @param[in] theS  The shape for which the origins are necessary.
   const TopTools_ListOfShape& GetOrigins(const TopoDS_Shape& theS)
   {
     const TopTools_ListOfShape* pLOr = myOrigins.Seek(theS);

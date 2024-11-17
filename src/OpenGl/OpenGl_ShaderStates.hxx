@@ -197,9 +197,9 @@ public:
   OpenGl_OitState() : myOitMode (Graphic3d_RTM_BLEND_UNORDERED), myDepthFactor (0.5f) {}
 
   //! Sets the uniform values.
-  //! @param theToEnableWrite [in] flag indicating whether color and coverage
+  //! @param[in] theToEnableWrite  flag indicating whether color and coverage
   //!  values for OIT processing should be written by shader program.
-  //! @param theDepthFactor [in] scalar factor [0-1] defining influence of depth
+  //! @param[in] theDepthFactor  scalar factor [0-1] defining influence of depth
   //!  component of a fragment to its final coverage coefficient.
   void Set (Graphic3d_RenderTransparentMethod theMode,
             const float theDepthFactor)

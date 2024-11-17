@@ -40,8 +40,8 @@ class ShapeView_Tools
 public:
 
   //! Checks whether it is possible to explode the shape. The search is recursive until all types are collected.
-  //! \param theShape [in] source shape object
-  //! \param theExplodeTypes [out] container of possible shape types to be exploded
+  //! \param[in] theShape  source shape object
+  //! \param[out] theExplodeTypes  container of possible shape types to be exploded
   //! \return true if explode is finished, all types are collected.
   Standard_EXPORT static Standard_Boolean IsPossibleToExplode(const TopoDS_Shape& theShape,
     NCollection_List<TopAbs_ShapeEnum>& theExplodeTypes);

@@ -101,12 +101,12 @@ public:
   //!   and no stack will be provided if this or companion libraries (SymSrv.dll, SrcSrv.dll, etc.) will not be found;
   //!   .pdb symbols should be provided on Windows platform to retrieve a meaningful stack;
   //!   only x86_64 CPU architecture is currently implemented.
-  //! @param theBuffer [in] [out] message buffer to extend
-  //! @param theBufferSize [in] message buffer size
-  //! @param theNbTraces [in] maximum number of stack traces
-  //! @param theContext [in] optional platform-dependent frame context;
+  //! @param[in][out] theBuffer   message buffer to extend
+  //! @param[in] theBufferSize  message buffer size
+  //! @param[in] theNbTraces  maximum number of stack traces
+  //! @param[in] theContext  optional platform-dependent frame context;
   //!                        in case of DbgHelp (Windows) should be a pointer to CONTEXT
-  //! @param theNbTopSkip [in] number of traces on top of the stack to skip
+  //! @param[in] theNbTopSkip  number of traces on top of the stack to skip
   //! @return TRUE on success
   Standard_EXPORT static Standard_Boolean StackTrace (char* theBuffer,
                                                       const int theBufferSize,

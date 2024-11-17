@@ -260,9 +260,9 @@ private:
 
     //! Bind node to the map or find existing one.
     //! @param theIndex [in,out] index of new key to add, or index of existing key, if already bound
-    //! @param theIsOpposite [out] flag indicating that existing (already bound) node has opposite direction
-    //! @param thePos   [in] node position to add or find
-    //! @param theNorm  [in] element normal for equality check
+    //! @param[out] theIsOpposite  flag indicating that existing (already bound) node has opposite direction
+    //! @param[in] thePos    node position to add or find
+    //! @param[in] theNorm   element normal for equality check
     //! @return TRUE if node was not bound already
     Standard_EXPORT bool Bind (int&  theIndex,
                                bool& theIsOpposite,

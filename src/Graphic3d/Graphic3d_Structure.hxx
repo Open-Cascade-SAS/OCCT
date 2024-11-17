@@ -95,8 +95,8 @@ public:
   virtual void Erase() { erase(); }
   
   //! Highlights the structure in all the views with the given style
-  //! @param theStyle [in] the style (type of highlighting: box/color, color and opacity)
-  //! @param theToUpdateMgr [in] defines whether related computed structures will be
+  //! @param[in] theStyle  the style (type of highlighting: box/color, color and opacity)
+  //! @param[in] theToUpdateMgr  defines whether related computed structures will be
   //! highlighted via structure manager or not
   Standard_EXPORT void Highlight (const Handle(Graphic3d_PresentationAttributes)& theStyle, const Standard_Boolean theToUpdateMgr = Standard_True);
   
@@ -130,7 +130,7 @@ public:
   Graphic3d_ZLayerId GetZLayer() const { return myCStructure->ZLayer(); }
   
   //! Changes a sequence of clip planes slicing the structure on rendering.
-  //! @param thePlanes [in] the set of clip planes.
+  //! @param[in] thePlanes  the set of clip planes.
   void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
   {
     if (!myCStructure.IsNull()) { myCStructure->SetClipPlanes (thePlanes); }

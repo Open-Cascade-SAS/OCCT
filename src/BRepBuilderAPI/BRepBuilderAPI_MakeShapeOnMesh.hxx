@@ -29,7 +29,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Ctor. Sets mesh to process.
-  //! @param theMesh [in] - Mesh to construct shape for.
+  //! @param[in] theMesh  - Mesh to construct shape for.
   BRepBuilderAPI_MakeShapeOnMesh(const Handle(Poly_Triangulation)& theMesh)
   : myMesh(theMesh)
   {}

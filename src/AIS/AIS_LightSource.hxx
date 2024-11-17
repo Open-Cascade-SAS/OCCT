@@ -148,11 +148,11 @@ public: //! @name Light properties
   }
 
   //! Returns light source icon.
-  //! @param theIsEnabled [in] marker index for enabled/disabled light source states
+  //! @param[in] theIsEnabled  marker index for enabled/disabled light source states
   const Handle(Graphic3d_MarkerImage)& MarkerImage (bool theIsEnabled) const { return myMarkerImages[theIsEnabled ? 1 : 0]; }
 
   //! Returns light source icon.
-  //! @param theIsEnabled [in] marker index for enabled/disabled light source states
+  //! @param[in] theIsEnabled  marker index for enabled/disabled light source states
   Aspect_TypeOfMarker MarkerType (bool theIsEnabled) const { return myMarkerTypes[theIsEnabled ? 1 : 0]; }
 
   //! Sets custom icon to light source.

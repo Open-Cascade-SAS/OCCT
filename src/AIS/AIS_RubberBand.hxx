@@ -41,9 +41,9 @@ public:
   Standard_EXPORT AIS_RubberBand();
 
   //! Constructs the rubber band with empty filling and defined line style.
-  //! @param theLineColor [in] color of rubber band lines
-  //! @param theType [in] type of rubber band lines
-  //! @param theLineWidth [in] width of rubber band line. By default it is 1.
+  //! @param[in] theLineColor  color of rubber band lines
+  //! @param[in] theType  type of rubber band lines
+  //! @param[in] theLineWidth  width of rubber band line. By default it is 1.
   //! @warning It binds this object with Graphic3d_ZLayerId_TopOSD layer.
   Standard_EXPORT AIS_RubberBand (const Quantity_Color& theLineColor,
                                   const Aspect_TypeOfLine theType,
@@ -51,11 +51,11 @@ public:
                                   const Standard_Boolean theIsPolygonClosed = Standard_True);
 
   //! Constructs the rubber band with defined filling and line parameters.
-  //! @param theLineColor [in] color of rubber band lines
-  //! @param theType [in] type of rubber band lines
-  //! @param theFillColor [in] color of rubber band filling
-  //! @param theTransparency [in] transparency of the filling. 0 is for opaque filling. By default it is transparent.
-  //! @param theLineWidth [in] width of rubber band line. By default it is 1.
+  //! @param[in] theLineColor  color of rubber band lines
+  //! @param[in] theType  type of rubber band lines
+  //! @param[in] theFillColor  color of rubber band filling
+  //! @param[in] theTransparency  transparency of the filling. 0 is for opaque filling. By default it is transparent.
+  //! @param[in] theLineWidth  width of rubber band line. By default it is 1.
   //! @warning It binds this object with Graphic3d_ZLayerId_TopOSD layer.
   Standard_EXPORT AIS_RubberBand (const Quantity_Color& theLineColor,
                                   const Aspect_TypeOfLine theType,
@@ -109,7 +109,7 @@ public:
   Standard_EXPORT Aspect_TypeOfLine LineType() const;
 
   //! Sets fill transparency.
-  //! @param theValue [in] the transparency value. 1.0 is for transparent background
+  //! @param[in] theValue  the transparency value. 1.0 is for transparent background
   Standard_EXPORT void SetFillTransparency (const Standard_Real theValue) const;
 
   //! @return fill transparency.
@@ -119,8 +119,8 @@ public:
   Standard_EXPORT void SetFilling (const Standard_Boolean theIsFilling);
 
   //! Enable filling of rubber band with defined parameters.
-  //! @param theColor [in] color of filling
-  //! @param theTransparency [in] transparency of the filling. 0 is for opaque filling.
+  //! @param[in] theColor  color of filling
+  //! @param[in] theTransparency  transparency of the filling. 0 is for opaque filling.
   Standard_EXPORT void SetFilling (const Quantity_Color theColor, const Standard_Real theTransparency);
 
   //! @return true if filling of rubber band is enabled.

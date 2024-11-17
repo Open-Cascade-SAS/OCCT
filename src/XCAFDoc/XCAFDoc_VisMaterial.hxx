@@ -167,7 +167,7 @@ public: //! @name interface implementation
   virtual const Standard_GUID& ID() const Standard_OVERRIDE { return GetID(); }
 
   //! Restore attribute from specified state.
-  //! @param theWith [in] attribute state to restore (copy into this)
+  //! @param[in] theWith  attribute state to restore (copy into this)
   Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& theWith) Standard_OVERRIDE;
 
   //! Create a new empty attribute.
@@ -175,7 +175,7 @@ public: //! @name interface implementation
 
   //! Paste this attribute into another one.
   //! @param theInto [in/out] target attribute to copy this into
-  //! @param theRelTable [in] relocation table
+  //! @param[in] theRelTable  relocation table
   Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& theInto,
                                       const Handle(TDF_RelocationTable)& theRelTable) const Standard_OVERRIDE;
   

@@ -424,14 +424,14 @@ public:
   Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape);
 
   //! Method to get NamedData attribute assigned to the given shape label.
-  //! @param theLabel    [in] the shape Label
-  //! @param theToCreate [in] create and assign attribute if it doesn't exist
+  //! @param[in] theLabel     the shape Label
+  //! @param[in] theToCreate  create and assign attribute if it doesn't exist
   //! @return Handle to the NamedData attribute or Null if there is none
   Standard_EXPORT Handle(TDataStd_NamedData) GetNamedProperties (const TDF_Label& theLabel, const Standard_Boolean theToCreate = Standard_False) const;
 
   //! Method to get NamedData attribute assigned to a label of the given shape.
-  //! @param theShape    [in] input shape
-  //! @param theToCreate [in] create and assign attribute if it doesn't exist
+  //! @param[in] theShape     input shape
+  //! @param[in] theToCreate  create and assign attribute if it doesn't exist
   //! @return Handle to the NamedData attribute or Null if there is none
   Standard_EXPORT Handle(TDataStd_NamedData) GetNamedProperties(const TopoDS_Shape& theShape, const Standard_Boolean theToCreate = Standard_False) const;
   

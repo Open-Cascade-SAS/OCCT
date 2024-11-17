@@ -38,16 +38,16 @@ public:
 public:
 
   //! Constructor from existing pixmap.
-  //! @param theImage [in] source image
-  //! @param theImageAlpha [in] colorless image
+  //! @param[in] theImage  source image
+  //! @param[in] theImageAlpha  colorless image
   Standard_EXPORT Graphic3d_MarkerImage (const Handle(Image_PixMap)& theImage,
                                          const Handle(Image_PixMap)& theImageAlpha = Handle(Image_PixMap)());
 
   //! Creates marker image from array of bytes
   //! (method for compatibility with old markers definition).
-  //! @param theBitMap [in] source bitmap stored as array of bytes
-  //! @param theWidth  [in] number of bits in a row
-  //! @param theHeight [in] number of bits in a column
+  //! @param[in] theBitMap  source bitmap stored as array of bytes
+  //! @param[in] theWidth   number of bits in a row
+  //! @param[in] theHeight  number of bits in a column
   Standard_EXPORT Graphic3d_MarkerImage (const Handle(TColStd_HArray1OfByte)& theBitMap,
                                          const Standard_Integer theWidth,
                                          const Standard_Integer theHeight);
@@ -81,7 +81,7 @@ public:
   //! @param theAlphaValue pixels in the image that have alpha value greater than
   //!                      or equal to this parameter will be stored in bitmap as "1",
   //!                      others will be stored as "0"
-  //! @param theIsTopDown [in] flag indicating expected rows order in returned bitmap, which is bottom-up by default
+  //! @param[in] theIsTopDown  flag indicating expected rows order in returned bitmap, which is bottom-up by default
   Standard_EXPORT Handle(TColStd_HArray1OfByte) GetBitMapArray (const Standard_Real theAlphaValue = 0.5,
                                                                 const Standard_Boolean theIsTopDown = false) const;
 

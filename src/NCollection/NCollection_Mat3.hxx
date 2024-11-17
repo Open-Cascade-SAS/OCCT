@@ -57,8 +57,8 @@ public:
   }
 
   //! Get element at the specified row and column.
-  //! @param theRow [in] the row.to address.
-  //! @param theCol [in] the column to address.
+  //! @param[in] theRow  the row.to address.
+  //! @param[in] theCol  the column to address.
   //! @return the value of the addressed element.
   Element_t GetValue (const size_t theRow, const size_t theCol) const
   {
@@ -66,8 +66,8 @@ public:
   }
 
   //! Access element at the specified row and column.
-  //! @param theRow [in] the row.to access.
-  //! @param theCol [in] the column to access.
+  //! @param[in] theRow  the row.to access.
+  //! @param[in] theCol  the column to access.
   //! @return reference on the matrix element.
   Element_t& ChangeValue (const size_t theRow, const size_t theCol)
   {
@@ -75,9 +75,9 @@ public:
   }
 
   //! Set value for the element specified by row and columns.
-  //! @param theRow   [in] the row to change.
-  //! @param theCol   [in] the column to change.
-  //! @param theValue [in] the value to set.s
+  //! @param[in] theRow    the row to change.
+  //! @param[in] theCol    the column to change.
+  //! @param[in] theValue  the value to set.s
   void SetValue (const size_t    theRow,
                  const size_t    theCol,
                  const Element_t theValue)
@@ -98,8 +98,8 @@ public:
   }
 
   //! Change first 3 row values by the passed vector.
-  //! @param theRow [in] the row to change.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theRow  the row to change.
+  //! @param[in] theVec  the vector of values.
   void SetRow (const size_t theRow, const NCollection_Vec3<Element_t>& theVec)
   {
     SetValue (theRow, 0, theVec.x());
@@ -114,8 +114,8 @@ public:
   }
 
   //! Change first 3 column values by the passed vector.
-  //! @param theCol [in] the column to change.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theCol  the column to change.
+  //! @param[in] theVec  the vector of values.
   void SetColumn (const size_t theCol,
                   const NCollection_Vec3<Element_t>& theVec)
   {
@@ -182,7 +182,7 @@ public:
   Element_t*       ChangeData()       { return myMat; }
 
   //! Multiply by the vector (M * V).
-  //! @param theVec [in] the vector to multiply.
+  //! @param[in] theVec  the vector to multiply.
   NCollection_Vec3<Element_t> operator* (const NCollection_Vec3<Element_t>& theVec) const
   {
     return NCollection_Vec3<Element_t> (
@@ -192,8 +192,8 @@ public:
   }
 
   //! Compute matrix multiplication product: A * B.
-  //! @param theMatA [in] the matrix "A".
-  //! @param theMatB [in] the matrix "B".
+  //! @param[in] theMatA  the matrix "A".
+  //! @param[in] theMatB  the matrix "B".
   static NCollection_Mat3 Multiply (const NCollection_Mat3& theMatA,
                                     const NCollection_Mat3& theMatB)
   {
@@ -214,14 +214,14 @@ public:
   }
 
   //! Compute matrix multiplication.
-  //! @param theMat [in] the matrix to multiply.
+  //! @param[in] theMat  the matrix to multiply.
   void Multiply (const NCollection_Mat3& theMat)
   {
     *this = Multiply(*this, theMat);
   }
 
   //! Multiply by the another matrix.
-  //! @param theMat [in] the other matrix.
+  //! @param[in] theMat  the other matrix.
   NCollection_Mat3& operator*= (const NCollection_Mat3& theMat)
   {
     Multiply (theMat);
@@ -229,7 +229,7 @@ public:
   }
 
   //! Compute matrix multiplication product.
-  //! @param theMat [in] the other matrix.
+  //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
   Standard_NODISCARD NCollection_Mat3 operator* (const NCollection_Mat3& theMat) const
   {
@@ -237,7 +237,7 @@ public:
   }
 
   //! Compute matrix multiplication product.
-  //! @param theMat [in] the other matrix.
+  //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
   Standard_NODISCARD NCollection_Mat3 Multiplied (const NCollection_Mat3& theMat) const
   {
@@ -247,7 +247,7 @@ public:
   }
 
   //! Compute per-component multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   void Multiply (const Element_t theFactor)
   {
     for (size_t i = 0; i < 9; ++i)
@@ -257,7 +257,7 @@ public:
   }
 
   //! Compute per-element multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   NCollection_Mat3& operator*= (const Element_t theFactor)
   {
     Multiply (theFactor);
@@ -265,7 +265,7 @@ public:
   }
 
   //! Compute per-element multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
   Standard_NODISCARD NCollection_Mat3 operator* (const Element_t theFactor) const
   {
@@ -273,7 +273,7 @@ public:
   }
 
   //! Compute per-element multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
   Standard_NODISCARD NCollection_Mat3 Multiplied (const Element_t theFactor) const
   {
@@ -283,7 +283,7 @@ public:
   }
 
   //! Compute per-component division.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   void Divide (const Element_t theFactor)
   {
     for (size_t i = 0; i < 9; ++i)
@@ -293,7 +293,7 @@ public:
   }
 
   //! Per-component division.
-  //! @param theScalar [in] the scale factor.
+  //! @param[in] theScalar  the scale factor.
   NCollection_Mat3& operator/= (const Element_t theScalar)
   {
     Divide (theScalar);

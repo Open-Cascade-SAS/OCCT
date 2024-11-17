@@ -57,7 +57,7 @@ public:
   //! Compute interpolated value between two values.
   //! @param theT normalized interpolation coefficient within [0, 1] range,
   //!             with 0 pointing to first value and 1 to the second value.
-  //! @param theResult [out] interpolated value
+  //! @param[out] theResult  interpolated value
   void Interpolate (double theT, T& theResult) const
   {
     theResult = (1.0 - theT) * myStart + theT * myEnd;

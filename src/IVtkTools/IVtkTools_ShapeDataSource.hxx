@@ -46,7 +46,7 @@ public:
 public: //! @name Initialization
 
   //! Set the source OCCT shape.
-  //! @param theOccShape [in] OCCT shape wrapper.
+  //! @param[in] theOccShape  OCCT shape wrapper.
   void SetShape(const IVtkOCC_Shape::Handle& theOccShape);
 
   //! Get the source OCCT shape.
@@ -63,7 +63,7 @@ public: //! @name Data accessors
   IVtk_IdType GetId() const;
 
   //! Checks if the internal OccShape pointer is the same the argument.
-  //! @param [in] shape OccShape pointer to be checked.
+  //! @param[in]  shape OccShape pointer to be checked.
   //! @return true if the two OccShape instances are the same, and false otherwise.
   Standard_Boolean Contains (const IVtkOCC_Shape::Handle& theOccShape) const;
 
@@ -76,11 +76,11 @@ protected: //! @name Interface to override
   //! This is called by the superclass.
   //! This is the method you should override if you use this class as ancestor.
   //! Build output polygonal data set from the shape wrapper.
-  //! @param theRequest [in] information about data object.
+  //! @param[in] theRequest  information about data object.
   //! In current implementation it is ignored.
-  //! @param theInputVector [in] the input data. As adata source is the start
+  //! @param[in] theInputVector  the input data. As adata source is the start
   //! stage of the VTK pipeline, theInputVector is empty and not used (no input port).
-  //! @param theOutputVector [in] the pointer to output data, that is filled in this method.
+  //! @param[in] theOutputVector  the pointer to output data, that is filled in this method.
   virtual int RequestData(vtkInformation* theRequest,
                           vtkInformationVector** theInputVector,
                           vtkInformationVector* theOutputVector) Standard_OVERRIDE;
@@ -89,8 +89,8 @@ protected: //! @name Internals
 
   //! Transforms the passed polygonal data by the given OCCT transformation
   //! matrix.
-  //! @param theSource [in] source polygonal data to transform.
-  //! @param theTrsf [in] transformation to apply.
+  //! @param[in] theSource  source polygonal data to transform.
+  //! @param[in] theTrsf  transformation to apply.
   //! @return resulting polygonal data (transformed copy of source).
   vtkSmartPointer<vtkPolyData> transform (vtkPolyData* theSource, const gp_Trsf& theTrsf) const;
 

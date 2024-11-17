@@ -71,7 +71,7 @@ public:
   //! - visibility of columns,
   //! - columns width
   //! \param theTreeView a view instance
-  //! \param theItems [out] properties
+  //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
   Standard_EXPORT static void SaveState (ViewControl_PropertyView* theParameters,
                                          QMap<QString, QString>& theItems,

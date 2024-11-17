@@ -76,8 +76,8 @@ public:
   }
 
   //! Get element at the specified row and column.
-  //! @param theRow [in] the row to address.
-  //! @param theCol [in] the column to address.
+  //! @param[in] theRow  the row to address.
+  //! @param[in] theCol  the column to address.
   //! @return the value of the addressed element.
   Element_t GetValue (const size_t theRow, const size_t theCol) const
   {
@@ -85,8 +85,8 @@ public:
   }
 
   //! Access element at the specified row and column.
-  //! @param theRow [in] the row to access.
-  //! @param theCol [in] the column to access.
+  //! @param[in] theRow  the row to access.
+  //! @param[in] theCol  the column to access.
   //! @return reference on the matrix element.
   Element_t& ChangeValue (const size_t theRow, const size_t theCol)
   {
@@ -94,9 +94,9 @@ public:
   }
 
   //! Set value for the element specified by row and columns.
-  //! @param theRow   [in] the row to change.
-  //! @param theCol   [in] the column to change.
-  //! @param theValue [in] the value to set.
+  //! @param[in] theRow    the row to change.
+  //! @param[in] theCol    the column to change.
+  //! @param[in] theValue  the value to set.
   void SetValue (const size_t    theRow,
                  const size_t    theCol,
                  const Element_t theValue)
@@ -111,7 +111,7 @@ public:
   Element_t  operator() (const size_t theRow, const size_t theCol) const { return GetValue (theRow, theCol); }
 
   //! Get vector of elements for the specified row.
-  //! @param theRow [in] the row to access.
+  //! @param[in] theRow  the row to access.
   //! @return vector of elements.
   NCollection_Vec4<Element_t> GetRow (const size_t theRow) const
   {
@@ -122,8 +122,8 @@ public:
   }
 
   //! Change first 3 row values by the passed vector.
-  //! @param theRow [in] the row to change.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theRow  the row to change.
+  //! @param[in] theVec  the vector of values.
   void SetRow (const size_t theRow, const NCollection_Vec3<Element_t>& theVec)
   {
     SetValue (theRow, 0, theVec.x());
@@ -132,8 +132,8 @@ public:
   }
 
   //! Set row values by the passed 4 element vector.
-  //! @param theRow [in] the row to change.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theRow  the row to change.
+  //! @param[in] theVec  the vector of values.
   void SetRow (const size_t theRow, const NCollection_Vec4<Element_t>& theVec)
   {
     SetValue (theRow, 0, theVec.x());
@@ -143,7 +143,7 @@ public:
   }
 
   //! Get vector of elements for the specified column.
-  //! @param theCol [in] the column to access.
+  //! @param[in] theCol  the column to access.
   //! @return vector of elements.
   NCollection_Vec4<Element_t> GetColumn (const size_t theCol) const
   {
@@ -154,8 +154,8 @@ public:
   }
 
   //! Change first 3 column values by the passed vector.
-  //! @param theCol [in] the column to change.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theCol  the column to change.
+  //! @param[in] theVec  the vector of values.
   void SetColumn (const size_t theCol,
                   const NCollection_Vec3<Element_t>& theVec)
   {
@@ -165,8 +165,8 @@ public:
   }
 
   //! Set column values by the passed 4 element vector.
-  //! @param theCol [in] the column to change.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theCol  the column to change.
+  //! @param[in] theVec  the vector of values.
   void SetColumn (const size_t theCol,
                   const NCollection_Vec4<Element_t>& theVec)
   {
@@ -196,7 +196,7 @@ public:
   }
 
   //! Set diagonal elements of the matrix by the passed vector.
-  //! @param theVec [in] the vector of values.
+  //! @param[in] theVec  the vector of values.
   void SetDiagonal (const NCollection_Vec4<Element_t>& theVec)
   {
     SetValue (0, 0, theVec.x());
@@ -257,7 +257,7 @@ public:
   Element_t*       ChangeData()       { return myMat; }
 
   //! Multiply by the vector (M * V).
-  //! @param theVec [in] the vector to multiply.
+  //! @param[in] theVec  the vector to multiply.
   NCollection_Vec4<Element_t> operator* (const NCollection_Vec4<Element_t>& theVec) const
   {
     return NCollection_Vec4<Element_t> (
@@ -268,8 +268,8 @@ public:
   }
 
   //! Compute matrix multiplication product: A * B.
-  //! @param theMatA [in] the matrix "A".
-  //! @param theMatB [in] the matrix "B".
+  //! @param[in] theMatA  the matrix "A".
+  //! @param[in] theMatB  the matrix "B".
   static NCollection_Mat4 Multiply (const NCollection_Mat4& theMatA,
                                     const NCollection_Mat4& theMatB)
   {
@@ -290,14 +290,14 @@ public:
   }
 
   //! Compute matrix multiplication.
-  //! @param theMat [in] the matrix to multiply.
+  //! @param[in] theMat  the matrix to multiply.
   void Multiply (const NCollection_Mat4& theMat)
   {
     *this = Multiply(*this, theMat);
   }
 
   //! Multiply by the another matrix.
-  //! @param theMat [in] the other matrix.
+  //! @param[in] theMat  the other matrix.
   NCollection_Mat4& operator*= (const NCollection_Mat4& theMat)
   {
     Multiply (theMat);
@@ -305,7 +305,7 @@ public:
   }
 
   //! Compute matrix multiplication product.
-  //! @param theMat [in] the other matrix.
+  //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
   Standard_NODISCARD NCollection_Mat4 operator* (const NCollection_Mat4& theMat) const
   {
@@ -313,7 +313,7 @@ public:
   }
 
   //! Compute matrix multiplication product.
-  //! @param theMat [in] the other matrix.
+  //! @param[in] theMat  the other matrix.
   //! @return result of multiplication.
   Standard_NODISCARD NCollection_Mat4 Multiplied (const NCollection_Mat4& theMat) const
   {
@@ -323,7 +323,7 @@ public:
   }
 
   //! Compute per-component multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   void Multiply (const Element_t theFactor)
   {
     for (size_t i = 0; i < 16; ++i)
@@ -333,7 +333,7 @@ public:
   }
 
   //! Compute per-element multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   NCollection_Mat4& operator*= (const Element_t theFactor)
   {
     Multiply (theFactor);
@@ -341,7 +341,7 @@ public:
   }
 
   //! Compute per-element multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
   Standard_NODISCARD NCollection_Mat4 operator* (const Element_t theFactor) const
   {
@@ -349,7 +349,7 @@ public:
   }
 
   //! Compute per-element multiplication.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   //! @return the result of multiplication.
   Standard_NODISCARD NCollection_Mat4 Multiplied (const Element_t theFactor) const
   {
@@ -359,7 +359,7 @@ public:
   }
 
   //! Compute per-component division.
-  //! @param theFactor [in] the scale factor.
+  //! @param[in] theFactor  the scale factor.
   void Divide (const Element_t theFactor)
   {
     for (size_t i = 0; i < 16; ++i)
@@ -369,7 +369,7 @@ public:
   }
 
   //! Per-component division.
-  //! @param theScalar [in] the scale factor.
+  //! @param[in] theScalar  the scale factor.
   NCollection_Mat4& operator/= (const Element_t theScalar)
   {
     Divide (theScalar);
@@ -459,7 +459,7 @@ public:
   Standard_NODISCARD NCollection_Mat4 operator-() const { return Negated(); }
 
   //! Translate the matrix on the passed vector.
-  //! @param theVec [in] the translation vector.
+  //! @param[in] theVec  the translation vector.
   void Translate (const NCollection_Vec3<Element_t>& theVec)
   {
     NCollection_Mat4 aTempMat;
@@ -486,8 +486,8 @@ public:
   }
 
   //! Compute inverted matrix.
-  //! @param theOutMx [out] the inverted matrix
-  //! @param theDet   [out] determinant of matrix
+  //! @param[out] theOutMx  the inverted matrix
+  //! @param[out] theDet    determinant of matrix
   //! @return true if reversion success
   bool Inverted (NCollection_Mat4<Element_t>& theOutMx, Element_t& theDet) const
   {
@@ -578,7 +578,7 @@ public:
   }
 
   //! Compute inverted matrix.
-  //! @param theOutMx [out] the inverted matrix
+  //! @param[out] theOutMx  the inverted matrix
   //! @return true if reversion success
   bool Inverted (NCollection_Mat4<Element_t>& theOutMx) const
   {

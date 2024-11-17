@@ -172,7 +172,7 @@ public:
   bool IsStopped() { return myState != AnimationState_Started; }
 
   //! Update single frame of animation, update timer state
-  //! @param thePts [in] the time moment within [0; Duration()]
+  //! @param[in] thePts  the time moment within [0; Duration()]
   //! @return True if timeline is in progress
   Standard_EXPORT virtual Standard_Boolean Update (const Standard_Real thePts);
 

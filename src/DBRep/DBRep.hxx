@@ -41,18 +41,18 @@ public:
   Standard_EXPORT static void Set (const Standard_CString Name, const TopoDS_Shape& S);
   
   //! Returns the shape in the variable.
-  //! @param theName [in] [out] variable name, or "." to pick up shape interactively (the picked name will be returned then)
-  //! @param theType [in]       shape type filter; function will return NULL if shape has different type
-  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  //! @param[in][out] theName   variable name, or "." to pick up shape interactively (the picked name will be returned then)
+  //! @param[in] theType        shape type filter; function will return NULL if shape has different type
+  //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
   static TopoDS_Shape Get (Standard_CString& theName, TopAbs_ShapeEnum theType = TopAbs_SHAPE, Standard_Boolean theToComplain = Standard_False)
   {
     return getShape (theName, theType, theToComplain);
   }
 
   //! Returns the shape in the variable.
-  //! @param theName [in] [out] variable name, or "." to pick up shape interactively (the picked name will be returned then)
-  //! @param theType [in]       shape type filter; function will return NULL if shape has different type
-  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  //! @param[in][out] theName   variable name, or "." to pick up shape interactively (the picked name will be returned then)
+  //! @param[in] theType        shape type filter; function will return NULL if shape has different type
+  //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
   static TopoDS_Shape Get (TCollection_AsciiString& theName, TopAbs_ShapeEnum theType = TopAbs_SHAPE, Standard_Boolean theToComplain = Standard_False)
   {
     Standard_CString aNamePtr = theName.ToCString();
@@ -65,9 +65,9 @@ public:
   }
 
   //! Returns the shape in the variable.
-  //! @param theName [in] variable name
-  //! @param theType [in] shape type filter; function will return NULL if shape has different type
-  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  //! @param[in] theName  variable name
+  //! @param[in] theType  shape type filter; function will return NULL if shape has different type
+  //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
   static TopoDS_Shape GetExisting (const TCollection_AsciiString& theName, TopAbs_ShapeEnum theType = TopAbs_SHAPE, Standard_Boolean theToComplain = Standard_False)
   {
     if (theName.Length() == 1
@@ -110,9 +110,9 @@ public:
 protected:
 
   //! Returns the shape in the variable.
-  //! @param theName [in] [out] variable name, or "." to pick up shape interactively (the picked name will be returned then)
-  //! @param theType [in]       shape type filter; function will return NULL if shape has different type
-  //! @param theToComplain [in] when TRUE, prints a message on cout if the variable is not set
+  //! @param[in][out] theName   variable name, or "." to pick up shape interactively (the picked name will be returned then)
+  //! @param[in] theType        shape type filter; function will return NULL if shape has different type
+  //! @param[in] theToComplain  when TRUE, prints a message on cout if the variable is not set
   Standard_EXPORT static TopoDS_Shape getShape (Standard_CString& theName,
                                                 TopAbs_ShapeEnum theType,
                                                 Standard_Boolean theToComplain);

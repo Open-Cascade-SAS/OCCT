@@ -117,8 +117,8 @@ private:
   //! This method should be used for elements which can be used in scope of rendering algorithms.
   //! E.g. elements of groups during recursive rendering.
   //! If render filter is null, pure rendering is performed.
-  //! @param theWorkspace [in] the rendering workspace
-  //! @param theFilter    [in] the rendering filter to check whether the element should be rendered or not
+  //! @param[in] theWorkspace  the rendering workspace
+  //! @param[in] theFilter     the rendering filter to check whether the element should be rendered or not
   //! @return True if element passes the check and renders
   Standard_EXPORT bool renderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
                                        OpenGl_Element* theElement) const;

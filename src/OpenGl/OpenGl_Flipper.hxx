@@ -31,11 +31,11 @@ public:
 
   //! Construct rendering element to flip model-view matrix
   //! along the reference system to ensure up-Y, right-X orientation.
-  //! @param theReferenceSystem [in] the reference coordinate system.
+  //! @param[in] theReferenceSystem  the reference coordinate system.
   Standard_EXPORT OpenGl_Flipper (const gp_Ax2& theReferenceSystem);
 
   //! Set options for the element.
-  //! @param theIsEnabled [in] flag indicates whether the flipper
+  //! @param[in] theIsEnabled  flag indicates whether the flipper
   //! matrix modification should be set up or restored back.
   void SetOptions (const Standard_Boolean theIsEnabled) { myIsEnabled = theIsEnabled; }
 

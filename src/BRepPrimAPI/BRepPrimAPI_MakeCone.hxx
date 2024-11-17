@@ -39,23 +39,23 @@ public:
 
 
   //! Make a cone.
-  //! @param R1 [in] cone bottom radius, may be null (z = 0)
-  //! @param R2 [in] cone top radius, may be null (z = H)
-  //! @param H  [in] cone height
+  //! @param[in] R1  cone bottom radius, may be null (z = 0)
+  //! @param[in] R2  cone top radius, may be null (z = H)
+  //! @param[in] H   cone height
   Standard_EXPORT BRepPrimAPI_MakeCone(const Standard_Real R1, const Standard_Real R2, const Standard_Real H);
 
   //! Make a cone.
-  //! @param R1    [in] cone bottom radius, may be null (z = 0)
-  //! @param R2    [in] cone top radius, may be null (z = H)
-  //! @param H     [in] cone height
-  //! @param angle [in] angle to create a part cone
+  //! @param[in] R1     cone bottom radius, may be null (z = 0)
+  //! @param[in] R2     cone top radius, may be null (z = H)
+  //! @param[in] H      cone height
+  //! @param[in] angle  angle to create a part cone
   Standard_EXPORT BRepPrimAPI_MakeCone(const Standard_Real R1, const Standard_Real R2, const Standard_Real H, const Standard_Real angle);
 
   //! Make a cone.
-  //! @param axes [in] coordinate system for the construction of the cone
-  //! @param R1   [in] cone bottom radius, may be null (z = 0)
-  //! @param R2   [in] cone top radius, may be null (z = H)
-  //! @param H    [in] cone height
+  //! @param[in] axes  coordinate system for the construction of the cone
+  //! @param[in] R1    cone bottom radius, may be null (z = 0)
+  //! @param[in] R2    cone top radius, may be null (z = H)
+  //! @param[in] H     cone height
   Standard_EXPORT BRepPrimAPI_MakeCone(const gp_Ax2& Axes, const Standard_Real R1, const Standard_Real R2, const Standard_Real H);
   
   //! Make a cone of height H radius R1 in the plane z =

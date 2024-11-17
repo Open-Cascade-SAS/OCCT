@@ -68,8 +68,8 @@ public:
   Standard_EXPORT virtual void UpdateMemStats (Graphic3d_FrameStatsDataTmp& theStats) const;
 
   //! Increment draw calls statistics.
-  //! @param theStats [in] [out] frame counters to increment
-  //! @param theIsDetailed  [in] indicate detailed dump (more counters - number of triangles, points, etc.)
+  //! @param[in][out] theStats   frame counters to increment
+  //! @param[in] theIsDetailed   indicate detailed dump (more counters - number of triangles, points, etc.)
   Standard_EXPORT virtual void UpdateDrawStats (Graphic3d_FrameStatsDataTmp& theStats,
                                                  bool theIsDetailed) const;
 

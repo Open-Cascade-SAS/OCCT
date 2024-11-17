@@ -69,55 +69,55 @@ public:
   //!     the package Geom2d (in the case of an Adaptor2d_Curve2d curve)
   //!     or a 3D curve from the package Geom (in the case of an Adaptor3d_Curve curve),
   //! -   and those required on the curve by the computation algorithm.
-  //! @param theC [in] input 3D curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
+  //! @param[in] theC  input 3D curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
   Standard_EXPORT GCPnts_QuasiUniformAbscissa (const Adaptor3d_Curve& theC,
                                                const Standard_Integer theNbPoints,
                                                const Standard_Real theU1, const Standard_Real theU2);
 
   //! Initialize the algorithms with 3D curve and target number of points.
-  //! @param theC [in] input 3D curve
-  //! @param theNbPoints [in] defines the number of desired points
+  //! @param[in] theC  input 3D curve
+  //! @param[in] theNbPoints  defines the number of desired points
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Integer theNbPoints);
 
   //! Initialize the algorithms with 3D curve, target number of points and curve parameter range.
-  //! @param theC [in] input 3D curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
+  //! @param[in] theC  input 3D curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Integer theNbPoints,
                                    const Standard_Real theU1, const Standard_Real theU2);
 
   //! Computes a uniform abscissa distribution of points on the 2D curve.
-  //! @param theC [in] input 2D curve
-  //! @param theNbPoints [in] defines the number of desired points
+  //! @param[in] theC  input 2D curve
+  //! @param[in] theNbPoints  defines the number of desired points
   Standard_EXPORT GCPnts_QuasiUniformAbscissa (const Adaptor2d_Curve2d& theC,
                                                const Standard_Integer theNbPoints);
 
   //! Computes a Uniform abscissa distribution of points on a part of the 2D curve.
-  //! @param theC [in] input 2D curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
+  //! @param[in] theC  input 2D curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
   Standard_EXPORT GCPnts_QuasiUniformAbscissa (const Adaptor2d_Curve2d& theC,
                                                const Standard_Integer theNbPoints,
                                                const Standard_Real theU1, const Standard_Real theU2);
 
   //! Initialize the algorithms with 2D curve and target number of points.
-  //! @param theC [in] input 2D curve
-  //! @param theNbPoints [in] defines the number of desired points
+  //! @param[in] theC  input 2D curve
+  //! @param[in] theNbPoints  defines the number of desired points
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Integer theNbPoints);
   
   //! Initialize the algorithms with 2D curve, target number of points and curve parameter range.
-  //! @param theC [in] input 2D curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
+  //! @param[in] theC  input 2D curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Integer theNbPoints,
                                    const Standard_Real theU1, const Standard_Real theU2);

@@ -327,7 +327,7 @@ public:
   //! The sublevel value might be processed later using the same method.
   //!
   //! @param theStreamStr stream value
-  //! @param theKeyToValues [out] container of split values. It contains key to value and position of the value in the stream text
+  //! @param[out] theKeyToValues  container of split values. It contains key to value and position of the value in the stream text
   Standard_EXPORT static Standard_Boolean SplitJson (const TCollection_AsciiString& theStreamStr,
                                                      NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue>& theKeyToValues);
 
@@ -365,7 +365,7 @@ public:
                                                                  const bool isShortInfo = true);
 
   //! Append into output value: "Name": { Field }
-  //! @param theOStream [out] stream to be fill with values
+  //! @param[out] theOStream  stream to be fill with values
   //! @param theKey a source value
   //! @param theField stream value
   Standard_EXPORT static void DumpKeyToClass (Standard_OStream& theOStream,
@@ -373,13 +373,13 @@ public:
                                               const TCollection_AsciiString& theField);
 
   //! Unite values in one value using template: "value_1", "value_2", ..., "value_n"
-  //! @param theOStream [out] stream to be fill with values
-  //! @param theCount   [in]  number of values
+  //! @param[out] theOStream  stream to be fill with values
+  //! @param[in] theCount     number of values
   Standard_EXPORT static void DumpCharacterValues (Standard_OStream& theOStream, int theCount, ...);
 
   //! Unite values in one value using template: value_1, value_2, ..., value_n
-  //! @param theOStream [out] stream to be fill with values
-  //! @param theCount   [in]  number of values
+  //! @param[out] theOStream  stream to be fill with values
+  //! @param[in] theCount     number of values
   Standard_EXPORT static void DumpRealValues (Standard_OStream& theOStream, int theCount, ...);
 
   //! Check whether the parameter name is equal to the name in the stream at position

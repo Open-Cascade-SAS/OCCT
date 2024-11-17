@@ -65,9 +65,9 @@ public:
   Standard_EXPORT static Handle(Geom_Surface) Surface (const TopoDS_Face& F);
 
   //! Returns the triangulation of the face according to the mesh purpose.
-  //! @param theFace [in] the input face to find triangulation.
-  //! @param theLocation [out] the face location.
-  //! @param theMeshPurpose [in] a mesh purpose to find appropriate triangulation (NONE by default).
+  //! @param[in] theFace  the input face to find triangulation.
+  //! @param[out] theLocation  the face location.
+  //! @param[in] theMeshPurpose  a mesh purpose to find appropriate triangulation (NONE by default).
   //! @return an active triangulation in case of NONE purpose,
   //!         the first triangulation appropriate for the input purpose,
   //!         just the first triangulation if none matching other criteria and input purpose is AnyFallback
@@ -76,8 +76,8 @@ public:
                                                                           const Poly_MeshPurpose theMeshPurpose = Poly_MeshPurpose_NONE);
 
   //! Returns all triangulations of the face.
-  //! @param theFace [in] the input face.
-  //! @param theLocation [out] the face location.
+  //! @param[in] theFace  the input face.
+  //! @param[out] theLocation  the face location.
   //! @return list of all available face triangulations.
   Standard_EXPORT static const Poly_ListOfTriangulation& Triangulations (const TopoDS_Face& theFace, TopLoc_Location& theLocation);
 
@@ -269,9 +269,9 @@ public:
   Standard_EXPORT static Standard_Real Tolerance (const TopoDS_Vertex& V);
   
   //! Finds the parameter of <theV> on <theE>.
-  //! @param theV [in] input vertex
-  //! @param theE [in] input edge
-  //! @param theParam  [out] calculated parameter on the curve
+  //! @param[in] theV  input vertex
+  //! @param[in] theE  input edge
+  //! @param[out] theParam   calculated parameter on the curve
   //! @return TRUE if done
   Standard_EXPORT static Standard_Boolean Parameter (const TopoDS_Vertex& theV,
 	                                                   const TopoDS_Edge& theE,

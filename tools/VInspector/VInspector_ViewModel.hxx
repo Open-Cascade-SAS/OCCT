@@ -63,7 +63,7 @@ public:
   //! Returns tree view indices for the given pointers of presentable object
   //! \param thePointers a list of presentation pointers
   //! \param theParent an index of the parent item
-  //! \param [out] container of indices
+  //! \param[out]  container of indices
   Standard_EXPORT void FindPointers (const QStringList& thePointers,
                                      const QModelIndex& theParent,
                                      QModelIndexList& theFoundIndices);

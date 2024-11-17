@@ -152,7 +152,7 @@ public:
   //! The auto z-fit has extra parameters which can controlled from application level
   //! to ensure that the size of viewing volume will be sufficiently large to cover
   //! the depth of unmanaged objects, for example, transformation persistent ones.
-  //! @param theScaleFactor [in] the scale factor for Z-range.
+  //! @param[in] theScaleFactor  the scale factor for Z-range.
   //! The range between Z-min, Z-max projection volume planes
   //! evaluated by z fitting method will be scaled using this coefficient.
   //! Program error exception is thrown if negative or zero value
@@ -465,10 +465,10 @@ public:
   //! view projection. Can be used to perform interactive panning operation.
   //! In that case the DXv, DXy parameters specify panning relative to the
   //! point where the operation is started.
-  //! @param theDXv [in] the relative panning on "x" axis of view projection, in view space coordinates.
-  //! @param theDYv [in] the relative panning on "y" axis of view projection, in view space coordinates.
-  //! @param theZoomFactor [in] the zooming factor.
-  //! @param theToStart [in] pass TRUE when starting panning to remember view
+  //! @param[in] theDXv  the relative panning on "x" axis of view projection, in view space coordinates.
+  //! @param[in] theDYv  the relative panning on "y" axis of view projection, in view space coordinates.
+  //! @param[in] theZoomFactor  the zooming factor.
+  //! @param[in] theToStart  pass TRUE when starting panning to remember view
   //! state prior to panning for relative arguments. If panning is started,
   //! passing {0, 0} for {theDXv, theDYv} will return view to initial state.
   //! Performs update of view.
@@ -478,8 +478,8 @@ public:
   //! {Xp, Yp} pixel coordinates relative to the bottom-left corner of
   //! screen. To calculate pixel coordinates for any point from world
   //! coordinate space, it can be projected using "Project".
-  //! @param theXp [in] the x coordinate.
-  //! @param theYp [in] the y coordinate.
+  //! @param[in] theXp  the x coordinate.
+  //! @param[in] theYp  the y coordinate.
   Standard_EXPORT void SetCenter (const Standard_Integer theXp, const Standard_Integer theYp);
 
   //! Defines the view projection size in its maximum dimension,
@@ -518,17 +518,17 @@ public:
   //! The Z clipping range (depth range) is fitted if AutoZFit flag is TRUE.
   //! Throws program error exception if margin coefficient is < 0 or >= 1.
   //! Updates the view.
-  //! @param theMargin [in] the margin coefficient for view borders.
-  //! @param theToUpdate [in] flag to perform view update.
+  //! @param[in] theMargin  the margin coefficient for view borders.
+  //! @param[in] theToUpdate  flag to perform view update.
   Standard_EXPORT void FitAll (const Standard_Real theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
 
   //! Adjust view parameters to fit the displayed scene, respecting height / width ratio
   //! according to the custom bounding box given.
   //! Throws program error exception if margin coefficient is < 0 or >= 1.
   //! Updates the view.
-  //! @param theBox [in] the custom bounding box to fit.
-  //! @param theMargin [in] the margin coefficient for view borders.
-  //! @param theToUpdate [in] flag to perform view update.
+  //! @param[in] theBox  the custom bounding box to fit.
+  //! @param[in] theMargin  the margin coefficient for view borders.
+  //! @param[in] theToUpdate  flag to perform view update.
   Standard_EXPORT void FitAll (const Bnd_Box& theBox, const Standard_Real theMargin = 0.01, const Standard_Boolean theToUpdate = Standard_True);
 
   //! Adjusts the viewing volume so as not to clip the displayed objects by front and back
@@ -546,10 +546,10 @@ public:
   //! Centers the defined PIXEL window so that it occupies
   //! the maximum space while respecting the initial height/width ratio.
   //! NOTE than the original Z size of the view is NOT modified.
-  //! @param theMinXp [in] pixel coordinates of minimal corner on x screen axis.
-  //! @param theMinYp [in] pixel coordinates of minimal corner on y screen axis.
-  //! @param theMaxXp [in] pixel coordinates of maximal corner on x screen axis.
-  //! @param theMaxYp [in] pixel coordinates of maximal corner on y screen axis.
+  //! @param[in] theMinXp  pixel coordinates of minimal corner on x screen axis.
+  //! @param[in] theMinYp  pixel coordinates of minimal corner on y screen axis.
+  //! @param[in] theMaxXp  pixel coordinates of maximal corner on x screen axis.
+  //! @param[in] theMaxYp  pixel coordinates of maximal corner on y screen axis.
   Standard_EXPORT void WindowFit (const Standard_Integer theMinXp, const Standard_Integer theMinYp, const Standard_Integer theMaxXp, const Standard_Integer theMaxYp);
 
   //! Saves the current view mapping. This will be the
@@ -739,10 +739,10 @@ public:
   //! view projection. Can be used to perform interactive panning operation.
   //! In that case the DXp, DXp parameters specify panning relative to the
   //! point where the operation is started.
-  //! @param theDXp [in] the relative panning on "x" axis of view projection, in pixels.
-  //! @param theDYp [in] the relative panning on "y" axis of view projection, in pixels.
-  //! @param theZoomFactor [in] the zooming factor.
-  //! @param theToStart [in] pass TRUE when starting panning to remember view
+  //! @param[in] theDXp  the relative panning on "x" axis of view projection, in pixels.
+  //! @param[in] theDYp  the relative panning on "y" axis of view projection, in pixels.
+  //! @param[in] theZoomFactor  the zooming factor.
+  //! @param[in] theToStart  pass TRUE when starting panning to remember view
   //! state prior to panning for relative arguments. Passing 0 for relative
   //! panning parameter should return view panning to initial state.
   //! Performs update of view.
@@ -750,15 +750,15 @@ public:
 
   //! Zoom the view according to a zoom factor computed
   //! from the distance between the 2 mouse position.
-  //! @param theXp1 [in] the x coordinate of first mouse position, in pixels.
-  //! @param theYp1 [in] the y coordinate of first mouse position, in pixels.
-  //! @param theXp2 [in] the x coordinate of second mouse position, in pixels.
-  //! @param theYp2 [in] the y coordinate of second mouse position, in pixels.
+  //! @param[in] theXp1  the x coordinate of first mouse position, in pixels.
+  //! @param[in] theYp1  the y coordinate of first mouse position, in pixels.
+  //! @param[in] theXp2  the x coordinate of second mouse position, in pixels.
+  //! @param[in] theYp2  the y coordinate of second mouse position, in pixels.
   Standard_EXPORT void Zoom (const Standard_Integer theXp1, const Standard_Integer theYp1, const Standard_Integer theXp2, const Standard_Integer theYp2);
 
   //! Defines starting point for ZoomAtPoint view operation.
-  //! @param theXp [in] the x mouse coordinate, in pixels.
-  //! @param theYp [in] the y mouse coordinate, in pixels.
+  //! @param[in] theXp  the x mouse coordinate, in pixels.
+  //! @param[in] theYp  the y mouse coordinate, in pixels.
   Standard_EXPORT void StartZoomAtPoint (const Standard_Integer theXp, const Standard_Integer theYp);
 
   //! Zooms the model at a pixel defined by the method StartZoomAtPoint().
@@ -808,12 +808,12 @@ public:
   }
 
   //! Transform camera eye, center and scale to fit in the passed bounding box specified in WCS.
-  //! @param theCamera [in] the camera
-  //! @param theBox    [in] the bounding box
-  //! @param theMargin [in] the margin coefficient for view borders
-  //! @param theResolution [in] the minimum size of projection of bounding box in Xv or Yv direction when it considered to be a thin plane or point (without a volume);
+  //! @param[in] theCamera  the camera
+  //! @param[in] theBox     the bounding box
+  //! @param[in] theMargin  the margin coefficient for view borders
+  //! @param[in] theResolution  the minimum size of projection of bounding box in Xv or Yv direction when it considered to be a thin plane or point (without a volume);
   //!                           in this case only the center of camera is adjusted
-  //! @param theToEnlargeIfLine [in] when TRUE - in cases when the whole bounding box projected into thin line going along Z-axis of screen,
+  //! @param[in] theToEnlargeIfLine  when TRUE - in cases when the whole bounding box projected into thin line going along Z-axis of screen,
   //!                                the view plane is enlarged such thatwe see the whole line on rotation, otherwise only the center of camera is adjusted.
   //! @return TRUE if the fit all operation can be done
   Standard_EXPORT Standard_Boolean FitMinMax (const Handle(Graphic3d_Camera)& theCamera,
@@ -884,11 +884,11 @@ public:
   //! rendering space to convex volume. Number of supported clip planes can be consulted
   //! by PlaneLimit method of associated Graphic3d_GraphicDriver.
   //! Please be aware that the planes which exceed the limit are ignored during rendering.
-  //! @param thePlane [in] the clip plane to be added to view.
+  //! @param[in] thePlane  the clip plane to be added to view.
   Standard_EXPORT virtual void AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane);
 
   //! Removes clip plane from the view.
-  //! @param thePlane [in] the clip plane to be removed from view.
+  //! @param[in] thePlane  the clip plane to be removed from view.
   Standard_EXPORT virtual void RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane);
 
   //! Get clip planes.
@@ -901,7 +901,7 @@ public:
   //! clip planes can be consulted by InquirePlaneLimit method of
   //! Graphic3d_GraphicDriver. Please be aware that the planes that
   //! exceed the limit are ignored during rendering.
-  //! @param thePlanes [in] the clip planes to set.
+  //! @param[in] thePlanes  the clip planes to set.
   Standard_EXPORT void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes);
 
   //! Returns the MAX number of clipping planes associated to the view.
@@ -1006,8 +1006,8 @@ protected:
   //! Scales camera to fit the view frame of defined width and height
   //! keeping the aspect. For orthogonal camera the method changes scale,
   //! for perspective adjusts Eye location about the Center point.
-  //! @param theSizeXv [in] size of viewport frame on "x" axis.
-  //! @param theSizeYv [in] size of viewport frame on "y" axis.
+  //! @param[in] theSizeXv  size of viewport frame on "x" axis.
+  //! @param[in] theSizeYv  size of viewport frame on "y" axis.
   Standard_EXPORT void Scale (const Handle(Graphic3d_Camera)& theCamera, const Standard_Real theSizeXv, const Standard_Real theSizeYv) const;
 
   Standard_EXPORT void Translate (const Handle(Graphic3d_Camera)& theCamera, const Standard_Real theDXv, const Standard_Real theDYv) const;

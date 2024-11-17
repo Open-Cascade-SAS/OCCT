@@ -177,7 +177,7 @@ public:
 
   //! Returns presentations of sub items
   //! \param theIndices a container of selected indices
-  //! \thePresentations [out] container of presentations
+  //! \thePresentations[out]  container of presentations
   Standard_EXPORT static void SubItemsPresentations (const QModelIndexList& theIndices,
                                                      NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
@@ -198,7 +198,7 @@ protected:
 
   //! Returns presentations of sub items. Recursive method to get presentations of all children
   //! \param theItem an item to get own presentations and presentations of children
-  //! \thePresentations [out] container of presentations found
+  //! \thePresentations[out]  container of presentations found
   static void subItemsPresentations (const TreeModel_ItemBasePtr& theItem,
                                     NCollection_List<Handle(Standard_Transient)>& thePresentations);
 

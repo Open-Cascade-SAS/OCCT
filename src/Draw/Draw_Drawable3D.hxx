@@ -37,14 +37,14 @@ public:
   typedef Handle(Draw_Drawable3D)(*FactoryFunction_t)(Standard_IStream& theStream);
 
   //! Register factory for restoring drawable from stream (opposite to Draw_Drawable3D::Save()).
-  //! @param theType [in] class name
-  //! @param theFactory [in] factory function
+  //! @param[in] theType  class name
+  //! @param[in] theFactory  factory function
   Standard_EXPORT static void RegisterFactory (const Standard_CString theType,
                                                const FactoryFunction_t& theFactory);
 
   //! Restore drawable from stream (opposite to Draw_Drawable3D::Save()).
-  //! @param theType [in] class name
-  //! @param theStream [in] input stream
+  //! @param[in] theType  class name
+  //! @param[in] theStream  input stream
   //! @return restored drawable or NULL if factory is undefined for specified class
   Standard_EXPORT static Handle(Draw_Drawable3D) Restore (const Standard_CString theType,
                                                           Standard_IStream& theStream);

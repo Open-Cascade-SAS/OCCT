@@ -290,7 +290,7 @@ public: //! @name Style management API
   const Quantity_Color& BoxColor() const { return myDrawer->ShadingAspect()->Color(); }
 
   //! Set new value of front color for the 3D part of object.
-  //! @param theColor [in] input color value.
+  //! @param[in] theColor  input color value.
   void SetBoxColor (const Quantity_Color& theColor)
   {
     if (!myDrawer->ShadingAspect()->Color().IsEqual (theColor)
@@ -308,7 +308,7 @@ public: //! @name Style management API
   Standard_Real BoxTransparency() const { return myDrawer->ShadingAspect()->Transparency(); }
 
   //! Set new value of transparency for 3D part of object.
-  //! @param theValue [in] input transparency value
+  //! @param[in] theValue  input transparency value
   void SetBoxTransparency (Standard_Real theValue)
   {
     if (Abs (myDrawer->ShadingAspect()->Transparency() - theValue) > Precision::Confusion()
@@ -412,7 +412,7 @@ public: //! @name Style management API
 public:
 
   //! Set new value of color for the whole object.
-  //! @param theColor [in] input color value.
+  //! @param[in] theColor  input color value.
   virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE
   {
     SetBoxColor (theColor);
@@ -428,7 +428,7 @@ public:
   }
 
   //! Set new value of transparency for the whole object.
-  //! @param theValue [in] input transparency value.
+  //! @param[in] theValue  input transparency value.
   virtual void SetTransparency (const Standard_Real theValue) Standard_OVERRIDE
   {
     SetBoxTransparency (theValue);
@@ -469,7 +469,7 @@ public: //! @name animation methods
   Standard_EXPORT Standard_Real Duration() const;
 
   //! Set duration of animation.
-  //! @param theValue [in] input value of duration in seconds
+  //! @param[in] theValue  input value of duration in seconds
   Standard_EXPORT void SetDuration (Standard_Real theValue);
 
   //! Return TRUE if new camera Up direction should be always set to default value for a new camera Direction; FALSE by default.
@@ -490,11 +490,11 @@ public: //! @name animation methods
   Standard_EXPORT Standard_Boolean HasAnimation() const;
 
   //! Start camera transformation corresponding to the input detected owner.
-  //! @param theOwner [in] detected owner.
+  //! @param[in] theOwner  detected owner.
   Standard_EXPORT virtual void StartAnimation (const Handle(AIS_ViewCubeOwner)& theOwner);
 
   //! Perform one step of current camera transformation.
-  //! theToUpdate [in] enable/disable update of view.
+  //! theToUpdate[in]  enable/disable update of view.
   //! @return TRUE if animation is not stopped.
   Standard_EXPORT virtual Standard_Boolean UpdateAnimation (const Standard_Boolean theToUpdate);
 
@@ -508,7 +508,7 @@ protected:
   Standard_EXPORT Standard_Boolean updateAnimation();
 
   //! Fit selected/all into view.
-  //! @param theView [in] view definition to retrieve scene bounding box
+  //! @param[in] theView  view definition to retrieve scene bounding box
   //! @param theCamera [in,out] camera definition
   Standard_EXPORT virtual void viewFitAll (const Handle(V3d_View)& theView,
                                            const Handle(Graphic3d_Camera)& theCamera);
@@ -530,17 +530,17 @@ public: //! @name Presentation computation
   virtual Handle(SelectMgr_EntityOwner) GlobalSelOwner() const Standard_OVERRIDE { return Handle(SelectMgr_EntityOwner)(); }
 
   //! Compute 3D part of View Cube.
-  //! @param thePrsMgr [in] presentation manager.
-  //! @param thePrs [in] input presentation that is to be filled with flat presentation primitives.
-  //! @param theMode [in] display mode.
+  //! @param[in] thePrsMgr  presentation manager.
+  //! @param[in] thePrs  input presentation that is to be filled with flat presentation primitives.
+  //! @param[in] theMode  display mode.
   //! @warning this object accept only 0 display mode.
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                                         const Handle(Prs3d_Presentation)& thePrs,
                                         const Standard_Integer theMode = 0) Standard_OVERRIDE;
 
   //! Redefine computing of sensitive entities for View Cube.
-  //! @param theSelection [in] input selection object that is to be filled with sensitive entities.
-  //! @param theMode [in] selection mode.
+  //! @param[in] theSelection  input selection object that is to be filled with sensitive entities.
+  //! @param[in] theMode  selection mode.
   //! @warning object accepts only 0 selection mode.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
@@ -553,9 +553,9 @@ public: //! @name Presentation computation
   virtual void ClearSelected() Standard_OVERRIDE {}
 
   //! Method which highlights input owner belonging to this selectable object.
-  //! @param thePM [in] presentation manager
-  //! @param theStyle [in] style for dynamic highlighting.
-  //! @param theOwner [in] input entity owner.
+  //! @param[in] thePM  presentation manager
+  //! @param[in] theStyle  style for dynamic highlighting.
+  //! @param[in] theOwner  input entity owner.
   Standard_EXPORT virtual void HilightOwnerWithColor (const Handle(PrsMgr_PresentationManager)& thePM,
                                                       const Handle(Prs3d_Drawer)& theStyle,
                                                       const Handle(SelectMgr_EntityOwner)& theOwner) Standard_OVERRIDE;
@@ -586,7 +586,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
   //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
   //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
-  //! @param theDir     [in] part to define
+  //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxPartTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
                                                        Standard_Integer& theNbNodes,
                                                        Standard_Integer& theNbTris,
@@ -596,7 +596,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
   //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
   //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
-  //! @param theDir     [in] part to define
+  //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxSideTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
                                                        Standard_Integer& theNbNodes,
                                                        Standard_Integer& theNbTris,
@@ -606,7 +606,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
   //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
   //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
-  //! @param theDir     [in] part to define
+  //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxEdgeTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
                                                        Standard_Integer& theNbNodes,
                                                        Standard_Integer& theNbTris,
@@ -616,7 +616,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
   //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
   //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
-  //! @param theDir     [in] part to define
+  //! @param[in] theDir      part to define
   Standard_EXPORT virtual void createBoxCornerTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
                                                          Standard_Integer& theNbNodes,
                                                          Standard_Integer& theNbTris,
@@ -628,9 +628,9 @@ protected:
   //! @param theTris    [in,out] triangulation to fill, or NULL to return size
   //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
   //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
-  //! @param theSize    [in] rectangle dimensions
-  //! @param theRadius  [in] radius at corners
-  //! @param theTrsf    [in] transformation
+  //! @param[in] theSize     rectangle dimensions
+  //! @param[in] theRadius   radius at corners
+  //! @param[in] theTrsf     transformation
   Standard_EXPORT static void createRoundRectangleTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
                                                              Standard_Integer& theNbNodes,
                                                              Standard_Integer& theNbTris,

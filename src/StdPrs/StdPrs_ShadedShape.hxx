@@ -61,7 +61,7 @@ public:
 public:
 
   //! Create primitive array with triangles for specified shape.
-  //! @param theShape [in] the shape with precomputed triangulation
+  //! @param[in] theShape  the shape with precomputed triangulation
   static Handle(Graphic3d_ArrayOfTriangles) FillTriangles (const TopoDS_Shape& theShape)
   {
     gp_Pnt2d aDummy;

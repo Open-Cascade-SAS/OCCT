@@ -52,13 +52,13 @@ public:
 public:
 
   //! Get last detected triangle.
-  //! @param theTriangle [out] triangle node indexes
+  //! @param[out] theTriangle  triangle node indexes
   //! @return TRUE if defined
   Standard_EXPORT bool LastDetectedTriangle (Poly_Triangle& theTriangle) const;
 
   //! Get last detected triangle.
-  //! @param theTriangle [out] triangle node indexes
-  //! @param theTriNodes [out] triangle nodes (with pre-applied transformation)
+  //! @param[out] theTriangle  triangle node indexes
+  //! @param[out] theTriNodes  triangle nodes (with pre-applied transformation)
   //! @return TRUE if defined
   Standard_EXPORT bool LastDetectedTriangle (Poly_Triangle& theTriangle,
                                              gp_Pnt theTriNodes[3]) const;

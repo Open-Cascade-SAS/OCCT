@@ -24,10 +24,10 @@ class Prs3d_ToolSphere : public Prs3d_ToolQuadric
 public:
 
   //! Generate primitives for 3D quadric surface.
-  //! @param theRadius   [in] sphere radius
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
-  //! @param theTrsf     [in] optional transformation to apply
+  //! @param[in] theRadius    sphere radius
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
+  //! @param[in] theTrsf      optional transformation to apply
   //! @return generated triangulation
   Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theRadius,
                                                                     const Standard_Integer theNbSlices,
@@ -36,9 +36,9 @@ public:
 public:
 
   //! Initializes the algorithm creating a sphere.
-  //! @param theRadius   [in] sphere radius
-  //! @param theNbSlices [in] number of slices within U parameter
-  //! @param theNbStacks [in] number of stacks within V parameter
+  //! @param[in] theRadius    sphere radius
+  //! @param[in] theNbSlices  number of slices within U parameter
+  //! @param[in] theNbStacks  number of stacks within V parameter
   Standard_EXPORT Prs3d_ToolSphere (const Standard_Real    theRadius,
                                     const Standard_Integer theNbSlices,
                                     const Standard_Integer theNbStacks);

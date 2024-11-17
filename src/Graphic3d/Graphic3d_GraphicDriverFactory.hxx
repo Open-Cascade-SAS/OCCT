@@ -30,8 +30,8 @@ class Graphic3d_GraphicDriverFactory : public Standard_Transient
 public:
 
   //! Registers factory.
-  //! @param theFactory     [in] factory to register
-  //! @param theIsPreferred [in] add to the beginning of the list when TRUE, or add to the end otherwise
+  //! @param[in] theFactory      factory to register
+  //! @param[in] theIsPreferred  add to the beginning of the list when TRUE, or add to the end otherwise
   Standard_EXPORT static void RegisterFactory (const Handle(Graphic3d_GraphicDriverFactory)& theFactory,
                                                bool theIsPreferred = false);
 

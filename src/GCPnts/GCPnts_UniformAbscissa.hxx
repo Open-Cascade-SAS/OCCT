@@ -35,20 +35,20 @@ public:
   Standard_EXPORT GCPnts_UniformAbscissa();
 
   //! Computes a uniform abscissa distribution of points on the 3D curve.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor3d_Curve& theC,
                                           const Standard_Real theAbscissa,
                                           const Standard_Real theToler = -1);
 
   //! Computes a Uniform abscissa distribution of points on a part of the 3D Curve.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor3d_Curve& theC,
                                           const Standard_Real theAbscissa,
@@ -56,20 +56,20 @@ public:
                                           const Standard_Real theToler = -1);
 
   //! Computes a uniform abscissa distribution of points on the 3D Curve.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor3d_Curve& theC,
                                           const Standard_Integer theNbPoints,
                                           const Standard_Real theToler = -1);
 
   //! Computes a Uniform abscissa distribution of points on a part of the 3D Curve.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor3d_Curve& theC,
                                           const Standard_Integer theNbPoints,
@@ -77,20 +77,20 @@ public:
                                           const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 3D curve, Abscissa, and Tolerance.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Real theAbscissa,
                                    const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 3D curve, Abscissa, Tolerance, and parameter range.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Real theAbscissa,
@@ -98,20 +98,20 @@ public:
                                    const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 3D curve, number of points, and Tolerance.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Integer theNbPoints,
                                    const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 3D curve, number of points, Tolerance, and parameter range.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Integer theNbPoints,
@@ -121,20 +121,20 @@ public:
 public:
 
   //! Computes a uniform abscissa distribution of points on the 2D curve.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor2d_Curve2d& theC,
                                           const Standard_Real theAbscissa,
                                           const Standard_Real theToler = -1);
 
   //! Computes a Uniform abscissa distribution of points on a part of the 2D Curve.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor2d_Curve2d& theC,
                                           const Standard_Real theAbscissa,
@@ -142,20 +142,20 @@ public:
                                           const Standard_Real theToler = -1);
 
   //! Computes a uniform abscissa distribution of points on the 2D Curve.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor2d_Curve2d& theC,
                                           const Standard_Integer theNbPoints,
                                           const Standard_Real theToler = -1);
 
   //! Computes a Uniform abscissa distribution of points on a part of the 2D Curve.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT GCPnts_UniformAbscissa (const Adaptor2d_Curve2d& theC,
                                           const Standard_Integer theNbPoints,
@@ -163,20 +163,20 @@ public:
                                           const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 2D curve, Abscissa, and Tolerance.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Real theAbscissa,
                                    const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 2D curve, Abscissa, Tolerance, and parameter range.
-  //! @param theC [in] input curve
-  //! @param theAbscissa [in] abscissa (distance between two consecutive points)
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theAbscissa  abscissa (distance between two consecutive points)
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Real theAbscissa,
@@ -184,20 +184,20 @@ public:
                                    const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 2D curve, number of points, and Tolerance.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Integer theNbPoints,
                                    const Standard_Real theToler = -1);
 
   //! Initialize the algorithms with 2D curve, number of points, Tolerance, and parameter range.
-  //! @param theC [in] input curve
-  //! @param theNbPoints [in] defines the number of desired points
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theToler [in] used for more precise calculation of curve length
+  //! @param[in] theC  input curve
+  //! @param[in] theNbPoints  defines the number of desired points
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theToler  used for more precise calculation of curve length
   //!                      (Precision::Confusion() by default)
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Integer theNbPoints,

@@ -47,13 +47,13 @@ public:
 
   //!< Returns columns of the model for the metric
   //!< \param theMetricType metric
-  //!< \param theMetricColumns [out] container of metric columns
+  //!< \param[out] theMetricColumns  container of metric columns
   static Standard_EXPORT void GetMetricColumns (const Message_MetricType theMetricType, QList<int>& theMetricColumns);
 
   //!< Returns metric type for the column
-  //!< \param theColumnId [in] index of the tree column
-  //!< \param theMetricType [out] metric type if found
-  //!< \param thePosition [out] index of the metric column, 0 - is metric, 1 - is delta
+  //!< \param[in] theColumnId  index of the tree column
+  //!< \param[out] theMetricType  metric type if found
+  //!< \param[out] thePosition  index of the metric column, 0 - is metric, 1 - is delta
   //!< \return true if the column has metric parameters
   static Standard_EXPORT bool IsMetricColumn (const int theColumnId, Message_MetricType& theMetricType, int& thePosition);
 

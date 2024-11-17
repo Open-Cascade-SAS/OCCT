@@ -84,12 +84,12 @@ public:
   virtual void ProcessEvents() = 0;
 
   //! Submit texture eye to XR Composer.
-  //! @param theTexture     [in] texture handle
-  //! @param theGraphicsLib [in] graphics library in which texture handle is defined
-  //! @param theColorSpace  [in] texture color space;
+  //! @param[in] theTexture      texture handle
+  //! @param[in] theGraphicsLib  graphics library in which texture handle is defined
+  //! @param[in] theColorSpace   texture color space;
   //!                            sRGB means no color conversion by composer;
   //!                            Linear means to sRGB color conversion by composer
-  //! @param theEye [in] eye to display
+  //! @param[in] theEye  eye to display
   //! @return FALSE on error
   virtual bool SubmitEye (void* theTexture,
                           Aspect_GraphicsLibrary theGraphicsLib,
@@ -153,8 +153,8 @@ public:
   virtual Standard_Integer NamedTrackedDevice (Aspect_XRTrackedDeviceRole theDevice) const = 0;
 
   //! Load model for displaying device.
-  //! @param theDevice  [in] device index
-  //! @param theTexture [out] texture source
+  //! @param[in] theDevice   device index
+  //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
   Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel (Standard_Integer theDevice,
                                                       Handle(Image_Texture)& theTexture)
@@ -163,9 +163,9 @@ public:
   }
 
   //! Load model for displaying device.
-  //! @param theDevice  [in] device index
-  //! @param theToApplyUnitFactor [in] flag to apply unit scale factor
-  //! @param theTexture [out] texture source
+  //! @param[in] theDevice   device index
+  //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
+  //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
   Handle(Graphic3d_ArrayOfTriangles) LoadRenderModel (Standard_Integer theDevice,
                                                       Standard_Boolean theToApplyUnitFactor,
@@ -175,16 +175,16 @@ public:
   }
 
   //! Fetch data for digital input action (like button).
-  //! @param theAction [in] action of Aspect_XRActionType_InputDigital type
+  //! @param[in] theAction  action of Aspect_XRActionType_InputDigital type
   virtual Aspect_XRDigitalActionData GetDigitalActionData (const Handle(Aspect_XRAction)& theAction) const = 0;
 
   //! Fetch data for digital input action (like axis).
-  //! @param theAction [in] action of Aspect_XRActionType_InputAnalog type
+  //! @param[in] theAction  action of Aspect_XRActionType_InputAnalog type
   virtual Aspect_XRAnalogActionData GetAnalogActionData (const Handle(Aspect_XRAction)& theAction) const = 0;
 
   //! Fetch data for pose input action (like fingertip position).
   //! The returned values will match the values returned by the last call to WaitPoses().
-  //! @param theAction [in] action of Aspect_XRActionType_InputPose type
+  //! @param[in] theAction  action of Aspect_XRActionType_InputPose type
   virtual Aspect_XRPoseActionData GetPoseActionDataForNextFrame (const Handle(Aspect_XRAction)& theAction) const = 0;
 
   //! Trigger vibration.
@@ -228,9 +228,9 @@ protected:
   Standard_EXPORT Aspect_XRSession();
 
   //! Load model for displaying device.
-  //! @param theDevice  [in] device index
-  //! @param theToApplyUnitFactor [in] flag to apply unit scale factor
-  //! @param theTexture [out] texture source
+  //! @param[in] theDevice   device index
+  //! @param[in] theToApplyUnitFactor  flag to apply unit scale factor
+  //! @param[out] theTexture  texture source
   //! @return model triangulation or NULL if not found
   virtual Handle(Graphic3d_ArrayOfTriangles) loadRenderModel (Standard_Integer theDevice,
                                                               Standard_Boolean theToApplyUnitFactor,

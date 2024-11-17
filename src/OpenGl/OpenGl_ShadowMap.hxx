@@ -74,8 +74,8 @@ public:
   void SetShadowMapBias (Standard_ShortReal theBias) { myShadowMapBias = theBias; }
 
   //! Compute camera.
-  //! @param theView   [in] active view
-  //! @param theOrigin [in] when not-NULL - displace shadow map camera to specified Z-Layer origin
+  //! @param[in] theView    active view
+  //! @param[in] theOrigin  when not-NULL - displace shadow map camera to specified Z-Layer origin
   Standard_EXPORT bool UpdateCamera (const Graphic3d_CView& theView,
                                      const gp_XYZ* theOrigin = NULL);
 

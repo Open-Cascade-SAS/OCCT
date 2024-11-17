@@ -243,10 +243,10 @@ public:
   //!   aGlCtx->Init ((Aspect_Drawable )theXWindow, (Aspect_Display )theXDisp,  (Aspect_RenderingContext )theGlxCtx);
   //! @endcode
   //!
-  //! @param theSurface [in] surface / window          (EGLSurface | HWND  | GLXDrawable/Window)
-  //! @param theDisplay [in] display or device context (EGLDisplay | HDC   | Display*)
-  //! @param theContext [in] rendering context         (EGLContext | HGLRC | GLXContext | EAGLContext* | NSOpenGLContext*)
-  //! @param theIsCoreProfile [in] flag indicating that passed GL rendering context has been created with Core Profile
+  //! @param[in] theSurface  surface / window          (EGLSurface | HWND  | GLXDrawable/Window)
+  //! @param[in] theDisplay  display or device context (EGLDisplay | HDC   | Display*)
+  //! @param[in] theContext  rendering context         (EGLContext | HGLRC | GLXContext | EAGLContext* | NSOpenGLContext*)
+  //! @param[in] theIsCoreProfile  flag indicating that passed GL rendering context has been created with Core Profile
   //! @return false if OpenGL context can not be bound to specified surface
   Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theSurface,
                                          const Aspect_Display          theDisplay,
@@ -296,9 +296,9 @@ public:
   //! Pointer to function retrieved from library is statically casted
   //! to requested type - there no way to check real signature of exported function.
   //! The context should be bound before call.
-  //! @param theLastFailFuncName [out] set to theFuncName in case of failure, unmodified on success
-  //! @param theFuncName [in] function name to find
-  //! @param theFuncPtr [out] retrieved function pointer
+  //! @param[out] theLastFailFuncName  set to theFuncName in case of failure, unmodified on success
+  //! @param[in] theFuncName  function name to find
+  //! @param[out] theFuncPtr  retrieved function pointer
   //! @return TRUE on success
   template <typename FuncType_t>
   Standard_Boolean FindProcVerbose (const char*& theLastFailFuncName,
@@ -834,8 +834,8 @@ public: //! @name methods to alter or retrieve current state
   }
 
   //! Bind specified texture set to current context, or unbind previous one when NULL specified.
-  //! @param theTextures [in] texture set to bind
-  //! @param theProgram  [in] program attributes; when not NULL,
+  //! @param[in] theTextures  texture set to bind
+  //! @param[in] theProgram   program attributes; when not NULL,
   //!                         mock textures will be bound to texture units expected by GLSL program, but undefined by texture set
   //! @return previous texture set
   Standard_EXPORT Handle(OpenGl_TextureSet) BindTextures (const Handle(OpenGl_TextureSet)& theTextures,
@@ -897,8 +897,8 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetPointSpriteOrigin();
 
   //! Setup texture matrix to active GLSL program or to FFP global state using glMatrixMode (GL_TEXTURE).
-  //! @param theParams    [in] texture parameters
-  //! @param theIsTopDown [in] texture top-down flag
+  //! @param[in] theParams     texture parameters
+  //! @param[in] theIsTopDown  texture top-down flag
   Standard_EXPORT void SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams,
                                          const Standard_Boolean theIsTopDown);
 

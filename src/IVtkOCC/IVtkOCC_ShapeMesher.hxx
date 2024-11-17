@@ -105,9 +105,9 @@ private:
   //! Generates wireframe representation of the given TopoDS_Face object
   //! with help of OCCT algorithms. The resulting polylines are passed to IPolyData
   //! interface and associated with the given sub-shape ID.
-  //! @param [in] theFace TopoDS_Face object to build wireframe representation for
-  //! @param [in] theShapeId The face' sub-shape ID
-  //! @param [in] theDeflection curve deflection
+  //! @param[in]  theFace TopoDS_Face object to build wireframe representation for
+  //! @param[in]  theShapeId The face' sub-shape ID
+  //! @param[in]  theDeflection curve deflection
   void addWFFace (const TopoDS_Face&  theFace,
                   const IVtk_IdType   theShapeId,
                   const Standard_Real theDeflection);
@@ -116,8 +116,8 @@ private:
   //! starting from OCCT triangulation that should be created in advance. 
   //! The resulting triangles are passed to IPolyData
   //! interface and associated with the given sub-shape ID.
-  //! @param [in] theFace    TopoDS_Face object to build shaded representation for
-  //! @param [in] theShapeId the face' sub-shape ID
+  //! @param[in]  theFace    TopoDS_Face object to build shaded representation for
+  //! @param[in]  theShapeId the face' sub-shape ID
   //! @see IVtkOCC_ShapeMesher::meshShape, IVtkOCC_ShapeMesher::addEdge
   void addShadedFace (const TopoDS_Face&  theFace,
                       const IVtk_IdType   theShapeId);

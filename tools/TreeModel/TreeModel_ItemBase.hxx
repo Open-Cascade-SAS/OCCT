@@ -155,7 +155,7 @@ public:
     { (void)theRow, (void)theColumn; (void)theValue; }
 
   //! Returns presentation of the item to be visualized in the view
-  //! \thePresentations [out] container of presentation handles
+  //! \thePresentations[out]  container of presentation handles
   Standard_EXPORT virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
 protected:
 

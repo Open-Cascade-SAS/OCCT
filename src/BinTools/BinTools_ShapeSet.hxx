@@ -37,7 +37,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Builds an empty ShapeSet.
-  //! @param theWithTriangles [in] flag to write triangulation data
+  //! @param[in] theWithTriangles  flag to write triangulation data
   Standard_EXPORT BinTools_ShapeSet ();
 
   Standard_EXPORT virtual ~BinTools_ShapeSet();

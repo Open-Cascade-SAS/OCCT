@@ -90,17 +90,17 @@ public:
 
   //! Adds a layer to all views.
   //! To add a structure to desired layer on display it is necessary to set the layer ID for the structure.
-  //! @param theNewLayerId [in] id of new layer, should be > 0 (negative values are reserved for default layers).
-  //! @param theSettings   [in] new layer settings
-  //! @param theLayerAfter [in] id of layer to append new layer before
+  //! @param[in] theNewLayerId  id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param[in] theSettings    new layer settings
+  //! @param[in] theLayerAfter  id of layer to append new layer before
   Standard_EXPORT virtual void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
                                                   const Graphic3d_ZLayerSettings& theSettings,
                                                   const Graphic3d_ZLayerId theLayerAfter) = 0;
 
   //! Adds a layer to all views.
-  //! @param theNewLayerId  [in] id of new layer, should be > 0 (negative values are reserved for default layers).
-  //! @param theSettings    [in] new layer settings
-  //! @param theLayerBefore [in] id of layer to append new layer after
+  //! @param[in] theNewLayerId   id of new layer, should be > 0 (negative values are reserved for default layers).
+  //! @param[in] theSettings     new layer settings
+  //! @param[in] theLayerBefore  id of layer to append new layer after
   Standard_EXPORT virtual void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
                                                  const Graphic3d_ZLayerSettings& theSettings,
                                                  const Graphic3d_ZLayerId theLayerBefore) = 0;

@@ -212,11 +212,11 @@ public:
   virtual bool IsPointSprite() const { return false; }
 
   //! Auxiliary method for making an image dump from texture data.
-  //! @param theImage   [out] result image data (will be overridden)
-  //! @param theCtx      [in] active GL context
-  //! @param theTexUnit  [in] texture slot to use
-  //! @param theLevel    [in] mipmap level to dump
-  //! @param theCubeSide [in] cubemap side to dump within [0, 5] range
+  //! @param[out] theImage    result image data (will be overridden)
+  //! @param[in] theCtx       active GL context
+  //! @param[in] theTexUnit   texture slot to use
+  //! @param[in] theLevel     mipmap level to dump
+  //! @param[in] theCubeSide  cubemap side to dump within [0, 5] range
   //! @return FALSE on error
   Standard_EXPORT bool ImageDump (Image_PixMap& theImage,
                                   const Handle(OpenGl_Context)& theCtx,
@@ -299,12 +299,12 @@ public:
   //! Initializes 6 sides of cubemap.
   //! If theCubeMap is not NULL then size and format will be taken from it and corresponding arguments will be ignored.
   //! Otherwise this parameters will be taken from arguments.
-  //! @param theCtx         [in] active OpenGL context
-  //! @param theCubeMap     [in] cubemap definition, can be NULL
-  //! @param theSize        [in] cubemap dimensions
-  //! @param theFormat      [in] image format
-  //! @param theToGenMipmap [in] flag to generate mipmaped cubemap
-  //! @param theIsColorMap  [in] flag indicating cubemap storing color values
+  //! @param[in] theCtx          active OpenGL context
+  //! @param[in] theCubeMap      cubemap definition, can be NULL
+  //! @param[in] theSize         cubemap dimensions
+  //! @param[in] theFormat       image format
+  //! @param[in] theToGenMipmap  flag to generate mipmaped cubemap
+  //! @param[in] theIsColorMap   flag indicating cubemap storing color values
   Standard_EXPORT bool InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
                                     const Handle(Graphic3d_CubeMap)& theCubeMap,
                                     Standard_Size    theSize,

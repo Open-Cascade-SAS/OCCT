@@ -55,25 +55,25 @@ class PrsDim_DiameterDimension : public PrsDim_Dimension
 public:
 
   //! Construct diameter dimension for the circle.
-  //! @param theCircle [in] the circle to measure.
+  //! @param[in] theCircle  the circle to measure.
   Standard_EXPORT PrsDim_DiameterDimension (const gp_Circ& theCircle);
 
   //! Construct diameter dimension for the circle and orient it correspondingly
   //! to the passed plane.
-  //! @param theCircle [in] the circle to measure.
-  //! @param thePlane [in] the plane defining preferred orientation
+  //! @param[in] theCircle  the circle to measure.
+  //! @param[in] thePlane  the plane defining preferred orientation
   //!        for dimension.
   Standard_EXPORT PrsDim_DiameterDimension (const gp_Circ& theCircle,
                                             const gp_Pln& thePlane);
 
   //! Construct diameter on the passed shape, if applicable.
-  //! @param theShape [in] the shape to measure.
+  //! @param[in] theShape  the shape to measure.
   Standard_EXPORT PrsDim_DiameterDimension (const TopoDS_Shape& theShape);
 
   //! Construct diameter on the passed shape, if applicable - and
   //! define the preferred plane to orient the dimension.
-  //! @param theShape [in] the shape to measure.
-  //! @param thePlane [in] the plane defining preferred orientation
+  //! @param[in] theShape  the shape to measure.
+  //! @param[in] thePlane  the plane defining preferred orientation
   //!        for dimension.
   Standard_EXPORT PrsDim_DiameterDimension (const TopoDS_Shape& theShape,
                                             const gp_Pln& thePlane);
@@ -96,13 +96,13 @@ public:
   //! on the circle to attach the dimension lines to.
   //! The dimension will become invalid if the diameter of the circle
   //! is less than Precision::Confusion().
-  //! @param theCircle [in] the circle to measure.
+  //! @param[in] theCircle  the circle to measure.
   Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle);
 
   //! Measure diameter on the passed shape, if applicable.
   //! The dimension will become invalid if the passed shape is not
   //! measurable or if measured diameter value is less than Precision::Confusion().
-  //! @param theShape [in] the shape to measure.
+  //! @param[in] theShape  the shape to measure.
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape);
 
   //! @return the display units string.
@@ -150,9 +150,9 @@ protected:
   //! Program error exception is raised if the dimension plane "x" direction 
   //! is orthogonal to plane (the "impossible" case). The passed dimension plane
   //! is the one specially computed to locate dimension presentation in circle.
-  //! @param theCircle [in] the circle.
-  //! @param theFirstPnt [out] the first point.
-  //! @param theSecondPnt [out] the second point.
+  //! @param[in] theCircle  the circle.
+  //! @param[out] theFirstPnt  the first point.
+  //! @param[out] theSecondPnt  the second point.
   Standard_EXPORT void ComputeSidePoints (const gp_Circ& theCircle,
                                           gp_Pnt& theFirstPnt,
                                           gp_Pnt& theSecondPnt);

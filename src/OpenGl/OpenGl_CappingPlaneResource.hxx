@@ -38,20 +38,20 @@ public:
 
   //! Constructor.
   //! Create capping plane presentation associated to clipping plane data.
-  //! @param thePlane [in] the plane data.
+  //! @param[in] thePlane  the plane data.
   Standard_EXPORT OpenGl_CappingPlaneResource (const Handle(Graphic3d_ClipPlane)& thePlane);
 
   //! Destroy object.
   Standard_EXPORT virtual ~OpenGl_CappingPlaneResource();
 
   //! Update resource data in the passed context.
-  //! @param theContext   [in] the context
-  //! @param theObjAspect [in] object aspect
+  //! @param[in] theContext    the context
+  //! @param[in] theObjAspect  object aspect
   Standard_EXPORT void Update (const Handle(OpenGl_Context)& theContext,
                                const Handle(Graphic3d_Aspects)& theObjAspect);
 
   //! Release associated OpenGl resources.
-  //! @param theContext [in] the resource context.
+  //! @param[in] theContext  the resource context.
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
   //! Returns estimated GPU memory usage - not implemented.

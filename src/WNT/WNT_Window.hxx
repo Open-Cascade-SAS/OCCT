@@ -82,7 +82,7 @@ public:
   
   //! Opens a window according to the map mode.
   //! This method is specific to Windows NT.
-  //! @param theMapMode [in] can be one of SW_xxx constants defined in <windows.h>
+  //! @param[in] theMapMode  can be one of SW_xxx constants defined in <windows.h>
   Standard_EXPORT void Map (const Standard_Integer theMapMode) const;
 
   //! Closes the window <me>.
@@ -143,13 +143,13 @@ public:
   };
 
   //! RegisterRawInputDevices() wrapper.
-  //! @param theRawDeviceMask [in] mask of RawInputMask flags
+  //! @param[in] theRawDeviceMask  mask of RawInputMask flags
   //! @return number of actually registered device types
   Standard_EXPORT int RegisterRawInputDevices (unsigned int theRawDeviceMask);
 
   //! Process a single window message.
-  //! @param theListener [in][out] listener to redirect message
-  //! @param theMsg [in][out] message to process
+  //! @param[in][out] theListener  listener to redirect message
+  //! @param[in][out] theMsg  message to process
   //! @return TRUE if message has been processed
   Standard_EXPORT virtual bool ProcessMessage (Aspect_WindowInputListener& theListener,
                                                MSG& theMsg);

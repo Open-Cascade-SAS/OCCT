@@ -94,8 +94,8 @@ public:
                                               Standard_Real& theHeight) const Standard_OVERRIDE;
 
   //! Converts 3D display coordinates into 3D world coordinates.
-  //! @param [in] theDisplayPnt 2d point of display coordinates
-  //! @param [out] theWorldPnt 3d point of world coordinates
+  //! @param[in]  theDisplayPnt 2d point of display coordinates
+  //! @param[out]  theWorldPnt 3d point of world coordinates
   //! @return true if conversion was successful, false otherwise
   Standard_EXPORT virtual bool DisplayToWorld (const gp_XY& theDisplayPnt, gp_XYZ& theWorldPnt) const Standard_OVERRIDE;
 

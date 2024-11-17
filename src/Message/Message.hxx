@@ -112,14 +112,14 @@ public:
   }
 
   //! Converts message metric to OSD memory info type.
-  //! @param theMetric [in] message metric
-  //! @param theMemInfo [out] filled memory info type
+  //! @param[in] theMetric  message metric
+  //! @param[out] theMemInfo  filled memory info type
   //! @return true if converted
   static Standard_EXPORT Standard_Boolean ToOSDMetric (const Message_MetricType theMetric, OSD_MemInfo::Counter& theMemInfo);
 
   //! Converts OSD memory info type to message metric.
   //! @param theMemInfo [int] memory info type
-  //! @param theMetric [out] filled message metric
+  //! @param[out] theMetric  filled message metric
   //! @return true if converted
   static Standard_EXPORT Standard_Boolean ToMessageMetric (const OSD_MemInfo::Counter theMemInfo, Message_MetricType& theMetric);
 

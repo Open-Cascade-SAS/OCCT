@@ -32,12 +32,12 @@ public:
   Standard_EXPORT Graphic3d_AspectText3d();
 
   //! Creates a context table for text primitives defined with the specified values.
-  //! @param theColor [in] text color
-  //! @param theFont  [in] font family name or alias like Font_NOF_ASCII_MONO
-  //! @param theExpansionFactor [in] deprecated parameter, has no effect
-  //! @param theSpace [in] deprecated parameter, has no effect
-  //! @param theStyle [in] font style
-  //! @param theDisplayType [in] display mode
+  //! @param[in] theColor  text color
+  //! @param[in] theFont   font family name or alias like Font_NOF_ASCII_MONO
+  //! @param[in] theExpansionFactor  deprecated parameter, has no effect
+  //! @param[in] theSpace  deprecated parameter, has no effect
+  //! @param[in] theStyle  font style
+  //! @param[in] theDisplayType  display mode
   Standard_EXPORT Graphic3d_AspectText3d (const Quantity_Color& theColor,
                                           Standard_CString theFont,
                                           Standard_Real theExpansionFactor,

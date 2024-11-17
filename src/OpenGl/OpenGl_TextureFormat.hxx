@@ -33,24 +33,24 @@ public:
   static OpenGl_TextureFormat Create();
 
   //! Find texture format suitable to specified image format.
-  //! @param theCtx [in] OpenGL context defining supported texture formats
-  //! @param theFormat [in] image format
-  //! @param theIsColorMap [in] flag indicating color nature of image (to select sRGB texture)
+  //! @param[in] theCtx  OpenGL context defining supported texture formats
+  //! @param[in] theFormat  image format
+  //! @param[in] theIsColorMap  flag indicating color nature of image (to select sRGB texture)
   //! @return found format or invalid format
   Standard_EXPORT static OpenGl_TextureFormat FindFormat (const Handle(OpenGl_Context)& theCtx,
                                                           Image_Format theFormat,
                                                           bool theIsColorMap);
 
   //! Find texture format suitable to specified internal (sized) texture format.
-  //! @param theCtx [in] OpenGL context defining supported texture formats
-  //! @param theSizedFormat [in] sized (internal) texture format (example: GL_RGBA8)
+  //! @param[in] theCtx  OpenGL context defining supported texture formats
+  //! @param[in] theSizedFormat  sized (internal) texture format (example: GL_RGBA8)
   //! @return found format or invalid format
   Standard_EXPORT static OpenGl_TextureFormat FindSizedFormat (const Handle(OpenGl_Context)& theCtx,
                                                                GLint theSizedFormat);
 
   //! Find texture format suitable to specified compressed texture format.
-  //! @param theCtx [in] OpenGL context defining supported texture formats
-  //! @param theFormat [in] compressed texture format
+  //! @param[in] theCtx  OpenGL context defining supported texture formats
+  //! @param[in] theFormat  compressed texture format
   //! @return found format or invalid format
   Standard_EXPORT static OpenGl_TextureFormat FindCompressedFormat (const Handle(OpenGl_Context)& theCtx,
                                                                     Image_CompressedFormat theFormat,

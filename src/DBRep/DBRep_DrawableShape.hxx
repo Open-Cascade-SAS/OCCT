@@ -101,28 +101,28 @@ public:
 public:
 
   //! Auxiliary method computing nodal normals for presentation purposes.
-  //! @param theNormals [out] vector of computed normals (pair of points [from, to])
-  //! @param theFace    [in]  input face
-  //! @param theLength  [in]  normal length
+  //! @param[out] theNormals  vector of computed normals (pair of points [from, to])
+  //! @param[in] theFace      input face
+  //! @param[in] theLength    normal length
   //! @return FALSE if normals can not be computed
   Standard_EXPORT static Standard_Boolean addMeshNormals (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> >& theNormals,
                                                           const TopoDS_Face&  theFace,
                                                           const Standard_Real theLength);
 
   //! Auxiliary method computing nodal normals for presentation purposes.
-  //! @param theNormals [out] map of computed normals (grouped per Face)
-  //! @param theShape   [in]  input shape which will be exploded into Faces
-  //! @param theLength  [in]  normal length
+  //! @param[out] theNormals  map of computed normals (grouped per Face)
+  //! @param[in] theShape     input shape which will be exploded into Faces
+  //! @param[in] theLength    normal length
   Standard_EXPORT static void addMeshNormals (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > > & theNormals,
                                               const TopoDS_Shape& theShape,
                                               const Standard_Real theLength);
 
   //! Auxiliary method computing surface normals distributed within the Face for presentation purposes.
-  //! @param theNormals  [out] vector of computed normals (pair of points [from, to])
-  //! @param theFace     [in]  input face
-  //! @param theLength   [in]  normal length
-  //! @param theNbAlongU [in]  number along U
-  //! @param theNbAlongV [in]  number along V
+  //! @param[out] theNormals   vector of computed normals (pair of points [from, to])
+  //! @param[in] theFace       input face
+  //! @param[in] theLength     normal length
+  //! @param[in] theNbAlongU   number along U
+  //! @param[in] theNbAlongV   number along V
   //! @return FALSE if normals can not be computed
   Standard_EXPORT static Standard_Boolean addSurfaceNormals (NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> >& theNormals,
                                                              const TopoDS_Face&     theFace,
@@ -131,11 +131,11 @@ public:
                                                              const Standard_Integer theNbAlongV);
 
   //! Auxiliary method computing surface normals distributed within the Face for presentation purposes.
-  //! @param theNormals  [out] map of computed normals (grouped per Face)
-  //! @param theShape    [in]  input shape which will be exploded into Faces
-  //! @param theLength   [in]  normal length
-  //! @param theNbAlongU [in]  number along U
-  //! @param theNbAlongV [in]  number along V
+  //! @param[out] theNormals   map of computed normals (grouped per Face)
+  //! @param[in] theShape      input shape which will be exploded into Faces
+  //! @param[in] theLength     normal length
+  //! @param[in] theNbAlongU   number along U
+  //! @param[in] theNbAlongV   number along V
   //! @return FALSE if normals can not be computed
   Standard_EXPORT static void addSurfaceNormals (NCollection_DataMap<TopoDS_Face, NCollection_Vector<std::pair<gp_Pnt, gp_Pnt> > >& theNormals,
                                                  const TopoDS_Shape&    theShape,

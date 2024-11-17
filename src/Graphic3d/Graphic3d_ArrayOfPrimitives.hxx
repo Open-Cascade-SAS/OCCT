@@ -690,17 +690,17 @@ public: //! @name optional array of Indices/Edges for using shared Vertex data
   //! Add triangle strip into indexed triangulation array.
   //! N-2 triangles are added from N input nodes.
   //! Raises exception if array is not of type Graphic3d_TOPA_TRIANGLES.
-  //! @param theVertexLower [in] index of first node defining triangle strip
-  //! @param theVertexUpper [in] index of last  node defining triangle strip
+  //! @param[in] theVertexLower  index of first node defining triangle strip
+  //! @param[in] theVertexUpper  index of last  node defining triangle strip
   Standard_EXPORT void AddTriangleStripEdges (Standard_Integer theVertexLower,
                                               Standard_Integer theVertexUpper);
 
   //! Add triangle fan into indexed triangulation array.
   //! N-2 triangles are added from N input nodes (or N-1 with closed flag).
   //! Raises exception if array is not of type Graphic3d_TOPA_TRIANGLES.
-  //! @param theVertexLower [in] index of first node defining triangle fun (center)
-  //! @param theVertexUpper [in] index of last  node defining triangle fun
-  //! @param theToClose [in] close triangle fan (connect first and last points)
+  //! @param[in] theVertexLower  index of first node defining triangle fun (center)
+  //! @param[in] theVertexUpper  index of last  node defining triangle fun
+  //! @param[in] theToClose  close triangle fan (connect first and last points)
   Standard_EXPORT void AddTriangleFanEdges (Standard_Integer theVertexLower,
                                             Standard_Integer theVertexUpper,
                                             Standard_Boolean theToClose);
@@ -708,9 +708,9 @@ public: //! @name optional array of Indices/Edges for using shared Vertex data
   //! Add line strip (polyline) into indexed segments array.
   //! N-1 segments are added from N input nodes (or N with closed flag).
   //! Raises exception if array is not of type Graphic3d_TOPA_SEGMENTS.
-  //! @param theVertexLower [in] index of first node defining line strip fun (center)
-  //! @param theVertexUpper [in] index of last  node defining triangle fun
-  //! @param theToClose [in] close triangle fan (connect first and last points)
+  //! @param[in] theVertexLower  index of first node defining line strip fun (center)
+  //! @param[in] theVertexUpper  index of last  node defining triangle fun
+  //! @param[in] theToClose  close triangle fan (connect first and last points)
   Standard_EXPORT void AddPolylineEdges (Standard_Integer theVertexLower,
                                          Standard_Integer theVertexUpper,
                                          Standard_Boolean theToClose);

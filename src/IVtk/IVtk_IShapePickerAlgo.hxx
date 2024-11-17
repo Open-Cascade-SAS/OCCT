@@ -37,7 +37,7 @@ public:
   virtual int  NbPicked() = 0;
 
   //! Get activated selection modes for a shape.
-  //! @param [in] theShape a shape with activated selection mode(s)
+  //! @param[in]  theShape a shape with activated selection mode(s)
   //! @return list of active selection modes
   virtual IVtk_SelectionModeList GetSelectionModes (const IVtk_IShape::Handle& theShape) const = 0;
 
@@ -46,9 +46,9 @@ public: // @name Set selectable shapes and selection modes
   //! Activates/deactivates the given selection mode for the shape.
   //! If mode == SM_None, the shape becomes non-selectable and 
   //! is removed from the internal selection data.
-  //! @param [in] theShape Shape for which the selection mode should be activated
-  //! @param [in] theMode Selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theShape Shape for which the selection mode should be activated
+  //! @param[in]  theMode Selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   virtual void SetSelectionMode (const IVtk_IShape::Handle& theShape,
                                  const IVtk_SelectionMode theMode,
                                  const bool theIsTurnOn = true) = 0;
@@ -56,9 +56,9 @@ public: // @name Set selectable shapes and selection modes
   //! Activates/deactivates the given selection mode for the shape.
   //! If mode == SM_None, the shape becomes non-selectable and 
   //! is removed from the internal selection data.
-  //! @param [in] theShapes List of shapes for which the selection mode should be activated
-  //! @param [in] theMode Selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theShapes List of shapes for which the selection mode should be activated
+  //! @param[in]  theMode Selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   virtual void SetSelectionMode (const IVtk_ShapePtrList& theShapes,
                                  const IVtk_SelectionMode theMode,
                                  const bool theIsTurnOn = true) = 0;
@@ -80,8 +80,8 @@ public: // @name Obtain picking results
   //! is the first in the list)
   virtual const IVtk_ShapeIdList& ShapesPicked() const = 0;
 
-  //! @param [in] theId Top-level shape ID
-  //! @param [out] theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
+  //! @param[in]  theId Top-level shape ID
+  //! @param[out]  theShapeList the list of picked sub-shape IDs for the given top-level shape ID,
   //! in the order of increasing depth (the ID of the sub-shape closest to the eye 
   //! is the first in the list)
   virtual void SubShapesPicked (const IVtk_IdType theId, IVtk_ShapeIdList& theShapeList) const = 0;

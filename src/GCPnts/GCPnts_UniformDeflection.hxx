@@ -44,38 +44,38 @@ public:
   Standard_EXPORT GCPnts_UniformDeflection();
 
   //! Computes a uniform Deflection distribution of points on the curve.
-  //! @param theC [in] input 3D curve
-  //! @param theDeflection [in] target deflection
-  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  //! @param[in] theC  input 3D curve
+  //! @param[in] theDeflection  target deflection
+  //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection (const Adaptor3d_Curve& theC,
                                             const Standard_Real theDeflection,
                                             const Standard_Boolean theWithControl = Standard_True);
 
   //! Computes a uniform Deflection distribution of points on the curve.
-  //! @param theC [in] input 2D curve
-  //! @param theDeflection [in] target deflection
-  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  //! @param[in] theC  input 2D curve
+  //! @param[in] theDeflection  target deflection
+  //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection (const Adaptor2d_Curve2d& theC,
                                             const Standard_Real theDeflection,
                                             const Standard_Boolean theWithControl = Standard_True);
 
   //! Computes a Uniform Deflection distribution of points on a part of the curve.
-  //! @param theC [in] input 3D curve
-  //! @param theDeflection [in] target deflection
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  //! @param[in] theC  input 3D curve
+  //! @param[in] theDeflection  target deflection
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection (const Adaptor3d_Curve& theC,
                                             const Standard_Real theDeflection,
                                             const Standard_Real theU1, const Standard_Real theU2,
                                             const Standard_Boolean theWithControl = Standard_True);
   
   //! Computes a Uniform Deflection distribution of points on a part of the curve.
-  //! @param theC [in] input 2D curve
-  //! @param theDeflection [in] target deflection
-  //! @param theU1 [in] first parameter on curve
-  //! @param theU2 [in] last  parameter on curve
-  //! @param theWithControl [in] when TRUE, the algorithm controls the estimate deflection
+  //! @param[in] theC  input 2D curve
+  //! @param[in] theDeflection  target deflection
+  //! @param[in] theU1  first parameter on curve
+  //! @param[in] theU2  last  parameter on curve
+  //! @param[in] theWithControl  when TRUE, the algorithm controls the estimate deflection
   Standard_EXPORT GCPnts_UniformDeflection (const Adaptor2d_Curve2d& theC,
                                             const Standard_Real theDeflection,
                                             const Standard_Real theU1, const Standard_Real theU2,

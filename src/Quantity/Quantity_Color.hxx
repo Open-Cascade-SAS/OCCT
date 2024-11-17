@@ -237,8 +237,8 @@ public:
   //! So the output is formatted as 0x00RRGGBB.
   //! Note that this unpacking does NOT involve non-linear sRGB -> linear RGB conversion,
   //! as would be usually expected for RGB color packed into 4 bytes.
-  //! @param theColor [in] color to convert
-  //! @param theARGB [out] result color encoded as integer
+  //! @param[in] theColor  color to convert
+  //! @param[out] theARGB  result color encoded as integer
   static void Color2argb (const Quantity_Color& theColor,
                           Standard_Integer& theARGB)
   {

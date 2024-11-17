@@ -29,17 +29,17 @@ class Prs3d_BndBox : public Prs3d_Root
 public:
 
   //! Computes presentation of a bounding box.
-  //! @param thePresentation [in] the presentation.
-  //! @param theBndBox [in] the bounding box.
-  //! @param theDrawer [in] the drawer.
+  //! @param[in] thePresentation  the presentation.
+  //! @param[in] theBndBox  the bounding box.
+  //! @param[in] theDrawer  the drawer.
   Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& thePresentation,
                                    const Bnd_Box& theBndBox,
                                    const Handle(Prs3d_Drawer)& theDrawer);
 
   //! Computes presentation of a bounding box.
-  //! @param thePresentation [in] the presentation.
-  //! @param theBndBox [in] the bounding box.
-  //! @param theDrawer [in] the drawer.
+  //! @param[in] thePresentation  the presentation.
+  //! @param[in] theBndBox  the bounding box.
+  //! @param[in] theDrawer  the drawer.
   Standard_EXPORT static void Add (const Handle(Prs3d_Presentation)& thePresentation,
                                    const Bnd_OBB& theBndBox,
                                    const Handle(Prs3d_Drawer)& theDrawer);
@@ -47,7 +47,7 @@ public:
 public:
 
   //! Create primitive array with line segments for displaying a box.
-  //! @param theBox [in] the box to add
+  //! @param[in] theBox  the box to add
   static Handle(Graphic3d_ArrayOfSegments) FillSegments (const Bnd_OBB& theBox)
   {
     if (theBox.IsVoid())
@@ -61,7 +61,7 @@ public:
   }
 
   //! Create primitive array with line segments for displaying a box.
-  //! @param theBox [in] the box to add
+  //! @param[in] theBox  the box to add
   static Handle(Graphic3d_ArrayOfSegments) FillSegments (const Bnd_Box& theBox)
   {
     if (theBox.IsVoid())
@@ -75,9 +75,9 @@ public:
   }
 
   //! Create primitive array with line segments for displaying a box.
-  //! @param theSegments [in] [out] primitive array to be filled;
+  //! @param[in][out] theSegments   primitive array to be filled;
   //!                               should be at least 8 nodes and 24 edges in size
-  //! @param theBox [in] the box to add
+  //! @param[in] theBox  the box to add
   static void FillSegments (const Handle(Graphic3d_ArrayOfSegments)& theSegments, const Bnd_OBB& theBox)
   {
     if (!theBox.IsVoid())
@@ -89,9 +89,9 @@ public:
   }
 
   //! Create primitive array with line segments for displaying a box.
-  //! @param theSegments [in] [out] primitive array to be filled;
+  //! @param[in][out] theSegments   primitive array to be filled;
   //!                               should be at least 8 nodes and 24 edges in size
-  //! @param theBox [in] the box to add
+  //! @param[in] theBox  the box to add
   static void FillSegments (const Handle(Graphic3d_ArrayOfSegments)& theSegments, const Bnd_Box& theBox)
   {
     if (!theBox.IsVoid())
@@ -116,9 +116,9 @@ public:
 public:
 
   //! Create primitive array with line segments for displaying a box.
-  //! @param theSegments [in] [out] primitive array to be filled;
+  //! @param[in][out] theSegments   primitive array to be filled;
   //!                               should be at least 8 nodes and 24 edges in size
-  //! @param theBox [in] the box to add
+  //! @param[in] theBox  the box to add
   static void fillSegments (const Handle(Graphic3d_ArrayOfSegments)& theSegments, const gp_Pnt* theBox)
   {
     const Standard_Integer aFrom = theSegments->VertexNumber();

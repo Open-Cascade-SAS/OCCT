@@ -247,21 +247,21 @@ public: //! @name highlighting management
   void SetSelectionStyle (const Handle(Prs3d_Drawer)& theStyle) { myStyles[Prs3d_TypeOfHighlight_Selected] = theStyle; }
 
   //! Returns highlight style of the object if it is marked as highlighted via global status
-  //! @param theObj [in] the object to check
+  //! @param[in] theObj  the object to check
   Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(AIS_InteractiveObject)& theObj,
                                                    Handle(Prs3d_Drawer)& theStyle) const;
 
   //! Returns highlight style of the owner if it is selected
-  //! @param theOwner [in] the owner to check
+  //! @param[in] theOwner  the owner to check
   Standard_EXPORT Standard_Boolean HighlightStyle (const Handle(SelectMgr_EntityOwner)& theOwner,
                                                    Handle(Prs3d_Drawer)& theStyle) const;
 
   //! Returns true if the object is marked as highlighted via its global status
-  //! @param theObj [in] the object to check
+  //! @param[in] theObj  the object to check
   Standard_EXPORT Standard_Boolean IsHilighted (const Handle(AIS_InteractiveObject)& theObj) const;
 
   //! Returns true if the owner is marked as selected
-  //! @param theOwner [in] the owner to check
+  //! @param[in] theOwner  the owner to check
   Standard_EXPORT Standard_Boolean IsHilighted (const Handle(SelectMgr_EntityOwner)& theOwner) const;
 
   //! Changes the color of all the lines of the object in view.
@@ -461,10 +461,10 @@ public: //! @name Selection management
 
   //! Selects objects within the bounding rectangle.
   //! Viewer should be explicitly redrawn after selection.
-  //! @param thePntMin [in] rectangle lower point (in pixels)
-  //! @param thePntMax [in] rectangle upper point (in pixels)
-  //! @param theView   [in] active view where rectangle is defined
-  //! @param theSelScheme [in] selection scheme
+  //! @param[in] thePntMin  rectangle lower point (in pixels)
+  //! @param[in] thePntMax  rectangle upper point (in pixels)
+  //! @param[in] theView    active view where rectangle is defined
+  //! @param[in] theSelScheme  selection scheme
   //! @return picking status
   //! @sa StdSelect_ViewerSelector3d::AllowOverlapDetection()
   Standard_EXPORT AIS_StatusOfPick SelectRectangle (const Graphic3d_Vec2i&    thePntMin,
@@ -474,9 +474,9 @@ public: //! @name Selection management
 
   //! Select everything found in the polygon defined by bounding polyline.
   //! Viewer should be explicitly redrawn after selection.
-  //! @param thePolyline  [in] polyline defining polygon bounds (in pixels)
-  //! @param theView      [in] active view where polyline is defined
-  //! @param theSelScheme [in] selection scheme
+  //! @param[in] thePolyline   polyline defining polygon bounds (in pixels)
+  //! @param[in] theView       active view where polyline is defined
+  //! @param[in] theSelScheme  selection scheme
   //! @return picking status
   Standard_EXPORT AIS_StatusOfPick SelectPolygon (const TColgp_Array1OfPnt2d& thePolyline,
                                                   const Handle(V3d_View)&     theView,
@@ -484,9 +484,9 @@ public: //! @name Selection management
 
   //! Selects the topmost object picked by the point in the view,
   //! Viewer should be explicitly redrawn after selection.
-  //! @param thePnt  [in] point pixel coordinates within the view
-  //! @param theView [in] active view where point is defined
-  //! @param theSelScheme [in] selection scheme
+  //! @param[in] thePnt   point pixel coordinates within the view
+  //! @param[in] theView  active view where point is defined
+  //! @param[in] theSelScheme  selection scheme
   //! @return picking status
   Standard_EXPORT AIS_StatusOfPick SelectPoint (const Graphic3d_Vec2i&    thePnt,
                                                 const Handle(V3d_View)&   theView,
@@ -495,7 +495,7 @@ public: //! @name Selection management
   //! Select and hilights the previous detected via AIS_InteractiveContext::MoveTo() method;
   //! unhilights the previous picked.
   //! Viewer should be explicitly redrawn after selection.
-  //! @param theSelScheme [in] selection scheme
+  //! @param[in] theSelScheme  selection scheme
   //! @return picking status
   //!
   //! @sa HighlightStyle() defining default highlight styles of selected owners (Prs3d_TypeOfHighlight_Selected and Prs3d_TypeOfHighlight_LocalSelected)
@@ -1318,8 +1318,8 @@ protected: //! @name internal methods
   Standard_EXPORT void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner);
 
   //! Helper function that highlights the owners with check for AutoHighlight, e.g. is used for selection.
-  //! @param theOwners [in] list of owners to highlight
-  //! @param theStyle  [in] highlight style to apply or NULL to apply selection style
+  //! @param[in] theOwners  list of owners to highlight
+  //! @param[in] theStyle   highlight style to apply or NULL to apply selection style
   Standard_EXPORT void highlightOwners (const AIS_NListOfEntityOwner& theOwners,
                                         const Handle(Prs3d_Drawer)& theStyle);
 
@@ -1347,32 +1347,32 @@ protected: //! @name internal methods
 
   //! Helper function that turns on sub-intensity in global status and highlights
   //! given objects with sub-intensity color
-  //! @param theObject [in] the object. If NULL is given, than sub-intensity will be turned on for
+  //! @param[in] theObject  the object. If NULL is given, than sub-intensity will be turned on for
   //! all inveractive objects of the context
-  //! @param theDispMode [in] display mode. If -1 is given, sub-intensity will be turned on for
+  //! @param[in] theDispMode  display mode. If -1 is given, sub-intensity will be turned on for
   //! all display modes in global status's list of modes
-  //! @param theIsDisplayedOnly [in] is true if sub-intensity should be applied only to objects with
+  //! @param[in] theIsDisplayedOnly  is true if sub-intensity should be applied only to objects with
   //! status AIS_DS_Displayed
   Standard_EXPORT void turnOnSubintensity (const Handle(AIS_InteractiveObject)& theObject = NULL,
                                            const Standard_Integer theDispMode = -1,
                                            const Standard_Boolean theIsDisplayedOnly = Standard_True) const;
 
   //! Helper function that highlights the object with sub-intensity color without any checks
-  //! @param theObject [in] the object that will be highlighted
-  //! @param theMode [in] display mode
+  //! @param[in] theObject  the object that will be highlighted
+  //! @param[in] theMode  display mode
   Standard_EXPORT void highlightWithSubintensity (const Handle(AIS_InteractiveObject)& theObject,
                                                   const Standard_Integer theMode) const;
 
   //! Helper function that highlights the owner with sub-intensity color without any checks
-  //! @param theOwner [in] the owner that will be highlighted
-  //! @param theMode [in] display mode
+  //! @param[in] theOwner  the owner that will be highlighted
+  //! @param[in] theMode  display mode
   Standard_EXPORT void highlightWithSubintensity (const Handle(SelectMgr_EntityOwner)& theOwner,
                                                   const Standard_Integer theMode) const;
 
   //! Helper function that returns correct dynamic highlight style for the object:
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
   //! dynamic highlight style of interactive context will be returned.
-  //! @param theObj [in] the object to check
+  //! @param[in] theObj  the object to check
   const Handle(Prs3d_Drawer)& getHiStyle (const Handle(AIS_InteractiveObject)& theObj,
                                           const Handle(SelectMgr_EntityOwner)& theOwner) const
   {
@@ -1392,7 +1392,7 @@ protected: //! @name internal methods
   //! Helper function that returns correct selection style for the object:
   //! if custom style is defined via object's highlight drawer, it will be used. Otherwise,
   //! selection style of interactive context will be returned.
-  //! @param theObj [in] the object to check
+  //! @param[in] theObj  the object to check
   const Handle(Prs3d_Drawer)& getSelStyle (const Handle(AIS_InteractiveObject)& theObj,
                                            const Handle(SelectMgr_EntityOwner)& theOwner) const
   {

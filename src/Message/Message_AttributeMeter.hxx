@@ -37,31 +37,31 @@ public:
   Standard_EXPORT Message_AttributeMeter (const TCollection_AsciiString& theName = TCollection_AsciiString());
 
   //! Checks whether the attribute has values for the metric
-  //! @param theMetric [in] metric type
+  //! @param[in] theMetric  metric type
   //! @return true if the metric values exist in the attribute
   Standard_EXPORT Standard_Boolean HasMetric (const Message_MetricType& theMetric) const;
 
   //! Returns true when both values of the metric are set.
-  //! @param theMetric [in] metric type
+  //! @param[in] theMetric  metric type
   //! @return true if metric values are valid
   Standard_EXPORT Standard_Boolean IsMetricValid (const Message_MetricType& theMetric) const;
 
   //! Returns start value for the metric
-  //! @param theMetric [in] metric type
+  //! @param[in] theMetric  metric type
   //! @return real value
   Standard_EXPORT Standard_Real StartValue (const Message_MetricType& theMetric) const;
 
   //! Sets start values for the metric
-  //! @param theMetric [in] metric type
+  //! @param[in] theMetric  metric type
   Standard_EXPORT void SetStartValue (const Message_MetricType& theMetric, const Standard_Real theValue);
 
   //! Returns stop value for the metric
-  //! @param theMetric [in] metric type
+  //! @param[in] theMetric  metric type
   //! @return real value
   Standard_EXPORT Standard_Real StopValue (const Message_MetricType& theMetric) const;
 
   //! Sets stop values for the metric
-  //! @param theMetric [in] metric type
+  //! @param[in] theMetric  metric type
   Standard_EXPORT void SetStopValue (const Message_MetricType& theMetric, const Standard_Real theValue);
 
 public:

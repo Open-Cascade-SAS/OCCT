@@ -39,15 +39,15 @@ class OpenGl_VertexBufferEditor
 public:
 
   //! Creates empty editor
-  //! theTmpBufferLength [in] temporary buffer length
+  //! theTmpBufferLength[in]  temporary buffer length
   explicit OpenGl_VertexBufferEditor (const Standard_Integer theTmpBufferLength = 0)
   : myElemFrom (0),
     myElemsNb (0),
     myTmpBuffer (0, theTmpBufferLength > 0 ? (theTmpBufferLength - 1) : 2047) {}
 
   //! Creates empty editor
-  //! theTmpBuffer       [in] pointer to temporary buffer
-  //! theTmpBufferLength [in] temporary buffer length
+  //! theTmpBuffer[in]        pointer to temporary buffer
+  //! theTmpBufferLength[in]  temporary buffer length
   OpenGl_VertexBufferEditor (theVec_t*              theTmpBuffer,
                              const Standard_Integer theTmpBufferLength)
   : myElemFrom (0),
@@ -55,8 +55,8 @@ public:
     myTmpBuffer (theTmpBuffer[0], 0, theTmpBufferLength - 1) {}
 
   //! Initialize editor for specified buffer object.
-  //! theGlCtx [in] bound OpenGL context to edit buffer object
-  //! theVbo   [in] buffer to edit
+  //! theGlCtx[in]  bound OpenGL context to edit buffer object
+  //! theVbo[in]    buffer to edit
   Standard_Boolean Init (const Handle(OpenGl_Context)& theGlCtx,
                          const Handle(OpenGl_Buffer)&  theVbo)
   {

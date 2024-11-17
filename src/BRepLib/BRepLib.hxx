@@ -274,13 +274,13 @@ public:
 
 
   //! Enlarges the face on the given value.
-  //! @param theF [in] The face to extend
-  //! @param theExtVal [in] The extension value
-  //! @param theExtUMin [in] Defines whether to extend the face in UMin direction
-  //! @param theExtUMax [in] Defines whether to extend the face in UMax direction
-  //! @param theExtVMin [in] Defines whether to extend the face in VMin direction
-  //! @param theExtVMax [in] Defines whether to extend the face in VMax direction
-  //! @param theFExtended [in] The extended face
+  //! @param[in] theF  The face to extend
+  //! @param[in] theExtVal  The extension value
+  //! @param[in] theExtUMin  Defines whether to extend the face in UMin direction
+  //! @param[in] theExtUMax  Defines whether to extend the face in UMax direction
+  //! @param[in] theExtVMin  Defines whether to extend the face in VMin direction
+  //! @param[in] theExtVMax  Defines whether to extend the face in VMax direction
+  //! @param[in] theFExtended  The extended face
   Standard_EXPORT static void ExtendFace(const TopoDS_Face& theF,
                                          const Standard_Real theExtVal,
                                          const Standard_Boolean theExtUMin,

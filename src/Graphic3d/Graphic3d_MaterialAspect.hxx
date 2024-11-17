@@ -44,8 +44,8 @@ public:
   Standard_EXPORT static Graphic3d_TypeOfMaterial MaterialType (const Standard_Integer theRank);
 
   //! Finds the material for specified name.
-  //! @param theName [in]  name to find
-  //! @param theMat  [out] found material
+  //! @param[in] theName   name to find
+  //! @param[out] theMat   found material
   //! @return FALSE if name was unrecognized
   Standard_EXPORT static Standard_Boolean MaterialFromName (const Standard_CString theName,
                                                             Graphic3d_NameOfMaterial& theMat);

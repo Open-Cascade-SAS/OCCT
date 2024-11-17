@@ -67,38 +67,38 @@ public:
   //! Sets the renderer to be used by OCCT selection algorithm
   void SetRenderer (vtkRenderer* theRenderer);
   //! Sets area selection on/off
-  //! @param [in] theIsOn true if area selection is turned on, false otherwise.
+  //! @param[in]  theIsOn true if area selection is turned on, false otherwise.
   void SetAreaSelection (bool theIsOn);
 
   //! Get activated selection modes for a shape.
-  //! @param [in] theShape a shape with activated selection mode(s)
+  //! @param[in]  theShape a shape with activated selection mode(s)
   //! @return list of active selection modes
   IVtk_SelectionModeList GetSelectionModes (const IVtk_IShape::Handle& theShape) const;
 
   //! Get activated selection modes for a shape actor.
-  //! @param [in] theShapeActor an actor with activated selection mode(s)
+  //! @param[in]  theShapeActor an actor with activated selection mode(s)
   //! @return list of active selection modes
   IVtk_SelectionModeList GetSelectionModes (vtkActor* theShapeActor) const;
 
   //! Turn on/off a selection mode for a shape actor.
-  //! @param [in] theShape a shape to set a selection mode for
-  //! @param [in] theMode selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theShape a shape to set a selection mode for
+  //! @param[in]  theMode selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   void SetSelectionMode (const IVtk_IShape::Handle& theShape,
                          const IVtk_SelectionMode theMode,
                          const bool theIsTurnOn = true) const;
 
   //! Turn on/off a selection mode for a shape actor.
-  //! @param [in] theShapeActor shape presentation actor to set a selection mode for
-  //! @param [in] theMode selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theShapeActor shape presentation actor to set a selection mode for
+  //! @param[in]  theMode selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   void SetSelectionMode (vtkActor* theShapeActor,
                          const IVtk_SelectionMode theMode,
                          const bool theIsTurnOn = true) const;
 
   //! Sets the current selection mode for all visible shape objects.
-  //! @param [in] theMode selection mode to be activated
-  //! @param [in] theIsTurnOn Flag to turn on/off the selection mode
+  //! @param[in]  theMode selection mode to be activated
+  //! @param[in]  theIsTurnOn Flag to turn on/off the selection mode
   void SetSelectionMode (const IVtk_SelectionMode theMode,
                          const bool theIsTurnOn = true) const;
 
@@ -109,30 +109,30 @@ public:
   //! all OccShape objects found by the picking algorithm. e.g. all 
   //! shapes under the mouse cursor. Otherwise, ID of the shape closest to the eye
   //! is returned.
-  //! @param [in] theIsAll Get all selected shapes or just the only
+  //! @param[in]  theIsAll Get all selected shapes or just the only
   //!        top one is returned, has no effect during area selection.
   //! @return List of top-level shape IDs
   IVtk_ShapeIdList GetPickedShapesIds (bool theIsAll = false) const;
 
   //! Access to the list of sub-shapes ids picked. 
-  //! @param [in] theId top-level shape ID
-  //! @param [in] theIsAll Get all selected sub-shapes or just the 
+  //! @param[in]  theId top-level shape ID
+  //! @param[in]  theIsAll Get all selected sub-shapes or just the 
   //!        only top one is returned, has no effect during area selection.
   //! @return List of sub-shapes IDs
   IVtk_ShapeIdList GetPickedSubShapesIds (const IVtk_IdType theId, bool theIsAll = false) const;
 
   //! Access to the list of actors picked. 
-  //! @param [in] theIsAll Get all selected actors or just the only
+  //! @param[in]  theIsAll Get all selected actors or just the only
   //!         top one is returned, has no effect during area selection.
   //! @return List of actors IDs
   vtkSmartPointer<vtkActorCollection> GetPickedActors (bool theIsAll = false) const;
 
   //! Remove selectable object from the picker (from internal maps).
-  //! @param [in] theShape the selectable shape
+  //! @param[in]  theShape the selectable shape
   void RemoveSelectableObject(const IVtk_IShape::Handle& theShape);
 
   //! Remove selectable object from the picker (from internal maps).
-  //! @param [in] theShapeActor the shape presentation actor to be removed from the picker
+  //! @param[in]  theShapeActor the shape presentation actor to be removed from the picker
   void RemoveSelectableActor(vtkActor* theShapeActor);
 
 protected:
@@ -152,10 +152,10 @@ private: // not copyable
 
   //! Implementation of picking algorithm. 
   //! The coordinates accepted by this method are display (pixel) coordinates.
-  //! @param [in] pos contains the pick point (3 coordinates) or pick rectangle (6 coordinates)
+  //! @param[in]  pos contains the pick point (3 coordinates) or pick rectangle (6 coordinates)
   //! or polyline (array of 2d coordinates)
-  //! @param [in] renderer vtkRenderer object to be used (normally set in advance with setRenderer())
-  //! @param [in] nbPoints number of points for polyline case
+  //! @param[in]  renderer vtkRenderer object to be used (normally set in advance with setRenderer())
+  //! @param[in]  nbPoints number of points for polyline case
   //! @see IVtkTools_ShapePicker::setRenderer
   virtual void doPickImpl (double*, vtkRenderer* theRenderer, const int theNbPoints = -1);
 

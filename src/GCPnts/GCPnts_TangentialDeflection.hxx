@@ -70,12 +70,12 @@ public:
   Standard_EXPORT GCPnts_TangentialDeflection();
 
   //! Constructor for 3D curve.
-  //! @param theC [in] 3d curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  3d curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection (const Adaptor3d_Curve& theC,
                                                const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
                                                const Standard_Integer theMinimumOfPoints = 2,
@@ -83,14 +83,14 @@ public:
                                                const Standard_Real theMinLen = 1.0e-7);
 
   //! Constructor for 3D curve with restricted range.
-  //! @param theC [in] 3d curve
-  //! @param theFirstParameter [in] first parameter on curve
-  //! @param theLastParameter  [in] last  parameter on curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTo  l [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  3d curve
+  //! @param[in] theFirstParameter  first parameter on curve
+  //! @param[in] theLastParameter   last  parameter on curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param theUTo  l[in]  tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection (const Adaptor3d_Curve& theC,
                                                const Standard_Real theFirstParameter, const Standard_Real theLastParameter,
                                                const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
@@ -99,12 +99,12 @@ public:
                                                const Standard_Real theMinLen = 1.0e-7);
 
   //! Constructor for 2D curve.
-  //! @param theC [in] 2d curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  2d curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection (const Adaptor2d_Curve2d& theC,
                                                const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
                                                const Standard_Integer theMinimumOfPoints = 2,
@@ -112,14 +112,14 @@ public:
                                                const Standard_Real theMinLen = 1.0e-7);
 
   //! Constructor for 2D curve with restricted range.
-  //! @param theC [in] 2d curve
-  //! @param theFirstParameter [in] first parameter on curve
-  //! @param theLastParameter  [in] last  parameter on curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  2d curve
+  //! @param[in] theFirstParameter  first parameter on curve
+  //! @param[in] theLastParameter   last  parameter on curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT GCPnts_TangentialDeflection (const Adaptor2d_Curve2d& theC,
                                                const Standard_Real theFirstParameter, const Standard_Real theLastParameter,
                                                const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
@@ -128,12 +128,12 @@ public:
                                                const Standard_Real theMinLen = 1.0e-7);
 
   //! Initialize algorithm for 3D curve.
-  //! @param theC [in] 3d curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  3d curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
                                    const Standard_Integer theMinimumOfPoints = 2,
@@ -141,14 +141,14 @@ public:
                                    const Standard_Real theMinLen = 1.0e-7);
 
   //! Initialize algorithm for 3D curve with restricted range.
-  //! @param theC [in] 3d curve
-  //! @param theFirstParameter [in] first parameter on curve
-  //! @param theLastParameter  [in] last  parameter on curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  3d curve
+  //! @param[in] theFirstParameter  first parameter on curve
+  //! @param[in] theLastParameter   last  parameter on curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& theC,
                                    const Standard_Real theFirstParameter, const Standard_Real theLastParameter,
                                    const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
@@ -157,12 +157,12 @@ public:
                                    const Standard_Real theMinLen = 1.0e-7);
 
   //! Initialize algorithm for 2D curve.
-  //! @param theC [in] 2d curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  2d curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,
                                    const Standard_Integer theMinimumOfPoints = 2,
@@ -170,14 +170,14 @@ public:
                                    const Standard_Real theMinLen = 1.0e-7);
 
   //! Initialize algorithm for 2D curve with restricted range.
-  //! @param theC [in] 2d curve
-  //! @param theFirstParameter [in] first parameter on curve
-  //! @param theLastParameter  [in] last  parameter on curve
-  //! @param theAngularDeflection   [in] angular deflection in radians
-  //! @param theCurvatureDeflection [in] linear deflection
-  //! @param theMinimumOfPoints [in] minimum number of points
-  //! @param theUTol   [in] tolerance in curve parametric scope
-  //! @param theMinLen [in] minimal length
+  //! @param[in] theC  2d curve
+  //! @param[in] theFirstParameter  first parameter on curve
+  //! @param[in] theLastParameter   last  parameter on curve
+  //! @param[in] theAngularDeflection    angular deflection in radians
+  //! @param[in] theCurvatureDeflection  linear deflection
+  //! @param[in] theMinimumOfPoints  minimum number of points
+  //! @param[in] theUTol    tolerance in curve parametric scope
+  //! @param[in] theMinLen  minimal length
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& theC,
                                    const Standard_Real theFirstParameter, const Standard_Real theLastParameter,
                                    const Standard_Real theAngularDeflection, const Standard_Real theCurvatureDeflection,

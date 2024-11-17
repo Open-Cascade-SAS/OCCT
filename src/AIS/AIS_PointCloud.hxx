@@ -65,16 +65,16 @@ public:
 
   //! Sets the points from array of points.
   //! Method will not copy the input data - array will be stored as handle.
-  //! @param thePoints [in] the array of points
+  //! @param[in] thePoints  the array of points
   Standard_EXPORT virtual void SetPoints (const Handle(Graphic3d_ArrayOfPoints)& thePoints);
 
   //! Sets the points with optional colors.
   //! The input data will be copied into internal buffer.
   //! The input arrays should have equal length, otherwise
   //! the presentation will not be computed and displayed.
-  //! @param theCoords  [in] the array of coordinates
-  //! @param theColors  [in] optional array of colors
-  //! @param theNormals [in] optional array of normals
+  //! @param[in] theCoords   the array of coordinates
+  //! @param[in] theColors   optional array of colors
+  //! @param[in] theNormals  optional array of normals
   Standard_EXPORT virtual void SetPoints (const Handle(TColgp_HArray1OfPnt)&     theCoords,
                                           const Handle(Quantity_HArray1OfColor)& theColors  = NULL,
                                           const Handle(TColgp_HArray1OfDir)&     theNormals = NULL);

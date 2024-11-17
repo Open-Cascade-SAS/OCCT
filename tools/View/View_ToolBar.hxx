@@ -76,7 +76,7 @@ public:
 
   //! Saves state of tool bar actions
   //! \param theToolBar a view instance
-  //! \param theItems [out] properties
+  //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
   Standard_EXPORT static void SaveState (View_ToolBar* theToolBar,
                                          QMap<QString, QString>& theItems,

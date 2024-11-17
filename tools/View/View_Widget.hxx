@@ -103,7 +103,7 @@ public:
 
   //! Saves state of widget actions
   //! \param theParameters a view instance
-  //! \param theItems [out] properties
+  //! \param[out] theItems  properties
   //! \param thePrefix preference item prefix
   Standard_EXPORT static void SaveState (View_Widget* theWidget,
                                          QMap<QString, QString>& theItems,

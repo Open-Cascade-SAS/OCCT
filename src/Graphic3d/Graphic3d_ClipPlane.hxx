@@ -59,27 +59,27 @@ public:
   Standard_EXPORT Graphic3d_ClipPlane();
 
   //! Copy constructor.
-  //! @param theOther [in] the copied plane.
+  //! @param[in] theOther  the copied plane.
   Standard_EXPORT Graphic3d_ClipPlane(const Graphic3d_ClipPlane& theOther);
 
   //! Construct clip plane for the passed equation.
   //! By default the plane is on, capping is turned off.
-  //! @param theEquation [in] the plane equation.
+  //! @param[in] theEquation  the plane equation.
   Standard_EXPORT Graphic3d_ClipPlane (const Graphic3d_Vec4d& theEquation);
 
   //! Construct clip plane from the passed geometrical definition.
   //! By default the plane is on, capping is turned off.
-  //! @param thePlane [in] the plane.
+  //! @param[in] thePlane  the plane.
   Standard_EXPORT Graphic3d_ClipPlane (const gp_Pln& thePlane);
 
   //! Set plane equation by its geometrical definition.
   //! The equation is specified in "world" coordinate system.
-  //! @param thePlane [in] the plane.
+  //! @param[in] thePlane  the plane.
   Standard_EXPORT void SetEquation (const gp_Pln& thePlane);
 
   //! Set 4-component equation vector for clipping plane.
   //! The equation is specified in "world" coordinate system.
-  //! @param theEquation [in] the XYZW (or "ABCD") equation vector.
+  //! @param[in] theEquation  the XYZW (or "ABCD") equation vector.
   Standard_EXPORT void SetEquation (const Graphic3d_Vec4d& theEquation);
 
   //! Get 4-component equation vector for clipping plane.
@@ -98,12 +98,12 @@ public:
   }
 
   //! Change state of the clipping plane.
-  //! @param theIsOn [in] the flag specifying whether the graphic driver
+  //! @param[in] theIsOn  the flag specifying whether the graphic driver
   //! clipping by this plane should be turned on or off.
   Standard_EXPORT void SetOn(const Standard_Boolean theIsOn);
 
   //! Change state of capping surface rendering.
-  //! @param theIsOn [in] the flag specifying whether the graphic driver should
+  //! @param[in] theIsOn  the flag specifying whether the graphic driver should
   //! perform rendering of capping surface produced by this plane. The graphic
   //! driver produces this surface for convex graphics by means of stencil-test
   //! and multi-pass rendering.
@@ -172,14 +172,14 @@ public: // @name user-defined graphical attributes
   Standard_EXPORT void SetCappingColor (const Quantity_Color& theColor);
 
   //! Set material for rendering capping surface.
-  //! @param theMat [in] the material.
+  //! @param[in] theMat  the material.
   Standard_EXPORT void SetCappingMaterial (const Graphic3d_MaterialAspect& theMat);
 
   //! @return capping material.
   const Graphic3d_MaterialAspect& CappingMaterial() const { return myAspect->FrontMaterial(); }
 
   //! Set texture to be applied on capping surface.
-  //! @param theTexture [in] the texture.
+  //! @param[in] theTexture  the texture.
   Standard_EXPORT void SetCappingTexture (const Handle(Graphic3d_TextureMap)& theTexture);
 
   //! @return capping texture map.
@@ -188,14 +188,14 @@ public: // @name user-defined graphical attributes
                                                               : Handle(Graphic3d_TextureMap)(); }
 
   //! Set hatch style (stipple) and turn hatching on.
-  //! @param theStyle [in] the hatch style.
+  //! @param[in] theStyle  the hatch style.
   Standard_EXPORT void SetCappingHatch (const Aspect_HatchStyle theStyle);
 
   //! @return hatching style.
   Aspect_HatchStyle CappingHatch() const { return (Aspect_HatchStyle)myAspect->HatchStyle()->HatchType(); }
 
   //! Set custom hatch style (stipple) and turn hatching on.
-  //! @param theStyle [in] the hatch pattern.
+  //! @param[in] theStyle  the hatch pattern.
   Standard_EXPORT void SetCappingCustomHatch (const Handle(Graphic3d_HatchStyle)& theStyle);
 
   //! @return hatching style.
