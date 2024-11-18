@@ -39,5 +39,5 @@
 #define AppParCurves_Gradient_BFGS_hxx <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
 #define AppParCurves_Gradient BRepApprox_MyGradientOfTheComputeLineBezierOfApprox
 #define AppParCurves_Gradient_hxx <BRepApprox_MyGradientOfTheComputeLineBezierOfApprox.hxx>
-#include <AppParCurves_Gradient_BFGS.gxx>
+#include "../AppParCurves/AppParCurves_Gradient_BFGS.gxx"
 

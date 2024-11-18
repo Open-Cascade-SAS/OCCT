@@ -30,5 +30,5 @@
 #define ThePSurfaceTool_hxx <Adaptor3d_HSurfaceTool.hxx>
 #define IntCurveSurface_Polyhedron IntCurveSurface_ThePolyhedronOfHInter
 #define IntCurveSurface_Polyhedron_hxx <IntCurveSurface_ThePolyhedronOfHInter.hxx>
-#include <IntCurveSurface_Polyhedron.gxx>
+#include "../IntCurveSurface/IntCurveSurface_Polyhedron.gxx"
 

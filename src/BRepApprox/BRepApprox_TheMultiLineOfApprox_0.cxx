@@ -27,5 +27,5 @@
 #define TheSvSurfaces_hxx <ApproxInt_SvSurfaces.hxx>
 #define ApproxInt_MultiLine BRepApprox_TheMultiLineOfApprox
 #define ApproxInt_MultiLine_hxx <BRepApprox_TheMultiLineOfApprox.hxx>
-#include <ApproxInt_MultiLine.gxx>
+#include "../ApproxInt/ApproxInt_MultiLine.gxx"
 

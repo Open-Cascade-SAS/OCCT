@@ -36,5 +36,5 @@
 #define AppParCurves_BSpGradient_BFGS_hxx <AppDef_BSpGradient_BFGSOfMyBSplGradientOfBSplineCompute.hxx>
 #define AppParCurves_BSpGradient AppDef_MyBSplGradientOfBSplineCompute
 #define AppParCurves_BSpGradient_hxx <AppDef_MyBSplGradientOfBSplineCompute.hxx>
-#include <AppParCurves_BSpGradient_BFGS.gxx>
+#include "../AppParCurves/AppParCurves_BSpGradient_BFGS.gxx"
 

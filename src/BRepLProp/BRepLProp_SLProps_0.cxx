@@ -33,5 +33,5 @@
 #define Tool_hxx <BRepLProp_SurfaceTool.hxx>
 #define LProp_SLProps BRepLProp_SLProps
 #define LProp_SLProps_hxx <BRepLProp_SLProps.hxx>
-#include <LProp_SLProps.gxx>
+#include "../LProp/LProp_SLProps.gxx"
 

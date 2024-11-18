@@ -33,5 +33,5 @@
 #define TheCurveTool_hxx <HLRBRep_LineTool.hxx>
 #define IntImp_ZerCSParFunc HLRBRep_TheCSFunctionOfInterCSurf
 #define IntImp_ZerCSParFunc_hxx <HLRBRep_TheCSFunctionOfInterCSurf.hxx>
-#include <IntImp_ZerCSParFunc.gxx>
+#include "../IntImp/IntImp_ZerCSParFunc.gxx"
 

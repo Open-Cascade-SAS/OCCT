@@ -70,5 +70,5 @@
 #define TheLine_hxx <BRepBlend_Line.hxx>
 #define Blend_Walking BRepBlend_Walking
 #define Blend_Walking_hxx <BRepBlend_Walking.hxx>
-#include <Blend_Walking.gxx>
+#include "../Blend/Blend_Walking.gxx"
 

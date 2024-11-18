@@ -31,5 +31,5 @@
 #define Squares_hxx <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
 #define AppParCurves_BSpFunction GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox
 #define AppParCurves_BSpFunction_hxx <GeomInt_BSpParFunctionOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include <AppParCurves_BSpFunction.gxx>
+#include "../AppParCurves/AppParCurves_BSpFunction.gxx"
 

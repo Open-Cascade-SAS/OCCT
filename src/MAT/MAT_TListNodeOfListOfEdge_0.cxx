@@ -39,5 +39,5 @@
 #define MAT_TList MAT_ListOfEdge
 #define MAT_TList_hxx <MAT_ListOfEdge.hxx>
 #define Handle_MAT_TList Handle(MAT_ListOfEdge)
-#include <MAT_TListNode.gxx>
+#include "../MAT/MAT_TListNode.gxx"
 

@@ -36,5 +36,5 @@
 #define ToolPolyh_hxx <IntCurveSurface_ThePolyhedronToolOfHInter.hxx>
 #define Intf_InterferencePolygonPolyhedron IntCurveSurface_TheInterferenceOfHInter
 #define Intf_InterferencePolygonPolyhedron_hxx <IntCurveSurface_TheInterferenceOfHInter.hxx>
-#include <Intf_InterferencePolygonPolyhedron.gxx>
+#include "../Intf/Intf_InterferencePolygonPolyhedron.gxx"
 

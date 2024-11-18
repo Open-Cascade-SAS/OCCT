@@ -51,5 +51,5 @@
 #define Approx_Gradient_BFGSOfMyGradient_hxx <BRepApprox_Gradient_BFGSOfMyGradientOfTheComputeLineBezierOfApprox.hxx>
 #define Approx_ComputeLine BRepApprox_TheComputeLineBezierOfApprox
 #define Approx_ComputeLine_hxx <BRepApprox_TheComputeLineBezierOfApprox.hxx>
-#include <Approx_ComputeLine.gxx>
+#include "../Approx/Approx_ComputeLine.gxx"
 

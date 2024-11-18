@@ -33,5 +33,5 @@
 #define ToolLine_hxx <AppDef_MyLineTool.hxx>
 #define AppParCurves_LeastSquare AppDef_ParLeastSquareOfTheGradient
 #define AppParCurves_LeastSquare_hxx <AppDef_ParLeastSquareOfTheGradient.hxx>
-#include <AppParCurves_LeastSquare.gxx>
+#include "../AppParCurves/AppParCurves_LeastSquare.gxx"
 

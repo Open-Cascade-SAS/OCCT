@@ -36,5 +36,5 @@
 #define AppParCurves_BSpGradient_BFGS_hxx <GeomInt_BSpGradient_BFGSOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
 #define AppParCurves_BSpGradient GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox
 #define AppParCurves_BSpGradient_hxx <GeomInt_MyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include <AppParCurves_BSpGradient_BFGS.gxx>
+#include "../AppParCurves/AppParCurves_BSpGradient_BFGS.gxx"
 

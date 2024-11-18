@@ -39,5 +39,5 @@
 #define Tool_hxx <GeomLProp_CurveTool.hxx>
 #define LProp_CLProps GeomLProp_CLProps
 #define LProp_CLProps_hxx <GeomLProp_CLProps.hxx>
-#include <LProp_CLProps.gxx>
+#include "../LProp/LProp_CLProps.gxx"
 

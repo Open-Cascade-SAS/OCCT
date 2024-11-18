@@ -38,5 +38,5 @@
 #define TheIntConicCurve_hxx <HLRBRep_TheIntConicCurveOfCInter.hxx>
 #define IntCurve_UserIntConicCurveGen HLRBRep_IntConicCurveOfCInter
 #define IntCurve_UserIntConicCurveGen_hxx <HLRBRep_IntConicCurveOfCInter.hxx>
-#include <IntCurve_UserIntConicCurveGen.gxx>
+#include "../IntCurve/IntCurve_UserIntConicCurveGen.gxx"
 

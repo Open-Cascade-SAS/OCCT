@@ -29,5 +29,5 @@
 #define ToolLine_hxx <GeomInt_TheMultiLineToolOfWLApprox.hxx>
 #define AppParCurves_ResolConstraint GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox
 #define AppParCurves_ResolConstraint_hxx <GeomInt_ResConstraintOfMyGradientbisOfTheComputeLineOfWLApprox.hxx>
-#include <AppParCurves_ResolConstraint.gxx>
+#include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
 

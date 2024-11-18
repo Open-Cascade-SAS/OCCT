@@ -33,5 +33,5 @@
 #define ToolLine_hxx <BRepApprox_TheMultiLineToolOfApprox.hxx>
 #define AppParCurves_LeastSquare BRepApprox_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfApprox
 #define AppParCurves_LeastSquare_hxx <BRepApprox_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfApprox.hxx>
-#include <AppParCurves_LeastSquare.gxx>
+#include "../AppParCurves/AppParCurves_LeastSquare.gxx"
 

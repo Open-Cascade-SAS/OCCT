@@ -40,5 +40,5 @@
 #define Interface_Recognizer IGESData_FileRecognizer
 #define Interface_Recognizer_hxx <IGESData_FileRecognizer.hxx>
 #define Handle_Interface_Recognizer Handle(IGESData_FileRecognizer)
-#include <Interface_Recognizer.gxx>
+#include "../Interface/Interface_Recognizer.gxx"
 

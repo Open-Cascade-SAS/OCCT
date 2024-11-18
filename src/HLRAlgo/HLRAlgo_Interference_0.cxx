@@ -26,5 +26,5 @@
 #define TheShape_hxx <HLRAlgo_Coincidence.hxx>
 #define TopBas_Interference HLRAlgo_Interference
 #define TopBas_Interference_hxx <HLRAlgo_Interference.hxx>
-#include <TopBas_Interference.gxx>
+#include "../TopBas/TopBas_Interference.gxx"
 

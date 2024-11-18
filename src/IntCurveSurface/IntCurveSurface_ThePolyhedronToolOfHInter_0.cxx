@@ -26,5 +26,5 @@
 #define ThePolyhedron_hxx <IntCurveSurface_ThePolyhedronOfHInter.hxx>
 #define IntCurveSurface_PolyhedronTool IntCurveSurface_ThePolyhedronToolOfHInter
 #define IntCurveSurface_PolyhedronTool_hxx <IntCurveSurface_ThePolyhedronToolOfHInter.hxx>
-#include <IntCurveSurface_PolyhedronTool.gxx>
+#include "../IntCurveSurface/IntCurveSurface_PolyhedronTool.gxx"
 

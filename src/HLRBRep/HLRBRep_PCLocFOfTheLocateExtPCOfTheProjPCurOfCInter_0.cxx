@@ -38,5 +38,5 @@
 #define Extrema_SeqPC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtPC HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter
 #define Extrema_FuncExtPC_hxx <HLRBRep_PCLocFOfTheLocateExtPCOfTheProjPCurOfCInter.hxx>
-#include <Extrema_FuncExtPC.gxx>
+#include "../Extrema/Extrema_FuncExtPC.gxx"
 

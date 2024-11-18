@@ -43,5 +43,5 @@
 #define IFSelect_ModelModifier StepSelect_ModelModifier
 #define IFSelect_ModelModifier_hxx <StepSelect_ModelModifier.hxx>
 #define Handle_IFSelect_ModelModifier Handle(StepSelect_ModelModifier)
-#include <IFSelect_ModelModifier.gxx>
+#include "../IFSelect/IFSelect_ModelModifier.gxx"
 

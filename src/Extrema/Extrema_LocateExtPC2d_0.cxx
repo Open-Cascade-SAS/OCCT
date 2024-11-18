@@ -58,5 +58,5 @@
 #define Extrema_PCLocFOfLocEPC_hxx <Extrema_PCLocFOfLocEPCOfLocateExtPC2d.hxx>
 #define Extrema_GLocateExtPC Extrema_LocateExtPC2d
 #define Extrema_GLocateExtPC_hxx <Extrema_LocateExtPC2d.hxx>
-#include <Extrema_GLocateExtPC.gxx>
+#include "../Extrema/Extrema_GLocateExtPC.gxx"
 

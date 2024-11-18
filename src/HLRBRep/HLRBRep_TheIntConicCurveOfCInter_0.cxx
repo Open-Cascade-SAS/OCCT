@@ -45,5 +45,5 @@
 #define IntCurve_MyImpParToolOfTheIntersector_hxx <HLRBRep_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfCInter.hxx>
 #define IntCurve_IntConicCurveGen HLRBRep_TheIntConicCurveOfCInter
 #define IntCurve_IntConicCurveGen_hxx <HLRBRep_TheIntConicCurveOfCInter.hxx>
-#include <IntCurve_IntConicCurveGen.gxx>
+#include "../IntCurve/IntCurve_IntConicCurveGen.gxx"
 

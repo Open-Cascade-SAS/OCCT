@@ -28,5 +28,5 @@
 #define TheIntersector_hxx <Geom2dHatch_Intersector.hxx>
 #define TopClass_Classifier2d Geom2dHatch_FClass2dOfClassifier
 #define TopClass_Classifier2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
-#include <TopClass_Classifier2d.gxx>
+#include "../TopClass/TopClass_Classifier2d.gxx"
 

@@ -37,5 +37,5 @@
 #define TheISurfaceTool_hxx <IntSurf_QuadricTool.hxx>
 #define IntImp_ZerImpFunc GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox
 #define IntImp_ZerImpFunc_hxx <GeomInt_TheZerImpFuncOfTheImpPrmSvSurfacesOfWLApprox.hxx>
-#include <IntImp_ZerImpFunc.gxx>
+#include "../IntImp/IntImp_ZerImpFunc.gxx"
 

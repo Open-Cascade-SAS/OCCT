@@ -39,5 +39,5 @@
 #define TheFunction_hxx <IntPatch_TheSurfFunction.hxx>
 #define IntStart_SearchInside IntPatch_TheSearchInside
 #define IntStart_SearchInside_hxx <IntPatch_TheSearchInside.hxx>
-#include <IntStart_SearchInside.gxx>
+#include "../IntStart/IntStart_SearchInside.gxx"
 

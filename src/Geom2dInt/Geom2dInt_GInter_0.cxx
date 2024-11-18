@@ -70,5 +70,5 @@
 #define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx <Geom2dInt_ExactIntersectionPointOfTheIntPCurvePCurveOfGInter.hxx>
 #define IntCurve_IntCurveCurveGen Geom2dInt_GInter
 #define IntCurve_IntCurveCurveGen_hxx <Geom2dInt_GInter.hxx>
-#include <IntCurve_IntCurveCurveGen.gxx>
+#include "../IntCurve/IntCurve_IntCurveCurveGen.gxx"
 

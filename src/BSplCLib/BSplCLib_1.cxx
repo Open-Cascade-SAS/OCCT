@@ -48,4 +48,4 @@
 
 #define BSplCLib_DataContainer BSplCLib_DataContainer_2d  
   
-#include <BSplCLib_CurveComputation.gxx>
+#include "../BSplCLib/BSplCLib_CurveComputation.gxx"

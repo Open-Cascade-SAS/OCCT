@@ -35,5 +35,5 @@
 #define IntCurveSurface_TheQuadCurvFunc_hxx <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
 #define IntCurveSurface_QuadricCurveExactInter IntCurveSurface_TheQuadCurvExactHInter
 #define IntCurveSurface_QuadricCurveExactInter_hxx <IntCurveSurface_TheQuadCurvExactHInter.hxx>
-#include <IntCurveSurface_QuadricCurveExactInter.gxx>
+#include "../IntCurveSurface/IntCurveSurface_QuadricCurveExactInter.gxx"
 

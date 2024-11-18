@@ -28,5 +28,5 @@
 #define TheArc_hxx <Adaptor2d_Curve2d.hxx>
 #define IntStart_PathPoint Contap_ThePathPointOfTheSearch
 #define IntStart_PathPoint_hxx <Contap_ThePathPointOfTheSearch.hxx>
-#include <IntStart_PathPoint.gxx>
+#include "../IntStart/IntStart_PathPoint.gxx"
 

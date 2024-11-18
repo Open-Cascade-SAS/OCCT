@@ -39,5 +39,5 @@
 #define TheFunction_hxx <Contap_SurfFunction.hxx>
 #define IntStart_SearchInside Contap_TheSearchInside
 #define IntStart_SearchInside_hxx <Contap_TheSearchInside.hxx>
-#include <IntStart_SearchInside.gxx>
+#include "../IntStart/IntStart_SearchInside.gxx"
 

@@ -38,5 +38,5 @@
 #define IntImpParGen_MyImpParTool_hxx <Geom2dInt_MyImpParToolOfTheIntersectorOfTheIntConicCurveOfGInter.hxx>
 #define IntImpParGen_Intersector Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter
 #define IntImpParGen_Intersector_hxx <Geom2dInt_TheIntersectorOfTheIntConicCurveOfGInter.hxx>
-#include <IntImpParGen_Intersector.gxx>
+#include "../IntImpParGen/IntImpParGen_Intersector.gxx"
 

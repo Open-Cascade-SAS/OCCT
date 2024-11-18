@@ -33,5 +33,5 @@
 #define ResolCons_hxx <AppDef_ResConstraintOfTheGradient.hxx>
 #define AppParCurves_Function AppDef_ParFunctionOfTheGradient
 #define AppParCurves_Function_hxx <AppDef_ParFunctionOfTheGradient.hxx>
-#include <AppParCurves_Function.gxx>
+#include "../AppParCurves/AppParCurves_Function.gxx"
 

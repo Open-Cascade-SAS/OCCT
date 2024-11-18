@@ -50,5 +50,5 @@
 #define Handle_LibCtl_Node Handle(StepData_NodeOfWriterLib)
 #define LibCtl_Library StepData_WriterLib
 #define LibCtl_Library_hxx <StepData_WriterLib.hxx>
-#include <LibCtl_GlobalNode.gxx>
+#include "../LibCtl/LibCtl_GlobalNode.gxx"
 

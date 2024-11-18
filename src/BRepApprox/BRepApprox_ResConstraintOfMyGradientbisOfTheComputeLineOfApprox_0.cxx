@@ -29,5 +29,5 @@
 #define ToolLine_hxx <BRepApprox_TheMultiLineToolOfApprox.hxx>
 #define AppParCurves_ResolConstraint BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox
 #define AppParCurves_ResolConstraint_hxx <BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox.hxx>
-#include <AppParCurves_ResolConstraint.gxx>
+#include "../AppParCurves/AppParCurves_ResolConstraint.gxx"
 

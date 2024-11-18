@@ -51,5 +51,5 @@
 #define Approx_Gradient_BFGSOfMyGradient_hxx <AppDef_Gradient_BFGSOfMyGradientOfCompute.hxx>
 #define Approx_ComputeLine AppDef_Compute
 #define Approx_ComputeLine_hxx <AppDef_Compute.hxx>
-#include <Approx_ComputeLine.gxx>
+#include "../Approx/Approx_ComputeLine.gxx"
 

@@ -33,5 +33,5 @@
 #define ToolLine_hxx <GeomInt_TheMultiLineToolOfWLApprox.hxx>
 #define AppParCurves_LeastSquare GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox
 #define AppParCurves_LeastSquare_hxx <GeomInt_BSpParLeastSquareOfMyBSplGradientOfTheComputeLineOfWLApprox.hxx>
-#include <AppParCurves_LeastSquare.gxx>
+#include "../AppParCurves/AppParCurves_LeastSquare.gxx"
 

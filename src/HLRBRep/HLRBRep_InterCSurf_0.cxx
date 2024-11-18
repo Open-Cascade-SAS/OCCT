@@ -67,5 +67,5 @@
 #define IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactInter_hxx <HLRBRep_TheQuadCurvFuncOfTheQuadCurvExactInterCSurf.hxx>
 #define IntCurveSurface_Inter HLRBRep_InterCSurf
 #define IntCurveSurface_Inter_hxx <HLRBRep_InterCSurf.hxx>
-#include <IntCurveSurface_Inter.gxx>
+#include "../IntCurveSurface/IntCurveSurface_Inter.gxx"
 

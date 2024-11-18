@@ -69,5 +69,5 @@
 #define Approx_Gradient_BFGSOfMyGradientbis_hxx <BRepApprox_Gradient_BFGSOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #define Approx_BSplComputeLine BRepApprox_TheComputeLineOfApprox
 #define Approx_BSplComputeLine_hxx <BRepApprox_TheComputeLineOfApprox.hxx>
-#include <Approx_BSplComputeLine.gxx>
+#include "../Approx/Approx_BSplComputeLine.gxx"
 

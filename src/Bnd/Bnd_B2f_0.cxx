@@ -26,5 +26,5 @@
 #define RealType_hxx <Standard_ShortReal.hxx>
 #define Bnd_B2x Bnd_B2f
 #define Bnd_B2x_hxx <Bnd_B2f.hxx>
-#include <Bnd_B2x.gxx>
+#include "../Bnd/Bnd_B2x.gxx"
 

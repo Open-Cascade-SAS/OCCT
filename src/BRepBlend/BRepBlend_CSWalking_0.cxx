@@ -69,5 +69,5 @@
 #define TheLine_hxx <BRepBlend_Line.hxx>
 #define Blend_CSWalking BRepBlend_CSWalking
 #define Blend_CSWalking_hxx <BRepBlend_CSWalking.hxx>
-#include <Blend_CSWalking.gxx>
+#include "../Blend/Blend_CSWalking.gxx"
 

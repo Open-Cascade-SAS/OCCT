@@ -69,5 +69,5 @@
 #define Approx_Gradient_BFGSOfMyGradientbis_hxx <AppDef_Gradient_BFGSOfMyGradientbisOfBSplineCompute.hxx>
 #define Approx_BSplComputeLine AppDef_BSplineCompute
 #define Approx_BSplComputeLine_hxx <AppDef_BSplineCompute.hxx>
-#include <Approx_BSplComputeLine.gxx>
+#include "../Approx/Approx_BSplComputeLine.gxx"
 

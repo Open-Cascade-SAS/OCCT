@@ -30,5 +30,5 @@
 #define ThePathPoint_hxx <IntPatch_ThePathPointOfTheSOnBounds.hxx>
 #define IntStart_Segment IntPatch_TheSegmentOfTheSOnBounds
 #define IntStart_Segment_hxx <IntPatch_TheSegmentOfTheSOnBounds.hxx>
-#include <IntStart_Segment.gxx>
+#include "../IntStart/IntStart_Segment.gxx"
 

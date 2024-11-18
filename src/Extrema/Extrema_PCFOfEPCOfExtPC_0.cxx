@@ -39,5 +39,5 @@
 #define Extrema_SeqPC_hxx <Extrema_SequenceOfPOnCurv.hxx>
 #define Extrema_FuncExtPC Extrema_PCFOfEPCOfExtPC
 #define Extrema_FuncExtPC_hxx <Extrema_PCFOfEPCOfExtPC.hxx>
-#include <Extrema_FuncExtPC.gxx>
+#include "../Extrema/Extrema_FuncExtPC.gxx"
 

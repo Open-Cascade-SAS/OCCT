@@ -39,5 +39,5 @@
 #define Extrema_SeqPC_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_FuncExtPC Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter
 #define Extrema_FuncExtPC_hxx <Geom2dInt_PCLocFOfTheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#include <Extrema_FuncExtPC.gxx>
+#include "../Extrema/Extrema_FuncExtPC.gxx"
 

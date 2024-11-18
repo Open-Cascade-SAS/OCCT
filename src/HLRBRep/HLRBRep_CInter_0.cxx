@@ -69,5 +69,5 @@
 #define IntCurve_ExactIntersectionPointOfTheIntPCurvePCurve_hxx <HLRBRep_ExactIntersectionPointOfTheIntPCurvePCurveOfCInter.hxx>
 #define IntCurve_IntCurveCurveGen HLRBRep_CInter
 #define IntCurve_IntCurveCurveGen_hxx <HLRBRep_CInter.hxx>
-#include <IntCurve_IntCurveCurveGen.gxx>
+#include "../IntCurve/IntCurve_IntCurveCurveGen.gxx"
 

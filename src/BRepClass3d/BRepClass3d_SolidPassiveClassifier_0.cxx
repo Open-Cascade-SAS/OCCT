@@ -26,5 +26,5 @@
 #define TheIntersector_hxx <BRepClass3d_Intersector3d.hxx>
 #define TopClass_Classifier3d BRepClass3d_SolidPassiveClassifier
 #define TopClass_Classifier3d_hxx <BRepClass3d_SolidPassiveClassifier.hxx>
-#include <TopClass_Classifier3d.gxx>
+#include "../TopClass/TopClass_Classifier3d.gxx"
 

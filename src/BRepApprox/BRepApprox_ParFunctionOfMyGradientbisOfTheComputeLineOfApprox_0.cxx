@@ -33,5 +33,5 @@
 #define ResolCons_hxx <BRepApprox_ResConstraintOfMyGradientbisOfTheComputeLineOfApprox.hxx>
 #define AppParCurves_Function BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox
 #define AppParCurves_Function_hxx <BRepApprox_ParFunctionOfMyGradientbisOfTheComputeLineOfApprox.hxx>
-#include <AppParCurves_Function.gxx>
+#include "../AppParCurves/AppParCurves_Function.gxx"
 

@@ -34,5 +34,5 @@
 #define TopClass_FClass2d_hxx <Geom2dHatch_FClass2dOfClassifier.hxx>
 #define TopClass_FaceClassifier Geom2dHatch_Classifier
 #define TopClass_FaceClassifier_hxx <Geom2dHatch_Classifier.hxx>
-#include <TopClass_FaceClassifier.gxx>
+#include "../TopClass/TopClass_FaceClassifier.gxx"
 

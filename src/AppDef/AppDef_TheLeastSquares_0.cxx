@@ -33,5 +33,5 @@
 #define ToolLine_hxx <AppDef_MyLineTool.hxx>
 #define AppParCurves_LeastSquare AppDef_TheLeastSquares
 #define AppParCurves_LeastSquare_hxx <AppDef_TheLeastSquares.hxx>
-#include <AppParCurves_LeastSquare.gxx>
+#include "../AppParCurves/AppParCurves_LeastSquare.gxx"
 

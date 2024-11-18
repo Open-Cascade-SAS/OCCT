@@ -71,7 +71,7 @@ static void Drawsect(const TheSurface& surf,
 
 #endif
 
-#include <Blend_CSWalking_1.gxx>
-#include <Blend_CSWalking_2.gxx>
-#include <Blend_CSWalking_3.gxx>
-#include <Blend_CSWalking_4.gxx>
+#include "../Blend/Blend_CSWalking_1.gxx"
+#include "../Blend/Blend_CSWalking_2.gxx"
+#include "../Blend/Blend_CSWalking_3.gxx"
+#include "../Blend/Blend_CSWalking_4.gxx"

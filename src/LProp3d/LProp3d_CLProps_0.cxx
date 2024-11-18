@@ -38,5 +38,5 @@
 #define Tool_hxx <LProp3d_CurveTool.hxx>
 #define LProp_CLProps LProp3d_CLProps
 #define LProp_CLProps_hxx <LProp3d_CLProps.hxx>
-#include <LProp_CLProps.gxx>
+#include "../LProp/LProp_CLProps.gxx"
 

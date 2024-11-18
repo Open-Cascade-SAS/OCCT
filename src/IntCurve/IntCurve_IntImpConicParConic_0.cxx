@@ -38,5 +38,5 @@
 #define IntImpParGen_MyImpParTool_hxx <IntCurve_MyImpParToolOfIntImpConicParConic.hxx>
 #define IntImpParGen_Intersector IntCurve_IntImpConicParConic
 #define IntImpParGen_Intersector_hxx <IntCurve_IntImpConicParConic.hxx>
-#include <IntImpParGen_Intersector.gxx>
+#include "../IntImpParGen/IntImpParGen_Intersector.gxx"
 

@@ -36,5 +36,5 @@
 #define ToolPolyh_hxx <HLRBRep_ThePolyhedronToolOfInterCSurf.hxx>
 #define Intf_InterferencePolygonPolyhedron HLRBRep_TheInterferenceOfInterCSurf
 #define Intf_InterferencePolygonPolyhedron_hxx <HLRBRep_TheInterferenceOfInterCSurf.hxx>
-#include <Intf_InterferencePolygonPolyhedron.gxx>
+#include "../Intf/Intf_InterferencePolygonPolyhedron.gxx"
 

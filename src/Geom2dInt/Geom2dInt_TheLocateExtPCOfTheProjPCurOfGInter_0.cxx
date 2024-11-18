@@ -46,5 +46,5 @@
 #define Extrema_SeqPCOfPCLocF_hxx <Extrema_SequenceOfPOnCurv2d.hxx>
 #define Extrema_GenLocateExtPC Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter
 #define Extrema_GenLocateExtPC_hxx <Geom2dInt_TheLocateExtPCOfTheProjPCurOfGInter.hxx>
-#include <Extrema_GenLocateExtPC.gxx>
+#include "../Extrema/Extrema_GenLocateExtPC.gxx"
 

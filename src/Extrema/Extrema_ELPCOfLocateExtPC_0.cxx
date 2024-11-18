@@ -51,5 +51,5 @@
 #define Extrema_PCFOfEPC_hxx <Extrema_PCFOfEPCOfELPCOfLocateExtPC.hxx>
 #define Extrema_GExtPC Extrema_ELPCOfLocateExtPC
 #define Extrema_GExtPC_hxx <Extrema_ELPCOfLocateExtPC.hxx>
-#include <Extrema_GExtPC.gxx>
+#include "../Extrema/Extrema_GExtPC.gxx"
 

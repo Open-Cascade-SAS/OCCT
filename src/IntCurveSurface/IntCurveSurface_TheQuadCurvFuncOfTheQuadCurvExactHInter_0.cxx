@@ -29,5 +29,5 @@
 #define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
 #define IntCurveSurface_QuadricCurveFunc IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter
 #define IntCurveSurface_QuadricCurveFunc_hxx <IntCurveSurface_TheQuadCurvFuncOfTheQuadCurvExactHInter.hxx>
-#include <IntCurveSurface_QuadricCurveFunc.gxx>
+#include "../IntCurveSurface/IntCurveSurface_QuadricCurveFunc.gxx"
 

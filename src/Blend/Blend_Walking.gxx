@@ -99,10 +99,10 @@ static void Drawsect(const TheSurface& surf1,
 }
 #endif
 
-#include <Blend_Walking_1.gxx>
-#include <Blend_Walking_2.gxx>
-#include <Blend_Walking_3.gxx>
-#include <Blend_Walking_4.gxx>
+#include "../Blend/Blend_Walking_1.gxx"
+#include "../Blend/Blend_Walking_2.gxx"
+#include "../Blend/Blend_Walking_3.gxx"
+#include "../Blend/Blend_Walking_4.gxx"
 
 
 

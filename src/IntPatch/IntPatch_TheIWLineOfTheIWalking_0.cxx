@@ -39,5 +39,5 @@
 #define IntWalk_IWLine IntPatch_TheIWLineOfTheIWalking
 #define IntWalk_IWLine_hxx <IntPatch_TheIWLineOfTheIWalking.hxx>
 #define Handle_IntWalk_IWLine Handle(IntPatch_TheIWLineOfTheIWalking)
-#include <IntWalk_IWLine.gxx>
+#include "../IntWalk/IntWalk_IWLine.gxx"
 

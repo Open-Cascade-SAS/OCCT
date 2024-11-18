@@ -29,5 +29,5 @@
 #define TheCurveTool_hxx <HLRBRep_CurveTool.hxx>
 #define IntCurve_Polygon2dGen HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter
 #define IntCurve_Polygon2dGen_hxx <HLRBRep_ThePolygon2dOfTheIntPCurvePCurveOfCInter.hxx>
-#include <IntCurve_Polygon2dGen.gxx>
+#include "../IntCurve/IntCurve_Polygon2dGen.gxx"
 

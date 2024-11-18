@@ -29,5 +29,5 @@
 #define TheCurveTool_hxx <IntCurveSurface_TheHCurveTool.hxx>
 #define IntCurveSurface_Polygon IntCurveSurface_ThePolygonOfHInter
 #define IntCurveSurface_Polygon_hxx <IntCurveSurface_ThePolygonOfHInter.hxx>
-#include <IntCurveSurface_Polygon.gxx>
+#include "../IntCurveSurface/IntCurveSurface_Polygon.gxx"
 

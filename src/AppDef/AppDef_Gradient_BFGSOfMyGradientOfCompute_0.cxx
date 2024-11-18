@@ -39,5 +39,5 @@
 #define AppParCurves_Gradient_BFGS_hxx <AppDef_Gradient_BFGSOfMyGradientOfCompute.hxx>
 #define AppParCurves_Gradient AppDef_MyGradientOfCompute
 #define AppParCurves_Gradient_hxx <AppDef_MyGradientOfCompute.hxx>
-#include <AppParCurves_Gradient_BFGS.gxx>
+#include "../AppParCurves/AppParCurves_Gradient_BFGS.gxx"
 

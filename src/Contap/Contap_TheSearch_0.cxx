@@ -53,5 +53,5 @@
 #define IntStart_SequenceOfSegment_hxx <Contap_SequenceOfSegmentOfTheSearch.hxx>
 #define IntStart_SearchOnBoundaries Contap_TheSearch
 #define IntStart_SearchOnBoundaries_hxx <Contap_TheSearch.hxx>
-#include <IntStart_SearchOnBoundaries.gxx>
+#include "../IntStart/IntStart_SearchOnBoundaries.gxx"
 
