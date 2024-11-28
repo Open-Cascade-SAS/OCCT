@@ -1215,11 +1215,11 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
       realfirstC = AppParCurves_TangencyPoint;
       if (myfirstC == AppParCurves_CurvaturePoint) {
         if (nbP3d != 0 && nbP2d != 0)
-          Ok = LineTool::Tangency(Line, Thefirstpt, TabV, TabV2d);
+          Ok = LineTool::Curvature(Line, Thefirstpt, TabV, TabV2d);
         else if (nbP2d != 0)
-          Ok = LineTool::Tangency(Line, Thefirstpt, TabV2d);
+          Ok = LineTool::Curvature(Line, Thefirstpt, TabV2d);
         else if (nbP3d != 0)
-          Ok = LineTool::Tangency(Line, Thefirstpt, TabV);
+          Ok = LineTool::Curvature(Line, Thefirstpt, TabV);
         if (Ok) {
           realfirstC = AppParCurves_CurvaturePoint;
         }
@@ -1242,11 +1242,11 @@ void Approx_BSplComputeLine::FindRealConstraints(const MultiLine& Line)
       reallastC = AppParCurves_TangencyPoint;
       if (mylastC == AppParCurves_CurvaturePoint) {
         if (nbP3d != 0 && nbP2d != 0)
-          Ok = LineTool::Tangency(Line, Thelastpt, TabV, TabV2d);
+          Ok = LineTool::Curvature(Line, Thelastpt, TabV, TabV2d);
         else if (nbP2d != 0)
-          Ok = LineTool::Tangency(Line, Thelastpt, TabV2d);
+          Ok = LineTool::Curvature(Line, Thelastpt, TabV2d);
         else if (nbP3d != 0)
-          Ok = LineTool::Tangency(Line, Thelastpt, TabV);
+          Ok = LineTool::Curvature(Line, Thelastpt, TabV);
         if (Ok) {
           reallastC = AppParCurves_CurvaturePoint;
         }
