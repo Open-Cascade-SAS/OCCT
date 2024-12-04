@@ -21,9 +21,10 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <Message_ProgressRange.hxx>
+#include <StepData_Factors.hxx>
 #include <TopoDSToStep_BuilderError.hxx>
 #include <TopoDSToStep_Root.hxx>
-#include <Message_ProgressRange.hxx>
 
 class StepShape_TopologicalRepresentationItem;
 class StepVisual_TessellatedItem;
