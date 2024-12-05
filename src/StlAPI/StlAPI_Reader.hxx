@@ -21,6 +21,9 @@
 class TopoDS_Shape;
 
 //! Reading from stereolithography format.
+//! Reads STL file and creates a shape composed of triangular faces, one per facet.
+//! IMPORTANT: This approach is very inefficient, especially for large files.
+//! IMPORTANT: Consider reading STL file to Poly_Triangulation object instead (see class RWStl).
 class StlAPI_Reader
 {
 public:
