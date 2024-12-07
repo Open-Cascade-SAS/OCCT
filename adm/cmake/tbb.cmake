@@ -1,5 +1,18 @@
 # tbb
 
+# vcpkg processing
+if (BUILD_USE_VCPKG)
+  find_package(TBB CONFIG REQUIRED)
+  set(CSF_TBB TBB::tbb TBB::tbbmalloc)
+  if (WIN32)
+    set (USED_3RDPARTY_TBB_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
+  else()
+    set (USED_3RDPARTY_TBB_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib")
+  endif()
+  list (APPEND 3RDPARTY_INCLUDE_DIRS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/tbb")
+  return()
+endif()
+
 if (MSVC AND BUILD_SHARED_LIBS)
   add_definitions (-D__TBB_NO_IMPLICIT_LINKAGE)
   add_definitions (-D__TBBMALLOC_NO_IMPLICIT_LINKAGE)
