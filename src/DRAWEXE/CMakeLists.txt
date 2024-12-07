@@ -77,3 +77,14 @@ if (EMSCRIPTEN)
             DESTINATION "${INSTALL_DIR_BIN}/${OCCT_INSTALL_BIN_LETTER}")
   endif()
 endif()
+
+# just for test
+if (NOT WIN32 AND USE_TK)
+set(TK_LIBS
+  -lXss
+  -lXft
+  -lexpat
+)
+
+target_link_libraries(DRAWEXE ${TK_LIBS})
+endif()
