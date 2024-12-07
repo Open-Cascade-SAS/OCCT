@@ -43,7 +43,7 @@ TopExp_Explorer::TopExp_Explorer()
   toAvoid (TopAbs_SHAPE),
   hasMore (Standard_False)
 {
-  myStack = (TopoDS_Iterator*)Standard::Allocate(theStackSize*sizeof(TopoDS_Iterator));
+  myStack = (TopoDS_Iterator*)Standard::AllocateOptimal(theStackSize*sizeof(TopoDS_Iterator));
 }
 
 //=======================================================================
@@ -60,7 +60,7 @@ TopExp_Explorer::TopExp_Explorer (const TopoDS_Shape& theS,
   toAvoid (theToAvoid),
   hasMore (Standard_False)
 {
-  myStack = (TopoDS_Iterator*)Standard::Allocate(theStackSize*sizeof(TopoDS_Iterator));
+  myStack = (TopoDS_Iterator*)Standard::AllocateOptimal(theStackSize*sizeof(TopoDS_Iterator));
 
   Init (theS, theToFind, theToAvoid);
 }
@@ -138,7 +138,7 @@ const TopoDS_Shape&  TopExp_Explorer::Current()const
 void TopExp_Explorer::Next()
 {
   Standard_Integer NewSize;
-  TopoDS_Shape ShapTop;
+  TopoDS_Shape const* ShapTop = nullptr;
   TopAbs_ShapeEnum ty;
   Standard_NoMoreObject_Raise_if(!hasMore,"TopExp_Explorer::Next");
 
@@ -159,16 +159,9 @@ void TopExp_Explorer::Next()
     else {
       // push and try to find
       if(++myTop >= mySizeOfStack) {
-	NewSize = mySizeOfStack + theStackSize;
-	TopExp_Stack newStack = (TopoDS_Iterator*)Standard::Allocate(NewSize*sizeof(TopoDS_Iterator));
-	Standard_Integer i;
-	for ( i =0; i < myTop; i++) {
-	  new (&newStack[i]) TopoDS_Iterator(myStack[i]);
-	  myStack[i].~TopoDS_Iterator();
-	}
-	Standard::Free(myStack);
-	mySizeOfStack = NewSize;
-	myStack = newStack;
+        NewSize = mySizeOfStack + theStackSize;
+        myStack = (TopoDS_Iterator*)Standard::Reallocate(myStack, NewSize * sizeof(TopoDS_Iterator));
+        mySizeOfStack = NewSize;
       }
       new (&myStack[myTop]) TopoDS_Iterator(myShape);
     }
@@ -177,8 +170,8 @@ void TopExp_Explorer::Next()
 
   for (;;) {
     if (myStack[myTop].More()) {
-      ShapTop = myStack[myTop].Value();
-      ty = ShapTop.ShapeType();
+      ShapTop = &myStack[myTop].Value();
+      ty = ShapTop->ShapeType();
       if (SAMETYPE(toFind,ty)) {
 	hasMore = Standard_True;
 	return;
@@ -186,17 +179,10 @@ void TopExp_Explorer::Next()
       else if (LESSCOMPLEX(toFind,ty) && !AVOID(toAvoid,ty)) {
 	if(++myTop >= mySizeOfStack) {
 	  NewSize = mySizeOfStack + theStackSize;
-	  TopExp_Stack newStack = (TopoDS_Iterator*)Standard::Allocate(NewSize*sizeof(TopoDS_Iterator));
-	  Standard_Integer i;
-	  for (i =0; i < myTop; i++) {
-	    new (&newStack[i]) TopoDS_Iterator(myStack[i]);
-	    myStack[i].~TopoDS_Iterator();
-	  }
-	  Standard::Free(myStack);
+    myStack = (TopoDS_Iterator*)Standard::Reallocate(myStack, NewSize * sizeof(TopoDS_Iterator));
 	  mySizeOfStack = NewSize;
-	  myStack = newStack;
 	}
-	new (&myStack[myTop]) TopoDS_Iterator(ShapTop);
+	new (&myStack[myTop]) TopoDS_Iterator(*ShapTop);
       }
       else {
 	myStack[myTop].Next();
