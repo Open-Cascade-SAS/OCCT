@@ -63,8 +63,35 @@ else()
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
 endif()
 
-# the name of the project
-project (OCCT)
+if (NOT DEFINED BUILD_USE_VCPKG)
+  set (BUILD_USE_VCPKG OFF CACHE BOOL "Use vcpkg for 3rdparty libraries.")
+endif()
+
+if (BUILD_USE_VCPKG)
+  # search if CMAKE_TOOLCHAIN_FILE is already defined for <vcpkg-root>/scripts/buildsystems/vcpkg.cmake
+  # if exists, then extract the VCPKG ROOT from it path,
+  # if it exist, but not for vcpkg, then needs to reset to vcpkg and what was before move to VCPKG_CHAINLOAD_TOOLCHAIN_FILE
+  if (DEFINED CMAKE_TOOLCHAIN_FILE)
+    if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
+      string (REGEX REPLACE "/scripts/buildsystems/vcpkg.cmake" "" VCPKG_ROOT ${CMAKE_TOOLCHAIN_FILE})
+      set (VCPKG_ROOT "${VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
+    else()
+      set (VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
+      set (CMAKE_TOOLCHAIN_FILE "")
+    endif()
+  endif()
+
+  # check env varaible for VCPKG_ROOT
+  if (DEFINED ENV{VCPKG_ROOT} AND NOT VCPKG_ROOT)
+    set (VCPKG_ROOT "$ENV{VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
+  elseif ("${VCPKG_ROOT}" STREQUAL "")
+    set (VCPKG_ROOT "" CACHE PATH "Path to vcpkg root directory.")
+    message(FATAL_ERROR "VCPKG_ROOT is not defined. Please set it to the path of vcpkg root directory.")
+  endif()
+  if (NOT "${VCPKG_ROOT}" STREQUAL "")
+    set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "Path to vcpkg toolchain file.")
+  endif()
+endif()
 
 if (WIN32)
   add_definitions(-DUNICODE)
@@ -253,9 +280,487 @@ elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
   set (BIN_LETTER "i")
 endif()
 
+# a directory recognized as a 'patch' for OCCT
+set (BUILD_PATCH "" CACHE PATH "${BUILD_PATCH_DESCR}")
+
+# the list of being built toolkits
+set (BUILD_ADDITIONAL_TOOLKITS "" CACHE STRING "${BUILD_ADDITIONAL_TOOLKITS_DESCR}")
+separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
+
+if (MSVC)
+  set (BUILD_SAMPLES_MFC OFF CACHE BOOL "${BUILD_SAMPLES_MFC_DESCR}")
+endif()
+set (BUILD_SAMPLES_QT OFF CACHE BOOL "${BUILD_SAMPLES_QT_DESCR}")
+
+set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
+
+# uwp sample
+if (MSVC)
+  if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+    set (BUILD_MODULE_UwpSample OFF CACHE BOOL "${BUILD_MODULE_UwpSample_DESCR}")
+  else()
+    unset (BUILD_MODULE_UwpSample)
+  endif()
+endif()
+
+# whether use optional 3rdparty or not
+set (USE_TK        ON  CACHE BOOL "${USE_TK_DESCR}")
+set (USE_FREETYPE  ON  CACHE BOOL "${USE_FREETYPE_DESCR}")
+set (USE_FREEIMAGE OFF CACHE BOOL "${USE_FREEIMAGE_DESCR}")
+set (USE_FFMPEG    OFF CACHE BOOL "${USE_FFMPEG_DESCR}")
+set (USE_OPENVR    OFF CACHE BOOL "${USE_OPENVR_DESCR}")
+set (USE_RAPIDJSON OFF CACHE BOOL "${USE_RAPIDJSON_DESCR}")
+set (USE_DRACO     OFF CACHE BOOL "${USE_DRACO_DESCR}")
+set (USE_TBB       OFF CACHE BOOL "${USE_TBB_DESCR}")
+set (USE_EIGEN     OFF CACHE BOOL "${USE_EIGEN_DESCR}")
+
+if (WIN32 OR ANDROID OR IOS OR EMSCRIPTEN)
+  # no Xlib
+elseif (APPLE)
+  set (USE_XLIB OFF CACHE BOOL "${USE_XLIB_DESCR}")
+else()
+  set (USE_XLIB ON  CACHE BOOL "${USE_XLIB_DESCR}")
+endif()
+
+if (WIN32)
+  set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
+else()
+  set (USE_D3D OFF)
+endif()
+
+# Enable/Disable the floating point exceptions (FPE) during runtime.
+if (NOT BUILD_ENABLE_FPE_SIGNAL_HANDLER)
+  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER OFF CACHE BOOL "${BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR}" FORCE)
+endif()
+
+if (BUILD_ENABLE_FPE_SIGNAL_HANDLER)
+  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 1)
+else()
+  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 0)
+endif()
+
+# OpenGL
+if (ANDROID OR IOS OR EMSCRIPTEN OR "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
+  set (USE_OPENGL OFF)
+  set (USE_GLES2 ON)
+else()
+  set (USE_OPENGL ON CACHE BOOL "${USE_OPENGL_DESCR}")
+  set (USE_GLES2 OFF CACHE BOOL "${USE_GLES2_DESCR}")
+endif()
+
+# include the patched or original list of modules
+# list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
+# list <OCCT_MODULES> will contain all modules
+OCCT_MODULES_AND_TOOLKITS (MODULES "TOOLKITS" OCCT_MODULES)
+
+foreach (OCCT_MODULE ${OCCT_MODULES})
+  BUILD_MODULE (${OCCT_MODULE})
+endforeach()
+
+if (ANDROID AND BUILD_MODULE_Draw)
+  message (STATUS "Info. Draw module is turned off due to it is not supported on Android")
+  set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
+endif()
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND BUILD_MODULE_Draw)
+  message (STATUS "Info. Draw module is turned off due to it is not supported on UWP")
+  set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
+endif()
+
+# Overview
+if (NOT DEFINED BUILD_DOC_Overview)
+  set (DO_ONLY_CHECK_FOR_DOXYGEN ON)
+  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
+  set (DO_ONLY_CHECK_FOR_DOXYGEN OFF)
+
+  if (CAN_DOXYGEN_BE_USED)
+    message (STATUS "Info. Overview building is turned on")
+  endif()
+
+  set (BUILD_DOC_Overview ${CAN_DOXYGEN_BE_USED} CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
+endif()
+
+# accumulate used toolkits (first level) in BUILD_TOOLKITS variable
+list (APPEND BUILD_TOOLKITS ${BUILD_ADDITIONAL_TOOLKITS})
+
+foreach (OCCT_MODULE ${OCCT_MODULES})
+  if (BUILD_MODULE_${OCCT_MODULE})
+    list (APPEND BUILD_TOOLKITS ${${OCCT_MODULE}_TOOLKITS})
+  endif()
+endforeach()
+
+# accumulate all used toolkits
+list (REMOVE_DUPLICATES BUILD_TOOLKITS)
+set (RAW_BUILD_TOOLKITS)
+set (OCCT_FULL_LIST_OF_INCLUDES)
+foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
+  EXCTRACT_TOOLKIT_FULL_DEPS ("src" ${BUILD_TOOLKIT} TOOLKIT_FULL_DEPS TOOLKIT_INCLUDES)
+  list (APPEND OCCT_FULL_LIST_OF_INCLUDES ${TOOLKIT_INCLUDES})
+  list (APPEND RAW_BUILD_TOOLKITS ${BUILD_TOOLKIT} ${TOOLKIT_FULL_DEPS})
+endforeach()
+
+list (REMOVE_DUPLICATES RAW_BUILD_TOOLKITS)
+list (REMOVE_DUPLICATES OCCT_FULL_LIST_OF_INCLUDES)
+
+set (BUILD_TOOLKITS ${RAW_BUILD_TOOLKITS})
+
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
+
+# search for TKIVtk and TKIVtkDraw in BUILD_TOOLKITS
+list (FIND BUILD_TOOLKITS TKIVtk CAN_USE_VTK)
+if (CAN_USE_VTK EQUAL -1)
+  list (FIND BUILD_TOOLKITS TKIVtkDraw CAN_USE_VTK)
+endif()
+
+if (NOT CAN_USE_VTK EQUAL -1)
+  if (NOT DEFINED USE_VTK)
+    set (USE_VTK OFF CACHE BOOL "${USE_VTK_DESCR}")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET (USE_VTK)
+endif()
+
+# Rebuild *.yacc and *.lex files that are contained by TKMath toolkit
+list (FIND BUILD_TOOLKITS TKMath   CAN_REBUILD_PDC_FOR_TKMATH)
+list (FIND BUILD_TOOLKITS StepFile CAN_REBUILD_PDC_FOR_STEPFILE)
+
+if (NOT ${CAN_REBUILD_PDC_FOR_TKMATH} EQUAL -1 OR NOT ${CAN_REBUILD_PDC_FOR_STEPFILE} EQUAL -1)
+  set (BUILD_YACCLEX OFF CACHE BOOL "${BUILD_YACCLEX_DESCR}")
+else()
+  OCCT_CHECK_AND_UNSET (BUILD_YACCLEX)
+endif()
+
+if (NOT DEFINED 3RDPARTY_DIR)
+  set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
+  get_filename_component (3RDPARTY_DIR "${3RDPARTY_DIR}" ABSOLUTE)
+else()
+  file (TO_CMAKE_PATH "${3RDPARTY_DIR}" 3RDPARTY_DIR)
+  set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
+endif()
+
+# search for CSF variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_FreeImagePlus CAN_USE_FREEIMAGE)
+OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
+OCCT_IS_PRODUCT_REQUIRED (CSF_TclTkLibs CAN_USE_TK)
+OCCT_IS_PRODUCT_REQUIRED (CSF_XwLibs CAN_USE_XLIB)
+OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE CAN_USE_FREETYPE)
+OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlLibs CAN_USE_OPENGL)
+OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlesLibs CAN_USE_GLES2)
+OCCT_IS_PRODUCT_REQUIRED (CSF_TBB CAN_USE_TBB)
+OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
+
+set (OCCT_3RDPARTY_CMAKE_LIST)
+
+# Tcl (mandatory for Draw Harness)
+if (USE_TCL)
+  message (STATUS "Info: TCL is used by OCCT")
+  # TODO: add port of tcl
+  # OCCT_ADD_VCPKG_FEATURE ("tcl")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tcl")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TCL")
+  OCCT_CHECK_AND_UNSET ("INSTALL_TCL")
+  OCCT_UNSET_VCPKG_FEATURE ("tcl")
+endif()
+
+# The temporary solution to exclude TCL from vcpkg
+OCCT_UNSET_VCPKG_FEATURE ("tcl")
+
+# Tk (optional for Draw Harness)
+if (CAN_USE_TK AND USE_TK)
+  message (STATUS "Info: TK is used by OCCT")
+  # TODO: add port of TK
+  # OCCT_ADD_VCPKG_FEATURE ("tk")
+  add_definitions (-DHAVE_TK)
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tk")
+else()
+  if (NOT CAN_USE_TK)
+    OCCT_CHECK_AND_UNSET ("USE_TK")
+  endif()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TK")
+  OCCT_CHECK_AND_UNSET ("INSTALL_TK")
+  OCCT_UNSET_VCPKG_FEATURE ("tk")
+endif()
+
+# The temporary solution to exclude TK from vcpkg
+OCCT_UNSET_VCPKG_FEATURE ("tk")
+
+# Xlib
+if (CAN_USE_XLIB)
+  if (USE_XLIB)
+    message (STATUS "Info: Xlib is used by OCCT")
+    add_definitions (-DHAVE_XLIB)
+    if (APPLE)
+      list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/xlib")
+    endif()
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_XLIB")
+endif()
+
+# FreeType
+if (CAN_USE_FREETYPE AND USE_FREETYPE)
+  message (STATUS "Info: FreeType is used by OCCT")
+  add_definitions (-DHAVE_FREETYPE)
+  OCCT_ADD_VCPKG_FEATURE ("freetype")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/freetype")
+else()
+  if (NOT CAN_USE_FREETYPE)
+    OCCT_CHECK_AND_UNSET ("USE_FREETYPE")
+  endif()
+  OCCT_UNSET_VCPKG_FEATURE ("freetype")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREETYPE")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build")
+  OCCT_CHECK_AND_UNSET ("INSTALL_FREETYPE")
+endif()
+
+# VTK
+if (USE_VTK)
+  add_definitions (-DHAVE_VTK)
+  OCCT_ADD_VCPKG_FEATURE ("vtk")
+  set (OCCT_VTK_USED_TARGETS "" CACHE INTERNAL "" FORCE)
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/vtk")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")
+  OCCT_UNSET_VCPKG_FEATURE ("vtk")
+  if (NOT CAN_USE_VTK EQUAL -1)
+    message (STATUS "Info: TKIVtk and TKIVtkDraw toolkits excluded due to VTK usage is disabled")
+
+    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtk)
+    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtkDraw)
+  endif()
+endif()
+
+# FREEIMAGE
+if (CAN_USE_FREEIMAGE AND USE_FREEIMAGE)
+  add_definitions (-DHAVE_FREEIMAGE)
+  OCCT_ADD_VCPKG_FEATURE ("freeimage")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/freeimage")
+elseif (NOT CAN_USE_FREEIMAGE)
+  OCCT_CHECK_AND_UNSET ("USE_FREEIMAGE")
+  OCCT_UNSET_VCPKG_FEATURE ("freeimage")
+endif()
+if (NOT CAN_USE_FREEIMAGE OR BUILD_USE_VCPKG)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGE")
+  OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
+endif()
+
+# OpenVR
+# search for CSF_OpenVR variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_OpenVR CAN_USE_OPENVR)
+if (CAN_USE_OPENVR AND USE_OPENVR)
+  add_definitions (-DHAVE_OPENVR)
+  OCCT_ADD_VCPKG_FEATURE ("openvr")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/openvr")
+elseif (NOT CAN_USE_OPENVR)
+  OCCT_CHECK_AND_UNSET ("USE_OPENVR")
+  OCCT_UNSET_VCPKG_FEATURE ("openvr")
+endif()
+if (NOT CAN_USE_OPENVR OR BUILD_USE_VCPKG)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENVR")
+  OCCT_CHECK_AND_UNSET ("INSTALL_OPENVR")
+endif()
+
+# FFmpeg
+# search for CSF_FFmpeg variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_FFmpeg CAN_USE_FFMPEG)
+
+if (CAN_USE_FFMPEG AND USE_FFMPEG)
+  add_definitions (-DHAVE_FFMPEG)
+  OCCT_ADD_VCPKG_FEATURE ("ffmpeg")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/ffmpeg")
+elseif (NOT CAN_USE_FFMPEG)
+  OCCT_CHECK_AND_UNSET ("USE_FFMPEG")
+  OCCT_UNSET_VCPKG_FEATURE ("ffmpeg")
+endif()
+if (NOT CAN_USE_FFMPEG OR BUILD_USE_VCPKG)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FFMPEG")
+  OCCT_CHECK_AND_UNSET ("INSTALL_FFMPEG")
+endif()
+
+# OpenGL
+if (CAN_USE_OPENGL)
+  if (USE_OPENGL)
+    add_definitions (-DHAVE_OPENGL_EXT)
+  else()
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGl)
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGlTest)
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_OPENGL")
+endif()
+
+# OpenGL ES 2.0
+if (CAN_USE_GLES2)
+  if (USE_GLES2)
+    add_definitions (-DHAVE_GLES2_EXT)
+    if (NOT IOS)
+      list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/egl")
+      list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/gles2")
+    endif()
+  else()
+    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EGL")
+    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GLES2")
+    OCCT_CHECK_AND_UNSET ("INSTALL_EGL")
+    OCCT_CHECK_AND_UNSET ("INSTALL_GLES2")
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGles)
+    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGlesTest)
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_GLES2")
+
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EGL")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GLES2")
+  OCCT_CHECK_AND_UNSET ("INSTALL_EGL")
+  OCCT_CHECK_AND_UNSET ("INSTALL_GLES2")
+endif()
+
+# D3D
+if (USE_D3D)
+  add_definitions (-DHAVE_D3D)
+  #if(MSVC_VERSION LESS 1700)
+  #OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/d3d")
+  #endif()
+else()
+  list (REMOVE_ITEM BUILD_TOOLKITS TKD3DHost)
+  list (REMOVE_ITEM BUILD_TOOLKITS TKD3DHostTest)
+endif()
+
+if (ANDROID)
+  set (CAN_USE_TBB OFF)
+endif()
+
+# TBB
+if (CAN_USE_TBB AND USE_TBB)
+  add_definitions (-DHAVE_TBB)
+  OCCT_ADD_VCPKG_FEATURE ("tbb")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tbb")
+elseif (NOT CAN_USE_TBB)
+  OCCT_CHECK_AND_UNSET ("USE_TBB")
+  OCCT_UNSET_VCPKG_FEATURE ("tbb")
+endif()
+if (NOT CAN_USE_TBB OR BUILD_USE_VCPKG)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBBMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_TBB")
+endif()
+
+# RapidJSON
+# search for CSF_RapidJSON variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_RapidJSON CAN_USE_RAPIDJSON)
+if (CAN_USE_RAPIDJSON AND USE_RAPIDJSON)
+  add_definitions (-DHAVE_RAPIDJSON)
+  OCCT_ADD_VCPKG_FEATURE ("rapidjson")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/rapidjson")
+elseif (NOT CAN_USE_RAPIDJSON)
+  OCCT_CHECK_AND_UNSET ("USE_RAPIDJSON")
+  OCCT_UNSET_VCPKG_FEATURE ("rapidjson")
+endif()
+if (NOT CAN_USE_RAPIDJSON OR BUILD_USE_VCPKG)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_RAPIDJSON")
+  OCCT_CHECK_AND_UNSET ("INSTALL_RAPIDJSON")
+endif()
+
+# Draco library
+# search for CSF_Draco variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_Draco CAN_USE_DRACO)
+if (CAN_USE_DRACO AND USE_DRACO)
+  add_definitions (-DHAVE_DRACO)
+  OCCT_ADD_VCPKG_FEATURE ("draco")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/draco")
+elseif (NOT CAN_USE_DRACO)
+  OCCT_CHECK_AND_UNSET ("USE_DRACO")
+  OCCT_UNSET_VCPKG_FEATURE ("draco")
+endif()
+if (NOT CAN_USE_DRACO OR BUILD_USE_VCPKG)
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_DRACO")
+  OCCT_CHECK_AND_UNSET ("INSTALL_DRACO")
+endif()
+
+# EIGEN
+if (CAN_USE_EIGEN)
+  if (USE_EIGEN)
+    add_definitions (-DHAVE_EIGEN)
+    list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/eigen")
+  else()
+    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EIGEN")
+    OCCT_CHECK_AND_UNSET ("INSTALL_EIGEN")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_EIGEN")
+
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EIGEN")
+  OCCT_CHECK_AND_UNSET ("INSTALL_EIGEN")
+endif()
+
+# Doxygen
+if (BUILD_DOC_Overview)
+  if (NOT DEFINED INSTALL_DOC_Overview)
+    set (INSTALL_DOC_Overview OFF CACHE BOOL "${INSTALL_DOC_Overview_DESCR}")
+  endif()
+
+  if (INSTALL_DOC_Overview)
+    install (DIRECTORY "${CMAKE_BINARY_DIR}/doc/overview" DESTINATION  "${INSTALL_DIR_DOC}")
+
+    # create overview.html only for windows
+    if (WIN32 AND "${INSTALL_DIR_LAYOUT}" STREQUAL "Windows")
+      OCCT_INSTALL_FILE_OR_DIR ("dox/resources/overview.html" "${INSTALL_DIR_DOC}/..")
+    endif()
+  endif()
+
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/doxygen")
+else()
+  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_Overview")
+
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_EXECUTABLE")
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_DOT_EXECUTABLE")
+endif()
+
+# bison
+if (BUILD_YACCLEX)
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/bison")
+else()
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_BISON_EXECUTABLE")
+endif()
+
+# flex
+if (BUILD_YACCLEX)
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/flex")
+else()
+  OCCT_CHECK_AND_UNSET ("3RDPARTY_FLEX_EXECUTABLE")
+endif()
+
+# Jemalloc
+if ("${USE_MMGR_TYPE}" STREQUAL "JEMALLOC")
+  OCCT_ADD_VCPKG_FEATURE ("jemalloc")
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/jemalloc")
+else()
+  OCCT_UNSET_VCPKG_FEATURE ("jemalloc")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_JEMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_JEMALLOC")
+endif()
+
+# qt for inspector and samples
+if (BUILD_Inspector OR BUILD_SAMPLES_QT)
+  # check qt 3rdparty path
+  add_definitions (-DHAVE_QT)
+  list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/qt")
+  message (STATUS "Info: Qt is used by OCCT")
+else()
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
+  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
+endif()
+
+# the name of the project
+project (OCCT)
+
 # Get all used variables: OS_WITH_BIT, COMPILER
 OCCT_MAKE_OS_WITH_BITNESS()
 OCCT_MAKE_COMPILER_SHORT_NAME()
+
+# define CSF variable
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
 
 # do not define INSTALL_DIR_BIN for win.
 # Leave library structure for win: <prefix>/win64/vc10/bin(d)
@@ -388,479 +893,12 @@ if(APPLE)
   set (INSTALL_NAME_DIR "" CACHE STRING "install_name library suffix on OS X (e.g. @executable_path/../Frameworks)")
 endif()
 
-# a directory recognized as a 'patch' for OCCT
-set (BUILD_PATCH "" CACHE PATH "${BUILD_PATCH_DESCR}")
-
-# the list of being built toolkits
-set (BUILD_ADDITIONAL_TOOLKITS "" CACHE STRING "${BUILD_ADDITIONAL_TOOLKITS_DESCR}")
-separate_arguments (BUILD_ADDITIONAL_TOOLKITS)
-
-if (MSVC)
-  set (BUILD_SAMPLES_MFC OFF CACHE BOOL "${BUILD_SAMPLES_MFC_DESCR}")
-endif()
-set (BUILD_SAMPLES_QT OFF CACHE BOOL "${BUILD_SAMPLES_QT_DESCR}")
-
-set (BUILD_Inspector OFF CACHE BOOL "${BUILD_Inspector_DESCR}")
-
-# uwp sample
-if (MSVC)
-  if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-    set (BUILD_MODULE_UwpSample OFF CACHE BOOL "${BUILD_MODULE_UwpSample_DESCR}")
-  else()
-    unset (BUILD_MODULE_UwpSample)
-  endif()
-endif()
-
-# whether use optional 3rdparty or not
-set (USE_TK        ON  CACHE BOOL "${USE_TK_DESCR}")
-set (USE_FREETYPE  ON  CACHE BOOL "${USE_FREETYPE_DESCR}")
-set (USE_FREEIMAGE OFF CACHE BOOL "${USE_FREEIMAGE_DESCR}")
-set (USE_FFMPEG    OFF CACHE BOOL "${USE_FFMPEG_DESCR}")
-set (USE_OPENVR    OFF CACHE BOOL "${USE_OPENVR_DESCR}")
-set (USE_RAPIDJSON OFF CACHE BOOL "${USE_RAPIDJSON_DESCR}")
-set (USE_DRACO     OFF CACHE BOOL "${USE_DRACO_DESCR}")
-set (USE_TBB       OFF CACHE BOOL "${USE_TBB_DESCR}")
-set (USE_EIGEN     OFF CACHE BOOL "${USE_EIGEN_DESCR}")
-
-if (WIN32 OR ANDROID OR IOS OR EMSCRIPTEN)
-  # no Xlib
-elseif (APPLE)
-  set (USE_XLIB OFF CACHE BOOL "${USE_XLIB_DESCR}")
-else()
-  set (USE_XLIB ON  CACHE BOOL "${USE_XLIB_DESCR}")
-endif()
-
-if (WIN32)
-  set (USE_D3D OFF CACHE BOOL "${USE_D3D_DESCR}")
-else()
-  set (USE_D3D OFF)
-endif()
-
-# Enable/Disable the floating point exceptions (FPE) during runtime.
-if (NOT BUILD_ENABLE_FPE_SIGNAL_HANDLER)
-  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER OFF CACHE BOOL "${BUILD_ENABLE_FPE_SIGNAL_HANDLER_DESCR}" FORCE)
-endif()
-
-if (BUILD_ENABLE_FPE_SIGNAL_HANDLER)
-  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 1)
-else()
-  set (BUILD_ENABLE_FPE_SIGNAL_HANDLER 0)
-endif()
-
-# OpenGL
-if (ANDROID OR IOS OR EMSCRIPTEN OR "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
-  set (USE_OPENGL OFF)
-  set (USE_GLES2 ON)
-else()
-  set (USE_OPENGL ON CACHE BOOL "${USE_OPENGL_DESCR}")
-  set (USE_GLES2 OFF CACHE BOOL "${USE_GLES2_DESCR}")
-endif()
-
-# include the patched or original list of modules
-# list <MODULENAME>_TOOLKITS is created foreach module and contains its toolkits
-# list <OCCT_MODULES> will contain all modules
-OCCT_MODULES_AND_TOOLKITS (MODULES "TOOLKITS" OCCT_MODULES)
-
-foreach (OCCT_MODULE ${OCCT_MODULES})
-  BUILD_MODULE (${OCCT_MODULE})
-endforeach()
-
-if (ANDROID AND BUILD_MODULE_Draw)
-  message (STATUS "Info. Draw module is turned off due to it is not supported on Android")
-  set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
-endif()
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore" AND BUILD_MODULE_Draw)
-  message (STATUS "Info. Draw module is turned off due to it is not supported on UWP")
-  set (BUILD_MODULE_Draw OFF CACHE BOOL "${BUILD_MODULE_Draw_DESCR}" FORCE)
-endif()
-
-# Overview
-if (NOT DEFINED BUILD_DOC_Overview)
-  set (DO_ONLY_CHECK_FOR_DOXYGEN ON)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
-  set (DO_ONLY_CHECK_FOR_DOXYGEN OFF)
-
-  if (CAN_DOXYGEN_BE_USED)
-    message (STATUS "Info. Overview building is turned on")
-  endif()
-
-  set (BUILD_DOC_Overview ${CAN_DOXYGEN_BE_USED} CACHE BOOL "${BUILD_DOC_Overview_DESCR}")
-endif()
-
-# accumulate used toolkits (first level) in BUILD_TOOLKITS variable
-list (APPEND BUILD_TOOLKITS ${BUILD_ADDITIONAL_TOOLKITS})
-
-foreach (OCCT_MODULE ${OCCT_MODULES})
-  if (BUILD_MODULE_${OCCT_MODULE})
-    list (APPEND BUILD_TOOLKITS ${${OCCT_MODULE}_TOOLKITS})
-  endif()
-endforeach()
-
-# accumulate all used toolkits
-list (REMOVE_DUPLICATES BUILD_TOOLKITS)
-set (RAW_BUILD_TOOLKITS)
-set (OCCT_FULL_LIST_OF_INCLUDES)
-foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
-  EXCTRACT_TOOLKIT_FULL_DEPS ("src" ${BUILD_TOOLKIT} TOOLKIT_FULL_DEPS TOOLKIT_INCLUDES)
-  list (APPEND OCCT_FULL_LIST_OF_INCLUDES ${TOOLKIT_INCLUDES})
-  list (APPEND RAW_BUILD_TOOLKITS ${BUILD_TOOLKIT} ${TOOLKIT_FULL_DEPS})
-endforeach()
-
-list (REMOVE_DUPLICATES RAW_BUILD_TOOLKITS)
-list (REMOVE_DUPLICATES OCCT_FULL_LIST_OF_INCLUDES)
-
-set (BUILD_TOOLKITS ${RAW_BUILD_TOOLKITS})
-
 # include the patched or original list of definitions and flags
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_defs_flags")
 
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
-
-# search for TKIVtk and TKIVtkDraw in BUILD_TOOLKITS
-list (FIND BUILD_TOOLKITS TKIVtk CAN_USE_VTK)
-if (CAN_USE_VTK EQUAL -1)
-  list (FIND BUILD_TOOLKITS TKIVtkDraw CAN_USE_VTK)
-endif()
-
-if (NOT CAN_USE_VTK EQUAL -1)
-  if (NOT DEFINED USE_VTK)
-    set (USE_VTK OFF CACHE BOOL "${USE_VTK_DESCR}")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET (USE_VTK)
-endif()
-
-# Rebuild *.yacc and *.lex files that are contained by TKMath toolkit
-list (FIND BUILD_TOOLKITS TKMath   CAN_REBUILD_PDC_FOR_TKMATH)
-list (FIND BUILD_TOOLKITS StepFile CAN_REBUILD_PDC_FOR_STEPFILE)
-
-if (NOT ${CAN_REBUILD_PDC_FOR_TKMATH} EQUAL -1 OR NOT ${CAN_REBUILD_PDC_FOR_STEPFILE} EQUAL -1)
-  set (BUILD_YACCLEX OFF CACHE BOOL "${BUILD_YACCLEX_DESCR}")
-else()
-  OCCT_CHECK_AND_UNSET (BUILD_YACCLEX)
-endif()
-
-if (NOT DEFINED 3RDPARTY_DIR)
-  set (3RDPARTY_DIR "" CACHE PATH ${3RDPARTY_DIR_DESCR})
-  get_filename_component (3RDPARTY_DIR "${3RDPARTY_DIR}" ABSOLUTE)
-else()
-  file (TO_CMAKE_PATH "${3RDPARTY_DIR}" 3RDPARTY_DIR)
-  set (3RDPARTY_DIR "${3RDPARTY_DIR}" CACHE PATH "${3RDPARTY_DIR_DESCR}" FORCE)
-endif()
-
-# search for CSF variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_FreeImagePlus CAN_USE_FREEIMAGE)
-OCCT_IS_PRODUCT_REQUIRED (CSF_TclLibs USE_TCL)
-OCCT_IS_PRODUCT_REQUIRED (CSF_TclTkLibs CAN_USE_TK)
-OCCT_IS_PRODUCT_REQUIRED (CSF_XwLibs CAN_USE_XLIB)
-OCCT_IS_PRODUCT_REQUIRED (CSF_FREETYPE CAN_USE_FREETYPE)
-OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlLibs CAN_USE_OPENGL)
-OCCT_IS_PRODUCT_REQUIRED (CSF_OpenGlesLibs CAN_USE_GLES2)
-OCCT_IS_PRODUCT_REQUIRED (CSF_TBB CAN_USE_TBB)
-OCCT_IS_PRODUCT_REQUIRED (CSF_EIGEN CAN_USE_EIGEN)
-
-# define CSF variable
-OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_csf")
-
-# Tcl (mandatory for Draw Harness)
-if (USE_TCL)
-  message (STATUS "Info: TCL is used by OCCT")
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tcl")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TCL")
-  OCCT_CHECK_AND_UNSET ("INSTALL_TCL")
-endif()
-
-# Tk (optional for Draw Harness)
-if (CAN_USE_TK)
-  if (USE_TK)
-    message (STATUS "Info: TK is used by OCCT")
-    add_definitions (-DHAVE_TK)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tk")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TK")
-    OCCT_CHECK_AND_UNSET ("INSTALL_TK")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_TK")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TK")
-  OCCT_CHECK_AND_UNSET ("INSTALL_TK")
-endif()
-
-# Xlib
-if (CAN_USE_XLIB)
-  if (USE_XLIB)
-    message (STATUS "Info: Xlib is used by OCCT")
-    add_definitions (-DHAVE_XLIB)
-    if (APPLE)
-      OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/glx")
-    endif()
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_XLIB")
-endif()
-
-# FreeType
-if (CAN_USE_FREETYPE)
-  if (USE_FREETYPE)
-    message (STATUS "Info: FreeType is used by OCCT")
-    add_definitions (-DHAVE_FREETYPE)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freetype")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREETYPE")
-    OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_freetype2")
-    OCCT_CHECK_AND_UNSET ("3RDPARTY_FREETYPE_INCLUDE_DIR_ft2build")
-    OCCT_CHECK_AND_UNSET ("INSTALL_FREETYPE")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_FREETYPE")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREETYPE")
-  OCCT_CHECK_AND_UNSET ("INSTALL_FREETYPE")
-endif()
-
-# VTK
-if (USE_VTK)
-  add_definitions (-DHAVE_VTK)
-  set (OCCT_VTK_USED_TARGETS "" CACHE INTERNAL "" FORCE)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/vtk")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_VTK")
-
-  if (NOT CAN_USE_VTK EQUAL -1)
-    message (STATUS "Info: TKIVtk and TKIVtkDraw toolkits excluded due to VTK usage is disabled")
-
-    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtk)
-    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtkDraw)
-  endif()
-endif()
-
-# FREEIMAGE
-if (CAN_USE_FREEIMAGE)
-  if (USE_FREEIMAGE)
-    add_definitions (-DHAVE_FREEIMAGE)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/freeimage")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGE")
-    OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_FREEIMAGE")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FREEIMAGE")
-  OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
-endif()
-
-# OpenVR
-# search for CSF_OpenVR variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_OpenVR CAN_USE_OPENVR)
-if (CAN_USE_OPENVR)
-  if (USE_OPENVR)
-    add_definitions (-DHAVE_OPENVR)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/openvr")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENVR")
-    OCCT_CHECK_AND_UNSET ("INSTALL_OPENVR")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_OPENVR")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENVR")
-  OCCT_CHECK_AND_UNSET ("INSTALL_OPENVR")
-endif()
-
-# FFmpeg
-# search for CSF_FFmpeg variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_FFmpeg CAN_USE_FFMPEG)
-
-if (CAN_USE_FFMPEG)
-  if (USE_FFMPEG)
-    add_definitions (-DHAVE_FFMPEG)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/ffmpeg")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FFMPEG")
-    OCCT_CHECK_AND_UNSET ("INSTALL_FFMPEG")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_FFMPEG")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_FFMPEG")
-  OCCT_CHECK_AND_UNSET ("INSTALL_FFMPEG")
-endif()
-
-# OpenGL
-if (CAN_USE_OPENGL)
-  if (USE_OPENGL)
-    add_definitions (-DHAVE_OPENGL_EXT)
-  else()
-    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGl)
-    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGlTest)
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_OPENGL")
-endif()
-
-# OpenGL ES 2.0
-if (CAN_USE_GLES2)
-  if (USE_GLES2)
-    add_definitions (-DHAVE_GLES2_EXT)
-    if (NOT IOS)
-      OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/egl")
-      OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/gles2")
-    endif()
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EGL")
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GLES2")
-    OCCT_CHECK_AND_UNSET ("INSTALL_EGL")
-    OCCT_CHECK_AND_UNSET ("INSTALL_GLES2")
-    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGles)
-    list (REMOVE_ITEM BUILD_TOOLKITS TKOpenGlesTest)
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_GLES2")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EGL")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_GLES2")
-  OCCT_CHECK_AND_UNSET ("INSTALL_EGL")
-  OCCT_CHECK_AND_UNSET ("INSTALL_GLES2")
-endif()
-
-# D3D
-if (USE_D3D)
-  add_definitions (-DHAVE_D3D)
-  #if(MSVC_VERSION LESS 1700)
-  #OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/d3d")
-  #endif()
-else()
-  list (REMOVE_ITEM BUILD_TOOLKITS TKD3DHost)
-  list (REMOVE_ITEM BUILD_TOOLKITS TKD3DHostTest)
-endif()
-
-# TBB
-if (NOT DEFINED ANDROID AND CAN_USE_TBB)
-  if (USE_TBB)
-    add_definitions (-DHAVE_TBB)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/tbb")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBBMALLOC")
-    OCCT_CHECK_AND_UNSET ("INSTALL_TBB")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_TBB")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBB")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TBBMALLOC")
-  OCCT_CHECK_AND_UNSET ("INSTALL_TBB")
-endif()
-
-# RapidJSON
-# search for CSF_RapidJSON variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_RapidJSON CAN_USE_RAPIDJSON)
-if (CAN_USE_RAPIDJSON)
-  if (USE_RAPIDJSON)
-    add_definitions (-DHAVE_RAPIDJSON)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/rapidjson")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_RAPIDJSON")
-    OCCT_CHECK_AND_UNSET ("INSTALL_RAPIDJSON")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_RAPIDJSON")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_RAPIDJSON")
-  OCCT_CHECK_AND_UNSET ("INSTALL_RAPIDJSON")
-endif()
-
-# Draco library
-# search for CSF_Draco variable in EXTERNLIB of each being used toolkit
-OCCT_IS_PRODUCT_REQUIRED (CSF_Draco CAN_USE_DRACO)
-if (CAN_USE_DRACO)
-  if (USE_DRACO)
-    add_definitions (-DHAVE_DRACO)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/draco")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_DRACO")
-    OCCT_CHECK_AND_UNSET ("INSTALL_DRACO")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_DRACO")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_DRACO")
-  OCCT_CHECK_AND_UNSET ("INSTALL_DRACO")
-endif()
-
-# EIGEN
-if (CAN_USE_EIGEN)
-  if (USE_EIGEN)
-    add_definitions (-DHAVE_EIGEN)
-    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/eigen")
-  else()
-    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EIGEN")
-    OCCT_CHECK_AND_UNSET ("INSTALL_EIGEN")
-  endif()
-else()
-  OCCT_CHECK_AND_UNSET ("USE_EIGEN")
-
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_EIGEN")
-  OCCT_CHECK_AND_UNSET ("INSTALL_EIGEN")
-endif()
-
-# Doxygen
-if (BUILD_DOC_Overview)
-  if (NOT DEFINED INSTALL_DOC_Overview)
-    set (INSTALL_DOC_Overview OFF CACHE BOOL "${INSTALL_DOC_Overview_DESCR}")
-  endif()
-
-  if (INSTALL_DOC_Overview)
-    install (DIRECTORY "${CMAKE_BINARY_DIR}/doc/overview" DESTINATION  "${INSTALL_DIR_DOC}")
-
-    # create overview.html only for windows
-    if (WIN32 AND "${INSTALL_DIR_LAYOUT}" STREQUAL "Windows")
-      OCCT_INSTALL_FILE_OR_DIR ("dox/resources/overview.html" "${INSTALL_DIR_DOC}/..")
-    endif()
-  endif()
-
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/doxygen")
-else()
-  OCCT_CHECK_AND_UNSET ("INSTALL_DOC_Overview")
-
-  OCCT_CHECK_AND_UNSET ("3RDPARTY_DOXYGEN_EXECUTABLE")
-  OCCT_CHECK_AND_UNSET ("3RDPARTY_DOT_EXECUTABLE")
-endif()
-
-# bison
-if (BUILD_YACCLEX)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/bison")
-else()
-  OCCT_CHECK_AND_UNSET ("3RDPARTY_BISON_EXECUTABLE")
-endif()
-
-# flex
-if (BUILD_YACCLEX)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/flex")
-else()
-  OCCT_CHECK_AND_UNSET ("3RDPARTY_FLEX_EXECUTABLE")
-endif()
-
-# Jemalloc
-if ("${USE_MMGR_TYPE}" STREQUAL "JEMALLOC")
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/jemalloc")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_JEMALLOC")
-  OCCT_CHECK_AND_UNSET ("INSTALL_JEMALLOC")
-endif()
-
-# qt for inspector and samples
-if (BUILD_Inspector OR BUILD_SAMPLES_QT)
-  # check qt 3rdparty path
-  add_definitions (-DHAVE_QT)
-  OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/qt")
-  message (STATUS "Info: Qt is used by OCCT")
-else()
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_QT")
-  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TQTMALLOC")
-  OCCT_CHECK_AND_UNSET ("INSTALL_QT")
-endif()
+foreach (OCCT_3RDPARTY_LIST ${OCCT_3RDPARTY_CMAKE_LIST})
+  OCCT_INCLUDE_CMAKE_FILE (${OCCT_3RDPARTY_LIST})
+endforeach()
 
 # check all 3rdparty include paths
 string (REGEX REPLACE ";" " " 3RDPARTY_NOT_INCLUDED "${3RDPARTY_NOT_INCLUDED}")

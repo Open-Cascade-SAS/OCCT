@@ -55,7 +55,11 @@ endfunction()
 
 # COMPILER_BITNESS variable
 macro (OCCT_MAKE_COMPILER_BITNESS)
-  math (EXPR COMPILER_BITNESS "32 + 32*(${CMAKE_SIZEOF_VOID_P}/8)")
+  if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(COMPILER_BITNESS 64)
+  else()
+    set(COMPILER_BITNESS 32)
+  endif()
 endmacro()
 
 # OS_WITH_BIT
@@ -725,5 +729,17 @@ macro (OCCT_CREATE_SYMLINK_TO_FILE LIBRARY_NAME LINK_NAME)
         execute_process (COMMAND ln -s \"${LIBRARY_NAME}\" \"${LINK_NAME}\")
       endif()
     ")
+  endif()
+endmacro()
+
+macro(OCCT_ADD_VCPKG_FEATURE THE_FEATURE)
+  if (BUILD_USE_VCPKG)
+    list(APPEND VCPKG_MANIFEST_FEATURES "${THE_FEATURE}" PARENT_SCOPE)
+  endif()
+endmacro()
+
+macro (OCCT_UNSET_VCPKG_FEATURE THE_FEATURE)
+  if (BUILD_USE_VCPKG)
+    list (REMOVE_ITEM VCPKG_MANIFEST_FEATURES "${THE_FEATURE}" PARENT_SCOPE)
   endif()
 endmacro()
