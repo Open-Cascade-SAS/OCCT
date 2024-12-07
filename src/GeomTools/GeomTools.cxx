@@ -101,10 +101,11 @@ void GeomTools::GetReal(Standard_IStream& IS,Standard_Real& theValue)
   theValue = 0.;
   if (IS.eof()) 
     return;
-
-  char buffer[256];
+  // According IEEE-754 Specification and standard stream parameters
+  // the most optimal buffer length is 25
+  char buffer[25];
   buffer[0] = '\0';
-  std::streamsize anOldWide = IS.width(256);
+  std::streamsize anOldWide = IS.width(25);
   IS >> buffer;
   IS.width(anOldWide);
   theValue = Strtod(buffer, NULL);
