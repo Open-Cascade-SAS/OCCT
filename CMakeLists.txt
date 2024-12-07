@@ -1,5 +1,38 @@
 cmake_minimum_required (VERSION 3.10 FATAL_ERROR)
 
+if (NOT DEFINED BUILD_USE_VCPKG)
+  set (BUILD_USE_VCPKG ON CACHE BOOL "Use vcpkg for 3rdparty libraries.")
+  if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
+    set (BUILD_USE_VCPKG ON)
+  endif()
+endif()
+
+if (BUILD_USE_VCPKG)
+  # search if CMAKE_TOOLCHAIN_FILE is already defined for <vcpkg-root>/scripts/buildsystems/vcpkg.cmake
+  # if exists, then extract the VCPKG ROOT from it path,
+  # if it exist, but not for vcpkg, then needs to reset to vcpkg and what was before move to VCPKG_CHAINLOAD_TOOLCHAIN_FILE
+  if (CMAKE_TOOLCHAIN_FILE STREQUAL "")
+    if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
+      string (REGEX REPLACE "/scripts/buildsystems/vcpkg.cmake" "" VCPKG_ROOT ${CMAKE_TOOLCHAIN_FILE})
+      set (VCPKG_ROOT "${VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
+    else()
+      set (VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
+      set (CMAKE_TOOLCHAIN_FILE CACHE STRING "")
+    endif()
+  endif()
+
+  # check env varaible for VCPKG_ROOT
+  if (DEFINED ENV{VCPKG_ROOT} AND NOT VCPKG_ROOT)
+    set (VCPKG_ROOT "$ENV{VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
+  elseif ("${VCPKG_ROOT}" STREQUAL "")
+    set (VCPKG_ROOT "" CACHE PATH "Path to vcpkg root directory.")
+    message(FATAL_ERROR "VCPKG_ROOT is not defined. Please set it to the path of vcpkg root directory.")
+  endif()
+  if (NOT "${VCPKG_ROOT}" STREQUAL "")
+    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+  endif()
+endif()
+
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/adm/cmake")
 
 set (CMAKE_SUPPRESS_REGENERATION TRUE)
@@ -61,36 +94,6 @@ if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
 else()
   unset (BUILD_SHARED_LIBS)
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
-endif()
-
-if (NOT DEFINED BUILD_USE_VCPKG)
-  set (BUILD_USE_VCPKG OFF CACHE BOOL "Use vcpkg for 3rdparty libraries.")
-endif()
-
-if (BUILD_USE_VCPKG)
-  # search if CMAKE_TOOLCHAIN_FILE is already defined for <vcpkg-root>/scripts/buildsystems/vcpkg.cmake
-  # if exists, then extract the VCPKG ROOT from it path,
-  # if it exist, but not for vcpkg, then needs to reset to vcpkg and what was before move to VCPKG_CHAINLOAD_TOOLCHAIN_FILE
-  if (DEFINED CMAKE_TOOLCHAIN_FILE)
-    if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
-      string (REGEX REPLACE "/scripts/buildsystems/vcpkg.cmake" "" VCPKG_ROOT ${CMAKE_TOOLCHAIN_FILE})
-      set (VCPKG_ROOT "${VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
-    else()
-      set (VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
-      set (CMAKE_TOOLCHAIN_FILE "")
-    endif()
-  endif()
-
-  # check env varaible for VCPKG_ROOT
-  if (DEFINED ENV{VCPKG_ROOT} AND NOT VCPKG_ROOT)
-    set (VCPKG_ROOT "$ENV{VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
-  elseif ("${VCPKG_ROOT}" STREQUAL "")
-    set (VCPKG_ROOT "" CACHE PATH "Path to vcpkg root directory.")
-    message(FATAL_ERROR "VCPKG_ROOT is not defined. Please set it to the path of vcpkg root directory.")
-  endif()
-  if (NOT "${VCPKG_ROOT}" STREQUAL "")
-    set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "Path to vcpkg toolchain file.")
-  endif()
 endif()
 
 if (WIN32)
@@ -453,8 +456,7 @@ set (OCCT_3RDPARTY_CMAKE_LIST)
 # Tcl (mandatory for Draw Harness)
 if (USE_TCL)
   message (STATUS "Info: TCL is used by OCCT")
-  # TODO: add port of tcl
-  # OCCT_ADD_VCPKG_FEATURE ("tcl")
+  OCCT_ADD_VCPKG_FEATURE ("tcl")
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tcl")
 else()
   OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_TCL")
@@ -462,14 +464,10 @@ else()
   OCCT_UNSET_VCPKG_FEATURE ("tcl")
 endif()
 
-# The temporary solution to exclude TCL from vcpkg
-OCCT_UNSET_VCPKG_FEATURE ("tcl")
-
 # Tk (optional for Draw Harness)
 if (CAN_USE_TK AND USE_TK)
   message (STATUS "Info: TK is used by OCCT")
-  # TODO: add port of TK
-  # OCCT_ADD_VCPKG_FEATURE ("tk")
+  OCCT_ADD_VCPKG_FEATURE ("tk")
   add_definitions (-DHAVE_TK)
   list (APPEND OCCT_3RDPARTY_CMAKE_LIST "adm/cmake/tk")
 else()
@@ -480,9 +478,6 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_TK")
   OCCT_UNSET_VCPKG_FEATURE ("tk")
 endif()
-
-# The temporary solution to exclude TK from vcpkg
-OCCT_UNSET_VCPKG_FEATURE ("tk")
 
 # Xlib
 if (CAN_USE_XLIB)
