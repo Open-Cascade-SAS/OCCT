@@ -23,11 +23,38 @@ jobs:
       matrix:
         os: [windows-2022, macos-15, ubuntu-24.04]
         compiler: [msvc, clang, gcc]
+        include:
+          - os: windows-2022
+            compiler: msvc
+            cmake_generator: "Visual Studio 16 2019"
+            cmake_arch: "x64"
+          - os: windows-2022
+            compiler: clang
+            cmake_generator: "Ninja"
+            cmake_arch: ""
+          - os: macos-15
+            compiler: clang
+            cmake_generator: "Unix Makefiles"
+            cmake_arch: ""
+          - os: macos-15
+            compiler: gcc
+            cmake_generator: "Unix Makefiles"
+            cmake_arch: ""
+          - os: ubuntu-24.04
+            compiler: clang
+            cmake_generator: "Unix Makefiles"
+            cmake_arch: ""
+          - os: ubuntu-24.04
+            compiler: gcc
+            cmake_generator: "Unix Makefiles"
+            cmake_arch: ""
         exclude:
           - os: macos-15
             compiler: msvc
           - os: ubuntu-24.04
             compiler: msvc
+          - os: windows-2022
+            compiler: gcc
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -112,6 +139,8 @@ jobs:
             compiler: msvc
           - os: ubuntu-24.04
             compiler: msvc
+          - os: windows-2022
+            compiler: gcc
     runs-on: ${{ matrix.os }}
     needs: prepare-and-build
 
