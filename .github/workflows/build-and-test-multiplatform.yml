@@ -57,6 +57,9 @@ jobs:
             compiler: gcc
     runs-on: ${{ matrix.os }}
 
+    env:
+      SEPARATOR: ${{ matrix.os == 'windows-2022' && ' ^' || ' \'}}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
@@ -98,23 +101,23 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -G "${{ matrix.cmake_generator }}" ${matrix.cmake_arch} \
-              -D CMAKE_C_COMPILER=${{ matrix.compiler }} \
-              -D CMAKE_CXX_COMPILER=${{ matrix.compiler }}++ \
-              -D BUILD_USE_PCH=ON \
-              -D BUILD_INCLUDE_SYMLINK=ON \
-              -D CMAKE_BUILD_TYPE=Release \
-              -D INSTALL_DIR=${{ github.workspace }}/install \
-              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
-              -D USE_RAPIDJSON=ON \
-              -D USE_DRACO=ON \
-              -D USE_FREETYPE=ON \
-              -D USE_OPENGL=ON \
-              -D USE_FREEIMAGE=ON \
-              -D USE_FFMPEG=ON \
-              -D USE_GLES2=ON \
-              -D USE_OPENVR=ON \
-              -D USE_VTK=ON \
+        cmake -G "${{ matrix.cmake_generator }}" ${matrix.cmake_arch} ${{ env.SEPARATOR }} \
+              -D CMAKE_C_COMPILER=${{ matrix.compiler }} ${{ env.SEPARATOR }} \
+              -D CMAKE_CXX_COMPILER=${{ matrix.compiler }}++ ${{ env.SEPARATOR }} \
+              -D BUILD_USE_PCH=ON ${{ env.SEPARATOR }} \
+              -D BUILD_INCLUDE_SYMLINK=ON ${{ env.SEPARATOR }} \
+              -D CMAKE_BUILD_TYPE=Release ${{ env.SEPARATOR }} \
+              -D INSTALL_DIR=${{ github.workspace }}/install ${{ env.SEPARATOR }} \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 ${{ env.SEPARATOR }} \
+              -D USE_RAPIDJSON=ON ${{ env.SEPARATOR }} \
+              -D USE_DRACO=ON ${{ env.SEPARATOR }} \
+              -D USE_FREETYPE=ON ${{ env.SEPARATOR }} \
+              -D USE_OPENGL=ON ${{ env.SEPARATOR }} \
+              -D USE_FREEIMAGE=ON ${{ env.SEPARATOR }} \
+              -D USE_FFMPEG=ON ${{ env.SEPARATOR }} \
+              -D USE_GLES2=ON ${{ env.SEPARATOR }} \
+              -D USE_OPENVR=ON ${{ env.SEPARATOR }} \
+              -D USE_VTK=ON ${{ env.SEPARATOR }} \
               -D USE_TBB=ON ..
 
     - name: Build OCCT
