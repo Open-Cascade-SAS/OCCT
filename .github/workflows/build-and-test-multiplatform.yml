@@ -27,27 +27,21 @@ jobs:
           - os: windows-2022
             compiler: msvc
             cmake_generator: "Visual Studio 17 2022"
-            cmake_arch: "x64"
           - os: windows-2022
             compiler: clang
             cmake_generator: "Ninja"
-            cmake_arch: ""
           - os: macos-15
             compiler: clang
             cmake_generator: "Unix Makefiles"
-            cmake_arch: ""
           - os: macos-15
             compiler: gcc
             cmake_generator: "Unix Makefiles"
-            cmake_arch: ""
           - os: ubuntu-24.04
             compiler: clang
             cmake_generator: "Unix Makefiles"
-            cmake_arch: ""
           - os: ubuntu-24.04
             compiler: gcc
             cmake_generator: "Unix Makefiles"
-            cmake_arch: ""
         exclude:
           - os: macos-15
             compiler: msvc
@@ -58,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      SEPARATOR: ${{ matrix.os == 'windows-2022' && ' ^' || ' \'}}
+      SEPARATOR: ${{ matrix.os == 'windows-2022' && '`' || ' \'}}
 
     steps:
     - name: Checkout repository
