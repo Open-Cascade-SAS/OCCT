@@ -51,9 +51,6 @@
         "rapidjson"
       ]
     },
-    "samples": {
-      "description": "Enable optional samples"
-    },
     "tbb": {
       "description": "Enable optional usage of tbb",
       "dependencies": [
@@ -70,18 +67,6 @@
             "opengl"
           ]
         }
-      ]
-    },
-    "tcl": {
-      "description": "Enable optional usage of tcl",
-      "dependencies": [
-        "tcl"
-      ]
-    },
-    "tk": {
-      "description": "Enable optional usage of tk",
-      "dependencies": [
-        "tk"
       ]
     },
     "draco": {
