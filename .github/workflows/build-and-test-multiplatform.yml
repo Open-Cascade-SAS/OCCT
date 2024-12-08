@@ -26,7 +26,7 @@ jobs:
         include:
           - os: windows-2022
             compiler: msvc
-            cmake_generator: "Visual Studio 16 2019"
+            cmake_generator: "Visual Studio 17 2022"
             cmake_arch: "x64"
           - os: windows-2022
             compiler: clang
@@ -101,7 +101,7 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -G "${{ matrix.cmake_generator }}" ${matrix.cmake_arch} ${{ env.SEPARATOR }}
+        cmake -G "${{ matrix.cmake_generator }}" ${{ env.SEPARATOR }}
               -D CMAKE_C_COMPILER=${{ matrix.compiler }} ${{ env.SEPARATOR }}
               -D CMAKE_CXX_COMPILER=${{ matrix.compiler }}++ ${{ env.SEPARATOR }}
               -D BUILD_USE_PCH=ON ${{ env.SEPARATOR }}
