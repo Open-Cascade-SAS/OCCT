@@ -1,0 +1,76 @@
+# Set flag dump_file to 1 in order to regenerate script files with actual data
+# used as reference. In this mode all tests intentionally report failure. 
+set dump_file 0
+
+# Read original file
+if { [string length $filename] > 1} {
+  set path_file [locate_data_file $filename]
+  if { [catch { ReadFile aDocExport $path_file } catch_result] } {
+    set err_msg "Error: file was not read - exception "
+    puts $err_msg
+  }
+}
+
+# mesh the shape before Gltf writing
+XGetOneShape a aDocExport
+incmesh a 0.1
+
+# write file
+WriteGltf aDocExport $imagedir/${casename}_D_First.gltf
+set aSize [file size $imagedir/${casename}_D_First.gltf]
+
+# Import created Gltf file and get its metadata.
+ReadGltf aDocImport $imagedir/${casename}_D_First.gltf
+set aMetaDataBase [ XGetProperties aDocImport ]
+set aMetaData [format $aMetaDataBase]
+
+
+if { $dump_file == 1 } { 
+    set fd_stream  [open $dirname/$groupname/$gridname/$casename w] 
+    puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
+    puts $fd_stream "set filename $filename"
+    puts $fd_stream "set ref_size $aSize"
+    puts $fd_stream "set check_metadata $check_metadata"
+    if {$check_metadata == 1} {
+      puts $fd_stream "set ref_metadata \{$aMetaData\}"
+    }
+    close $fd_stream
+    puts "Error : Running in regeneration mode, comparison was not performed!"
+} else {
+    if {$aSize != $ref_size} {
+        puts "Error: Wrong file size $aSize instead of $ref_size"
+    }
+    
+    if {$check_metadata == 1} {
+      # Compare metadata in files.
+      set aMetaDataLines [split ${aMetaData} "\n"]
+      set aRefMetaDataLines [split ${ref_metadata} "\n"]
+      set aMetaDataLinesCount [llength $aMetaDataLines]
+      set aRefMetaDataLinesCount [llength $aRefMetaDataLines]
+      set aMinLineCount [expr min($aMetaDataLinesCount, $aRefMetaDataLinesCount)]
+      for {set aLineIndex 0} {$aLineIndex < $aMinLineCount} {incr aLineIndex} {
+        set aCurrentMetaDataLine [lindex $aMetaDataLines $aLineIndex]
+        set aCurrentRefMetaDataLine [lindex $aRefMetaDataLines $aLineIndex]
+        if {$aCurrentMetaDataLine != $aCurrentRefMetaDataLine} {
+          puts "Error: Incorrect metadata at line $aLineIndex"
+          puts "Expected: \"$aCurrentRefMetaDataLine\""
+          puts "Actual:   \"$aCurrentMetaDataLine\""
+          break
+        }
+      }
+      # It is faster to check this condition first, before string-by-string comparison,
+      # however string-by-string comparison would be more informative in case of error.
+      if {$aMetaDataLinesCount != $aRefMetaDataLinesCount} {
+           puts "Error: Line count is metadata doesn't match the expected value."
+          puts "Expected: $aRefMetaDataLinesCount"
+          puts "Actual:   $aMetaDataLinesCount"
+      }
+    }
+}
+
+# finalize scenario
+Close aDocImport
+Close aDocExport
+file delete $imagedir/${casename}_D_First.gltf
+file delete $imagedir/${casename}_D_First.bin
+puts "TEST COMPLETED"
