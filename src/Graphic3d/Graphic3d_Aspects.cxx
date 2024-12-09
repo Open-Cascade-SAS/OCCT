@@ -35,6 +35,7 @@ Graphic3d_Aspects::Graphic3d_Aspects()
   myLinePattern         (0xFFFF),
   myMarkerType          (Aspect_TOM_POINT),
   myMarkerScale         (1.0f),
+  myMarkerPhysical      (false),
   myTextStyle           (Aspect_TOST_NORMAL),
   myTextDisplayType     (Aspect_TODT_NORMAL),
   myTextFontAspect      (Font_FontAspect_Regular),

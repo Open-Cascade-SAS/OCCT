@@ -165,7 +165,7 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
   OpenGl_Vec4 aColor = theWorkspace->InteriorColor();
 
   aCtx->ShaderManager()->BindLineProgram (Handle(OpenGl_TextureSet)(), Aspect_TOL_SOLID,
-                                          Graphic3d_TypeOfShadingModel_Unlit, Graphic3d_AlphaMode_Opaque, false,
+                                          Graphic3d_TypeOfShadingModel_Unlit, Graphic3d_AlphaMode_Opaque, false, false,
                                           Handle(OpenGl_ShaderProgram)());
   aCtx->SetColor4fv (aColor);
 
