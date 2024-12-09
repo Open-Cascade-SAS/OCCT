@@ -1,0 +1,29 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bug28345_30338.stp
+set ref_size 5896
+set check_metadata 1
+set ref_metadata {Property for [0:1:1:1]:
+H_CIP : 55.545955351400004
+Property for [0:1:1:1:1]:
+H : 45
+E : 55
+B : 16
+I : 15
+A : 3
+D : 3
+C : 140
+F : 0.29999999999999999
+DESCRIPTION : 
+MODELED_BY : 
+Property for [0:1:1:1:2]:
+H : 45
+E : 55
+B : 16
+I : 15
+A : 3
+D : 3
+C : 140
+F : 0.29999999999999999
+DESCRIPTION : 
+MODELED_BY : 
+}
