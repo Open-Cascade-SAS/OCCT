@@ -39,18 +39,6 @@ jobs:
         .\vcpkg\bootstrap-vcpkg.bat
       shell: cmd
 
-    - name: Install dependencies with vcpkg (Unix)
-      if: runner.os != 'Windows'
-      run: |
-        ./vcpkg/vcpkg install --triplet x64-linux
-      shell: bash
-
-    - name: Install dependencies with vcpkg (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        .\vcpkg\vcpkg install --triplet x64-windows
-      shell: cmd
-
     - name: Configure OCCT (Unix)
       if: runner.os != 'Windows'
       run: |
