@@ -23,7 +23,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04, windows-2022, windows-2019, macos-15, macos-14, macos-13, 	macos-12]
+        os: [ubuntu-24.04, ubuntu-22.04, ubuntu-20.04, windows-2022, windows-2019, macos-15, macos-14, macos-13]
 
     steps:
     - name: Checkout repository
@@ -34,6 +34,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential curl zip unzip tar nasm
+        sudo apt-get install -y libxi-dev libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxrandr-dev libxxf86vm-dev
 
     - name: Install required packages (macOS)
       if: runner.os == 'macOS'
