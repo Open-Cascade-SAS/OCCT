@@ -16,19 +16,17 @@ if (BUILD_USE_VCPKG)
   # search if CMAKE_TOOLCHAIN_FILE is already defined for <vcpkg-root>/scripts/buildsystems/vcpkg.cmake
   # if exists, then extract the VCPKG ROOT from it path,
   # if it exist, but not for vcpkg, then needs to reset to vcpkg and what was before move to VCPKG_CHAINLOAD_TOOLCHAIN_FILE
-  if (NOT "${CMAKE_TOOLCHAIN_FILE}" STREQUAL "")
-    if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
+  if (NOT "${CMAKE_TOOLCHAIN_FILE}" STREQUAL "" AND EXISTS "${CMAKE_TOOLCHAIN_FILE}")
+    if ("${CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg.cmake")
       string (REGEX REPLACE "/scripts/buildsystems/vcpkg.cmake" "" VCPKG_ROOT ${CMAKE_TOOLCHAIN_FILE})
       set (VCPKG_ROOT "${VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory." FORCE)
     else()
       set (VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
       set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
     endif()
-  else()
+  elseif (EXISTS "${VCPKG_ROOT}")
     set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
-  endif()
-
-  if ("${VCPKG_ROOT}" STREQUAL "" OR NOT EXISTS "${VCPKG_ROOT}")
+  else()
     set (VCPKG_ROOT "" CACHE PATH "Path to vcpkg root directory.")
     message(FATAL_ERROR "VCPKG_ROOT is not defined. Please set it to the path of vcpkg root directory.")
   endif()

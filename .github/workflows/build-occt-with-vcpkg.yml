@@ -40,6 +40,8 @@ jobs:
       run: |
         brew update
         brew install cmake ninja nasm
+        # temporary workaround for missing tcl-tk
+        brew install tcl-tk
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'

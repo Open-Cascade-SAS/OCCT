@@ -116,11 +116,5 @@
         "jemalloc"
       ]
     }
-  },
-  "overrides": [
-    {
-      "name": "ffmpeg",
-      "version": "4.4.3#3"
-    }
-  ]
+  }
 }
