@@ -1,0 +1,126 @@
+{
+  "name": "opencascade",
+  "version": "7.8.1",
+  "description": "Open CASCADE Technology (OCCT) is an open-source software development platform for 3D CAD, CAM, CAE.",
+  "homepage": "https://github.com/Open-Cascade-SAS/OCCT",
+  "documentation": "https://github.com/Open-Cascade-SAS/OCCT/wiki",
+  "license": "LGPL-2.1",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ],
+  "default-features": [
+    {
+      "name": "tcl"
+    },
+    {
+      "name": "freetype",
+      "platform": "!uwp"
+    },
+    {
+      "name": "angle",
+       "platform": "uwp"
+    },
+    {
+      "name": "opengl",
+      "platform": "!(android | ios | uwp | wasm32)"
+    }
+  ],
+  "features": {
+    "angle": {
+      "description": "Enables optional usage of ANGLE. Part of the module-visualization.",
+      "dependencies": [
+        "angle"
+      ]
+    },
+    "opengl": {
+      "description": "Enables optional usage of OpenGL. Part of the module-visualization.",
+      "dependencies": [
+        "opengl"
+      ]
+    },
+    "tcl": {
+      "description": "Enables optional usage of Tcl. Part of the module-foundation-classes.",
+      "dependencies": [
+        "tcl"
+      ]
+    },
+    "freeimage": {
+      "description": "Enables optional usage of FreeImage. Part of the module-visualization.",
+      "dependencies": [
+        "freeimage"
+      ]
+    },
+    "freetype": {
+      "description": "Enables optional usage of FreeType. Part of the module-visualization.",
+      "supports": "!uwp",
+      "dependencies": [
+        "fontconfig",
+        {
+          "name": "freetype",
+          "default-features": false
+        }
+      ]
+    },
+    "rapidjson": {
+      "description": "Enables optional usage of RapidJSON. Part of the module-data-exchange.",
+      "dependencies": [
+        "rapidjson"
+      ]
+    },
+    "tbb": {
+      "description": "Enables optional usage of TBB. Part of the module-foundation-classes.",
+      "dependencies": [
+        "tbb"
+      ]
+    },
+    "vtk": {
+      "description": "Enables optional usage of VTK. Part of the module-visualization.",
+      "dependencies": [
+        {
+          "name": "vtk",
+          "default-features": false,
+          "features": [
+            "opengl"
+          ]
+        }
+      ]
+    },
+    "draco": {
+      "description": "Enables optional usage of Draco. Part of the module-data-exchange.",
+      "dependencies": [
+        "draco"
+      ]
+    },
+    "ffmpeg": {
+      "description": "Enables optional usage of FFmpeg. Part of the module-visualization.",
+      "dependencies": [
+        "ffmpeg"
+      ]
+    },
+    "openvr": {
+      "description": "Enables optional usage of OpenVR. Part of the module-visualization.",
+      "dependencies": [
+        "openvr"
+      ]
+    },
+    "jemalloc": {
+      "description": "Enables optional usage of jemalloc. Part of the module-foundation-classes.",
+      "dependencies": [
+        "jemalloc"
+      ]
+    }
+  },
+  "overrides": [
+    {
+      "name": "ffmpeg",
+      "version": "4.4.3#3"
+    }
+  ]
+}

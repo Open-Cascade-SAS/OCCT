@@ -8,29 +8,32 @@ if (NOT DEFINED BUILD_USE_VCPKG)
 endif()
 
 if (BUILD_USE_VCPKG)
+  # check env variable for VCPKG_ROOT
+  if (DEFINED ENV{VCPKG_ROOT} AND NOT VCPKG_ROOT)
+    set (VCPKG_ROOT "$ENV{VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
+  endif()
+
   # search if CMAKE_TOOLCHAIN_FILE is already defined for <vcpkg-root>/scripts/buildsystems/vcpkg.cmake
   # if exists, then extract the VCPKG ROOT from it path,
   # if it exist, but not for vcpkg, then needs to reset to vcpkg and what was before move to VCPKG_CHAINLOAD_TOOLCHAIN_FILE
-  if (CMAKE_TOOLCHAIN_FILE STREQUAL "")
+  if (NOT "${CMAKE_TOOLCHAIN_FILE}" STREQUAL "")
     if (CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg.cmake")
       string (REGEX REPLACE "/scripts/buildsystems/vcpkg.cmake" "" VCPKG_ROOT ${CMAKE_TOOLCHAIN_FILE})
-      set (VCPKG_ROOT "${VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
+      set (VCPKG_ROOT "${VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory." FORCE)
     else()
       set (VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
-      set (CMAKE_TOOLCHAIN_FILE CACHE STRING "")
+      set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
     endif()
+  else()
+    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "" FORCE)
   endif()
 
-  # check env varaible for VCPKG_ROOT
-  if (DEFINED ENV{VCPKG_ROOT} AND NOT VCPKG_ROOT)
-    set (VCPKG_ROOT "$ENV{VCPKG_ROOT}" CACHE PATH "Path to vcpkg root directory.")
-  elseif ("${VCPKG_ROOT}" STREQUAL "")
+  if ("${VCPKG_ROOT}" STREQUAL "" OR NOT EXISTS "${VCPKG_ROOT}")
     set (VCPKG_ROOT "" CACHE PATH "Path to vcpkg root directory.")
     message(FATAL_ERROR "VCPKG_ROOT is not defined. Please set it to the path of vcpkg root directory.")
   endif()
-  if (NOT "${VCPKG_ROOT}" STREQUAL "")
-    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-  endif()
+
+  set (VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/adm/vcpkg")
 endif()
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/adm/cmake")
