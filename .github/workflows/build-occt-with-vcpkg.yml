@@ -33,7 +33,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential curl zip unzip tar nasm
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm
         sudo apt-get install -y libxi-dev libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxrandr-dev libxxf86vm-dev
 
     - name: Install required packages (macOS)
@@ -67,6 +67,7 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_USE_VCPKG=ON \
+              -DUSE_MMGR_TYPE=JEMALLOC \
               -DUSE_FREETYPE=ON \
               -DUSE_TK=OFF \
               -DBUILD_USE_PCH=ON \
@@ -81,6 +82,7 @@ jobs:
               -DUSE_TBB=ON \
               -DUSE_RAPIDJSON=ON \
               -DUSE_OPENGL=ON \
+              ${{ runner.os == 'macOS' && '-DBUILD_MODULE_Draw=OFF' || '' }} \
               ${{ runner.os != 'macOS' && '-DUSE_OPENVR=ON' || '' }} ..
       shell: bash
 
@@ -93,6 +95,7 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ^
               -DCMAKE_BUILD_TYPE=Release ^
               -DBUILD_USE_VCPKG=ON ^
+              -DUSE_MMGR_TYPE=JEMALLOC ^
               -DUSE_FREETYPE=ON ^
               -DUSE_TK=OFF ^
               -DBUILD_USE_PCH=ON ^
@@ -133,6 +136,7 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake \
               -DCMAKE_BUILD_TYPE=Debug \
               -DBUILD_USE_VCPKG=ON \
+              -DUSE_MMGR_TYPE=JEMALLOC \
               -DUSE_FREETYPE=ON \
               -DUSE_TK=OFF \
               -DBUILD_USE_PCH=ON \
@@ -147,6 +151,7 @@ jobs:
               -DUSE_TBB=ON \
               -DUSE_RAPIDJSON=ON \
               -DUSE_OPENGL=ON \
+              ${{ runner.os == 'macOS' && '-DBUILD_MODULE_Draw=OFF' || '' }} \
               ${{ runner.os != 'macOS' && '-DUSE_OPENVR=ON' || '' }} ..
       shell: bash
 
@@ -159,6 +164,7 @@ jobs:
               -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ^
               -DCMAKE_BUILD_TYPE=Debug ^
               -DBUILD_USE_VCPKG=ON ^
+              -DUSE_MMGR_TYPE=JEMALLOC ^
               -DUSE_FREETYPE=ON ^
               -DUSE_TK=OFF ^
               -DBUILD_USE_PCH=ON ^
