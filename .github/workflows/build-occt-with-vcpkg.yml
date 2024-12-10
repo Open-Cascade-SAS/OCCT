@@ -58,11 +58,11 @@ jobs:
               -DUSE_FFMPEG=ON \
               -DUSE_FREEIMAGE=ON \
               -DUSE_GLES2=ON \
-              -DUSE_OPENVR=ON \
               -DUSE_VTK=ON \
               -DUSE_TBB=ON \
               -DUSE_RAPIDJSON=ON \
-              -DUSE_OPENGL=ON ..
+              -DUSE_OPENGL=ON \
+              ${{ runner.os != 'macOS' && '-DUSE_OPENVR=ON' || '' }} ..
       shell: bash
 
     - name: Configure OCCT (Windows)
