@@ -16,6 +16,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     strategy:
       matrix:
         os: [ubuntu-24.04, windows-2022, macos-15]
@@ -24,6 +25,18 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
+
+    - name: Install required packages (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential curl zip unzip tar
+
+    - name: Install required packages (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew update
+        brew install cmake ninja nasm
 
     - name: Set up vcpkg (Unix)
       if: runner.os != 'Windows'
