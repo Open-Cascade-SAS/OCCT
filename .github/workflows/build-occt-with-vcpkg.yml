@@ -33,14 +33,14 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm
+        sudo apt-get install -y build-essential ninja-build curl zip unzip tar nasm autoconf
         sudo apt-get install -y libxi-dev libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxrandr-dev libxxf86vm-dev
 
     - name: Install required packages (macOS)
       if: runner.os == 'macOS'
       run: |
         brew update
-        brew install cmake ninja nasm
+        brew install cmake ninja nasm autoconf
         # temporary workaround for missing tcl-tk
         brew install tcl-tk
 
