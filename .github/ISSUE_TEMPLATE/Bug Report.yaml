@@ -6,41 +6,6 @@ body:
     attributes:
       value: |
         **Please provide the following information:**
-  - type: dropdown
-    attributes:
-      label: Category
-      description: "Select the bug category"
-      options:
-        - Application Framework
-        - Build
-        - Coding
-        - Configuration
-        - Data Exchange
-        - Documentation
-        - DRAW
-        - Foundation Classes
-        - Mesh
-        - Modeling
-        - Samples
-        - Shape Healing
-        - Testing
-        - Visualization
-    validations:
-      required: true
-  - type: dropdown
-    id: severity
-    attributes:
-      label: Severity
-      description: "Select the bug severity"
-      options:
-        - Crash
-        - Critical
-        - Major
-        - Minor
-        - Trivial
-      default: 2
-    validations:
-      required: true
   - type: textarea
     id: description
     attributes:
@@ -93,11 +58,6 @@ body:
       default: 0
     validations:
       required: true
-  - type: input
-    id: compiler_version
-    attributes:
-      label: Compiler Version
-      description: "Specify the compiler version (optional)"
   - type: dropdown
     id: bitness
     attributes:
@@ -125,16 +85,6 @@ body:
       default: 6
     validations:
       required: true
-  - type: input
-    id: precise_occt_version
-    attributes:
-      label: Precise OCCT Version or Branch
-      description: "Specify the precise OCCT version, branch, or SSH (optional)"
-  - type: input
-    id: environment
-    attributes:
-      label: Environment
-      description: "Details about your environment (OS, compiler, etc.)"
   - type: textarea
     id: additional_files
     attributes:

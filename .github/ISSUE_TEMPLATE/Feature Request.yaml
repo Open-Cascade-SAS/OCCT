@@ -6,27 +6,6 @@ body:
     attributes:
       value: |
         **Please provide the following information:**
-  - type: dropdown
-    attributes:
-      label: Category
-      description: "Select the bug category"
-      options:
-        - Application Framework
-        - Build
-        - Coding
-        - Configuration
-        - Data Exchange
-        - Documentation
-        - DRAW
-        - Foundation Classes
-        - Mesh
-        - Modeling
-        - Samples
-        - Shape Healing
-        - Testing
-        - Visualization
-    validations:
-      required: true
   - type: textarea
     id: description
     attributes:
