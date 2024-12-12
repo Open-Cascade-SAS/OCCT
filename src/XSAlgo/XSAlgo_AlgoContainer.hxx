@@ -24,7 +24,6 @@
 #include <Standard_Transient.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
-class ShapeBuild_ReShape;
 class XSAlgo_ToolContainer;
 class TopoDS_Shape;
 class TopoDS_Edge;
@@ -64,6 +63,7 @@ public:
   //! @param[out] theInfo information to be recorded in the translation map
   //! @param[in] theProgress progress indicator
   //! @param[in] theNonManifold flag to proceed with non-manifold topology
+  //! @param[in] theDetailingLevel the lowest shape type to be processed, lower shapes are ignored
   //! @return the processed shape
   Standard_EXPORT virtual TopoDS_Shape ProcessShape (const TopoDS_Shape&          theShape,
                                                      const Standard_Real          thePrec,
@@ -73,30 +73,8 @@ public:
                                                      Handle(Standard_Transient)&  theInfo,
                                                      const Message_ProgressRange& theProgress = Message_ProgressRange(),
                                                      const Standard_Boolean       theNonManifold = Standard_False,
-                                                     const TopAbs_ShapeEnum theDetalisationLevel = TopAbs_VERTEX) const;
+                                                     const TopAbs_ShapeEnum       theDetailingLevel = TopAbs_VERTEX) const;
 
-  //! Does shape processing with specified tolerances
-  //! @param[in] theShape shape to process
-  //! @param[in] thePrec basic precision and tolerance
-  //! @param[in] theMaxTol maximum allowed tolerance
-  //! @param[in] thePrscfile name of the resource file
-  //! @param[in] thePseq name of the sequence of operators defined in the resource file for Shape Processing
-  //! @param[out] theInfo information to be recorded in the translation map
-  //! @param[in] theReShape tool to record the modifications of input shape
-  //! @param[in] theProgress progress indicator
-  //! @param[in] theNonManifold flag to proceed with non-manifold topology
-  //! @return the processed shape
-  Standard_EXPORT virtual TopoDS_Shape ProcessShape(const TopoDS_Shape&               theShape,
-                                                    const Standard_Real               thePrec,
-                                                    const Standard_Real               theMaxTol,
-                                                    const Standard_CString            thePrscfile,
-                                                    const Standard_CString            thePseq,
-                                                    Handle(Standard_Transient)&       theInfo,
-                                                    const Handle(ShapeBuild_ReShape)& theReShape,
-                                                    const Message_ProgressRange&      theProgress = Message_ProgressRange(),
-                                                    const Standard_Boolean            theNonManifold = Standard_False,
-                                                    const TopAbs_ShapeEnum theDetalisationLevel = TopAbs_VERTEX) const;
-  
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.
   Standard_EXPORT virtual Standard_Boolean CheckPCurve (const TopoDS_Edge& edge, const TopoDS_Face& face, const Standard_Real preci, const Standard_Boolean isSeam) const;

@@ -197,8 +197,8 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
     shape = XSAlgo::AlgoContainer()->ProcessShape(shape, theeps, CAS.GetMaxTol(),
                                                   "read.iges.resource.name",
                                                   "read.iges.sequence",
-                                                  info, mymodel->ReShape(),
-                                                  aPS.Next(), false, TopAbs_EDGE);
+                                                  info, aPS.Next(),
+                                                  false, TopAbs_EDGE);
     XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
   }
 
