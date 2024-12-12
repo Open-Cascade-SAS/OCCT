@@ -23,7 +23,6 @@
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message_Msg.hxx>
-#include <ShapeBuild_ReShape.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -48,7 +47,6 @@ void IGESData_VerifyDate
 IGESData_IGESModel::IGESData_IGESModel ()
 {
   thestart = new TColStd_HSequenceOfHAsciiString();
-  myReShape = new ShapeBuild_ReShape();
 //  thecheckstx = new Interface_Check;
 //  thechecksem = new Interface_Check;
 }
@@ -64,7 +62,6 @@ void IGESData_IGESModel::ClearHeader ()
   IGESData_GlobalSection newheader;  // Un peu brutal, certes
   theheader = newheader;
   thestart = new TColStd_HSequenceOfHAsciiString();
-  myReShape = new ShapeBuild_ReShape();
 }
 
 

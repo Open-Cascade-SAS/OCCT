@@ -90,10 +90,9 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
                                                 const Standard_CString thePrscfile,
                                                 const Standard_CString thePseq,
                                                 Handle(Standard_Transient)& theInfo,
-                                                const Handle(ShapeBuild_ReShape)& theReShape,
                                                 const Message_ProgressRange& theProgress,
                                                 const Standard_Boolean theNonManifold,
-                                                const TopAbs_ShapeEnum theDetalisationLevel) const
+                                                const TopAbs_ShapeEnum theDetailingLevel) const
 {
   if (theShape.IsNull())
   {
@@ -110,7 +109,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
       // If resource file wasn't found, use static values instead
       Interface_Static::FillMap(aContext->ResourceManager()->GetMap());
     }
-    aContext->SetDetalisation(theDetalisationLevel);
+    aContext->SetDetalisation(theDetailingLevel);
   }
   aContext->SetNonManifold(theNonManifold);
   theInfo = aContext;
@@ -147,7 +146,6 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
         aSfs->SetMaxTolerance(theMaxTol);
         aSfs->FixFaceTool()->FixWireTool()->FixSameParameterMode() = Standard_False;
         aSfs->FixSolidTool()->CreateOpenSolidMode() = Standard_False;
-        aSfs->SetContext(theReShape);
         aSfs->Perform(theProgress);
 
         TopoDS_Shape aShape = aSfs->Shape();
@@ -182,26 +180,6 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
     return theShape; // return original shape
 
   return aContext->Result();
-}
-
-//=======================================================================
-//function : ProcessShape
-//purpose  :
-//=======================================================================
-TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape(const TopoDS_Shape& theShape,
-                                                const Standard_Real thePrec,
-                                                const Standard_Real theMaxTol,
-                                                const Standard_CString thePrscfile,
-                                                const Standard_CString thePseq,
-                                                Handle(Standard_Transient)& theInfo,
-                                                const Message_ProgressRange& theProgress,
-                                                const Standard_Boolean theNonManifold,
-                                                const TopAbs_ShapeEnum theDetalisationLevel) const
-{
-  Handle(ShapeBuild_ReShape) aReShape = new ShapeBuild_ReShape();
-  return ProcessShape(theShape, thePrec, theMaxTol, thePrscfile,
-                      thePseq, theInfo, aReShape, theProgress, 
-                      theNonManifold, theDetalisationLevel);
 }
 
 //=======================================================================
