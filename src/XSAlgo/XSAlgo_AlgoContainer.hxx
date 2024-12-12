@@ -34,22 +34,13 @@ class Transfer_FinderProcess;
 class XSAlgo_AlgoContainer;
 DEFINE_STANDARD_HANDLE(XSAlgo_AlgoContainer, Standard_Transient)
 
-
 class XSAlgo_AlgoContainer : public Standard_Transient
 {
-
 public:
 
-  
   //! Empty constructor
-  Standard_EXPORT XSAlgo_AlgoContainer();
-  
-  //! Sets ToolContainer
-    void SetToolContainer (const Handle(XSAlgo_ToolContainer)& TC);
-  
-  //! Returns ToolContainer
-    Handle(XSAlgo_ToolContainer) ToolContainer() const;
-  
+  XSAlgo_AlgoContainer() {};
+
   //! Performs actions necessary for preparing environment
   //! for transfer. Empty in Open version.
   Standard_EXPORT virtual void PrepareForTransfer() const;
@@ -88,29 +79,7 @@ public:
   //! from item startTPitem
   Standard_EXPORT virtual void MergeTransferInfo (const Handle(Transfer_FinderProcess)& FP, const Handle(Standard_Transient)& info) const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(XSAlgo_AlgoContainer,Standard_Transient)
-
-protected:
-
-
-
-
-private:
-
-
-  Handle(XSAlgo_ToolContainer) myTC;
-
-
 };
-
-
-#include <XSAlgo_AlgoContainer.lxx>
-
-
-
-
 
 #endif // _XSAlgo_AlgoContainer_HeaderFile

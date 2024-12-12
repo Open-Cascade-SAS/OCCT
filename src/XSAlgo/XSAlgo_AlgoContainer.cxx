@@ -56,19 +56,9 @@
 #include <TransferBRep_ShapeMapper.hxx>
 #include <UnitsMethods.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
-#include <XSAlgo_ToolContainer.hxx>
 #include <TopExp_Explorer.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSAlgo_AlgoContainer,Standard_Transient)
-
-//=======================================================================
-//function : XSAlgo_AlgoContainer
-//purpose  : 
-//=======================================================================
-XSAlgo_AlgoContainer::XSAlgo_AlgoContainer()
-{
-  myTC = new XSAlgo_ToolContainer;
-}
 
 //=======================================================================
 //function : PrepareForTransfer
