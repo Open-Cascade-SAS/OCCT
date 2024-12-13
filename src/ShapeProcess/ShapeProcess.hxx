@@ -16,11 +16,13 @@
 #ifndef _ShapeProcess_HeaderFile
 #define _ShapeProcess_HeaderFile
 
+#include <Message_ProgressRange.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Message_ProgressRange.hxx>
+#include <bitset>
+#include <vector>
 
 class ShapeProcess_Operator;
 class ShapeProcess_Context;
@@ -34,10 +36,43 @@ class ShapeProcess_Context;
 class ShapeProcess 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
+  //! Describes all available operations.
+  //! C++11 enum class is not used to allow implicit conversion to undelying type.
+  enum Operation : uint8_t
+  {
+    First = 0, // First operation index.
+    DirectFaces = First,
+    SameParameter,
+    SetTolerance,
+    SplitAngle,
+    BSplineRestriction,
+    ElementaryToRevolution,
+    SweptToElementary,
+    SurfaceToBSpline,
+    ToBezier,
+    SplitContinuity,
+    SplitClosedFaces,
+    FixWireGaps,
+    FixFaceSize,
+    DropSmallSolids,
+    DropSmallEdges,
+    FixShape,
+    SplitClosedEdges,
+    SplitCommonVertex,
+    Count // Number of operations.
+  };
+
+  // Bitset of operations. It is used to specify which operations should be performed.
+  // For example, to perform DirectFaces and SameParameter operations, use:
+  // ShapeProcess::OperationsFlags flags;
+  // flags.set(ShapeProcess::Operation::DirectFaces);
+  // flags.set(ShapeProcess::Operation::SameParameter);
+  // ShapeProcess::Perform(context, flags);
+  using OperationsFlags = std::bitset<Operation::Count>;
   
+public:
   //! Registers operator to make it visible for Performer
   Standard_EXPORT static Standard_Boolean RegisterOperator (const Standard_CString name, const Handle(ShapeProcess_Operator)& op);
   
@@ -52,6 +87,28 @@ public:
                     const Standard_CString seq,
                     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
+  //! Performs a specified sequence of operators on @p theContext.
+  //! @param theContext Context to perform operations on. Contains the shape to process
+  //!        and processing parameters. If processing parameters are not set, default values are used.
+  //!        Parameters should be in a scope of operation, for example,
+  //!        instead of "FromSTEP.FixShape.Tolerance3d"	we should use just "FixShape.Tolerance3d".
+  //! @param theOperations Bitset of operations to perform.
+  //! @param theProgress Progress indicator.
+  //! @return true if at least one operation was performed, false otherwise.
+  Standard_EXPORT static Standard_Boolean Perform(const Handle(ShapeProcess_Context)& theContext,
+                                                  const OperationsFlags&              theOperations,
+                                                  const Message_ProgressRange&        theProgress = Message_ProgressRange());
+
+private:
+  //! Returns operators to be performed according to the specified flags.
+  //! @param theFlags Bitset of operations flags.
+  //! @return List of operators to perform: pairs of operator name and operator handle.
+  static std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> getOperators(const OperationsFlags& theFlags);
+
+  //! Converts operation flag to its name.
+  //! @param theOperation Operation flag.
+  //! @return Operation name.
+  static const char* toOperationName(const Operation theOperation);
 };
 
 #endif // _ShapeProcess_HeaderFile

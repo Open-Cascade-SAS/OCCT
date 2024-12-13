@@ -68,7 +68,10 @@ public:
 
   //! Checks quality of pcurve of the edge on the given face,
   //! and corrects it if necessary.
-  Standard_EXPORT virtual Standard_Boolean CheckPCurve (const TopoDS_Edge& edge, const TopoDS_Face& face, const Standard_Real preci, const Standard_Boolean isSeam) const;
+  Standard_EXPORT virtual Standard_Boolean CheckPCurve (const TopoDS_Edge&     theEdge,
+                                                        const TopoDS_Face&     theFace,
+                                                        const Standard_Real    thePrecision,
+                                                        const Standard_Boolean theIsSeam) const;
   
   Standard_EXPORT virtual void MergeTransferInfo (const Handle(Transfer_TransientProcess)& TP, const Handle(Standard_Transient)& info, const Standard_Integer startTPitem = 1) const;
   

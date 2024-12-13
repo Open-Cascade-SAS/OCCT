@@ -23,10 +23,40 @@
 #include <ShapeProcess_Operator.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
+#include <TCollection_AsciiString.hxx>
 
 static NCollection_DataMap<TCollection_AsciiString, Handle(ShapeProcess_Operator)> aMapOfOperators;
+
+namespace
+{
+  //! Simple RAII class to lock the scope of the current operation.
+  class ScopeLock
+  {
+  public:
+    //! Constructor.
+    //! Locks the scope of the current operation.
+    //! @param theContext the context to lock.
+    //! @param theScopeName the name of the scope to lock.
+    ScopeLock(ShapeProcess_Context& theContext, const char* theScopeName)
+      : myContext(theContext)
+    {
+      myContext.SetScope(theScopeName);
+    }
+
+    //! Destructor.
+    //! Unlocks the scope of the current operation.
+    ~ScopeLock()
+    {
+      myContext.UnSetScope();
+    }
+
+  private:
+    ShapeProcess_Context& myContext; //!< The context to lock.
+  };
+}
+
+
 //=======================================================================
 //function : RegisterOperator
 //purpose  : 
@@ -72,7 +102,7 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
                                         const Standard_CString seq,
                                         const Message_ProgressRange& theProgress)
 {
-  context->SetScope ( seq );
+  ScopeLock aSequenceScope(*context, seq);
   
   // get description of the sequence
   TCollection_AsciiString sequence;
@@ -84,7 +114,6 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
       Message_Msg SMSG3 ("SP.Sequence.Warn.NoSeq"); // Sequence %s not found
       context->Messenger()->Send (SMSG3 << seq, Message_Warning);
     }
-    context->UnSetScope();
     return Standard_False;
   }
   TColStd_SequenceOfAsciiString sequenceOfOperators;
@@ -131,7 +160,7 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
       continue;
     }
     
-    context->SetScope ( oper.ToCString() );
+    ScopeLock anOperationScope(*context, oper.ToCString());
     try {
       OCC_CATCH_SIGNALS
       if (op->Perform(context, aRange))
@@ -142,9 +171,140 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
       SMSG2 << oper << anException.GetMessageString();
       context->Messenger()->Send (SMSG2, Message_Alarm);
     }
-    context->UnSetScope();
   }
   
-  context->UnSetScope();
   return isDone;
+}
+
+//=======================================================================
+//function : Perform
+//purpose  :
+//=======================================================================
+Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& theContext,
+                                       const OperationsFlags&              theOperations,
+                                       const Message_ProgressRange&        theProgress)
+{
+  if (!theContext)
+  {
+    return Standard_False;
+  }
+
+  std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> anOperators = getOperators(theOperations);
+  if (anOperators.empty())
+  {
+    return Standard_False;
+  }
+
+  Standard_Boolean anIsAnySuccess = Standard_False;
+  Message_ProgressScope aProgressScope(theProgress, nullptr, static_cast<Standard_Real>(anOperators.size()));
+  for (const auto& anOperator : anOperators)
+  {
+    const char* anOperationName = anOperator.first;
+    const Handle(ShapeProcess_Operator)& anOperation = anOperator.second;
+    Message_ProgressRange aProgressRange = aProgressScope.Next();
+    ScopeLock anOperationScope(*theContext, anOperationName); // Set operation scope.
+    try
+    {
+      OCC_CATCH_SIGNALS;
+      anIsAnySuccess |= anOperation->Perform(theContext, aProgressRange);
+    }
+    catch (const Standard_Failure& anException)
+    {
+      Message_Msg aMessage("SP.Sequence.Error.Except"); //Operator %s failed with exception %s
+      aMessage << anOperationName << anException.GetMessageString();
+      theContext->Messenger()->Send(aMessage, Message_Alarm);
+    }
+  }
+  return anIsAnySuccess;
+}
+
+//=======================================================================
+//function : getOperators
+//purpose  :
+//=======================================================================
+std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> ShapeProcess::getOperators(const OperationsFlags& theFlags)
+{
+  std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> aResult;
+  for (std::underlying_type<Operation>::type anOperation = Operation::First; anOperation < Operation::Count; ++anOperation)
+  {
+    if (theFlags.test(anOperation))
+    {
+      const char* anOperationName = toOperationName(static_cast<Operation>(anOperation));
+      if (!anOperationName)
+      {
+        continue;
+      }
+      Handle(ShapeProcess_Operator) anOperator;
+      if (FindOperator(anOperationName, anOperator))
+      {
+        aResult.emplace_back(anOperationName, anOperator);
+      }
+    }
+  }
+  return aResult;
+}
+
+//=======================================================================
+//function : toOperationName
+//purpose  :
+//=======================================================================
+const char* ShapeProcess::toOperationName(const Operation theOperation)
+{
+  switch (theOperation)
+  {
+    case Operation::DirectFaces:
+      return "DirectFaces";
+
+    case Operation::SameParameter:
+      return "SameParameter";
+
+    case Operation::SetTolerance:
+      return "SetTolerance";
+
+    case Operation::SplitAngle:
+      return "SplitAngle";
+
+    case Operation::BSplineRestriction:
+      return "BSplineRestriction";
+
+    case Operation::ElementaryToRevolution:
+      return "ElementaryToRevolution";
+
+    case Operation::SweptToElementary:
+      return "SweptToElementary";
+
+    case Operation::SurfaceToBSpline:
+      return "SurfaceToBSpline";
+
+    case Operation::ToBezier:
+      return "ToBezier";
+
+    case Operation::SplitContinuity:
+      return "SplitContinuity";
+
+    case Operation::SplitClosedFaces:
+      return "SplitClosedFaces";
+
+    case Operation::FixWireGaps:
+      return "FixWireGaps";
+
+    case Operation::FixFaceSize:
+      return "FixFaceSize";
+
+    case Operation::DropSmallSolids:
+      return "DropSmallSolids";
+
+    case Operation::DropSmallEdges:
+      return "DropSmallEdges";
+
+    case Operation::FixShape:
+      return "FixShape";
+
+    case Operation::SplitClosedEdges:
+      return "SplitClosedEdges";
+
+    case Operation::SplitCommonVertex:
+      return "SplitCommonVertex";
+  }
+  return nullptr;
 }
