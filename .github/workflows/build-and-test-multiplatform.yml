@@ -6,9 +6,9 @@
 name: Build and Test OCCT on Multiple Platforms
 
 on:
-  pull_request:
-    branches:
-      - '**'
+  # pull_request:
+  #   branches:
+  #     - '**'
   push:
     branches:
       - 'master'

@@ -1,12 +1,12 @@
 # tk
 
-if (NOT DEFINED INSTALL_TK AND BUILD_SHARED_LIBS)
+if (NOT DEFINED INSTALL_TK AND NOT BUILD_USE_VCPKG)
   set (INSTALL_TK OFF CACHE BOOL "${INSTALL_TK_DESCR}")
 endif()
 
 # tk directory
 if (NOT DEFINED 3RDPARTY_TK_DIR)
-  set (3RDPARTY_TK_DIR "" CACHE PATH "The directory containing tk")
+    set (3RDPARTY_TK_DIR "" CACHE PATH "The directory containing tk")
 endif ()
 
 if (NOT 3RDPARTY_TK_DIR AND 3RDPARTY_TCLTK_DIR)
@@ -16,6 +16,12 @@ endif()
 # tk include directory
 if (NOT DEFINED 3RDPARTY_TK_INCLUDE_DIR)
   set (3RDPARTY_TK_INCLUDE_DIR "" CACHE FILEPATH "The directory containing headers of tk")
+endif()
+
+if (BUILD_USE_VCPKG)
+  set (3RDPARTY_TK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tk" FORCE)
+  set (3RDPARTY_TCLTK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}" CACHE PATH "The directory containing tcltk" FORCE)
+  set (3RDPARTY_TK_INCLUDE_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include" CACHE FILEPATH "The directory containing headers of tk" FORCE)
 endif()
 
 if (BUILD_SHARED_LIBS)
@@ -190,7 +196,8 @@ if (BUILD_SHARED_LIBS)
   if (3RDPARTY_TK_LIBRARY AND EXISTS "${3RDPARTY_TK_LIBRARY}")
     list (APPEND 3RDPARTY_LIBRARY_DIRS "${3RDPARTY_TK_LIBRARY_DIR}")
   else()
-    list (APPEND 3RDPARTY_NO_LIBS 3RDPARTY_TK_LIBRARY_DIR)
+    set (USE_TK OFF)
+    message(STATUS "Warning: TK library is not found. TK will be disabled.")
   endif()
 
   if (WIN32)
