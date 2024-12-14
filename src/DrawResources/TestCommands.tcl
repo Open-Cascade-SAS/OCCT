@@ -270,7 +270,7 @@ proc testgrid {args} {
         if { $arg == "-exclude" } {
             incr narg
             if { $narg < [llength $args] && ! [regexp {^-} [lindex $args $narg]] } {
-                set argts $args
+                set argts [string trim [lindex $args $narg]]
                 set idx_begin [string first " -ex" $argts]
                 if { ${idx_begin} != "-1" } {
                     set argts [string replace $argts 0 $idx_begin]

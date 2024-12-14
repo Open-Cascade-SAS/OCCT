@@ -422,7 +422,8 @@ jobs:
       run: |
         cd install
         call env.bat vc14 win64 release
-        DRAWEXE.exe -v -c testgrid
+        curl -L -o ../.github/scripts/tests_to_skip https://dev.opencascade.org/sites/default/files/tests_to_skip.txt
+        DRAWEXE.exe -v -f ../.github/scripts/run_tests.tcl
       shell: cmd
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
@@ -493,7 +494,8 @@ jobs:
       run: |
         cd install
         call env.bat clang win64 release
-        DRAWEXE.exe -v -c testgrid
+        curl -L -o ../.github/scripts/tests_to_skip https://dev.opencascade.org/sites/default/files/tests_to_skip.txt
+        DRAWEXE.exe -v -f ../.github/scripts/run_tests.tcl
       shell: cmd
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
@@ -663,7 +665,8 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         curl -L -o ../../.github/scripts/tests_to_skip https://dev.opencascade.org/sites/default/files/tests_to_skip.txt
+         ./DRAWEXE -v -f ../../.github/scripts/run_tests.tcl
       shell: bash
       env:
         DISPLAY: :99
@@ -726,7 +729,8 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         curl -L -o ../../.github/scripts/tests_to_skip https://dev.opencascade.org/sites/default/files/tests_to_skip.txt
+         ./DRAWEXE -v -f ../../.github/scripts/run_tests.tcl
       shell: bash
       env:
         DISPLAY: :99
