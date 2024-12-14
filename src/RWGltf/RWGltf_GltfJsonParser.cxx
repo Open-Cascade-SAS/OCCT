@@ -35,6 +35,10 @@
 #ifdef HAVE_RAPIDJSON
 namespace
 {
+// Auxiliary macros for formatting message.
+#define reportGltfError(theMsg)   reportGltfSyntaxProblem(TCollection_AsciiString() + theMsg, Message_Fail);
+#define reportGltfWarning(theMsg) reportGltfSyntaxProblem(TCollection_AsciiString() + theMsg, Message_Warning);
+
   //! Material extension.
   static const char THE_KHR_materials_common[] = "KHR_materials_common";
   static const char THE_KHR_binary_glTF[]      = "KHR_binary_glTF";
@@ -416,21 +420,6 @@ void RWGltf_GltfJsonParser::GltfElementMap::Init (const TCollection_AsciiString&
     }
   }
 }
-#endif
-
-// Auxiliary macros for formatting message.
-#define reportGltfError(theMsg)   reportGltfSyntaxProblem(TCollection_AsciiString() + theMsg, Message_Fail);
-#define reportGltfWarning(theMsg) reportGltfSyntaxProblem(TCollection_AsciiString() + theMsg, Message_Warning);
-
-// =======================================================================
-// function : reportGltfSyntaxProblem
-// purpose  :
-// =======================================================================
-void RWGltf_GltfJsonParser::reportGltfSyntaxProblem (const TCollection_AsciiString& theMsg,
-                                                    Message_Gravity theGravity) const
-{
-  Message::Send (myErrorPrefix + theMsg, theGravity);
-}
 
 // =======================================================================
 // function : parseTransformationMatrix
@@ -594,6 +583,17 @@ bool RWGltf_GltfJsonParser::parseTransformationComponents(const TCollection_Asci
     theResult = TopLoc_Location(aTrsf);
   }
   return true;
+}
+#endif
+
+// =======================================================================
+// function : reportGltfSyntaxProblem
+// purpose  :
+// =======================================================================
+void RWGltf_GltfJsonParser::reportGltfSyntaxProblem (const TCollection_AsciiString& theMsg,
+                                                    Message_Gravity theGravity) const
+{
+  Message::Send (myErrorPrefix + theMsg, theGravity);
 }
 
 // =======================================================================

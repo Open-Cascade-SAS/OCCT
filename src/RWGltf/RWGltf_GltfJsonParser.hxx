@@ -406,10 +406,6 @@ protected:
     const RWGltf_JsonValue* myRoot;
 
   };
-#endif
-protected:
-  //! Print message about invalid glTF syntax.
-  void reportGltfSyntaxProblem (const TCollection_AsciiString& theMsg, Message_Gravity theGravity) const;
 
 private:
   //! Parse transformation matrix of the node.
@@ -438,6 +434,10 @@ private:
                                      const RWGltf_JsonValue* theScaleVal,
                                      const RWGltf_JsonValue* theTranslationVal,
                                      TopLoc_Location& theResult) const;
+#endif
+protected:
+  //! Print message about invalid glTF syntax.
+  void reportGltfSyntaxProblem (const TCollection_AsciiString& theMsg, Message_Gravity theGravity) const;
 
 protected:
   TopTools_SequenceOfShape*        myRootShapes;    //!< sequence of result root shapes
