@@ -1,6 +1,6 @@
 name: "Feature Request"
 description: "Request a new feature or enhancement for the OCCT"
-labels: ["2. Enhancement"]
+labels: ["2. Enhancement", "0. New"]
 body:
   - type: markdown
     attributes:

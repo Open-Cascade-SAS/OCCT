@@ -1,6 +1,6 @@
 name: "Bug Report"
 description: "Report a bug related to the OCCT"
-labels: ["2. Bug"]
+labels: ["2. Bug", "0. New"]
 body:
   - type: markdown
     attributes:
