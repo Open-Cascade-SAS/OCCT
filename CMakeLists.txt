@@ -965,6 +965,10 @@ if (BUILD_Inspector)
   endforeach()
 
   # collect all the headers to <binary dir>/inc/inspector folder
+
+  # Ensure the include directory exists
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${INSTALL_DIR_INCLUDE}/inspector")
+
   string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
   message (STATUS "\nInfo: \(${CURRENT_TIME}\) Start collecting all OCCT tool header files into ${CMAKE_BINARY_DIR}/inc/inspector ...")
   COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOL_TOOLKITS}" "tools" "${INSTALL_DIR_INCLUDE}/inspector")
