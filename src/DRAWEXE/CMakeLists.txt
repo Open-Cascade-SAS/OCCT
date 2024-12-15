@@ -27,10 +27,6 @@ OCCT_INCLUDE_CMAKE_FILE (adm/cmake/occt_toolkit)
 unset (EXECUTABLE_PROJECT)
 unset (CUSTOM_EXTERNLIB)
 
-if (NOT BUILD_SHARED_LIBS)
-  CONFIGURE_DRACO_DEPS()
-endif()
-
 if (EMSCRIPTEN)
   # Look for Tcl version string from file tcl.h
   set (TCL_MAJOR_VERSION  8)

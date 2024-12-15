@@ -727,3 +727,119 @@ macro (OCCT_CREATE_SYMLINK_TO_FILE LIBRARY_NAME LINK_NAME)
     ")
   endif()
 endmacro()
+
+# Function to process CSF libraries and append their file names to a specified list.
+# Additionally, handle library directories for different build configurations.
+# Arguments:
+#   CURRENT_CSF - The current CSF libraries to process.
+#   LIST_NAME - The name of the list to append the processed library file names to.
+#   TARGET_NAME - The target to which the library directories will be added.
+function (PROCESS_CSF_LIBRARIES CURRENT_CSF LIST_NAME TARGET_NAME)
+  separate_arguments (CURRENT_CSF)
+
+  # Local variables to collect found libraries and directories
+  set(FOUND_LIBS "")
+  set(FOUND_DEBUG_DIRS "")
+  set(FOUND_RELEASE_DIRS "")
+
+  # Check if the result is already cached
+  string(REPLACE ";" "_" CACHE_KEY "${CURRENT_CSF}")
+  get_property(CACHED_LIBS GLOBAL PROPERTY "CACHED_LIBS_${CACHE_KEY}" SET)
+  get_property(CACHED_DEBUG_DIRS GLOBAL PROPERTY "CACHED_DEBUG_DIRS_${CACHE_KEY}" SET)
+  get_property(CACHED_RELEASE_DIRS GLOBAL PROPERTY "CACHED_RELEASE_DIRS_${CACHE_KEY}" SET)
+  if (CACHED_LIBS AND NOT "${CACHED_LIBS}" STREQUAL "1")
+    list (APPEND FOUND_LIBS ${CACHED_LIBS})
+    if (CACHED_DEBUG_DIRS)
+      list (APPEND FOUND_DEBUG_DIRS ${CACHED_DEBUG_DIRS})
+    endif()
+    if (CACHED_RELEASE_DIRS)
+      list (APPEND FOUND_RELEASE_DIRS ${CACHED_RELEASE_DIRS})
+    endif()
+  else()
+    foreach (CSF_LIBRARY ${CURRENT_CSF})
+      set (LIBRARY_FROM_CACHE 0)
+      set (CSF_LIBRARY_ORIGINAL ${CSF_LIBRARY})
+      string (TOLOWER "${CSF_LIBRARY}" CSF_LIBRARY)
+      string (REPLACE "+" "[+]" CSF_LIBRARY "${CSF_LIBRARY}")
+      string (REPLACE "." "" CSF_LIBRARY "${CSF_LIBRARY}")
+      get_cmake_property(ALL_CACHE_VARIABLES CACHE_VARIABLES)
+      string (REGEX MATCHALL "(^|;)3RDPARTY_[^;]+_LIBRARY[^;]*" ALL_CACHE_VARIABLES "${ALL_CACHE_VARIABLES}")
+      set (DEBUG_DIR "")
+      set (RELEASE_DIR "")
+      set (BOTH_DIR "")
+      foreach (CACHE_VARIABLE ${ALL_CACHE_VARIABLES})
+        set (CURRENT_CACHE_LIBRARY ${${CACHE_VARIABLE}})
+        string (TOLOWER "${CACHE_VARIABLE}" CACHE_VARIABLE)
+        if (NOT EXISTS "${CURRENT_CACHE_LIBRARY}" OR IS_DIRECTORY "${CURRENT_CACHE_LIBRARY}")
+          continue()
+        endif()
+        string (REGEX MATCH "_${CSF_LIBRARY}$" IS_ENDING "${CACHE_VARIABLE}")
+        string (REGEX MATCH "^([a-z]+)" CSF_WO_VERSION "${CSF_LIBRARY}")
+        string (REGEX MATCH "_${CSF_WO_VERSION}$" IS_ENDING_WO_VERSION "${CACHE_VARIABLE}")
+
+        if ("3rdparty_${CSF_LIBRARY}_library" STREQUAL "${CACHE_VARIABLE}" OR
+            "3rdparty_${CSF_WO_VERSION}_library" STREQUAL "${CACHE_VARIABLE}" OR
+            NOT "x${IS_ENDING}" STREQUAL "x" OR
+            NOT "x${IS_ENDING_WO_VERSION}" STREQUAL "x")
+          get_filename_component(LIBRARY_NAME "${CURRENT_CACHE_LIBRARY}" NAME)
+          list (APPEND FOUND_LIBS "${LIBRARY_NAME}")
+          get_filename_component(LIBRARY_DIR "${CURRENT_CACHE_LIBRARY}" DIRECTORY)
+          set (RELEASE_DIR "${LIBRARY_DIR}")
+          set (LIBRARY_FROM_CACHE 1)
+        elseif ("3rdparty_${CSF_LIBRARY}_library_debug" STREQUAL "${CACHE_VARIABLE}" OR
+                "3rdparty_${CSF_LIBRARY}_debug_library" STREQUAL "${CACHE_VARIABLE}")
+          get_filename_component(LIBRARY_NAME "${CURRENT_CACHE_LIBRARY}" NAME)
+          list (APPEND FOUND_LIBS "${LIBRARY_NAME}")
+          get_filename_component(LIBRARY_DIR "${CURRENT_CACHE_LIBRARY}" DIRECTORY)
+          set (DEBUG_DIR "${LIBRARY_DIR}")
+          set (LIBRARY_FROM_CACHE 1)
+        endif()
+
+        if (DEBUG_DIR AND RELEASE_DIR)
+          break()
+        endif()
+      endforeach()
+      if (NOT ${LIBRARY_FROM_CACHE} AND NOT "${CSF_LIBRARY}" STREQUAL "")
+        list (APPEND FOUND_LIBS "${CSF_LIBRARY_ORIGINAL}")
+        continue()
+      endif()
+      if (DEBUG_DIR AND RELEASE_DIR)
+        list (APPEND FOUND_DEBUG_DIRS "${DEBUG_DIR}")
+        list (APPEND FOUND_RELEASE_DIRS "${RELEASE_DIR}")
+      elseif (DEBUG_DIR)
+        list (APPEND FOUND_DEBUG_DIRS "${DEBUG_DIR}")
+        list (APPEND FOUND_RELEASE_DIRS "${DEBUG_DIR}")
+        message (WARNING "Debug directory found but no release directory found. Using debug directory for both configurations.")
+      elseif (RELEASE_DIR)
+        list (APPEND FOUND_DEBUG_DIRS "${RELEASE_DIR}")
+        list (APPEND FOUND_RELEASE_DIRS "${RELEASE_DIR}")
+      elseif (BOTH_DIR)
+        list (APPEND FOUND_DEBUG_DIRS "${BOTH_DIR}")
+        list (APPEND FOUND_RELEASE_DIRS "${BOTH_DIR}")
+      endif()
+    endforeach()
+
+    # Cache the result
+    set_property(GLOBAL PROPERTY "CACHED_LIBS_${CACHE_KEY}" "${FOUND_LIBS}")
+    set_property(GLOBAL PROPERTY "CACHED_DEBUG_DIRS_${CACHE_KEY}" "${FOUND_DEBUG_DIRS}")
+    set_property(GLOBAL PROPERTY "CACHED_RELEASE_DIRS_${CACHE_KEY}" "${FOUND_RELEASE_DIRS}")
+  endif()
+
+  # Append found values to the external variable
+  list(APPEND ${LIST_NAME} ${FOUND_LIBS})
+  set(${LIST_NAME} "${${LIST_NAME}}" PARENT_SCOPE)
+
+  # Handle library directories for different build configurations
+  list (REMOVE_DUPLICATES FOUND_RELEASE_DIRS)
+  list (REMOVE_DUPLICATES FOUND_DEBUG_DIRS)
+
+  foreach (RELEASE_DIR ${FOUND_RELEASE_DIRS})
+    get_filename_component(RELEASE_DIR_ABS "${RELEASE_DIR}" ABSOLUTE)
+    target_link_directories(${TARGET_NAME} PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_DIR_ABS}>;$<$<CONFIG:RELWITHDEBINFO>:${RELEASE_DIR_ABS}>")
+  endforeach()
+
+  foreach (DEBUG_DIR ${FOUND_DEBUG_DIRS})
+    get_filename_component(DEBUG_DIR_ABS "${DEBUG_DIR}" ABSOLUTE)
+    target_link_directories(${TARGET_NAME} PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_DIR_ABS}>")
+  endforeach()
+endfunction()
