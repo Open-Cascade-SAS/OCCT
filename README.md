@@ -28,22 +28,23 @@ You can also find OCCT pre-installed on your system or install it from packages 
 
 Documentation is available at the following links:
 - [Latest version](https://dev.opencascade.org/doc/overview)
-- [Version 7.7](https://dev.opencascade.org/doc/occt-7.7.0/overview)
+- [Version 7.8](https://dev.opencascade.org/doc/occt-7.8.0/overview)
 
 Documentation can be part of the package. To preview documentation as part of the package, open the file `doc/html/index.html` to browse HTML documentation.
 
 If HTML documentation is not available in your package, you can:
 
-- **Generate it from sources:** You need to have Tcl and Doxygen 1.8.4 (or above) installed on your system and accessible in your environment (check the environment variable PATH). Use the batch file `gendoc.bat` on Windows or the Bash script `gendoc` on Linux or OS X to (re)generate documentation.
-- **Read documentation in source plain text (Markdown) format** found in the subfolder `dox`.
+- **Generate it from sources:** You need to have Tcl and Doxygen 1.8.4 (or above) installed on your system and accessible in your environment (check the environment variable PATH). Use the batch file `adm/gendoc.bat` on Windows or the Bash script `adm/gendoc` on Linux or OS X to (re)generate documentation.
+- **Generate together with sources:** You need to have CMake and 1.8.4 (or above) installed on your system. Enable `BUILD_DOC_Overview` CMake parameter and set the path to Doxygen `3RDPARTY_DOXYGEN_EXECUTABLE`. Then build ALL or only `Overview`.
+- **Read documentation in source plain text (Markdown) format** found in the subfolder `dox` or [GitHub Wiki](https://github.com/Open-Cascade-SAS/OCCT/wiki).
 
-See `dox/dev_guides/documentation/documentation.md` or [Building Documentation](https://dev.opencascade.org/doc/occt-7.7.0/overview/html/build_upgrade__building_documentation.html) for details.
+See `dox/dev_guides/documentation/documentation.md` or [Building Documentation](https://dev.opencascade.org/doc/occt-7.8.0/overview/html/build_upgrade__building_documentation.html) for details.
 
 ## Building
 
 In most cases, you need to rebuild OCCT on your platform (OS, compiler) before using it in your project to ensure binary compatibility.
 
-Consult the file `dox/dev_guides/building/building.md` or [Building OCCT](https://dev.opencascade.org/doc/overview/html/build_upgrade__building_occt.html) for instructions on building OCCT from sources on supported platforms.
+Consult the file `dox/dev_guides/building/building.md` or [Building OCCT](https://dev.opencascade.org/doc/overview/html/build_upgrade__building_occt.html) or [Building OCCT Wiki](https://github.com/Open-Cascade-SAS/OCCT/wiki/build_upgrade) for instructions on building OCCT from sources on supported platforms.
 
 ## Version
 

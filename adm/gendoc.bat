@@ -6,8 +6,8 @@ rem should be in the PATH
 
 SET "OLD_PATH=%PATH%"
 
-if exist "%~dp0env.bat" (
-  call "%~dp0env.bat"
+if exist "%~dp0../env.bat" (
+  call "%~dp0../env.bat"
 )
 
 set "TCL_EXEC=tclsh.exe"
@@ -15,7 +15,7 @@ set "TCL_EXEC=tclsh.exe"
 for %%X in (%TCL_EXEC%) do (set TCL_FOUND=%%~$PATH:X)
 
 if defined TCL_FOUND (
-  %TCL_EXEC% %~dp0adm/start.tcl gendoc %*
+  %TCL_EXEC% %~dp0start.tcl gendoc %*
 ) else (
   echo "Error. %TCL_EXEC% is not found. Please update PATH variable"
 )

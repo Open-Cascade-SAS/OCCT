@@ -8,6 +8,9 @@ on:
   push:
     branches:
       - 'master'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   build:
@@ -26,6 +29,7 @@ jobs:
     - name: Build documentation
       run: |
         set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
+        cd adm
         bash gendoc -refman
       shell: cmd
 

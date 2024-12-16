@@ -4,7 +4,7 @@
 To generate HTML documentation from sources contained in *dox* subdirectory, 
 you need to have Tcl and Doxygen 1.8.5 (or above) installed on your system.
 
-Use script **gendoc** (batch file on Windows, shell script on Linux / Mac OSX) to generate documentation.
+Use script **gendoc** (batch file on Windows, shell script on Linux / Mac OSX) located in `adm` directory to generate documentation.
 
 To generate Overview documentation:
 

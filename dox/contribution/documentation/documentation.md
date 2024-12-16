@@ -59,7 +59,7 @@ See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressi
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
 
-Run command *gendoc* from command prompt (with OCCT directory as current one) to generate OCCT documentation.
+Run command *gendoc* from command prompt (located in `adm` directory) to generate OCCT documentation.
 The synopsis is:
 
     gendoc \[-h\] {-refman|-overview} \[-html|-pdf|-chm\] \[-m=<list of modules>|-ug=<list of docs>\] \[-v\] \[-s=<search_mode>\] \[-mathjax=<path>\]
