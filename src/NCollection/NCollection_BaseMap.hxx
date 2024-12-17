@@ -49,16 +49,16 @@ public:
     //! Empty constructor
     Iterator (void) :
       myNbBuckets (0),
-      myBuckets   (NULL),
+      myBuckets   (nullptr),
       myBucket    (0),
-      myNode      (NULL) {}
+      myNode      (nullptr) {}
     
     //! Constructor
     Iterator (const NCollection_BaseMap& theMap) :
       myNbBuckets (theMap.myNbBuckets),
       myBuckets   (theMap.myData1),
       myBucket    (-1),
-      myNode      (NULL)
+      myNode      (nullptr)
     {
       if (!myBuckets) 
         myNbBuckets = -1;
@@ -78,7 +78,7 @@ public:
       myNbBuckets = theMap.myNbBuckets;
       myBuckets = theMap.myData1;
       myBucket = -1;
-      myNode = NULL;
+      myNode = nullptr;
       if (!myBuckets) 
         myNbBuckets = -1;
       PNext();
@@ -88,7 +88,7 @@ public:
     void Reset (void)
     {
       myBucket = -1;
-      myNode = NULL;
+      myNode = nullptr;
       PNext();
     }
     
@@ -101,7 +101,7 @@ public:
   protected:
     //! PMore
     Standard_Boolean PMore (void) const
-    { return (myNode != NULL); }
+    { return (myNode != nullptr); }
     
     //! PNext
     void PNext (void)
@@ -161,8 +161,8 @@ public:
                        const Standard_Boolean single,
                        const Handle(NCollection_BaseAllocator)& theAllocator) :
     myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator),
-    myData1(NULL),
-    myData2(NULL),
+    myData1(nullptr),
+    myData2(nullptr),
     myNbBuckets(NbBuckets),
     mySize(0),
     isDouble(!single)
@@ -200,6 +200,12 @@ public:
      NCollection_ListNode** data1,
      NCollection_ListNode** data2);
 
+  //! Reallocate the existed data containers.
+  //! Filling operation must to be done outside.
+  //! Reallocated memory will be cleared (all elements will be set to nullptr).
+  Standard_EXPORT Standard_Boolean Reallocate 
+    (const Standard_Integer  theNbBuckets);
+
   //! Resizable
   Standard_Boolean Resizable() const
   { return IsEmpty() || (mySize > myNbBuckets); }
@@ -213,10 +219,6 @@ public:
   //! Destroy
   Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
                                Standard_Boolean doReleaseMemory = Standard_True);
-
-  //! NextPrimeForMap
-  Standard_EXPORT Standard_Integer NextPrimeForMap
-    (const Standard_Integer N) const;
 
   //! Exchange content of two maps without data copying
   void exchangeMapsData (NCollection_BaseMap& theOther)
@@ -242,6 +244,8 @@ public:
   Handle(NCollection_BaseAllocator) myAllocator;
   NCollection_ListNode ** myData1;
   NCollection_ListNode ** myData2;
+
+  void resetSize() { mySize = 0; }
 
  private: 
   // ---------- PRIVATE FIELDS ------------
