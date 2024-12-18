@@ -1,4 +1,4 @@
-# This workflow builds the OCCT reference manual documentation.
+# This workflow builds the OCCT reference manual and overview documentations.
 # It is triggered on pushes to the 'master' branch.
 # The workflow includes steps to checkout the repository, install dependencies, build the documentation, and upload the generated documentation and logs as artifacts.
 
@@ -8,9 +8,6 @@ on:
   push:
     branches:
       - 'master'
-  pull_request:
-    branches:
-      - '**'
 
 jobs:
   build:
@@ -26,7 +23,7 @@ jobs:
         choco install -y graphviz
         choco install -y doxygen.install
 
-    - name: Build documentation
+    - name: Build refman documentation
       run: |
         set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
         cd adm
@@ -35,7 +32,6 @@ jobs:
 
     - name: Upload refman documentation
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
       with:
         name: refman-doc
         path: doc/refman
@@ -46,4 +42,18 @@ jobs:
       with:
         name: doxygen.log
         path: doc/html_doxygen_err.log
+        retention-days: 90
+
+    - name: Build documentation Overview
+      run: |
+        set PATH=%PATH%;C:\Program Files\doxygen\bin;C:\Program Files\Graphviz\bin;C:\Program Files\doxygen
+        cd adm
+        bash gendoc -overview
+      shell: cmd
+
+    - name: Upload overview documentation
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: overview-doc
+        path: doc/overview
         retention-days: 90
