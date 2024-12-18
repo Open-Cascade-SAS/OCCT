@@ -37,6 +37,7 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
+#include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_FormatVersion.hxx>
 #include <TDocStd_Owner.hxx>
@@ -322,13 +323,22 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     myPAtt.SetIStream (theIStream); // for reading shapes data from the stream directly
   EnableQuickPartReading (myMsgDriver, aQuickPart);
 
+  myResolvedLinks.Clear();
+  myUnresolvedLinks.Clear();
+
   // read sub-tree of the root label
   if (!theFilter.IsNull())
     theFilter->StartIteration();
   const auto aStreamStartPosition = theIStream.tellg();
   Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root(), theFilter, aQuickPart, Standard_False, aPS.Next());
-  if (!myUnresolvedLinks.IsEmpty())
+  while (!myUnresolvedLinks.IsEmpty())
   {
+    if (!aPS.More())
+    {
+      myReaderStatus = PCDM_RS_UserBreak;
+      return;
+    }
+
     // In case we have skipped some linked TreeNodes before getting to
     // their children.
     theFilter->StartIteration();
@@ -497,10 +507,17 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
           theLabel.AddAttribute(tAtt);
         }
       }
-      else
+      else if (theLabel != tAtt->Label())
+      {
+        TCollection_AsciiString aLabelEntry1, aLabelEntry2;
+        TDF_Tool::Entry (tAtt->Label(), aLabelEntry1);
+        TDF_Tool::Entry (theLabel,      aLabelEntry2);
+
         myMsgDriver->Send(aMethStr +
           "warning: attempt to attach attribute " +
-          aDriver->TypeName() + " to a second label", Message_Warning);
+          aDriver->TypeName() + " to a second label " + "(" +
+          aLabelEntry1 + " => " + aLabelEntry2 + ")", Message_Warning);
+      }
 
       Standard_Boolean ok = aDriver->Paste(myPAtt, tAtt, myRelocTable);
       if (!ok) {
@@ -511,12 +528,16 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
       else if (!isBound)
       {
         myRelocTable.Bind(anID, tAtt);
-        Handle(TDataStd_TreeNode) aNode = Handle(TDataStd_TreeNode)::DownCast(tAtt);
-        if (!theFilter.IsNull() && !aNode.IsNull() && !aNode->Father().IsNull() && aNode->Father()->IsNew())
+      }
+
+      Handle(TDataStd_TreeNode) aNode = Handle(TDataStd_TreeNode)::DownCast(tAtt);
+      if (!theFilter.IsNull() && !aNode.IsNull() && !aNode->Father().IsNull() && aNode->Father()->IsNew())
+      {
+        Standard_Integer anUnresolvedLink;
+        myPAtt.SetPosition(BP_HEADSIZE);
+        myPAtt >> anUnresolvedLink;
+        if (myResolvedLinks.Add (myPAtt.Id()))
         {
-          Standard_Integer anUnresolvedLink;
-          myPAtt.SetPosition(BP_HEADSIZE);
-          myPAtt >> anUnresolvedLink;
           myUnresolvedLinks.Add(anUnresolvedLink);
         }
       }
@@ -650,6 +671,7 @@ void BinLDrivers_DocumentRetrievalDriver::Clear()
   myPAtt.Destroy();    // free buffer
   myRelocTable.Clear();
   myMapUnsupported.Clear();
+  myResolvedLinks.Clear();
 }
 
 //=======================================================================
