@@ -422,7 +422,7 @@ jobs:
       run: |
         cd install
         call env.bat vc14 win64 release
-        DRAWEXE.exe -v -c testgrid
+        DRAWEXE.exe -v -c testgrid -parallel 4
       shell: cmd
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
@@ -493,7 +493,7 @@ jobs:
       run: |
         cd install
         call env.bat clang win64 release
-        DRAWEXE.exe -v -c testgrid
+        DRAWEXE.exe -v -c testgrid -parallel 4
       shell: cmd
       env:
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
