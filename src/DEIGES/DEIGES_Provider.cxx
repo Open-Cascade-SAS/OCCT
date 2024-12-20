@@ -66,19 +66,17 @@ void DEIGES_Provider::initStatic(const Handle(DE_ConfigurationNode)& theNode)
 
   // Get previous values
   myOldValues.ReadBSplineContinuity =
-    (DEIGES_ConfigurationNode::ReadMode_BSplineContinuity)Interface_Static::IVal(
+    (DEIGES_Parameters::ReadMode_BSplineContinuity)Interface_Static::IVal(
       "read.iges.bspline.continuity");
   myOldValues.ReadPrecisionMode =
-    (DEIGES_ConfigurationNode::ReadMode_Precision)Interface_Static::IVal("read.precision.mode");
+    (DEIGES_Parameters::ReadMode_Precision)Interface_Static::IVal("read.precision.mode");
   myOldValues.ReadPrecisionVal = Interface_Static::RVal("read.precision.val");
   myOldValues.ReadMaxPrecisionMode =
-    (DEIGES_ConfigurationNode::ReadMode_MaxPrecision)Interface_Static::IVal(
-      "read.maxprecision.mode");
+    (DEIGES_Parameters::ReadMode_MaxPrecision)Interface_Static::IVal("read.maxprecision.mode");
   myOldValues.ReadMaxPrecisionVal = Interface_Static::RVal("read.maxprecision.val");
   myOldValues.ReadSameParamMode   = Interface_Static::IVal("read.stdsameparameter.mode") == 1;
   myOldValues.ReadSurfaceCurveMode =
-    (DEIGES_ConfigurationNode::ReadMode_SurfaceCurve)Interface_Static::IVal(
-      "read.surfacecurve.mode");
+    (DEIGES_Parameters::ReadMode_SurfaceCurve)Interface_Static::IVal("read.surfacecurve.mode");
   myOldValues.EncodeRegAngle = Interface_Static::RVal("read.encoderegularity.angle") * 180.0 / M_PI;
 
   myOldValues.ReadApproxd1       = Interface_Static::IVal("read.iges.bspline.approxd1.mode") == 1;
@@ -88,9 +86,9 @@ void DEIGES_Provider::initStatic(const Handle(DE_ConfigurationNode)& theNode)
   myOldValues.ReadOnlyVisible    = Interface_Static::IVal("read.iges.onlyvisible") == 1;
 
   myOldValues.WriteBRepMode =
-    (DEIGES_ConfigurationNode::WriteMode_BRep)Interface_Static::IVal("write.iges.brep.mode");
+    (DEIGES_Parameters::WriteMode_BRep)Interface_Static::IVal("write.iges.brep.mode");
   myOldValues.WriteConvertSurfaceMode =
-    (DEIGES_ConfigurationNode::WriteMode_ConvertSurface)Interface_Static::IVal(
+    (DEIGES_Parameters::WriteMode_ConvertSurface)Interface_Static::IVal(
       "write.convertsurface.mode");
   myOldValues.WriteHeaderAuthor   = Interface_Static::CVal("write.iges.header.author");
   myOldValues.WriteHeaderCompany  = Interface_Static::CVal("write.iges.header.company");
@@ -99,11 +97,10 @@ void DEIGES_Provider::initStatic(const Handle(DE_ConfigurationNode)& theNode)
   myOldValues.WriteResourceName   = Interface_Static::CVal("write.iges.resource.name");
   myOldValues.WriteSequence       = Interface_Static::CVal("write.iges.sequence");
   myOldValues.WritePrecisionMode =
-    (DEIGES_ConfigurationNode::WriteMode_PrecisionMode)Interface_Static::IVal(
-      "write.precision.mode");
+    (DEIGES_Parameters::WriteMode_PrecisionMode)Interface_Static::IVal("write.precision.mode");
   myOldValues.WritePrecisionVal = Interface_Static::RVal("write.precision.val");
   myOldValues.WritePlaneMode =
-    (DEIGES_ConfigurationNode::WriteMode_PlaneMode)Interface_Static::IVal("write.iges.plane.mode");
+    (DEIGES_Parameters::WriteMode_PlaneMode)Interface_Static::IVal("write.iges.plane.mode");
   myOldValues.WriteOffsetMode = Interface_Static::IVal("write.iges.offset.mode") == 1;
 
   myOldLengthUnit = Interface_Static::IVal("xstep.cascade.unit");
@@ -120,8 +117,7 @@ void DEIGES_Provider::initStatic(const Handle(DE_ConfigurationNode)& theNode)
 
 //=================================================================================================
 
-void DEIGES_Provider::setStatic(
-  const DEIGES_ConfigurationNode::IGESCAFControl_InternalSection& theParameter)
+void DEIGES_Provider::setStatic(const DEIGES_Parameters& theParameter)
 {
   Interface_Static::SetIVal("read.iges.bspline.continuity", theParameter.ReadBSplineContinuity);
   Interface_Static::SetIVal("read.precision.mode", theParameter.ReadPrecisionMode);

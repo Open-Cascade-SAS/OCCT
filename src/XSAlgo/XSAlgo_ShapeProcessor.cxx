@@ -36,13 +36,52 @@
 #include <Transfer_TransientProcess.hxx>
 #include <UnitsMethods.hxx>
 
+#include <sstream>
+#include <unordered_set>
+
+namespace
+{
+  //! Function to split a string based on multiple delimiters.
+  //! @param aString String to split.
+  //! @param delimiters Set of delimiters.
+  //! @return Vector of tokens.
+  std::vector<std::string> splitString(const std::string& aString, const std::unordered_set<char>& delimiters)
+  {
+    std::vector<std::string> aResult;
+    std::string              aCurrentToken;
+
+    for (char aCurrentCharacter : aString)
+    {
+      if (delimiters.find(aCurrentCharacter) != delimiters.end())
+      {
+        if (!aCurrentToken.empty())
+        {
+          aResult.emplace_back(std::move(aCurrentToken));
+          aCurrentToken.clear();
+        }
+      }
+      else
+      {
+        aCurrentToken += aCurrentCharacter;
+      }
+    }
+
+    if (!aCurrentToken.empty())
+    {
+      aResult.emplace_back(std::move(aCurrentToken));
+    }
+
+    return aResult;
+  }
+}
+
 //=============================================================================
 
 XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(const ParameterMap&          theParameters,
                                              const DE_ShapeFixParameters& theShapeFixParameters)
 : myParameters(theParameters)
 {
-  FillParameterMap(theShapeFixParameters, myParameters);
+  FillParameterMap(theShapeFixParameters, false, myParameters);
 }
 
 //=============================================================================
@@ -50,7 +89,7 @@ XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(const ParameterMap&          thePar
 XSAlgo_ShapeProcessor::XSAlgo_ShapeProcessor(const DE_ShapeFixParameters& theParameters)
 {
   ParameterMap aMap;
-  FillParameterMap(theParameters, aMap);
+  FillParameterMap(theParameters, false, aMap);
   myParameters = aMap;
 }
 
@@ -60,6 +99,11 @@ TopoDS_Shape XSAlgo_ShapeProcessor::ProcessShape(const TopoDS_Shape&          th
                                                  const OperationsFlags&       theOperations,
                                                  const Message_ProgressRange& theProgress)
 {
+  if (theShape.IsNull())
+  {
+    return theShape;
+  }
+
   initializeContext(theShape);
   return ShapeProcess::Perform(myContext, theOperations, theProgress) ? myContext->Result() : theShape;
 }
@@ -440,69 +484,163 @@ Standard_Boolean XSAlgo_ShapeProcessor::CheckPCurve(const TopoDS_Edge&     theEd
 
 //=============================================================================
 
+XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(const std::string& theFileResourceName,
+                                                                                const std::string& theScopeResourceName)
+{
+  const Standard_CString            aFileName = Interface_Static::CVal(theFileResourceName.c_str());
+  Handle(ShapeProcess_ShapeContext) aContext  = new ShapeProcess_ShapeContext(TopoDS_Shape(), aFileName);
+  if (!aContext->ResourceManager()->IsInitialized())
+  {
+    // If resource file wasn't found, use static values instead
+    Interface_Static::FillMap(aContext->ResourceManager()->GetMap());
+  }
+  const std::string aScope = Interface_Static::CVal(theScopeResourceName.c_str());
+
+  // Copy parameters to the result.
+  ParameterMap                                    aResultParameters;
+  OperationsFlags                                 aResultFlags;
+  const Resource_DataMapOfAsciiStringAsciiString& aMap = aContext->ResourceManager()->GetMap();
+  using RMapIter                                       = Resource_DataMapOfAsciiStringAsciiString::Iterator;
+  for (RMapIter anIter(aMap); anIter.More(); anIter.Next())
+  {
+    std::string  aKey           = anIter.Key().ToCString();
+    const size_t aScopePosition = aKey.find(aScope);
+    if (aScopePosition != 0)
+    {
+      // Ignore all parameters that don't start with the specified scope.
+      continue;
+    }
+    // Remove the scope from the key + 1 for the dot.
+    // "FromIGES.FixShape.FixFreeFaceMode" -> "FixShape.FixFreeFaceMode"
+    aKey.erase(0, aScope.size() + 1);
+    if (aKey != "exec.op")
+    {
+      // If it is not an operation flag, add it to the parameters.
+      aResultParameters[aKey] = anIter.Value().ToCString();
+    }
+    else
+    {
+      // Parse operations flags.
+      const std::vector<std::string> anOperationStrings = splitString(anIter.Value().ToCString(), {' ', '\t', ',', ';'});
+      for (const auto& anOperationString : anOperationStrings)
+      {
+        std::pair<ShapeProcess::Operation, bool> anOperationFlag = ShapeProcess::ToOperationFlag(anOperationString.c_str());
+        if (anOperationFlag.second)
+        {
+          aResultFlags.set(anOperationFlag.first);
+        }
+      }
+    }
+  }
+  return {aResultParameters, aResultFlags};
+}
+
+//=============================================================================
+
 void XSAlgo_ShapeProcessor::FillParameterMap(const DE_ShapeFixParameters&         theParameters,
+                                             const bool                           theIsReplace,
                                              XSAlgo_ShapeProcessor::ParameterMap& theMap)
 {
-  // Helper lambda to convert enum to string.
-  auto makeString = [](const DE_ShapeFixParameters::FixMode theMode)
-  {
-    return std::to_string(static_cast<std::underlying_type<DE_ShapeFixParameters::FixMode>::type>(theMode));
-  };
+  SetParameter("FixShape.Tolerance3d", theParameters.Tolerance3d, theIsReplace, theMap);
+  SetParameter("FixShape.MaxTolerance3d", theParameters.MaxTolerance3d, theIsReplace, theMap);
+  SetParameter("FixShape.MinTolerance3d", theParameters.MinTolerance3d, theIsReplace, theMap);
+  SetParameter("DetalizationLevel", std::to_string(theParameters.DetalizationLevel), theIsReplace, theMap);
+  SetParameter("NonManifold", std::to_string(theParameters.NonManifold), theIsReplace, theMap);
+  SetParameter("FixShape.FixFreeShellMode", theParameters.FixFreeShellMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixFreeFaceMode", theParameters.FixFreeFaceMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixFreeWireMode", theParameters.FixFreeWireMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSameParameterMode", theParameters.FixSameParameterMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSolidMode", theParameters.FixSolidMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixShellOrientationMode", theParameters.FixShellOrientationMode, theIsReplace, theMap);
+  SetParameter("FixShape.CreateOpenSolidMode", theParameters.CreateOpenSolidMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixShellMode", theParameters.FixShellMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixFaceOrientationMode", theParameters.FixFaceOrientationMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixFaceMode", theParameters.FixFaceMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixWireMode", theParameters.FixWireMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixOrientationMode", theParameters.FixOrientationMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixAddNaturalBoundMode", theParameters.FixAddNaturalBoundMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixMissingSeamMode", theParameters.FixMissingSeamMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSmallAreaWireMode", theParameters.FixSmallAreaWireMode, theIsReplace, theMap);
+  SetParameter("FixShape.RemoveSmallAreaFaceMode", theParameters.RemoveSmallAreaFaceMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixIntersectingWiresMode", theParameters.FixIntersectingWiresMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixLoopWiresMode", theParameters.FixLoopWiresMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSplitFaceMode", theParameters.FixSplitFaceMode, theIsReplace, theMap);
+  SetParameter("FixShape.AutoCorrectPrecisionMode", theParameters.AutoCorrectPrecisionMode, theIsReplace, theMap);
+  SetParameter("FixShape.ModifyTopologyMode", theParameters.ModifyTopologyMode, theIsReplace, theMap);
+  SetParameter("FixShape.ModifyGeometryMode", theParameters.ModifyGeometryMode, theIsReplace, theMap);
+  SetParameter("FixShape.ClosedWireMode", theParameters.ClosedWireMode, theIsReplace, theMap);
+  SetParameter("FixShape.PreferencePCurveMode", theParameters.PreferencePCurveMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixReorderMode", theParameters.FixReorderMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSmallMode", theParameters.FixSmallMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixConnectedMode", theParameters.FixConnectedMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixEdgeCurvesMode", theParameters.FixEdgeCurvesMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixDegeneratedMode", theParameters.FixDegeneratedMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixLackingMode", theParameters.FixLackingMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSelfIntersectionMode", theParameters.FixSelfIntersectionMode, theIsReplace, theMap);
+  SetParameter("FixShape.RemoveLoopMode", theParameters.RemoveLoopMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixReversed2dMode", theParameters.FixReversed2dMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixRemovePCurveMode", theParameters.FixRemovePCurveMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixRemoveCurve3dMode", theParameters.FixRemoveCurve3dMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixAddPCurveMode", theParameters.FixAddPCurveMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixAddCurve3dMode", theParameters.FixAddCurve3dMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixSeamMode", theParameters.FixSeamMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixShiftedMode", theParameters.FixShiftedMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixEdgeSameParameterMode", theParameters.FixEdgeSameParameterMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixNotchedEdgesMode", theParameters.FixNotchedEdgesMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixTailMode", theParameters.FixTailMode, theIsReplace, theMap);
+  SetParameter("FixShape.MaxTailAngle", theParameters.MaxTailAngle, theIsReplace, theMap);
+  SetParameter("FixShape.MaxTailWidth", theParameters.MaxTailWidth, theIsReplace, theMap);
+  SetParameter("FixShape.FixSelfIntersectingEdgeMode", theParameters.FixSelfIntersectingEdgeMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixIntersectingEdgesMode", theParameters.FixIntersectingEdgesMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixNonAdjacentIntersectingEdgesMode",
+               theParameters.FixNonAdjacentIntersectingEdgesMode,
+               theIsReplace,
+               theMap);
+  SetParameter("FixShape.FixVertexPositionMode", theParameters.FixVertexPositionMode, theIsReplace, theMap);
+  SetParameter("FixShape.FixVertexToleranceMode", theParameters.FixVertexToleranceMode, theIsReplace, theMap);
+}
 
-  theMap.emplace("ShapeFix.Tolerance3d", std::to_string(theParameters.Tolerance3d));
-  theMap.emplace("ShapeFix.MaxTolerance3d", std::to_string(theParameters.MaxTolerance3d));
-  theMap.emplace("ShapeFix.MinTolerance3d", std::to_string(theParameters.MinTolerance3d));
-  theMap.emplace("DetalizationLevel", std::to_string(theParameters.DetalizationLevel));
-  theMap.emplace("NonManifold", std::to_string(theParameters.NonManifold));
-  theMap.emplace("ShapeFix.FixFreeShellMode", makeString(theParameters.FixFreeShellMode));
-  theMap.emplace("ShapeFix.FixFreeFaceMode", makeString(theParameters.FixFreeFaceMode));
-  theMap.emplace("ShapeFix.FixFreeWireMode", makeString(theParameters.FixFreeWireMode));
-  theMap.emplace("ShapeFix.FixSameParameterMode", makeString(theParameters.FixSameParameterMode));
-  theMap.emplace("ShapeFix.FixSolidMode", makeString(theParameters.FixSolidMode));
-  theMap.emplace("ShapeFix.FixShellOrientationMode", makeString(theParameters.FixShellOrientationMode));
-  theMap.emplace("ShapeFix.CreateOpenSolidMode", makeString(theParameters.CreateOpenSolidMode));
-  theMap.emplace("ShapeFix.FixShellMode", makeString(theParameters.FixShellMode));
-  theMap.emplace("ShapeFix.FixFaceOrientationMode", makeString(theParameters.FixFaceOrientationMode));
-  theMap.emplace("ShapeFix.FixFaceMode", makeString(theParameters.FixFaceMode));
-  theMap.emplace("ShapeFix.FixWireMode", makeString(theParameters.FixWireMode));
-  theMap.emplace("ShapeFix.FixOrientationMode", makeString(theParameters.FixOrientationMode));
-  theMap.emplace("ShapeFix.FixAddNaturalBoundMode", makeString(theParameters.FixAddNaturalBoundMode));
-  theMap.emplace("ShapeFix.FixMissingSeamMode", makeString(theParameters.FixMissingSeamMode));
-  theMap.emplace("ShapeFix.FixSmallAreaWireMode", makeString(theParameters.FixSmallAreaWireMode));
-  theMap.emplace("ShapeFix.RemoveSmallAreaFaceMode", makeString(theParameters.RemoveSmallAreaFaceMode));
-  theMap.emplace("ShapeFix.FixIntersectingWiresMode", makeString(theParameters.FixIntersectingWiresMode));
-  theMap.emplace("ShapeFix.FixLoopWiresMode", makeString(theParameters.FixLoopWiresMode));
-  theMap.emplace("ShapeFix.FixSplitFaceMode", makeString(theParameters.FixSplitFaceMode));
-  theMap.emplace("ShapeFix.AutoCorrectPrecisionMode", makeString(theParameters.AutoCorrectPrecisionMode));
-  theMap.emplace("ShapeFix.ModifyTopologyMode", makeString(theParameters.ModifyTopologyMode));
-  theMap.emplace("ShapeFix.ModifyGeometryMode", makeString(theParameters.ModifyGeometryMode));
-  theMap.emplace("ShapeFix.ClosedWireMode", makeString(theParameters.ClosedWireMode));
-  theMap.emplace("ShapeFix.PreferencePCurveMode", makeString(theParameters.PreferencePCurveMode));
-  theMap.emplace("ShapeFix.FixReorderMode", makeString(theParameters.FixReorderMode));
-  theMap.emplace("ShapeFix.FixSmallMode", makeString(theParameters.FixSmallMode));
-  theMap.emplace("ShapeFix.FixConnectedMode", makeString(theParameters.FixConnectedMode));
-  theMap.emplace("ShapeFix.FixEdgeCurvesMode", makeString(theParameters.FixEdgeCurvesMode));
-  theMap.emplace("ShapeFix.FixDegeneratedMode", makeString(theParameters.FixDegeneratedMode));
-  theMap.emplace("ShapeFix.FixLackingMode", makeString(theParameters.FixLackingMode));
-  theMap.emplace("ShapeFix.FixSelfIntersectionMode", makeString(theParameters.FixSelfIntersectionMode));
-  theMap.emplace("ShapeFix.RemoveLoopMode", makeString(theParameters.RemoveLoopMode));
-  theMap.emplace("ShapeFix.FixReversed2dMode", makeString(theParameters.FixReversed2dMode));
-  theMap.emplace("ShapeFix.FixRemovePCurveMode", makeString(theParameters.FixRemovePCurveMode));
-  theMap.emplace("ShapeFix.FixRemoveCurve3dMode", makeString(theParameters.FixRemoveCurve3dMode));
-  theMap.emplace("ShapeFix.FixAddPCurveMode", makeString(theParameters.FixAddPCurveMode));
-  theMap.emplace("ShapeFix.FixAddCurve3dMode", makeString(theParameters.FixAddCurve3dMode));
-  theMap.emplace("ShapeFix.FixSeamMode", makeString(theParameters.FixSeamMode));
-  theMap.emplace("ShapeFix.FixShiftedMode", makeString(theParameters.FixShiftedMode));
-  theMap.emplace("ShapeFix.FixEdgeSameParameterMode", makeString(theParameters.FixEdgeSameParameterMode));
-  theMap.emplace("ShapeFix.FixNotchedEdgesMode", makeString(theParameters.FixNotchedEdgesMode));
-  theMap.emplace("ShapeFix.FixTailMode", makeString(theParameters.FixTailMode));
-  theMap.emplace("ShapeFix.MaxTailAngle", makeString(theParameters.MaxTailAngle));
-  theMap.emplace("ShapeFix.MaxTailWidth", makeString(theParameters.MaxTailWidth));
-  theMap.emplace("ShapeFix.FixSelfIntersectingEdgeMode", makeString(theParameters.FixSelfIntersectingEdgeMode));
-  theMap.emplace("ShapeFix.FixIntersectingEdgesMode", makeString(theParameters.FixIntersectingEdgesMode));
-  theMap.emplace("ShapeFix.FixNonAdjacentIntersectingEdgesMode", makeString(theParameters.FixNonAdjacentIntersectingEdgesMode));
-  theMap.emplace("ShapeFix.FixVertexPositionMode", makeString(theParameters.FixVertexPositionMode));
-  theMap.emplace("ShapeFix.FixVertexToleranceMode", makeString(theParameters.FixVertexToleranceMode));
+//=============================================================================
+
+void XSAlgo_ShapeProcessor::SetParameter(const char*                    theKey,
+                                         DE_ShapeFixParameters::FixMode theValue,
+                                         const bool                     theIsReplace,
+                                         ParameterMap&                  theMap)
+{
+  SetParameter(theKey,
+               std::to_string(static_cast<std::underlying_type<DE_ShapeFixParameters::FixMode>::type>(theValue)),
+               theIsReplace,
+               theMap);
+}
+
+//=============================================================================
+
+void XSAlgo_ShapeProcessor::SetParameter(const char* theKey, double theValue, const bool theIsReplace, ParameterMap& theMap)
+{
+  // Note that conversion with std::to_string() here is not possible, since it normally preserves
+  // only first 6 digits (before C++26). As a result, any value of 1e-7 or below will turn into 0.
+  // By using std::ostringstream with std::setprecision(6) formatting we will preserve first 6
+  // SIGNIFICANT digits.
+  std::ostringstream aStrStream;
+  aStrStream << std::setprecision(6) << theValue;
+  SetParameter(theKey, aStrStream.str(), theIsReplace, theMap);
+}
+
+//=============================================================================
+
+void XSAlgo_ShapeProcessor::SetParameter(const char*   theKey,
+                                         std::string&& theValue,
+                                         const bool    theIsReplace,
+                                         ParameterMap& theMap)
+{
+  if (theIsReplace)
+  {
+    theMap[theKey] = std::move(theValue);
+  }
+  else
+  {
+    theMap.emplace(theKey, std::move(theValue));
+  }
 }
 
 //=============================================================================

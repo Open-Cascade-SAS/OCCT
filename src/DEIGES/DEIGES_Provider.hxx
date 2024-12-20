@@ -148,13 +148,13 @@ private:
   void initStatic(const Handle(DE_ConfigurationNode)& theNode);
 
   //! Initialize static variables
-  void setStatic(const DEIGES_ConfigurationNode::IGESCAFControl_InternalSection& theParameter);
+  void setStatic(const DEIGES_Parameters& theParameter);
 
   //! Reset used interface static variables
   void resetStatic();
 
-  DEIGES_ConfigurationNode::IGESCAFControl_InternalSection myOldValues;
-  int                                                      myOldLengthUnit = 1;
+  DEIGES_Parameters myOldValues;
+  int               myOldLengthUnit = 1;
 };
 
 #endif // _DEIGES_Provider_HeaderFile

@@ -17,6 +17,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
+#include <DEIGES_Parameters.hxx>
 #include <IGESAppli.hxx>
 #include <IGESAppli_Protocol.hxx>
 #include <IGESData_FileProtocol.hxx>
@@ -45,7 +46,7 @@
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 #include <stdio.h>
 //#include <ShapeCustom.hxx>
@@ -58,29 +59,68 @@
 
 static Handle(IGESData_FileProtocol) protocol;
 
-
-//=======================================================================
-//function : IGESToBRep_Reader
-//purpose  : 
-//=======================================================================
-    IGESToBRep_Reader::IGESToBRep_Reader ()
+namespace
 {
-  theDone = Standard_False;
-  if (protocol.IsNull()) {
-    IGESAppli::Init();  IGESSolid::Init();
+  //=======================================================================
+  //function : EncodeRegul
+  //purpose  : INTERNAL to encode regularity on edges
+  //=======================================================================
+  static Standard_Boolean EncodeRegul(const TopoDS_Shape& theShape)
+  {
+    const Standard_Real aToleranceAngle = Interface_Static::RVal("read.encoderegularity.angle");
+    if (theShape.IsNull())
+    {
+      return Standard_True;
+    }
+    if (aToleranceAngle <= 0.)
+    {
+      return Standard_True;
+    }
+
+    try
+    {
+      OCC_CATCH_SIGNALS
+      BRepLib::EncodeRegularity(theShape, aToleranceAngle);
+    }
+    catch (const Standard_Failure&)
+    {
+      return Standard_False;
+    }
+    return Standard_True;
+  }
+
+  //=======================================================================
+  //function : TrimTolerances
+  //purpose  : Trims tolerances of the shape according to static parameters
+  //=======================================================================
+  static void TrimTolerances(const TopoDS_Shape& theShape, const Standard_Real theTolerance)
+  {
+    if (Interface_Static::IVal("read.maxprecision.mode") == 1)
+    {
+      ShapeFix_ShapeTolerance SFST;
+      SFST.LimitTolerance(theShape, 0, Max(theTolerance, Interface_Static::RVal("read.maxprecision.val")));
+    }
+  }
+}
+
+//=============================================================================
+
+IGESToBRep_Reader::IGESToBRep_Reader()
+: theDone(Standard_False)
+{
+  if (protocol.IsNull())
+  {
+    IGESAppli::Init();
+    IGESSolid::Init();
     protocol = new IGESData_FileProtocol;
     protocol->Add(IGESAppli::Protocol());
     protocol->Add(IGESSolid::Protocol());
   }
   theActor = new IGESToBRep_Actor;
-  theProc = new Transfer_TransientProcess;
+  theProc  = new Transfer_TransientProcess;
 }
 
-
-//=======================================================================
-//function : LoadFile
-//purpose  : loads a Model from a file
-//=======================================================================
+//=============================================================================
 
 Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
 { 
@@ -187,12 +227,9 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
   return StatusFile;
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : SetModel
-//purpose  : Specifies a Model to work on
-//=======================================================================
-    void  IGESToBRep_Reader::SetModel (const Handle(IGESData_IGESModel)& model)
+void IGESToBRep_Reader::SetModel (const Handle(IGESData_IGESModel)& model)
 {
   theModel = model;
   theDone  = Standard_False;
@@ -203,55 +240,45 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
     theProc->Clear();
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : Model
-//purpose  : returns the Model to be worked on
-//=======================================================================
-    Handle(IGESData_IGESModel)  IGESToBRep_Reader::Model () const
-      {  return theModel;  }
-
-
-//=======================================================================
-//function : SetTransientProcess
-//purpose  : Specifies a TransferProcess
-//=======================================================================
-    void  IGESToBRep_Reader::SetTransientProcess
-  (const Handle(Transfer_TransientProcess)& TP)
-     {  theProc = TP;  }
-
-//=======================================================================
-//function : TransientProcess
-//purpose  : Returns the TransferProcess
-//=======================================================================
-    Handle(Transfer_TransientProcess)  IGESToBRep_Reader::TransientProcess () const
-     {  return theProc;  }
-
-//=======================================================================
-//function : Actor
-//purpose  : returns theActor
-//=======================================================================
-    Handle(IGESToBRep_Actor)  IGESToBRep_Reader::Actor () const
-      {  return theActor;  }
-
-
-//=======================================================================
-//function : Clear
-//purpose  : Clears the result and Done status
-//=======================================================================
-    void  IGESToBRep_Reader::Clear ()
+Handle(IGESData_IGESModel) IGESToBRep_Reader::Model() const
 {
-  theDone  = Standard_False;
+  return theModel;
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::SetTransientProcess(const Handle(Transfer_TransientProcess)& TP)
+{
+  theProc = TP;
+}
+
+//=============================================================================
+
+Handle(Transfer_TransientProcess) IGESToBRep_Reader::TransientProcess() const
+{
+  return theProc;
+}
+
+//=============================================================================
+
+Handle(IGESToBRep_Actor) IGESToBRep_Reader::Actor() const
+{
+  return theActor;
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::Clear()
+{
+  theDone = Standard_False;
   theShapes.Clear();
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : Check
-//purpose  : Checks the Model
-//=======================================================================
-    Standard_Boolean  IGESToBRep_Reader::Check
-  (const Standard_Boolean withprint) const
+Standard_Boolean IGESToBRep_Reader::Check(const Standard_Boolean withprint) const
 {
   Interface_CheckTool cht (theModel,protocol);
   Interface_CheckIterator chl = cht.CompleteCheckList();
@@ -265,96 +292,15 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
   return chl.IsEmpty(Standard_True);
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : IsDone
-//purpose  : returns True if the last transfert was a success
-//=======================================================================
-    Standard_Boolean  IGESToBRep_Reader::IsDone () const
-      {  return theDone;  }
-
-
-//=======================================================================
-//function : EncodeRegul
-//purpose  : INTERNAL to encode regularity on edges
-//=======================================================================
-
-static Standard_Boolean  EncodeRegul (const TopoDS_Shape& sh)
+Standard_Boolean IGESToBRep_Reader::IsDone() const
 {
-  Standard_Real tolang = Interface_Static::RVal("read.encoderegularity.angle");
-  if (sh.IsNull()) return Standard_True;
-  if (tolang <= 0) return Standard_True;
-  try {
-    OCC_CATCH_SIGNALS
-    BRepLib::EncodeRegularity (sh,tolang);
-  }
-  catch(Standard_Failure const&) {
-    return Standard_False;
-  }
-  return Standard_True;
+  return theDone;
 }
 
-//=======================================================================
-//function : UpdateMap
-//purpose  : Updates the correspondence map (Transfer_TransientProcess),
-//           setting as translation results, the shapes received after
-//           modification by modifier (BRepTools_Modifier)
-//warning  : BRepTools_Modifier raises exception when it cannot find input
-//           shape in its internal list
-//=======================================================================
+//=============================================================================
 
-// comment as unused PTV 18.09.2000
-// static void UpdateMap (const Handle(Transfer_TransientProcess)& map,
-// 		       const BRepTools_Modifier& modifier)
-// {
-//   Transfer_IteratorOfProcessForTransient iterator = map->CompleteResult(Standard_True);
-//   for (iterator.Start(); iterator.More(); iterator.Next()) {
-//     const Handle(Transfer_Binder) binder = iterator.Value();
-//     try { //to avoid exception in BRepTools_Modifier
-//       OCC_CATCH_SIGNALS
-//       if (binder->IsKind (STANDARD_TYPE (TransferBRep_ShapeBinder))) {
-// 	DeclareAndCast(TransferBRep_ShapeBinder, shapebinder, binder);
-// 	if (shapebinder->HasResult()) {
-// 	  TopoDS_Shape result = shapebinder->Result();
-// 	  TopoDS_Shape modified = modifier.ModifiedShape (result);
-// 	  if (shapebinder->Status() != Transfer_StatusUsed) //to avoid exception
-// 	    shapebinder->SetResult (modified);
-// 	}
-//       }
-//       else if (binder->IsKind (STANDARD_TYPE (TransferBRep_ShapeListBinder))) {
-// 	DeclareAndCast(TransferBRep_ShapeListBinder, shapelistbinder, binder);
-// 	for (Standard_Integer i = 1; i <= shapelistbinder->NbShapes(); i++) {
-// 	  TopoDS_Shape result = shapelistbinder->Shape (i);
-// 	  TopoDS_Shape modified = modifier.ModifiedShape (result);
-// 	  shapelistbinder->SetResult (i, modified);
-// 	}
-//       }
-//     }
-//     catch(Standard_Failure) {
-//       continue;
-//     }
-//   }
-// }
-
-//=======================================================================
-//function : TrimTolerances
-//purpose  : Trims tolerances of the shape according to static parameters
-//          
-//=======================================================================
-
-static void TrimTolerances (const TopoDS_Shape& shape,
-			    const Standard_Real tol)
-{
-  if( Interface_Static::IVal("read.maxprecision.mode")==1) {
-    ShapeFix_ShapeTolerance SFST;
-    SFST.LimitTolerance (shape, 0, Max(tol,Interface_Static::RVal ("read.maxprecision.val")));
-  }
-}
-  
-//=======================================================================
-//function : TransferRoots
-//purpose  : Transfers all Roots Entities
-//=======================================================================
 void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible,
                                         const Message_ProgressRange& theProgress)
 {
@@ -463,11 +409,8 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible,
   TF->Send (msg2065, Message_Info);
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : Transfer
-//purpose  : Transfers an Entity given
-//=======================================================================
 Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num,
                                               const Message_ProgressRange& theProgress)
 { 
@@ -494,7 +437,7 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num,
 
   Message_ProgressScope aPS(theProgress, "OneEnt", 2);
 
-  XSAlgo::AlgoContainer()->PrepareForTransfer();
+  XSAlgo_ShapeProcessor::PrepareForTransfer();
   IGESToBRep_CurveAndSurface CAS;
   CAS.SetModel(theModel);
   Standard_Real eps;
@@ -544,19 +487,24 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num,
       exceptionRaised = Standard_True;
     }
   }
-  if (!exceptionRaised) {
-    // fixing shape
-//    shape = XSAlgo::AlgoContainer()->PerformFixShape ( shape, theProc, eps*CAS.GetUnitFactor(), CAS.GetMaxTol() );
+  if (!exceptionRaised)
+  {
+    InitializeMissingParameters();
 
-    Handle(Standard_Transient) info;
-    shape = XSAlgo::AlgoContainer()->ProcessShape( shape, eps*CAS.GetUnitFactor(), CAS.GetMaxTol(),
-                                                   "read.iges.resource.name", 
-                                                   "read.iges.sequence", info,
-                                                   aPS.Next(), false, TopAbs_EDGE);
+    // Set tolerances for shape processing.
+    // These parameters are calculated inside IGESToBRep_Reader::Transfer() and cannot be set from outside.
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", eps * CAS.GetUnitFactor(), true, myShapeProcParams);
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", CAS.GetMaxTol(), true, myShapeProcParams);
+
+    XSAlgo_ShapeProcessor aShapeProcessor(myShapeProcParams);
+    shape = aShapeProcessor.ProcessShape(shape, myShapeProcFlags.first, aPS.Next());
+
     if (aPS.UserBreak())
+    {
       return Standard_False;
+    }
 
-    XSAlgo::AlgoContainer()->MergeTransferInfo(theProc, info, nbTPitems);
+    aShapeProcessor.MergeTransferInfo(theProc, nbTPitems);
 
     ShapeExtend_Explorer SBE;
     if (SBE.ShapeType (shape,Standard_True) != TopAbs_SHAPE) {
@@ -589,39 +537,32 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num,
   return Standard_True;
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : UsedTolerance
-//purpose  : Returns the used tolerance (input)
-//=======================================================================
-    Standard_Real  IGESToBRep_Reader::UsedTolerance () const
-      {  return theActor->UsedTolerance();  }
+Standard_Real IGESToBRep_Reader::UsedTolerance() const
+{
+  return theActor->UsedTolerance();
+}
 
-//=======================================================================
-//function : NbShapes
-//purpose  : Returns the count of produced Shapes
-//=======================================================================
-    Standard_Integer  IGESToBRep_Reader::NbShapes () const
-      {  return theShapes.Length();  }
+//=============================================================================
 
+Standard_Integer IGESToBRep_Reader::NbShapes() const
+{
+  return theShapes.Length();
+}
 
-//=======================================================================
-//function : Shape
-//purpose  : Returns a Shape given its rank
-//=======================================================================
-    TopoDS_Shape  IGESToBRep_Reader::Shape (const Standard_Integer num) const
+//=============================================================================
+
+TopoDS_Shape IGESToBRep_Reader::Shape(const Standard_Integer num) const
 {
   TopoDS_Shape res;
   if (num > 0 && num <= theShapes.Length()) res = theShapes.Value(num);
   return res;
 }
 
+//=============================================================================
 
-//=======================================================================
-//function : OneShape
-//purpose  : Returns a unique Shape
-//=======================================================================
-    TopoDS_Shape  IGESToBRep_Reader::OneShape () const
+TopoDS_Shape IGESToBRep_Reader::OneShape() const
 {
   TopoDS_Shape res;
   Standard_Integer nb = theShapes.Length();
@@ -633,5 +574,58 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num,
     B.MakeCompound(C);
     for (Standard_Integer i = 1; i <= nb; i ++)  B.Add (C,theShapes.Value(i));
     return C;
+  }
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::SetParameters(const ParameterMap& theParameters)
+{
+  myShapeProcParams = theParameters;
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::SetParameters(ParameterMap&& theParameters)
+{
+  myShapeProcParams = std::move(theParameters);
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::SetParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
+{
+  myShapeProcParams.clear();
+  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
+  for (const auto& aParam : theAdditionalParameters)
+  {
+    if (myShapeProcParams.find(aParam.first) == myShapeProcParams.end())
+    {
+      myShapeProcParams[aParam.first] = aParam.second;
+    }
+  }
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  myShapeProcFlags.first = theFlags;
+  myShapeProcFlags.second = true;
+}
+
+//=============================================================================
+
+void IGESToBRep_Reader::InitializeMissingParameters()
+{
+  if (GetParameters().empty())
+  {
+    SetParameters(DEIGES_Parameters::GetDefaultReadingParamsIGES());
+  }
+
+  if (!myShapeProcFlags.second)
+  {
+    myShapeProcFlags.first.set(ShapeProcess::Operation::FixShape);
+    myShapeProcFlags.second = true;
   }
 }

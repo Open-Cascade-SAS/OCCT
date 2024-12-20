@@ -25,7 +25,7 @@
 #include <Quantity_Date.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <UnitsMethods.hxx>
 
 #include <stdio.h>
@@ -116,7 +116,7 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
   //Message_Msg Msg48 ("XSTEP_48");
   //Message_Msg Msg49 ("XSTEP_49");
   //======================================
-  XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+  XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
   theSeparator = ',';       theEndMark = ';';
   theSendName.Nullify();    theFileName.Nullify();  theSystemId.Nullify();
   theInterfaceVersion.Nullify();

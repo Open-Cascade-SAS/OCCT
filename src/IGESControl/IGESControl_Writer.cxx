@@ -19,6 +19,7 @@
 #include <BndLib_AddSurface.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepToIGESBRep_Entity.hxx>
+#include <DEIGES_Parameters.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomToIGES_GeomCurve.hxx>
@@ -41,62 +42,69 @@
 #include <TopoDS_Shape.hxx>
 #include <Transfer_FinderProcess.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 #include <errno.h>
-IGESControl_Writer::IGESControl_Writer ()
-    :  myTP (new Transfer_FinderProcess(10000)) ,
-       myIsComputed (Standard_False)
+
+//=============================================================================
+
+IGESControl_Writer::IGESControl_Writer()
+: myTP(new Transfer_FinderProcess(10000)),
+  myIsComputed(Standard_False)
 {
-//  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
   myEditor.Init(IGESSelect_WorkLibrary::DefineProtocol());
-  myEditor.SetUnitName(Interface_Static::CVal ("write.iges.unit"));
-  myEditor.ApplyUnit(); 
-  myWriteMode = Interface_Static::IVal ("write.iges.brep.mode");
-  myModel = myEditor.Model();
+  myEditor.SetUnitName(Interface_Static::CVal("write.iges.unit"));
+  myEditor.ApplyUnit();
+  myWriteMode = Interface_Static::IVal("write.iges.brep.mode");
+  myModel     = myEditor.Model();
 }
 
-IGESControl_Writer::IGESControl_Writer
-  (const Standard_CString unit, const Standard_Integer modecr)
-    :  myTP (new Transfer_FinderProcess(10000)) ,
-       myWriteMode (modecr) , myIsComputed (Standard_False)
+//=============================================================================
+
+IGESControl_Writer::IGESControl_Writer(const Standard_CString theUnit,
+                                       const Standard_Integer theModecr)
+: myTP(new Transfer_FinderProcess(10000)),
+  myWriteMode(theModecr),
+  myIsComputed(Standard_False)
 {
-//  faudrait aussi (?) prendre les parametres par defaut ... ?
   IGESControl_Controller::Init();
   myEditor.Init(IGESSelect_WorkLibrary::DefineProtocol());
-  myEditor.SetUnitName(unit);
+  myEditor.SetUnitName(theUnit);
   myEditor.ApplyUnit();
   myModel = myEditor.Model();
 }
 
-IGESControl_Writer::IGESControl_Writer
-  (const Handle(IGESData_IGESModel)& model, const Standard_Integer modecr)
-    :  myTP (new Transfer_FinderProcess(10000)) ,
-       myModel (model) , 
-       myEditor (model,IGESSelect_WorkLibrary::DefineProtocol()) ,
-       myWriteMode (modecr) , myIsComputed (Standard_False)     {  }
+//=============================================================================
+
+IGESControl_Writer::IGESControl_Writer(const Handle(IGESData_IGESModel)& theModel,
+                                       const Standard_Integer            theModecr)
+: myTP(new Transfer_FinderProcess(10000)),
+  myModel(theModel),
+  myEditor(theModel, IGESSelect_WorkLibrary::DefineProtocol()),
+  myWriteMode(theModecr),
+  myIsComputed(Standard_False)
+{}
+
+//=============================================================================
 
 Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape,
                                                const Message_ProgressRange& theProgress)
 {
   if (theShape.IsNull()) return Standard_False;
   
-  XSAlgo::AlgoContainer()->PrepareForTransfer();
+  XSAlgo_ShapeProcessor::PrepareForTransfer();
+
+  InitializeMissingParameters();
   
   Message_ProgressScope aPS(theProgress, NULL, 2);
-  //  modified by NIZHNY-EAP Tue Aug 29 11:16:54 2000 ___BEGIN___
-  Handle(Standard_Transient) info;
-  Standard_Real Tol = Interface_Static::RVal("write.precision.val");
-  Standard_Real maxTol = Interface_Static::RVal("read.maxprecision.val");
-  TopoDS_Shape Shape = XSAlgo::AlgoContainer()->ProcessShape( theShape, Tol, maxTol, 
-                                                              "write.iges.resource.name", 
-                                                              "write.iges.sequence", info,
-                                                              aPS.Next(), false, TopAbs_EDGE);
+
+  XSAlgo_ShapeProcessor aShapeProcessor(myShapeProcParams);
+  TopoDS_Shape          Shape = aShapeProcessor.ProcessShape(theShape, myShapeProcFlags.first, aPS.Next());
+
   if (!aPS.More())
     return Standard_False;
 
-  //  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
   BRepToIGES_BREntity   B0;  B0.SetTransferProcess(myTP); B0.SetModel(myModel);
   BRepToIGESBRep_Entity B1;  B1.SetTransferProcess(myTP); B1.SetModel(myModel);
   Handle(IGESData_IGESEntity) ent = myWriteMode?
@@ -106,9 +114,7 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape,
 
   if(ent.IsNull())
     return Standard_False;
-//  modified by NIZHNY-EAP Tue Aug 29 11:37:18 2000 ___BEGIN___
-  XSAlgo::AlgoContainer()->MergeTransferInfo(myTP, info);
-//  modified by NIZHNY-EAP Tue Aug 29 11:37:25 2000 ___END___
+  aShapeProcessor.MergeTransferInfo(myTP);
   
   //22.10.98 gka BUC60080
 
@@ -203,6 +209,8 @@ Standard_Boolean IGESControl_Writer::AddGeom (const Handle(Standard_Transient)& 
   return AddEntity (ent);
 }
 
+//=============================================================================
+
 Standard_Boolean IGESControl_Writer::AddEntity (const Handle(IGESData_IGESEntity)& ent)
 {
   if (ent.IsNull()) return Standard_False;
@@ -210,6 +218,8 @@ Standard_Boolean IGESControl_Writer::AddEntity (const Handle(IGESData_IGESEntity
   myIsComputed = Standard_False;
   return Standard_True;
 }
+
+//=============================================================================
 
 void IGESControl_Writer::ComputeModel ()
 {
@@ -220,30 +230,25 @@ void IGESControl_Writer::ComputeModel ()
   }
 }
 
+//=============================================================================
+
 Standard_Boolean IGESControl_Writer::Write
   (Standard_OStream& S, const Standard_Boolean fnes)
 {
   if (!S) return Standard_False;
   ComputeModel();
   Standard_Integer nbEnt = myModel->NbEntities();
-#ifdef OCCT_DEBUG
-  std::cout<<" IGES Write : "<<nbEnt<<" ent.s"<< std::flush;
-#endif
   if(!nbEnt)
     return Standard_False;
   IGESData_IGESWriter IW (myModel);
 //  ne pas oublier le mode fnes ... a transmettre a IW
   IW.SendModel (IGESSelect_WorkLibrary::DefineProtocol());
-#ifdef OCCT_DEBUG
-  std::cout<<" ...  ecriture  ..."<<std::flush;
-#endif
   if (fnes) IW.WriteMode() = 10;
   Standard_Boolean status = IW.Print(S);
-#ifdef OCCT_DEBUG
-  std::cout<<" ...  fichier ecrit  ..."<<std::endl;
-#endif
   return status;
 }
+
+//=============================================================================
 
 Standard_Boolean IGESControl_Writer::Write
   (const Standard_CString file, const Standard_Boolean fnes)
@@ -254,9 +259,6 @@ Standard_Boolean IGESControl_Writer::Write
   {
     return Standard_False;
   }
-#ifdef OCCT_DEBUG
-  std::cout<<" Ecriture fichier ("<< (fnes ? "fnes" : "IGES") <<"): "<<file<<std::endl;
-#endif
   Standard_Boolean res = Write (*aStream,fnes);
 
   errno = 0;
@@ -265,4 +267,57 @@ Standard_Boolean IGESControl_Writer::Write
   aStream.reset();
 
   return res;
+}
+
+//=============================================================================
+
+void IGESControl_Writer::SetParameters(const ParameterMap& theParameters)
+{
+  myShapeProcParams = theParameters;
+}
+
+//=============================================================================
+
+void IGESControl_Writer::SetParameters(ParameterMap&& theParameters)
+{
+  myShapeProcParams = std::move(theParameters);
+}
+
+//=============================================================================
+
+void IGESControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
+{
+  myShapeProcParams.clear();
+  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
+  for (const auto& aParam : theAdditionalParameters)
+  {
+    if (myShapeProcParams.find(aParam.first) == myShapeProcParams.end())
+    {
+      myShapeProcParams[aParam.first] = aParam.second;
+    }
+  }
+}
+
+//=============================================================================
+
+void IGESControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  myShapeProcFlags.first = theFlags;
+  myShapeProcFlags.second = true;
+}
+
+//=============================================================================
+
+void IGESControl_Writer::InitializeMissingParameters()
+{
+  if (GetParameters().empty())
+  {
+    SetParameters(DEIGES_Parameters::GetDefaultWritingParamsIGES());
+  }
+
+  if (!myShapeProcFlags.second)
+  {
+    myShapeProcFlags.first.set(ShapeProcess::Operation::DirectFaces);
+    myShapeProcFlags.second = true;
+  }
 }

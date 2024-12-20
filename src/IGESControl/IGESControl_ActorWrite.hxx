@@ -21,21 +21,18 @@
 #include <Standard_Type.hxx>
 
 #include <Transfer_ActorOfFinderProcess.hxx>
+
 class Transfer_Finder;
 class Transfer_Binder;
 class Transfer_FinderProcess;
-
-
 class IGESControl_ActorWrite;
+
 DEFINE_STANDARD_HANDLE(IGESControl_ActorWrite, Transfer_ActorOfFinderProcess)
 
 //! Actor to write Shape to IGES
 class IGESControl_ActorWrite : public Transfer_ActorOfFinderProcess
 {
-
 public:
-
-  
   Standard_EXPORT IGESControl_ActorWrite();
   
   //! Recognizes a ShapeMapper
@@ -50,21 +47,7 @@ public:
                     const Handle(Transfer_FinderProcess)& FP,
                     const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IGESControl_ActorWrite,Transfer_ActorOfFinderProcess)
-
-protected:
-
-
-
-
-private:
-
-
-
-
 };
 
 

@@ -45,7 +45,7 @@
 #include <XCAFPrs.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
 
@@ -589,7 +589,7 @@ void IGESCAFControl_Writer::prepareUnit(const TDF_Label& theLabel)
   }
   else
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     Model()->ChangeGlobalSection().SetCascadeUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
 }

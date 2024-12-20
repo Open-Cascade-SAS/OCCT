@@ -59,10 +59,12 @@ class Transfer_Binder;
 class STEPCAFControl_Reader 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  
+  using ParameterMap = XSControl_Reader::ParameterMap;
+  using ProcessingFlags = XSControl_Reader::ProcessingFlags;
+
+public:
   //! Creates a reader with an empty
   //! STEP model and sets ColorMode, LayerMode, NameMode and
   //! PropsMode to Standard_True.
@@ -209,9 +211,38 @@ public:
 
   const XCAFDoc_DataMapOfShapeLabel& GetShapeLabelMap() const { return myMap; }
 
-protected:
+  //! Sets parameters for shape processing.
+  //! @param theParameters the parameters for shape processing.
+  Standard_EXPORT void SetParameters(const ParameterMap& theParameters);
 
-  
+  //! Sets parameters for shape processing.
+  //! Parameters are moved from the input map.
+  //! @param theParameters the parameters for shape processing.
+  Standard_EXPORT void SetParameters(ParameterMap&& theParameters);
+
+  //! Sets parameters for shape processing.
+  //! Parameters from @p theParameters are copied to the internal map.
+  //! Parameters from @p theAdditionalParameters are copied to the internal map
+  //! if they are not present in @p theParameters.
+  //! @param theParameters the parameters for shape processing.
+  //! @param theAdditionalParameters the additional parameters for shape processing.
+  Standard_EXPORT void SetParameters(const DE_ShapeFixParameters& theParameters,
+                                     const ParameterMap&          theAdditionalParameters = {});
+
+  //! Returns parameters for shape processing that was set by SetParameters() method.
+  //! @return the parameters for shape processing. Empty map if no parameters were set.
+  Standard_EXPORT const ParameterMap& GetParameters() const;
+
+  //! Sets flags defining operations to be performed on shapes.
+  //! @param theFlags The flags defining operations to be performed on shapes.
+  Standard_EXPORT void SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags);
+
+  //! Returns flags defining operations to be performed on shapes.
+  //! @return Pair of values defining operations to be performed on shapes and a boolean value
+  //!         that indicates whether the flags were set.
+  Standard_EXPORT const ProcessingFlags& GetShapeProcessFlags() const;
+
+protected:
   //! Translates STEP file already loaded into the reader
   //! into the document
   //! If num==0, translates all roots, else only root number num
@@ -319,7 +350,6 @@ protected:
   Standard_EXPORT virtual TCollection_ExtendedString convertName (const TCollection_AsciiString& theName) const;
 
 private:
-
   //! Internal method. Import all Datum attributes and set them to XCAF object. Set connection of Datum to GeomTolerance (theGDTL).
   Standard_Boolean setDatumToXCAF(const Handle(StepDimTol_Datum)& theDat,
     const TDF_Label theGDTL,
@@ -361,7 +391,6 @@ private:
                                   Handle(TDataStd_NamedData)& theAttr) const;
 
 private:
-
   STEPControl_Reader myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
   XCAFDoc_DataMapOfShapeLabel myMap;
@@ -375,7 +404,6 @@ private:
   Standard_Boolean myMatMode;
   Standard_Boolean myViewMode;
   NCollection_DataMap<Handle(Standard_Transient), TDF_Label> myGDTMap;
-
 };
 
 #endif // _STEPCAFControl_Reader_HeaderFile

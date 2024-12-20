@@ -20,13 +20,20 @@
 #include <Transfer_ProcessForFinder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
 #include <Transfer_TransientMapper.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Transfer_ActorOfFinderProcess,Transfer_ActorOfProcessForFinder)
 
+//=============================================================================
+
 Transfer_ActorOfFinderProcess::Transfer_ActorOfFinderProcess ()    {  themodetrans = 0;  }
+
+//=============================================================================
 
 Standard_Integer& Transfer_ActorOfFinderProcess::ModeTrans ()
 {  return themodetrans;  }
+
+//=============================================================================
 
 Handle(Transfer_Binder)  Transfer_ActorOfFinderProcess::Transfer
   (const Handle(Transfer_Finder)& fnd,
@@ -40,6 +47,8 @@ Handle(Transfer_Binder)  Transfer_ActorOfFinderProcess::Transfer
   return TransientResult (res);
 }
 
+//=============================================================================
+
 Handle(Transfer_Binder)  Transfer_ActorOfFinderProcess::Transferring
   (const Handle(Transfer_Finder)& ent,
    const Handle(Transfer_ProcessForFinder)& TP,
@@ -48,6 +57,8 @@ Handle(Transfer_Binder)  Transfer_ActorOfFinderProcess::Transferring
   return Transfer(ent,Handle(Transfer_FinderProcess)::DownCast(TP), theProgress);
 }
 
+//=============================================================================
+
 Handle(Standard_Transient)  Transfer_ActorOfFinderProcess::TransferTransient
   (const Handle(Standard_Transient)& /*ent*/,
    const Handle(Transfer_FinderProcess)&,
@@ -55,4 +66,42 @@ Handle(Standard_Transient)  Transfer_ActorOfFinderProcess::TransferTransient
 {
   Handle(Standard_Transient) nulres;
   return nulres;
+}
+
+//=============================================================================
+
+void Transfer_ActorOfFinderProcess::SetParameters(const ParameterMap& theParameters)
+{
+  myShapeProcParams = theParameters;
+}
+
+//=============================================================================
+
+void Transfer_ActorOfFinderProcess::SetParameters(ParameterMap&& theParameters)
+{
+  myShapeProcParams = std::move(theParameters);
+}
+
+//=============================================================================
+
+void Transfer_ActorOfFinderProcess::SetParameters(const DE_ShapeFixParameters& theParameters,
+                                                  const ParameterMap&          theAdditionalParameters)
+{
+  myShapeProcParams.clear();
+  XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
+  for (const auto& aParam : theAdditionalParameters)
+  {
+    if (myShapeProcParams.find(aParam.first) == myShapeProcParams.end())
+    {
+      myShapeProcParams[aParam.first] = aParam.second;
+    }
+  }
+}
+
+//=============================================================================
+
+void Transfer_ActorOfFinderProcess::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  myShapeProcFlags.first = theFlags;
+  myShapeProcFlags.second = true;
 }

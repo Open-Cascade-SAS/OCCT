@@ -32,52 +32,83 @@
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeBinder.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESToBRep_Actor,Transfer_ActorOfTransientProcess)
 
-//=======================================================================
-//function : IGESToBRep_Actor
-//purpose  : 
-//=======================================================================
-IGESToBRep_Actor::IGESToBRep_Actor ()
-{  thecontinuity = 0;  theeps = 0.0001;  }
+namespace
+{
+  //=======================================================================
+  //function : EncodeRegul
+  //purpose  : INTERNAL to encode regularity on edges
+  //=======================================================================
+  static Standard_Boolean EncodeRegul(const TopoDS_Shape& theShape)
+  {
+    const Standard_Real aToleranceAngle = Interface_Static::RVal("read.encoderegularity.angle");
+    if (theShape.IsNull())
+    {
+      return Standard_True;
+    }
+    if (aToleranceAngle <= 0.)
+    {
+      return Standard_True;
+    }
 
+    try
+    {
+      OCC_CATCH_SIGNALS
+      BRepLib::EncodeRegularity(theShape, aToleranceAngle);
+    }
+    catch (const Standard_Failure&)
+    {
+      return Standard_False;
+    }
+    return Standard_True;
+  }
+
+  //=======================================================================
+  //function : TrimTolerances
+  //purpose  : Trims tolerances of the shape according to static parameters
+  //=======================================================================
+  static void TrimTolerances(const TopoDS_Shape& theShape, const Standard_Real theTolerance)
+  {
+    if (Interface_Static::IVal("read.maxprecision.mode") == 1)
+    {
+      ShapeFix_ShapeTolerance aSFST;
+      aSFST.LimitTolerance(theShape, 0, Max(theTolerance, Interface_Static::RVal("read.maxprecision.val")));
+    }
+  }
+}
 
 //=======================================================================
-//function : SetModel
-//purpose  : 
+
+IGESToBRep_Actor::IGESToBRep_Actor() : thecontinuity(0), theeps(0.0001)
+{}
+
 //=======================================================================
+
 void IGESToBRep_Actor::SetModel (const Handle(Interface_InterfaceModel)& model)
 {
   themodel = model;
   theeps = Handle(IGESData_IGESModel)::DownCast(themodel)->GlobalSection().Resolution();
 }
 
+//=======================================================================
 
-//=======================================================================
-//function : SetContinuity
-//purpose  : 
-//=======================================================================
 void  IGESToBRep_Actor::SetContinuity (const Standard_Integer continuity)
 {
   thecontinuity = continuity;
 }
 
+//=======================================================================
 
-//=======================================================================
-//function : GetContinuity
-//purpose  : 
-//=======================================================================
 Standard_Integer  IGESToBRep_Actor::GetContinuity () const
 {
   return thecontinuity;
 }
 
 //=======================================================================
-//function : Recognize
-//purpose  : 
-//=======================================================================
+
 Standard_Boolean  IGESToBRep_Actor::Recognize
 (const Handle(Standard_Transient)& start)
 {
@@ -97,44 +128,9 @@ Standard_Boolean  IGESToBRep_Actor::Recognize
 //  Cas restants : non reconnus
   return Standard_False;
 }
-//=======================================================================
-//function : EncodeRegul
-//purpose  : INTERNAL to encode regularity on edges
-//=======================================================================
-
-static Standard_Boolean  EncodeRegul (const TopoDS_Shape& sh)
-{
-  Standard_Real tolang = Interface_Static::RVal("read.encoderegularity.angle");
-  if (sh.IsNull()) return Standard_True;
-  if (tolang <= 0) return Standard_True;
-  try {
-    OCC_CATCH_SIGNALS
-    BRepLib::EncodeRegularity (sh,tolang);
-  }
-  catch(Standard_Failure const&) {
-    return Standard_False;
-  }
-  return Standard_True;
-}
-//=======================================================================
-//function : TrimTolerances
-//purpose  : Trims tolerances of the shape according to static parameters
-//          
-//=======================================================================
-
-static void TrimTolerances (const TopoDS_Shape& shape,
-			    const Standard_Real tol)
-{
-  if( Interface_Static::IVal("read.maxprecision.mode")==1) {
-    ShapeFix_ShapeTolerance SFST;
-    SFST.LimitTolerance (shape, 0, Max(tol,Interface_Static::RVal ("read.maxprecision.val")));
-  }
-}
 
 //=======================================================================
-//function : Transfer
-//purpose  : 
-//=======================================================================
+
 Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
 (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP,
  const Message_ProgressRange& theProgress)
@@ -148,7 +144,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
     return NullResult();
   TopoDS_Shape shape;
 
-//   appeler le transfert seulement si type OK
+  // Call the transfer only if type is OK.
   Standard_Integer typnum = ent->TypeNumber();
   Standard_Integer fornum = ent->FormNumber();
   Standard_Real eps;
@@ -160,7 +156,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
     // Start progress scope (no need to check if progress exists -- it is safe)
     Message_ProgressScope aPS(theProgress, "Transfer stage", 2);
 
-    XSAlgo::AlgoContainer()->PrepareForTransfer();
+    XSAlgo_ShapeProcessor::PrepareForTransfer();
     IGESToBRep_CurveAndSurface CAS;
     CAS.SetModel(mymodel);
     CAS.SetContinuity(thecontinuity);
@@ -179,7 +175,6 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
     if (eps > 1.E-08) {
       CAS.SetEpsGeom(eps);
       theeps = eps*CAS.GetUnitFactor();
-//      Interface_Static::SetRVal("lastpreci",theeps);
     }
     Standard_Integer nbTPitems = TP->NbMapped();
     {
@@ -191,15 +186,18 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
 	shape.Nullify();
       }
     }
-    
+
     // fixing shape
-    Handle(Standard_Transient) info;
-    shape = XSAlgo::AlgoContainer()->ProcessShape(shape, theeps, CAS.GetMaxTol(),
-                                                  "read.iges.resource.name",
-                                                  "read.iges.sequence",
-                                                  info, aPS.Next(),
-                                                  false, TopAbs_EDGE);
-    XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
+
+    // Set tolerances for shape processing.
+    // These parameters are calculated inside IGESToBRep_Actor::Transfer() and cannot be set from outside.
+    Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetParameters();
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", theeps, true, aParameters);
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", CAS.GetMaxTol(), true, aParameters);
+
+    XSAlgo_ShapeProcessor         aShapeProcessor(aParameters);
+    shape = aShapeProcessor.ProcessShape(shape, GetProcessingFlags().first, aPS.Next());
+    aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
   }
 
   ShapeExtend_Explorer SBE;
@@ -216,6 +214,9 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
   return binder;
 }
 
+//=============================================================================
 
-    Standard_Real  IGESToBRep_Actor::UsedTolerance () const
-      {  return theeps;  }
+Standard_Real IGESToBRep_Actor::UsedTolerance() const
+{
+  return theeps;
+}

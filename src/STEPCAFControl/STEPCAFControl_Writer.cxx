@@ -212,7 +212,7 @@
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
@@ -361,7 +361,7 @@ void STEPCAFControl_Writer::prepareUnit(const TDF_Label& theLabel,
   }
   else
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     theModel->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
     theLocalFactors.SetCascadeUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
@@ -561,6 +561,49 @@ Standard_Boolean STEPCAFControl_Writer::ExternFile(const Standard_CString theNam
     return Standard_False;
   theExtFile = myFiles.Find(theName);
   return Standard_True;
+}
+
+//=============================================================================
+
+void STEPCAFControl_Writer::SetParameters(const ParameterMap& theParameters)
+{
+  myWriter.SetParameters(theParameters);
+}
+
+//=============================================================================
+
+void STEPCAFControl_Writer::SetParameters(ParameterMap&& theParameters)
+{
+  myWriter.SetParameters(std::move(theParameters));
+}
+
+//=============================================================================
+
+void STEPCAFControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters,
+                                          const ParameterMap&          theAdditionalParameters)
+{
+  myWriter.SetParameters(theParameters, theAdditionalParameters);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Writer::ParameterMap& STEPCAFControl_Writer::GetParameters() const
+{
+  return myWriter.GetParameters();
+}
+
+//=============================================================================
+
+void STEPCAFControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  myWriter.SetShapeProcessFlags(theFlags);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Writer::ProcessingFlags& STEPCAFControl_Writer::GetShapeProcessFlags() const
+{
+  return myWriter.GetShapeProcessFlags();
 }
 
 //=======================================================================

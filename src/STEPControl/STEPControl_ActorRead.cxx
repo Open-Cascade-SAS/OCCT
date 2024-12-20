@@ -119,7 +119,7 @@
 #include <TransferBRep_ShapeBinder.hxx>
 #include <UnitsMethods.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
@@ -309,7 +309,7 @@ Handle(Transfer_Binder)  STEPControl_ActorRead::Transfer
   Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast ( TP->Model() );
   if (!aStepModel->IsInitializedUnit())
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     aStepModel->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
     aLocalFactors.SetCascadeUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
@@ -809,7 +809,6 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     return shbinder;
   isBound = Standard_False;
   Standard_Integer nb = sr->NbItems();
-  // Used in XSAlgo::AlgoContainer()->ProcessShape (ssv; 13.11.2010)
   Standard_Integer nbTPitems = TP->NbMapped();
   Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
   #ifdef TRANSLOG
@@ -930,17 +929,19 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
   }
 
   // [BEGIN] Proceed with non-manifold topology (ssv; 12.11.2010)
-  if (!isManifold) {
+  if (!isManifold)
+  {
     Message_ProgressScope aPS1 (aPSRoot.Next(), "Process", 1);
 
-    Handle(Standard_Transient) info;
-    // IMPORTANT: any fixing on non-manifold topology must be done after the shape is transferred from STEP
-    TopoDS_Shape fixedResult = 
-      XSAlgo::AlgoContainer()->ProcessShape( comp, myPrecision, myMaxTol,
-                                             "read.step.resource.name", 
-                                             "read.step.sequence", info,
-                                             aPS1.Next(), Standard_True);
-    XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
+    // Set tolerances for shape processing.
+    // These parameters are calculated inside STEPControl_ActorRead::Transfer() and cannot be set from outside.
+    Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetParameters();
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.NonManifold", std::to_string(true), true, aParameters);
+    XSAlgo_ShapeProcessor aShapeProcessor(aParameters);
+    TopoDS_Shape          fixedResult = aShapeProcessor.ProcessShape(comp, GetProcessingFlags().first, aPS1.Next());
+    aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
 
     if (fixedResult.ShapeType() == TopAbs_COMPOUND)
     {
@@ -1554,15 +1555,16 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
   if (found && myShapeBuilder.IsDone()) {
     mappedShape = myShapeBuilder.Value();
     // Apply ShapeFix (on manifold shapes only. Non-manifold topology is processed separately: ssv; 13.11.2010)
-    if (isManifold && aHasGeom) 
+    if (isManifold && aHasGeom)
     {
-      Handle(Standard_Transient) info;
-      mappedShape = 
-        XSAlgo::AlgoContainer()->ProcessShape( mappedShape, myPrecision, myMaxTol,
-                                               "read.step.resource.name", 
-                                               "read.step.sequence", info,
-                                               aPS.Next());
-      XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
+      // Set tolerances for shape processing.
+      // These parameters are calculated inside STEPControl_ActorRead::Transfer() and cannot be set from outside.
+      Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetParameters();
+      XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
+      XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
+      XSAlgo_ShapeProcessor         aShapeProcessor(aParameters);
+      mappedShape = aShapeProcessor.ProcessShape(mappedShape, GetProcessingFlags().first, aPS.Next());
+      aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
     }
   }
   found = !mappedShape.IsNull();
@@ -1725,19 +1727,23 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
     // Apply ShapeFix
     Handle(Transfer_Binder) binder = TP->Find(fs);
     sb = Handle(TransferBRep_ShapeBinder)::DownCast(binder);
-    if (!sb.IsNull() && !sb->Result().IsNull()) {
+    if (!sb.IsNull() && !sb->Result().IsNull())
+    {
       TopoDS_Shape S = sb->Result();
 
-      Handle(Standard_Transient) info;
-      TopoDS_Shape shape = XSAlgo::AlgoContainer()->ProcessShape(S, myPrecision, myMaxTol,
-        "read.step.resource.name",
-        "read.step.sequence", info,
-        theProgress);
-      //      TopoDS_Shape shape = XSAlgo::AlgoContainer()->PerformFixShape( S, TP, myPrecision, myMaxTol );
-      if (shape != S)
-        sb->SetResult(shape);
+      Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetParameters();
+      XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
+      XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
+      XSAlgo_ShapeProcessor         aShapeProcessor(aParameters);
+      TopoDS_Shape          shape = aShapeProcessor.ProcessShape(S, GetProcessingFlags().first, theProgress);
+      aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
 
-      XSAlgo::AlgoContainer()->MergeTransferInfo(TP, info, nbTPitems);
+      if (shape != S)
+      {
+        sb->SetResult(shape);
+      }
+
+      aShapeProcessor.MergeTransferInfo(TP, nbTPitems);
     }
 
 

@@ -32,7 +32,7 @@
 #include <VrmlData_Scene.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 
@@ -165,7 +165,7 @@ static Standard_Integer ReadVrml(Draw_Interpretor& theDI,
   Standard_Real aScaleFactor = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactor))
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer();
+    XSAlgo_ShapeProcessor::PrepareForTransfer();
     aScaleFactor = UnitsMethods::GetCasCadeLengthUnit();
   }
 
@@ -227,7 +227,7 @@ static Standard_Integer WriteVrml(Draw_Interpretor& di, Standard_Integer argc, c
   Standard_Real aScaleFactorM = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactorM))
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     aScaleFactorM = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
   }
   if (!writer.WriteDoc(aDoc, argv[2], aScaleFactorM))

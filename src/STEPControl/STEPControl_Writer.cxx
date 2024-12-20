@@ -13,6 +13,7 @@
 
 #include <STEPControl_Writer.hxx>
 
+#include <DE_ShapeFixParameters.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <STEPControl_ActorWrite.hxx>
@@ -24,7 +25,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
 
@@ -49,7 +50,7 @@ STEPControl_Writer::STEPControl_Writer
   (const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch)
 {
   STEPControl_Controller::Init();
-  SetWS (WS,scratch);
+  SetWS(WS, scratch);
 }
 
 
@@ -157,7 +158,7 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
   thesession->TransferWriter()->SetTransferMode (mws);
   if (!Model()->IsInitializedUnit())
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     Model()->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
   if (!thesession->Model().IsNull())
@@ -167,6 +168,7 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
   Handle(STEPControl_ActorWrite) ActWrite =
     Handle(STEPControl_ActorWrite)::DownCast(WS()->NormAdaptor()->ActorWrite());
   ActWrite->SetGroupMode(Handle(StepData_StepModel)::DownCast(thesession->Model())->InternalParameters.WriteAssembly);
+  InitializeMissingParameters();
   return thesession->TransferWriteShape(sh, compgraph, theProgress);
 }
 
@@ -214,4 +216,98 @@ void STEPControl_Writer::PrintStatsTransfer
   (const Standard_Integer what, const Standard_Integer mode) const
 {
   thesession->TransferWriter()->PrintStats (what,mode);
+}
+//=============================================================================
+
+void STEPControl_Writer::SetParameters(const ParameterMap& theParameters)
+{
+  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  {
+    anActor->SetParameters(theParameters);
+  }
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetParameters(ParameterMap&& theParameters)
+{
+  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  {
+    anActor->SetParameters(std::move(theParameters));
+  }
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters,
+                                       const ParameterMap& theAdditionalParameters)
+{
+  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  {
+    anActor->SetParameters(theParameters, theAdditionalParameters);
+  }
+}
+
+//=============================================================================
+
+const STEPControl_Writer::ParameterMap& STEPControl_Writer::GetParameters() const
+{
+  static const ParameterMap                   anEmptyMap;
+  const Handle(Transfer_ActorOfFinderProcess) anActor = GetActor();
+  return anActor.IsNull() ? anEmptyMap : anActor->GetParameters();
+}
+
+//=============================================================================
+
+void STEPControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
+  {
+    anActor->SetShapeProcessFlags(theFlags);
+  }
+}
+
+//=============================================================================
+
+const STEPControl_Writer::ProcessingFlags& STEPControl_Writer::GetShapeProcessFlags() const
+{
+  static const ProcessingFlags                anEmptyFlags;
+  const Handle(Transfer_ActorOfFinderProcess) anActor = GetActor();
+  return anActor.IsNull() ? anEmptyFlags : anActor->GetShapeProcessFlags();
+}
+
+//=============================================================================
+
+Handle(Transfer_ActorOfFinderProcess) STEPControl_Writer::GetActor() const
+{
+  Handle(XSControl_WorkSession) aSession = WS();
+  if (aSession.IsNull())
+  {
+    return nullptr;
+  }
+
+  Handle(XSControl_Controller) aController = aSession->NormAdaptor();
+  if (aController.IsNull())
+  {
+    return nullptr;
+  }
+
+  return aController->ActorWrite();
+}
+
+//=============================================================================
+
+void STEPControl_Writer::InitializeMissingParameters()
+{
+  if (GetParameters().empty())
+  {
+    SetParameters(DESTEP_Parameters::GetDefaultWritingParamsSTEP());
+  }
+  if (GetShapeProcessFlags().second == false)
+  {
+    ShapeProcess::OperationsFlags aFlags;
+    aFlags.set(ShapeProcess::Operation::SplitCommonVertex);
+    aFlags.set(ShapeProcess::Operation::DirectFaces);
+    SetShapeProcessFlags(aFlags);
+  }
 }

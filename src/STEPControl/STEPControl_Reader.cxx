@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
+#include <DE_ShapeFixParameters.hxx>
 #include <IFSelect_WorkLibrary.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
@@ -60,6 +60,7 @@
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 
@@ -83,7 +84,7 @@ STEPControl_Reader::STEPControl_Reader
 {
   STEPControl_Controller::Init();
   SetWS (WS,scratch);
-  SetNorm ("STEP");
+  SetNorm("STEP");
 }
 
 //=======================================================================
@@ -650,6 +651,23 @@ inline static TCollection_AsciiString getSiName(const Handle(StepBasic_SiUnit)& 
   };
   return aName;
 }
+
+//=================================================================================================
+
+DE_ShapeFixParameters STEPControl_Reader::GetDefaultParameters() const
+{
+  return DESTEP_Parameters::GetDefaultReadingParamsSTEP();
+}
+
+//=================================================================================================
+
+ShapeProcess::OperationsFlags STEPControl_Reader::GetDefaultShapeProcessFlags() const
+{
+  ShapeProcess::OperationsFlags aFlags;
+  aFlags.set(ShapeProcess::Operation::FixShape);
+  return aFlags;
+}
+
 
 //=======================================================================
 //function : findUnits

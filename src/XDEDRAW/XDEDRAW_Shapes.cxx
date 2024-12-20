@@ -35,7 +35,7 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XDEDRAW_Shapes.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <UnitsMethods.hxx>
 
 #include <stdio.h>
@@ -62,7 +62,7 @@ static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, c
   Standard_Real aLengthUnit = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(Doc, aLengthUnit))
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     aLengthUnit = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
     XCAFDoc_DocumentTool::SetLengthUnit(Doc, aLengthUnit);
   }

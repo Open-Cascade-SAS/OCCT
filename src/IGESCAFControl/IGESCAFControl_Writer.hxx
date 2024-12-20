@@ -26,6 +26,7 @@
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_DataMapOfStyleTransient.hxx>
 #include <TopTools_MapOfShape.hxx>
+
 class XSControl_WorkSession;
 class TDocStd_Document;
 class TCollection_AsciiString;

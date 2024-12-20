@@ -14,6 +14,7 @@
 #ifndef _DE_ShapeFixParameters_HeaderFile
 #define _DE_ShapeFixParameters_HeaderFile
 
+#include <Standard_Macro.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
 //! Struct for shape healing parameters storage
@@ -30,7 +31,7 @@ struct DE_ShapeFixParameters
   double           Tolerance3d                         = 1.e-6;
   double           MaxTolerance3d                      = 1.0;
   double           MinTolerance3d                      = 1.e-7;
-  TopAbs_ShapeEnum DetalizationLevel                   = TopAbs_ShapeEnum::TopAbs_FACE;
+  TopAbs_ShapeEnum DetalizationLevel                   = TopAbs_ShapeEnum::TopAbs_VERTEX;
   bool             NonManifold                         = false;
   FixMode          FixFreeShellMode                    = FixMode::FixOrNot;
   FixMode          FixFreeFaceMode                     = FixMode::FixOrNot;

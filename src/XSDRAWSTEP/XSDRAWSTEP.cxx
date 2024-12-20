@@ -45,7 +45,7 @@
 #include <TopoDS_Shape.hxx>
 #include <UnitsMethods.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 
@@ -126,6 +126,10 @@ static Standard_Integer stepread(Draw_Interpretor& theDI,
   }
 
   sr.SetSystemLengthUnit(XSDRAW::GetLengthUnit());
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
+  sr.SetParameters(std::move(aProcessingData.first));
+  sr.SetShapeProcessFlags(aProcessingData.second);
 
   //   nom = "." -> fichier deja lu
   Standard_Integer i, num, nbs, modepri = 1;
@@ -282,7 +286,7 @@ static Standard_Integer testreadstep(Draw_Interpretor& theDI,
     aFileNames[anInd - 1] = theArgVec[anInd];
   }
   STEPControl_Controller::Init();
-  XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+  XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
   IFSelect_ReturnStatus aReadStat;
   DESTEP_Parameters aParameters;
   aParameters.InitFromStatic();
@@ -292,7 +296,11 @@ static Standard_Integer testreadstep(Draw_Interpretor& theDI,
     0, aSize,
     [&](const Standard_Integer theIndex)
     {
-      STEPControl_Reader aReader;
+    STEPControl_Reader                    aReader;
+    XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+      XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
+    aReader.SetParameters(std::move(aProcessingData.first));
+    aReader.SetShapeProcessFlags(aProcessingData.second);
       aReader.SetSystemLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
       if (useStream)
       {
@@ -426,6 +434,10 @@ static Standard_Integer stepwrite(Draw_Interpretor& theDI,
   Message_ProgressScope aPSRoot(progress->Start(), "Translating", 100);
   progress->Show(aPSRoot);
 
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");
+  sw.SetParameters(std::move(aProcessingData.first));
+  sw.SetShapeProcessFlags(aProcessingData.second);
   Standard_Integer stat = sw.Transfer(shape, mode, Standard_True, aPSRoot.Next(90));
   if (stat == IFSelect_RetDone)
   {
@@ -505,7 +517,12 @@ static Standard_Integer testwrite(Draw_Interpretor& theDI,
     0, aSize,
     [&](const Standard_Integer theIndex)
     {
-      STEPControl_Writer aWriter;
+    STEPControl_Writer                    aWriter;
+    XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+      XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");
+    aWriter.SetParameters(std::move(aProcessingData.first));
+    aWriter.SetShapeProcessFlags(aProcessingData.second);
+
       if (aWriter.Transfer(aShape, STEPControl_AsIs, aParameters) != IFSelect_RetDone)
       {
         theDI << "Error: Can't transfer input shape";
@@ -781,6 +798,11 @@ static Standard_Integer ReadStep(Draw_Interpretor& theDI,
     Draw::Set(aDocumentName, aDrawDoc);
   }
 
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+  XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
+  aReader.SetParameters(std::move(aProcessingData.first));
+  aReader.SetShapeProcessFlags(aProcessingData.second);
+
   if (!aReader.Transfer(aDocument, aRootScope.Next()))
   {
     theDI << "Cannot read any relevant data from the STEP file\n";
@@ -942,6 +964,11 @@ static Standard_Integer WriteStep(Draw_Interpretor& theDI,
 
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI);
   Message_ProgressScope aRootScope(aProgress->Start(), "STEP export", isFileMode ? 2 : 1);
+
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+  XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");
+  aWriter.SetParameters(std::move(aProcessingData.first));
+  aWriter.SetShapeProcessFlags(aProcessingData.second);
 
   if (!aLabel.IsNull())
   {

@@ -15,6 +15,8 @@
 //abv 10.04.99 S4136: eliminate using BRepAPI::Precision()
 
 #include <BRepLib.hxx>
+#include <DEIGES_Parameters.hxx>
+#include <DE_ShapeFixParameters.hxx>
 #include <IFSelect_CheckCounter.hxx>
 #include <IFSelect_Functions.hxx>
 #include <IGESControl_Controller.hxx>
@@ -35,6 +37,7 @@
 #include <Transfer_Binder.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_Controller.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
@@ -82,8 +85,6 @@ Handle(IGESData_IGESModel) IGESControl_Reader::IGESModel () const
 {
   return Handle(IGESData_IGESModel)::DownCast(Model());
 }
-
-
 
 //=======================================================================
 //function : NbRootsForTransfer
@@ -313,4 +314,20 @@ void  IGESControl_Reader::PrintTransferInfo
     default: break;
     }
   }
+}
+
+//=================================================================================================
+
+DE_ShapeFixParameters IGESControl_Reader::GetDefaultParameters() const
+{
+  return DEIGES_Parameters::GetDefaultReadingParamsIGES();
+}
+
+//=================================================================================================
+
+ShapeProcess::OperationsFlags IGESControl_Reader::GetDefaultShapeProcessFlags() const
+{
+  ShapeProcess::OperationsFlags aFlags;
+  aFlags.set(ShapeProcess::Operation::FixShape);
+  return aFlags;
 }

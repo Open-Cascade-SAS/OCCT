@@ -39,7 +39,7 @@
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <UnitsMethods.hxx>
@@ -163,13 +163,12 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (const Handle(TDocStd_Document)
   Standard_Real aScaleFactorMM = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(doc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     aScaleFactorMM = UnitsMethods::GetCasCadeLengthUnit();
     // set length unit to the document
     XCAFDoc_DocumentTool::SetLengthUnit(doc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter);
   }
   aModel->ChangeGlobalSection().SetCascadeUnit(aScaleFactorMM);
-
   TransferRoots(theProgress); // replaces the above
   num = NbShapes();
   if ( num <=0 ) return Standard_False;

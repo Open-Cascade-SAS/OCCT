@@ -216,7 +216,7 @@
 #include <XCAFDimTolObjects_DatumObject.hxx>
 #include <XCAFView_Object.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
@@ -568,7 +568,7 @@ void STEPCAFControl_Reader::prepareUnits(const Handle(StepData_StepModel)& theMo
   Standard_Real aScaleFactorMM = 1.;
   if (!XCAFDoc_DocumentTool::GetLengthUnit(theDoc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     aScaleFactorMM = UnitsMethods::GetCasCadeLengthUnit();
     // Sets length unit to the document
     XCAFDoc_DocumentTool::SetLengthUnit(theDoc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter);
@@ -2368,7 +2368,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   // calculate units
   Handle(StepVisual_DraughtingModel) aDModel =
     Handle(StepVisual_DraughtingModel)::DownCast(aDMIA->UsedRepresentation());
-  XSAlgo::AlgoContainer()->PrepareForTransfer();
+  XSAlgo_ShapeProcessor::PrepareForTransfer();
   STEPControl_ActorRead anActor(aTP->Model());
   StepData_Factors aLocalFactors = theLocalFactors;
   anActor.PrepareUnits(aDModel, aTP, aLocalFactors);
@@ -2477,7 +2477,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
   }
   if (!aSDR.IsNull())
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer();
+    XSAlgo_ShapeProcessor::PrepareForTransfer();
     STEPControl_ActorRead anActor(theTR->Model());
     StepData_Factors aLocalFactors = theLocalFactors;
     anActor.PrepareUnits(aSDR, aTP, aLocalFactors);
@@ -2915,7 +2915,7 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
               {
                 Handle(StepGeom_Axis2Placement3d) anAx
                   = Handle(StepGeom_Axis2Placement3d)::DownCast(aSRWP->ItemsValue(j));
-                XSAlgo::AlgoContainer()->PrepareForTransfer();
+                XSAlgo_ShapeProcessor::PrepareForTransfer();
                 STEPControl_ActorRead anActor(aTP->Model());
                 StepData_Factors aLocalFactors = theLocalFactors;
                 anActor.PrepareUnits(aSRWP, aTP, aLocalFactors);
@@ -4455,7 +4455,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
       StepData_Factors aLocalFactors = theLocalFactors;
       if (!aDMIA.IsNull())
       {
-        XSAlgo::AlgoContainer()->PrepareForTransfer();
+        XSAlgo_ShapeProcessor::PrepareForTransfer();
         STEPControl_ActorRead anActor(aModel);
         Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
         anActor.PrepareUnits(aDMIA->UsedRepresentation(), aTP, aLocalFactors);
@@ -4811,7 +4811,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
     StepData_Factors aLocalFactors = theLocalFactors;
     if (!aDModel.IsNull())
     {
-      XSAlgo::AlgoContainer()->PrepareForTransfer();
+      XSAlgo_ShapeProcessor::PrepareForTransfer();
       STEPControl_ActorRead anActor(aTP->Model());
       anActor.PrepareUnits(aDModel, aTP, aLocalFactors);
     }
@@ -5366,6 +5366,49 @@ void STEPCAFControl_Reader::SetViewMode(const Standard_Boolean viewmode)
 Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
 {
   return myViewMode;
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetParameters(const ParameterMap& theParameters)
+{
+  myReader.SetParameters(theParameters);
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetParameters(ParameterMap&& theParameters)
+{
+  myReader.SetParameters(std::move(theParameters));
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetParameters(const DE_ShapeFixParameters& theParameters,
+                                          const ParameterMap&          theAdditionalParameters)
+{
+  myReader.SetParameters(theParameters, theAdditionalParameters);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Reader::ParameterMap& STEPCAFControl_Reader::GetParameters() const
+{
+  return myReader.GetParameters();
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  return myReader.SetShapeProcessFlags(theFlags);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Reader::ProcessingFlags& STEPCAFControl_Reader::GetShapeProcessFlags() const
+{
+  return myReader.GetShapeProcessFlags();
 }
 
 //=======================================================================

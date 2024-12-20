@@ -55,19 +55,20 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.ReadBSplineContinuity =
-    (ReadMode_BSplineContinuity)theResource->IntegerVal("read.iges.bspline.continuity",
-                                                        InternalParameters.ReadBSplineContinuity,
-                                                        aScope);
+    (DEIGES_Parameters::ReadMode_BSplineContinuity)theResource->IntegerVal(
+      "read.iges.bspline.continuity",
+      InternalParameters.ReadBSplineContinuity,
+      aScope);
   InternalParameters.ReadPrecisionMode =
-    (ReadMode_Precision)theResource->IntegerVal("read.precision.mode",
-                                                InternalParameters.ReadPrecisionMode,
-                                                aScope);
+    (DEIGES_Parameters::ReadMode_Precision)
+      theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
   InternalParameters.ReadMaxPrecisionMode =
-    (ReadMode_MaxPrecision)theResource->IntegerVal("read.maxprecision.mode",
-                                                   InternalParameters.ReadMaxPrecisionMode,
-                                                   aScope);
+    (DEIGES_Parameters::ReadMode_MaxPrecision)theResource->IntegerVal(
+      "read.maxprecision.mode",
+      InternalParameters.ReadMaxPrecisionMode,
+      aScope);
   InternalParameters.ReadMaxPrecisionVal =
     theResource->RealVal("read.maxprecision.val", InternalParameters.ReadMaxPrecisionVal, aScope);
   InternalParameters.ReadSameParamMode =
@@ -75,9 +76,10 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                             InternalParameters.ReadSameParamMode,
                             aScope);
   InternalParameters.ReadSurfaceCurveMode =
-    (ReadMode_SurfaceCurve)theResource->IntegerVal("read.surfacecurve.mode",
-                                                   InternalParameters.ReadSurfaceCurveMode,
-                                                   aScope);
+    (DEIGES_Parameters::ReadMode_SurfaceCurve)theResource->IntegerVal(
+      "read.surfacecurve.mode",
+      InternalParameters.ReadSurfaceCurveMode,
+      aScope);
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
 
@@ -99,13 +101,14 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("read.layer", InternalParameters.ReadLayer, aScope);
 
   InternalParameters.WriteBRepMode =
-    (WriteMode_BRep)theResource->IntegerVal("write.brep.mode",
-                                            InternalParameters.WriteBRepMode,
-                                            aScope);
+    (DEIGES_Parameters::WriteMode_BRep)theResource->IntegerVal("write.brep.mode",
+                                                               InternalParameters.WriteBRepMode,
+                                                               aScope);
   InternalParameters.WriteConvertSurfaceMode =
-    (WriteMode_ConvertSurface)theResource->IntegerVal("write.convertsurface.mode",
-                                                      InternalParameters.WriteConvertSurfaceMode,
-                                                      aScope);
+    (DEIGES_Parameters::WriteMode_ConvertSurface)theResource->IntegerVal(
+      "write.convertsurface.mode",
+      InternalParameters.WriteConvertSurfaceMode,
+      aScope);
   InternalParameters.WriteHeaderAuthor =
     theResource->StringVal("write.header.author", InternalParameters.WriteHeaderAuthor, aScope);
   InternalParameters.WriteHeaderCompany =
@@ -119,15 +122,15 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
   InternalParameters.WriteSequence =
     theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
   InternalParameters.WritePrecisionMode =
-    (WriteMode_PrecisionMode)theResource->IntegerVal("write.precision.mode",
-                                                     InternalParameters.WritePrecisionMode,
-                                                     aScope);
+    (DEIGES_Parameters::WriteMode_PrecisionMode)theResource->IntegerVal(
+      "write.precision.mode",
+      InternalParameters.WritePrecisionMode,
+      aScope);
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
   InternalParameters.WritePlaneMode =
-    (WriteMode_PlaneMode)theResource->IntegerVal("write.plane.mode",
-                                                 InternalParameters.WritePlaneMode,
-                                                 aScope);
+    (DEIGES_Parameters::WriteMode_PlaneMode)
+      theResource->IntegerVal("write.plane.mode", InternalParameters.WritePlaneMode, aScope);
   InternalParameters.WriteOffsetMode =
     theResource->BooleanVal("write.offset", InternalParameters.WriteOffsetMode, aScope);
   InternalParameters.WriteColor =

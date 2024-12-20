@@ -26,6 +26,7 @@
 #include <TopoDS_Shape.hxx>
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
+#include <Transfer_ActorOfTransientProcess.hxx>
 #include <XSControl_Controller.hxx>
 #include <XSControl_Reader.hxx>
 #include <XSControl_TransferReader.hxx>
@@ -255,6 +256,7 @@ Standard_Boolean  XSControl_Reader::TransferEntity
   if (start.IsNull()) return Standard_False;
   const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
   TR->BeginTransfer();
+  InitializeMissingParameters();
   if (TR->TransferOne (start, Standard_True, theProgress) == 0) return Standard_False;
   TopoDS_Shape sh = TR->ShapeResult(start);
   //ShapeExtend_Explorer STU;
@@ -279,6 +281,7 @@ Standard_Integer  XSControl_Reader::TransferList
   Standard_Integer i, nb = list->Length();
   const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
   TR->BeginTransfer();
+  InitializeMissingParameters();
   ClearShapes();
   ShapeExtend_Explorer STU;
   Message_ProgressScope PS(theProgress, NULL, nb);
@@ -307,6 +310,7 @@ Standard_Integer  XSControl_Reader::TransferRoots (const Message_ProgressRange& 
   const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
    
   TR->BeginTransfer();
+  InitializeMissingParameters();
   ClearShapes();
   ShapeExtend_Explorer STU;
   Message_ProgressScope PS (theProgress, "Root", nb);
@@ -483,4 +487,94 @@ void XSControl_Reader::GetStatsTransfer (const Handle(TColStd_HSequenceOfTransie
 	}
   }
 }
-						      
+
+//=============================================================================
+
+void XSControl_Reader::SetParameters(const ParameterMap& theParameters)
+{
+  if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
+  {
+    anActor->SetParameters(theParameters);
+  }
+}
+
+//=============================================================================
+
+void XSControl_Reader::SetParameters(ParameterMap&& theParameters)
+{
+  if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
+  {
+    anActor->SetParameters(std::move(theParameters));
+  }
+}
+
+//=============================================================================
+
+void XSControl_Reader::SetParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
+{
+  if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
+  {
+    anActor->SetParameters(theParameters, theAdditionalParameters);
+  }
+}
+
+//=============================================================================
+
+const XSControl_Reader::ParameterMap& XSControl_Reader::GetParameters() const
+{
+  static const ParameterMap anEmptyMap;
+  const Handle(Transfer_ActorOfTransientProcess) anActor = GetActor();
+  return anActor.IsNull() ? anEmptyMap : anActor->GetParameters();
+}
+
+//=============================================================================
+
+void XSControl_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
+  {
+    anActor->SetProcessingFlags(theFlags);
+  }
+}
+
+//=============================================================================
+
+const XSControl_Reader::ProcessingFlags& XSControl_Reader::GetShapeProcessFlags() const
+{
+  static const ProcessingFlags                   anEmptyFlags;
+  const Handle(Transfer_ActorOfTransientProcess) anActor = GetActor();
+  return anActor.IsNull() ? anEmptyFlags : anActor->GetProcessingFlags();
+}
+
+//=============================================================================
+
+Handle(Transfer_ActorOfTransientProcess) XSControl_Reader::GetActor() const
+{
+  Handle(XSControl_WorkSession) aSession = WS();
+  if (aSession.IsNull())
+  {
+    return nullptr;
+  }
+
+  Handle(XSControl_TransferReader) aReader = aSession->TransferReader();
+  if (aReader.IsNull())
+  {
+    return nullptr;
+  }
+
+  return aReader->Actor();
+}
+
+//=============================================================================
+
+void XSControl_Reader::InitializeMissingParameters()
+{
+  if (GetParameters().empty())
+  {
+    SetParameters(GetDefaultParameters());
+  }
+  if (!GetShapeProcessFlags().second)
+  {
+    SetShapeProcessFlags(GetDefaultShapeProcessFlags());
+  }
+}

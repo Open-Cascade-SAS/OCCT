@@ -922,9 +922,18 @@ Handle(Transfer_Binder) Transfer_ProcessForTransient::TransferProduct
   Message_ProgressScope aScope(theProgress, NULL, 1, true);
   while (!actor.IsNull())
   {
-    if (actor->Recognize(start)) binder = actor->Transferring(start, this, aScope.Next());
-    else binder.Nullify();
-    if (!binder.IsNull()) break;
+    if (actor->Recognize(start))
+    {
+      binder = actor->Transferring(start, this, aScope.Next());
+    }
+    else
+    {
+      binder.Nullify();
+    }
+    if (!binder.IsNull())
+    {
+      break;
+    }
     actor = actor->Next();
   }
   if (aScope.UserBreak())

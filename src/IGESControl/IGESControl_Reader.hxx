@@ -20,15 +20,12 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <XSControl_Reader.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_PrintFail.hxx>
 #include <IFSelect_PrintCount.hxx>
-class XSControl_WorkSession;
+
 class IGESData_IGESModel;
-
-
 
 //! Reads IGES files, checks them and translates their contents into Open CASCADE models.
 //! The IGES data can be that of a whole model or that of a specific list of entities in the model.
@@ -68,9 +65,7 @@ class IGESData_IGESModel;
 class IGESControl_Reader  : public XSControl_Reader
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-
   
   //! Creates a Reader from scratch
   Standard_EXPORT IGESControl_Reader();
@@ -96,29 +91,19 @@ public:
   //! Prints Statistics and check list for Transfer
   Standard_EXPORT void PrintTransferInfo (const IFSelect_PrintFail failwarn, const IFSelect_PrintCount mode) const;
 
-
-
-
 protected:
+  //! Returns default parameters for shape fixing.
+  //! @return default parameters for shape fixing.
+  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultParameters() const Standard_OVERRIDE;
 
-
-
-
+  //! Returns default flags for shape processing.
+  //! @return Default flags for shape processing.
+  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const Standard_OVERRIDE;
 
 private:
-
-
-
   Standard_Boolean theReadOnlyVisible;
-
-
 };
 
-
 #include <IGESControl_Reader.lxx>
-
-
-
-
 
 #endif // _IGESControl_Reader_HeaderFile

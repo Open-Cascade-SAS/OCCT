@@ -64,7 +64,6 @@ class STEPControl_ActorRead : public Transfer_ActorOfTransientProcess
 {
 
 public:
-
   Standard_EXPORT STEPControl_ActorRead(const Handle(Interface_InterfaceModel)& theModel);
 
   Standard_EXPORT virtual Standard_Boolean Recognize (const Handle(Standard_Transient)& start) Standard_OVERRIDE;
@@ -116,13 +115,9 @@ public:
                                                  const StepData_Factors& theLocalFactors = StepData_Factors());
 
 
-
-
   DEFINE_STANDARD_RTTIEXT(STEPControl_ActorRead,Transfer_ActorOfTransientProcess)
 
 protected:
-
-
   //! Transfers product definition entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
     Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
@@ -204,11 +199,7 @@ protected:
                     const Handle(Transfer_TransientProcess)& TP,
                     const Message_ProgressRange& theProgress);
 
-
-
 private:
-
-
   Standard_EXPORT TopoDS_Shell closeIDEASShell (const TopoDS_Shell& shell, const TopTools_ListOfShape& closingShells);
 
   Standard_EXPORT void computeIDEASClosings (const TopoDS_Compound& comp, TopTools_IndexedDataMapOfShapeListOfShape& shellClosingMap);
@@ -221,18 +212,12 @@ private:
                                                   TopoDS_Compound& theCund,
                                                   Message_ProgressScope& thePS);
 
+private:
   StepToTopoDS_NMTool myNMTool;
   Standard_Real myPrecision;
   Standard_Real myMaxTol;
   Handle(StepRepr_Representation) mySRContext;
   Handle(Interface_InterfaceModel) myModel;
-
 };
-
-
-
-
-
-
 
 #endif // _STEPControl_ActorRead_HeaderFile

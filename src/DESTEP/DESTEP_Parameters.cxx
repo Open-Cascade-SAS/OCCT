@@ -95,3 +95,17 @@ void DESTEP_Parameters::Reset()
   DESTEP_Parameters aParameters;
   *this = aParameters;
 }
+
+//=================================================================================================
+
+DE_ShapeFixParameters DESTEP_Parameters::GetDefaultReadingParamsSTEP()
+{
+  return DE_ShapeFixParameters();
+}
+
+//=================================================================================================
+
+DE_ShapeFixParameters DESTEP_Parameters::GetDefaultWritingParamsSTEP()
+{
+  return DE_ShapeFixParameters();
+}

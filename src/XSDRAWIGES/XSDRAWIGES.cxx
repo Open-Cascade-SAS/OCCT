@@ -46,7 +46,7 @@
 #include <Transfer_IteratorOfProcessForTransient.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
@@ -216,12 +216,16 @@ static Standard_Integer igesbrep(Draw_Interpretor& theDI,
       modepri = Draw::Atoi(str);
     }
 
+    XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+      XSAlgo_ShapeProcessor::ReadProcessingData("read.iges.resource.name", "read.iges.sequence");
+    Reader.SetParameters(std::move(aProcessingData.first));
+    Reader.SetShapeProcessFlags(aProcessingData.second);
+
     if (modepri == 0)
     {  //fin
       theDI << "Bye and good luck! \n";
       break;
     }
-
     else if (modepri <= 2)
     {  // 1 : Visible Roots, 2 : All Roots
       theDI << "All Geometry Transfer\n";
@@ -489,6 +493,12 @@ static Standard_Integer testread(Draw_Interpretor& theDI,
     case IFSelect_RetFail: { theDI << "error during read\n";  return 1; }
     default: { theDI << "failure\n";   return 1; }
   }
+
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("read.iges.resource.name", "read.iges.sequence");
+  Reader.SetParameters(std::move(aProcessingData.first));
+  Reader.SetShapeProcessFlags(aProcessingData.second);
+
   Reader.TransferRoots();
   TopoDS_Shape shape = Reader.OneShape();
   DBRep::Set(theArgVec[2], shape);
@@ -519,6 +529,11 @@ static Standard_Integer brepiges(Draw_Interpretor& theDI,
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(theDI, 1);
   Message_ProgressScope aRootProgress(aProgress->Start(), "Translating", 100);
   aProgress->Show(aRootProgress);
+
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("write.iges.resource.name", "write.iges.sequence");
+  anIgesWriter.SetParameters(std::move(aProcessingData.first));
+  anIgesWriter.SetShapeProcessFlags(aProcessingData.second);
 
   Message_ProgressScope aStepProgress(aRootProgress.Next(90), NULL, theNbArgs);
   for (Standard_Integer i = 1; i < theNbArgs && aStepProgress.More(); i++)
@@ -577,6 +592,10 @@ static Standard_Integer testwrite(Draw_Interpretor& theDI,
     return 1;
   }
   IGESControl_Writer Writer;
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("write.iges.resource.name", "write.iges.sequence");
+  Writer.SetParameters(std::move(aProcessingData.first));
+  Writer.SetShapeProcessFlags(aProcessingData.second);
   Standard_CString filename = theArgVec[1];
   TopoDS_Shape shape = DBRep::Get(theArgVec[2]);
   Standard_Boolean ok = Writer.AddShape(shape);
@@ -810,6 +829,10 @@ static Standard_Integer etest(Draw_Interpretor& theDI,
   IGESControl_Reader aReader;
   aReader.ReadFile(theArgVec[1]);
   aReader.SetReadVisible(Standard_True);
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("read.iges.resource.name", "read.iges.sequence");
+  aReader.SetParameters(std::move(aProcessingData.first));
+  aReader.SetShapeProcessFlags(aProcessingData.second);
   aReader.TransferRoots();
   TopoDS_Shape shape = aReader.OneShape();
   DBRep::Set(theArgVec[2], shape);
@@ -882,6 +905,11 @@ static Standard_Integer ReadIges(Draw_Interpretor& theDI,
     return 1;
   }
 
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("read.iges.resource.name", "read.iges.sequence");
+  aReader.SetParameters(std::move(aProcessingData.first));
+  aReader.SetShapeProcessFlags(aProcessingData.second);
+
   Handle(TDocStd_Document) aDocument;
   if (!DDocStd::GetDocument(theArgVec[1], aDocument, Standard_False))
   {
@@ -943,6 +971,10 @@ static Standard_Integer WriteIges(Draw_Interpretor& theDI, Standard_Integer theN
       case 'l': aWriter.SetLayerMode(mode); break;
       }
   }
+  XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
+    XSAlgo_ShapeProcessor::ReadProcessingData("write.iges.resource.name", "write.iges.sequence");
+  aWriter.SetParameters(std::move(aProcessingData.first));
+  aWriter.SetShapeProcessFlags(aProcessingData.second);
   aWriter.Transfer(aDocument, aRootScope.Next());
 
   if (isModified)

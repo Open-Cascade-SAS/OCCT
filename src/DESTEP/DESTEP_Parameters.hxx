@@ -14,6 +14,7 @@
 #ifndef _DESTEP_Parameters_HeaderFile
 #define _DESTEP_Parameters_HeaderFile
 
+#include <DE_ShapeFixParameters.hxx>
 #include <Resource_FormatType.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -120,6 +121,7 @@ public:
     WriteMode_VertexMode_SingleVertex
   };
 
+public:
   Standard_EXPORT DESTEP_Parameters();
 
   //! Initialize parameters
@@ -142,6 +144,12 @@ public:
         return "";
     }
   }
+
+  //! Returns default parameters for reading STEP files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultReadingParamsSTEP();
+
+  //! Returns default parameters for writing STEP files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultWritingParamsSTEP();
 
 public:
   // Common

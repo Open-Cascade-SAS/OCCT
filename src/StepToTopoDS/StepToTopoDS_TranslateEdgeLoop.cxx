@@ -74,7 +74,7 @@
 #include <TopoDS_Wire.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 // ============================================================================
 // Method  : RemoveSinglePCurve
@@ -164,7 +164,7 @@ static void CheckPCurves (TopoDS_Wire& aWire, const TopoDS_Face& aFace,
 
 
     // advanced check
-    XSAlgo::AlgoContainer()->CheckPCurve (myEdge, aFace, preci, sbwd->IsSeam(i));
+    XSAlgo_ShapeProcessor::CheckPCurve(myEdge, aFace, preci, sbwd->IsSeam(i));
   }
 }
 
