@@ -1,2 +1,0 @@
-OCC_TOOLKIT_NAME = \$\$TARGET
-include(../../OccToolkit.pri)

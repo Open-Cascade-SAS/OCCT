@@ -1,2 +1,0 @@
-OCC_MODULE_NAME = \$\$TARGET
-include(../OccModule.pri)
