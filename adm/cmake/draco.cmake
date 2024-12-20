@@ -1,6 +1,51 @@
 # Draco - a library for a lossy vertex data compression, used as extension to glTF format.
 # https://github.com/google/draco
 
+macro (SEARCH_DRACO_LIB)
+  if (3RDPARTY_DRACO_DIR AND EXISTS "${3RDPARTY_DRACO_DIR}")
+    if (NOT 3RDPARTY_DRACO_LIBRARY OR NOT EXISTS "${3RDPARTY_DRACO_LIBRARY}")
+      set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .a)
+      set (3RDPARTY_DRACO_LIBRARY "3RDPARTY_DRACO_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to Draco library" FORCE)
+  
+      find_library (3RDPARTY_DRACO_LIBRARY NAMES ${CSF_Draco}
+                                           PATHS "${3RDPARTY_DRACO_DIR}"
+                                           PATH_SUFFIXES lib
+                                           CMAKE_FIND_ROOT_PATH_BOTH
+                                           NO_DEFAULT_PATH)
+      if (3RDPARTY_DRACO_LIBRARY AND EXISTS "${3RDPARTY_DRACO_LIBRARY}")
+        get_filename_component (3RDPARTY_DRACO_LIBRARY_DIR "${3RDPARTY_DRACO_LIBRARY}" PATH)
+        set (3RDPARTY_DRACO_LIBRARY_DIR "${3RDPARTY_DRACO_LIBRARY_DIR}" CACHE FILEPATH "The directory containing Draco library" FORCE)
+      endif()
+    endif()
+  
+    if (WIN32 AND (NOT 3RDPARTY_DRACO_LIBRARY_DEBUG OR NOT EXISTS "${3RDPARTY_DRACO_LIBRARY_DEBUG}"))
+      set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .a)
+      set (3RDPARTY_DRACO_LIBRARY_DEBUG "3RDPARTY_DRACO_LIBRARY_DEBUG-NOTFOUND" CACHE FILEPATH "The path to debug Draco library" FORCE)
+  
+      find_library (3RDPARTY_DRACO_LIBRARY_DEBUG NAMES ${CSF_Draco}
+                                           PATHS "${3RDPARTY_DRACO_DIR}"
+                                           PATH_SUFFIXES libd debug/lib
+                                           CMAKE_FIND_ROOT_PATH_BOTH
+                                           NO_DEFAULT_PATH)
+      if (3RDPARTY_DRACO_LIBRARY_DEBUG AND EXISTS "${3RDPARTY_DRACO_LIBRARY_DEBUG}")
+        get_filename_component (3RDPARTY_DRACO_LIBRARY_DIR_DEBUG "${3RDPARTY_DRACO_LIBRARY_DEBUG}" PATH)
+        set (3RDPARTY_DRACO_LIBRARY_DIR_DEBUG "${3RDPARTY_DRACO_LIBRARY_DIR_DEBUG}" CACHE FILEPATH "The directory containing debug Draco library" FORCE)
+      endif()
+    endif()
+  endif()
+endmacro()
+
+# vcpkg processing
+if (BUILD_USE_VCPKG)
+  find_package (draco CONFIG REQUIRED)
+
+  set (3RDPARTY_DRACO_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+  SEARCH_DRACO_LIB()
+
+  list (APPEND 3RDPARTY_INCLUDE_DIRS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/draco")
+  return()
+endif()
+
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_macros")
 
 if (NOT DEFINED 3RDPARTY_DRACO_DIR)
@@ -65,34 +110,4 @@ else()
   list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_DRACO_INCLUDE_DIR)
 endif()
 
-if (3RDPARTY_DRACO_DIR AND EXISTS "${3RDPARTY_DRACO_DIR}")
-  if (NOT 3RDPARTY_DRACO_LIBRARY OR NOT EXISTS "${3RDPARTY_DRACO_LIBRARY}")
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .a)
-    set (3RDPARTY_DRACO_LIBRARY "3RDPARTY_DRACO_LIBRARY-NOTFOUND" CACHE FILEPATH "The path to Draco library" FORCE)
-
-    find_library (3RDPARTY_DRACO_LIBRARY NAMES ${CSF_Draco}
-                                         PATHS "${3RDPARTY_DRACO_DIR}"
-                                         PATH_SUFFIXES lib
-                                         CMAKE_FIND_ROOT_PATH_BOTH
-                                         NO_DEFAULT_PATH)
-    if (3RDPARTY_DRACO_LIBRARY AND EXISTS "${3RDPARTY_DRACO_LIBRARY}")
-      get_filename_component (3RDPARTY_DRACO_LIBRARY_DIR "${3RDPARTY_DRACO_LIBRARY}" PATH)
-      set (3RDPARTY_DRACO_LIBRARY_DIR "${3RDPARTY_DRACO_LIBRARY_DIR}" CACHE FILEPATH "The directory containing Draco library" FORCE)
-    endif()
-  endif()
-
-  if (WIN32 AND (NOT 3RDPARTY_DRACO_LIBRARY_DEBUG OR NOT EXISTS "${3RDPARTY_DRACO_LIBRARY_DEBUG}"))
-    set (CMAKE_FIND_LIBRARY_SUFFIXES .lib .a)
-    set (3RDPARTY_DRACO_LIBRARY_DEBUG "3RDPARTY_DRACO_LIBRARY_DEBUG-NOTFOUND" CACHE FILEPATH "The path to debug Draco library" FORCE)
-
-    find_library (3RDPARTY_DRACO_LIBRARY_DEBUG NAMES ${CSF_Draco}
-                                         PATHS "${3RDPARTY_DRACO_DIR}"
-                                         PATH_SUFFIXES libd
-                                         CMAKE_FIND_ROOT_PATH_BOTH
-                                         NO_DEFAULT_PATH)
-    if (3RDPARTY_DRACO_LIBRARY_DEBUG AND EXISTS "${3RDPARTY_DRACO_LIBRARY_DEBUG}")
-      get_filename_component (3RDPARTY_DRACO_LIBRARY_DIR_DEBUG "${3RDPARTY_DRACO_LIBRARY_DEBUG}" PATH)
-      set (3RDPARTY_DRACO_LIBRARY_DIR_DEBUG "${3RDPARTY_DRACO_LIBRARY_DIR_DEBUG}" CACHE FILEPATH "The directory containing debug Draco library" FORCE)
-    endif()
-  endif()
-endif()
+SEARCH_DRACO_LIB()

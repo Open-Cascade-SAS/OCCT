@@ -1,5 +1,13 @@
 # RapidJSON
 
+# vcpkg processing
+if (BUILD_USE_VCPKG)
+  find_package(RapidJSON CONFIG REQUIRED)
+  set(CSF_RapidJSON rapidjson)
+  list (APPEND 3RDPARTY_INCLUDE_DIRS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/rapidjson")
+  return()
+endif()
+
 if (NOT DEFINED INSTALL_RAPIDJSON)
   set (INSTALL_RAPIDJSON OFF CACHE BOOL "${INSTALL_RAPIDJSON_DESCR}")
 endif()

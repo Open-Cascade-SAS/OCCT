@@ -1,5 +1,19 @@
 # vtk
 
+# vcpkg processing
+if (BUILD_USE_VCPKG)
+  find_package(VTK REQUIRED)
+  set(CSF_VTK VTK::CommonCore)
+  set(IS_VTK_9XX 1)
+  if (WIN32)
+    set (USED_3RDPARTY_VTK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
+  else()
+    set (USED_3RDPARTY_VTK_DIR "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib")
+  endif()
+  list (APPEND 3RDPARTY_INCLUDE_DIRS "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include")
+  return()
+endif()
+
 if (NOT DEFINED INSTALL_VTK)
   set (INSTALL_VTK OFF CACHE BOOL "${INSTALL_VTK_DESCR}")
 endif()
