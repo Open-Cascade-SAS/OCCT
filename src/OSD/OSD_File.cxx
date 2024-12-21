@@ -459,7 +459,7 @@ void OSD_File::Build (const OSD_OpenMode theMode,
     throw Standard_ProgramError ("OSD_File::Build(): no name was given");
   }
 
-  const char* anFDOpenMode = "r";
+  const char* anFDOpenMode;
   Standard_Integer anOpenMode = O_CREAT | O_TRUNC;
   switch (theMode)
   {
@@ -544,7 +544,7 @@ void OSD_File::Append (const OSD_OpenMode theMode,
     throw Standard_ProgramError ("OSD_File::Append(): no name was given");
   }
 
-  const char* anFDOpenMode = "r";
+  const char* anFDOpenMode;
   Standard_Integer anOpenMode = O_APPEND;
   switch (theMode)
   {
@@ -622,7 +622,7 @@ void OSD_File::Open (const OSD_OpenMode theMode,
     throw Standard_ProgramError ("OSD_File::Open(): no name was given");
   }
 
-  const char* anFDOpenMode = "r";
+  const char* anFDOpenMode;
   Standard_Integer anOpenMode = 0;
   switch (theMode)
   {

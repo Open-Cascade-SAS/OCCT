@@ -539,9 +539,6 @@ void GeomLib::EvalMaxDistanceAlongParameter(const Adaptor3d_Curve& ACurve,
     local_distance_squared =
       Point1.SquareDistance (Point2) ;
     
-    local_distance_squared =
-      Point1.SquareDistance (Point2) ;
-    
     
     if (local_distance_squared > tolerance_squared) {
       
@@ -1508,7 +1505,6 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
 //   Standard_Boolean rational = ( InU && BS->IsURational() ) 
 //                                   || ( !InU && BS->IsVRational() ) ;
   Standard_Boolean rational = (BS->IsURational() ||  BS->IsVRational());
-  Standard_Boolean NullWeight;
   constexpr Standard_Real EpsW = 10*Precision::PConfusion();
   Standard_Integer gap = 3;
   if ( rational ) gap++;
@@ -1739,7 +1735,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
     TColStd_Array2OfReal& NewW = NewWeights->ChangeArray2();
 
     if (!rational) NewW.Init(1.);
-    NullWeight= Standard_False;
+    Standard_Boolean NullWeight= Standard_False;
 
     if (InU) {
       for (ii=1; ii<=NU && !NullWeight; ii++) {
@@ -1791,7 +1787,6 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
       std::cout << "Echec de l'Extension rationnelle" << std::endl;    
 #endif
       lambmin /= 3.;
-      NullWeight = Standard_False;
     }
     else {
       ExtOk = Standard_True;

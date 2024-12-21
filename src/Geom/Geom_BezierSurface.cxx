@@ -404,10 +404,9 @@ Geom_BezierSurface::Geom_BezierSurface
     throw Standard_ConstructionError();
   }
   
-  Standard_Integer Row = PoleWeights.LowerRow();
   Standard_Integer Col = PoleWeights.LowerCol();
   while (Col <= PoleWeights.UpperCol()) {
-    Row = PoleWeights.LowerRow();
+    Standard_Integer Row = PoleWeights.LowerRow();
     while (Row <= PoleWeights.UpperRow()) {
       if (PoleWeights(Row, Col) <= gp::Resolution()) {
         throw Standard_ConstructionError();

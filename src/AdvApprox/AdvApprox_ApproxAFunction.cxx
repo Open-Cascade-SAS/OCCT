@@ -419,7 +419,7 @@ void AdvApprox_ApproxAFunction::Approximation(
 					      Standard_Integer& ErrorCode)
 {
 //  Standard_Real EpsPar =  Precision::Confusion();
-  Standard_Integer IDIM, NUPIL,TheDeg;
+  Standard_Integer NUPIL,TheDeg;
 #ifdef OCCT_DEBUG
   Standard_Integer NDIMEN = TotalDimension;
 #endif
@@ -440,7 +440,7 @@ void AdvApprox_ApproxAFunction::Approximation(
 
 //--> La dimension totale doit etre la somme des dimensions des
 //    sous-espaces
-      IDIM=0;
+      Standard_Integer IDIM=0;
       for ( Standard_Integer I=1; I<=TotalNumSS; I++) {IDIM += LocalDimension(I);}
       if (IDIM != TotalDimension) 
 	{ErrorCode=1;
@@ -510,7 +510,6 @@ void AdvApprox_ApproxAFunction::Approximation(
 
 //---------- Calcul du degre de la courbe et de l' erreur max ----------
 
-      IDIM=0;
       NumCoeffPerCurveArray(NumCurves + 1)=0;
 
 //    L'erreur doit etre satisfaite sur tous les sous-espaces sinon, on decoupe

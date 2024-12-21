@@ -629,8 +629,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   temp_degree,
   pivot_index_problem,
   num_flat_knots,
-  num_knots,
-  order ;
+  num_knots;
 
   if (Parameterisation != Convert_TgtThetaOver2 &&
       Parameterisation != Convert_RationalC1) {
@@ -682,10 +681,9 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
 
 
      Degree = 4 ;
-     order = Degree + 1 ;
      num_knots = 5 ;
      num_flat_knots = (Degree -1) * num_knots + 2 * 2 ;
-     num_poles = num_flat_knots - order ;
+     num_poles = num_flat_knots - Degree - 1 ;
      num_periodic_poles = num_poles - 2 ;
      TColStd_Array1OfReal  flat_knots(1,num_flat_knots) ;
      CosNumeratorPtr = 
@@ -721,7 +719,6 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
        KnotsPtr->SetValue(ii, (ii-1) * half_pi) ;
        MultsPtr->SetValue(ii, Degree-1) ;
      }
-     order = degree + 1 ;
 
      TColStd_Array1OfReal      parameters(1,num_poles)  ;
      TColgp_Array1OfPnt        poles_array(1,num_poles) ;

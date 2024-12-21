@@ -62,6 +62,7 @@ class BndLib_Box2dCurve  {
 
   void PerformOptimal(const Standard_Real Tol);
 
+  // Keep myT1 and myT2 unchanged
   void Clear();
 
   Standard_Integer ErrorStatus() const;

@@ -2913,8 +2913,6 @@ BSplCLib::SolveBandedSystem(const math_Matrix&  Matrix,
     if ( Abs(divizor) > Toler )
       Inverse = 1.0e0 / divizor ;
     else {
-      Inverse = 1.0e0;
-//      std::cout << "  BSplCLib::SolveBandedSystem() : zero determinant " << std::endl;
       ReturnCode = 1;
       goto FINISH;
     }

@@ -459,7 +459,7 @@ void AppDef_Variational::Approximate()
 
   //---------------------------------------------------------------------
 
-  Standard_Integer jp2d,jp3d,index,ipole, 
+  Standard_Integer jp2d,jp3d,ipole, 
     NbElem = TheCurve->NbElements();
 
   TColgp_Array1OfPnt TabP3d(1, Max(1,myNbP3d));
@@ -468,9 +468,6 @@ void AppDef_Variational::Approximate()
 
   gp_Pnt2d P2d;
   gp_Pnt P3d;
-
-  index=0;
-
   {
     Handle(TColStd_HArray2OfReal) PolynomialIntervalsPtr =
       new TColStd_HArray2OfReal(1,NbElem,1,2) ;
@@ -549,7 +546,7 @@ void AppDef_Variational::Approximate()
 
       for (ipole=PolesPtr->LowerRow();ipole<=PolesPtr->UpperRow();ipole++)
       {
-        index=PolesPtr->LowerCol();
+        Standard_Integer index = PolesPtr->LowerCol();
         /*	    if(myNbP2d !=0 ) 
         {
         for (jp2d=1;jp2d<=myNbP2d;jp2d++)
@@ -1150,7 +1147,7 @@ void AppDef_Variational::TheMotor(
 
   Handle(TColStd_HArray1OfReal) CurrentTi, NewTi, OldTi;  
   Handle(TColStd_HArray2OfInteger) Dependence;
-  Standard_Boolean lestim, lconst, ToOptim, iscut;
+  Standard_Boolean lestim, ToOptim, iscut;
   Standard_Boolean isnear = Standard_False, again = Standard_True; 
   Standard_Integer NbEst, ICDANA, NumPnt, Iter;
   Standard_Integer MaxNbEst =5; 
@@ -1198,7 +1195,7 @@ void AppDef_Variational::TheMotor(
 
     // (1) Loop  Optimization / Estimation
     lestim = Standard_True;
-    lconst = Standard_True;
+    Standard_Boolean lconst = Standard_True;
     NbEst = 0;
 
     J->SetCurve(CCurrent);

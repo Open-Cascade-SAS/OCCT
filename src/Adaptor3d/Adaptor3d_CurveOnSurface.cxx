@@ -219,8 +219,7 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
   if((N!=Bound1)&&(N!=Bound2))  { 
     if(Abs(Der) > Tol ) { 
       if(Der>0) {Bound1=N;Bound2= N+1;}
-      else
-      if(Der<0){Bound1=N-1;Bound2=N;}
+      else {Bound1=N-1;Bound2=N;}
       DerNull = Standard_False;
     }
     if(Abs(Der) <=Tol ) {

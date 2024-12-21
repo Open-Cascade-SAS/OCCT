@@ -44,7 +44,7 @@ Standard_Failure::StringRef* Standard_Failure::StringRef::allocate_message (cons
   }
 
   const Standard_Size aLen = strlen (theString);
-  StringRef* aStrPtr = (StringRef* )malloc (aLen + sizeof(Standard_Integer) + 1);
+  StringRef* aStrPtr = (StringRef*)Standard::AllocateOptimal (aLen + sizeof(Standard_Integer) + 1);
   if (aStrPtr != NULL)
   {
     strcpy ((char* )&aStrPtr->Message[0], theString);
@@ -78,7 +78,7 @@ void Standard_Failure::StringRef::deallocate_message (Standard_Failure::StringRe
   {
     if (--theString->Counter == 0)
     {
-      free ((void* )theString);
+      Standard::Free ((void* )theString);
     }
   }
 }

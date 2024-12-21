@@ -973,7 +973,7 @@ Storage_Error FSD_BinaryFile::EndWriteTypeSection()
 Storage_Error FSD_BinaryFile::BeginReadTypeSection() 
 {
  if (!fseek(myStream,myHeader.btype,SEEK_SET)) return Storage_VSOk;
-  else return Storage_VSSectionNotFound;
+ else return Storage_VSSectionNotFound;
 }
 
 //=======================================================================
@@ -1030,7 +1030,7 @@ void FSD_BinaryFile::ReadTypeInformations(Standard_IStream& theIStream, Standard
 
 Storage_Error FSD_BinaryFile::EndReadTypeSection() 
 {
- if (!fseek(myStream,myHeader.etype,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.etype,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
@@ -1085,7 +1085,7 @@ Storage_Error FSD_BinaryFile::EndWriteRootSection()
 
 Storage_Error FSD_BinaryFile::BeginReadRootSection() 
 {
- if (!fseek(myStream,myHeader.broot,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.broot,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
@@ -1145,7 +1145,7 @@ void FSD_BinaryFile::ReadRoot (Standard_IStream& theIStream, TCollection_AsciiSt
 
 Storage_Error FSD_BinaryFile::EndReadRootSection() 
 {
- if (!fseek(myStream,myHeader.eroot,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.eroot,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
@@ -1199,7 +1199,7 @@ Storage_Error FSD_BinaryFile::EndWriteRefSection()
 
 Storage_Error FSD_BinaryFile::BeginReadRefSection() 
 {
- if (!fseek(myStream,myHeader.bref,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.bref,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
@@ -1258,7 +1258,7 @@ void FSD_BinaryFile::ReadReferenceType (Standard_IStream& theIStream, Standard_I
 
 Storage_Error FSD_BinaryFile::EndReadRefSection() 
 {
- if (!fseek(myStream,myHeader.eref,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.eref,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
@@ -1342,7 +1342,7 @@ Storage_Error FSD_BinaryFile::EndWriteDataSection()
 
 Storage_Error FSD_BinaryFile::BeginReadDataSection() 
 {
- if (!fseek(myStream,myHeader.bdata,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.bdata,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
@@ -1401,7 +1401,7 @@ void FSD_BinaryFile::EndReadPersistentObjectData()
 
 Storage_Error FSD_BinaryFile::EndReadDataSection() 
 {
- if (!fseek(myStream,myHeader.edata,SEEK_SET)) return Storage_VSOk;
+  if (!fseek(myStream,myHeader.edata,SEEK_SET)) return Storage_VSOk;
   else return Storage_VSSectionNotFound;
 }
 
