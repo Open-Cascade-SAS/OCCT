@@ -403,7 +403,7 @@ void NCollection_BaseSequence::RemoveSeq (const Standard_Integer From,
   if (pfrom->Previous())
     pfrom->Previous()->SetNext (pto->Next());
   else
-    myFirstItem = pto->Next();
+    myFirstItem = pto->Next(); // NOLINT
   if (pto->Next())
     pto->Next()->SetPrevious (pfrom->Previous());
   else

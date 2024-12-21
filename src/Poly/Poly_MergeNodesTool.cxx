@@ -200,7 +200,7 @@ inline bool Poly_MergeNodesTool::MergedNodesMap::Bind (int& theIndex,
 
   DataMapNode** aData = (DataMapNode** )myData1;
   const size_t aHash = hashCode (thePos, theNorm, NbBuckets());
-  for (DataMapNode* aNodeIter = aData[aHash]; aNodeIter != NULL;
+  for (DataMapNode* aNodeIter = aData[aHash]; aNodeIter != NULL; // NOLINT
        aNodeIter = (DataMapNode* )aNodeIter->Next())
   {
     if (isEqual (aNodeIter->Key(), thePos, theNorm, theIsOpposite))

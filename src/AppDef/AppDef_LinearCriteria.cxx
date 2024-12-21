@@ -753,13 +753,12 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
 {
   Standard_Real t; 
   Standard_Real UFirst, ULast;
-  Standard_Integer ipnt;
 
   UFirst = myCurve->Knots()(Element); 
   ULast =  myCurve->Knots()(Element + 1);
  
   IF = 0;
-  for(ipnt = myParameters->Lower(); ipnt <= myParameters->Upper(); ipnt++) {
+  for(Standard_Integer ipnt = myParameters->Lower(); ipnt <= myParameters->Upper(); ipnt++) {
     t = myParameters->Value(ipnt); 
     if((t > UFirst && t <= ULast) || (Element == 1 && t == UFirst)) {
       if (IF == 0) IF=ipnt;
@@ -770,11 +769,10 @@ void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
 
   if (IF != 0) {
     Handle(PLib_Base) myBase = myCurve->Base();
-    Standard_Integer order = myBase->WorkDegree()+1, ii; 
+    Standard_Integer order = myBase->WorkDegree()+1; 
     myCache = new TColStd_HArray1OfReal (1, (IL-IF+1)*(order));
-    
-    ii =1;
-    for(ipnt = IF, ii=1; ipnt <= IL; ipnt++, ii+=order) {
+
+    for(Standard_Integer ipnt = IF, ii=1; ipnt <= IL; ipnt++, ii+=order) {
       Standard_Real * cache = &myCache->ChangeValue(ii);
       TColStd_Array1OfReal BasicValue(cache[0], 0, order-1);
       t = myParameters->Value(ipnt);

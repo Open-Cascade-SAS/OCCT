@@ -672,14 +672,14 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCurve(const Handle(Geom_C
     if (theTarget == GeomAbs_Line)
     {
       newc3d[0] = ComputeLine(c3d, tolerance, c1, c2, fp[0], lp[0], theGap);
-      cf = fp[0];
+      cf = fp[0]; // NOLINT
       cl = lp[0];
       return  newc3d[0];
     }
     if (theTarget == GeomAbs_Circle)
     {
       newc3d[1] = ComputeCircle(c3d, tolerance, c1, c2, fp[1], lp[1], theGap);
-      cf = fp[1];
+      cf = fp[1]; // NOLINT
       cl = lp[1];
       return  newc3d[1];
     }
@@ -760,7 +760,7 @@ Handle(Geom_Curve) GeomConvert_CurveToAnaCurve::ComputeCurve(const Handle(Geom_C
 
   if (imin >= 0)
   {
-    cf = fp[imin];
+    cf = fp[imin]; // NOLINT
     cl = lp[imin];
     theGap = d[imin];
     return newc3d[imin];

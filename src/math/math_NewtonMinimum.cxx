@@ -92,7 +92,6 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
   math_Vector Point2(1, F.NbVariables());
   math_Vector* precedent = &Point1;
   math_Vector* suivant = &Point2;
-  math_Vector* auxiliaire = precedent;
 
   Standard_Boolean Ok = Standard_True;
   Standard_Integer NbConv = 0, ii, Nreduction;
@@ -234,7 +233,7 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
     }
 
     if (VItere <= VPrecedent) {
-       auxiliaire =  precedent;
+       math_Vector* auxiliaire =  precedent;
        precedent = suivant;
        suivant = auxiliaire;
        PreviousMinimum = VPrecedent;

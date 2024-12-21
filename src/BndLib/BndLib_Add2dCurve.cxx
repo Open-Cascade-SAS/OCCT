@@ -229,6 +229,7 @@ BndLib_Box2dCurve::BndLib_Box2dCurve()
 {
   Clear();
 }
+
 //=======================================================================
 //function : ~
 //purpose  : 
@@ -248,6 +249,7 @@ void BndLib_Box2dCurve::Clear()
   myTypeBase=GeomAbs_OtherCurve;
   myOffsetBase=0.;
   myOffsetFlag=Standard_False;
+  myT1 = myT2 = 0.;
 }
 //=======================================================================
 //function : SetCurve

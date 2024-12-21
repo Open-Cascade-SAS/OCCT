@@ -93,7 +93,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const S
 
       for (k = (m + 1)/2; k >= 0; k--) {
 	l     = m - k;
-	u    += (a[k + n + 1] - a[l])*t[k] + b[k + n + 1]*s[k - 1] - b[l]*s[k];
+	u    += (a[k + n + 1] - a[l])*t[k] + b[k + n + 1]*s[k - 1] - b[l]*s[k]; // NOLINT
 	s[k]  = u;
       }
 
@@ -118,10 +118,10 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const S
 
       if (m % 2 == 0) {
 	k = m/2;
-	a[k + n + 1] = a[k] + (s[j] - b[k + n + 1]*s[j + 1])/ t[j + 1];
+	a[k + n + 1] = a[k] + (s[j] - b[k + n + 1]*s[j + 1])/ t[j + 1]; // NOLINT
       } else {
 	k = (m + 1)/2;
-	b[k + n + 1] = s[j]/s[j + 1];
+	b[k + n + 1] = s[j]/s[j + 1]; // NOLINT
       }
 
       ptrtmp = t;
@@ -130,7 +130,7 @@ math_ComputeKronrodPointsAndWeights::math_ComputeKronrodPointsAndWeights(const S
     }
 
     // Termination phase.
-    a[2*Number] = a[n - 1] - b[2*Number]*s[0]/t[0];
+    a[2*Number] = a[n - 1] - b[2*Number]*s[0]/t[0]; // NOLINT
 
     delete [] ss;
     delete [] tt;

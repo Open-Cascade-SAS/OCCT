@@ -240,7 +240,7 @@ protected:
       return aNode->Index();
     }
     const Standard_Integer aNewIndex = Increment();
-    aNode = new (this->myAllocator) IndexedMapNode (theKey1, aNewIndex, myData1[aHash]);
+    aNode = new (this->myAllocator) IndexedMapNode (theKey1, aNewIndex, myData1[aHash]); // NOLINT
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     return aNewIndex;

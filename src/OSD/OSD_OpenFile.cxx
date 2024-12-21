@@ -71,7 +71,7 @@ int OSD_OpenFileDescriptor (const TCollection_ExtendedString& theName,
   }
 #else
   NCollection_Utf8String aString (theName.ToExtString());
-  aFileDesc = open (aString.ToCString(), aFlags);
+  aFileDesc = open (aString.ToCString(), aFlags); // NOLINT
 #endif
   return aFileDesc;
 }

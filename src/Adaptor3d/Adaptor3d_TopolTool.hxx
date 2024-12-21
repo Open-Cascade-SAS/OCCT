@@ -156,6 +156,10 @@ public:
 
 protected:
 
+  void initialize (const Handle(Adaptor3d_Surface)& theS);
+
+protected:
+
   Handle(Adaptor3d_Surface) myS;
   Standard_Integer myNbSamplesU;
   Standard_Integer myNbSamplesV;

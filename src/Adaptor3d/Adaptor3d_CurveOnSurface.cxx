@@ -219,8 +219,7 @@ static void FindBounds(const TColStd_Array1OfReal& Arr,
   if((N!=Bound1)&&(N!=Bound2))  { 
     if(Abs(Der) > Tol ) { 
       if(Der>0) {Bound1=N;Bound2= N+1;}
-      else
-      if(Der<0){Bound1=N-1;Bound2=N;}
+      else {Bound1=N-1;Bound2=N;}
       DerNull = Standard_False;
     }
     if(Abs(Der) <=Tol ) {
@@ -272,14 +271,14 @@ static void Locate1Coord(const Standard_Integer Index,
     }
     else
       if(DIsNull==Standard_True){
-	if( Abs( Comp1-(f=BSplC->Knot(Lo))) <= Tol)
+	if( Abs( Comp1-(f=BSplC->Knot(Lo))) <= Tol) // NOLINT
 	  {	  
 	    if(Index==1)   { LeftBot.SetX(BSplC->Knot(Lo));
 			     RightTop.SetX(BSplC->Knot(Lo+1));}
 	    else if(Index==2)  { LeftBot.SetY(BSplC->Knot(Lo));
 				 RightTop.SetY(BSplC->Knot(Lo+1));}
 	   } else
-	     if( Abs( Comp1-(l=BSplC->Knot(Up))) <= Tol)
+	     if( Abs( Comp1-(l=BSplC->Knot(Up))) <= Tol) // NOLINT
 	       {
 		 if(Index==1)   {  LeftBot.SetX(BSplC->Knot(Up-1));
 				   RightTop.SetX(BSplC->Knot(Up));}
@@ -572,7 +571,7 @@ static void Locate2Coord(const Standard_Integer Index,
 		if(Index==2) {  LeftBot.SetY(I1);
 				RightTop.SetY(Comp1);}
 	      }
-	else
+	   else
 	  if(DComp1 > 0) 
 	    {   if(Index==1) {  LeftBot.SetX(Comp1);
 				RightTop.SetX(I2);}
@@ -585,7 +584,7 @@ static void Locate2Coord(const Standard_Integer Index,
 				RightTop.SetY(I2);}
 	       }
 	 }
-    else 
+   else 
       if(Abs(DComp1)<=Tol) {
 			      if(Index==1) { LeftBot.SetX(I1) ;
 					     RightTop.SetX(I2);}

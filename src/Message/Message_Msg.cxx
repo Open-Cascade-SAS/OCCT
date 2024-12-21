@@ -138,7 +138,6 @@ void Message_Msg::Set (const TCollection_ExtendedString& theMsg)
         aFormatType = Msg_StringType;
         break;
       default:
-        aFormatType = Msg_IndefiniteType;
         continue;
       }
       mySeqOfFormats.Append (Standard_Integer(aFormatType));  // type

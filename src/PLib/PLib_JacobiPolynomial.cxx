@@ -111,7 +111,7 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
 // the copy of TabWeightsDB into TabWeights
   for (j=0; j<=myDegree; j++) {
     for (i=1; i<=NbGaussPoints/2; i++) {
-      TabWeights.SetValue(i,j,*pdb++);
+      TabWeights.SetValue(i,j,*pdb++); // NOLINT
     }
   } 
 
@@ -129,7 +129,7 @@ void PLib_JacobiPolynomial::Weights(const Standard_Integer NbGaussPoints,
 
     // the copy of TabWeightsDB0 into TabWeights
     for (j=0; j<=myDegree; j+=2) 
-      TabWeights.SetValue(0,j,*pdb0++);
+      TabWeights.SetValue(0,j,*pdb0++); // NOLINT
     for (j=1; j<=myDegree; j+=2) 
       TabWeights.SetValue(0,j,0.);
   }
@@ -154,7 +154,7 @@ void PLib_JacobiPolynomial::MaxValue(TColStd_Array1OfReal& TabMax) const
       case 2: pdb = MaxValuesDB_C2; break;
     }
   for (Standard_Integer i=TabMax.Lower(); i <= TabMax.Upper(); i++) {
-    TabMax.SetValue(i,*pdb++);
+    TabMax.SetValue(i,*pdb++); // NOLINT
   }
 }
 
@@ -199,13 +199,12 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer Dimension,
                                             Standard_Real& MaxError) const
 {
   Standard_Integer i,idim,icut, ia = 2*(myNivConstr+1)-1;
-  Standard_Real Bid,Eps1,Error;
+  Standard_Real Bid,Eps1;
 
   math_Vector MaxErrDim(1,Dimension,0.);
 
   NewDegree = ia;
   MaxError = 0.;
-  Error = 0.;
   icut=ia+1;
 
   TColStd_Array1OfReal TabMax(0, myDegree+1);
@@ -215,7 +214,7 @@ void PLib_JacobiPolynomial::ReduceDegree(const Standard_Integer Dimension,
     for (idim=1; idim<=Dimension; idim++) {
       MaxErrDim(idim) += Abs(JacArray[i*Dimension+idim-1]) * TabMax(i-icut);
     }
-    Error = MaxErrDim.Norm();
+    Standard_Real Error = MaxErrDim.Norm();
     if (Error > Tol && i <= MaxDegree) {
       NewDegree = i;
       break;
@@ -289,7 +288,7 @@ void PLib_JacobiPolynomial::ToCoefficients(const Standard_Integer Dimension,
     for (idim=1; idim<=Dimension; idim++) {
       Bid = 0.;
       for (j=i; j<=Degree/2; j++) {
-        Bid += (*(pTr+iptt+j)) * JacCoeff(2*j*Dimension+idim-1);
+        Bid += (*(pTr+iptt+j)) * JacCoeff(2*j*Dimension+idim-1); // NOLINT
       }
       Coefficients.SetValue(2*i*Dimension+idim-1, Bid);
     }
@@ -306,7 +305,7 @@ void PLib_JacobiPolynomial::ToCoefficients(const Standard_Integer Dimension,
       Bid = 0.;
       jj = ibegJC+(2*i+1)*Dimension+idim-1;
       for (j=i; j<=(Degree-1)/2; j++, jj+=2*Dimension) {
-        Bid += (*(pTr+iptt+j)) * JacCoeff(jj);
+        Bid += (*(pTr+iptt+j)) * JacCoeff(jj); // NOLINT
       }
       Coefficients(ii) = Bid;
     }

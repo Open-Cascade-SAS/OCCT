@@ -222,9 +222,7 @@ void gp_Mat::Invert()
   aNewMat[1][2] = -(myMat[0][0] * myMat[1][2] - myMat[1][0] * myMat[0][2]);
   aNewMat[2][2] =   myMat[0][0] * myMat[1][1] - myMat[0][1] * myMat[1][0];
   Standard_Real aDet =  myMat[0][0] * aNewMat[0][0] + myMat[0][1]* aNewMat[1][0] + myMat[0][2] * aNewMat[2][0];
-  Standard_Real aVal = aDet;
-  if (aVal < 0) aVal = -aVal;
-  Standard_ConstructionError_Raise_if (aVal <= gp::Resolution(), "gp_Mat::Invert() - matrix has zero determinant");
+  Standard_ConstructionError_Raise_if (Abs(aDet) <= gp::Resolution(), "gp_Mat::Invert() - matrix has zero determinant");
   aDet = 1.0e0 / aDet;
   myMat[0][0] = aNewMat[0][0];
   myMat[1][0] = aNewMat[1][0];
@@ -256,9 +254,7 @@ gp_Mat gp_Mat::Inverted() const
   aNewMat.myMat[1][2] = -(myMat[0][0] * myMat[1][2] - myMat[1][0] * myMat[0][2]);
   aNewMat.myMat[2][2] =   myMat[0][0] * myMat[1][1] - myMat[0][1] * myMat[1][0];
   Standard_Real aDet =  myMat[0][0] * aNewMat.myMat[0][0] + myMat[0][1]* aNewMat.myMat[1][0] + myMat[0][2] * aNewMat.myMat[2][0];
-  Standard_Real aVal =  aDet;
-  if (aVal < 0) aVal = -aVal;
-  Standard_ConstructionError_Raise_if (aVal <= gp::Resolution(), "gp_Mat::Inverted() - matrix has zero determinant");
+  Standard_ConstructionError_Raise_if (Abs(aDet) <= gp::Resolution(), "gp_Mat::Inverted() - matrix has zero determinant");
   aDet = 1.0e0 / aDet;
   aNewMat.Multiply (aDet);
   return aNewMat;

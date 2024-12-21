@@ -506,7 +506,7 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP,
                                     (TwoCurves)? DomainSup + DomainSup - aTheta : RealLast(),
                                     (TwoCurves) ? DomainSup + DomainSup - DomainInf : RealLast()};
 
-  std::sort(aParams, aParams + aMaxPar - 1);
+  std::sort(aParams, aParams + aMaxPar - 1); // NOLINT
 
   for (Standard_Integer i = 0; i < aMaxPar; i++)
   {

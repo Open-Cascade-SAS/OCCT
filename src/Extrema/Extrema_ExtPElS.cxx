@@ -176,16 +176,15 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   gp_Pnt Pp = P.Translated(OZ.Multiplied(-Zp));
   gp_Vec OPp(O, Pp);
   if (OPp.SquareMagnitude() < Tol * Tol) return;
-  Standard_Real B, U1, V1, U2, V2;
+  Standard_Real U1, V1, U2, V2;
   Standard_Boolean Same = DirZ.Dot(MP) >= 0.0;
   U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-M_PI<U1<M_PI
   if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps) { U1 = 0.; }
-  B = MP.Angle(DirZ);
   if (!Same) { U1 += M_PI; }
   U2 = U1 + M_PI;
   if (U1 < 0.) { U1 += 2. * M_PI; }
   if (U2 > 2.*M_PI) { U2 -= 2. * M_PI; }
-  B = MP.Angle(DirZ);
+  Standard_Real B = MP.Angle(DirZ);
   A = Abs(A);
   Standard_Real L = sqrt(L2);
   if (!Same) {

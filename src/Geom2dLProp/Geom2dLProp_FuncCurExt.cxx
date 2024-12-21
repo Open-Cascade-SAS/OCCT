@@ -85,7 +85,7 @@ Standard_Boolean Geom2dLProp_FuncCurExt::Values (const Standard_Real  X,
 
   Value (X,F);
   Value (X+Dx,F2);
-  D     = (F2 - F)/Dx;
+  D     = (F2 - F)/Dx; // NOLINT
 
   return Standard_True;
 }

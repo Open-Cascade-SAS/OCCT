@@ -369,7 +369,7 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
       OtherIndex += 2;
       
       for (jj = ii - 1 ; jj >= 0 ; jj--) {
-	Factor = binomial_array[jj] * PolesArray[((ii-jj) << 2) + 3]; 
+	Factor = binomial_array[jj] * PolesArray[((ii-jj) << 2) + 3]; // NOLINT
 	RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++;
 	RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++;
 	RationalArray[Index] -=  Factor * RationalArray[Index1];
@@ -395,7 +395,7 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
       
       for (jj = ii - 1 ; jj >= ii - MinDegRequ ; jj--) {
 	Factor = binomial_array[jj] * PolesArray[((ii-jj) << 2) + 3]; 
-	RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++;
+	RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++; // NOLINT
 	RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++;
 	RationalArray[Index] -=  Factor * RationalArray[Index1];
 	Index  -= 2;
@@ -403,7 +403,7 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
       }
       
       for (jj = ii ; jj >=  1 ; jj--) {
-	binomial_array[jj] += binomial_array[jj - 1] ;
+	binomial_array[jj] += binomial_array[jj - 1]; // NOLINT
       }
       RationalArray[Index] *= Inverse; Index++;
       RationalArray[Index] *= Inverse; Index++;
@@ -452,7 +452,7 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
       ++OtherIndex;
       
       for (jj = ii - 1 ; jj >= 0 ; jj--) {
-	Factor = binomial_array[jj] * PolesArray[(ii-jj) * Dimension1 + Dimension]; 
+	Factor = binomial_array[jj] * PolesArray[(ii-jj) * Dimension1 + Dimension]; // NOLINT
 	
 	for (kk = 0 ; kk < Dimension ; kk++) {
 	  RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++;
@@ -483,14 +483,14 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
 	Factor = binomial_array[jj] * PolesArray[(ii-jj) * Dimension1 + Dimension]; 
 	
 	for (kk = 0 ; kk < Dimension ; kk++) {
-	  RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++;
+	  RationalArray[Index] -=  Factor * RationalArray[Index1]; Index++; Index1++; // NOLINT
 	}
 	Index  -= Dimension ;
 	Index1 -= Dimension2 ;
       }
       
       for (jj = ii ; jj >=  1 ; jj--) {
-	binomial_array[jj] += binomial_array[jj - 1] ;
+	binomial_array[jj] += binomial_array[jj - 1]; // NOLINT
       }
       
       for (kk = 0 ; kk < Dimension ; kk++) {

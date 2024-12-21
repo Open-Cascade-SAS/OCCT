@@ -310,7 +310,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
   F.Initialize(P, Dir);
   F.Value(tsol, fsol);
 
-  if (fsol<PValue) { 
+  if (fsol<PValue) { // NOLINT
     good = Standard_True;
     Result = fsol;
     FSR_DEBUG("t= "<<tsol<<" F = " << fsol << " OldF = "<<PValue);
@@ -366,7 +366,7 @@ static Standard_Boolean MinimizeDirection(const math_Vector&   P,
             {
               tsol = Sol.Location();
               good = Standard_True;
-              Result = Sol.Minimum();
+              Result = Sol.Minimum(); // NOLINT
             }
           }
         }
@@ -712,7 +712,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 
   Standard_Integer i;
   Standard_Boolean ChangeDirection = Standard_False, Sort = Standard_False, isNewSol = Standard_False;
-  Standard_Boolean Good, Verif;
+  Standard_Boolean Verif;
   Standard_Boolean Stop;
   const Standard_Real EpsSqrt = 1.e-16, Eps = 1.e-32, Eps2 = 1.e-64, Progres = 0.005;
   Standard_Real F2, PreviousMinimum, Dy, OldF;
@@ -861,7 +861,6 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
       Dy = GH*DH;
       OldF = PreviousMinimum;
       Stop = Standard_False;
-      Good = Standard_False;
       DescenteIter = 0;
       Standard_Boolean Sortbis;
 
@@ -898,7 +897,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           }
           else {
             if ((F2 >= OldF)||(F2 >= PreviousMinimum)) {
-              Good = Standard_False;
+              Standard_Boolean Good = Standard_False;
               if (DescenteIter == 0) { 
                 // C'est le premier pas qui flanche, on fait une interpolation.
                 // et on minimise si necessaire.
@@ -931,7 +930,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                   return;
                 }
                 //
-                Sort = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+                Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
                   aConstraints, Delta, isNewSol);
               }
               Sort = Standard_False; // On a rejete le point sur la frontiere
@@ -997,7 +996,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               }
               else {
                 Ambda = 1.0;
-                Ambda2 = 0.5*Ambda/DH.Norm();
+                Ambda2 = 0.5*Ambda/DH.Norm(); // NOLINT
               }
 
               for( i = Sol.Lower(); i <= Sol.Upper(); i++) { 
@@ -1085,11 +1084,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
           (F2>=OldF))||(F2>=PreviousMinimum)) {
             // On minimise par Brent
             DescenteIter++;
-            Good = MinimizeDirection(SolSave, Delta, OldF, F2,  
+            Standard_Boolean Good = MinimizeDirection(SolSave, Delta, OldF, F2,  
               DHSave, GH, Tol, F_Dir);
             if (!Good) {
               Sol = SolSave;
-              Sort = Standard_False;
+              Sort = Standard_False; // NOLINT
             }
             else {
               Sol = SolSave + Delta;
@@ -1105,7 +1104,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                 return;
               }
               //
-              Sort = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+              Sort = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave, // NOLINT
                 aConstraints, Delta, isNewSol);
               if (isNewSol) {
                 //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);

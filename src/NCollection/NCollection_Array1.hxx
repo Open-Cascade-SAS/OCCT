@@ -26,8 +26,6 @@
 #include <NCollection_IndexedIterator.hxx>
 
 #include <algorithm>
-#include <array>
-#include <vector>
 
 //! The class NCollection_Array1 represents unidimensional arrays of fixed size known at run time.
 //! The range of the index is user defined.

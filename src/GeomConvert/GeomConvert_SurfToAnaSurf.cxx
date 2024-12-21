@@ -407,7 +407,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(const Ha
       }
     }
   }
-  anAvMaxCurv /= n;
+  anAvMaxCurv /= n; // NOLINT
   anAvMinCurv /= n;
   anAvR /= n;
   anAvDir /= n;
@@ -850,7 +850,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const Standa
   Standard_Real twist = 1000;
   if (toler > diagonal / twist) toler = diagonal / twist;
 
-  isurf = 1; // set cylinder
+  isurf = 1; // set cylinder NOLINT
   Standard_Boolean aCylinderConus = Standard_False;
   Standard_Boolean aToroidSphere = Standard_False;
 
@@ -890,7 +890,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const Standa
         myGap = dd[isurf];
         return newSurf[isurf];
       }
-      isurf = 3; // set sphere
+      isurf = 3; // set sphere NOLINT
     }
     else if (umidiso->IsKind(STANDARD_TYPE(Geom_Line)) && vmidiso->IsKind(STANDARD_TYPE(Geom_Circle))) {
       aCylinderConus = Standard_True; VCase = Standard_True;
@@ -900,7 +900,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const Standa
         myGap = dd[isurf];
         return newSurf[isurf];
       }
-      isurf = 1;// set cylinder
+      isurf = 1;// set cylinder NOLINT
     }
     else if (umidiso->IsKind(STANDARD_TYPE(Geom_Circle)) && vmidiso->IsKind(STANDARD_TYPE(Geom_Line)))
     {
@@ -911,7 +911,7 @@ Handle(Geom_Surface) GeomConvert_SurfToAnaSurf::ConvertToAnalytical(const Standa
         myGap = dd[isurf];
         return newSurf[isurf];
       }
-      isurf = 1;// set cylinder
+      isurf = 1;// set cylinder NOLINT
     }
 
 

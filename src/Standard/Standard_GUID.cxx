@@ -192,7 +192,7 @@ Standard_GUID::Standard_GUID(const Standard_CString aGuid)
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b3);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b4);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b5);
-  tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b6);
+  Standard_GUID_GetValue8(tmpBuffer,my8b6);
 }
 
 Standard_GUID::Standard_GUID(const Standard_ExtString aGuid) 
@@ -232,7 +232,7 @@ Standard_GUID::Standard_GUID(const Standard_ExtString aGuid)
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b3);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b4);
   tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b5);
-  tmpBuffer = Standard_GUID_GetValue8(tmpBuffer,my8b6);
+  Standard_GUID_GetValue8(tmpBuffer,my8b6);
 }
 
 Standard_GUID::Standard_GUID(const Standard_Integer a32b,

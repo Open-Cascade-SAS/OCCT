@@ -120,7 +120,7 @@ void Extrema_ExtElCS::Perform(const gp_Lin& C,
       else if (Inters.IsDone())
       {
         myNbExt = Inters.NbPoints();
-        aStartIdx = myNbExt;
+        aStartIdx = myNbExt; // NOLINT
         if (myNbExt > 0)
         {
           // Not more than 2 additional points from perpendiculars.

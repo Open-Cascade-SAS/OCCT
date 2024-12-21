@@ -84,7 +84,7 @@ Storage_Error FSD_File::Open(const TCollection_AsciiString& aName,const Storage_
 
   if (OpenMode() == Storage_VSNone)
   {
-    std::ios_base::openmode anOpenMode = std::ios_base::openmode(0);
+    std::ios_base::openmode anOpenMode = std::ios_base::openmode{};
     switch (aMode)
     {
       case Storage_VSNone:
@@ -237,7 +237,7 @@ void FSD_File::WriteExtendedLine(const TCollection_ExtendedString& buffer)
 void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
 {
   char c = '\0';
-  Standard_ExtCharacter i = 0,j,count = 0;
+  Standard_ExtCharacter i = 0,count = 0;
   Standard_Boolean fin = Standard_False;
   Standard_CString tg = ENDOFNORMALEXTENDEDSECTION;
  
@@ -249,7 +249,6 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
     if (c == tg[count]) count++;
     else count = 0;
     if (count < SIZEOFNORMALEXTENDEDSECTION) {
-      j = 0;
       i = (Standard_ExtCharacter)c;
       if (c == '\0') fin = Standard_True;
       i = (i << 8);
@@ -258,10 +257,9 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
       if (c == tg[count]) count++;
       else count = 0;
       if (count < SIZEOFNORMALEXTENDEDSECTION) {
-	j = (Standard_ExtCharacter)c;
 	if (c != '\n') {
 	  fin = Standard_False;
-	  i |= (0x00FF & j);
+	  i |= (0x00FF & (Standard_ExtCharacter)c);
 	  buffer += (Standard_ExtCharacter)i;
 	}
       }
@@ -613,9 +611,12 @@ Storage_BaseDriver& FSD_File::GetShortReal(Standard_ShortReal& aValue)
 
 void FSD_File::Destroy()
 {
-  if (OpenMode() != Storage_VSNone) {
-    Close();
+  if (OpenMode() == Storage_VSNone)
+  {
+    return;
   }
+  myStream.close();
+  SetOpenMode(Storage_VSNone);
 }
 
 //=======================================================================

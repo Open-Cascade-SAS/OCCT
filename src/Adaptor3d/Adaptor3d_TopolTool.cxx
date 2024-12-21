@@ -47,7 +47,7 @@ Adaptor3d_TopolTool::Adaptor3d_TopolTool ()
 
 Adaptor3d_TopolTool::Adaptor3d_TopolTool (const Handle(Adaptor3d_Surface)& S)
 {
-  Initialize(S);
+  initialize(S);
 }
 
 
@@ -57,6 +57,11 @@ void Adaptor3d_TopolTool::Initialize ()
 }
 
 void Adaptor3d_TopolTool::Initialize (const Handle(Adaptor3d_Surface)& S)
+{
+  initialize(S);
+}
+
+void Adaptor3d_TopolTool::initialize (const Handle(Adaptor3d_Surface)& S)
 {
   Standard_Real pinf,psup,deltap;
   //Adaptor2d_Line2d  * Line2dPtr ;

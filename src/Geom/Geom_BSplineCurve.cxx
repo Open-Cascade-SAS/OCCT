@@ -846,7 +846,7 @@ void Geom_BSplineCurve::SetOrigin(const Standard_Real U,
   if(Abs(U-u)>Tol) { //On reparametre la courbe
     Standard_Real delta = U-u;
     uf += delta;
-    ul += delta;
+    ul += delta; // NOLINT
     TColStd_Array1OfReal& kn = knots->ChangeArray1();
     Standard_Integer fk = kn.Lower(), lk = kn.Upper();
     for(Standard_Integer i = fk; i <= lk; i++){

@@ -2304,7 +2304,7 @@ void SplitOnDirection(SplitDS & theSplitDS)
   theSplitDS.myExtCCCurve1 = &aCOnS;
   theSplitDS.myExtCCLast2DParam = aLast2DParam;
 
-  FindSplitPoint(theSplitDS,
+  FindSplitPoint(theSplitDS, // NOLINT
                  theSplitDS.myCurve->FirstParameter(), // Initial curve range.
                  theSplitDS.myCurve->LastParameter());
 }

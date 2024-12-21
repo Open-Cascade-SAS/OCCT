@@ -30,13 +30,11 @@
 class BSplCLib_BezierArrays 
 {
  public:
-  BSplCLib_BezierArrays (Standard_Integer Degree) 
-  : knots (aKnots[0], 1, 2), mults (aMults[0], 1, 2) 
-  {
-    aKnots[0] = 0.;
-    aKnots[1] = 1.;
-    aMults[0] = aMults[1] = Degree + 1;
-  }
+BSplCLib_BezierArrays (Standard_Integer Degree) :
+  aKnots{0., 1.},
+  aMults{Degree + 1, Degree + 1},
+  knots (aKnots[0], 1, 2),
+  mults (aMults[0], 1, 2) {}
 
  private:
   Standard_Real aKnots[2];

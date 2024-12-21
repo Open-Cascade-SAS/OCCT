@@ -449,15 +449,12 @@ Standard_Integer GeomAdaptor_Surface::NbVIntervals(const GeomAbs_Shape S) const
 
 void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
 {
-  Standard_Integer myNbUIntervals = 1;
-
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface:
     {
       GeomAdaptor_Curve myBasisCurve
         (myBSplineSurface->VIso(myBSplineSurface->VKnot(myBSplineSurface->FirstVKnotIndex())),myUFirst,myULast);
-      myNbUIntervals = myBasisCurve.NbIntervals(S);
       myBasisCurve.Intervals(T,S);
       return;
     }
@@ -467,7 +464,6 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
         (Handle(Geom_SurfaceOfLinearExtrusion)::DownCast (mySurface)->BasisCurve(),myUFirst,myULast);
       if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
       {
-        myNbUIntervals = myBasisCurve.NbIntervals(S);
         myBasisCurve.Intervals(T,S);
         return;
       }
@@ -488,7 +484,6 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
       }
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
       GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
-      myNbUIntervals = Sur.NbUIntervals(BaseS);
       Sur.UIntervals(T, BaseS);
       return;
     }
@@ -503,7 +498,7 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
   }
 
   T(T.Lower()) = myUFirst;
-  T(T.Lower() + myNbUIntervals) = myULast;
+  T(T.Lower() + 1) = myULast;
 }
 
 //=======================================================================
@@ -513,15 +508,12 @@ void GeomAdaptor_Surface::UIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
 
 void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shape S) const
 {
-  Standard_Integer myNbVIntervals = 1;
-
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface:
     {
       GeomAdaptor_Curve myBasisCurve
         (myBSplineSurface->UIso(myBSplineSurface->UKnot(myBSplineSurface->FirstUKnotIndex())),myVFirst,myVLast);
-      myNbVIntervals = myBasisCurve.NbIntervals(S);
       myBasisCurve.Intervals(T,S);
       return;
     }
@@ -532,7 +524,6 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
       GeomAdaptor_Curve myBasisCurve(myRevSurf->BasisCurve(), myVFirst, myVLast);
       if (myBasisCurve.GetType() == GeomAbs_BSplineCurve)
       {
-        myNbVIntervals = myBasisCurve.NbIntervals(S);
         myBasisCurve.Intervals(T,S);
         return;
       }
@@ -553,7 +544,6 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
       }
       Handle(Geom_OffsetSurface) myOffSurf = Handle(Geom_OffsetSurface)::DownCast(mySurface);
       GeomAdaptor_Surface Sur(myOffSurf->BasisSurface(), myUFirst, myULast, myVFirst, myVLast);
-      myNbVIntervals = Sur.NbVIntervals(BaseS);
       Sur.VIntervals(T, BaseS);
       return;
     }
@@ -568,7 +558,7 @@ void GeomAdaptor_Surface::VIntervals(TColStd_Array1OfReal& T, const GeomAbs_Shap
   }
   
   T(T.Lower()) = myVFirst;
-  T(T.Lower() + myNbVIntervals) = myVLast;
+  T(T.Lower() + 1) = myVLast;
 }
 
 //=======================================================================

@@ -223,7 +223,7 @@ void PLib_HermitJacobi::D0123(const Standard_Integer NDeriv,
   }
   W0 = WValues(0);
   for (i=DegreeH+1, j=0; i<=WorkDegree; i++, j++) {
-    BasisValue(ibeg0+i) = W0 * jac0[j];
+    BasisValue(ibeg0+i) = W0 * jac0[j]; // NOLINT
   }
 
 // Evaluation a l'ordre 1
