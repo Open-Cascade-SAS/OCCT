@@ -135,6 +135,7 @@ public:
                                     const Graphic3d_TypeOfShadingModel  theShadingModel,
                                     const Graphic3d_AlphaMode           theAlphaMode,
                                     const Standard_Boolean              theHasVertColor,
+                                    const Standard_Boolean              theEnableLineGeometry,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
     if (!theCustomProgram.IsNull()
@@ -144,6 +145,12 @@ public:
     }
 
     Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
+
+    if (theEnableLineGeometry)
+    {
+      aBits |= Graphic3d_ShaderFlags_LineWidth;
+    }
+
     if (theLineType != Aspect_TOL_SOLID)
     {
       aBits |= Graphic3d_ShaderFlags_StippleLine;
@@ -157,6 +164,7 @@ public:
   Standard_EXPORT Standard_Boolean BindMarkerProgram (const Handle(OpenGl_TextureSet)& theTextures,
                                                       Graphic3d_TypeOfShadingModel theShadingModel,
                                                       Graphic3d_AlphaMode theAlphaMode,
+                                                      Standard_Boolean theRenderPhysicalCircle,
                                                       Standard_Boolean theHasVertColor,
                                                       const Handle(OpenGl_ShaderProgram)& theCustomProgram);
 
