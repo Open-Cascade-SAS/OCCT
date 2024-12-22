@@ -127,7 +127,7 @@ private:
   TColStd_MapOfInteger myMapUnsupported;
   BinLDrivers_VectorOfDocumentSection mySections;
   NCollection_Map<Standard_Integer> myUnresolvedLinks;
-
+  NCollection_Map<Standard_Integer> myResolvedLinks;
 
 };
 
