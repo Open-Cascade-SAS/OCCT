@@ -61,7 +61,7 @@ public:
     FixShape,
     SplitClosedEdges,
     SplitCommonVertex,
-    Count // Number of operations.
+    Last = SplitCommonVertex // Last operation index.
   };
 
   // Bitset of operations. It is used to specify which operations should be performed.
@@ -70,7 +70,7 @@ public:
   // flags.set(ShapeProcess::Operation::DirectFaces);
   // flags.set(ShapeProcess::Operation::SameParameter);
   // ShapeProcess::Perform(context, flags);
-  using OperationsFlags = std::bitset<Operation::Count>;
+  using OperationsFlags = std::bitset<Operation::Last + 1>;
   
 public:
   //! Registers operator to make it visible for Performer

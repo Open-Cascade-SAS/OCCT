@@ -2193,13 +2193,18 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 #elif defined(__GNUC__)
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Woverflow"
+#elif defined(_MSC_VER)
+  #pragma warning(push)
+  #pragma warning(disable: 4307)
 #endif
-      constexpr Standard_Integer i=IntegerLast();
+      constexpr Standard_Integer i = IntegerLast();
       Standard_Integer res = i + 1;
 #if defined(__clang__)
   #pragma clang diagnostic pop
 #elif defined(__GNUC__)
   #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+  #pragma warning(pop)
 #endif
       di << "Not caught: " << i << " + 1 = " << res << ", still OK\n";
     }

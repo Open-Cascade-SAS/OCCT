@@ -1038,14 +1038,12 @@ void Aspect_OpenVRSession::ProcessEvents()
       {
         case Aspect_XRActionType_InputDigital:
         {
-          Aspect_XRDigitalActionData aData = GetDigitalActionData (anAction);
-          //if (aData.IsChanged) { std::cout << "  " << anAction->Id() << " pressed: " << aData.IsPressed << "\n"; }
+          GetDigitalActionData (anAction);
           break;
         }
         case Aspect_XRActionType_InputAnalog:
         {
-          Aspect_XRAnalogActionData aData = GetAnalogActionData (anAction);
-          //if (aData.IsChanged()) { std::cout << "  " << anAction->Id() << " changed: " << aData.VecXYZ[0] << " " << aData.VecXYZ[1] << " " << aData.VecXYZ[2] << "\n"; }
+          GetAnalogActionData (anAction);
           break;
         }
         case Aspect_XRActionType_InputPose:
@@ -1053,6 +1051,8 @@ void Aspect_OpenVRSession::ProcessEvents()
           GetPoseActionDataForNextFrame (anAction);
           break;
         }
+        default:
+          break;
       }
     }
   }

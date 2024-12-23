@@ -71,7 +71,9 @@ jobs:
                 -D USE_VTK=ON `
                 -D USE_TBB=ON `
                 -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON ..
+                -D USE_OPENGL=ON `
+                -D CMAKE_CXX_FLAGS="/W4 /WX" `
+                -D CMAKE_C_FLAGS="/W4 /WX" ..
       shell: pwsh
 
     - name: Build OCCT
@@ -141,7 +143,9 @@ jobs:
                 -D USE_VTK=OFF `
                 -D USE_TBB=ON `
                 -D USE_RAPIDJSON=ON `
-                -D USE_OPENGL=ON ..
+                -D USE_OPENGL=ON `
+                -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" `
+                -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-unknown-warning-option" ..
       shell: pwsh
 
     - name: Build OCCT
@@ -193,7 +197,9 @@ jobs:
               -D USE_DRACO=ON \
               -D USE_FREETYPE=ON \
               -D USE_OPENGL=ON \
-              -D USE_FREEIMAGE=ON ..
+              -D USE_FREEIMAGE=ON \
+              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
     - name: Build OCCT
       run: |
@@ -244,7 +250,9 @@ jobs:
               -D USE_DRACO=ON \
               -D USE_FREETYPE=ON \
               -D USE_OPENGL=ON \
-              -D USE_FREEIMAGE=ON ..
+              -D USE_FREEIMAGE=ON \
+              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
     - name: Build OCCT
       run: |
@@ -298,7 +306,9 @@ jobs:
               -D USE_VTK=ON \
               -D USE_TBB=OFF \
               -D USE_RAPIDJSON=ON \
-              -D USE_OPENGL=ON ..
+              -D USE_OPENGL=ON \
+              -D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Werror -Wall -Wextra" ..
 
     - name: Build OCCT
       run: |
