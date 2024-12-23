@@ -1318,7 +1318,7 @@ int yyFlexLexer::LexerInput( char* buf, int max_size )
 	if ( yyin.bad() )
 		return -1;
 	else
-		return yyin.gcount();
+		return static_cast<int>(yyin.gcount());
 #endif
 }
 

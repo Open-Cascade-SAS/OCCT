@@ -35,7 +35,7 @@ public:
   vtkTypeMacro(IVtkTools_DisplayModeFilter,IVtkTools_SubPolyDataFilter)
 
   static IVtkTools_DisplayModeFilter *New();
-  void PrintSelf (std::ostream& os, vtkIndent indent);
+  void PrintSelf (std::ostream& os, vtkIndent indent) Standard_OVERRIDE;
 
   //! Set display mode to define cells types to be passed through this filter.
   void SetDisplayMode (const IVtk_DisplayMode aMode);

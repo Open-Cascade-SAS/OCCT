@@ -49,9 +49,9 @@ public:
 
   vtkTypeMacro (IVtkDraw_Interactor, vtkRenderWindowInteractor)
 
-  virtual void Initialize();
-  virtual void Enable();
-  virtual void Start() { }
+  virtual void Initialize() Standard_OVERRIDE;
+  virtual void Enable() Standard_OVERRIDE;
+  virtual void Start() Standard_OVERRIDE { }
 
   const PSelector& Selector() const { return mySelector; }
   void SetShapePicker (const PSelector& theSelector);
@@ -97,7 +97,7 @@ protected:
   void OnMouseWheelBackward (HWND wnd, UINT nFlags, Standard_Integer X, Standard_Integer Y);
 #else
   static void ProcessEvents (ClientData theData, int);
-  void GetMousePosition (Standard_Integer *theX, Standard_Integer *theY);
+  void GetMousePosition (Standard_Integer *theX, Standard_Integer *theY) Standard_OVERRIDE;
 #endif
 
 private:

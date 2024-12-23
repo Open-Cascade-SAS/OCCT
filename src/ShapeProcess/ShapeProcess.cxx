@@ -225,7 +225,7 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& theCo
 std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> ShapeProcess::getOperators(const OperationsFlags& theFlags)
 {
   std::vector<std::pair<const char*, Handle(ShapeProcess_Operator)>> aResult;
-  for (std::underlying_type<Operation>::type anOperation = Operation::First; anOperation < Operation::Count; ++anOperation)
+  for (std::underlying_type<Operation>::type anOperation = Operation::First; anOperation <= Operation::Last; ++anOperation)
   {
     if (theFlags.test(anOperation))
     {

@@ -35,7 +35,7 @@ public:
   vtkTypeMacro(IVtkTools_SubPolyDataFilter,vtkPolyDataAlgorithm)
 
   static IVtkTools_SubPolyDataFilter *New();
-  void PrintSelf (std::ostream& theOs, vtkIndent theIndent);
+  void PrintSelf (std::ostream& theOs, vtkIndent theIndent) Standard_OVERRIDE;
 
   //! Set ids to be passed through this filter.
   void SetData(const IVtk_IdTypeMap theSet);
