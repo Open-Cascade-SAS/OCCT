@@ -17,7 +17,7 @@
 
 %option yywrap
 %{
-#include <ExprIntrp.tab.h>
+#include <ExprIntrp.tab.hxx>
 
 #include <ExprIntrp_yaccintrf.hxx>
 
