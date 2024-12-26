@@ -49,16 +49,16 @@ public:
     //! Empty constructor
     Iterator (void) :
       myNbBuckets (0),
-      myBuckets   (NULL),
+      myBuckets   (nullptr),
       myBucket    (0),
-      myNode      (NULL) {}
+      myNode      (nullptr) {}
     
     //! Constructor
     Iterator (const NCollection_BaseMap& theMap) :
       myNbBuckets (theMap.myNbBuckets),
       myBuckets   (theMap.myData1),
       myBucket    (-1),
-      myNode      (NULL)
+      myNode      (nullptr)
     {
       if (!myBuckets) 
         myNbBuckets = -1;
@@ -78,7 +78,7 @@ public:
       myNbBuckets = theMap.myNbBuckets;
       myBuckets = theMap.myData1;
       myBucket = -1;
-      myNode = NULL;
+      myNode = nullptr;
       if (!myBuckets) 
         myNbBuckets = -1;
       PNext();
@@ -88,7 +88,7 @@ public:
     void Reset (void)
     {
       myBucket = -1;
-      myNode = NULL;
+      myNode = nullptr;
       PNext();
     }
     
@@ -101,7 +101,7 @@ public:
   protected:
     //! PMore
     Standard_Boolean PMore (void) const
-    { return (myNode != NULL); }
+    { return (myNode != nullptr); }
     
     //! PNext
     void PNext (void)
@@ -161,8 +161,8 @@ public:
                        const Standard_Boolean single,
                        const Handle(NCollection_BaseAllocator)& theAllocator) :
     myAllocator(theAllocator.IsNull() ? NCollection_BaseAllocator::CommonBaseAllocator() : theAllocator),
-    myData1(NULL),
-    myData2(NULL),
+    myData1(nullptr),
+    myData2(nullptr),
     myNbBuckets(NbBuckets),
     mySize(0),
     isDouble(!single)

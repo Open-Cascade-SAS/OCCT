@@ -16,7 +16,7 @@
 #include <TColStd_PackedMapOfInteger.hxx>
 
 #include <NCollection_Array1.hxx>
-#include <TCollection.hxx>
+#include <NCollection_Primes.hxx>
 
 namespace
 {
@@ -153,7 +153,7 @@ TColStd_PackedMapOfInteger& TColStd_PackedMapOfInteger::Assign
 
 void TColStd_PackedMapOfInteger::ReSize (const Standard_Integer theNbBuckets)
 {
-  Standard_Integer aNewBuck = TCollection::NextPrimeForMap (theNbBuckets);
+  Standard_Integer aNewBuck = NCollection_Primes::NextPrimeForMap (theNbBuckets);
   if (aNewBuck <= myNbBuckets)
   {
     if (!IsEmpty())

@@ -16,7 +16,7 @@
 // Purpose:     Implementation of the BaseMap class
 
 #include <NCollection_BaseMap.hxx>
-#include <TCollection.hxx>
+#include <NCollection_Primes.hxx>
 
 //=======================================================================
 //function : BeginResize
@@ -46,7 +46,7 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
       Standard::Allocate((N+1)*sizeof(NCollection_ListNode *));
   }
   else
-    data2 = NULL;
+    data2 = nullptr;
   return Standard_True;
 }
 
@@ -70,7 +70,6 @@ void  NCollection_BaseMap::EndResize
   myData1 = data1;
   myData2 = data2;
 }
-
 
 //=======================================================================
 //function : Destroy
@@ -101,16 +100,15 @@ void  NCollection_BaseMap::Destroy (NCollection_DelMapNode fDel,
     {
       memset(myData2, 0, (aNbBuckets + 1) * sizeof(NCollection_ListNode*));
     }
+    mySize = 0;
   }
-
-  mySize = 0;
   if (doReleaseMemory)
   {
     if (myData1)
       Standard::Free(myData1);
     if (myData2)
       Standard::Free(myData2);
-    myData1 = myData2 = NULL;
+    myData1 = myData2 = nullptr;
   }
 }
 
@@ -175,6 +173,5 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
 Standard_Integer NCollection_BaseMap::NextPrimeForMap
   (const Standard_Integer N) const
 {
-  return TCollection::NextPrimeForMap ( N );
+  return NCollection_Primes::NextPrimeForMap ( N );
 }
-
