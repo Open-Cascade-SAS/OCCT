@@ -1424,12 +1424,12 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
     aMapRight.Add (aKeyIter);
   }
 
-  QCOMPARE (aMapLeft .Contains (aMapRight), Standard_False);
-  QCOMPARE (aMapRight.Contains (aMapLeft),  Standard_False);
+  QCOMPARE (NCollection_MapAlgo::Contains (aMapLeft, aMapRight), Standard_False);
+  QCOMPARE (NCollection_MapAlgo::Contains (aMapRight, aMapLeft),  Standard_False);
 
   // validate Union operation
   NCollection_Map<Standard_Integer> aMapUnion;
-  aMapUnion.Union (aMapLeft, aMapRight);
+  NCollection_MapAlgo::Union(aMapUnion, aMapLeft, aMapRight);
   QCOMPARE (aMapUnion.Extent(), aRightUpper - aLeftLower + 1);
   for (Standard_Integer aKeyIter = aLeftLower; aKeyIter <= aRightUpper; ++aKeyIter)
   {
@@ -1438,18 +1438,18 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
 
   // validate Intersection operation
   NCollection_Map<Standard_Integer> aMapSect;
-  aMapSect.Intersection (aMapLeft, aMapRight);
+  NCollection_MapAlgo::Intersection(aMapSect, aMapLeft, aMapRight);
   QCOMPARE (aMapSect.Extent(), aLeftUpper - aRightLower + 1);
   for (Standard_Integer aKeyIter = aRightLower; aKeyIter <= aLeftUpper; ++aKeyIter)
   {
     QCOMPARE (aMapSect.Contains (aKeyIter), Standard_True);
   }
-  QCOMPARE (aMapLeft .Contains (aMapSect), Standard_True);
-  QCOMPARE (aMapRight.Contains (aMapSect), Standard_True);
+  QCOMPARE (NCollection_MapAlgo::Contains (aMapLeft, aMapSect), Standard_True);
+  QCOMPARE (NCollection_MapAlgo::Contains (aMapRight, aMapSect), Standard_True);
 
   // validate Substruction operation
   NCollection_Map<Standard_Integer> aMapSubsLR;
-  aMapSubsLR.Subtraction (aMapLeft, aMapRight);
+  NCollection_MapAlgo::Subtraction(aMapSubsLR, aMapLeft, aMapRight);
   QCOMPARE (aMapSubsLR.Extent(), aRightLower - aLeftLower);
   for (Standard_Integer aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
   {
@@ -1457,7 +1457,7 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
   }
 
   NCollection_Map<Standard_Integer> aMapSubsRL;
-  aMapSubsRL.Subtraction (aMapRight, aMapLeft);
+  NCollection_MapAlgo::Subtraction(aMapSubsRL, aMapRight, aMapLeft);
   QCOMPARE (aMapSubsRL.Extent(), aRightUpper - aLeftUpper);
   for (Standard_Integer aKeyIter = aLeftUpper + 1; aKeyIter < aRightUpper; ++aKeyIter)
   {
@@ -1466,7 +1466,7 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
 
   // validate Difference operation
   NCollection_Map<Standard_Integer> aMapDiff;
-  aMapDiff.Difference (aMapLeft, aMapRight);
+  NCollection_MapAlgo::Difference(aMapDiff, aMapLeft, aMapRight);
   QCOMPARE (aMapDiff.Extent(), aRightLower - aLeftLower + aRightUpper - aLeftUpper);
   for (Standard_Integer aKeyIter = aLeftLower; aKeyIter < aRightLower; ++aKeyIter)
   {
@@ -1489,10 +1489,10 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
   aMapSect.Add (43);
 
   NCollection_Map<Standard_Integer> aMapCopy (aMapSwap);
-  QCOMPARE (aMapCopy.IsEqual (aMapSwap), Standard_True);
+  QCOMPARE (NCollection_MapAlgo::IsEqual(aMapCopy, aMapSwap), Standard_True);
   aMapCopy.Remove (34);
   aMapCopy.Add    (43);
-  QCOMPARE (aMapCopy.IsEqual (aMapSwap), Standard_False);
+  QCOMPARE (NCollection_MapAlgo::IsEqual(aMapCopy, aMapSwap), Standard_False);
 
   return 0;
 }

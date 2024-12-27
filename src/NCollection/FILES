@@ -46,6 +46,7 @@ NCollection_List.hxx
 NCollection_ListNode.hxx
 NCollection_LocalArray.hxx
 NCollection_Map.hxx
+NCollection_MapAlgo.hxx
 NCollection_Mat3.hxx
 NCollection_Mat4.hxx
 NCollection_OccAllocator.hxx

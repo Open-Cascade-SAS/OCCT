@@ -361,8 +361,8 @@ Handle(IMeshData::ListOfPnt2d) BRepMesh_NURBSRangeSplitter::GenerateSurfaceNodes
       aFixedParams[0], aFixedParams[1]).GetControlParametersToRemove(theParameters),
   };
 
-  aParamsToRemove[0]->Subtract(*aFixedParams[0]);
-  aParamsToRemove[1]->Subtract(*aFixedParams[1]);
+  NCollection_MapAlgo::Subtract(*aParamsToRemove[0], *aFixedParams[0]);
+  NCollection_MapAlgo::Subtract(*aParamsToRemove[1], *aFixedParams[1]);
 
   // insert nodes of the regular grid
   Handle(IMeshData::ListOfPnt2d) aNodes = new IMeshData::ListOfPnt2d(

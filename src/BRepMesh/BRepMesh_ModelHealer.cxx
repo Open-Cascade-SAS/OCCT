@@ -235,7 +235,7 @@ Standard_Boolean BRepMesh_ModelHealer::popEdgesToUpdate(
     Handle(IMeshData::MapOfIEdgePtr)& aIntersections = aFaceIt.ChangeValue();
     if (!aIntersections.IsNull())
     {
-      theEdgesToUpdate.Unite(*aIntersections);
+      NCollection_MapAlgo::Unite(theEdgesToUpdate, *aIntersections);
       aIntersections.Nullify();
     }
   }

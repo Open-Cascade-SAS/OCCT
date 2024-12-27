@@ -309,7 +309,7 @@ void BRepMesh_FaceChecker::collectResult()
     const Handle(IMeshData::MapOfIEdgePtr)& aEdges = myWiresIntersectingEdges->Value(aWireIt);
     if (!aEdges.IsNull())
     {
-      myIntersectingEdges->Unite(*aEdges);
+      NCollection_MapAlgo::Unite(*myIntersectingEdges, *aEdges);
     }
   }
 }

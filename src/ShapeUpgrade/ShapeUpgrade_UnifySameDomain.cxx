@@ -2516,7 +2516,7 @@ Standard_Boolean ShapeUpgrade_UnifySameDomain::MergeEdges(TopTools_SequenceOfSha
       }
     }
   }
-  VerticesToAvoid.Unite(NonMergVrt);
+  NCollection_MapAlgo::Unite(VerticesToAvoid, NonMergVrt);
 
   // do loop while there are unused edges
   TopTools_MapOfShape aUsedEdges;

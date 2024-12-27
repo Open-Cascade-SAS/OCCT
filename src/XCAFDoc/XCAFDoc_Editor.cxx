@@ -672,7 +672,7 @@ bool XCAFDoc_Editor::FilterShapeTree(const Handle(XCAFDoc_ShapeTool)& theShapeTo
   for (TDF_LabelMap::Iterator aLabelIter (theLabelsToKeep); aLabelIter.More(); aLabelIter.Next())
   {
     GetParentShapeLabels (aLabelIter.Key(), aInternalLabels);
-    aLabelsToKeep.Unite(aInternalLabels);
+    NCollection_MapAlgo::Unite(aLabelsToKeep, aInternalLabels);
     aInternalLabels.Clear(false);
   }
   for(TDF_ChildIterator aLabelIter (theShapeTool->Label(), true); aLabelIter.More(); aLabelIter.Next())

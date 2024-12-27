@@ -401,8 +401,8 @@ static void TestMap(QANCollection_MapFunc& theM, Draw_Interpretor& theDI)
     aM3.Add(2);
     aM3.Add(3);
 
-    if (!aM1.HasIntersection(aM2) || !aM2.HasIntersection(aM1) ||
-         aM1.HasIntersection(aM3) ||  aM3.HasIntersection(aM1))
+    if (!NCollection_MapAlgo::HasIntersection(aM1, aM2) || !NCollection_MapAlgo::HasIntersection(aM2, aM1) ||
+         NCollection_MapAlgo::HasIntersection(aM1, aM3) ||  NCollection_MapAlgo::HasIntersection(aM3, aM1))
     {
       theDI << "Error: method 'HasIntersection' failed.";
     }

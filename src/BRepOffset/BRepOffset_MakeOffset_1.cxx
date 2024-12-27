@@ -3362,7 +3362,7 @@ Standard_Boolean BRepOffset_BuildOffsetFaces::CheckInvertedBlock (const TopoDS_S
       GetVerticesOnEdges (aCB1, myInvertedEdges, *pMVInverted1, *pMVAll1);
     }
     //
-    if (pMVInverted->HasIntersection (*pMVAll1))
+    if (NCollection_MapAlgo::HasIntersection(*pMVInverted, *pMVAll1))
     {
       return Standard_False;
     }
@@ -5886,8 +5886,8 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces (TopTools_MapOfShape& theVertsT
           mapShapes(*aLFImi, TopAbs_EDGE, aMEVIm);
           mapShapes(*aLFImi, TopAbs_VERTEX, aMEVIm);
 
-          Standard_Boolean isIContainsE = aMEVIm.HasIntersection(anInsideEdges);
-          Standard_Boolean isIContainsV = aMEVIm.HasIntersection(anInsideVertices);
+          Standard_Boolean isIContainsE = NCollection_MapAlgo::HasIntersection(aMEVIm, anInsideEdges);
+          Standard_Boolean isIContainsV = NCollection_MapAlgo::HasIntersection(aMEVIm, anInsideVertices);
 
           for (j = i + 1; j <= aNb; ++j)
           {
@@ -5914,8 +5914,8 @@ void BRepOffset_BuildOffsetFaces::IntersectFaces (TopTools_MapOfShape& theVertsT
             mapShapes(*aLFImj, TopAbs_VERTEX, aMEVIm);
             // check images of both faces contain anInsideEdges and anInsideVertices
             // not process if false and true 
-            Standard_Boolean isJContainsE = aMEVIm.HasIntersection(anInsideEdges);
-            Standard_Boolean isJContainsV = aMEVIm.HasIntersection(anInsideVertices);
+            Standard_Boolean isJContainsE = NCollection_MapAlgo::HasIntersection(aMEVIm, anInsideEdges);
+            Standard_Boolean isJContainsV = NCollection_MapAlgo::HasIntersection(aMEVIm, anInsideVertices);
 
             // Check if one face is connected to inside edge then
             // the other must be also connected

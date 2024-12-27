@@ -16,12 +16,13 @@
 #ifndef NCollection_Map_HeaderFile
 #define NCollection_Map_HeaderFile
 
+#include <NCollection_MapAlgo.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_TListNode.hxx>
-#include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
-
+#include <NCollection_StlIterator.hxx>
+#include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
+
 #include <utility>
 
 /**
@@ -348,204 +349,80 @@ public:
   Standard_Integer Size(void) const
   { return Extent(); }
 
- public:
-  //!@name Boolean operations with maps as sets of keys
-  //!@{
+public:
 
-  //! @return true if two maps contains exactly the same keys
-  Standard_Boolean IsEqual (const NCollection_Map& theOther) const
+  //! Checks if two maps contain exactly the same keys.
+  //! This function compares the keys of this map and another map and returns true
+  //! if they contain exactly the same keys.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean IsEqual(const NCollection_Map& theOther) const
   {
-    return Extent() == theOther.Extent()
-        && Contains (theOther);
+    return NCollection_MapAlgo::IsEqual<NCollection_Map>(*this, theOther);
   }
 
-  //! @return true if this map contains ALL keys of another map.
-  Standard_Boolean Contains (const NCollection_Map& theOther) const
+  //! Checks if this map contains all keys of another map.
+  //! This function checks if this map contains all keys of another map.
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean Contains(const NCollection_Map& theOther) const
   {
-    if (this == &theOther
-     || theOther.IsEmpty())
-    {
-      return Standard_True;
-    }
-    else if (Extent() < theOther.Extent())
-    {
-      return Standard_False;
-    }
-
-    for (Iterator anIter (theOther); anIter.More(); anIter.Next())
-    {
-      if (!Contains (anIter.Key()))
-      {
-        return Standard_False;
-      }
-    }
-
-    return Standard_True;
+    return NCollection_MapAlgo::Contains<NCollection_Map>(*this, theOther);
   }
 
   //! Sets this Map to be the result of union (aka addition, fuse, merge, boolean OR) operation between two given Maps
   //! The new Map contains the values that are contained either in the first map or in the second map or in both.
   //! All previous content of this Map is cleared.
   //! This map (result of the boolean operation) can also be passed as one of operands.
-  void Union (const NCollection_Map& theLeft,
-              const NCollection_Map& theRight)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  void Union(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
-    if (&theLeft == &theRight)
-    {
-      Assign (theLeft);
-      return;
-    }
-
-    if (this != &theLeft
-     && this != &theRight)
-    {
-      Clear();
-    }
-
-    if (this != &theLeft)
-    {
-      for (Iterator anIter (theLeft); anIter.More(); anIter.Next())
-      {
-        Add (anIter.Key());
-      }
-    }
-    if (this != &theRight)
-    {
-      for (Iterator anIter (theRight); anIter.More(); anIter.Next())
-      {
-        Add (anIter.Key());
-      }
-    }
+    NCollection_MapAlgo::Union<NCollection_Map>(*this, theLeft, theRight);
   }
 
   //! Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with another (given) Map.
   //! The result contains the values that were previously contained in this map or contained in the given (operand) map.
   //! This algorithm is similar to method Union().
   //! Returns True if contents of this map is changed.
-  Standard_Boolean Unite (const NCollection_Map& theOther)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean Unite(const NCollection_Map& theOther)
   {
-    if (this == &theOther)
-    {
-      return Standard_False;
-    }
-
-    const Standard_Integer anOldExtent = Extent();
-    Union (*this, theOther);
-    return anOldExtent != Extent();
+    return NCollection_MapAlgo::Unite<NCollection_Map>(*this, theOther);
   }
 
   //! Returns true if this and theMap have common elements.
-  Standard_Boolean HasIntersection (const NCollection_Map& theMap) const
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean HasIntersection(const NCollection_Map& theMap) const
   {
-    const NCollection_Map* aMap1 = this;
-    const NCollection_Map* aMap2 = &theMap;
-    if (theMap.Size() < Size())
-    {
-      aMap1 = &theMap;
-      aMap2 = this;
-    }
-
-    for (NCollection_Map::Iterator aIt(*aMap1); aIt.More(); aIt.Next())
-    {
-      if (aMap2->Contains(aIt.Value()))
-      {
-        return Standard_True;
-      }
-    }
-
-    return Standard_False;
+    return NCollection_MapAlgo::HasIntersection<NCollection_Map>(*this, theMap);
   }
 
   //! Sets this Map to be the result of intersection (aka multiplication, common, boolean AND) operation between two given Maps.
   //! The new Map contains only the values that are contained in both map operands.
   //! All previous content of this Map is cleared.
   //! This same map (result of the boolean operation) can also be used as one of operands.
-  void Intersection (const NCollection_Map& theLeft,
-                     const NCollection_Map& theRight)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  void Intersection(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
-    if (&theLeft == &theRight)
-    {
-      Assign (theLeft);
-      return;
-    }
-
-    if (this == &theLeft)
-    {
-      NCollection_Map aCopy (1, this->myAllocator);
-      Exchange     (aCopy);
-      Intersection (aCopy, theRight);
-      return;
-    }
-    else if (this == &theRight)
-    {
-      NCollection_Map aCopy (1, this->myAllocator);
-      Exchange     (aCopy);
-      Intersection (theLeft, aCopy);
-      return;
-    }
-
-    Clear();
-    if (theLeft.Extent() < theRight.Extent())
-    {
-      for (Iterator anIter (theLeft); anIter.More(); anIter.Next())
-      {
-        if (theRight.Contains (anIter.Key()))
-        {
-          Add (anIter.Key());
-        }
-      }
-    }
-    else
-    {
-      for (Iterator anIter (theRight); anIter.More(); anIter.Next())
-      {
-        if (theLeft.Contains (anIter.Key()))
-        {
-          Add (anIter.Key());
-        }
-      }
-    }
+    NCollection_MapAlgo::Intersection<NCollection_Map>(*this, theLeft, theRight);
   }
 
   //! Apply to this Map the intersection operation (aka multiplication, common, boolean AND) with another (given) Map.
   //! The result contains only the values that are contained in both this and the given maps.
   //! This algorithm is similar to method Intersection().
   //! Returns True if contents of this map is changed.
-  Standard_Boolean Intersect (const NCollection_Map& theOther)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean Intersect(const NCollection_Map& theOther)
   {
-    if (this == &theOther
-     || IsEmpty())
-    {
-      return Standard_False;
-    }
-
-    const Standard_Integer anOldExtent = Extent();
-    Intersection (*this, theOther);
-    return anOldExtent != Extent();
+    return NCollection_MapAlgo::Intersect<NCollection_Map>(*this, theOther);
   }
 
   //! Sets this Map to be the result of subtraction (aka set-theoretic difference, relative complement,
   //! exclude, cut, boolean NOT) operation between two given Maps.
   //! The new Map contains only the values that are contained in the first map operands and not contained in the second one.
   //! All previous content of this Map is cleared.
-  void Subtraction (const NCollection_Map& theLeft,
-                    const NCollection_Map& theRight)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  void Subtraction(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
-    if (this == &theLeft)
-    {
-      Subtract (theRight);
-      return;
-    }
-    else if (this == &theRight)
-    {
-      NCollection_Map aCopy (1, this->myAllocator);
-      Exchange    (aCopy);
-      Subtraction (theLeft, aCopy);
-      return;
-    }
-
-    Assign   (theLeft);
-    Subtract (theRight);
+    NCollection_MapAlgo::Subtraction<NCollection_Map>(*this, theLeft, theRight);
   }
 
   //! Apply to this Map the subtraction (aka set-theoretic difference, relative complement,
@@ -553,89 +430,29 @@ public:
   //! The result contains only the values that were previously contained in this map and not contained in this map.
   //! This algorithm is similar to method Subtract() with two operands.
   //! Returns True if contents of this map is changed.
-  Standard_Boolean Subtract (const NCollection_Map& theOther)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean Subtract(const NCollection_Map& theOther)
   {
-    if (this == &theOther)
-    {
-      if (IsEmpty())
-      {
-        return Standard_False;
-      }
-
-      Clear();
-      return Standard_True;
-    }
-
-    const Standard_Integer anOldExtent = Extent();
-    for (Iterator anIter (theOther); anIter.More(); anIter.Next())
-    {
-      Remove (anIter.Key());
-    }
-    return anOldExtent != Extent();
+    return NCollection_MapAlgo::Subtract<NCollection_Map>(*this, theOther);
   }
 
   //! Sets this Map to be the result of symmetric difference (aka exclusive disjunction, boolean XOR) operation between two given Maps.
   //! The new Map contains the values that are contained only in the first or the second operand maps but not in both.
   //! All previous content of this Map is cleared. This map (result of the boolean operation) can also be used as one of operands.
-  void Difference (const NCollection_Map& theLeft,
-                   const NCollection_Map& theRight)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  void Difference(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
-    if (&theLeft == &theRight)
-    {
-      Clear();
-      return;
-    }
-    else if (this == &theLeft)
-    {
-      NCollection_Map aCopy (1, this->myAllocator);
-      Exchange   (aCopy);
-      Difference (aCopy, theRight);
-      return;
-    }
-    else if (this == &theRight)
-    {
-      NCollection_Map aCopy (1, this->myAllocator);
-      Exchange   (aCopy);
-      Difference (theLeft, aCopy);
-      return;
-    }
-
-    Clear();
-    for (Iterator anIter (theLeft); anIter.More(); anIter.Next())
-    {
-      if (!theRight.Contains (anIter.Key()))
-      {
-        Add (anIter.Key());
-      }
-    }
-    for (Iterator anIter (theRight); anIter.More(); anIter.Next())
-    {
-      if (!theLeft.Contains (anIter.Key()))
-      {
-        Add (anIter.Key());
-      }
-    }
+    NCollection_MapAlgo::Difference<NCollection_Map>(*this, theLeft, theRight);
   }
 
   //! Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation with another (given) Map.
   //! The result contains the values that are contained only in this or the operand map, but not in both.
   //! This algorithm is similar to method Difference().
   //! Returns True if contents of this map is changed.
-  Standard_Boolean Differ (const NCollection_Map& theOther)
+  Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from NCollection_MapAlgo.hxx instead.")
+  Standard_Boolean Differ(const NCollection_Map& theOther)
   {
-    if (this == &theOther)
-    {
-      if (IsEmpty())
-      {
-        return Standard_False;
-      }
-      Clear();
-      return Standard_True;
-    }
-
-    const Standard_Integer anOldExtent = Extent();
-    Difference (*this, theOther);
-    return anOldExtent != Extent();
+    return NCollection_MapAlgo::Differ<NCollection_Map>(*this, theOther);
   }
 
 protected:
