@@ -41,13 +41,14 @@ jobs:
 
     - name: Download and extract Mesa3D
       run: |
-        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
         7z x mesa3d.7z -omesa3d
 
     - name: Run system-wide deployment
       run: |
         cd mesa3d
         .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
       shell: cmd
 
     - name: Configure OCCT
@@ -111,13 +112,14 @@ jobs:
 
     - name: Download and extract Mesa3D
       run: |
-        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
         7z x mesa3d.7z -omesa3d
 
     - name: Run system-wide deployment
       run: |
         cd mesa3d
         .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
       shell: cmd
 
     - name: Configure OCCT
@@ -413,13 +415,14 @@ jobs:
 
     - name: Download and extract Mesa3D
       run: |
-        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
         7z x mesa3d.7z -omesa3d
 
     - name: Run system-wide deployment
       run: |
         cd mesa3d
         .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
       shell: cmd
 
     - name: Install Visual C++ 2010 Redistributable
@@ -435,6 +438,7 @@ jobs:
         DRAWEXE.exe -v -c testgrid
       shell: cmd
       env:
+        LIBGL_ALWAYS_SOFTWARE: 1
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
@@ -484,13 +488,14 @@ jobs:
 
     - name: Download and extract Mesa3D
       run: |
-        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.2.5/mesa3d-24.2.5-release-msvc.7z
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
         7z x mesa3d.7z -omesa3d
 
     - name: Run system-wide deployment
       run: |
         cd mesa3d
         .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
       shell: cmd
 
     - name: Install Visual C++ 2010 Redistributable
@@ -506,6 +511,7 @@ jobs:
         DRAWEXE.exe -v -c testgrid
       shell: cmd
       env:
+        LIBGL_ALWAYS_SOFTWARE: 1
         CSF_TestScriptsPath: ${{ github.workspace }}/tests
         CSF_TestDataPath: ${{ github.workspace }}/data
 
@@ -647,9 +653,6 @@ jobs:
     - name: Start Xvfb
       run: Xvfb :99 -screen 0 1920x1080x24 &
 
-    - name: Set DISPLAY environment variable
-      run: echo "DISPLAY=:99" >> $GITHUB_ENV
-
     - name: Download test data
       run: |
         cd data
@@ -661,9 +664,6 @@ jobs:
       with:
         name: install-linux-clang-x64
         path: install
-
-    - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
-      run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
     - name: Set execute permissions on DRAWEXE
       run: chmod +x install/bin/DRAWEXE
@@ -710,9 +710,6 @@ jobs:
     - name: Start Xvfb
       run: Xvfb :99 -screen 0 1920x1080x24 &
 
-    - name: Set DISPLAY environment variable
-      run: echo "DISPLAY=:99" >> $GITHUB_ENV
-
     - name: Download test data
       run: |
         cd data
@@ -724,9 +721,6 @@ jobs:
       with:
         name: install-linux-gcc-x64
         path: install
-
-    - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
-      run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
     - name: Set execute permissions on DRAWEXE
       run: chmod +x install/bin/DRAWEXE
