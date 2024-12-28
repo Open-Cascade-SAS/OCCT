@@ -14,4 +14,4 @@ BRepClass3d_SolidClassifier.hxx
 BRepClass3d_SolidExplorer.cxx
 BRepClass3d_SolidExplorer.hxx
 BRepClass3d_SolidPassiveClassifier.hxx
-BRepClass3d_SolidPassiveClassifier_0.cxx
+BRepClass3d_SolidPassiveClassifier.cxx
