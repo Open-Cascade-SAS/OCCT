@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <TopoDS_TShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-
+#include <TopoDS_TShape.hxx>
 
 class TopoDS_TSolid;
 DEFINE_STANDARD_HANDLE(TopoDS_TSolid, TopoDS_TShape)
@@ -31,41 +29,17 @@ DEFINE_STANDARD_HANDLE(TopoDS_TSolid, TopoDS_TShape)
 //! edges and vertices.
 class TopoDS_TSolid : public TopoDS_TShape
 {
-
 public:
-
-  
   //! Creates an empty TSolid.
-    TopoDS_TSolid();
-  
+  TopoDS_TSolid() : TopoDS_TShape() { Orientable(Standard_False); }
+
   //! returns SOLID.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
-  
+
   //! Returns an empty TSolid.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TopoDS_TSolid,TopoDS_TShape)
-
-protected:
-
-
-
-
-private:
-
-
-
-
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TSolid, TopoDS_TShape)
 };
-
-
-#include <TopoDS_TSolid.lxx>
-
-
-
-
 
 #endif // _TopoDS_TSolid_HeaderFile

@@ -19,10 +19,8 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <TopoDS_TShape.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-
+#include <TopoDS_TShape.hxx>
 
 class TopoDS_TCompound;
 DEFINE_STANDARD_HANDLE(TopoDS_TCompound, TopoDS_TShape)
@@ -30,41 +28,17 @@ DEFINE_STANDARD_HANDLE(TopoDS_TCompound, TopoDS_TShape)
 //! A TCompound is an all-purpose set of Shapes.
 class TopoDS_TCompound : public TopoDS_TShape
 {
-
 public:
-
-  
   //! Creates an empty TCompound.
-    TopoDS_TCompound();
-  
+  TopoDS_TCompound() : TopoDS_TShape() { Orientable(Standard_False); }
+
   //! Returns COMPOUND.
   Standard_EXPORT TopAbs_ShapeEnum ShapeType() const Standard_OVERRIDE;
-  
+
   //! Returns an empty TCompound.
   Standard_EXPORT Handle(TopoDS_TShape) EmptyCopy() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(TopoDS_TCompound,TopoDS_TShape)
-
-protected:
-
-
-
-
-private:
-
-
-
-
+  DEFINE_STANDARD_RTTIEXT(TopoDS_TCompound, TopoDS_TShape)
 };
-
-
-#include <TopoDS_TCompound.lxx>
-
-
-
-
 
 #endif // _TopoDS_TCompound_HeaderFile

@@ -27,7 +27,6 @@ MoniTool_Stat.hxx
 MoniTool_Timer.cxx
 MoniTool_Timer.hxx
 MoniTool_Timer.lxx
-MoniTool_TimerSentry.cxx
 MoniTool_TimerSentry.hxx
 MoniTool_TimerSentry.lxx
 MoniTool_TransientElem.cxx

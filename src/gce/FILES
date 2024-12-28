@@ -45,6 +45,5 @@ gce_MakeTranslation.cxx
 gce_MakeTranslation.hxx
 gce_MakeTranslation2d.cxx
 gce_MakeTranslation2d.hxx
-gce_Root.cxx
 gce_Root.hxx
 gce_Root.lxx
