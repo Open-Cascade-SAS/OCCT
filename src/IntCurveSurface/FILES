@@ -1,5 +1,3 @@
-IntCurveSurface_HCurveTool.gxx
-IntCurveSurface_HCurveTool.lxx
 IntCurveSurface_HInter.hxx
 IntCurveSurface_HInter_0.cxx
 IntCurveSurface_Inter.gxx
@@ -26,7 +24,7 @@ IntCurveSurface_TheCSFunctionOfHInter_0.cxx
 IntCurveSurface_TheExactHInter.hxx
 IntCurveSurface_TheExactHInter_0.cxx
 IntCurveSurface_TheHCurveTool.hxx
-IntCurveSurface_TheHCurveTool_0.cxx
+IntCurveSurface_TheHCurveTool.cxx
 IntCurveSurface_TheInterferenceOfHInter.hxx
 IntCurveSurface_TheInterferenceOfHInter_0.cxx
 IntCurveSurface_ThePolygonOfHInter.hxx
