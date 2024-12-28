@@ -27,7 +27,7 @@ BRepBlend_ConstRadInv.hxx
 BRepBlend_CSCircular.hxx
 BRepBlend_CSConstRad.hxx
 BRepBlend_CSWalking.hxx
-BRepBlend_CSWalking_0.cxx
+BRepBlend_CSWalking.cxx
 BRepBlend_CurvPointRadInv.cxx
 BRepBlend_CurvPointRadInv.hxx
 BRepBlend_EvolRad.hxx
@@ -74,4 +74,4 @@ BRepBlend_SurfRstLineBuilder.cxx
 BRepBlend_SurfRstLineBuilder.hxx
 BRepBlend_SurfRstLineBuilder.lxx
 BRepBlend_Walking.hxx
-BRepBlend_Walking_0.cxx
+BRepBlend_Walking.cxx
