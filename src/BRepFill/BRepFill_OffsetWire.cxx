@@ -2675,7 +2675,7 @@ static void QuasiFleche(const Adaptor3d_Curve& C,
   Standard_Real theFleche=0;
   Standard_Boolean flecheok = Standard_False;
   if (Norme > Eps) { 
-    // Evaluation of the arrow by interpolation. See IntWalk_IWalking_5.gxx
+    // Evaluation of the arrow by interpolation. See IntWalk_IWalking::TestDeflection
     Standard_Real N1 = Vdeb.SquareMagnitude();
     Standard_Real N2 = Vdelta.SquareMagnitude();
     if (N1 > Eps && N2 > Eps) {
