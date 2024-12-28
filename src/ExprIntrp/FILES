@@ -1,8 +1,8 @@
 ExprIntrp.cxx
 ExprIntrp.hxx
 ExprIntrp.lex
-ExprIntrp.tab.c
-ExprIntrp.tab.h
+ExprIntrp.tab.cxx
+ExprIntrp.tab.hxx
 ExprIntrp.yacc
 ExprIntrp_Analysis.cxx
 ExprIntrp_Analysis.hxx
@@ -27,4 +27,4 @@ ExprIntrp_yaccanal.hxx
 ExprIntrp_yaccintrf.cxx
 ExprIntrp_yaccintrf.hxx
 ExprIntrp_yacclex.cxx
-lex.ExprIntrp.c
+lex.ExprIntrp.cxx
