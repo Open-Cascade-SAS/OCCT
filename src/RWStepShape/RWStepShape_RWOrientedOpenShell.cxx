@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWOrientedOpenShell.hxx>
+#include "RWStepShape_RWOrientedOpenShell.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_OrientedOpenShell.hxx>

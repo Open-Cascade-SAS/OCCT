@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWChange.hxx>
+#include "RWStepAP203_RWChange.pxx"
 #include <StepAP203_Change.hxx>
 #include <StepAP203_HArray1OfWorkItem.hxx>
 #include <StepAP203_WorkItem.hxx>

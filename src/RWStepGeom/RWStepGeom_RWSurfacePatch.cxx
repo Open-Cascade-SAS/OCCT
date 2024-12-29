@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWSurfacePatch.hxx>
+#include "RWStepGeom_RWSurfacePatch.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BoundedSurface.hxx>

@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWRoleAssociation.hxx>
+#include "RWStepBasic_RWRoleAssociation.pxx"
 #include <StepBasic_ObjectRole.hxx>
 #include <StepBasic_RoleAssociation.hxx>
 #include <StepData_StepReaderData.hxx>

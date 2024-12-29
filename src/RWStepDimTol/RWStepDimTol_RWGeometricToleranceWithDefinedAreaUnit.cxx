@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.hxx>
+#include "RWStepDimTol_RWGeometricToleranceWithDefinedAreaUnit.pxx"
 
 #include <Interface_EntityIterator.hxx>
 #include <StepBasic_LengthMeasureWithUnit.hxx>

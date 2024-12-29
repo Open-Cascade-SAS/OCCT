@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem.hxx>
+#include "RWStepShape_RWMeasureRepresentationItemAndQualifiedRepresentationItem.pxx"
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepBasic_Unit.hxx>

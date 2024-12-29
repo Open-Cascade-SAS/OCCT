@@ -15,7 +15,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWTessellatedAnnotationOccurrence.hxx>
+#include "RWStepVisual_RWTessellatedAnnotationOccurrence.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_TessellatedAnnotationOccurrence.hxx>

@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWPlanarBox.hxx>
+#include "RWStepVisual_RWPlanarBox.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PlanarBox.hxx>

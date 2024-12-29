@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWChangeRequest.hxx>
+#include "RWStepAP203_RWChangeRequest.pxx"
 #include <StepAP203_ChangeRequest.hxx>
 #include <StepAP203_ChangeRequestItem.hxx>
 #include <StepAP203_HArray1OfChangeRequestItem.hxx>

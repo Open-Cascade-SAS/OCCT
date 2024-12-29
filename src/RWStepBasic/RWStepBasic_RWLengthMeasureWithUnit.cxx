@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWLengthMeasureWithUnit.hxx>
+#include "RWStepBasic_RWLengthMeasureWithUnit.pxx"
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepData_StepReaderData.hxx>

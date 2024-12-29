@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignApprovalAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignApprovalAssignment.pxx"
 #include <StepAP214_AutoDesignApprovalAssignment.hxx>
 #include <StepAP214_AutoDesignGeneralOrgItem.hxx>
 #include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>

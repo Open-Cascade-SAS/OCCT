@@ -16,7 +16,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWConstructiveGeometryRepresentation.hxx>
+#include "RWStepRepr_RWConstructiveGeometryRepresentation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_RepresentationContext.hxx>

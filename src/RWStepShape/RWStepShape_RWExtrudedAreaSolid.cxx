@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWExtrudedAreaSolid.hxx>
+#include "RWStepShape_RWExtrudedAreaSolid.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>

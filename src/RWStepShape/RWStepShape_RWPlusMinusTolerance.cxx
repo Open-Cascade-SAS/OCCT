@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWPlusMinusTolerance.hxx>
+#include "RWStepShape_RWPlusMinusTolerance.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_PlusMinusTolerance.hxx>

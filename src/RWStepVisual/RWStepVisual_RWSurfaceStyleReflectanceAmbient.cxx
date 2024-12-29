@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWSurfaceStyleReflectanceAmbient.hxx>
+#include "RWStepVisual_RWSurfaceStyleReflectanceAmbient.pxx"
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

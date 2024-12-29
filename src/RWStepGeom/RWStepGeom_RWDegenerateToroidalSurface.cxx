@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWDegenerateToroidalSurface.hxx>
+#include "RWStepGeom_RWDegenerateToroidalSurface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>

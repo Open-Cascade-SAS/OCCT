@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource.hxx>
+#include "RWStepBasic_RWProductDefinitionFormationWithSpecifiedSource.pxx"
 #include <StepBasic_Product.hxx>
 #include <StepBasic_ProductDefinitionFormationWithSpecifiedSource.hxx>
 #include <StepBasic_Source.hxx>

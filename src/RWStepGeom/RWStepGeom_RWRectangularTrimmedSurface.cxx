@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWRectangularTrimmedSurface.hxx>
+#include "RWStepGeom_RWRectangularTrimmedSurface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_RectangularTrimmedSurface.hxx>

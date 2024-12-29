@@ -16,7 +16,7 @@
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWProductDefinitionReference.hxx>
+#include "RWStepBasic_RWProductDefinitionReference.pxx"
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_ProductDefinitionReference.hxx>
 #include <StepData_StepReaderData.hxx>

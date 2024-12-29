@@ -16,7 +16,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWMechanicalContext.hxx>
+#include "RWStepBasic_RWMechanicalContext.pxx"
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_MechanicalContext.hxx>
 #include <StepData_StepReaderData.hxx>

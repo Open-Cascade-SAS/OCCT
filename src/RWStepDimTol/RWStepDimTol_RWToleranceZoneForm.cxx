@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepDimTol_RWToleranceZoneForm.hxx>
+#include "RWStepDimTol_RWToleranceZoneForm.pxx"
 
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

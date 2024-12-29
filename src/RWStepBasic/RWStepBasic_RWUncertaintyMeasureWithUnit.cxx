@@ -16,7 +16,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_MSG.hxx>
-#include <RWStepBasic_RWUncertaintyMeasureWithUnit.hxx>
+#include "RWStepBasic_RWUncertaintyMeasureWithUnit.pxx"
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>

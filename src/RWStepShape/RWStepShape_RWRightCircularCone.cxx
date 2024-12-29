@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWRightCircularCone.hxx>
+#include "RWStepShape_RWRightCircularCone.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis1Placement.hxx>

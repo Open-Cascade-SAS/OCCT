@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWApplicationContext.hxx>
+#include "RWStepBasic_RWApplicationContext.pxx"
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

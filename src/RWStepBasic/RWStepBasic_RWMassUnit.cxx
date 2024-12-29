@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWMassUnit.hxx>
+#include "RWStepBasic_RWMassUnit.pxx"
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MassUnit.hxx>
 #include <StepData_StepReaderData.hxx>

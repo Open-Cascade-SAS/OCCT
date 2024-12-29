@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWPlane.hxx>
+#include "RWStepGeom_RWPlane.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>

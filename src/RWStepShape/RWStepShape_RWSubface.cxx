@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWSubface.hxx>
+#include "RWStepShape_RWSubface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_FaceBound.hxx>

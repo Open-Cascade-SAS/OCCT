@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWConversionBasedUnit.hxx>
+#include "RWStepBasic_RWConversionBasedUnit.pxx"
 #include <StepBasic_ConversionBasedUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>

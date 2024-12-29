@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWOffsetSurface.hxx>
+#include "RWStepGeom_RWOffsetSurface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_OffsetSurface.hxx>

@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepElement_RWVolume3dElementDescriptor.hxx>
+#include "RWStepElement_RWVolume3dElementDescriptor.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepElement_Volume3dElementDescriptor.hxx>

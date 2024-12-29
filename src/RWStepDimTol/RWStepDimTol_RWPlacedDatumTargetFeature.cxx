@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepDimTol_RWPlacedDatumTargetFeature.hxx>
+#include "RWStepDimTol_RWPlacedDatumTargetFeature.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepDimTol_PlacedDatumTargetFeature.hxx>

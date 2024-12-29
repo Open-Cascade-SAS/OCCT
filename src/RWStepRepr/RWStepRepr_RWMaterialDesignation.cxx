@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWMaterialDesignation.hxx>
+#include "RWStepRepr_RWMaterialDesignation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_MaterialDesignation.hxx>

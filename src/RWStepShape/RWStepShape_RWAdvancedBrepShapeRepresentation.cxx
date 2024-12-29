@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWAdvancedBrepShapeRepresentation.hxx>
+#include "RWStepShape_RWAdvancedBrepShapeRepresentation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_RepresentationContext.hxx>

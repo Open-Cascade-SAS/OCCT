@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWDocumentType.hxx>
+#include "RWStepBasic_RWDocumentType.pxx"
 #include <StepBasic_DocumentType.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

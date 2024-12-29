@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepDimTol_RWDatumReferenceCompartment.hxx>
+#include "RWStepDimTol_RWDatumReferenceCompartment.pxx"
 
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>

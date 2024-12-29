@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepVisual_RWCurveStyleFontPattern.hxx>
+#include "RWStepVisual_RWCurveStyleFontPattern.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CurveStyleFontPattern.hxx>

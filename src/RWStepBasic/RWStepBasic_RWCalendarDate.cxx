@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWCalendarDate.hxx>
+#include "RWStepBasic_RWCalendarDate.pxx"
 #include <StepBasic_CalendarDate.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

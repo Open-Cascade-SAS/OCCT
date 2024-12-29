@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepKinematics_RWPrismaticPairWithRange.hxx>
+#include "RWStepKinematics_RWPrismaticPairWithRange.pxx"
 
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>

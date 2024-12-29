@@ -16,7 +16,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWAnnotationFillAreaOccurrence.hxx>
+#include "RWStepVisual_RWAnnotationFillAreaOccurrence.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_GeometricRepresentationItem.hxx>

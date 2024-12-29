@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWGeneralPropertyAssociation.hxx>
+#include "RWStepBasic_RWGeneralPropertyAssociation.pxx"
 #include <StepBasic_GeneralProperty.hxx>
 #include <StepBasic_GeneralPropertyAssociation.hxx>
 #include <StepData_StepReaderData.hxx>

@@ -16,7 +16,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol.hxx>
+#include "RWStepDimTol_RWGeoTolAndGeoTolWthMaxTol.pxx"
 #include <StepBasic_LengthMeasureWithUnit.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>

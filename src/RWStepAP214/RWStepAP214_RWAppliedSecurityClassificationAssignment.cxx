@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedSecurityClassificationAssignment.hxx>
+#include "RWStepAP214_RWAppliedSecurityClassificationAssignment.pxx"
 #include <StepAP214_AppliedSecurityClassificationAssignment.hxx>
 #include <StepAP214_HArray1OfSecurityClassificationItem.hxx>
 #include <StepAP214_SecurityClassificationItem.hxx>

@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepVisual_RWCameraModel.hxx>
+#include "RWStepVisual_RWCameraModel.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CameraModel.hxx>

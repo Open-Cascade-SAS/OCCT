@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWTextStyleWithBoxCharacteristics.hxx>
+#include "RWStepVisual_RWTextStyleWithBoxCharacteristics.pxx"
 #include <Standard_Real.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

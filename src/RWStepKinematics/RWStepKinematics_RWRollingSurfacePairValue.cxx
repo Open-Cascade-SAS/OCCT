@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepKinematics_RWRollingSurfacePairValue.hxx>
+#include "RWStepKinematics_RWRollingSurfacePairValue.pxx"
 
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>

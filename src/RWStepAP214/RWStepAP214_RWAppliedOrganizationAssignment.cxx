@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedOrganizationAssignment.hxx>
+#include "RWStepAP214_RWAppliedOrganizationAssignment.pxx"
 #include <StepAP214_AppliedOrganizationAssignment.hxx>
 #include <StepAP214_HArray1OfOrganizationItem.hxx>
 #include <StepAP214_OrganizationItem.hxx>

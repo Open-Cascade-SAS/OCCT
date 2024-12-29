@@ -15,7 +15,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedDateAndTimeAssignment.hxx>
+#include "RWStepAP214_RWAppliedDateAndTimeAssignment.pxx"
 #include <StepAP214_AppliedDateAndTimeAssignment.hxx>
 #include <StepAP214_DateAndTimeItem.hxx>
 #include <StepAP214_HArray1OfDateAndTimeItem.hxx>

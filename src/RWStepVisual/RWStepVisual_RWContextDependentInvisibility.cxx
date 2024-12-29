@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWContextDependentInvisibility.hxx>
+#include "RWStepVisual_RWContextDependentInvisibility.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_ContextDependentInvisibility.hxx>

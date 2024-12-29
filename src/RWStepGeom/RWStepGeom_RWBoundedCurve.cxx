@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepGeom_RWBoundedCurve.hxx>
+#include "RWStepGeom_RWBoundedCurve.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BoundedCurve.hxx>

@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepElement_RWSurfaceSectionFieldVarying.hxx>
+#include "RWStepElement_RWSurfaceSectionFieldVarying.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepElement_SurfaceSection.hxx>

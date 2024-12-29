@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_Check.hxx>
-#include <RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit.hxx>
+#include "RWStepRepr_RWReprItemAndPlaneAngleMeasureWithUnit.pxx"
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepBasic_Unit.hxx>

@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWApprovalPersonOrganization.hxx>
+#include "RWStepBasic_RWApprovalPersonOrganization.pxx"
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalPersonOrganization.hxx>
 #include <StepBasic_ApprovalRole.hxx>

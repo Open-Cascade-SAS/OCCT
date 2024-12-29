@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWCoordinatedUniversalTimeOffset.hxx>
+#include "RWStepBasic_RWCoordinatedUniversalTimeOffset.pxx"
 #include <StepBasic_CoordinatedUniversalTimeOffset.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

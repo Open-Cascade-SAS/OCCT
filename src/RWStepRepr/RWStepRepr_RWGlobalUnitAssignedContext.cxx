@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWGlobalUnitAssignedContext.hxx>
+#include "RWStepRepr_RWGlobalUnitAssignedContext.pxx"
 #include <StepBasic_NamedUnit.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

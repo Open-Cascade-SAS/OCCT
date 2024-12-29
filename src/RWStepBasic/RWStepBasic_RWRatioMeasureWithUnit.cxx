@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWRatioMeasureWithUnit.hxx>
+#include "RWStepBasic_RWRatioMeasureWithUnit.pxx"
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_RatioMeasureWithUnit.hxx>
 #include <StepData_StepReaderData.hxx>

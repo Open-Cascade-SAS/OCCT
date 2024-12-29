@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWPersonAndOrganizationRole.hxx>
+#include "RWStepBasic_RWPersonAndOrganizationRole.pxx"
 #include <StepBasic_PersonAndOrganizationRole.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

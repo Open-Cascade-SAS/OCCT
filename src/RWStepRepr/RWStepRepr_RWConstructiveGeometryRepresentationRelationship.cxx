@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWConstructiveGeometryRepresentationRelationship.hxx>
+#include "RWStepRepr_RWConstructiveGeometryRepresentationRelationship.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>

@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepFEA_RWFeaSurfaceSectionGeometricRelationship.hxx>
+#include "RWStepFEA_RWFeaSurfaceSectionGeometricRelationship.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepElement_AnalysisItemWithinRepresentation.hxx>

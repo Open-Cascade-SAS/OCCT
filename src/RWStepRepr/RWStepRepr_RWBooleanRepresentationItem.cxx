@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepRepr_RWBooleanRepresentationItem.hxx>
+#include "RWStepRepr_RWBooleanRepresentationItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_BooleanRepresentationItem.hxx>

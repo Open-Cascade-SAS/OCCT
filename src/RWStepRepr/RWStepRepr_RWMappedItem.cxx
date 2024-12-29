@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWMappedItem.hxx>
+#include "RWStepRepr_RWMappedItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_MappedItem.hxx>

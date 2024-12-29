@@ -13,7 +13,7 @@
 
 
 #include <Interface_Check.hxx>
-#include <RWStepRepr_RWDescriptiveRepresentationItem.hxx>
+#include "RWStepRepr_RWDescriptiveRepresentationItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_DescriptiveRepresentationItem.hxx>

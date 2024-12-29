@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignActualDateAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignActualDateAssignment.pxx"
 #include <StepAP214_AutoDesignActualDateAssignment.hxx>
 #include <StepAP214_AutoDesignDatedItem.hxx>
 #include <StepAP214_HArray1OfAutoDesignDatedItem.hxx>

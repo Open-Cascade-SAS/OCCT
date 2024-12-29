@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext.hxx>
+#include "RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>

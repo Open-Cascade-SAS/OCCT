@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWEdgeBasedWireframeModel.hxx>
+#include "RWStepShape_RWEdgeBasedWireframeModel.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_EdgeBasedWireframeModel.hxx>

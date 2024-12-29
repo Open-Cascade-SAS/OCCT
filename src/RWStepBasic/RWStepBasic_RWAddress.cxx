@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWAddress.hxx>
+#include "RWStepBasic_RWAddress.pxx"
 #include <StepBasic_Address.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

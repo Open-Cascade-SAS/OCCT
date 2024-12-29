@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWTrimmedCurve.hxx>
+#include "RWStepGeom_RWTrimmedCurve.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CartesianPoint.hxx>

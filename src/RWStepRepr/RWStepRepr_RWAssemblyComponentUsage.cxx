@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.1
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWAssemblyComponentUsage.hxx>
+#include "RWStepRepr_RWAssemblyComponentUsage.pxx"
 #include <StepBasic_ProductDefinition.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

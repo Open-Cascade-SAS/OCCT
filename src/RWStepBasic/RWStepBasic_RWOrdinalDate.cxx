@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWOrdinalDate.hxx>
+#include "RWStepBasic_RWOrdinalDate.pxx"
 #include <StepBasic_OrdinalDate.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

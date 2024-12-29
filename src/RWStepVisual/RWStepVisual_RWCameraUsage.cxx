@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWCameraUsage.hxx>
+#include "RWStepVisual_RWCameraUsage.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_Representation.hxx>

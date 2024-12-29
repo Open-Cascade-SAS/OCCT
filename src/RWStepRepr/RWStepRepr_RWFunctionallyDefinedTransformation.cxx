@@ -13,7 +13,7 @@
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
-#include <RWStepRepr_RWFunctionallyDefinedTransformation.hxx>
+#include "RWStepRepr_RWFunctionallyDefinedTransformation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_FunctionallyDefinedTransformation.hxx>

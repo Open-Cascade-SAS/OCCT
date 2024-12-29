@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedDateAssignment.hxx>
+#include "RWStepAP214_RWAppliedDateAssignment.pxx"
 #include <StepAP214_AppliedDateAssignment.hxx>
 #include <StepAP214_DateItem.hxx>
 #include <StepAP214_HArray1OfDateItem.hxx>

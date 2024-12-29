@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.hxx>
+#include "RWStepAP203_RWCcDesignPersonAndOrganizationAssignment.pxx"
 #include <StepAP203_CcDesignPersonAndOrganizationAssignment.hxx>
 #include <StepAP203_HArray1OfPersonOrganizationItem.hxx>
 #include <StepAP203_PersonOrganizationItem.hxx>

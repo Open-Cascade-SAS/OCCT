@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.hxx>
+#include "RWStepDimTol_RWGeometricToleranceWithMaximumTolerance.pxx"
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>

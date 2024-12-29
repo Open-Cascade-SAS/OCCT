@@ -13,7 +13,7 @@
 
 
 #include <Interface_Check.hxx>
-#include <RWStepRepr_RWReprItemAndLengthMeasureWithUnit.hxx>
+#include "RWStepRepr_RWReprItemAndLengthMeasureWithUnit.pxx"
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>
 #include <StepBasic_Unit.hxx>

@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWOverRidingStyledItem.hxx>
+#include "RWStepVisual_RWOverRidingStyledItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_OverRidingStyledItem.hxx>

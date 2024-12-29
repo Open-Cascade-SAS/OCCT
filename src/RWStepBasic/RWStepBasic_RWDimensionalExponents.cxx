@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWDimensionalExponents.hxx>
+#include "RWStepBasic_RWDimensionalExponents.pxx"
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

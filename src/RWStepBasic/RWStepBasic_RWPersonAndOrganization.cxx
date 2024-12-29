@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWPersonAndOrganization.hxx>
+#include "RWStepBasic_RWPersonAndOrganization.pxx"
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_Person.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>

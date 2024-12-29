@@ -15,7 +15,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.hxx>
+#include "RWStepRepr_RWCompShAspAndDatumFeatAndShAsp.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_CompShAspAndDatumFeatAndShAsp.hxx>

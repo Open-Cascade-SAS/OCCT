@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepFEA_RWFeaAxis2Placement3d.hxx>
+#include "RWStepFEA_RWFeaAxis2Placement3d.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaAxis2Placement3d.hxx>

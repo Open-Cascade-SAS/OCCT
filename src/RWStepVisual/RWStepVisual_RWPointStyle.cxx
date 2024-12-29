@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWPointStyle.hxx>
+#include "RWStepVisual_RWPointStyle.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_Colour.hxx>

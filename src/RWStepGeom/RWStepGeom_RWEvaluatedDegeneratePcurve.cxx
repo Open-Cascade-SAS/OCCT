@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWEvaluatedDegeneratePcurve.hxx>
+#include "RWStepGeom_RWEvaluatedDegeneratePcurve.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CartesianPoint.hxx>

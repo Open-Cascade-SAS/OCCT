@@ -13,7 +13,7 @@
 
 
 #include <Interface_Check.hxx>
-#include <RWStepBasic_RWPerson.hxx>
+#include "RWStepBasic_RWPerson.pxx"
 #include <StepBasic_Person.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

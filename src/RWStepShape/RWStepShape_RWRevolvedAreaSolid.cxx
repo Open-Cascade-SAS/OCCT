@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWRevolvedAreaSolid.hxx>
+#include "RWStepShape_RWRevolvedAreaSolid.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis1Placement.hxx>

@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepGeom_RWSurface.hxx>
+#include "RWStepGeom_RWSurface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Surface.hxx>

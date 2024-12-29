@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWShapeRepresentationRelationshipWithTransformation.hxx>
+#include "RWStepRepr_RWShapeRepresentationRelationshipWithTransformation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_Representation.hxx>

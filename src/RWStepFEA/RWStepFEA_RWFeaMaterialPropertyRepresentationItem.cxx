@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepFEA_RWFeaMaterialPropertyRepresentationItem.hxx>
+#include "RWStepFEA_RWFeaMaterialPropertyRepresentationItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_FeaMaterialPropertyRepresentationItem.hxx>

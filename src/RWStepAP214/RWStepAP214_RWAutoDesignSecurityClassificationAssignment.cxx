@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignSecurityClassificationAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignSecurityClassificationAssignment.pxx"
 #include <StepAP214_AutoDesignSecurityClassificationAssignment.hxx>
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_HArray1OfApproval.hxx>

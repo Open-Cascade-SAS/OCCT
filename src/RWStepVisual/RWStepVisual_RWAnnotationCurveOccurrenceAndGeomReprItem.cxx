@@ -15,7 +15,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem.hxx>
+#include "RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>

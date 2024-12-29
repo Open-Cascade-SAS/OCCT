@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepFEA_RWFeaParametricPoint.hxx>
+#include "RWStepFEA_RWFeaParametricPoint.pxx"
 #include <Standard_Real.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

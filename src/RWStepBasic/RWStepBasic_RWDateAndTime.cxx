@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWDateAndTime.hxx>
+#include "RWStepBasic_RWDateAndTime.pxx"
 #include <StepBasic_Date.hxx>
 #include <StepBasic_DateAndTime.hxx>
 #include <StepBasic_LocalTime.hxx>

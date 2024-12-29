@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_ShareTool.hxx>
-#include <RWStepGeom_RWDirection.hxx>
+#include "RWStepGeom_RWDirection.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Direction.hxx>

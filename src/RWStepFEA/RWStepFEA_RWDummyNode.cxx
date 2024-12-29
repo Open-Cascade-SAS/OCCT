@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepFEA_RWDummyNode.hxx>
+#include "RWStepFEA_RWDummyNode.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepFEA_DummyNode.hxx>

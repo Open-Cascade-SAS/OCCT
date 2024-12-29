@@ -15,7 +15,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWPersonalAddress.hxx>
+#include "RWStepBasic_RWPersonalAddress.pxx"
 #include <StepBasic_Person.hxx>
 #include <StepBasic_PersonalAddress.hxx>
 #include <StepData_StepReaderData.hxx>

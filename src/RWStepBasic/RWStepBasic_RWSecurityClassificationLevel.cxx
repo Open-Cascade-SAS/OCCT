@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWSecurityClassificationLevel.hxx>
+#include "RWStepBasic_RWSecurityClassificationLevel.pxx"
 #include <StepBasic_SecurityClassificationLevel.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

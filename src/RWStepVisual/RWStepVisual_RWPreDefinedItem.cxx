@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepVisual_RWPreDefinedItem.hxx>
+#include "RWStepVisual_RWPreDefinedItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PreDefinedItem.hxx>

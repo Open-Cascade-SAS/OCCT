@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWReparametrisedCompositeCurveSegment.hxx>
+#include "RWStepGeom_RWReparametrisedCompositeCurveSegment.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Curve.hxx>

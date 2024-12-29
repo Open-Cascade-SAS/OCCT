@@ -14,7 +14,7 @@
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWItemDefinedTransformation.hxx>
+#include "RWStepRepr_RWItemDefinedTransformation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_ItemDefinedTransformation.hxx>

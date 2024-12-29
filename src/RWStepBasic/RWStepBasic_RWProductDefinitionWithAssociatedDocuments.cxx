@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWProductDefinitionWithAssociatedDocuments.hxx>
+#include "RWStepBasic_RWProductDefinitionWithAssociatedDocuments.pxx"
 #include <StepBasic_ProductDefinitionContext.hxx>
 #include <StepBasic_ProductDefinitionFormation.hxx>
 #include <StepBasic_ProductDefinitionWithAssociatedDocuments.hxx>

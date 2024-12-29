@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWCcDesignSecurityClassification.hxx>
+#include "RWStepAP203_RWCcDesignSecurityClassification.pxx"
 #include <StepAP203_CcDesignSecurityClassification.hxx>
 #include <StepAP203_ClassifiedItem.hxx>
 #include <StepAP203_HArray1OfClassifiedItem.hxx>

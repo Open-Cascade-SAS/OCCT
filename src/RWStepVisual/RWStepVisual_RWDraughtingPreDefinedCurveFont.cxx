@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepVisual_RWDraughtingPreDefinedCurveFont.hxx>
+#include "RWStepVisual_RWDraughtingPreDefinedCurveFont.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_DraughtingPreDefinedCurveFont.hxx>

@@ -290,6 +290,23 @@
 
 # endif  /* _WIN32 */
 
+//! @def Standard_HIDDEN
+//! This macro should be used in declarations of methods or functions
+//! to ensure that they are hidden and not exported from the shared library.
+//!
+//! Expands to "__attribute__((visibility("hidden")))" on GCC and Clang
+#if defined(__has_attribute)
+  #if __has_attribute(visibility)
+    #define Standard_HIDDEN __attribute__((visibility("hidden")))
+  #else
+    #define Standard_HIDDEN
+  #endif
+#elif defined(__GNUC__) || defined(__clang__)
+  #define Standard_HIDDEN __attribute__((visibility("hidden")))
+#else
+  #define Standard_HIDDEN
+#endif
+
 //! @def OCCT_UWP
 //! This macro is defined on Windows platform in the case if the code
 //! is being compiled for UWP (Universal Windows Platform).

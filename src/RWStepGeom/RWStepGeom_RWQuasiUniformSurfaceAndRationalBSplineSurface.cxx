@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface.hxx>
+#include "RWStepGeom_RWQuasiUniformSurfaceAndRationalBSplineSurface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_QuasiUniformSurfaceAndRationalBSplineSurface.hxx>

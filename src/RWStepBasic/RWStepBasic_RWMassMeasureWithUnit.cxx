@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWMassMeasureWithUnit.hxx>
+#include "RWStepBasic_RWMassMeasureWithUnit.pxx"
 #include <StepBasic_MassMeasureWithUnit.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepData_StepReaderData.hxx>

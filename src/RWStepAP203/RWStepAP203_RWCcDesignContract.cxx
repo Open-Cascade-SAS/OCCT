@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWCcDesignContract.hxx>
+#include "RWStepAP203_RWCcDesignContract.pxx"
 #include <StepAP203_CcDesignContract.hxx>
 #include <StepAP203_ContractedItem.hxx>
 #include <StepAP203_HArray1OfContractedItem.hxx>

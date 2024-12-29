@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWSurfaceOfRevolution.hxx>
+#include "RWStepGeom_RWSurfaceOfRevolution.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis1Placement.hxx>

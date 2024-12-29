@@ -16,7 +16,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
+#include "RWStepVisual_RWCameraModelD3MultiClipping.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>

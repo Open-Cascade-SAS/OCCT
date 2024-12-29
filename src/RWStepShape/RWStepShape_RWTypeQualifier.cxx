@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepShape_RWTypeQualifier.hxx>
+#include "RWStepShape_RWTypeQualifier.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_TypeQualifier.hxx>

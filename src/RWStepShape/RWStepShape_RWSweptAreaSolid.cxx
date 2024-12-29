@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWSweptAreaSolid.hxx>
+#include "RWStepShape_RWSweptAreaSolid.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CurveBoundedSurface.hxx>

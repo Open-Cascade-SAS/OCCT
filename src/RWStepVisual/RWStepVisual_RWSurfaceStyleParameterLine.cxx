@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWSurfaceStyleParameterLine.hxx>
+#include "RWStepVisual_RWSurfaceStyleParameterLine.pxx"
 #include <Standard_Integer.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

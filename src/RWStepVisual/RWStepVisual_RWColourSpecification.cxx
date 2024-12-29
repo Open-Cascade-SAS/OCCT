@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepVisual_RWColourSpecification.hxx>
+#include "RWStepVisual_RWColourSpecification.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_ColourSpecification.hxx>

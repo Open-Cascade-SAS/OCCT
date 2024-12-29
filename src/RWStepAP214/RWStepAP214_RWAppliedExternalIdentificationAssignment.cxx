@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedExternalIdentificationAssignment.hxx>
+#include "RWStepAP214_RWAppliedExternalIdentificationAssignment.pxx"
 #include <StepAP214_AppliedExternalIdentificationAssignment.hxx>
 #include <StepAP214_ExternalIdentificationItem.hxx>
 #include <StepAP214_HArray1OfExternalIdentificationItem.hxx>

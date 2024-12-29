@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation.hxx>
+#include "RWStepBasic_RWProductDefinitionReferenceWithLocalRepresentation.pxx"
 #include <StepBasic_ExternalSource.hxx>
 #include <StepBasic_ProductDefinitionReferenceWithLocalRepresentation.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>

@@ -16,7 +16,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWTessellatedGeometricSet.hxx>
+#include "RWStepVisual_RWTessellatedGeometricSet.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_TessellatedGeometricSet.hxx>

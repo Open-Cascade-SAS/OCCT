@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWCompositeTextWithExtent.hxx>
+#include "RWStepVisual_RWCompositeTextWithExtent.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CompositeTextWithExtent.hxx>

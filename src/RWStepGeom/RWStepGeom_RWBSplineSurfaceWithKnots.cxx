@@ -15,7 +15,7 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
-#include <RWStepGeom_RWBSplineSurfaceWithKnots.hxx>
+#include "RWStepGeom_RWBSplineSurfaceWithKnots.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BSplineSurfaceWithKnots.hxx>

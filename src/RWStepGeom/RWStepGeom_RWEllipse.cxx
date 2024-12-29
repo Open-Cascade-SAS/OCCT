@@ -14,7 +14,7 @@
 
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
-#include <RWStepGeom_RWEllipse.hxx>
+#include "RWStepGeom_RWEllipse.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Ellipse.hxx>

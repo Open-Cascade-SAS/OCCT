@@ -16,9 +16,9 @@
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
-#include <RWStepGeom_RWBSplineCurveWithKnots.hxx>
-#include <RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve.hxx>
-#include <RWStepGeom_RWRationalBSplineCurve.hxx>
+#include "RWStepGeom_RWBSplineCurveWithKnots.pxx"
+#include "RWStepGeom_RWBSplineCurveWithKnotsAndRationalBSplineCurve.pxx"
+#include "RWStepGeom_RWRationalBSplineCurve.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_BSplineCurveWithKnots.hxx>

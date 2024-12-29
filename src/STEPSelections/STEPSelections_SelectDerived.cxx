@@ -17,7 +17,7 @@
 
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <RWStepAP214_GeneralModule.hxx>
+#include "../RWStepAP214/RWStepAP214_GeneralModule.pxx"
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <StepData_ReadWriteModule.hxx>

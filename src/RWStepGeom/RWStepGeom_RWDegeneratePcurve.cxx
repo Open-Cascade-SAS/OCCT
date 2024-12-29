@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWDegeneratePcurve.hxx>
+#include "RWStepGeom_RWDegeneratePcurve.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_DegeneratePcurve.hxx>

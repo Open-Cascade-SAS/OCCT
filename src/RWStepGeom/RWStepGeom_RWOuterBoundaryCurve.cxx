@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWOuterBoundaryCurve.hxx>
+#include "RWStepGeom_RWOuterBoundaryCurve.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_OuterBoundaryCurve.hxx>

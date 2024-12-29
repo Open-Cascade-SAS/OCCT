@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedDocumentReference.hxx>
+#include "RWStepAP214_RWAppliedDocumentReference.pxx"
 #include <StepAP214_AppliedDocumentReference.hxx>
 #include <StepAP214_DocumentReferenceItem.hxx>
 #include <StepAP214_HArray1OfDocumentReferenceItem.hxx>

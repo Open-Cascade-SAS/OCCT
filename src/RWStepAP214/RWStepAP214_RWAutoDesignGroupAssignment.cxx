@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignGroupAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignGroupAssignment.pxx"
 #include <StepAP214_AutoDesignGroupAssignment.hxx>
 #include <StepAP214_AutoDesignGroupedItem.hxx>
 #include <StepAP214_HArray1OfAutoDesignGroupedItem.hxx>

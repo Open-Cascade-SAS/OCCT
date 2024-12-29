@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWPresentationStyleAssignment.hxx>
+#include "RWStepVisual_RWPresentationStyleAssignment.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_NullStyleMember.hxx>

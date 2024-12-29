@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWApproval.hxx>
+#include "RWStepBasic_RWApproval.pxx"
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalStatus.hxx>
 #include <StepData_StepReaderData.hxx>

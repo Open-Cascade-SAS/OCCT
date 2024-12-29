@@ -14,7 +14,7 @@
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWDocumentRelationship.hxx>
+#include "RWStepBasic_RWDocumentRelationship.pxx"
 #include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentRelationship.hxx>
 #include <StepData_StepReaderData.hxx>

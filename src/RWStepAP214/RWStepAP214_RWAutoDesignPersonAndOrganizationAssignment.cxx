@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignPersonAndOrganizationAssignment.pxx"
 #include <StepAP214_AutoDesignPersonAndOrganizationAssignment.hxx>
 #include <StepAP214_HArray1OfAutoDesignGeneralOrgItem.hxx>
 #include <StepBasic_PersonAndOrganization.hxx>

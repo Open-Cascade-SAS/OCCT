@@ -13,7 +13,7 @@
 
 #include <Standard_Type.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWMechanicalDesignAndDraughtingRelationship.hxx>
+#include "RWStepRepr_RWMechanicalDesignAndDraughtingRelationship.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_Representation.hxx>

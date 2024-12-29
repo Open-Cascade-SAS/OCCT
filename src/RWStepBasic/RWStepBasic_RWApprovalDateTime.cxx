@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWApprovalDateTime.hxx>
+#include "RWStepBasic_RWApprovalDateTime.pxx"
 #include <StepBasic_Approval.hxx>
 #include <StepBasic_ApprovalDateTime.hxx>
 #include <StepBasic_DateTimeSelect.hxx>

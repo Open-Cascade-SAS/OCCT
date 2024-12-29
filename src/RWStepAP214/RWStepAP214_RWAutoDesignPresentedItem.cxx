@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignPresentedItem.hxx>
+#include "RWStepAP214_RWAutoDesignPresentedItem.pxx"
 #include <StepAP214_AutoDesignPresentedItem.hxx>
 #include <StepAP214_AutoDesignPresentedItemSelect.hxx>
 #include <StepAP214_HArray1OfAutoDesignPresentedItemSelect.hxx>

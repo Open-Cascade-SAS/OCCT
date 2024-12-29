@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWCcDesignCertification.hxx>
+#include "RWStepAP203_RWCcDesignCertification.pxx"
 #include <StepAP203_CcDesignCertification.hxx>
 #include <StepAP203_CertifiedItem.hxx>
 #include <StepAP203_HArray1OfCertifiedItem.hxx>

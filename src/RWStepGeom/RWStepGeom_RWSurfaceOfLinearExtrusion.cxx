@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWSurfaceOfLinearExtrusion.hxx>
+#include "RWStepGeom_RWSurfaceOfLinearExtrusion.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_Curve.hxx>

@@ -13,7 +13,7 @@
 
 //gka 05.03.99 S4134 upgrade from CD to DIS
 
-#include <RWStepBasic_RWOrganization.hxx>
+#include "RWStepBasic_RWOrganization.pxx"
 #include <StepBasic_Organization.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

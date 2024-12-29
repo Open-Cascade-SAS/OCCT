@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWFaceOuterBound.hxx>
+#include "RWStepShape_RWFaceOuterBound.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_FaceOuterBound.hxx>

@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepKinematics_RWActuatedKinPairAndOrderKinPair.hxx>
+#include "RWStepKinematics_RWActuatedKinPairAndOrderKinPair.pxx"
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>

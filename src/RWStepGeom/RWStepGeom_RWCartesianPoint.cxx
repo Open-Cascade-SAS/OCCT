@@ -13,7 +13,7 @@
 
 
 #include <Interface_Check.hxx>
-#include <RWStepGeom_RWCartesianPoint.hxx>
+#include "RWStepGeom_RWCartesianPoint.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CartesianPoint.hxx>

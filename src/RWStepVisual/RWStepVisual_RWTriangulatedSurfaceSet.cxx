@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWTriangulatedSurfaceSet.hxx>
+#include "RWStepVisual_RWTriangulatedSurfaceSet.pxx"
 
 #include <StepVisual_TriangulatedSurfaceSet.hxx>
 #include <Interface_EntityIterator.hxx>

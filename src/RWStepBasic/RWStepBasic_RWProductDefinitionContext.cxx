@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWProductDefinitionContext.hxx>
+#include "RWStepBasic_RWProductDefinitionContext.pxx"
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_ProductDefinitionContext.hxx>
 #include <StepData_StepReaderData.hxx>

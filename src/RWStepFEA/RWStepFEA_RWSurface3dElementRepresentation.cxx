@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepFEA_RWSurface3dElementRepresentation.hxx>
+#include "RWStepFEA_RWSurface3dElementRepresentation.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepElement_ElementMaterial.hxx>

@@ -14,7 +14,7 @@
 // sln 09.10.2001. BUC61003. Correction of looking for items of complex entity in case of them  do not saticfy to alphabetical order
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit.hxx>
+#include "RWStepBasic_RWConversionBasedUnitAndPlaneAngleUnit.pxx"
 #include <StepBasic_ConversionBasedUnitAndPlaneAngleUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>

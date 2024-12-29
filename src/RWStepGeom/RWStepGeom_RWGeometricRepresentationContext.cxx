@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepGeom_RWGeometricRepresentationContext.hxx>
+#include "RWStepGeom_RWGeometricRepresentationContext.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_GeometricRepresentationContext.hxx>

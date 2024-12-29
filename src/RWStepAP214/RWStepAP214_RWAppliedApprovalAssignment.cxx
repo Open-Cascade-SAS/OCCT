@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedApprovalAssignment.hxx>
+#include "RWStepAP214_RWAppliedApprovalAssignment.pxx"
 #include <StepAP214_AppliedApprovalAssignment.hxx>
 #include <StepAP214_ApprovalItem.hxx>
 #include <StepAP214_HArray1OfApprovalItem.hxx>

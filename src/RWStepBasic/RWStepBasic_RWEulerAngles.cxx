@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWEulerAngles.hxx>
+#include "RWStepBasic_RWEulerAngles.pxx"
 #include <Standard_Real.hxx>
 #include <StepBasic_EulerAngles.hxx>
 #include <StepData_StepReaderData.hxx>

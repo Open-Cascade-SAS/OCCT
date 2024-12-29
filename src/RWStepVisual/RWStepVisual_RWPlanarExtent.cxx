@@ -12,7 +12,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepVisual_RWPlanarExtent.hxx>
+#include "RWStepVisual_RWPlanarExtent.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_PlanarExtent.hxx>

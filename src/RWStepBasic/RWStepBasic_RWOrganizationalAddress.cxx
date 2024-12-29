@@ -15,7 +15,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWOrganizationalAddress.hxx>
+#include "RWStepBasic_RWOrganizationalAddress.pxx"
 #include <StepBasic_Organization.hxx>
 #include <StepBasic_OrganizationalAddress.hxx>
 #include <StepData_StepReaderData.hxx>

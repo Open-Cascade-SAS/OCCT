@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepRepr_RWIntegerRepresentationItem.hxx>
+#include "RWStepRepr_RWIntegerRepresentationItem.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_IntegerRepresentationItem.hxx>

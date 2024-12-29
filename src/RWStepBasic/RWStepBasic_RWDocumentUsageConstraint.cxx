@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWDocumentUsageConstraint.hxx>
+#include "RWStepBasic_RWDocumentUsageConstraint.pxx"
 #include <StepBasic_Document.hxx>
 #include <StepBasic_DocumentUsageConstraint.hxx>
 #include <StepData_StepReaderData.hxx>

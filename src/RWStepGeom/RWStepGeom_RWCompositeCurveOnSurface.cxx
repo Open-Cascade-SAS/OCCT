@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepGeom_RWCompositeCurveOnSurface.hxx>
+#include "RWStepGeom_RWCompositeCurveOnSurface.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepGeom_CompositeCurveOnSurface.hxx>

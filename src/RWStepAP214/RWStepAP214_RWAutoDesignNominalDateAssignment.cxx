@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignNominalDateAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignNominalDateAssignment.pxx"
 #include <StepAP214_AutoDesignNominalDateAssignment.hxx>
 #include <StepAP214_HArray1OfAutoDesignDatedItem.hxx>
 #include <StepBasic_Date.hxx>

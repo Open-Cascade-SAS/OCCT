@@ -15,7 +15,7 @@
 
 
 #include <Interface_Check.hxx>
-#include <RWStepRepr_RWValueRepresentationItem.hxx>
+#include "RWStepRepr_RWValueRepresentationItem.pxx"
 #include <StepBasic_MeasureValueMember.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

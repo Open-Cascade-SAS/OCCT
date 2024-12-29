@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWEffectivity.hxx>
+#include "RWStepBasic_RWEffectivity.pxx"
 #include <StepBasic_Effectivity.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>

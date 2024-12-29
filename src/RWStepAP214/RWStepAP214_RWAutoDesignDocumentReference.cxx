@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignDocumentReference.hxx>
+#include "RWStepAP214_RWAutoDesignDocumentReference.pxx"
 #include <StepAP214_AutoDesignDocumentReference.hxx>
 #include <StepAP214_AutoDesignReferencingItem.hxx>
 #include <StepAP214_HArray1OfAutoDesignReferencingItem.hxx>

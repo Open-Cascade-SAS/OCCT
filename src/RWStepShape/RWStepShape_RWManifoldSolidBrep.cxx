@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepShape_RWManifoldSolidBrep.hxx>
+#include "RWStepShape_RWManifoldSolidBrep.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>

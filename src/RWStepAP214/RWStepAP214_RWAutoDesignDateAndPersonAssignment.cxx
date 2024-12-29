@@ -14,7 +14,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAutoDesignDateAndPersonAssignment.hxx>
+#include "RWStepAP214_RWAutoDesignDateAndPersonAssignment.pxx"
 #include <StepAP214_AutoDesignDateAndPersonAssignment.hxx>
 #include <StepAP214_AutoDesignDateAndPersonItem.hxx>
 #include <StepAP214_HArray1OfAutoDesignDateAndPersonItem.hxx>

@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWLocalTime.hxx>
+#include "RWStepBasic_RWLocalTime.pxx"
 #include <StepBasic_CoordinatedUniversalTimeOffset.hxx>
 #include <StepBasic_LocalTime.hxx>
 #include <StepData_StepReaderData.hxx>

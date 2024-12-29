@@ -14,7 +14,7 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepKinematics_RWMechanismStateRepresentation.hxx>
+#include "RWStepKinematics_RWMechanismStateRepresentation.pxx"
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>

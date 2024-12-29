@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWSecurityClassification.hxx>
+#include "RWStepBasic_RWSecurityClassification.pxx"
 #include <StepBasic_SecurityClassification.hxx>
 #include <StepBasic_SecurityClassificationLevel.hxx>
 #include <StepData_StepReaderData.hxx>

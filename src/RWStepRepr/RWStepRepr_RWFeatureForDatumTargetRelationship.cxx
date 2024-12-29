@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.0
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWFeatureForDatumTargetRelationship.hxx>
+#include "RWStepRepr_RWFeatureForDatumTargetRelationship.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_ShapeAspect.hxx>

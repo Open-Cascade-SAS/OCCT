@@ -13,7 +13,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWSurfaceStyleControlGrid.hxx>
+#include "RWStepVisual_RWSurfaceStyleControlGrid.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepVisual_CurveStyle.hxx>

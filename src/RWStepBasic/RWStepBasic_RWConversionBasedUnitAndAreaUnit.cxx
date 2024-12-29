@@ -16,7 +16,7 @@
 
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepBasic_RWConversionBasedUnitAndAreaUnit.hxx>
+#include "RWStepBasic_RWConversionBasedUnitAndAreaUnit.pxx"
 #include <StepBasic_ConversionBasedUnitAndAreaUnit.hxx>
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_MeasureWithUnit.hxx>

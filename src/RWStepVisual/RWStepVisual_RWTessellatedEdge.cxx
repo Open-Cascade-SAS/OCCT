@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWTessellatedEdge.hxx>
+#include "RWStepVisual_RWTessellatedEdge.pxx"
 #include <StepVisual_TessellatedEdge.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepReaderData.hxx>

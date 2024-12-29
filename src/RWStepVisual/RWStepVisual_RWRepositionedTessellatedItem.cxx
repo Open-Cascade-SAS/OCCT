@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepVisual_RWRepositionedTessellatedItem.hxx>
+#include "RWStepVisual_RWRepositionedTessellatedItem.pxx"
 
 #include <Interface_Check.hxx>
 #include <StepData_StepReaderData.hxx>

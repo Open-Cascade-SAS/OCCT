@@ -12,8 +12,8 @@
 // commercial license or contractual agreement.
 
 
-#include <RWStepBasic_RWSiUnit.hxx>
-#include <RWStepBasic_RWSiUnitAndTimeUnit.hxx>
+#include "RWStepBasic_RWSiUnit.pxx"
+#include "RWStepBasic_RWSiUnitAndTimeUnit.pxx"
 #include <StepBasic_DimensionalExponents.hxx>
 #include <StepBasic_SiPrefix.hxx>
 #include <StepBasic_SiUnitAndTimeUnit.hxx>

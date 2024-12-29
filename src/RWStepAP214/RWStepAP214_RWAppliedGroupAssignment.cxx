@@ -17,7 +17,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP214_RWAppliedGroupAssignment.hxx>
+#include "RWStepAP214_RWAppliedGroupAssignment.pxx"
 #include <StepAP214_AppliedGroupAssignment.hxx>
 #include <StepAP214_GroupItem.hxx>
 #include <StepAP214_HArray1OfGroupItem.hxx>

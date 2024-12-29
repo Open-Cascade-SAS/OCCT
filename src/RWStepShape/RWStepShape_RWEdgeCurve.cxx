@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWStepShape_RWEdgeCurve.hxx>
+#include "RWStepShape_RWEdgeCurve.pxx"
 
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>

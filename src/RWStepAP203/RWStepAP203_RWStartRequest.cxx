@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWStartRequest.hxx>
+#include "RWStepAP203_RWStartRequest.pxx"
 #include <StepAP203_StartRequest.hxx>
 #include <StepAP203_StartRequestItem.hxx>
 #include <StepBasic_VersionedActionRequest.hxx>

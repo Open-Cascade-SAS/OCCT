@@ -16,7 +16,7 @@
 // Generator:	ExpToCas (EXPRESS -> CASCADE/XSTEP Translator) V1.2
 
 #include <Interface_EntityIterator.hxx>
-#include <RWStepRepr_RWDerivedShapeAspect.hxx>
+#include "RWStepRepr_RWDerivedShapeAspect.pxx"
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_DerivedShapeAspect.hxx>

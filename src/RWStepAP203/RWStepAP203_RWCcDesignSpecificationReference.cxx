@@ -18,7 +18,7 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepAP203_RWCcDesignSpecificationReference.hxx>
+#include "RWStepAP203_RWCcDesignSpecificationReference.pxx"
 #include <StepAP203_CcDesignSpecificationReference.hxx>
 #include <StepAP203_HArray1OfSpecifiedItem.hxx>
 #include <StepAP203_SpecifiedItem.hxx>
