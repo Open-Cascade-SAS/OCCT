@@ -268,12 +268,13 @@
 #  ifndef Standard_EXPORT
 #   if defined(__GNUC__) || defined(__clang__)
 #    define Standard_EXPORT __attribute__((visibility("default")))
+#    define Standard_EXPORTEXTERN extern __attribute__((visibility("default")))
+#    define Standard_EXPORTEXTERNC extern "C" __attribute__((visibility("default")))
 #   else
 #    define Standard_EXPORT
+#    define Standard_EXPORTEXTERN extern
+#    define Standard_EXPORTEXTERNC extern "C"
 #   endif
-// For global variables :
-#   define Standard_EXPORTEXTERN extern
-#   define Standard_EXPORTEXTERNC extern "C"
 #  endif  /* Standard_EXPORT */
 
 #  ifndef Standard_IMPORT
