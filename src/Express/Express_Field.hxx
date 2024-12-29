@@ -15,6 +15,7 @@
 #define _Express_Field_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 class Express_Type;
 class TCollection_HAsciiString;

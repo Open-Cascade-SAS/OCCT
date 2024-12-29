@@ -59,7 +59,7 @@ public:
   //! Assigns the IDs to the drivers of the given Types.
   //! It uses indices in the map as IDs.
   //! Useful in storage procedure.
-  Standard_EXPORT void AssignIds (const TColStd_IndexedMapOfTransient& theTypes);
+  Standard_EXPORT void AssignIds (const NCollection_IndexedMap<Handle(Standard_Type)>& theTypes);
   
   //! Assigns the IDs to the drivers of the given Type Names;
   //! It uses indices in the sequence as IDs.

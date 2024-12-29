@@ -17,6 +17,7 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_OStream.hxx>
+#include <Standard_Handle.hxx>
 
 class Express_Schema;
 class TCollection_AsciiString;

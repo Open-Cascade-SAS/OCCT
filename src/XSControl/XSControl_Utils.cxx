@@ -112,8 +112,7 @@ static const Standard_ExtString   voidext = { 0 };
   (const Handle(Standard_Transient)& item, const Standard_Boolean nopk) const
 {
   if (item.IsNull()) return "";
-  DeclareAndCast(Standard_Type,atype,item);
-  if (atype.IsNull()) atype = item->DynamicType();
+  Handle(Standard_Type) atype = item->DynamicType();
   Standard_CString tn = atype->Name();
   if (!nopk) return tn;
   for (int i = 0; tn[i] != '\0'; i ++) {

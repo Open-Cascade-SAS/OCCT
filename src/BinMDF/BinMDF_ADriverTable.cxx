@@ -90,12 +90,12 @@ const Handle(Standard_Type)& BinMDF_ADriverTable::AddDerivedDriver (Standard_CSt
 //=======================================================================
 
 void BinMDF_ADriverTable::AssignIds
-                (const TColStd_IndexedMapOfTransient& theTypes)
+                (const NCollection_IndexedMap<Handle(Standard_Type)>& theTypes)
 {
   myMapId.Clear();
   Standard_Integer i;
   for (i=1; i <= theTypes.Extent(); i++) {
-    Handle(Standard_Type) aType (Handle(Standard_Type)::DownCast (theTypes(i)));
+    const Handle(Standard_Type)& aType = theTypes(i);
     if (myMap.IsBound (aType)) {
       myMapId.Bind (aType, i);
     }
@@ -141,7 +141,8 @@ void BinMDF_ADriverTable::AssignIds
   {
     if (!myMapId.IsBound2 (aStrId.Value()))
     {
-      if (Handle(Standard_Type) anAdded = AddDerivedDriver (aStrId.Key().ToCString()))
+      Handle(Standard_Type) anAdded = AddDerivedDriver(aStrId.Key().ToCString());
+      if (!anAdded.IsNull())
       {
         myMapId.Bind (anAdded, aStrId.Value());
       }

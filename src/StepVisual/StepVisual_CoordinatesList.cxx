@@ -14,7 +14,7 @@
 
 #include <StepVisual_CoordinatesList.hxx>
 #include <StepVisual_TessellatedItem.hxx>
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CoordinatesList,StepGeom_TessellatedItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_CoordinatesList, StepVisual_TessellatedItem)
 
 StepVisual_CoordinatesList::StepVisual_CoordinatesList ()  {}
 

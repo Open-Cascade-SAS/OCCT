@@ -17,6 +17,7 @@
 #define OpenGl_Resource_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 class OpenGl_Context;
 

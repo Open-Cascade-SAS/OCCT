@@ -31,7 +31,7 @@ static Standard_CString  thename = "";
     void StepData_FileProtocol::Add (const Handle(StepData_Protocol)& protocol)
 {
   if (protocol.IsNull()) return;
-  Handle(Standard_Type) ptype = protocol->DynamicType();
+  const Handle(Standard_Type)& ptype = protocol->DynamicType();
   Standard_Integer nb = thecomps.Length();
   for (Standard_Integer i = 1; i <= nb; i ++) {
     if (thecomps.Value(i)->IsInstance(ptype)) return;

@@ -122,4 +122,6 @@ private:
 //! Definition of Handle_Standard_Transient as typedef for compatibility
 typedef opencascade::handle<Standard_Transient> Handle_Standard_Transient;
 
+#include <Standard_Handle.hxx>
+
 #endif 

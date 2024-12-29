@@ -870,7 +870,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   Handle(Geom_Curve) cIso;
   Standard_Real t1, t2;
   
-  Handle(Standard_Type) sType = mySurf->Surface()->DynamicType();
+  const Handle(Standard_Type)& sType = mySurf->Surface()->DynamicType();
   Standard_Boolean isAnalytic = Standard_True;
   if (sType == STANDARD_TYPE(Geom_BezierSurface) || sType == STANDARD_TYPE(Geom_BSplineSurface)) isAnalytic = Standard_False; 
   Standard_Real uf, ul, vf, vl;

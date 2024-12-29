@@ -51,17 +51,13 @@ static Handle(Standard_Transient)   nultrans;  // pour retour const&(Null)
     void  Transfer_TransferIterator::SelectResult
   (const Handle(Standard_Type)& atype, const Standard_Boolean keep)
 {
-  Standard_Integer casetype = 0;
-  if (atype->SubType(STANDARD_TYPE(Standard_Transient)))  casetype = 2;
-
   for (Standard_Integer i = theitems->Length(); i > 0; i --) {
     Handle(Transfer_Binder) atr = theitems->Value(i);
     Handle(Standard_Type) btype = ResultType();
     Standard_Boolean matchtype;
     if      (!atr->HasResult()) matchtype = Standard_False;
     else if (atr->IsMultiple()) matchtype = Standard_False;
-    else if (casetype == 0) matchtype = (atype == btype);         // Type fixe
-    else                    matchtype = (btype->SubType(atype));  // Dynamique
+    else                        matchtype = (btype->SubType(atype));
     if (matchtype != keep) {
       theselect->SetValue(i,0);
       if (themaxi == i) themaxi = i-1;
@@ -154,8 +150,7 @@ static Handle(Standard_Transient)   nultrans;  // pour retour const&(Null)
     Standard_Boolean  Transfer_TransferIterator::HasTransientResult () const
 {
   Handle(Standard_Type) btype = ResultType();
-  if (btype.IsNull()) return Standard_False;
-  return btype->SubType(STANDARD_TYPE(Standard_Transient));
+  return !btype.IsNull();
 }
 
     const Handle(Standard_Transient)&

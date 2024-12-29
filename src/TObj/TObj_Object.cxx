@@ -1220,7 +1220,7 @@ Standard_Boolean TObj_Object::copyData
                 (const Handle(TObj_Object)& theTargetObject)
 {
   Standard_Boolean IsDone = Standard_False;
-  if ( !theTargetObject->DynamicType()->SubType( DynamicType() ) )
+  if ( !theTargetObject->IsKind( DynamicType() ) )
     return IsDone;
   // init the copier by labels.
   TDF_Label aDataLabel = GetDataLabel();

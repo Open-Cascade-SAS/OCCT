@@ -18,6 +18,7 @@
 #define StepFile_Read_HeaderFile
 
 #include <Standard_CString.hxx>
+#include <Standard_Handle.hxx>
 #include <Standard_Type.hxx>
 
 #include <iostream>

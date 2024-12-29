@@ -756,7 +756,7 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_TriangulatedSurfaceSet.hxx>
 
 static int THE_StepAP214_Protocol_init = 0;
-static Interface_DataMapOfTransientInteger types(819);
+static NCollection_DataMap<Handle(Standard_Type), Standard_Integer> types(819);
 
 //=======================================================================
 //function : StepAP214_Protocol

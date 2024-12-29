@@ -250,7 +250,7 @@ Standard_Boolean Interface_FileReaderTool::RecognizeByLib(const Standard_Integer
   }
   if (CN <= 0 || proto.IsNull()) return Standard_False;
 //   Se recaler dans GeneralLib : Creation de l entite vide
-  Handle(Standard_Type) typrot = proto->DynamicType();
+  const Handle(Standard_Type)& typrot = proto->DynamicType();
   for (glib.Start(); glib.More(); glib.Next()) {
     proto = glib.Protocol();
     if (proto.IsNull()) continue;

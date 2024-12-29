@@ -223,13 +223,9 @@ void Message_Algorithm::SendStatusMessages (const Message_ExecStatus& theStatus,
 
     // find message, prefixed by class type name, iterating by base classes if necessary
     TCollection_AsciiString aMsgName;
-    for (Handle(Standard_Type) aType = DynamicType(); ! aType.IsNull(); aType = aType->Parent())
-    {
+    Handle(Standard_Type) aType = DynamicType();
       aMsgName = aType->Name();
       aMsgName += aSuffix;
-      if (Message_MsgFile::HasMsg(aMsgName))
-        break;
-    }
 
     // create a message
     Message_Msg aMsg ( aMsgName );

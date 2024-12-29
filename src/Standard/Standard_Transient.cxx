@@ -18,9 +18,11 @@
 #include <Standard_CString.hxx>
 #include <Standard_ProgramError.hxx>
 
-const Handle(Standard_Type)& Standard_Transient::get_type_descriptor ()
+const Handle(Standard_Type)& Standard_Transient::get_type_descriptor()
 {
-  return opencascade::type_instance<Standard_Transient>::get();
+  static const opencascade::handle<Standard_Type> THE_TYPE_INSTANCE(new Standard_Type(typeid(Standard_Transient), get_type_name(),
+                                                                    sizeof(Standard_Transient), nullptr));
+  return THE_TYPE_INSTANCE;
 }
 
 //

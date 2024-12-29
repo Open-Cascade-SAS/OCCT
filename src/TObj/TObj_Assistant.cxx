@@ -39,9 +39,9 @@ TColStd_SequenceOfTransient& TObj_Assistant::getModels()
 //purpose  : 
 //=======================================================================
 
-TColStd_IndexedMapOfTransient& TObj_Assistant::getTypes()
+NCollection_IndexedMap<Handle(Standard_Type)>& TObj_Assistant::getTypes()
 {
-  static TColStd_IndexedMapOfTransient sTypes;
+  static NCollection_IndexedMap<Handle(Standard_Type)> sTypes;
   return sTypes;
 }
 
@@ -119,7 +119,7 @@ Handle(Standard_Type) TObj_Assistant::FindType
   (const Standard_Integer theTypeIndex)
 {
   if(theTypeIndex > 0 && theTypeIndex <= getTypes().Extent())
-    return Handle(Standard_Type)::DownCast(getTypes().FindKey(theTypeIndex));
+    return getTypes().FindKey(theTypeIndex);
 
   return 0;
 }
@@ -166,12 +166,12 @@ DEFINE_STANDARD_HANDLE(TObj_Assistant_UnknownType,Standard_Transient)
 Standard_Integer TObj_Assistant::BindType
   (const Handle(Standard_Type)& theType)
 {
-  if(theType.IsNull())
-  {
-    Handle(Standard_Transient) anUnknownType;
-    anUnknownType = new TObj_Assistant_UnknownType;
-    return getTypes().Add(anUnknownType);
-  }
+  // if(!theType)
+  // {
+  //   Handle(Standard_Transient) anUnknownType;
+  //   anUnknownType = new TObj_Assistant_UnknownType;
+  //   return getTypes().Add(anUnknownType);
+  // }
 
   return getTypes().Add(theType);
 }

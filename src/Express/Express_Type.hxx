@@ -15,6 +15,7 @@
 #define _Express_Type_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 class TCollection_AsciiString;
 

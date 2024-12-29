@@ -84,7 +84,7 @@ StepData_PDescr::StepData_PDescr  ()
       {  thekind = KindEntity;  thetype = atype;  thednam.Clear();  }
 
     void  StepData_PDescr::SetDescr (const Standard_CString dscnam)
-      {  thekind = KindEntity;  thetype.Nullify();
+      {  thekind = KindEntity;  thetype = Handle(Standard_Type)();
 	 thednam.Clear();  thednam.AssignCat(dscnam);  }
 
     void  StepData_PDescr::AddArity (const Standard_Integer arity)

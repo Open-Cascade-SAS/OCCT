@@ -110,8 +110,8 @@ private:
   Handle(Interface_Protocol) theproto;
   Handle(Interface_SignType) thesign;
   Interface_GeneralLib thelib;
-  Interface_DataMapOfTransientInteger thentnum;
-  TColStd_IndexedDataMapOfTransientTransient thentmod;
+  NCollection_DataMap<Handle(Standard_Type),Standard_Integer> thentnum;
+  NCollection_IndexedDataMap<Handle(Standard_Type),Handle(Standard_Transient)> thentmod;
 
 
 };

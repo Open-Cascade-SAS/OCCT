@@ -17,6 +17,7 @@
 #define _Message_Alert_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 DEFINE_STANDARD_HANDLE(Message_Alert, Standard_Transient)
 
