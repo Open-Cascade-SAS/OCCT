@@ -765,11 +765,11 @@ static Standard_Integer meshcolors(Draw_Interpretor& theDI,
 
         for (Standard_Integer aCount = 0; aCount < aMesh->GetBuildersCount(); aCount++)
         {
-          aTempBuilder = aMesh->FindBuilder("MeshVS_ElementalColorPrsBuilder");
+          aTempBuilder = aMesh->FindBuilder(STANDARD_TYPE(MeshVS_ElementalColorPrsBuilder));
           if (!aTempBuilder.IsNull())
             aMesh->RemoveBuilderById(aTempBuilder->GetId());
 
-          aTempBuilder = aMesh->FindBuilder("MeshVS_NodalColorPrsBuilder");
+          aTempBuilder = aMesh->FindBuilder(STANDARD_TYPE(MeshVS_NodalColorPrsBuilder));
           if (!aTempBuilder.IsNull())
             aMesh->RemoveBuilderById(aTempBuilder->GetId());
         }
@@ -980,7 +980,7 @@ static Standard_Integer meshvectors(Draw_Interpretor& theDI,
 
   Handle(MeshVS_PrsBuilder) aTempBuilder;
 
-  aTempBuilder = aMesh->FindBuilder("MeshVS_VectorPrsBuilder");
+  aTempBuilder = aMesh->FindBuilder(STANDARD_TYPE(MeshVS_VectorPrsBuilder));
   if (!aTempBuilder.IsNull())
     aMesh->RemoveBuilderById(aTempBuilder->GetId());
 

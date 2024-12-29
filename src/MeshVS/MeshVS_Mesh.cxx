@@ -1192,18 +1192,26 @@ void MeshVS_Mesh::ClearSelected ()
 //=======================================================================
 Handle (MeshVS_PrsBuilder) MeshVS_Mesh::FindBuilder ( const Standard_CString theTypeName ) const
 {
-  Standard_Integer len = myBuilders.Length();
-  Handle(MeshVS_PrsBuilder) aBuilder;
-  Standard_Boolean IsExist = Standard_False;
-
-  for ( Standard_Integer i=1; i<=len && !IsExist; i++)
-    if ( myBuilders.Value (i)->IsKind ( theTypeName ) )
+  for (const Handle(MeshVS_PrsBuilder)& aBuilder : myBuilders)
+  {
+    if (aBuilder->IsKind(theTypeName))
     {
-      aBuilder = myBuilders.Value (i);
-      IsExist = Standard_True;
+      return aBuilder;
     }
+  }
+  return nullptr;
+}
 
-  return aBuilder;
+Handle(MeshVS_PrsBuilder) MeshVS_Mesh::FindBuilder (const Handle(Standard_Type)& theType) const
+{
+  for (const Handle(MeshVS_PrsBuilder)& aBuilder : myBuilders)
+  {
+    if (aBuilder->IsKind(theType))
+    {
+      return aBuilder;
+    }
+  }
+  return nullptr;
 }
 
 //=======================================================================

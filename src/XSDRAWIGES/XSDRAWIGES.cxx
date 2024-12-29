@@ -18,10 +18,10 @@
 #include <DDocStd.hxx>
 #include <DDocStd_DrawDocument.hxx>
 #include <Draw.hxx>
+#include <DrawTrSurf.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
 #include <Draw_ProgressIndicator.hxx>
-#include <DrawTrSurf.hxx>
 #include <IGESCAFControl_Reader.hxx>
 #include <IGESCAFControl_Writer.hxx>
 #include <IGESControl_Controller.hxx>
@@ -29,7 +29,10 @@
 #include <IGESControl_Writer.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_IGESModel.hxx>
+#include <IGESGeom_BoundedSurface.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
 #include <IGESSelect_Activator.hxx>
+#include <IGESSolid_Face.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
 #include <Message.hxx>
@@ -621,13 +624,13 @@ static Standard_Integer XSDRAWIGES_tplosttrim(Draw_Interpretor& theDI,
   Handle(XSControl_WorkSession) aWorkSession = XSDRAW::Session();
   const Handle(Transfer_TransientProcess)& anTransientProcess = aWorkSession->TransferReader()->TransientProcess();
   TColStd_Array1OfAsciiString aTypeStrings(1, 3);
-  TColStd_Array1OfAsciiString aKindStrings(1, 3);
+  NCollection_Array1<Handle(Standard_Type>) aKindTypes(1, 3);
   aTypeStrings.SetValue(1, "xst-type(CurveOnSurface)");
   aTypeStrings.SetValue(2, "xst-type(Boundary)");
   aTypeStrings.SetValue(3, "xst-type(Loop)");
-  aKindStrings.SetValue(1, "IGESGeom_TrimmedSurface");
-  aKindStrings.SetValue(2, "IGESGeom_BoundedSurface");
-  aKindStrings.SetValue(3, "IGESSolid_Face");
+  aKindTypes.SetValue(1, STANDARD_TYPE(IGESGeom_TrimmedSurface));
+  aKindTypes.SetValue(2, STANDARD_TYPE(IGESGeom_BoundedSurface));
+  aKindTypes.SetValue(3, STANDARD_TYPE(IGESSolid_Face));
   if (anTransientProcess.IsNull())
   {
     theDI << "No Transfer Read\n";
@@ -639,6 +642,10 @@ static Standard_Integer XSDRAWIGES_tplosttrim(Draw_Interpretor& theDI,
   if (theNbArgs > 1)
   {
     TCollection_AsciiString anArg(theArgVec[1]);
+    TColStd_Array1OfAsciiString aKindStrings(1, 3);
+    aKindStrings.SetValue(1, "IGESGeom_TrimmedSurface");
+    aKindStrings.SetValue(2, "IGESGeom_BoundedSurface");
+    aKindStrings.SetValue(3, "IGESSolid_Face");
     for (anIndex = 1; anIndex <= 3; anIndex++)
     {
       if (aKindStrings.Value(anIndex).Location(anArg, 1, aKindStrings.Value(anIndex).Length()) != 0)
@@ -683,7 +690,7 @@ static Standard_Integer XSDRAWIGES_tplosttrim(Draw_Interpretor& theDI,
         {
           for (Standard_Integer i = 1; i <= aNumSharingEntities; i++)
           {
-            if (aSharingEntities->Value(i)->IsKind(aKindStrings.Value(anIndex).ToCString()))
+            if (aSharingEntities->Value(i)->IsKind(aKindTypes.Value(anIndex)))
             {
               if (aFaceMap.Add(aSharingEntities->Value(i)))
               {

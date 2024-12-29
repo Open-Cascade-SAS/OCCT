@@ -2171,7 +2171,7 @@ void AIS_InteractiveContext::RebuildSelectionStructs()
 void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& theAssembly,
                                          const Handle(AIS_InteractiveObject)& theObjToDisconnect)
 {
-  if (theAssembly->IsInstance ("AIS_MultipleConnectedInteractive"))
+  if (theAssembly->IsInstance (STANDARD_TYPE(AIS_MultipleConnectedInteractive)))
   {
     Handle(AIS_MultipleConnectedInteractive) theObj (Handle(AIS_MultipleConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect (theObjToDisconnect);
@@ -2185,7 +2185,7 @@ void AIS_InteractiveContext::Disconnect (const Handle(AIS_InteractiveObject)& th
     const Handle(SelectMgr_SelectableObject)& anObj = theObjToDisconnect; // to avoid ambiguity
     mgrSelector->Remove (anObj);
   }
-  else if (theAssembly->IsInstance ("AIS_ConnectedInteractive") && theObjToDisconnect.IsNull())
+  else if (theAssembly->IsInstance (STANDARD_TYPE(AIS_ConnectedInteractive)) && theObjToDisconnect.IsNull())
   {
     Handle(AIS_ConnectedInteractive) theObj (Handle(AIS_ConnectedInteractive)::DownCast (theAssembly));
     theObj->Disconnect();
