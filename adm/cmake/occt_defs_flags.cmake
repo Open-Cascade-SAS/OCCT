@@ -143,8 +143,10 @@ if (MSVC)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   endif()
 elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_CXX_COMPILER_ID MATCHES "[Cc][Ll][Aa][Nn][Gg]"))
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-
+  # force hide all symbols by default.
+  # MSVC by default hides all symbols, so no need to add any flags
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fvisibility=hidden")
+  set (CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Wextra -fvisibility=hidden")
   if ("${BUILD_OPT_PROFILE}" STREQUAL "Production")
     # /Ot (favor speed over size) is similar to -O2 or -O3 in GCC/Clang.
     # /Oy (omit frame pointers) is similar to -fomit-frame-pointer in GCC/Clang.
