@@ -13,6 +13,8 @@
 
 #include <Standard_ArrayStreamBuffer.hxx>
 
+#include <cstring>
+
 // =======================================================================
 // function : Standard_ArrayStreamBuffer
 // purpose  :

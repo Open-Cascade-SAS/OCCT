@@ -92,7 +92,7 @@ void BOPTest::ReportAlerts(const Handle(Message_Report)& theReport)
   for (int iGravity = 0; iGravity < 2; iGravity++)
   {
     // report shapes for the same type of alert together
-    NCollection_Map<Handle(Standard_Transient)> aPassedTypes;
+    NCollection_Map<Handle(Standard_Type)> aPassedTypes;
     const Message_ListOfAlert& aList = theReport->GetAlerts (anAlertTypes[iGravity]);
     for (Message_ListOfAlert::Iterator aIt (aList); aIt.More(); aIt.Next())
     {

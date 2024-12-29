@@ -60,8 +60,7 @@ Standard_Boolean STEPSelections_SelectDerived::Matches(const Handle(Standard_Tra
     
   Standard_Boolean plex = module->IsComplex(CN);
     if (!plex) {
-      DeclareAndCast(Standard_Type,atype,ent);
-      if (atype.IsNull()) atype = ent->DynamicType();
+      Handle(Standard_Type) atype = ent->DynamicType();
       return atype->SubType(checker);
     } else {
       TColStd_SequenceOfAsciiString list;

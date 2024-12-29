@@ -215,7 +215,7 @@ void Geom2dAdaptor_Curve::load(const Handle(Geom2d_Curve)& C,
     myNestedEvaluator.Nullify();
     myBSplineCurve.Nullify();
 
-    Handle(Standard_Type) TheType = C->DynamicType();
+    const Handle(Standard_Type)& TheType = C->DynamicType();
     if ( TheType == STANDARD_TYPE(Geom2d_TrimmedCurve)) {
       Load(Handle(Geom2d_TrimmedCurve)::DownCast (C)->BasisCurve(),
 	   UFirst,ULast);

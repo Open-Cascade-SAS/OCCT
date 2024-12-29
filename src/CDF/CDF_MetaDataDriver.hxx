@@ -18,6 +18,7 @@
 #define _CDF_MetaDataDriver_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 class CDM_MetaData;
 class TCollection_ExtendedString;

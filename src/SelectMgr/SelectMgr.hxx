@@ -15,6 +15,7 @@
 #define _SelectMgr_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Handle.hxx>
 
 class Graphic3d_Structure;
 class Graphic3d_TransformPers;

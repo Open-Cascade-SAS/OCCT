@@ -21,10 +21,10 @@
 //! Since OCCT 7.0, relevant macros are provided by Standard_Type.hxx and Standard_Handle.hxx.
 
 #include <Standard_Type.hxx>
+#include <Standard_Handle.hxx>
 
 class Standard_Transient;
 class Standard_Persistent;
-class Standard_Type;
 
 // Obsolete macros kept for compatibility
 #define IMPLEMENT_DOWNCAST(C1,BC)

@@ -15,6 +15,7 @@
 #define _BinObjMgt_Position_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 class BinObjMgt_Position;
 DEFINE_STANDARD_HANDLE (BinObjMgt_Position, Standard_Transient)

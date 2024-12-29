@@ -36,7 +36,7 @@ namespace {
 
 }
 
-IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_NotesTool, XCAFDoc_NoteComment)
+IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_NotesTool, TDataStd_GenericEmpty)
 
 enum NotesTool_RootLabels
 {

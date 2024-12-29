@@ -16,6 +16,7 @@
 #define _Standard_Persistent_HeaderFile
 
 #include <Standard_Type.hxx>
+#include <Standard_Transient.hxx>
 
 //! Root of "persistent" classes, a legacy support of
 //! object oriented databases, now outdated.

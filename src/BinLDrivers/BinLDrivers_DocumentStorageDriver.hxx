@@ -120,8 +120,8 @@ private:
 
   BinObjMgt_Persistent myPAtt;
   TDF_LabelList myEmptyLabels;
-  TColStd_MapOfTransient myMapUnsupported;
-  TColStd_IndexedMapOfTransient myTypesMap;
+  NCollection_Map<Handle(Standard_Type)> myMapUnsupported;
+  NCollection_IndexedMap<Handle(Standard_Type)> myTypesMap;
   BinLDrivers_VectorOfDocumentSection mySections;
   TCollection_ExtendedString myFileName;
   //! Sizes of labels and some attributes that will be stored in the second pass

@@ -103,7 +103,7 @@ private:
   static Standard_EXPORT TColStd_SequenceOfTransient&   getModels();
 
   //! Method for taking fields for map types
-  static Standard_EXPORT TColStd_IndexedMapOfTransient& getTypes();
+  static Standard_EXPORT NCollection_IndexedMap<Handle(Standard_Type)>& getTypes();
 
   //! Method for taking fields for the Current model
   static Standard_EXPORT Handle(TObj_Model)&            getCurrentModel();

@@ -33,8 +33,7 @@ static Standard_CString nulsign = "";
    const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   if (ent.IsNull()) return nulsign;
-  DeclareAndCast(Standard_Type,atype,ent);
-  if (atype.IsNull()) atype = ent->DynamicType();
+  Handle(Standard_Type) atype = ent->DynamicType();
   Standard_CString tn = atype->Name();
   if (!thenopk) return tn;
   for (int i = 0; tn[i] != '\0'; i ++) {
