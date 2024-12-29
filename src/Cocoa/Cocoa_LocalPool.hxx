@@ -14,6 +14,8 @@
 #ifndef Cocoa_LocalPool_HeaderFile
 #define Cocoa_LocalPool_HeaderFile
 
+#include <Standard_Macro.hxx>
+
 #if defined(__clang__) && (__clang_major__ >= 4)
 #if __has_feature(objc_arc)
   #define HAVE_OBJC_ARC
@@ -38,8 +40,8 @@ class Cocoa_LocalPool
 
 public:
 
-  Cocoa_LocalPool();
-  ~Cocoa_LocalPool();
+  Standard_EXPORT Cocoa_LocalPool();
+  Standard_EXPORT ~Cocoa_LocalPool();
 
 private:
 
