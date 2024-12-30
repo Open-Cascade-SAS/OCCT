@@ -22,66 +22,82 @@ env:
 jobs:
   codeql-analyze:
     name: CodeQL Analyze (C/C++)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-    # Step: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install necessary dependencies for building the project
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
 
-    # Step: Initialize CodeQL for scanning
+    - name: Install rapidjson
+      run: |
+        wget https://github.com/Tencent/rapidjson/archive/858451e5b7d1c56cf8f6d58f88cf958351837e53.zip -O rapidjson.zip
+        unzip rapidjson.zip
+
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3.26.5
+      uses: github/codeql-action/init@v3.28.0
       with:
         languages: c-cpp
+        queries: security-extended
         build-mode: manual
 
-    # Step: Build the project using CMake and Make
-    - name: Build project
-      shell: bash
+    - name: Configure OCCT
       run: |
         mkdir -p build
         cd build
         cmake -G "Unix Makefiles" \
               -D CMAKE_C_COMPILER=gcc \
               -D CMAKE_CXX_COMPILER=g++ \
-              -D USE_FREETYPE=OFF \
-              -D CMAKE_BUILD_TYPE=Release ..
+              -D BUILD_USE_PCH=ON \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D BUILD_OPT_PROFILE=Production \
+              -D USE_TK=OFF \
+              -D CMAKE_BUILD_TYPE=${{ env.config }} \
+              -D INSTALL_DIR=${{ github.workspace }}/install \
+              -D 3RDPARTY_RAPIDJSON_DIR=${{ github.workspace }}/rapidjson-858451e5b7d1c56cf8f6d58f88cf958351837e53 \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=ON \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON ..
+
+    - name: Build OCCT
+      run: |
+        cd build
         make -j$(nproc)
 
-    # Step: Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3.26.5
+      uses: github/codeql-action/analyze@v3.28.0
       with:
         category: "/language:c-cpp"
 
   msvc-analyze:
     name: Microsoft C++ Code Analysis
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
-    # Step: Checkout the repository
+
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    # Step: Install necessary dependencies using Chocolatey
     - name: Install dependencies
       run: |
           choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
           choco install magicsplat-tcl-tk -y
 
-    # Step: Configure the project using CMake
     - name: Configure CMake
       run: |
         mkdir build
         cd build
         cmake -D USE_FREETYPE=OFF -DCMAKE_BUILD_TYPE=${{ env.config }} ..
 
-    # Step: Run MSVC Code Analysis
     - name: Run MSVC Code Analysis
       uses: microsoft/msvc-code-analysis-action@v0.1.1
       id: run-analysis
@@ -90,7 +106,6 @@ jobs:
         buildConfiguration: ${{ env.config }}
         ruleset: NativeRecommendedRules.ruleset
 
-    # Step: Upload SARIF file to GitHub Code Scanning Alerts
     - name: Upload SARIF to GitHub
       uses: github/codeql-action/upload-sarif@v3.26.5
       with:
