@@ -34,6 +34,7 @@ public: //! @name flags to disable particular functionality, should be used only
   Standard_Boolean keepArrayData;     //!< Disables freeing CPU memory after building VBOs (OFF by default)
   Standard_Boolean ffpEnable;         //!< Enables FFP (fixed-function pipeline), do not use built-in GLSL programs (OFF by default)
   Standard_Boolean usePolygonMode;    //!< Enables Polygon Mode instead of built-in GLSL programs (OFF by default; unsupported on OpenGL ES)
+  Standard_Boolean lineGeomDisable;   //!< Disables GLSL shader for line rendering (OFF by default)
   Standard_Boolean useSystemBuffer;   //!< Enables usage of system backbuffer for blitting (OFF by default on desktop OpenGL and ON on OpenGL ES for testing)
   Standard_Integer swapInterval;      //!< controls swap interval - 0 for VSync off and 1 for VSync on, 1 by default
   Standard_Boolean useZeroToOneDepth; //!< use [0, 1] depth range instead of [-1, 1] range, when possible (OFF by default)
