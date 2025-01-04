@@ -31,26 +31,44 @@ Standard_Type::Standard_Type (const std::type_info& theInfo,
   myName(theName),
   mySize(theSize), 
   myParent(theParent)
+{}
+
+Standard_Boolean Standard_Type::SubType(const Handle(Standard_Type)& theOther) const
 {
+  if (theOther.IsNull())
+  {
+    return false;
+  }
+  const Standard_Type* aTypeIter = this;
+  while (aTypeIter && theOther->mySize <= aTypeIter->mySize)
+  {
+    if (theOther.get() == aTypeIter)
+    {
+      return true;
+    }
+    aTypeIter = aTypeIter->Parent().get();
+  }
+  return false;
 }
 
-//============================================================================
-
-Standard_Boolean Standard_Type::SubType (const Handle(Standard_Type)& theOther) const
+Standard_Boolean Standard_Type::SubType(const Standard_CString theName) const
 {
-  return ! theOther.IsNull() && (theOther == this || (! myParent.IsNull() && myParent->SubType (theOther)));
+  if (!theName)
+  {
+    return false;
+  }
+  const Standard_Type* aTypeIter = this;
+  while (aTypeIter)
+  {
+    if (IsEqual(theName, aTypeIter->Name()))
+    {
+      return true;
+    }
+    aTypeIter = aTypeIter->Parent().get();
+  }
+  return false;
 }
 
-//============================================================================
-
-Standard_Boolean Standard_Type::SubType (const Standard_CString theName) const
-{
-  return theName != 0 && (IsEqual (myName, theName) || (! myParent.IsNull() && myParent->SubType (theName)));
-}
-
-// ------------------------------------------------------------------
-// Print (me; s: in out OStream) returns OStream;
-// ------------------------------------------------------------------
 void Standard_Type::Print (Standard_OStream& AStream) const
 {
   AStream << std::hex << (Standard_Address)this << " : " << std::dec << myName ;
