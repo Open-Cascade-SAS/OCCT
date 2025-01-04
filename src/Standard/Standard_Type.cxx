@@ -1,5 +1,5 @@
 // Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 1999-2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,24 +12,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Standard_Type.hxx>
-#include <Standard_Mutex.hxx>
-#include <Standard_Assert.hxx>
 
-#include <unordered_map>
+#include <NCollection_DataMap.hxx>
+#include <Standard_HashUtils.hxx>
+#include <Standard_Assert.hxx>
+#include <Standard_Mutex.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Standard_Type,Standard_Transient)
 
-//============================================================================
-
-Standard_Type::Standard_Type (const std::type_info& theInfo,
+Standard_Type::Standard_Type (const char* theSystemName,
                               const char* theName,
                               Standard_Size theSize,
                               const Handle(Standard_Type)& theParent) :
-  myInfo(theInfo),
+  mySystemName(theSystemName),
   myName(theName),
-  mySize(theSize), 
+  mySize(theSize),
   myParent(theParent)
 {}
 
@@ -79,14 +77,28 @@ void Standard_Type::Print (Standard_OStream& AStream) const
 //============================================================================
 
 namespace {
-  // Map of string to type
-  typedef std::unordered_map<std::type_index, Standard_Type*> registry_type;
+
+  struct typeNameHasher
+  {
+    size_t operator()(const Standard_CString theType) const noexcept
+    {
+      const int aLen = static_cast<int>(strlen(theType));
+      return opencascade::hashBytes(theType, aLen);
+    }
+
+    bool operator()(const Standard_CString theType1, const Standard_CString theType2) const noexcept
+    {
+      return strcmp(theType1, theType2) == 0;
+    }
+  };
+
+  using registry_type = NCollection_DataMap<Standard_CString, Standard_Type*, typeNameHasher>;
 
   // Registry is made static in the function to ensure that it gets
   // initialized by the time of first access
   registry_type& GetRegistry() 
   {
-    static registry_type theRegistry;
+    static registry_type theRegistry(2048, NCollection_BaseAllocator::CommonBaseAllocator());
     return theRegistry;
   }
 
@@ -99,21 +111,36 @@ Standard_Type* Standard_Type::Register (const std::type_info& theInfo, const cha
 {
   // Access to registry is protected by mutex; it should not happen often because
   // instances are cached by Standard_Type::Instance() (one per binary module)
-  static Standard_Mutex theMutex;
-  Standard_Mutex::Sentry aSentry (theMutex);
+  static Standard_Mutex aMutex;
+  Standard_Mutex::Sentry aSentry (aMutex);
 
   // return existing descriptor if already in the registry
   registry_type& aRegistry = GetRegistry();
-  Standard_Type* aType = 0;
-  auto anIter = aRegistry.find(theInfo);
-  if (anIter != aRegistry.end())
-    return anIter->second;
+  Standard_Type* aType;
+  if (aRegistry.Find(theInfo.name(), aType))
+  {
+    return aType;
+  }
 
-  // else create a new descriptor
-  aType = new Standard_Type (theInfo, theName, theSize, theParent);
+  // Calculate sizes for deep copies
+  const Standard_Size anInfoNameLen = strlen(theInfo.name()) + 1;
+  const Standard_Size aNameLen = strlen(theName) + 1;
 
-  // then add it to registry and return (the reference to the handle stored in the registry)
-  aRegistry.emplace(theInfo, aType);
+  // Allocate memory block for Standard_Type and the two strings
+  char* aMemoryBlock = static_cast<char*>(Standard::AllocateOptimal(sizeof(Standard_Type) + anInfoNameLen + aNameLen));
+
+  // Pointers to the locations for the deep copies of the strings
+  char* anInfoNameCopy = aMemoryBlock + sizeof(Standard_Type);
+  char* aNameCopy = anInfoNameCopy + anInfoNameLen;
+
+  // Deep copy the strings using strncpy
+  strncpy(anInfoNameCopy, theInfo.name(), anInfoNameLen);
+  strncpy(aNameCopy, theName, aNameLen);
+
+  aType = new (aMemoryBlock) Standard_Type(anInfoNameCopy, aNameCopy, theSize, theParent);
+
+  // Insert the descriptor into the registry
+  aRegistry.Bind(anInfoNameCopy, aType);
   return aType;
 }
 
@@ -121,5 +148,5 @@ Standard_Type::~Standard_Type ()
 {
   // remove descriptor from the registry
   registry_type& aRegistry = GetRegistry();
-  Standard_ASSERT(aRegistry.erase(myInfo) > 0, "Standard_Type::~Standard_Type() cannot find itself in registry",);
+  Standard_ASSERT(!aRegistry.UnBind(mySystemName), "Standard_Type::~Standard_Type() cannot find itself in registry",);
 }

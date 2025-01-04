@@ -102,7 +102,7 @@ class Standard_Type : public Standard_Transient
 public:
 
   //! Returns the system type name of the class (typeinfo.name)
-  Standard_CString SystemName() const { return myInfo.name(); }
+  Standard_CString SystemName() const { return mySystemName; }
   
   //! Returns the given name of the class type (get_type_name)
   Standard_CString Name() const { return myName; }
@@ -156,11 +156,11 @@ public:
 private:
 
   //! Constructor is private
-  Standard_Type (const std::type_info& theInfo, const char* theName,
+  Standard_Type (const char* theSystemName, const char* theName,
                  Standard_Size theSize, const Handle(Standard_Type)& theParent);
 
 private:
-  std::type_index myInfo;         //!< Object to store system name of the class
+  Standard_CString mySystemName;  //!< System name of the class
   Standard_CString myName;        //!< Given name of the class
   Standard_Size mySize;           //!< Size of the class instance, in bytes
   Handle(Standard_Type) myParent; //!< Type descriptor of parent class
