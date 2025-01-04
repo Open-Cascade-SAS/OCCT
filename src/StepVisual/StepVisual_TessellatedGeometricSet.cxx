@@ -15,7 +15,7 @@
 #include <StepVisual_TessellatedGeometricSet.hxx>
 
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet,StepGeom_TessellatedItem)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_TessellatedGeometricSet,StepVisual_TessellatedItem)
 
 
 StepVisual_TessellatedGeometricSet::StepVisual_TessellatedGeometricSet ()  {}

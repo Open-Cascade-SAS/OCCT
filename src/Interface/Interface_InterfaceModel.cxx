@@ -44,8 +44,7 @@ static NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)> 
 
 static const Handle(Standard_Type)& typerep()
 {
-  static  Handle(Standard_Type) tr = STANDARD_TYPE(Interface_ReportEntity);
-  return tr;
+  return STANDARD_TYPE(Interface_ReportEntity);
 }
 
 

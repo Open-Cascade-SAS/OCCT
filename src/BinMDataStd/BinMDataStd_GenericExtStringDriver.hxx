@@ -38,7 +38,7 @@ public:
   
   Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
 
-  Standard_EXPORT virtual Handle(Standard_Type)& SourceType() const Standard_OVERRIDE;
+  Standard_EXPORT virtual const Handle(Standard_Type)& SourceType() const Standard_OVERRIDE;
 
   //! persistent -> transient (retrieve)
   Standard_EXPORT Standard_Boolean Paste (const BinObjMgt_Persistent& Source, const Handle(TDF_Attribute)& Target, BinObjMgt_RRelocationTable& RelocTable) const Standard_OVERRIDE;
