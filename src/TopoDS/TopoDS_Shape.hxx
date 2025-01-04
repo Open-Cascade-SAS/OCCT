@@ -85,23 +85,24 @@ public:
   const TopLoc_Location& Location() const { return myLocation; }
 
   //! Sets the shape local coordinate system.
-  void Location (const TopLoc_Location& theLoc, const Standard_Boolean theRaiseExc = Standard_True)
+  //! @param theLoc the new local coordinate system.
+  //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
+  void Location (const TopLoc_Location& theLoc, const Standard_Boolean theRaiseExc = Standard_False)
   {
     const gp_Trsf& aTrsf = theLoc.Transformation();
-    if ((Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec() || aTrsf.IsNegative()) && theRaiseExc)
+    if (theRaiseExc)
     {
-      //Exception
-      throw Standard_DomainError("Location with scaling transformation is forbidden");
+      validateTransformation(aTrsf);
     }
-    else
-    {
-      myLocation = theLoc;
-    }
+    myLocation = theLoc;
   }
 
-  //! Returns a  shape  similar to <me> with   the local
+  //! Returns a  shape  similar to <me> with the local
   //! coordinate system set to <Loc>.
-  TopoDS_Shape Located (const TopLoc_Location& theLoc, const Standard_Boolean theRaiseExc = Standard_True) const
+  //! @param theLoc the new local coordinate system.
+  //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
+  //! @return the located shape.
+  TopoDS_Shape Located (const TopLoc_Location& theLoc, const Standard_Boolean theRaiseExc = Standard_False) const
   {
     TopoDS_Shape aShape (*this);
     aShape.Location (theLoc, theRaiseExc);
@@ -182,22 +183,23 @@ public:
   void Convex (Standard_Boolean theIsConvex) { myTShape->Convex (theIsConvex); }
 
   //! Multiplies the Shape location by thePosition.
-  void Move(const TopLoc_Location& thePosition, const Standard_Boolean theRaiseExc = Standard_True)
+  //! @param thePosition the transformation to apply.
+  //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
+  void Move(const TopLoc_Location& thePosition, const Standard_Boolean theRaiseExc = Standard_False)
   {
     const gp_Trsf& aTrsf = thePosition.Transformation();
-    if ((Abs(Abs(aTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec() || aTrsf.IsNegative()) && theRaiseExc)
+    if (theRaiseExc)
     {
-      //Exception
-      throw Standard_DomainError("Moving with scaling transformation is forbidden");
+      validateTransformation(aTrsf);
     }
-    else
-    {
-      myLocation = thePosition * myLocation;
-    }
+    myLocation = thePosition * myLocation;
    }
 
   //! Returns a shape similar to <me> with a location multiplied by thePosition.
-  TopoDS_Shape Moved (const TopLoc_Location& thePosition, const Standard_Boolean theRaiseExc = Standard_True) const
+  //! @param thePosition the transformation to apply.
+  //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
+  //! @return the moved shape.
+  TopoDS_Shape Moved (const TopLoc_Location& thePosition, const Standard_Boolean theRaiseExc = Standard_False) const
   {
     TopoDS_Shape aShape (*this);
     aShape.Move (thePosition, theRaiseExc);
@@ -299,6 +301,20 @@ public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
+protected:
+
+  //! Checks if the transformation contains scaling or negative values.
+  //! Raises an exception if the transformation is invalid.
+  //! @param theTrsf transformation to validate
+  void validateTransformation(const gp_Trsf& theTrsf) const
+  {
+    if (Abs(Abs(theTrsf.ScaleFactor()) - 1.) > TopLoc_Location::ScalePrec() || theTrsf.IsNegative())
+    {
+      //Exception
+      throw Standard_DomainError("Transformation with scaling transformation is forbidden");
+    }
+  }
 
 private:
 
