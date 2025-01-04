@@ -27,7 +27,7 @@
 #include <TDF_ListIteratorOfAttributeList.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Relation,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Relation, TDataStd_Expression)
 
 //=======================================================================
 //function : GetID

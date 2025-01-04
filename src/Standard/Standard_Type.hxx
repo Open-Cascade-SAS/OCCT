@@ -1,5 +1,5 @@
 // Copyright (c) 1991-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 1999-2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -25,61 +25,11 @@
 
 // Auxiliary tools to check at compile time that class declared as base in 
 // DEFINE_STANDARD_RTTI* macro is actually a base class.
-#if ! defined(OCCT_CHECK_BASE_CLASS)
-
-#if (defined(__GNUC__) && ((__GNUC__ == 4 && __GNUC_MINOR__ >= 7) || (__GNUC__ > 4)))
-
-// For GCC 4.7+, more strict check is possible -- ensuring that base class 
-// is direct base -- using non-standard C++ reflection functionality.
-
-#include <tr2/type_traits>
-#include <tuple>
-
-namespace opencascade 
-{
-  template<typename T>
-  struct direct_base_class_as_tuple {};
-
-  template<typename ... Ts>
-  struct direct_base_class_as_tuple<std::tr2::__reflection_typelist<Ts...> >
-  {
-    typedef std::tuple<Ts...> type;
-  };
-
-  template <typename T, typename Tuple>
-  struct has_type;
-
-  template <typename T>
-  struct has_type<T, std::tuple<> > : std::false_type {};
-
-  template <typename T, typename U, typename... Ts>
-  struct has_type<T, std::tuple<U, Ts...> > : has_type<T, std::tuple<Ts...> > {};
-
-  template <typename T, typename... Ts>
-  struct has_type<T, std::tuple<T, Ts...> > : std::true_type {};
-}
-
-#define OCCT_CHECK_BASE_CLASS(Class,Base) \
-  using direct_base_classes = opencascade::direct_base_class_as_tuple<std::tr2::direct_bases<Class>::type>::type; \
-  static_assert(opencascade::has_type<Base, direct_base_classes>::type::value, "OCCT RTTI definition is incorrect: " #Base " is not direct base class of " #Class); \
-  static_assert(&get_type_name == &Class::get_type_name, "OCCT RTTI definition is misplaced: current class is not " #Class);
-
-#elif (defined(_MSC_VER) && (_MSC_VER >= 1900))
-
-// VC14+ allow using address of member functions in static checks,
-// that allows checking for the current type being correctly named in the macro
-#define OCCT_CHECK_BASE_CLASS(Class,Base) \
-  static_assert(opencascade::is_base_but_not_same<Base, Class>::value, "OCCT RTTI definition is incorrect: " #Base " is not base class of " #Class); \
-  static_assert(&get_type_name == &Class::get_type_name, "OCCT RTTI definition is misplaced: current class is not " #Class);
-
-#else
-
-// by default, check only the base class
-#define OCCT_CHECK_BASE_CLASS(Class,Base) \
-  static_assert(opencascade::is_base_but_not_same<Base, Class>::value, "OCCT RTTI definition is incorrect: " #Base " is not base class of " #Class);
-
-#endif
-
+#ifndef OCCT_CHECK_BASE_CLASS
+#include <type_traits>
+#define OCCT_CHECK_BASE_CLASS(Class, Base) \
+  static_assert(std::is_base_of<Base, Class>::value && !std::is_same<Base, Class>::value, \
+    "OCCT RTTI definition is incorrect: " #Base " is not base class of " #Class);
 #endif /* ! defined(OCCT_CHECK_BASE_CLASS) */
 
 //! Helper macro to get instance of a type descriptor for a class in a legacy way.
@@ -93,8 +43,13 @@ namespace opencascade
 #define DEFINE_STANDARD_RTTI_INLINE(Class,Base) \
 public: \
   typedef Base base_type; \
-  static const char* get_type_name () { return #Class; OCCT_CHECK_BASE_CLASS(Class,Base) } \
-  static const Handle(Standard_Type)& get_type_descriptor () { return Standard_Type::Instance<Class>(); } \
+  static constexpr const char* get_type_name () { OCCT_CHECK_BASE_CLASS(Class,Base); return #Class; } \
+  static const Handle(Standard_Type)& get_type_descriptor () \
+  { \
+    static const Handle(Standard_Type) THE_TYPE_INSTANCE = Standard_Type::Register (typeid(Class), get_type_name(), \
+                                                                       sizeof(Class), Base::get_type_descriptor()); \
+    return THE_TYPE_INSTANCE; \
+  } \
   virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE { return get_type_descriptor (); }
 
 //! Helper macro to be included in definition of the classes inheriting
@@ -104,20 +59,20 @@ public: \
 #define DEFINE_STANDARD_RTTIEXT(Class,Base) \
 public: \
   typedef Base base_type; \
-  static const char* get_type_name () { return #Class; OCCT_CHECK_BASE_CLASS(Class,Base) } \
+  static constexpr const char* get_type_name () { OCCT_CHECK_BASE_CLASS(Class,Base); return #Class; } \
   Standard_EXPORT static const Handle(Standard_Type)& get_type_descriptor (); \
   Standard_EXPORT virtual const Handle(Standard_Type)& DynamicType() const Standard_OVERRIDE;
 
 //! Defines implementation of type descriptor and DynamicType() function
 #define IMPLEMENT_STANDARD_RTTIEXT(Class,Base) \
-  const Handle(Standard_Type)& Class::get_type_descriptor () { return Standard_Type::Instance<Class>(); } \
+  OCCT_CHECK_BASE_CLASS(Class,Base) \
+  const Handle(Standard_Type)& Class::get_type_descriptor () \
+  { \
+    static const Handle(Standard_Type) THE_TYPE_INSTANCE = Standard_Type::Register (typeid(Class), get_type_name(), \
+                                                           sizeof(Class), Class::base_type::get_type_descriptor()); \
+    return THE_TYPE_INSTANCE; \
+  } \
   const Handle(Standard_Type)& Class::DynamicType() const { return STANDARD_TYPE(Class); }
-
-// forward declaration of type_instance class
-namespace opencascade {
-  template <typename T>
-  class type_instance;
-}
 
 //! This class provides legacy interface (type descriptor) to run-time type
 //! information (RTTI) for OCCT classes inheriting from Standard_Transient.
@@ -177,7 +132,7 @@ public:
   template <class T>
   static const Handle(Standard_Type)& Instance()
   {
-    return opencascade::type_instance<T>::get();
+    return T::get_type_descriptor();
   }
 
   //! Register a type; returns either new or existing descriptor.
@@ -187,7 +142,7 @@ public:
   //! @param theSize size of the class instance
   //! @param theParent base class in the Transient hierarchy
   //!
-  //! Note that this function is intended for use by opencascade::type_instance only. 
+  //! Note that this function is intended for use by STANDARD_RTTIEXT macros only. 
   Standard_EXPORT static 
     Standard_Type* Register (const std::type_info& theInfo, const char* theName,
                              Standard_Size theSize, const Handle(Standard_Type)& theParent);
@@ -210,71 +165,6 @@ private:
   Standard_Size mySize;           //!< Size of the class instance, in bytes
   Handle(Standard_Type) myParent; //!< Type descriptor of parent class
 };
-
-namespace opencascade {
-
-  //! Template class providing instantiation of type descriptors as singletons.
-  //! The descriptors are defined as static variables in function get(), which
-  //! is essential to ensure that they are initialized in correct sequence.
-  //!
-  //! For compilers that do not provide thread-safe initialization of static
-  //! variables (C++11 feature, N2660), additional global variable is
-  //! defined for each type to hold its type descriptor. These globals ensure
-  //! that all types get initialized during the library loading and thus no 
-  //! concurrency occurs when type system is accessed from multiple threads.
-  template <typename T>
-  class type_instance
-  {
-    static Handle(Standard_Type) myInstance;
-  public:
-    static const Handle(Standard_Type)& get ();
-  };
-
-  //! Specialization of type descriptor instance for void; returns null handle
-  template <>
-  class type_instance<void>
-  {
-  public:
-    static Handle(Standard_Type) get () { return 0; }
-  };
-
-  // Implementation of static function returning instance of the
-  // type descriptor
-  template <typename T>
-  const Handle(Standard_Type)& type_instance<T>::get ()
-  {
-#if (defined(_MSC_VER) && _MSC_VER < 1900) || \
-    (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 3)) && \
-     ! defined(__clang__) && ! defined(__INTEL_COMPILER))
-    // ensure that myInstance is instantiated
-    (void)myInstance;
-#endif
-
-    // static variable inside function ensures that descriptors
-    // are initialized in correct sequence
-    static Handle(Standard_Type) anInstance =
-      Standard_Type::Register (typeid(T), T::get_type_name(), sizeof(T), 
-                               type_instance<typename T::base_type>::get());
-    return anInstance;
-  }
-
-  // Static class field is defined to ensure initialization of all type
-  // descriptors at load time of the library on compilers not supporting N2660:
-  // - VC++ below 14 (VS 2015)
-  // - GCC below 4.3
-  // Intel compiler reports itself as GCC on Linux and VC++ on Windows,
-  // and is claimed to support N2660 on Linux and on Windows "in VS2015 mode".
-  // CLang should support N2660 since version 2.9, but it is not clear how to 
-  // check its version reliably (on Linux it says it is GCC 4.2).
-#if (defined(_MSC_VER) && _MSC_VER < 1900) || \
-    (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 3)) && \
-     ! defined(__clang__) && ! defined(__INTEL_COMPILER))
-
-  template <typename T>
-  Handle(Standard_Type) type_instance<T>::myInstance (get());
-
-#endif
-}
 
 //! Operator printing type descriptor to stream
 inline Standard_OStream& operator << (Standard_OStream& theStream, const Handle(Standard_Type)& theType) 

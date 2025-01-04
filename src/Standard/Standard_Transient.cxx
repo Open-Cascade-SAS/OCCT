@@ -20,7 +20,8 @@
 
 const Handle(Standard_Type)& Standard_Transient::get_type_descriptor ()
 {
-  return opencascade::type_instance<Standard_Transient>::get();
+  static const Handle(Standard_Type) THE_TYPE_INSTANCE = Standard_Type::Register (typeid(Standard_Transient), get_type_name(), sizeof(Standard_Transient), nullptr);
+  return THE_TYPE_INSTANCE;
 }
 
 //
