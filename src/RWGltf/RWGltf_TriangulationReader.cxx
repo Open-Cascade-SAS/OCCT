@@ -583,8 +583,10 @@ bool RWGltf_TriangulationReader::readBuffer(
   RWGltf_GltfArrayType                         theType) const
 
 {
-  const TCollection_AsciiString& aName = theSourceMesh->Id();
-  if (theSourceMesh->PrimitiveMode() != RWGltf_GltfPrimitiveMode_Triangles)
+  const TCollection_AsciiString& aName     = theSourceMesh->Id();
+  const RWGltf_GltfPrimitiveMode aPrimMode = theSourceMesh->PrimitiveMode();
+  if (aPrimMode != RWGltf_GltfPrimitiveMode_Triangles && aPrimMode != RWGltf_GltfPrimitiveMode_Lines
+      && aPrimMode != RWGltf_GltfPrimitiveMode_Points)
   {
     Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
                          + "' skipped unsupported primitive array");
@@ -608,37 +610,48 @@ bool RWGltf_TriangulationReader::readBuffer(
           return false;
         }
 
-        const Standard_Integer aNbTris = (Standard_Integer)(theAccessor.Count / 3);
-        if (!setNbTriangles(theDestMesh, aNbTris))
+        const Standard_Boolean isTriangles = aPrimMode == RWGltf_GltfPrimitiveMode_Triangles;
+        const Standard_Integer aCounter    = isTriangles ? (Standard_Integer)(theAccessor.Count / 3)
+                                                         : (Standard_Integer)(theAccessor.Count);
+        if ((isTriangles && !setNbTriangles(theDestMesh, aCounter))
+            || !setNbEdges(theDestMesh, aCounter))
         {
           return false;
         }
         const size_t aStride =
           theAccessor.ByteStride != 0 ? theAccessor.ByteStride : sizeof(uint16_t);
         Standard_ReadBuffer aBuffer(theAccessor.Count * aStride, aStride);
-        Standard_Integer    aLastTriIndex = 0;
-        for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
+        Standard_Integer    aLastIndex = 0;
+        for (Standard_Integer aTriIter = 0; aTriIter < aCounter; ++aTriIter)
         {
-          if (const uint16_t* anIndex0 = aBuffer.ReadChunk<uint16_t>(theStream))
+          Standard_Integer wasSet = false;
+          if (isTriangles)
           {
-            aVec3.ChangeValue(1) = THE_LOWER_NODE_INDEX + *anIndex0;
-          }
-          if (const uint16_t* anIndex1 = aBuffer.ReadChunk<uint16_t>(theStream))
-          {
-            aVec3.ChangeValue(2) = THE_LOWER_NODE_INDEX + *anIndex1;
-          }
-          if (const uint16_t* anIndex2 = aBuffer.ReadChunk<uint16_t>(theStream))
-          {
-            aVec3.ChangeValue(3) = THE_LOWER_NODE_INDEX + *anIndex2;
+            for (Standard_Integer anIter = 1; anIter <= 3; ++anIter)
+            {
+              const uint16_t* anIndex = aBuffer.ReadChunk<uint16_t>(theStream);
+              if (anIndex == nullptr)
+              {
+                reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
+                return false;
+              }
+              aVec3.ChangeValue(anIter) = THE_LOWER_NODE_INDEX + *anIndex;
+            }
+            wasSet = setTriangle(theDestMesh, THE_LOWER_TRI_INDEX + aLastIndex, aVec3);
           }
           else
           {
-            reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
-            return false;
+            const uint16_t* anIndex = aBuffer.ReadChunk<uint16_t>(theStream);
+            if (anIndex == nullptr)
+            {
+              reportError(TCollection_AsciiString("Buffer '") + aName + "' reading error.");
+              return false;
+            }
+            wasSet = setEdge(theDestMesh,
+                             THE_LOWER_TRI_INDEX + aLastIndex,
+                             THE_LOWER_NODE_INDEX + *anIndex);
           }
 
-          const Standard_Integer wasSet =
-            setTriangle(theDestMesh, THE_LOWER_TRI_INDEX + aLastTriIndex, aVec3);
           if (!wasSet)
           {
             reportError(TCollection_AsciiString("Buffer '") + aName
@@ -646,13 +659,13 @@ bool RWGltf_TriangulationReader::readBuffer(
           }
           if (wasSet > 0)
           {
-            aLastTriIndex++;
+            aLastIndex++;
           }
         }
-        const Standard_Integer aNbDegenerate = aNbTris - aLastTriIndex;
+        const Standard_Integer aNbDegenerate = aCounter - aLastIndex;
         if (aNbDegenerate > 0)
         {
-          if (aNbDegenerate == aNbTris)
+          if (aNbDegenerate == aCounter)
           {
             Message::SendWarning(TCollection_AsciiString("Buffer '") + aName
                                  + "' has been skipped (all elements are degenerative in)");
@@ -666,7 +679,7 @@ bool RWGltf_TriangulationReader::readBuffer(
               + " degenerate triangles have been skipped while reading glTF triangulation '" + aName
               + "'");
           }
-          if (!setNbTriangles(theDestMesh, aLastTriIndex, true))
+          if (!setNbTriangles(theDestMesh, aLastIndex, true))
           {
             return false;
           }

@@ -104,7 +104,8 @@ Handle(Poly_Triangulation) RWGltf_GltfLatePrimitiveArray::LoadStreamData() const
   {
     return Handle(Poly_Triangulation)();
   }
-  Handle(Poly_Triangulation) aResult = createNewEntity();
+
+  Handle(RWMesh_TriangulationSource) aResult = new RWMesh_TriangulationSource();
   if (!aGltfReader->LoadStreamData(this, aResult))
   {
     return Handle(Poly_Triangulation)();

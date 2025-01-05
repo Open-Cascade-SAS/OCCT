@@ -84,7 +84,7 @@ public:
   //! that can be loaded using LoadDeferredData().
   virtual Standard_Boolean HasDeferredData() const Standard_OVERRIDE
   {
-    return !myData.IsEmpty() && RWMesh_TriangulationSource::HasDeferredData();
+    return !myData.IsEmpty() && (NbDeferredTriangles() > 0 || NbDeferredNodes() > 0);
   }
 
   //! Load primitive array saved as stream buffer to new triangulation object.

@@ -19,12 +19,46 @@ Close     DD
 
 ReadGltf  D "$aTmpGltf"
 XGetOneShape s D
-checknbshapes s -face 6 -compound 2
+checknbshapes s -face 6 -vertex 8 -compound 11
 
 set THE_REF_DUMP {
 ASSEMBLY COMPOUND 0:1:1:1 "empty_tmp.glb"
 	INSTANCE COMPOUND 0:1:1:1:1 (refers to 0:1:1:2) "Compound"
-PART COMPOUND 0:1:1:2 "Compound"
+	INSTANCE COMPOUND 0:1:1:1:2 (refers to 0:1:1:19) "Compound"
+ASSEMBLY COMPOUND 0:1:1:2 "Compound"
+	INSTANCE COMPOUND 0:1:1:2:1 (refers to 0:1:1:3) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:2 (refers to 0:1:1:5) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:3 (refers to 0:1:1:7) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:4 (refers to 0:1:1:9) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:5 (refers to 0:1:1:11) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:6 (refers to 0:1:1:13) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:7 (refers to 0:1:1:15) "Compound"
+	INSTANCE COMPOUND 0:1:1:2:8 (refers to 0:1:1:17) "Compound"
+ASSEMBLY COMPOUND 0:1:1:3 "Compound"
+	INSTANCE VERTEX 0:1:1:3:1 (refers to 0:1:1:4) "Vertex"
+PART VERTEX 0:1:1:4 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:5 "Compound"
+	INSTANCE VERTEX 0:1:1:5:1 (refers to 0:1:1:6) "Vertex"
+PART VERTEX 0:1:1:6 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:7 "Compound"
+	INSTANCE VERTEX 0:1:1:7:1 (refers to 0:1:1:8) "Vertex"
+PART VERTEX 0:1:1:8 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:9 "Compound"
+	INSTANCE VERTEX 0:1:1:9:1 (refers to 0:1:1:10) "Vertex"
+PART VERTEX 0:1:1:10 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:11 "Compound"
+	INSTANCE VERTEX 0:1:1:11:1 (refers to 0:1:1:12) "Vertex"
+PART VERTEX 0:1:1:12 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:13 "Compound"
+	INSTANCE VERTEX 0:1:1:13:1 (refers to 0:1:1:14) "Vertex"
+PART VERTEX 0:1:1:14 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:15 "Compound"
+	INSTANCE VERTEX 0:1:1:15:1 (refers to 0:1:1:16) "Vertex"
+PART VERTEX 0:1:1:16 "Vertex"
+ASSEMBLY COMPOUND 0:1:1:17 "Compound"
+	INSTANCE VERTEX 0:1:1:17:1 (refers to 0:1:1:18) "Vertex"
+PART VERTEX 0:1:1:18 "Vertex"
+PART COMPOUND 0:1:1:19 "Compound"
 
 Free Shapes: 1
 ASSEMBLY COMPOUND  0:1:1:1 "empty_tmp.glb"

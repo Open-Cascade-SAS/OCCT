@@ -112,7 +112,7 @@ protected:
     const Handle(OSD_FileSystem)&                theFileSystem) const;
 
 protected:
-  Handle(Poly_Triangulation) myTriangulation;
+  Handle(RWMesh_TriangulationSource) myTriangulation;
 };
 
 #endif // _RWGltf_TriangulationReader_HeaderFile

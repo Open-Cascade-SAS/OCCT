@@ -283,6 +283,25 @@ protected: //! @name interface for filling triangulation data
     return 1;
   }
 
+  //! Resizes array of edges to specified size.
+  //! @param[in] theMesh  triangulation source to be modified
+  //! @param[in] theNbEdges  elements number
+  //! @param[in] theToCopyData  copy old edges into new array
+  //! @return TRUE in case of success operation
+  Standard_EXPORT virtual bool setNbEdges(const Handle(Poly_Triangulation)& theMesh,
+                                          const Standard_Integer            theNbEdges,
+                                          const Standard_Boolean theToCopyData = false) const;
+
+  //! Adds edge element.
+  //! @param[in] theMesh  triangulation source to be modified
+  //! @param theIndex     edge index starting from 1
+  //! @param theEdge      edge nodes starting from 1
+  //! @return 0 if node indexes are out of range,
+  //!         1 in case of success operation.
+  Standard_EXPORT virtual Standard_Integer setEdge(const Handle(Poly_Triangulation)& theMesh,
+                                                   const Standard_Integer            theIndex,
+                                                   const Standard_Integer            theEdge) const;
+
 protected:
   RWMesh_CoordinateSystemConverter myCoordSysConverter; //!< coordinate system converter
   // clang-format off

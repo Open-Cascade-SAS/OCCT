@@ -162,3 +162,37 @@ bool RWMesh_TriangulationReader::finalizeLoading(
   }
   return true;
 }
+
+// =======================================================================
+// function : setNbEdges
+// purpose  :
+// =======================================================================
+bool RWMesh_TriangulationReader::setNbEdges(const Handle(Poly_Triangulation)& theMesh,
+                                            const Standard_Integer            theNbTris,
+                                            const Standard_Boolean            theToCopyData) const
+{
+  Handle(RWMesh_TriangulationSource) aMesh = Handle(RWMesh_TriangulationSource)::DownCast(theMesh);
+  if (theNbTris >= 1)
+  {
+    aMesh->ResizeEdges(theNbTris, theToCopyData);
+    return true;
+  }
+  return false;
+}
+
+// =======================================================================
+// function : setEdge
+// purpose  :
+// =======================================================================
+Standard_Integer RWMesh_TriangulationReader::setEdge(const Handle(Poly_Triangulation)& theMesh,
+                                                     const Standard_Integer            theIndex,
+                                                     const Standard_Integer theEdge) const
+{
+  Handle(RWMesh_TriangulationSource) aMesh = Handle(RWMesh_TriangulationSource)::DownCast(theMesh);
+  if (theEdge < 1 || theEdge > theMesh->NbNodes())
+  {
+    return 0;
+  }
+  aMesh->SetEdge(theIndex, theEdge);
+  return 1;
+}

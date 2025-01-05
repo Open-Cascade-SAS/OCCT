@@ -15,7 +15,7 @@
 #include "RWGltf_GltfJsonParser.hxx"
 
 #include <BRep_Builder.hxx>
-#include <gp_Quaternion.hxx>
+#include <FSD_Base64.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
@@ -24,11 +24,13 @@
 #include <OSD_Path.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <Precision.hxx>
-#include <FSD_Base64.hxx>
+#include <RWGltf_TriangulationReader.hxx>
 #include <TDataStd_NamedData.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <gp_Quaternion.hxx>
 
 #include <fstream>
 
@@ -1581,7 +1583,9 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNodes(TopTools_SequenceOfShape&    the
     {
       continue;
     }
-    else if (myToSkipEmptyNodes && !TopExp_Explorer(aNodeShape, TopAbs_FACE).More())
+    else if (myToSkipEmptyNodes && !TopExp_Explorer(aNodeShape, TopAbs_FACE).More()
+             && !TopExp_Explorer(aNodeShape, TopAbs_EDGE).More()
+             && !TopExp_Explorer(aNodeShape, TopAbs_VERTEX).More())
     {
       continue;
     }
@@ -1838,7 +1842,8 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
       return false;
     }
   }
-  if (aMode != RWGltf_GltfPrimitiveMode_Triangles)
+  if (aMode != RWGltf_GltfPrimitiveMode_Triangles && aMode != RWGltf_GltfPrimitiveMode_Lines
+      && aMode != RWGltf_GltfPrimitiveMode_Points)
   {
     Message::SendWarning(TCollection_AsciiString() + "Primitive array within Mesh '" + theMeshId
                          + "' skipped due to unsupported mode");
@@ -1887,21 +1892,15 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
   {
     if (myAttribMap != NULL)
     {
-      // sharing just triangulation is not much useful
-      // Handle(RWGltf_GltfLatePrimitiveArray) aLateData =
-      // Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (TopoDS::Face
-      // (thePrimArrayShape), aDummy)); TopoDS_Face aFaceCopy; BRep_Builder().MakeFace (aFaceCopy,
-      // aLateData);
-
-      // make a located Face copy
-      TopoDS_Shape aFaceCopy = thePrimArrayShape;
-      aFaceCopy.Location(TopLoc_Location(gp_Trsf()));
+      // make a located Shape copy
+      TopoDS_Shape aShapeCopy = thePrimArrayShape;
+      aShapeCopy.Location(TopLoc_Location(gp_Trsf()));
       RWMesh_NodeAttributes aShapeAttribs;
       aShapeAttribs.RawName = theMeshName;
       aShapeAttribs.Style.SetMaterial(aMat);
-      myAttribMap->Bind(aFaceCopy, aShapeAttribs);
-      myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayIdWithMat, aFaceCopy);
-      thePrimArrayShape = aFaceCopy;
+      myAttribMap->Bind(aShapeCopy, aShapeAttribs);
+      myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayIdWithMat, aShapeCopy);
+      thePrimArrayShape = aShapeCopy;
     }
     return true;
   }
@@ -1978,16 +1977,72 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
       return false;
     }
   }
-  else
+  else if (aMode == RWGltf_GltfPrimitiveMode_Triangles)
   {
     aMeshData->SetNbDeferredTriangles(aMeshData->NbDeferredNodes() / 3);
+  }
+  else
+  {
+    aMeshData->SetNbDeferredTriangles(0);
   }
 
   if (!aMeshData->Data().IsEmpty())
   {
-    TopoDS_Face  aFace;
-    BRep_Builder aBuilder;
-    aBuilder.MakeFace(aFace, aMeshData);
+    if (aMode != RWGltf_GltfPrimitiveMode_Triangles)
+    {
+      Message::SendWarning("Deferred loading is available only for triangulations. Other elements "
+                           "will be loaded immediately.");
+      Handle(RWGltf_TriangulationReader) aReader = new RWGltf_TriangulationReader();
+      aReader->SetCoordinateSystemConverter(myCSTrsf);
+      aMeshData->SetReader(aReader);
+      aMeshData->LoadDeferredData();
+    }
+
+    TopoDS_Shape aShape;
+    switch (aMode)
+    {
+      case RWGltf_GltfPrimitiveMode_Points: {
+        BRep_Builder    aBuilder;
+        TopoDS_Compound aVertices;
+        aBuilder.MakeCompound(aVertices);
+        for (Standard_Integer aNodeIdx = 1; aNodeIdx <= aMeshData->NbNodes(); ++aNodeIdx)
+        {
+          TopoDS_Vertex aVertex;
+          aBuilder.MakeVertex(aVertex, aMeshData->Node(aNodeIdx), Precision::Confusion());
+          aBuilder.Add(aVertices, aVertex);
+        }
+        aShape = aVertices;
+        break;
+      }
+      case RWGltf_GltfPrimitiveMode_Lines: {
+        TColgp_Array1OfPnt aNodes(1, aMeshData->NbEdges());
+        for (Standard_Integer anEdgeIdx = 1; anEdgeIdx <= aMeshData->NbEdges(); ++anEdgeIdx)
+        {
+          Standard_Integer aNodeIdx = aMeshData->Edge(anEdgeIdx);
+          aNodes.SetValue(anEdgeIdx, aMeshData->Node(aNodeIdx));
+        }
+        TopoDS_Edge            anEdge;
+        BRep_Builder           aBuilder;
+        Handle(Poly_Polygon3D) aPoly = new Poly_Polygon3D(aNodes);
+        aBuilder.MakeEdge(anEdge, aPoly);
+
+        aShape = anEdge;
+        break;
+      }
+      case RWGltf_GltfPrimitiveMode_Triangles: {
+        TopoDS_Face  aFace;
+        BRep_Builder aBuilder;
+        aBuilder.MakeFace(aFace, aMeshData);
+        aShape = aFace;
+        myFaceList.Append(aFace);
+        break;
+      }
+      default: {
+        Message::SendFail("Unsupported primitive mode.");
+        return false;
+        break;
+      }
+    }
     if (myAttribMap != NULL && aMeshData->HasStyle())
     {
       RWMesh_NodeAttributes aShapeAttribs;
@@ -1997,12 +2052,11 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray(TopoDS_Shape&                  th
       // aShapeAttribs.Style.SetColorSurf (aMeshData->BaseColor());
       aShapeAttribs.Style.SetMaterial(aMat);
 
-      myAttribMap->Bind(aFace, aShapeAttribs);
+      myAttribMap->Bind(aShape, aShapeAttribs);
     }
-    myFaceList.Append(aFace);
-    myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayId, aFace);
-    myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayIdWithMat, aFace);
-    thePrimArrayShape = aFace;
+    myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayId, aShape);
+    myShapeMap[ShapeMapGroup_PrimArray].Bind(aPrimArrayIdWithMat, aShape);
+    thePrimArrayShape = aShape;
   }
   return true;
 }
@@ -2147,7 +2201,15 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor(
   }
   else if (theType == RWGltf_GltfArrayType_Indices)
   {
-    theMeshData->SetNbDeferredTriangles((Standard_Integer)(aStruct.Count / 3));
+    if (theMeshData->PrimitiveMode() == RWGltf_GltfPrimitiveMode_Triangles)
+    {
+      theMeshData->SetNbDeferredTriangles((Standard_Integer)(aStruct.Count / 3));
+    }
+    else
+    {
+      theMeshData->SetNbDeferredNodes((Standard_Integer)(aStruct.Count));
+      theMeshData->SetNbDeferredTriangles(0);
+    }
   }
 
   const RWGltf_JsonValue* aBufferView =

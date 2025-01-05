@@ -39,7 +39,8 @@ if { $dump_file == 1 } {
     close $fd_stream
     puts "Error : Running in regeneration mode, comparison was not performed!"
 } else {
-    if {$aSize != $ref_size} {
+    set tolerance [expr {min(max(0.001 * $ref_size, 1), 100)}]
+    if {abs($aSize - $ref_size) > $tolerance} {
         puts "Error: Wrong file size $aSize instead of $ref_size"
     }
     

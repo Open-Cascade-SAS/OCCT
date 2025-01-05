@@ -1,0 +1,39 @@
+puts "========"
+puts "Data Exchange, RWGltf_CafReader - Edge and Vertex support"
+puts "========"
+
+vclear
+vclose ALL
+Close *
+
+set aTmpGltf "${imagedir}/${casename}_tmp.glb"
+
+vertex v1 2 0 0
+vertex v2 2 1 0
+vertex v3 3 1 0
+vertex v4 3 0 0
+
+polygon3d p1 2 0 0 0 1 1 0
+mkedge e1 p1
+polygon3d p2 2 0 1 0 1 0 0
+mkedge e2 p2
+
+XNewDoc D
+XAddShape D e1
+XAddShape D e2
+XAddShape D v1
+XAddShape D v2
+XAddShape D v3
+XAddShape D v4
+SetName D [XFindShape D e1] "edge_1"
+SetName D [XFindShape D e2] "edge_2"
+SetName D [XFindShape D v1] "vertex_1"
+SetName D [XFindShape D v2] "vertex_2"
+SetName D [XFindShape D v3] "vertex_3"
+SetName D [XFindShape D v4] "vertex_4"
+
+WriteGltf D "$aTmpGltf"
+
+ReadGltf D1 "$aTmpGltf"
+XGetOneShape s D1
+checknbshapes s -vertex 4 -edge 2
