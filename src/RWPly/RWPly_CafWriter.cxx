@@ -59,7 +59,7 @@ RWPly_CafWriter::~RWPly_CafWriter()
 //================================================================
 Standard_Boolean RWPly_CafWriter::toSkipFaceMesh (const RWMesh_FaceIterator& theFaceIter)
 {
-  return theFaceIter.IsEmptyMesh();
+  return theFaceIter.IsEmpty();
 }
 
 // =======================================================================
@@ -240,10 +240,10 @@ bool RWPly_CafWriter::writeNodes (RWPly_PlyWriterContext&    theWriter,
   Graphic3d_Vec3 aNormVec;
   Graphic3d_Vec2 aTexVec;
   Graphic3d_Vec4ub aColorVec (255);
-  if (theFace.HasFaceColor())
+  if (theFace.HasColor())
   {
     //Graphic3d_Vec4 aColorF = Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB (theFace.FaceColor());
-    Graphic3d_Vec4 aColorF = theFace.FaceColor();
+    Graphic3d_Vec4 aColorF = theFace.Color();
     aColorVec.SetValues ((unsigned char )int(aColorF.r() * 255.0f),
                          (unsigned char )int(aColorF.g() * 255.0f),
                          (unsigned char )int(aColorF.b() * 255.0f),

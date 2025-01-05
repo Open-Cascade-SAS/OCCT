@@ -14,21 +14,18 @@
 #ifndef _RWMesh_FaceIterator_HeaderFile
 #define _RWMesh_FaceIterator_HeaderFile
 
+#include <RWMesh_ShapeIterator.hxx>
+
 #include <BRepLProp_SLProps.hxx>
-#include <gp_Trsf.hxx>
-#include <NCollection_DataMap.hxx>
 #include <Poly_Triangulation.hxx>
-#include <TopExp_Explorer.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <XCAFPrs_Style.hxx>
 
 #include <algorithm>
 
 class TDF_Label;
 
 //! Auxiliary class to iterate through triangulated faces.
-class RWMesh_FaceIterator
+class RWMesh_FaceIterator : public RWMesh_ShapeIterator
 {
 public:
 
@@ -42,23 +39,23 @@ public:
   Standard_EXPORT RWMesh_FaceIterator (const TopoDS_Shape&  theShape,
                                        const XCAFPrs_Style& theStyle = XCAFPrs_Style());
 
-  //! Return explored shape.
-  const TopoDS_Shape& ExploredShape() const { return myFaceIter.ExploredShape(); }
-
   //! Return true if iterator points to the valid triangulation.
-  bool More() const { return !myPolyTriang.IsNull(); }
+  bool More() const Standard_OVERRIDE { return !myPolyTriang.IsNull(); }
 
   //! Find next value.
-  Standard_EXPORT void Next();
+  Standard_EXPORT void Next() Standard_OVERRIDE;
 
   //! Return current face.
   const TopoDS_Face& Face() const { return myFace; }
+
+  //! Return current face.
+  const TopoDS_Shape& Shape() const { return myFace; }
 
   //! Return current face triangulation.
   const Handle(Poly_Triangulation)& Triangulation() const { return myPolyTriang; }
 
   //! Return true if mesh data is defined.
-  bool IsEmptyMesh() const
+  bool IsEmpty() const Standard_OVERRIDE
   {
     return myPolyTriang.IsNull()
        || (myPolyTriang->NbNodes() < 1 && myPolyTriang->NbTriangles() < 1);
@@ -66,25 +63,14 @@ public:
 
 public:
 
-  //! Return face material.
-  const XCAFPrs_Style& FaceStyle() const { return myFaceStyle; }
-
-  //! Return TRUE if face color is set.
-  bool HasFaceColor() const { return myHasFaceColor; }
-
-  //! Return face color.
-  const Quantity_ColorRGBA& FaceColor() const { return myFaceColor; }
-
-public:
-
   //! Return number of elements of specific type for the current face.
   Standard_Integer NbTriangles() const { return myPolyTriang->NbTriangles(); }
 
   //! Lower element index in current triangulation.
-  Standard_Integer ElemLower() const { return 1; }
+  Standard_Integer ElemLower() const Standard_OVERRIDE { return 1; }
 
   //! Upper element index in current triangulation.
-  Standard_Integer ElemUpper() const { return myPolyTriang->NbTriangles(); }
+  Standard_Integer ElemUpper() const Standard_OVERRIDE { return myPolyTriang->NbTriangles(); }
 
   //! Return triangle with specified index with applied Face orientation.
   Poly_Triangle TriangleOriented (Standard_Integer theElemIndex) const
@@ -121,7 +107,7 @@ public:
   }
 
   //! Return number of nodes for the current face.
-  Standard_Integer NbNodes() const
+  Standard_Integer NbNodes() const Standard_OVERRIDE
   {
     return !myPolyTriang.IsNull()
           ? myPolyTriang->NbNodes()
@@ -129,18 +115,10 @@ public:
   }
 
   //! Lower node index in current triangulation.
-  Standard_Integer NodeLower() const { return 1; }
+  Standard_Integer NodeLower() const Standard_OVERRIDE { return 1; }
 
   //! Upper node index in current triangulation.
-  Standard_Integer NodeUpper() const { return myPolyTriang->NbNodes(); }
-
-  //! Return the node with specified index with applied transformation.
-  gp_Pnt NodeTransformed (const Standard_Integer theNode) const
-  {
-    gp_Pnt aNode = node (theNode);
-    aNode.Transform (myTrsf);
-    return aNode;
-  }
+  Standard_Integer NodeUpper() const Standard_OVERRIDE { return myPolyTriang->NbNodes(); }
 
   //! Return texture coordinates for the node.
   gp_Pnt2d NodeTexCoord (const Standard_Integer theNode) const
@@ -151,7 +129,7 @@ public:
 public:
 
   //! Return the node with specified index with applied transformation.
-  gp_Pnt node (const Standard_Integer theNode) const { return myPolyTriang->Node (theNode); }
+  gp_Pnt node (const Standard_Integer theNode) const Standard_OVERRIDE { return myPolyTriang->Node (theNode); }
 
   //! Return normal at specified node index without face transformation applied.
   Standard_EXPORT gp_Dir normal (Standard_Integer theNode) const;
@@ -161,20 +139,13 @@ public:
 
 private:
 
-  //! Dispatch face styles.
-  void dispatchStyles (const TDF_Label&       theLabel,
-                       const TopLoc_Location& theLocation,
-                       const XCAFPrs_Style&   theStyle);
-
   //! Reset information for current face.
   void resetFace()
   {
     myPolyTriang.Nullify();
     myFace.Nullify();
     myHasNormals = false;
-    myHasFaceColor = false;
-    myFaceColor = Quantity_ColorRGBA();
-    myFaceStyle = XCAFPrs_Style();
+    resetShape();
   }
 
   //! Initialize face properties.
@@ -182,23 +153,12 @@ private:
 
 private:
 
-  NCollection_DataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>
-                                  myStyles;       //!< Face -> Style map
-  XCAFPrs_Style                   myDefStyle;     //!< default style for faces without dedicated style
-  Standard_Boolean                myToMapColors;  //!< flag to dispatch styles
-
-  TopExp_Explorer                 myFaceIter;     //!< face explorer
   TopoDS_Face                     myFace;         //!< current face
   Handle(Poly_Triangulation)      myPolyTriang;   //!< triangulation of current face
-  TopLoc_Location                 myFaceLocation; //!< current face location
   mutable BRepLProp_SLProps       mySLTool;       //!< auxiliary tool for fetching normals from surface
   BRepAdaptor_Surface             myFaceAdaptor;  //!< surface adaptor for fetching normals from surface
   Standard_Boolean                myHasNormals;   //!< flag indicating that current face has normals
-  gp_Trsf                         myTrsf;         //!< current face transformation
   Standard_Boolean                myIsMirrored;   //!< flag indicating that face triangles should be mirrored
-  XCAFPrs_Style                   myFaceStyle;    //!< current face style
-  Quantity_ColorRGBA              myFaceColor;    //!< current face color
-  Standard_Boolean                myHasFaceColor; //!< flag indicating that current face has assigned color
 
 };
 

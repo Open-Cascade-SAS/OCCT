@@ -246,9 +246,9 @@ static Standard_Integer WritePly (Draw_Interpretor& theDI,
       {
         BRep_Builder().Add (aComp, aFaceIter.Face());
         Graphic3d_Vec4ub aColorVec (255);
-        if (aFaceIter.HasFaceColor())
+        if (aFaceIter.HasColor())
         {
-          Graphic3d_Vec4 aColorF = aFaceIter.FaceColor();
+          Graphic3d_Vec4 aColorF = aFaceIter.Color();
           aColorVec.SetValues ((unsigned char )int(aColorF.r() * 255.0f),
                                (unsigned char )int(aColorF.g() * 255.0f),
                                (unsigned char )int(aColorF.b() * 255.0f),
