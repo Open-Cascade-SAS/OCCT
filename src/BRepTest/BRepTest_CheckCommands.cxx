@@ -81,10 +81,12 @@ Standard_EXPORT void BRepTest_CheckCommands_SetFaultyName(const char* name)
   }
 }
 
-
-static TopTools_DataMapOfShapeListOfShape theMap;
-static Standard_Integer nbfaulty = 0;
-static Draw_SequenceOfDrawable3D lfaulty;
+namespace
+{
+  static TopTools_DataMapOfShapeListOfShape theMap;
+  static Standard_Integer                   nbfaulty = 0;
+  static Draw_SequenceOfDrawable3D          lfaulty;
+}
 
 Standard_IMPORT Standard_Integer BRepCheck_Trace(const Standard_Integer phase);
 
