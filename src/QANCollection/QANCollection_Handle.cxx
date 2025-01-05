@@ -148,7 +148,7 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   // check operations with Handle_* classes
   Handle(Geom_Line) hLine = aLine;
   CHECK(theDI, ! hLine.IsNull(), "hhandle for non-null");
-
+#include <Standard_WarningsDisable.hxx>
   const Handle_Geom_Line& chLine = aLine; // cast to self const ref
   const Handle_Geom_Curve& chCurve = aLine; // cast to base const ref
   const Handle_Geom_Line& hhLine = hLine; // cast to self const ref
@@ -203,7 +203,7 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
 #else
   CHECK(theDI, hTmpRefBase.get() != aCurve2.get(),  "local reference to temporary handle object (Handle_ to base type)");
 #endif
-
+#include <Standard_WarningsRestore.hxx>
   Handle(Geom_Surface) aSurf;
   (void)aSurf;
 

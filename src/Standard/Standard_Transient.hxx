@@ -120,6 +120,8 @@ private:
 };
 
 //! Definition of Handle_Standard_Transient as typedef for compatibility
+
+Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly instead.")
 typedef opencascade::handle<Standard_Transient> Handle_Standard_Transient;
 
 #endif 

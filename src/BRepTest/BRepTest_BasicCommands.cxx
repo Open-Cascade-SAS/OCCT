@@ -878,7 +878,7 @@ static Standard_Integer gbounding(Draw_Interpretor& di,Standard_Integer n,const 
     Standard_Boolean Is3d = Standard_True;
     Handle(Geom_Curve) C;
     Handle(Geom_Surface) S;
-    Handle_Geom2d_Curve C2d;
+    Handle(Geom2d_Curve) C2d;
     S = DrawTrSurf::GetSurface(a[1]);
     if (!S.IsNull())
     {

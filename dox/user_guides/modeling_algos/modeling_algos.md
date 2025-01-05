@@ -137,7 +137,7 @@ This class is used to  interpolate a BSplineCurve passing through an array of po
 This class may be  instantiated as follows: 
 ~~~~{.cpp}
 Geom2dAPI_Interpolate 
-(const  Handle_TColgp_HArray1OfPnt2d& Points, 
+(const  Handle(TColgp_HArray1OfPnt2d)& Points, 
 const  Standard_Boolean PeriodicFlag, 
 const Standard_Real  Tolerance); 
 
@@ -165,7 +165,7 @@ Geom2dAPI_Interpolate(Points,
 This class may be  instantiated as follows: 
 ~~~~{.cpp}
 GeomAPI_Interpolate 
-(const  Handle_TColgp_HArray1OfPnt& Points, 
+(const  Handle(TColgp_HArray1OfPnt)& Points, 
 const  Standard_Boolean PeriodicFlag, 
 const Standard_Real  Tolerance); 
 

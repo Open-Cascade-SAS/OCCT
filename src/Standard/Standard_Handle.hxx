@@ -415,7 +415,7 @@ namespace std
 //! For compatibility with previous versions of OCCT, define Handle_Class alias for opencascade::handle<Class>.
 #if (defined(_MSC_VER) && _MSC_VER >= 1800) 
 //! For Visual Studio 2013+, define Handle_Class as non-template class to allow exporting this type in C++/CLI.
-#define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) class C1; class Handle_##C1 : public Handle(C1) \
+#define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) class C1; class Standard_DEPRECATED("This class will be removed right after 7.9 release. Use Handle(T) directly instead.") Handle_##C1 : public Handle(C1) \
 { \
 public: \
   Handle_##C1() {} \
@@ -428,7 +428,7 @@ public: \
 };
 #else
 //! For other compilers, use simple typedef
-#define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) class C1; typedef Handle(C1) Handle_##C1;
+#define DEFINE_STANDARD_HANDLECLASS(C1,C2,BC) class C1; Standard_DEPRECATED("This typedef will be removed right after 7.9 release. Use Handle(T) directly instead.") typedef Handle(C1) Handle_##C1;
 #endif
 
 #define DEFINE_STANDARD_HANDLE(C1,C2) DEFINE_STANDARD_HANDLECLASS(C1,C2,Standard_Transient)

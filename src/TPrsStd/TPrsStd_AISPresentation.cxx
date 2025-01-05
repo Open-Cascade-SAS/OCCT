@@ -1010,7 +1010,7 @@ Handle(AIS_InteractiveContext) TPrsStd_AISPresentation::getAISContext() const
   if ( TPrsStd_AISViewer::Find(Label(), aViewer) )
     return aViewer->GetInteractiveContext();
 
-  return Handle_AIS_InteractiveContext();
+  return Handle(AIS_InteractiveContext)();
 }
 
 //=======================================================================
