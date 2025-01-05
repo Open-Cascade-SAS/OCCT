@@ -1,0 +1,22 @@
+puts "========"
+puts "278: Data Exchange, Fail to export to GLTF with draco buffer index out of bounds"
+puts "========"
+
+vclear
+vclose ALL
+Close *
+
+set aTmpGltf "${imagedir}/${casename}_tmp.glb"
+
+ReadStep D [locate_data_file "bug31670_russian.stp"]
+XGetOneShape s D
+incmesh s 0.1
+
+XNewDoc D
+XAddShape D s
+
+WriteGltf D "$aTmpGltf" -draco -mergefaces
+
+ReadGltf D1 "$aTmpGltf"
+XGetOneShape s1 D1
+checknbshapes s1 -face 11 -compound 10 -shape 21
