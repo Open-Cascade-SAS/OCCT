@@ -13,9 +13,9 @@
 
 #include <DE_ConfigurationNode.hxx>
 
+#include <DE_ConfigurationContext.hxx>
 #include <DE_Provider.hxx>
 #include <DE_Wrapper.hxx>
-#include <DE_ConfigurationContext.hxx>
 #include <Message.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
@@ -23,28 +23,23 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DE_ConfigurationNode, Standard_Transient)
 
-//=======================================================================
-// function : DE_ConfigurationNode
-// purpose  :
-//=======================================================================
-DE_ConfigurationNode::DE_ConfigurationNode() :
-  myIsEnabled(Standard_True)
-{}
+//=================================================================================================
 
-//=======================================================================
-// function : DE_ConfigurationNode
-// purpose  :
-//=======================================================================
+DE_ConfigurationNode::DE_ConfigurationNode()
+    : myIsEnabled(Standard_True)
+{
+}
+
+//=================================================================================================
+
 DE_ConfigurationNode::DE_ConfigurationNode(const Handle(DE_ConfigurationNode)& theConfigurationNode)
 {
   GlobalParameters = theConfigurationNode->GlobalParameters;
-  myIsEnabled = theConfigurationNode->IsEnabled();
+  myIsEnabled      = theConfigurationNode->IsEnabled();
 }
 
-//=======================================================================
-// function : Load
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::Load(const TCollection_AsciiString& theResourcePath)
 {
   Handle(DE_ConfigurationContext) aResource = new DE_ConfigurationContext();
@@ -52,20 +47,18 @@ bool DE_ConfigurationNode::Load(const TCollection_AsciiString& theResourcePath)
   return Load(aResource);
 }
 
-//=======================================================================
-// function : Save
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::Save(const TCollection_AsciiString& theResourcePath) const
 {
-  OSD_Path aPath = theResourcePath;
-  OSD_File aFile(aPath);
+  OSD_Path       aPath = theResourcePath;
+  OSD_File       aFile(aPath);
   OSD_Protection aProt;
   {
     try
     {
       OCC_CATCH_SIGNALS
-        aFile.Build(OSD_ReadWrite, aProt);
+      aFile.Build(OSD_ReadWrite, aProt);
     }
     catch (Standard_Failure const&)
     {
@@ -84,10 +77,8 @@ bool DE_ConfigurationNode::Save(const TCollection_AsciiString& theResourcePath) 
   return true;
 }
 
-//=======================================================================
-// function : UpdateLoad
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::UpdateLoad(const Standard_Boolean theToImport,
                                       const Standard_Boolean theToKeep)
 {
@@ -96,28 +87,22 @@ bool DE_ConfigurationNode::UpdateLoad(const Standard_Boolean theToImport,
   return true;
 }
 
-//=======================================================================
-// function : IsImportSupported
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::IsImportSupported() const
 {
   return false;
 }
 
-//=======================================================================
-// function : IsExportSupported
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::IsExportSupported() const
 {
   return false;
 }
 
-//=======================================================================
-// function : CheckForSupport
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::CheckExtension(const TCollection_AsciiString& theExtension) const
 {
   TCollection_AsciiString anExtension(theExtension);
@@ -130,8 +115,7 @@ bool DE_ConfigurationNode::CheckExtension(const TCollection_AsciiString& theExte
     anExtension.Remove(1);
   }
   const TColStd_ListOfAsciiString& anExtensions = GetExtensions();
-  for (TColStd_ListOfAsciiString::Iterator anIter(anExtensions);
-       anIter.More(); anIter.Next())
+  for (TColStd_ListOfAsciiString::Iterator anIter(anExtensions); anIter.More(); anIter.Next())
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value(), anExtension, Standard_False))
     {
@@ -141,10 +125,8 @@ bool DE_ConfigurationNode::CheckExtension(const TCollection_AsciiString& theExte
   return false;
 }
 
-//=======================================================================
-// function : CheckForSupport
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 bool DE_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
 {
   (void)theBuffer;

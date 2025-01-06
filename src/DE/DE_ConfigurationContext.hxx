@@ -20,7 +20,7 @@
 typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> DE_ResourceMap;
 
 //! Provides convenient interface to resource file
-//! Allows loading of the resource file and getting attributes' 
+//! Allows loading of the resource file and getting attributes'
 //! values starting from some scope, for example
 //! if scope is defined as "ToV4" and requested parameter
 //! is "exec.op", value of "ToV4.exec.op" parameter from
@@ -64,7 +64,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return Standard_False if parameter is not defined or has a wrong type
   Standard_EXPORT Standard_Boolean GetReal(const TCollection_AsciiString& theParam,
-                                           Standard_Real& theValue,
+                                           Standard_Real&                 theValue,
                                            const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -73,7 +73,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return Standard_False if parameter is not defined or has a wrong type
   Standard_EXPORT Standard_Boolean GetInteger(const TCollection_AsciiString& theParam,
-                                              Standard_Integer& theValue,
+                                              Standard_Integer&              theValue,
                                               const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -82,7 +82,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return Standard_False if parameter is not defined or has a wrong type
   Standard_EXPORT Standard_Boolean GetBoolean(const TCollection_AsciiString& theParam,
-                                              Standard_Boolean& theValue,
+                                              Standard_Boolean&              theValue,
                                               const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -91,7 +91,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return Standard_False if parameter is not defined or has a wrong type
   Standard_EXPORT Standard_Boolean GetString(const TCollection_AsciiString& theParam,
-                                             TCollection_AsciiString& theValue,
+                                             TCollection_AsciiString&       theValue,
                                              const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -100,7 +100,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return Standard_False if parameter is not defined or has a wrong type
   Standard_EXPORT Standard_Boolean GetStringSeq(const TCollection_AsciiString& theParam,
-                                                TColStd_ListOfAsciiString& theValue,
+                                                TColStd_ListOfAsciiString&     theValue,
                                                 const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -109,7 +109,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return specific type value
   Standard_EXPORT Standard_Real RealVal(const TCollection_AsciiString& theParam,
-                                        const Standard_Real theDefValue,
+                                        const Standard_Real            theDefValue,
                                         const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -118,7 +118,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return specific type value
   Standard_EXPORT Standard_Integer IntegerVal(const TCollection_AsciiString& theParam,
-                                              const Standard_Integer theDefValue,
+                                              const Standard_Integer         theDefValue,
                                               const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -127,7 +127,7 @@ public:
   //! @param[in] theScope base parameter name
   //! @return specific type value
   Standard_EXPORT Standard_Boolean BooleanVal(const TCollection_AsciiString& theParam,
-                                              const Standard_Boolean theDefValue,
+                                              const Standard_Boolean         theDefValue,
                                               const TCollection_AsciiString& theScope = "") const;
 
   //! Gets value of parameter as being of specific type
@@ -135,25 +135,23 @@ public:
   //! @param[in] theDefValue value by default if param is not found or has wrong type
   //! @param[in] theScope base parameter name
   //! @return specific type value
-  Standard_EXPORT TCollection_AsciiString StringVal(const TCollection_AsciiString& theParam,
-                                                    const TCollection_AsciiString& theDefValue,
-                                                    const TCollection_AsciiString& theScope = "") const;
+  Standard_EXPORT TCollection_AsciiString
+    StringVal(const TCollection_AsciiString& theParam,
+              const TCollection_AsciiString& theDefValue,
+              const TCollection_AsciiString& theScope = "") const;
 
   //! Gets internal resource map
   //! @return map with resource value
   Standard_EXPORT const DE_ResourceMap& GetInternalMap() const { return myResource; }
 
 protected:
-
   //! Update the resource with param value from the line
   //! @paramp[in] theResourceLine line contains the parameter
   //! @return true if theResourceLine has loaded correctly
   Standard_Boolean load(const TCollection_AsciiString& theResourceLine);
 
 private:
-
   DE_ResourceMap myResource; //!< Internal parameters map
-
 };
 
 #endif // _DE_ConfigurationContext_HeaderFile

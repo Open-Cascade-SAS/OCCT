@@ -23,5 +23,4 @@
 
 DEFINE_HARRAY1(Approx_HArray1OfAdHSurface, Approx_Array1OfAdHSurface)
 
-
 #endif

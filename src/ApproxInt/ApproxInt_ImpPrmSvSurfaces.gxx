@@ -14,131 +14,130 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomAbs_SurfaceType.hxx>
 #include <IntSurf_PntOn2S.hxx>
+#include <Precision.hxx>
+#include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <math_FunctionSetRoot.hxx>
-#include <StdFail_NotDone.hxx>
-#include <GeomAbs_SurfaceType.hxx>
-#include <Precision.hxx>
 
-//=======================================================================
-//function : IsSingular
-//purpose  :    Returns TRUE if vectors theDU || theDV or if at least one
+//=================================================================================================
+// function : IsSingular
+// purpose  :    Returns TRUE if vectors theDU || theDV or if at least one
 //            of them has null-magnitude.
 //              theSqLinTol is square of linear tolerance.
 //              theAngTol is angular tolerance.
-//=======================================================================
-static Standard_Boolean IsSingular( const gp_Vec& theDU,
-                                    const gp_Vec& theDV,
-                                    const Standard_Real theSqLinTol,
-                                    const Standard_Real theAngTol)
+//=================================================================================================
+
+static Standard_Boolean IsSingular(const gp_Vec&       theDU,
+                                   const gp_Vec&       theDV,
+                                   const Standard_Real theSqLinTol,
+                                   const Standard_Real theAngTol)
 {
   gp_Vec aDU(theDU), aDV(theDV);
 
-  const Standard_Real aSqMagnDU = aDU.SquareMagnitude(),
-                      aSqMagnDV = aDV.SquareMagnitude();
+  const Standard_Real aSqMagnDU = aDU.SquareMagnitude(), aSqMagnDV = aDV.SquareMagnitude();
 
-  if(aSqMagnDU < theSqLinTol)
+  if (aSqMagnDU < theSqLinTol)
     return Standard_True;
 
   aDU.Divide(sqrt(aSqMagnDU));
 
-  if(aSqMagnDV < theSqLinTol)
+  if (aSqMagnDV < theSqLinTol)
     return Standard_True;
 
   aDV.Divide(sqrt(aSqMagnDV));
 
-  //Here aDU and aDV vectors have magnitude 1.0.
+  // Here aDU and aDV vectors have magnitude 1.0.
 
-  if(aDU.Crossed(aDV).SquareMagnitude() < theAngTol*theAngTol)
+  if (aDU.Crossed(aDV).SquareMagnitude() < theAngTol * theAngTol)
     return Standard_True;
 
   return Standard_False;
 }
 
-//=======================================================================
-//function : SingularProcessing
-//purpose  :    Computes 2D-representation (in UV-coordinates) of 
+//=================================================================================================
+// function : SingularProcessing
+// purpose  :    Computes 2D-representation (in UV-coordinates) of
 //            theTg3D vector on the surface in case when
 //            theDU.Crossed(theDV).Magnitude() == 0.0. Stores result in
 //            theTg2D variable.
 //              theDU and theDV are vectors of 1st derivative
 //            (with respect to U and V variables correspondingly).
-//              If theIsTo3DTgCompute == TRUE then theTg3D has not been 
+//              If theIsTo3DTgCompute == TRUE then theTg3D has not been
 //            defined yet (it should be computed).
 //              theLinTol is SQUARE of the tolerance.
 //
-//Algorithm:
+// Algorithm:
 //              Condition
-//                  Tg=theDU*theTg2D.X()+theDV*theTg2D.Y()  
+//                  Tg=theDU*theTg2D.X()+theDV*theTg2D.Y()
 //            has to be satisfied strictly.
 //              More over, vector Tg has to be NORMALIZED
 //            (if theIsTo3DTgCompute == TRUE then new computed vector will
 //            always have magnitude 1.0).
-//=======================================================================
-static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
-                                            const gp_Vec& theDV,
-                                            const Standard_Boolean theIsTo3DTgCompute,
-                                            const Standard_Real theLinTol,
-                                            const Standard_Real theAngTol,
-                                            gp_Vec& theTg3D,
-                                            gp_Vec2d& theTg2D)
-{
-  //Attention: @ \sin theAngTol \approx theAngTol @ (for cross-product)
+//=================================================================================================
 
-  //Really, vector theTg3D has to be normalized (if theIsTo3DTgCompute == FALSE).
+static Standard_Boolean SingularProcessing(const gp_Vec&          theDU,
+                                           const gp_Vec&          theDV,
+                                           const Standard_Boolean theIsTo3DTgCompute,
+                                           const Standard_Real    theLinTol,
+                                           const Standard_Real    theAngTol,
+                                           gp_Vec&                theTg3D,
+                                           gp_Vec2d&              theTg2D)
+{
+  // Attention: @ \sin theAngTol \approx theAngTol @ (for cross-product)
+
+  // Really, vector theTg3D has to be normalized (if theIsTo3DTgCompute == FALSE).
   const Standard_Real aSQTan = theTg3D.SquareMagnitude();
 
-  const Standard_Real aSqMagnDU = theDU.SquareMagnitude(),
-                      aSqMagnDV = theDV.SquareMagnitude();
+  const Standard_Real aSqMagnDU = theDU.SquareMagnitude(), aSqMagnDV = theDV.SquareMagnitude();
 
-  //There are some reasons of singularity
+  // There are some reasons of singularity
 
-  //1.
-  if((aSqMagnDU < theLinTol) && (aSqMagnDV < theLinTol))
+  // 1.
+  if ((aSqMagnDU < theLinTol) && (aSqMagnDV < theLinTol))
   {
-    //For future, this case can be processed as same as in case of 
-    //osculating surfaces (expanding in Taylor series). Here,
-    //we return only.
+    // For future, this case can be processed as same as in case of
+    // osculating surfaces (expanding in Taylor series). Here,
+    // we return only.
 
     return Standard_False;
   }
 
-  //2.
-  if(aSqMagnDU < theLinTol)
+  // 2.
+  if (aSqMagnDU < theLinTol)
   {
-    //In this case, theTg3D vector will be parallel with theDV.
-    //Its true direction shall be precised later (the algorithm is
-    //based on array of Walking-points).
-    
-    if(theIsTo3DTgCompute)
+    // In this case, theTg3D vector will be parallel with theDV.
+    // Its true direction shall be precised later (the algorithm is
+    // based on array of Walking-points).
+
+    if (theIsTo3DTgCompute)
     {
-      //theTg3D will be normalized. Its magnitude is
+      // theTg3D will be normalized. Its magnitude is
       const Standard_Real aTgMagn = 1.0;
 
       const Standard_Real aNorm = sqrt(aSqMagnDV);
-      theTg3D = theDV.Divided(aNorm);
-      theTg2D.SetCoord(0.0, aTgMagn/aNorm);
+      theTg3D                   = theDV.Divided(aNorm);
+      theTg2D.SetCoord(0.0, aTgMagn / aNorm);
     }
     else
     {
-      //theTg3D is already defined.
-      //Here we check only, if this tangent is parallel to theDV.
+      // theTg3D is already defined.
+      // Here we check only, if this tangent is parallel to theDV.
 
-      if(theDV.Crossed(theTg3D).SquareMagnitude() < 
-                    theAngTol*theAngTol*aSqMagnDV*aSQTan)
+      if (theDV.Crossed(theTg3D).SquareMagnitude() < theAngTol * theAngTol * aSqMagnDV * aSQTan)
       {
-        //theTg3D is parallel to theDV
-        
-        //Use sign "+" if theTg3D and theDV are codirectional
-        //and sign "-" if opposite
+        // theTg3D is parallel to theDV
+
+        // Use sign "+" if theTg3D and theDV are codirectional
+        // and sign "-" if opposite
         const Standard_Real aDP = theTg3D.Dot(theDV);
-        theTg2D.SetCoord(0.0, Sign(sqrt(aSQTan/aSqMagnDV), aDP));
+        theTg2D.SetCoord(0.0, Sign(sqrt(aSQTan / aSqMagnDV), aDP));
       }
       else
       {
-        //theTg3D is not parallel to theDV
-        //It is abnormal
+        // theTg3D is not parallel to theDV
+        // It is abnormal
 
         return Standard_False;
       }
@@ -147,41 +146,40 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
     return Standard_True;
   }
 
-  //3.
-  if(aSqMagnDV < theLinTol)
+  // 3.
+  if (aSqMagnDV < theLinTol)
   {
-    //In this case, theTg3D vector will be parallel with theDU.
-    //Its true direction shall be precised later (the algorithm is
-    //based on array of Walking-points).
-    
-    if(theIsTo3DTgCompute)
+    // In this case, theTg3D vector will be parallel with theDU.
+    // Its true direction shall be precised later (the algorithm is
+    // based on array of Walking-points).
+
+    if (theIsTo3DTgCompute)
     {
-      //theTg3D will be normalized. Its magnitude is
+      // theTg3D will be normalized. Its magnitude is
       const Standard_Real aTgMagn = 1.0;
 
       const Standard_Real aNorm = sqrt(aSqMagnDU);
-      theTg3D = theDU.Divided(aNorm);
-      theTg2D.SetCoord(aTgMagn/aNorm, 0.0);
+      theTg3D                   = theDU.Divided(aNorm);
+      theTg2D.SetCoord(aTgMagn / aNorm, 0.0);
     }
     else
     {
-      //theTg3D is already defined.
-      //Here we check only, if this tangent is parallel to theDU.
+      // theTg3D is already defined.
+      // Here we check only, if this tangent is parallel to theDU.
 
-      if(theDU.Crossed(theTg3D).SquareMagnitude() < 
-                    theAngTol*theAngTol*aSqMagnDU*aSQTan)
+      if (theDU.Crossed(theTg3D).SquareMagnitude() < theAngTol * theAngTol * aSqMagnDU * aSQTan)
       {
-        //theTg3D is parallel to theDU
+        // theTg3D is parallel to theDU
 
-        //Use sign "+" if theTg3D and theDU are codirectional
-        //and sign "-" if opposite
+        // Use sign "+" if theTg3D and theDU are codirectional
+        // and sign "-" if opposite
         const Standard_Real aDP = theTg3D.Dot(theDU);
-        theTg2D.SetCoord(Sign(sqrt(aSQTan/aSqMagnDU), aDP), 0.0);
+        theTg2D.SetCoord(Sign(sqrt(aSQTan / aSqMagnDU), aDP), 0.0);
       }
       else
       {
-        //theTg3D is not parallel to theDU
-        //It is abnormal
+        // theTg3D is not parallel to theDU
+        // It is abnormal
 
         return Standard_False;
       }
@@ -190,42 +188,40 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
     return Standard_True;
   }
 
-  //4. If aSqMagnDU > 0.0 && aSqMagnDV > 0.0 but theDV || theDU.
+  // 4. If aSqMagnDU > 0.0 && aSqMagnDV > 0.0 but theDV || theDU.
 
-  const Standard_Real aLenU = sqrt(aSqMagnDU),
-                      aLenV = sqrt(aSqMagnDV);
+  const Standard_Real aLenU = sqrt(aSqMagnDU), aLenV = sqrt(aSqMagnDV);
 
-  //aLenSum > 0.0 definitely
+  // aLenSum > 0.0 definitely
   const Standard_Real aLenSum = aLenU + aLenV;
 
-  if(theDV.Dot(theDU) > 0.0)
+  if (theDV.Dot(theDU) > 0.0)
   {
-    //Vectors theDV and theDU are codirectional.
+    // Vectors theDV and theDU are codirectional.
 
-    if(theIsTo3DTgCompute)
+    if (theIsTo3DTgCompute)
     {
-      theTg2D.SetCoord(1.0/aLenSum, 1.0/aLenSum);
-      theTg3D = theDU*theTg2D.X() + theDV*theTg2D.Y();
+      theTg2D.SetCoord(1.0 / aLenSum, 1.0 / aLenSum);
+      theTg3D = theDU * theTg2D.X() + theDV * theTg2D.Y();
     }
     else
     {
-      //theTg3D is already defined.
-      //Here we check only, if this tangent is parallel to theDU
+      // theTg3D is already defined.
+      // Here we check only, if this tangent is parallel to theDU
       //(and theDV together).
 
-      if(theDU.Crossed(theTg3D).SquareMagnitude() < 
-                    theAngTol*theAngTol*aSqMagnDU*aSQTan)
+      if (theDU.Crossed(theTg3D).SquareMagnitude() < theAngTol * theAngTol * aSqMagnDU * aSQTan)
       {
-        //theTg3D is parallel to theDU
+        // theTg3D is parallel to theDU
 
-        const Standard_Real aDP = theTg3D.Dot(theDU);
+        const Standard_Real aDP    = theTg3D.Dot(theDU);
         const Standard_Real aLenTg = Sign(sqrt(aSQTan), aDP);
-        theTg2D.SetCoord(aLenTg/aLenSum, aLenTg/aLenSum);
+        theTg2D.SetCoord(aLenTg / aLenSum, aLenTg / aLenSum);
       }
       else
       {
-        //theTg3D is not parallel to theDU
-        //It is abnormal
+        // theTg3D is not parallel to theDU
+        // It is abnormal
 
         return Standard_False;
       }
@@ -233,36 +229,35 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
   }
   else
   {
-    //Vectors theDV and theDU are opposite.
+    // Vectors theDV and theDU are opposite.
 
-    if(theIsTo3DTgCompute)
+    if (theIsTo3DTgCompute)
     {
-      //Here we chose theDU as direction of theTg3D.
-      //True direction shall be precised later (the algorithm is
-      //based on array of Walking-points).
+      // Here we chose theDU as direction of theTg3D.
+      // True direction shall be precised later (the algorithm is
+      // based on array of Walking-points).
 
-      theTg2D.SetCoord(1.0/aLenSum, -1.0/aLenSum);
-      theTg3D = theDU*theTg2D.X() + theDV*theTg2D.Y();
+      theTg2D.SetCoord(1.0 / aLenSum, -1.0 / aLenSum);
+      theTg3D = theDU * theTg2D.X() + theDV * theTg2D.Y();
     }
     else
     {
-      //theTg3D is already defined.
-      //Here we check only, if this tangent is parallel to theDU
+      // theTg3D is already defined.
+      // Here we check only, if this tangent is parallel to theDU
       //(and theDV together).
 
-      if(theDU.Crossed(theTg3D).SquareMagnitude() < 
-                    theAngTol*theAngTol*aSqMagnDU*aSQTan)
+      if (theDU.Crossed(theTg3D).SquareMagnitude() < theAngTol * theAngTol * aSqMagnDU * aSQTan)
       {
-        //theTg3D is parallel to theDU
+        // theTg3D is parallel to theDU
 
-        const Standard_Real aDP = theTg3D.Dot(theDU);
+        const Standard_Real aDP    = theTg3D.Dot(theDU);
         const Standard_Real aLenTg = Sign(sqrt(aSQTan), aDP);
-        theTg2D.SetCoord(aLenTg/aLenSum, -aLenTg/aLenSum);
+        theTg2D.SetCoord(aLenTg / aLenSum, -aLenTg / aLenSum);
       }
       else
       {
-        //theTg3D is not parallel to theDU
-        //It is abnormal
+        // theTg3D is not parallel to theDU
+        // It is abnormal
 
         return Standard_False;
       }
@@ -272,9 +267,9 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
   return Standard_True;
 }
 
-//=======================================================================
-//function : NonSingularProcessing
-//purpose  :    Computes 2D-representation (in UV-coordinates) of 
+//=================================================================================================
+// function : NonSingularProcessing
+// purpose  :    Computes 2D-representation (in UV-coordinates) of
 //            theTg3D vector on the surface in case when
 //            theDU.Crossed(theDV).Magnitude() > 0.0. Stores result in
 //            theTg2D variable.
@@ -282,199 +277,218 @@ static Standard_Boolean SingularProcessing( const gp_Vec& theDU,
 //            (with respect to U and V variables correspondingly).
 //              theLinTol is SQUARE of the tolerance.
 //
-//Algorithm:
+// Algorithm:
 //              Condition
-//                  Tg=theDU*theTg2D.X()+theDV*theTg2D.Y()  
+//                  Tg=theDU*theTg2D.X()+theDV*theTg2D.Y()
 //            has to be satisfied strictly.
 //              More over, vector Tg has always to be NORMALIZED.
-//=======================================================================
-static Standard_Boolean NonSingularProcessing(const gp_Vec& theDU,
-                                              const gp_Vec& theDV,
-                                              const gp_Vec& theTg3D,
+//=================================================================================================
+
+static Standard_Boolean NonSingularProcessing(const gp_Vec&       theDU,
+                                              const gp_Vec&       theDV,
+                                              const gp_Vec&       theTg3D,
                                               const Standard_Real theLinTol,
                                               const Standard_Real theAngTol,
-                                              gp_Vec2d& theTg2D)
+                                              gp_Vec2d&           theTg2D)
 {
-  const gp_Vec aNormal = theDU.Crossed(theDV);
+  const gp_Vec        aNormal = theDU.Crossed(theDV);
   const Standard_Real aSQMagn = aNormal.SquareMagnitude();
 
-  if(IsSingular(theDU, theDV, theLinTol, theAngTol))
+  if (IsSingular(theDU, theDV, theLinTol, theAngTol))
   {
     gp_Vec aTg(theTg3D);
-    return 
-      SingularProcessing(theDU, theDV, Standard_False,
-                          theLinTol, theAngTol, aTg, theTg2D);
+    return SingularProcessing(theDU, theDV, Standard_False, theLinTol, theAngTol, aTg, theTg2D);
   }
 
-  //If @\vec{T}=\vec{A}*U+\vec{B}*V@ then 
+  // If @\vec{T}=\vec{A}*U+\vec{B}*V@ then
 
   //  \left\{\begin{matrix}
-  //  \vec{A} \times \vec{T} = (\vec{A} \times \vec{B})*V 
-  //  \vec{B} \times \vec{T} = (\vec{B} \times \vec{A})*U 
+  //  \vec{A} \times \vec{T} = (\vec{A} \times \vec{B})*V
+  //  \vec{B} \times \vec{T} = (\vec{B} \times \vec{A})*U
   //  \end{matrix}\right.
 
-  //From here, values of U and V can be found very easily
+  // From here, values of U and V can be found very easily
   //(if @\left \| \vec{A} \times \vec{B} \right \| > 0.0 @,
-  //else it is singular case). 
+  // else it is singular case).
 
-  const gp_Vec aTgU(theTg3D.Crossed(theDU)), aTgV(theTg3D.Crossed(theDV));
-  const Standard_Real aDeltaU = aTgV.SquareMagnitude()/aSQMagn;
-  const Standard_Real aDeltaV = aTgU.SquareMagnitude()/aSQMagn;
+  const gp_Vec        aTgU(theTg3D.Crossed(theDU)), aTgV(theTg3D.Crossed(theDV));
+  const Standard_Real aDeltaU = aTgV.SquareMagnitude() / aSQMagn;
+  const Standard_Real aDeltaV = aTgU.SquareMagnitude() / aSQMagn;
 
   theTg2D.SetCoord(Sign(sqrt(aDeltaU), aTgV.Dot(aNormal)), -Sign(sqrt(aDeltaV), aTgU.Dot(aNormal)));
 
   return Standard_True;
 }
 
-//--------------------------------------------------------------------------------
-ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const TheISurface& ISurf
-						       ,const ThePSurface& PSurf):
-       MyIsTangent(Standard_False),
-       MyHasBeenComputed(Standard_False),
-       MyIsTangentbis(Standard_False),
-       MyHasBeenComputedbis(Standard_False),
-       MyImplicitFirst(Standard_True),
-       MyZerImpFunc(PSurf,ISurf)
-{ 
+//=================================================================================================
+
+ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces(const TheISurface& ISurf,
+                                                       const ThePSurface& PSurf) :
+    MyIsTangent(Standard_False),
+    MyHasBeenComputed(Standard_False),
+    MyIsTangentbis(Standard_False),
+    MyHasBeenComputedbis(Standard_False),
+    MyImplicitFirst(Standard_True),
+    MyZerImpFunc(PSurf, ISurf)
+{
   SetUseSolver(Standard_True);
 }
-//--------------------------------------------------------------------------------
-ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const ThePSurface& PSurf
-						       ,const TheISurface& ISurf):
-       MyIsTangent(Standard_False),
-       MyHasBeenComputed(Standard_False),
-       MyIsTangentbis(Standard_False),
-       MyHasBeenComputedbis(Standard_False),
-       MyImplicitFirst(Standard_False),
-       MyZerImpFunc(PSurf,ISurf)
-{ 
+
+//=================================================================================================
+
+ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces(const ThePSurface& PSurf,
+                                                       const TheISurface& ISurf) :
+    MyIsTangent(Standard_False),
+    MyHasBeenComputed(Standard_False),
+    MyIsTangentbis(Standard_False),
+    MyHasBeenComputedbis(Standard_False),
+    MyImplicitFirst(Standard_False),
+    MyZerImpFunc(PSurf, ISurf)
+{
   SetUseSolver(Standard_True);
 }
-//--------------------------------------------------------------------------------
+
+//=================================================================================================
+
 void ApproxInt_ImpPrmSvSurfaces::Pnt(const Standard_Real u1,
-				     const Standard_Real v1,
-				     const Standard_Real u2,
-				     const Standard_Real v2,
-				     gp_Pnt& P) { 
-  gp_Pnt aP;
-  gp_Vec aT;
-  gp_Vec2d aTS1,aTS2;
-  Standard_Real tu1=u1;
-  Standard_Real tu2=u2;
-  Standard_Real tv1=v1;
-  Standard_Real tv2=v2;
-  this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
-  P=MyPnt;
+                                     const Standard_Real v1,
+                                     const Standard_Real u2,
+                                     const Standard_Real v2,
+                                     gp_Pnt&             P)
+{
+  gp_Pnt        aP;
+  gp_Vec        aT;
+  gp_Vec2d      aTS1, aTS2;
+  Standard_Real tu1 = u1;
+  Standard_Real tu2 = u2;
+  Standard_Real tv1 = v1;
+  Standard_Real tv2 = v2;
+  this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  P = MyPnt;
 }
-//--------------------------------------------------------------------------------
+
+//=================================================================================================
+
 Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Tangency(const Standard_Real u1,
-						      const Standard_Real v1,
-						      const Standard_Real u2,
-						      const Standard_Real v2,
-						      gp_Vec& T) { 
-  gp_Pnt aP;
-  gp_Vec aT;
-  gp_Vec2d aTS1,aTS2;
-  Standard_Real tu1=u1;
-  Standard_Real tu2=u2;
-  Standard_Real tv1=v1;
-  Standard_Real tv2=v2;
-  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
-  T=MyTg;
-  return(t);
+                                                      const Standard_Real v1,
+                                                      const Standard_Real u2,
+                                                      const Standard_Real v2,
+                                                      gp_Vec&             T)
+{
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  Standard_Real    tu1 = u1;
+  Standard_Real    tu2 = u2;
+  Standard_Real    tv1 = v1;
+  Standard_Real    tv2 = v2;
+  Standard_Boolean t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTg;
+  return (t);
 }
-//--------------------------------------------------------------------------------
+
+//=================================================================================================
+
 Standard_Boolean ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf1(const Standard_Real u1,
-							     const Standard_Real v1,
-							     const Standard_Real u2,
-							     const Standard_Real v2,
-							     gp_Vec2d& T) { 
-  gp_Pnt aP;
-  gp_Vec aT;
-  gp_Vec2d aTS1,aTS2;
-  Standard_Real tu1=u1;
-  Standard_Real tu2=u2;
-  Standard_Real tv1=v1;
-  Standard_Real tv2=v2;
-  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
-  T=MyTguv1;
-  return(t);
+                                                             const Standard_Real v1,
+                                                             const Standard_Real u2,
+                                                             const Standard_Real v2,
+                                                             gp_Vec2d&           T)
+{
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  Standard_Real    tu1 = u1;
+  Standard_Real    tu2 = u2;
+  Standard_Real    tv1 = v1;
+  Standard_Real    tv2 = v2;
+  Standard_Boolean t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTguv1;
+  return (t);
 }
-//--------------------------------------------------------------------------------
+
+//=================================================================================================
+
 Standard_Boolean ApproxInt_ImpPrmSvSurfaces::TangencyOnSurf2(const Standard_Real u1,
-							     const Standard_Real v1,
-							     const Standard_Real u2,
-							     const Standard_Real v2,
-							     gp_Vec2d& T) { 
-  gp_Pnt aP;
-  gp_Vec aT;
-  gp_Vec2d aTS1,aTS2;
-  Standard_Real tu1=u1;
-  Standard_Real tu2=u2;
-  Standard_Real tv1=v1;
-  Standard_Real tv2=v2;
-  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
-  T=MyTguv2;
-  return(t);
+                                                             const Standard_Real v1,
+                                                             const Standard_Real u2,
+                                                             const Standard_Real v2,
+                                                             gp_Vec2d&           T)
+{
+  gp_Pnt           aP;
+  gp_Vec           aT;
+  gp_Vec2d         aTS1, aTS2;
+  Standard_Real    tu1 = u1;
+  Standard_Real    tu2 = u2;
+  Standard_Real    tv1 = v1;
+  Standard_Real    tv2 = v2;
+  Standard_Boolean t   = this->Compute(tu1, tv1, tu2, tv2, aP, aT, aTS1, aTS2);
+  T                    = MyTguv2;
+  return (t);
 }
 
-//=======================================================================
-//function : Compute
-//purpose  :    Computes point on curve, 3D and 2D-tangents of a curve and
+//=================================================================================================
+// function : Compute
+// purpose  :    Computes point on curve, 3D and 2D-tangents of a curve and
 //            parameters on the surfaces.
-//=======================================================================
-Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
-                                                      Standard_Real& v1,
-                                                      Standard_Real& u2,
-                                                      Standard_Real& v2,
-                                                      gp_Pnt& P,
-                                                      gp_Vec& Tg,
-                                                      gp_Vec2d& Tguv1,
-                                                      gp_Vec2d& Tguv2)
-{ 
-  const IntSurf_Quadric&  aQSurf = MyZerImpFunc.ISurface();
-  const ThePSurface&      aPSurf = MyZerImpFunc.PSurface();
-  gp_Vec2d& aQuadTg = MyImplicitFirst ? Tguv1 : Tguv2;
-  gp_Vec2d& aPrmTg = MyImplicitFirst ? Tguv2 : Tguv1;
+//=================================================================================================
 
-  //for square
-  constexpr Standard_Real aNullValue =  Precision::Approximation()*
-                                    Precision::Approximation(),
-                      anAngTol = Precision::Angular();
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute(Standard_Real& u1,
+                                                     Standard_Real& v1,
+                                                     Standard_Real& u2,
+                                                     Standard_Real& v2,
+                                                     gp_Pnt&        P,
+                                                     gp_Vec&        Tg,
+                                                     gp_Vec2d&      Tguv1,
+                                                     gp_Vec2d&      Tguv2)
+{
+  const IntSurf_Quadric& aQSurf  = MyZerImpFunc.ISurface();
+  const ThePSurface&     aPSurf  = MyZerImpFunc.PSurface();
+  gp_Vec2d&              aQuadTg = MyImplicitFirst ? Tguv1 : Tguv2;
+  gp_Vec2d&              aPrmTg  = MyImplicitFirst ? Tguv2 : Tguv1;
 
-  Standard_Real tu1=u1;
-  Standard_Real tu2=u2;
-  Standard_Real tv1=v1;
-  Standard_Real tv2=v2;
-  
-  if(MyHasBeenComputed) { 
-    if(  (MyParOnS1.X()==u1)&&(MyParOnS1.Y()==v1)
-       &&(MyParOnS2.X()==u2)&&(MyParOnS2.Y()==v2)) {
-      return(MyIsTangent);
+  // for square
+  constexpr Standard_Real aNullValue = Precision::Approximation() * Precision::Approximation(),
+                          anAngTol   = Precision::Angular();
+
+  Standard_Real tu1 = u1;
+  Standard_Real tu2 = u2;
+  Standard_Real tv1 = v1;
+  Standard_Real tv2 = v2;
+
+  if (MyHasBeenComputed)
+  {
+    if ((MyParOnS1.X() == u1) && (MyParOnS1.Y() == v1) && (MyParOnS2.X() == u2) &&
+        (MyParOnS2.Y() == v2))
+    {
+      return (MyIsTangent);
     }
-    else if(MyHasBeenComputedbis == Standard_False) { 
-      MyTgbis         = MyTg;
-      MyTguv1bis      = MyTguv1;
-      MyTguv2bis      = MyTguv2;
-      MyPntbis        = MyPnt;
-      MyParOnS1bis    = MyParOnS1;
-      MyParOnS2bis    = MyParOnS2;
-      MyIsTangentbis  = MyIsTangent;
-      MyHasBeenComputedbis = MyHasBeenComputed; 
+    else if (MyHasBeenComputedbis == Standard_False)
+    {
+      MyTgbis              = MyTg;
+      MyTguv1bis           = MyTguv1;
+      MyTguv2bis           = MyTguv2;
+      MyPntbis             = MyPnt;
+      MyParOnS1bis         = MyParOnS1;
+      MyParOnS2bis         = MyParOnS2;
+      MyIsTangentbis       = MyIsTangent;
+      MyHasBeenComputedbis = MyHasBeenComputed;
     }
   }
 
-  if(MyHasBeenComputedbis) { 
-    if(  (MyParOnS1bis.X()==u1)&&(MyParOnS1bis.Y()==v1)
-       &&(MyParOnS2bis.X()==u2)&&(MyParOnS2bis.Y()==v2)) {
+  if (MyHasBeenComputedbis)
+  {
+    if ((MyParOnS1bis.X() == u1) && (MyParOnS1bis.Y() == v1) && (MyParOnS2bis.X() == u2) &&
+        (MyParOnS2bis.Y() == v2))
+    {
 
-      gp_Vec            TV(MyTg);
-      gp_Vec2d          TV1(MyTguv1);
-      gp_Vec2d          TV2(MyTguv2);
-      gp_Pnt            TP(MyPnt);
-      gp_Pnt2d          TP1(MyParOnS1);
-      gp_Pnt2d          TP2(MyParOnS2);
-      Standard_Boolean  TB=MyIsTangent;
+      gp_Vec           TV(MyTg);
+      gp_Vec2d         TV1(MyTguv1);
+      gp_Vec2d         TV2(MyTguv2);
+      gp_Pnt           TP(MyPnt);
+      gp_Pnt2d         TP1(MyParOnS1);
+      gp_Pnt2d         TP2(MyParOnS2);
+      Standard_Boolean TB = MyIsTangent;
 
       MyTg        = MyTgbis;
       MyTguv1     = MyTguv1bis;
@@ -484,132 +498,142 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
       MyParOnS2   = MyParOnS2bis;
       MyIsTangent = MyIsTangentbis;
 
-      MyTgbis         = TV;
-      MyTguv1bis      = TV1;
-      MyTguv2bis      = TV2;
-      MyPntbis        = TP;
-      MyParOnS1bis    = TP1;
-      MyParOnS2bis    = TP2;
-      MyIsTangentbis  = TB;
+      MyTgbis        = TV;
+      MyTguv1bis     = TV1;
+      MyTguv2bis     = TV2;
+      MyPntbis       = TP;
+      MyParOnS1bis   = TP1;
+      MyParOnS2bis   = TP2;
+      MyIsTangentbis = TB;
 
-      return(MyIsTangent);
+      return (MyIsTangent);
     }
   }
 
-  math_Vector X(1,2);
-  math_Vector BornInf(1,2), BornSup(1,2), Tolerance(1,2);
+  math_Vector X(1, 2);
+  math_Vector BornInf(1, 2), BornSup(1, 2), Tolerance(1, 2);
   //--- ThePSurfaceTool::GetResolution(aPSurf,Tolerance(1),Tolerance(2));
-  Tolerance(1) = 1.0e-8; Tolerance(2) = 1.0e-8;
-  Standard_Real binfu,bsupu,binfv,bsupv;
-  binfu = ThePSurfaceTool::FirstUParameter(aPSurf);
-  binfv = ThePSurfaceTool::FirstVParameter(aPSurf);
-  bsupu = ThePSurfaceTool::LastUParameter(aPSurf);
-  bsupv = ThePSurfaceTool::LastVParameter(aPSurf);
-  BornInf(1) = binfu; BornSup(1) = bsupu; 
-  BornInf(2) = binfv; BornSup(2) = bsupv;
+  Tolerance(1) = 1.0e-8;
+  Tolerance(2) = 1.0e-8;
+  Standard_Real binfu, bsupu, binfv, bsupv;
+  binfu                      = ThePSurfaceTool::FirstUParameter(aPSurf);
+  binfv                      = ThePSurfaceTool::FirstVParameter(aPSurf);
+  bsupu                      = ThePSurfaceTool::LastUParameter(aPSurf);
+  bsupv                      = ThePSurfaceTool::LastVParameter(aPSurf);
+  BornInf(1)                 = binfu;
+  BornSup(1)                 = bsupu;
+  BornInf(2)                 = binfv;
+  BornSup(2)                 = bsupv;
   Standard_Real TranslationU = 0., TranslationV = 0.;
-  
-  if (!FillInitialVectorOfSolution(u1, v1, u2, v2,
-                                   binfu, bsupu, binfv, bsupv,
+
+  if (!FillInitialVectorOfSolution(u1,
+                                   v1,
+                                   u2,
+                                   v2,
+                                   binfu,
+                                   bsupu,
+                                   binfv,
+                                   bsupv,
                                    X,
-                                   TranslationU, TranslationV))
+                                   TranslationU,
+                                   TranslationV))
   {
-    MyIsTangent=MyIsTangentbis=Standard_False;
+    MyIsTangent = MyIsTangentbis = Standard_False;
     MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
-    return(Standard_False);
+    return (Standard_False);
   }
 
   Standard_Boolean aRsnldIsDone = Standard_False;
-  Standard_Real PourTesterU = X(1);
-  Standard_Real PourTesterV = X(2);
+  Standard_Real    PourTesterU  = X(1);
+  Standard_Real    PourTesterV  = X(2);
   if (GetUseSolver())
   {
-    math_FunctionSetRoot  Rsnld(MyZerImpFunc);
+    math_FunctionSetRoot Rsnld(MyZerImpFunc);
     Rsnld.SetTolerance(Tolerance);
     Rsnld.Perform(MyZerImpFunc, X, BornInf, BornSup);
     aRsnldIsDone = Rsnld.IsDone();
     if (aRsnldIsDone)
       Rsnld.Root(X);
   }
-  if(aRsnldIsDone || !GetUseSolver()) 
+  if (aRsnldIsDone || !GetUseSolver())
   {
     MyHasBeenComputed = Standard_True;
-    
-    Standard_Real DistAvantApresU = Abs(PourTesterU-X(1));
-    Standard_Real DistAvantApresV = Abs(PourTesterV-X(2));
-    
+
+    Standard_Real DistAvantApresU = Abs(PourTesterU - X(1));
+    Standard_Real DistAvantApresV = Abs(PourTesterV - X(2));
+
     MyPnt = P = ThePSurfaceTool::Value(aPSurf, X(1), X(2));
-    
-    if( (DistAvantApresV <= 0.001 ) &&
-        (DistAvantApresU <= 0.001 ))
+
+    if ((DistAvantApresV <= 0.001) && (DistAvantApresU <= 0.001))
     {
-      gp_Vec aD1uPrm,aD1vPrm;
-      gp_Vec aD1uQuad,aD1vQuad;
+      gp_Vec aD1uPrm, aD1vPrm;
+      gp_Vec aD1uQuad, aD1vQuad;
 
-      if(MyImplicitFirst)
-      { 
-        u2 = X(1)-TranslationU;
-        v2 = X(2)-TranslationV;
+      if (MyImplicitFirst)
+      {
+        u2 = X(1) - TranslationU;
+        v2 = X(2) - TranslationV;
 
-        if(aQSurf.TypeQuadric() != GeomAbs_Plane)
-        { 
-          while(u1-tu1>M_PI)  u1-=M_PI+M_PI;
-          while(tu1-u1>M_PI)  u1+=M_PI+M_PI;
+        if (aQSurf.TypeQuadric() != GeomAbs_Plane)
+        {
+          while (u1 - tu1 > M_PI)
+            u1 -= M_PI + M_PI;
+          while (tu1 - u1 > M_PI)
+            u1 += M_PI + M_PI;
         }
 
-        MyParOnS1.SetCoord(tu1,tv1);
-        MyParOnS2.SetCoord(tu2,tv2);
+        MyParOnS1.SetCoord(tu1, tv1);
+        MyParOnS2.SetCoord(tu2, tv2);
 
         gp_Pnt aP2;
 
         ThePSurfaceTool::D1(aPSurf, X(1), X(2), P, aD1uPrm, aD1vPrm);
-        aQSurf.D1(u1,v1, aP2, aD1uQuad, aD1vQuad);
+        aQSurf.D1(u1, v1, aP2, aD1uQuad, aD1vQuad);
 
-        //Middle-point of P-P2 segment
+        // Middle-point of P-P2 segment
         P.BaryCenter(1.0, aP2, 1.0);
       }
       else
       {
-        u1 = X(1)-TranslationU;
-        v1 = X(2)-TranslationV;
-        //aQSurf.Parameters(P, u2, v2);
-        if(aQSurf.TypeQuadric() != GeomAbs_Plane)
+        u1 = X(1) - TranslationU;
+        v1 = X(2) - TranslationV;
+        // aQSurf.Parameters(P, u2, v2);
+        if (aQSurf.TypeQuadric() != GeomAbs_Plane)
         {
-          while(u2-tu2>M_PI)  u2-=M_PI+M_PI;
-          while(tu2-u2>M_PI)  u2+=M_PI+M_PI;
+          while (u2 - tu2 > M_PI)
+            u2 -= M_PI + M_PI;
+          while (tu2 - u2 > M_PI)
+            u2 += M_PI + M_PI;
         }
 
-        MyParOnS1.SetCoord(tu1,tv1);
-        MyParOnS2.SetCoord(tu2,tu2);
+        MyParOnS1.SetCoord(tu1, tv1);
+        MyParOnS2.SetCoord(tu2, tu2);
 
         gp_Pnt aP2;
         ThePSurfaceTool::D1(aPSurf, X(1), X(2), P, aD1uPrm, aD1vPrm);
 
         aQSurf.D1(u2, v2, aP2, aD1uQuad, aD1vQuad);
 
-        //Middle-point of P-P2 segment
+        // Middle-point of P-P2 segment
         P.BaryCenter(1.0, aP2, 1.0);
       }
 
       MyPnt = P;
 
-      //Normals to the surfaces
-      gp_Vec  aNormalPrm(aD1uPrm.Crossed(aD1vPrm)), 
-              aNormalImp(aQSurf.Normale(MyPnt));
+      // Normals to the surfaces
+      gp_Vec aNormalPrm(aD1uPrm.Crossed(aD1vPrm)), aNormalImp(aQSurf.Normale(MyPnt));
 
       const Standard_Real aSQMagnPrm = aNormalPrm.SquareMagnitude(),
                           aSQMagnImp = aNormalImp.SquareMagnitude();
 
-      Standard_Boolean  isPrmSingular = Standard_False,
-                        isImpSingular = Standard_False;
+      Standard_Boolean isPrmSingular = Standard_False, isImpSingular = Standard_False;
 
-      if(IsSingular(aD1uPrm, aD1vPrm, aNullValue, anAngTol))
+      if (IsSingular(aD1uPrm, aD1vPrm, aNullValue, anAngTol))
       {
         isPrmSingular = Standard_True;
-        if(!SingularProcessing(aD1uPrm, aD1vPrm, Standard_True,
-                                aNullValue, anAngTol, Tg, aPrmTg))
+        if (!SingularProcessing(aD1uPrm, aD1vPrm, Standard_True, aNullValue, anAngTol, Tg, aPrmTg))
         {
-          MyIsTangent = Standard_False;
+          MyIsTangent       = Standard_False;
           MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
           return Standard_False;
         }
@@ -621,15 +645,20 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
         aNormalPrm.Divide(sqrt(aSQMagnPrm));
       }
 
-      //Analogically for implicit surface
-      if(aSQMagnImp < aNullValue)
+      // Analogically for implicit surface
+      if (aSQMagnImp < aNullValue)
       {
         isImpSingular = Standard_True;
 
-        if(!SingularProcessing(aD1uQuad, aD1vQuad, !isPrmSingular,
-                                  aNullValue, anAngTol, Tg, aQuadTg))
+        if (!SingularProcessing(aD1uQuad,
+                                aD1vQuad,
+                                !isPrmSingular,
+                                aNullValue,
+                                anAngTol,
+                                Tg,
+                                aQuadTg))
         {
-          MyIsTangent = Standard_False;
+          MyIsTangent       = Standard_False;
           MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
           return Standard_False;
         }
@@ -641,289 +670,354 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
         aNormalImp.Divide(sqrt(aSQMagnImp));
       }
 
-      if(isImpSingular && isPrmSingular)
+      if (isImpSingular && isPrmSingular)
       {
-        //All is OK. All abnormal cases were processed above.
+        // All is OK. All abnormal cases were processed above.
 
         MyTguv1 = Tguv1;
         MyTguv2 = Tguv2;
 
-        MyIsTangent=Standard_True;
+        MyIsTangent = Standard_True;
         return MyIsTangent;
       }
-      else if(!(isImpSingular || isPrmSingular))
+      else if (!(isImpSingular || isPrmSingular))
       {
-        //Processing pure non-singular case
+        // Processing pure non-singular case
         //(3D- and 2D-tangents are still not defined)
 
-        //Ask to pay attention to the fact that here
-        //aNormalImp and aNormalPrm are normalized.
-        //Therefore, @ \left \| \vec{Tg} \right \| = 0.0 @
-        //if and only if (aNormalImp || aNormalPrm).
+        // Ask to pay attention to the fact that here
+        // aNormalImp and aNormalPrm are normalized.
+        // Therefore, @ \left \| \vec{Tg} \right \| = 0.0 @
+        // if and only if (aNormalImp || aNormalPrm).
         Tg = aNormalImp.Crossed(aNormalPrm);
       }
 
       const Standard_Real aSQMagnTg = Tg.SquareMagnitude();
 
-      if(aSQMagnTg < aNullValue)
+      if (aSQMagnTg < aNullValue)
       {
-        MyIsTangent = Standard_False;
+        MyIsTangent       = Standard_False;
         MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
         return Standard_False;
       }
 
-      //Normalize Tg vector
+      // Normalize Tg vector
       Tg.Divide(sqrt(aSQMagnTg));
       MyTg = Tg;
 
-      if(!isPrmSingular)
+      if (!isPrmSingular)
       {
-        //If isPrmSingular==TRUE then aPrmTg has already been computed.
+        // If isPrmSingular==TRUE then aPrmTg has already been computed.
 
-        if(!NonSingularProcessing(aD1uPrm, aD1vPrm, Tg, aNullValue, anAngTol, aPrmTg))
+        if (!NonSingularProcessing(aD1uPrm, aD1vPrm, Tg, aNullValue, anAngTol, aPrmTg))
         {
-          MyIsTangent = Standard_False;
+          MyIsTangent       = Standard_False;
           MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
           return Standard_False;
         }
       }
 
-      if(!isImpSingular)
+      if (!isImpSingular)
       {
-        //If isImpSingular==TRUE then aQuadTg has already been computed.
+        // If isImpSingular==TRUE then aQuadTg has already been computed.
 
-        if(!NonSingularProcessing(aD1uQuad, aD1vQuad, Tg, aNullValue, anAngTol, aQuadTg))
+        if (!NonSingularProcessing(aD1uQuad, aD1vQuad, Tg, aNullValue, anAngTol, aQuadTg))
         {
-          MyIsTangent = Standard_False;
+          MyIsTangent       = Standard_False;
           MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
           return Standard_False;
         }
       }
-        
+
       MyTguv1 = Tguv1;
       MyTguv2 = Tguv2;
 
-      MyIsTangent=Standard_True;
+      MyIsTangent = Standard_True;
 
 #ifdef OCCT_DEBUG
-      //cout << "+++++++++++++++++  ApproxInt_ImpPrmSvSurfaces::Compute(...)  ++++++++++" << endl;
-      //printf( "P2d_1(%+10.20f, %+10.20f); P2d_2(%+10.20f, %+10.20f)\n"
-      //        "P(%+10.20f, %+10.20f, %+10.20f);\n"
-      //        "Tg = {%+10.20f, %+10.20f, %+10.20f};\n"
-      //        "Tguv1 = {%+10.20f, %+10.20f};\n"
-      //        "Tguv2 = {%+10.20f, %+10.20f}\n",
-      //        u1, v1, u2, v2,
-      //        P.X(), P.Y(), P.Z(),
-      //        Tg.X(), Tg.Y(), Tg.Z(),
-      //        Tguv1.X(), Tguv1.Y(), Tguv2.X(), Tguv2.Y());
-      //cout << "-----------------------------------------------------------------------" << endl;
+      // cout << "+++++++++++++++++  ApproxInt_ImpPrmSvSurfaces::Compute(...)  ++++++++++" << endl;
+      // printf( "P2d_1(%+10.20f, %+10.20f); P2d_2(%+10.20f, %+10.20f)\n"
+      //         "P(%+10.20f, %+10.20f, %+10.20f);\n"
+      //         "Tg = {%+10.20f, %+10.20f, %+10.20f};\n"
+      //         "Tguv1 = {%+10.20f, %+10.20f};\n"
+      //         "Tguv2 = {%+10.20f, %+10.20f}\n",
+      //         u1, v1, u2, v2,
+      //         P.X(), P.Y(), P.Z(),
+      //         Tg.X(), Tg.Y(), Tg.Z(),
+      //         Tguv1.X(), Tguv1.Y(), Tguv2.X(), Tguv2.Y());
+      // cout << "-----------------------------------------------------------------------" << endl;
 #endif
 
-      return Standard_True; 
+      return Standard_True;
     }
-    else { 
+    else
+    {
       //-- cout<<" ApproxInt_ImpImpSvSurfaces.gxx : Distance apres recadrage Trop Grande "<<endl;
-    
-      MyIsTangent=Standard_False;
+
+      MyIsTangent       = Standard_False;
       MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
       return Standard_False;
     }
   }
-  else { 
-    MyIsTangent = Standard_False;
+  else
+  {
+    MyIsTangent       = Standard_False;
     MyHasBeenComputed = MyHasBeenComputedbis = Standard_False;
     return Standard_False;
   }
 }
 
-//=======================================================================
-//function : SeekPoint
-//purpose  :    Computes point on curve and
+//=================================================================================================
+// function : SeekPoint
+// purpose  :    Computes point on curve and
 //            parameters on the surfaces.
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean ApproxInt_ImpPrmSvSurfaces::SeekPoint(const Standard_Real u1,
                                                        const Standard_Real v1,
                                                        const Standard_Real u2,
                                                        const Standard_Real v2,
-                                                       IntSurf_PntOn2S& Point) { 
-  gp_Pnt aP;
-  gp_Vec aT;
-  gp_Vec2d aTS1,aTS2;
-  const IntSurf_Quadric&  aQSurf = MyZerImpFunc.ISurface();
-  const ThePSurface&      aPSurf = MyZerImpFunc.PSurface();
+                                                       IntSurf_PntOn2S&    Point)
+{
+  gp_Pnt                 aP;
+  gp_Vec                 aT;
+  gp_Vec2d               aTS1, aTS2;
+  const IntSurf_Quadric& aQSurf = MyZerImpFunc.ISurface();
+  const ThePSurface&     aPSurf = MyZerImpFunc.PSurface();
 
-  math_Vector X(1,2);
-  math_Vector BornInf(1,2), BornSup(1,2), Tolerance(1,2);
+  math_Vector X(1, 2);
+  math_Vector BornInf(1, 2), BornSup(1, 2), Tolerance(1, 2);
   //--- ThePSurfaceTool::GetResolution(aPSurf,Tolerance(1),Tolerance(2));
-  Tolerance(1) = 1.0e-8; Tolerance(2) = 1.0e-8;
-  Standard_Real binfu,bsupu,binfv,bsupv;
-  binfu = ThePSurfaceTool::FirstUParameter(aPSurf);
-  binfv = ThePSurfaceTool::FirstVParameter(aPSurf);
-  bsupu = ThePSurfaceTool::LastUParameter(aPSurf);
-  bsupv = ThePSurfaceTool::LastVParameter(aPSurf);
-  BornInf(1) = binfu; BornSup(1) = bsupu; 
-  BornInf(2) = binfv; BornSup(2) = bsupv;
+  Tolerance(1) = 1.0e-8;
+  Tolerance(2) = 1.0e-8;
+  Standard_Real binfu, bsupu, binfv, bsupv;
+  binfu                      = ThePSurfaceTool::FirstUParameter(aPSurf);
+  binfv                      = ThePSurfaceTool::FirstVParameter(aPSurf);
+  bsupu                      = ThePSurfaceTool::LastUParameter(aPSurf);
+  bsupv                      = ThePSurfaceTool::LastVParameter(aPSurf);
+  BornInf(1)                 = binfu;
+  BornSup(1)                 = bsupu;
+  BornInf(2)                 = binfv;
+  BornSup(2)                 = bsupv;
   Standard_Real TranslationU = 0., TranslationV = 0.;
-  
-  if (!FillInitialVectorOfSolution(u1, v1, u2, v2,
-                                   binfu, bsupu, binfv, bsupv,
+
+  if (!FillInitialVectorOfSolution(u1,
+                                   v1,
+                                   u2,
+                                   v2,
+                                   binfu,
+                                   bsupu,
+                                   binfv,
+                                   bsupv,
                                    X,
-                                   TranslationU, TranslationV))
+                                   TranslationU,
+                                   TranslationV))
     return Standard_False;
 
   Standard_Real NewU1, NewV1, NewU2, NewV2;
-  
-  math_FunctionSetRoot  Rsnld(MyZerImpFunc);
+
+  math_FunctionSetRoot Rsnld(MyZerImpFunc);
   Rsnld.SetTolerance(Tolerance);
-  Rsnld.Perform(MyZerImpFunc,X,BornInf,BornSup);
-  if(Rsnld.IsDone()) { 
+  Rsnld.Perform(MyZerImpFunc, X, BornInf, BornSup);
+  if (Rsnld.IsDone())
+  {
     MyHasBeenComputed = Standard_True;
     Rsnld.Root(X);
-  
+
     MyPnt = ThePSurfaceTool::Value(aPSurf, X(1), X(2));
-    
-    if(MyImplicitFirst)
-    { 
-      NewU2 = X(1)-TranslationU;
-      NewV2 = X(2)-TranslationV;
+
+    if (MyImplicitFirst)
+    {
+      NewU2 = X(1) - TranslationU;
+      NewV2 = X(2) - TranslationV;
 
       aQSurf.Parameters(MyPnt, NewU1, NewV1);
-      //adjust U
+      // adjust U
       if (aQSurf.TypeQuadric() != GeomAbs_Plane)
       {
-        Standard_Real sign = (NewU1 > u1)? -1 : 1;
+        Standard_Real sign = (NewU1 > u1) ? -1 : 1;
         while (Abs(u1 - NewU1) > M_PI)
-          NewU1 += sign*(M_PI+M_PI);
+          NewU1 += sign * (M_PI + M_PI);
       }
     }
     else
     {
-      NewU1 = X(1)-TranslationU;
-      NewV1 = X(2)-TranslationV;
+      NewU1 = X(1) - TranslationU;
+      NewV1 = X(2) - TranslationV;
 
       aQSurf.Parameters(MyPnt, NewU2, NewV2);
-      //adjust U
+      // adjust U
       if (aQSurf.TypeQuadric() != GeomAbs_Plane)
       {
-        Standard_Real sign = (NewU2 > u2)? -1 : 1;
+        Standard_Real sign = (NewU2 > u2) ? -1 : 1;
         while (Abs(u2 - NewU2) > M_PI)
-          NewU2 += sign*(M_PI+M_PI);
+          NewU2 += sign * (M_PI + M_PI);
       }
     }
   }
   else
     return Standard_False;
-  
+
   Point.SetValue(MyPnt, NewU1, NewV1, NewU2, NewV2);
   return Standard_True;
 }
-//--------------------------------------------------------------------------------
 
-Standard_Boolean
-ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const Standard_Real u1,
-                                                        const Standard_Real v1,
-                                                        const Standard_Real u2,
-                                                        const Standard_Real v2,
-                                                        const Standard_Real binfu,
-                                                        const Standard_Real bsupu,
-                                                        const Standard_Real binfv,
-                                                        const Standard_Real bsupv,
-                                                        math_Vector& X,
-                                                        Standard_Real& TranslationU,
-                                                        Standard_Real& TranslationV)
+//=================================================================================================
+
+Standard_Boolean ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(
+  const Standard_Real u1,
+  const Standard_Real v1,
+  const Standard_Real u2,
+  const Standard_Real v2,
+  const Standard_Real binfu,
+  const Standard_Real bsupu,
+  const Standard_Real binfv,
+  const Standard_Real bsupv,
+  math_Vector&        X,
+  Standard_Real&      TranslationU,
+  Standard_Real&      TranslationV)
 {
-  const ThePSurface&      aPSurf = MyZerImpFunc.PSurface();
+  const ThePSurface& aPSurf = MyZerImpFunc.PSurface();
 
-  math_Vector F(1,1);
+  math_Vector F(1, 1);
 
   TranslationU = 0.0;
   TranslationV = 0.0;
 
-  if(MyImplicitFirst) { 
-    if(u2<binfu-0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do {  TranslationU+=d; } while(u2+TranslationU < binfu);
-      }
-      else 
-	return(Standard_False);
-    }
-    else if(u2>bsupu+0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do { TranslationU-=d; } while(u2+TranslationU > bsupu);
+  if (MyImplicitFirst)
+  {
+    if (u2 < binfu - 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsUPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+        do
+        {
+          TranslationU += d;
+        } while (u2 + TranslationU < binfu);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    if(v2<binfv-0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV+=d; }	while(v2+TranslationV < binfv);
+    else if (u2 > bsupu + 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsUPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+        do
+        {
+          TranslationU -= d;
+        } while (u2 + TranslationU > bsupu);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    else if(v2>bsupv+0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV-=d; } while(v2+TranslationV > bsupv);
+    if (v2 < binfv - 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsVPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+        do
+        {
+          TranslationV += d;
+        } while (v2 + TranslationV < binfv);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    X(1) = u2+TranslationU; 
-    X(2) = v2+TranslationV;
+    else if (v2 > bsupv + 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsVPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+        do
+        {
+          TranslationV -= d;
+        } while (v2 + TranslationV > bsupv);
+      }
+      else
+        return (Standard_False);
+    }
+    X(1) = u2 + TranslationU;
+    X(2) = v2 + TranslationV;
   }
-  else { 
-    if(u1<binfu-0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do {  TranslationU+=d; 	} while(u1+TranslationU < binfu);
+  else
+  {
+    if (u1 < binfu - 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsUPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+        do
+        {
+          TranslationU += d;
+        } while (u1 + TranslationU < binfu);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    else if(u1>bsupu+0.0000000001) { 
-      if(ThePSurfaceTool::IsUPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
-	do { TranslationU-=d; } while(u1+TranslationU > bsupu);
+    else if (u1 > bsupu + 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsUPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::UPeriod(aPSurf);
+        do
+        {
+          TranslationU -= d;
+        } while (u1 + TranslationU > bsupu);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    if(v1<binfv-0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV+=d; }	while(v1+TranslationV < binfv);
+    if (v1 < binfv - 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsVPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+        do
+        {
+          TranslationV += d;
+        } while (v1 + TranslationV < binfv);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    else if(v1>bsupv+0.0000000001) { 
-      if(ThePSurfaceTool::IsVPeriodic(aPSurf)) { 
-	Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
-	do { TranslationV-=d; }	while(v1+TranslationV > bsupv);
+    else if (v1 > bsupv + 0.0000000001)
+    {
+      if (ThePSurfaceTool::IsVPeriodic(aPSurf))
+      {
+        Standard_Real d = ThePSurfaceTool::VPeriod(aPSurf);
+        do
+        {
+          TranslationV -= d;
+        } while (v1 + TranslationV > bsupv);
       }
       else
-	return(Standard_False);
+        return (Standard_False);
     }
-    X(1) = u1+TranslationU;
-    X(2) = v1+TranslationV;
+    X(1) = u1 + TranslationU;
+    X(2) = v1 + TranslationV;
   }
-  
-  //----------------------------------------------------
-  //Make a small step from boundaries in order to avoid
-  //finding "outboundaried" solution (Rsnld -> NotDone).
+
+  //=================================================================================================
+
+  // Make a small step from boundaries in order to avoid
+  // finding "outboundaried" solution (Rsnld -> NotDone).
   if (GetUseSolver())
   {
-    Standard_Real du = Max(Precision::Confusion(), ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
-    Standard_Real dv = Max(Precision::Confusion(), ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
-    if (X(1) - 0.0000000001 <= binfu) X(1) = X(1) + du;
-    if (X(1) + 0.0000000001 >= bsupu) X(1) = X(1) - du;
-    if (X(2) - 0.0000000001 <= binfv) X(2) = X(2) + dv;
-    if (X(2) + 0.0000000001 >= bsupv) X(2) = X(2) - dv;
+    Standard_Real du =
+      Max(Precision::Confusion(), ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
+    Standard_Real dv =
+      Max(Precision::Confusion(), ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
+    if (X(1) - 0.0000000001 <= binfu)
+      X(1) = X(1) + du;
+    if (X(1) + 0.0000000001 >= bsupu)
+      X(1) = X(1) - du;
+    if (X(2) - 0.0000000001 <= binfv)
+      X(2) = X(2) + dv;
+    if (X(2) + 0.0000000001 >= bsupv)
+      X(2) = X(2) - dv;
   }
-  
+
   return Standard_True;
 }
