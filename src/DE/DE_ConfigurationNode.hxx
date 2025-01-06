@@ -50,7 +50,6 @@ class DE_ConfigurationNode : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(DE_ConfigurationNode, Standard_Transient)
 public:
-
   //! Initializes all field by default
   Standard_EXPORT DE_ConfigurationNode();
 
@@ -93,7 +92,6 @@ public:
                                           const Standard_Boolean theToKeep);
 
 public:
-
   //! Checks the import supporting
   //! @return Standard_True if import is support
   Standard_EXPORT virtual bool IsImportSupported() const;
@@ -125,20 +123,13 @@ public:
   Standard_EXPORT virtual bool CheckContent(const Handle(NCollection_Buffer)& theBuffer) const;
 
 public:
-
   //! Gets the provider loading status
   //! @return Standard_True if the load is correct
-  Standard_Boolean IsEnabled() const
-  {
-    return myIsEnabled;
-  }
+  Standard_Boolean IsEnabled() const { return myIsEnabled; }
 
   //! Sets the provider loading status
   //! @param[in] theIsLoaded input load status
-  void SetEnabled(const Standard_Boolean theIsLoaded)
-  {
-    myIsEnabled = theIsLoaded;
-  }
+  void SetEnabled(const Standard_Boolean theIsLoaded) { myIsEnabled = theIsLoaded; }
 
   //! Custom function to activate commercial DE component.
   //! The input is special sequence of values that described in
@@ -150,18 +141,18 @@ public:
   Standard_EXPORT virtual void CustomActivation(const TColStd_ListOfAsciiString&) {};
 
 public:
-
   //!< Internal parameters for transfer process
   struct DE_SectionGlobal
   {
-    Standard_Real LengthUnit = 1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
-    Standard_Real SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial unit is unknown, default 1.0 (MM)
+    Standard_Real LengthUnit =
+      1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
+    Standard_Real SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial
+                                    //!< unit is unknown, default 1.0 (MM)
   } GlobalParameters;
 
 private:
-
-  Standard_Boolean myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper
-
+  Standard_Boolean
+    myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper
 };
 
 #endif // _DE_ConfigurationNode_HeaderFile

@@ -25,27 +25,26 @@ class DE_ShapeFixConfigurationNode : public DE_ConfigurationNode
 {
   DEFINE_STANDARD_RTTIEXT(DE_ShapeFixConfigurationNode, DE_ConfigurationNode)
 public:
-
   //! Initializes all field by default
   Standard_EXPORT DE_ShapeFixConfigurationNode();
 
   //! Copies values of all fields
   //! @param[in] theConfigurationNode object to copy
-  Standard_EXPORT DE_ShapeFixConfigurationNode(const Handle(DE_ShapeFixConfigurationNode)& theConfigurationNode);
+  Standard_EXPORT DE_ShapeFixConfigurationNode(
+    const Handle(DE_ShapeFixConfigurationNode)& theConfigurationNode);
 
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
   //! @return True if Load was successful
-  Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource) Standard_OVERRIDE;
+  Standard_EXPORT virtual bool Load(const Handle(DE_ConfigurationContext)& theResource)
+    Standard_OVERRIDE;
 
   //! Writes configuration to the string
   //! @return result resource string
   Standard_EXPORT virtual TCollection_AsciiString Save() const Standard_OVERRIDE;
 
 public:
-
   DE_ShapeFixParameters HealingParameters; //!< Shape healing parameters
-
 };
 
 #endif // _DE_ShapeFixConfigurationNode_HeaderFile
