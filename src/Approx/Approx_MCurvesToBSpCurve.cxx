@@ -26,7 +26,7 @@
 static void DEBUG(const AppParCurves_MultiCurve& MC)
 {
   Standard_Integer     i, j;
-  Standard_Integer     nbcu = MC.NbCurves();
+  Standard_Integer     nbcu    = MC.NbCurves();
   Standard_Integer     nbpoles = MC.NbPoles();
   TColgp_Array1OfPnt   Poles(1, nbpoles);
   TColgp_Array1OfPnt2d Poles2d(1, nbpoles);
@@ -89,19 +89,19 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
 
   if (nbcu == 1)
   {
-    CU = TheSeq.Value(1);
+    CU  = TheSeq.Value(1);
     deg = CU.Degree();
     TColStd_Array1OfReal    Knots(1, 2);
     TColStd_Array1OfInteger Mults(1, 2);
     Knots(1) = 0.0;
     Knots(2) = 1.0;
     Mults(1) = Mults(2) = deg + 1;
-    mySpline = AppParCurves_MultiBSpCurve(CU, Knots, Mults);
+    mySpline            = AppParCurves_MultiBSpCurve(CU, Knots, Mults);
   }
   else
   {
 
-    AppParCurves_MultiPoint P = TheSeq.Value(nbcu).Value(1);
+    AppParCurves_MultiPoint P    = TheSeq.Value(nbcu).Value(1);
     Standard_Integer        nb3d = P.NbPoints();
     Standard_Integer        nb2d = P.NbPoints2d();
 
@@ -136,12 +136,12 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
     if (nb3d != 0)
     {
       nbpolesspl = conv.NbPoles();
-      nbknots = conv.NbKnots();
+      nbknots    = conv.NbKnots();
     }
     else if (nb2d != 0)
     {
       nbpolesspl = conv2d.NbPoles();
-      nbknots = conv2d.NbKnots();
+      nbknots    = conv2d.NbKnots();
     }
 
     AppParCurves_Array1OfMultiPoint tabMU(1, nbpolesspl);
@@ -187,7 +187,7 @@ void Approx_MCurvesToBSpCurve::Perform(const AppParCurves_SequenceOfMultiCurve& 
 
     for (i = 1; i <= nbcu; i++)
     {
-      CU = TheSeq.Value(i);
+      CU      = TheSeq.Value(i);
       mydegre = CU.Degree();
       if (TheMults(i + 1) == deg)
         last = deg + 1; // Continuite C0

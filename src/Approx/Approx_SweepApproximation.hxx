@@ -82,8 +82,8 @@ public:
                                const Standard_Real    Tol2d,
                                const Standard_Real    TolAngular,
                                const GeomAbs_Shape    Continuity = GeomAbs_C0,
-                               const Standard_Integer Degmax = 11,
-                               const Standard_Integer Segmax = 50);
+                               const Standard_Integer Degmax     = 11,
+                               const Standard_Integer Segmax     = 50);
 
   //! The EvaluatorFunction from AdvApprox;
   Standard_EXPORT Standard_Integer Eval(const Standard_Real    Parameter,

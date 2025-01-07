@@ -107,13 +107,13 @@ private:
       Standard_Real* temp;
 
       // 3-D
-      temp = myPC3d;
-      myPC3d = myNewPC3d;
+      temp      = myPC3d;
+      myPC3d    = myNewPC3d;
       myNewPC3d = temp;
 
       // 2-D
-      temp = myPC2d;
-      myPC2d = myNewPC2d;
+      temp      = myPC2d;
+      myPC2d    = myNewPC2d;
       myNewPC2d = temp;
     }
   };
@@ -159,7 +159,7 @@ private:
                                    Approx_SameParameter_Data&  theData,
                                    Standard_Real&              theBestSqTol) const;
 
-  static const Standard_Integer myNbSamples = 22; // To be consistent with "checkshape".
+  static const Standard_Integer myNbSamples    = 22; // To be consistent with "checkshape".
   static const Standard_Integer myMaxArraySize = 1000;
   const Standard_Real           myDeltaMin; // Initialization is allowed only for integral types.
 

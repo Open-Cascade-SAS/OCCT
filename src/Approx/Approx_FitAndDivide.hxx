@@ -39,23 +39,23 @@ public:
   //! with a cutting if the corresponding boolean is True.
   Standard_EXPORT Approx_FitAndDivide(
     const AppCont_Function&       Line,
-    const Standard_Integer        degreemin = 3,
-    const Standard_Integer        degreemax = 8,
+    const Standard_Integer        degreemin   = 3,
+    const Standard_Integer        degreemax   = 8,
     const Standard_Real           Tolerance3d = 1.0e-5,
     const Standard_Real           Tolerance2d = 1.0e-5,
-    const Standard_Boolean        cutting = Standard_False,
-    const AppParCurves_Constraint FirstC = AppParCurves_TangencyPoint,
-    const AppParCurves_Constraint LastC = AppParCurves_TangencyPoint);
+    const Standard_Boolean        cutting     = Standard_False,
+    const AppParCurves_Constraint FirstC      = AppParCurves_TangencyPoint,
+    const AppParCurves_Constraint LastC       = AppParCurves_TangencyPoint);
 
   //! Initializes the fields of the algorithm.
   Standard_EXPORT Approx_FitAndDivide(
-    const Standard_Integer        degreemin = 3,
-    const Standard_Integer        degreemax = 8,
+    const Standard_Integer        degreemin   = 3,
+    const Standard_Integer        degreemax   = 8,
     const Standard_Real           Tolerance3d = 1.0e-05,
     const Standard_Real           Tolerance2d = 1.0e-05,
-    const Standard_Boolean        cutting = Standard_False,
-    const AppParCurves_Constraint FirstC = AppParCurves_TangencyPoint,
-    const AppParCurves_Constraint LastC = AppParCurves_TangencyPoint);
+    const Standard_Boolean        cutting     = Standard_False,
+    const AppParCurves_Constraint FirstC      = AppParCurves_TangencyPoint,
+    const AppParCurves_Constraint LastC       = AppParCurves_TangencyPoint);
 
   //! runs the algorithm after having initialized the fields.
   Standard_EXPORT void Perform(const AppCont_Function& Line);

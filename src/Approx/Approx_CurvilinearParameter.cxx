@@ -62,10 +62,7 @@ Standard_IMPORT Standard_Integer uparam_count;
 Standard_IMPORT Standard_Real    t_uparam;
 #endif
 
-//=======================================================================
-// class : Approx_CurvilinearParameter_EvalCurv
-// purpose  : case of a free 3D curve
-//=======================================================================
+//=================================================================================================
 
 class Approx_CurvilinearParameter_EvalCurv : public AdvApprox_EvaluatorFunction
 {
@@ -98,7 +95,7 @@ void Approx_CurvilinearParameter_EvalCurv::Evaluate(Standard_Integer* Dimension,
                                                     Standard_Real*    Result,
                                                     Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode             = 0;
   Standard_Real        S = *Param;
   TColStd_Array1OfReal Res(0, 2);
   Standard_Integer     i;
@@ -140,7 +137,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 {
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;
-  uparam_count = 0;
+  uparam_count                           = 0;
   InitChron(chr_total);
 #endif
   myCase = 1;
@@ -160,7 +157,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 #endif
 
   Standard_Real FirstS = fonct->FirstParameter();
-  Standard_Real LastS = fonct->LastParameter();
+  Standard_Real LastS  = fonct->LastParameter();
 
   Standard_Integer     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
@@ -193,15 +190,15 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
   ResultChron(chr_approx, t_approx);
 #endif
 
-  myDone = aApprox.IsDone();
+  myDone      = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
   if (myHasResult)
   {
     TColgp_Array1OfPnt Poles(1, aApprox.NbPoles());
     aApprox.Poles(1, Poles);
-    Handle(TColStd_HArray1OfReal)    Knots = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
+    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
+    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
     Standard_Integer                 Degree = aApprox.Degree();
     myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
   }
@@ -218,10 +215,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 #endif
 }
 
-//=======================================================================
-// class : Approx_CurvilinearParameter_EvalCurvOnSurf
-// purpose  : case of a curve on one surface
-//=======================================================================
+//=================================================================================================
 
 class Approx_CurvilinearParameter_EvalCurvOnSurf : public AdvApprox_EvaluatorFunction
 {
@@ -254,7 +248,7 @@ void Approx_CurvilinearParameter_EvalCurvOnSurf::Evaluate(Standard_Integer* Dime
                                                           Standard_Real*    Result,
                                                           Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode             = 0;
   Standard_Real        S = *Param;
   TColStd_Array1OfReal Res(0, 4);
   Standard_Integer     i;
@@ -295,7 +289,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 {
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;
-  uparam_count = 0;
+  uparam_count                           = 0;
   InitChron(chr_total);
 #endif
   myCase = 2;
@@ -327,7 +321,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 #endif
 
   Standard_Real FirstS = fonct->FirstParameter();
-  Standard_Real LastS = fonct->LastParameter();
+  Standard_Real LastS  = fonct->LastParameter();
 
   Standard_Integer     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
@@ -360,7 +354,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   ResultChron(chr_approx, t_approx);
 #endif
 
-  myDone = aApprox.IsDone();
+  myDone      = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
   if (myHasResult)
@@ -376,14 +370,14 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
     aApprox.Poles1d(2, Poles1d);
     for (i = 1; i <= NbPoles; i++)
       Poles2d(i).SetY(Poles1d(i));
-    Handle(TColStd_HArray1OfReal)    Knots = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
+    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
+    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
     Standard_Integer                 Degree = aApprox.Degree();
-    myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
+    myCurve3d  = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myCurve2d1 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
   }
   myMaxError2d1 = Max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
-  myMaxError3d = aApprox.MaxError(3, 1);
+  myMaxError3d  = aApprox.MaxError(3, 1);
 
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total, t_total);
@@ -396,10 +390,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 #endif
 }
 
-//=======================================================================
-// function : Approx_CurvilinearParameter_EvalCurvOn2Surf
-// purpose  : case of a curve on two surfaces
-//=======================================================================
+//=================================================================================================
 
 class Approx_CurvilinearParameter_EvalCurvOn2Surf : public AdvApprox_EvaluatorFunction
 {
@@ -432,7 +423,7 @@ void Approx_CurvilinearParameter_EvalCurvOn2Surf::Evaluate(Standard_Integer* Dim
                                                            Standard_Real*    Result,
                                                            Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode             = 0;
   Standard_Real        S = *Param;
   TColStd_Array1OfReal Res(0, 6);
   Standard_Integer     i;
@@ -477,7 +468,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;
-  uparam_count = 0;
+  uparam_count                           = 0;
   InitChron(chr_total);
 #endif
   myCase = 3;
@@ -509,7 +500,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 #endif
 
   Standard_Real FirstS = fonct->FirstParameter();
-  Standard_Real LastS = fonct->LastParameter();
+  Standard_Real LastS  = fonct->LastParameter();
 
   Standard_Integer     NbInterv_C2 = fonct->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
@@ -542,7 +533,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   ResultChron(chr_approx, t_approx);
 #endif
 
-  myDone = aApprox.IsDone();
+  myDone      = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
   if (myHasResult)
@@ -558,10 +549,10 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
     aApprox.Poles1d(2, Poles1d);
     for (i = 1; i <= NbPoles; i++)
       Poles2d(i).SetY(Poles1d(i));
-    Handle(TColStd_HArray1OfReal)    Knots = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
+    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
+    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
     Standard_Integer                 Degree = aApprox.Degree();
-    myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
+    myCurve3d  = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
     myCurve2d1 = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
     aApprox.Poles1d(3, Poles1d);
     for (i = 1; i <= NbPoles; i++)
@@ -573,7 +564,7 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
   }
   myMaxError2d1 = Max(aApprox.MaxError(1, 1), aApprox.MaxError(1, 2));
   myMaxError2d2 = Max(aApprox.MaxError(1, 3), aApprox.MaxError(1, 4));
-  myMaxError3d = aApprox.MaxError(3, 1);
+  myMaxError3d  = aApprox.MaxError(3, 1);
 
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total, t_total);
@@ -588,7 +579,6 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
 //=================================================================================================
 
-
 Standard_Boolean Approx_CurvilinearParameter::IsDone() const
 {
   return myDone;
@@ -596,78 +586,65 @@ Standard_Boolean Approx_CurvilinearParameter::IsDone() const
 
 //=================================================================================================
 
-
 Standard_Boolean Approx_CurvilinearParameter::HasResult() const
 {
   return myHasResult;
 }
 
-//=======================================================================
-// function : Curve3d
-// purpose  : returns the Bspline curve corresponding to the reparametrized 3D curve
-//=======================================================================
+//=================================================================================================
 
 Handle(Geom_BSplineCurve) Approx_CurvilinearParameter::Curve3d() const
 {
   return myCurve3d;
 }
 
-//=======================================================================
-// function : MaxError3d
-// purpose  : returns the maximum error on the reparametrized 3D curve
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Approx_CurvilinearParameter::MaxError3d() const
 {
   return myMaxError3d;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : Curve2d1
 // purpose  : returns the BsplineCurve representing the reparametrized 2D curve on the
 //           first surface (case of a curve on one or two surfaces)
-//=======================================================================
+//=================================================================================================
 
 Handle(Geom2d_BSplineCurve) Approx_CurvilinearParameter::Curve2d1() const
 {
   return myCurve2d1;
 }
 
-//=======================================================================
-// function : MaxError2d1
-// purpose  : returns the maximum error on the first reparametrized 2D curve
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Approx_CurvilinearParameter::MaxError2d1() const
 {
   return myMaxError2d1;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : Curve2d2
 // purpose  : returns the BsplineCurve representing the reparametrized 2D curve on the
 //           second surface (case of a curve on two surfaces)
-//=======================================================================
+//=================================================================================================
 
 Handle(Geom2d_BSplineCurve) Approx_CurvilinearParameter::Curve2d2() const
 {
   return myCurve2d2;
 }
 
-//=======================================================================
-// function : MaxError2d2
-// purpose  : returns the maximum error on the second reparametrized 2D curve
-//=======================================================================
+//=================================================================================================
 
 Standard_Real Approx_CurvilinearParameter::MaxError2d2() const
 {
   return myMaxError2d2;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : Dump
 // purpose  : print the maximum errors(s)
-//=======================================================================
+//=================================================================================================
 
 void Approx_CurvilinearParameter::Dump(Standard_OStream& o) const
 {
@@ -680,7 +657,6 @@ void Approx_CurvilinearParameter::Dump(Standard_OStream& o) const
 }
 
 //=================================================================================================
-
 
 void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_Curve2d)& C2D,
                                                        const Handle(Adaptor3d_Surface)& S,

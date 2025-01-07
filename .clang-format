@@ -11,6 +11,7 @@ BasedOnStyle: Microsoft
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowAllArgumentsOnNextLine: false
 AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveDeclarations: Consecutive
 AlignTrailingComments: true
 AllowShortFunctionsOnASingleLine: Inline

@@ -42,10 +42,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-//=======================================================================
-// class : Approx_CurveOnSurface_Eval
-// purpose: evaluator class for approximation of both 2d and 3d curves
-//=======================================================================
+//=================================================================================================
+
 class Approx_CurveOnSurface_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
@@ -80,7 +78,7 @@ void Approx_CurveOnSurface_Eval::Evaluate(Standard_Integer* Dimension,
                                           Standard_Real*    Result, // [Dimension]
                                           Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode        = 0;
   Standard_Real par = *Param;
 
   // Dimension is incorrect
@@ -92,8 +90,8 @@ void Approx_CurveOnSurface_Eval::Evaluate(Standard_Integer* Dimension,
   // Parameter is incorrect
   if (StartEnd[0] != StartEndSav[0] || StartEnd[1] != StartEndSav[1])
   {
-    fonct = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
-    fonct2d = fonct2d->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
+    fonct          = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
+    fonct2d        = fonct2d->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
     StartEndSav[0] = StartEnd[0];
     StartEndSav[1] = StartEnd[1];
   }
@@ -139,15 +137,12 @@ void Approx_CurveOnSurface_Eval::Evaluate(Standard_Integer* Dimension,
     }
     default:
       Result[0] = Result[1] = Result[2] = Result[3] = Result[4] = 0.;
-      *ErrorCode = 3;
+      *ErrorCode                                                = 3;
       break;
   }
 }
 
-//=======================================================================
-// class : Approx_CurveOnSurface_Eval3d
-// purpose: evaluator class for approximation of 3d curve
-//=======================================================================
+//=================================================================================================
 
 class Approx_CurveOnSurface_Eval3d : public AdvApprox_EvaluatorFunction
 {
@@ -180,7 +175,7 @@ void Approx_CurveOnSurface_Eval3d::Evaluate(Standard_Integer* Dimension,
                                             Standard_Real*    Result, // [Dimension]
                                             Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode        = 0;
   Standard_Real par = *Param;
 
   // Dimension is incorrect
@@ -192,7 +187,7 @@ void Approx_CurveOnSurface_Eval3d::Evaluate(Standard_Integer* Dimension,
   // Parameter is incorrect
   if (StartEnd[0] != StartEndSav[0] || StartEnd[1] != StartEndSav[1])
   {
-    fonct = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
+    fonct          = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
     StartEndSav[0] = StartEnd[0];
     StartEndSav[1] = StartEnd[1];
   }
@@ -202,7 +197,7 @@ void Approx_CurveOnSurface_Eval3d::Evaluate(Standard_Integer* Dimension,
   switch (*Order)
   {
     case 0:
-      pnt = fonct->Value(par);
+      pnt       = fonct->Value(par);
       Result[0] = pnt.X();
       Result[1] = pnt.Y();
       Result[2] = pnt.Z();
@@ -225,15 +220,12 @@ void Approx_CurveOnSurface_Eval3d::Evaluate(Standard_Integer* Dimension,
     }
     default:
       Result[0] = Result[1] = Result[2] = 0.;
-      *ErrorCode = 3;
+      *ErrorCode                        = 3;
       break;
   }
 }
 
-//=======================================================================
-// class : Approx_CurveOnSurface_Eval2d
-// purpose: evaluator class for approximation of 2d curve
-//=======================================================================
+//=================================================================================================
 
 class Approx_CurveOnSurface_Eval2d : public AdvApprox_EvaluatorFunction
 {
@@ -266,7 +258,7 @@ void Approx_CurveOnSurface_Eval2d::Evaluate(Standard_Integer* Dimension,
                                             Standard_Real*    Result, // [Dimension]
                                             Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode        = 0;
   Standard_Real par = *Param;
 
   // Dimension is incorrect
@@ -278,7 +270,7 @@ void Approx_CurveOnSurface_Eval2d::Evaluate(Standard_Integer* Dimension,
   // Parameter is incorrect
   if (StartEnd[0] != StartEndSav[0] || StartEnd[1] != StartEndSav[1])
   {
-    fonct2d = fonct2d->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
+    fonct2d        = fonct2d->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
     StartEndSav[0] = StartEnd[0];
     StartEndSav[1] = StartEnd[1];
   }
@@ -288,7 +280,7 @@ void Approx_CurveOnSurface_Eval2d::Evaluate(Standard_Integer* Dimension,
   switch (*Order)
   {
     case 0: {
-      pnt = fonct2d->Value(par);
+      pnt       = fonct2d->Value(par);
       Result[0] = pnt.X();
       Result[1] = pnt.Y();
       break;
@@ -309,15 +301,13 @@ void Approx_CurveOnSurface_Eval2d::Evaluate(Standard_Integer* Dimension,
     }
     default:
       Result[0] = Result[1] = 0.;
-      *ErrorCode = 3;
+      *ErrorCode            = 3;
       break;
   }
 }
 
-//=============================================================================
-// function : Approx_CurveOnSurface
-// purpose  : Constructor
-//=============================================================================
+//=================================================================================================
+
 Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2D,
                                              const Handle(Adaptor3d_Surface)& Surf,
                                              const Standard_Real              First,
@@ -342,10 +332,8 @@ Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2
   Perform(MaxSegments, MaxDegree, S, only3d, only2d);
 }
 
-//=============================================================================
-// function : Approx_CurveOnSurface
-// purpose  : Constructor
-//=============================================================================
+//=================================================================================================
+
 Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& theC2D,
                                              const Handle(Adaptor3d_Surface)& theSurf,
                                              const Standard_Real              theFirst,
@@ -372,11 +360,11 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
                                     const Standard_Boolean theOnly3d,
                                     const Standard_Boolean theOnly2d)
 {
-  myIsDone = Standard_False;
+  myIsDone    = Standard_False;
   myHasResult = Standard_False;
-  myError2dU = 0.0;
-  myError2dV = 0.0;
-  myError3d = 0.0;
+  myError2dU  = 0.0;
+  myError2dV  = 0.0;
+  myError3d   = 0.0;
 
   if (theOnly3d && theOnly2d)
     throw Standard_ConstructionError();
@@ -397,7 +385,7 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
   {
     if (buildC3dOnIsoLine(TrimmedC2D, isU, aParam, isForward))
     {
-      myIsDone = Standard_True;
+      myIsDone    = Standard_True;
       myHasResult = Standard_True;
       return;
     }
@@ -455,7 +443,7 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
 
   if (!theOnly2d)
   {
-    Num3DSS = 1;
+    Num3DSS   = 1;
     ThreeDTol = new TColStd_HArray1OfReal(1, Num3DSS);
     ThreeDTol->Init(myTol / 2);
   }
@@ -506,13 +494,13 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
 
   delete CutTool;
 
-  myIsDone = aApprox.IsDone();
+  myIsDone    = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
   if (myHasResult)
   {
-    Handle(TColStd_HArray1OfReal)    Knots = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
+    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
+    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
     Standard_Integer                 Degree = aApprox.Degree();
 
     if (!theOnly2d)
@@ -590,9 +578,9 @@ Standard_Boolean Approx_CurveOnSurface::isIsoLine(const Handle(Adaptor2d_Curve2d
   const GeomAbs_CurveType aType = theC2D->GetType();
   if (aType == GeomAbs_Line)
   {
-    gp_Lin2d aLin2d = theC2D->Line();
-    aLoc2d = aLin2d.Location();
-    aDir2d = aLin2d.Direction();
+    gp_Lin2d aLin2d   = theC2D->Line();
+    aLoc2d            = aLin2d.Location();
+    aDir2d            = aLin2d.Direction();
     isAppropriateType = Standard_True;
   }
   else if (aType == GeomAbs_BSplineCurve)
@@ -635,16 +623,16 @@ Standard_Boolean Approx_CurveOnSurface::isIsoLine(const Handle(Adaptor2d_Curve2d
   if (aDir2d.IsParallel(gp::DX2d(), Precision::Angular()))
   {
     // Horizontal line. V = const.
-    theIsU = Standard_False;
-    theParam = aLoc2d.Y();
+    theIsU       = Standard_False;
+    theParam     = aLoc2d.Y();
     theIsForward = aDir2d.Dot(gp::DX2d()) > 0.0;
     return Standard_True;
   }
   else if (aDir2d.IsParallel(gp::DY2d(), Precision::Angular()))
   {
     // Vertical line. U = const.
-    theIsU = Standard_True;
-    theParam = aLoc2d.X();
+    theIsU       = Standard_True;
+    theParam     = aLoc2d.X();
     theIsForward = aDir2d.Dot(gp::DY2d()) > 0.0;
     return Standard_True;
   }
@@ -694,7 +682,7 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
       {
         return Standard_False;
       }
-      aSurf = new Geom_RectangularTrimmedSurface(aSurf, U1, U2, aV1Param, aV2Param);
+      aSurf    = new Geom_RectangularTrimmedSurface(aSurf, U1, U2, aV1Param, aV2Param);
       isToTrim = Standard_False;
     }
     else
@@ -724,7 +712,7 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
       {
         return Standard_False;
       }
-      aSurf = new Geom_RectangularTrimmedSurface(aSurf, aU1Param, aU2Param, V1, V2);
+      aSurf    = new Geom_RectangularTrimmedSurface(aSurf, aU1Param, aU2Param, V1, V2);
       isToTrim = Standard_False;
     }
     else
@@ -755,8 +743,8 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
   // Evaluate error.
   myError3d = 0.0;
 
-  const Standard_Real    aParF = myFirst;
-  const Standard_Real    aParL = myLast;
+  const Standard_Real    aParF  = myFirst;
+  const Standard_Real    aParL  = myLast;
   const Standard_Integer aNbPnt = 23;
   for (Standard_Integer anIdx = 0; anIdx <= aNbPnt; ++anIdx)
   {
@@ -768,7 +756,7 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
     const gp_Pnt aPntC2D = mySurf->Value(aPnt2d.X(), aPnt2d.Y());
 
     const Standard_Real aSqDeviation = aPntC3D.SquareDistance(aPntC2D);
-    myError3d = Max(aSqDeviation, myError3d);
+    myError3d                        = Max(aSqDeviation, myError3d);
   }
 
   myError3d = Sqrt(myError3d);

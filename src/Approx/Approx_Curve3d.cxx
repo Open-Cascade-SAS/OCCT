@@ -27,10 +27,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-//=======================================================================
-// class : Approx_Curve3d_Eval
-// purpose: evaluator class for approximation
-//=======================================================================
+//=================================================================================================
+
 class Approx_Curve3d_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
@@ -62,7 +60,7 @@ void Approx_Curve3d_Eval::Evaluate(Standard_Integer* Dimension,
                                    Standard_Real*    Result, // [Dimension]
                                    Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode        = 0;
   Standard_Real par = *Param;
 
   // Dimension is incorrect
@@ -73,7 +71,7 @@ void Approx_Curve3d_Eval::Evaluate(Standard_Integer* Dimension,
 
   if (StartEnd[0] != StartEndSav[0] || StartEnd[1] != StartEndSav[1])
   {
-    fonct = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
+    fonct          = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
     StartEndSav[0] = StartEnd[0];
     StartEndSav[1] = StartEnd[1];
   }
@@ -84,7 +82,7 @@ void Approx_Curve3d_Eval::Evaluate(Standard_Integer* Dimension,
   switch (*Order)
   {
     case 0:
-      pnt = fonct->Value(par);
+      pnt       = fonct->Value(par);
       Result[0] = pnt.X();
       Result[1] = pnt.Y();
       Result[2] = pnt.Z();
@@ -103,7 +101,7 @@ void Approx_Curve3d_Eval::Evaluate(Standard_Integer* Dimension,
       break;
     default:
       Result[0] = Result[1] = Result[2] = 0.;
-      *ErrorCode = 3;
+      *ErrorCode                        = 3;
       break;
   }
 }
@@ -122,7 +120,7 @@ Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_Curve)& Curve,
   ThreeDTol->Init(Tol3d);
 
   Standard_Real First = Curve->FirstParameter();
-  Standard_Real Last = Curve->LastParameter();
+  Standard_Real Last  = Curve->LastParameter();
 
   Standard_Integer     NbInterv_C2 = Curve->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
@@ -150,18 +148,18 @@ Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_Curve)& Curve,
                                     ev,
                                     CutTool);
 
-  myIsDone = aApprox.IsDone();
+  myIsDone    = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
   if (myHasResult)
   {
     TColgp_Array1OfPnt Poles(1, aApprox.NbPoles());
     aApprox.Poles(1, Poles);
-    Handle(TColStd_HArray1OfReal)    Knots = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
+    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
+    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
     Standard_Integer                 Degree = aApprox.Degree();
     myBSplCurve = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
-    myMaxError = aApprox.MaxError(3, 1);
+    myMaxError  = aApprox.MaxError(3, 1);
   }
 }
 

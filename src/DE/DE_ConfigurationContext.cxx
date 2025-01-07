@@ -178,7 +178,7 @@ Standard_Boolean DE_ConfigurationContext::LoadFile(const TCollection_AsciiString
 {
   myResource.Clear();
   OSD_Path                aPath(theFile);
-  OSD_File                aFile = aPath;
+  OSD_File                aFile    = aPath;
   TCollection_AsciiString FileName = aPath.Name();
   aFile.Open(OSD_ReadOnly, OSD_Protection());
   if (aFile.Failed())
@@ -203,7 +203,7 @@ Standard_Boolean DE_ConfigurationContext::LoadFile(const TCollection_AsciiString
 Standard_Boolean DE_ConfigurationContext::LoadStr(const TCollection_AsciiString& theResource)
 {
   myResource.Clear();
-  TCollection_AsciiString aLine = "";
+  TCollection_AsciiString aLine   = "";
   const Standard_Integer  aLength = theResource.Length();
   for (Standard_Integer anInd = 1; anInd <= aLength; anInd++)
   {

@@ -22,10 +22,8 @@
 #include <Precision.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
-//=======================================================================
-// class : Approx_Curve2d_Eval
-// purpose: evaluator class for approximation
-//=======================================================================
+//=================================================================================================
+
 class Approx_Curve2d_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
@@ -57,7 +55,7 @@ void Approx_Curve2d_Eval::Evaluate(Standard_Integer* Dimension,
                                    Standard_Real*    Result, // [Dimension]
                                    Standard_Integer* ErrorCode)
 {
-  *ErrorCode = 0;
+  *ErrorCode        = 0;
   Standard_Real par = *Param;
 
   // Dimension is incorrect
@@ -72,7 +70,7 @@ void Approx_Curve2d_Eval::Evaluate(Standard_Integer* Dimension,
   }
   if (StartEnd[0] != StartEndSav[0] || StartEnd[1] != StartEndSav[1])
   {
-    fonct = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
+    fonct          = fonct->Trim(StartEnd[0], StartEnd[1], Precision::PConfusion());
     StartEndSav[0] = StartEnd[0];
     StartEndSav[1] = StartEnd[1];
   }
@@ -82,7 +80,7 @@ void Approx_Curve2d_Eval::Evaluate(Standard_Integer* Dimension,
   switch (*Order)
   {
     case 0:
-      pnt = fonct->Value(par);
+      pnt       = fonct->Value(par);
       Result[0] = pnt.X();
       Result[1] = pnt.Y();
       break;
@@ -98,7 +96,7 @@ void Approx_Curve2d_Eval::Evaluate(Standard_Integer* Dimension,
       break;
     default:
       Result[0] = Result[1] = 0.;
-      *ErrorCode = 3;
+      *ErrorCode            = 3;
       break;
   }
 }
@@ -117,8 +115,8 @@ Approx_Curve2d::Approx_Curve2d(const Handle(Adaptor2d_Curve2d)& C2D,
   Standard_Integer              Num1DSS = 2, Num2DSS = 0, Num3DSS = 0;
   Handle(TColStd_HArray1OfReal) TwoDTolNul, ThreeDTolNul;
   Handle(TColStd_HArray1OfReal) OneDTol = new TColStd_HArray1OfReal(1, Num1DSS);
-  OneDTol->ChangeValue(1) = TolU;
-  OneDTol->ChangeValue(2) = TolV;
+  OneDTol->ChangeValue(1)               = TolU;
+  OneDTol->ChangeValue(2)               = TolV;
 
   Standard_Integer     NbInterv_C2 = C2D->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
@@ -147,7 +145,7 @@ Approx_Curve2d::Approx_Curve2d(const Handle(Adaptor2d_Curve2d)& C2D,
                                     ev,
                                     CutTool);
 
-  myIsDone = aApprox.IsDone();
+  myIsDone    = aApprox.IsDone();
   myHasResult = aApprox.HasResult();
 
   if (myHasResult)
@@ -160,10 +158,10 @@ Approx_Curve2d::Approx_Curve2d(const Handle(Adaptor2d_Curve2d)& C2D,
     for (Standard_Integer i = 1; i <= aApprox.NbPoles(); i++)
       Poles2d.SetValue(i, gp_Pnt2d(Poles1dU.Value(i), Poles1dV.Value(i)));
 
-    Handle(TColStd_HArray1OfReal)    Knots = aApprox.Knots();
-    Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
+    Handle(TColStd_HArray1OfReal)    Knots  = aApprox.Knots();
+    Handle(TColStd_HArray1OfInteger) Mults  = aApprox.Multiplicities();
     Standard_Integer                 Degree = aApprox.Degree();
-    myCurve = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
+    myCurve       = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
     myMaxError2dU = aApprox.MaxError(1, 1);
     myMaxError2dV = aApprox.MaxError(1, 2);
   }

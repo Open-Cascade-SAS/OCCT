@@ -169,7 +169,7 @@ public:
   //! @param[in] theIsRecursive flag to update all nodes
   //! @return true if theResource has loaded correctly
   Standard_EXPORT Standard_Boolean Load(const TCollection_AsciiString& theResource = "",
-                                        const Standard_Boolean theIsRecursive = Standard_True);
+                                        const Standard_Boolean theIsRecursive      = Standard_True);
 
   //! Updates values according the resource
   //! @param[in] theResource input resource to use
@@ -187,8 +187,8 @@ public:
   Standard_EXPORT Standard_Boolean
     Save(const TCollection_AsciiString&   theResourcePath,
          const Standard_Boolean           theIsRecursive = Standard_True,
-         const TColStd_ListOfAsciiString& theFormats = TColStd_ListOfAsciiString(),
-         const TColStd_ListOfAsciiString& theVendors = TColStd_ListOfAsciiString());
+         const TColStd_ListOfAsciiString& theFormats     = TColStd_ListOfAsciiString(),
+         const TColStd_ListOfAsciiString& theVendors     = TColStd_ListOfAsciiString());
 
   //! Writes configuration to the string
   //! @param[in] theIsRecursive flag to write values of all nodes
@@ -197,8 +197,8 @@ public:
   //! @return result resource string
   Standard_EXPORT TCollection_AsciiString
     Save(const Standard_Boolean           theIsRecursive = Standard_True,
-         const TColStd_ListOfAsciiString& theFormats = TColStd_ListOfAsciiString(),
-         const TColStd_ListOfAsciiString& theVendors = TColStd_ListOfAsciiString());
+         const TColStd_ListOfAsciiString& theFormats     = TColStd_ListOfAsciiString(),
+         const TColStd_ListOfAsciiString& theVendors     = TColStd_ListOfAsciiString());
 
   //! Creates new node copy and adds to the map
   //! @param[in] theNode input node to copy

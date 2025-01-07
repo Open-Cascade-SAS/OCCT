@@ -386,7 +386,7 @@ Standard_Boolean DE_Wrapper::Bind(const Handle(DE_ConfigurationNode)& theNode)
   }
   const TCollection_AsciiString aFileFormat = theNode->GetFormat();
   const TCollection_AsciiString aVendorName = theNode->GetVendor();
-  DE_ConfigurationVendorMap*    aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
+  DE_ConfigurationVendorMap*    aVendorMap  = myConfiguration.ChangeSeek(aFileFormat);
   if (aVendorMap == NULL)
   {
     DE_ConfigurationVendorMap aTmpVendorMap;
@@ -405,7 +405,7 @@ Standard_Boolean DE_Wrapper::UnBind(const Handle(DE_ConfigurationNode)& theNode)
   }
   const TCollection_AsciiString aFileFormat = theNode->GetFormat();
   const TCollection_AsciiString aVendorName = theNode->GetVendor();
-  DE_ConfigurationVendorMap*    aVendorMap = myConfiguration.ChangeSeek(aFileFormat);
+  DE_ConfigurationVendorMap*    aVendorMap  = myConfiguration.ChangeSeek(aFileFormat);
   if (aVendorMap == NULL)
   {
     return false;
@@ -527,7 +527,7 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
           (aNode->CheckExtension(anExtr) || (theToImport && aNode->CheckContent(aBuffer))) &&
           aNode->UpdateLoad(theToImport, myKeepUpdates))
       {
-        theProvider = aNode->BuildProvider();
+        theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;
         return Standard_True;
       }
