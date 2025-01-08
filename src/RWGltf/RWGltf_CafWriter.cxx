@@ -746,26 +746,26 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
         continue;
       }
       
-      std::shared_ptr<RWGltf_CafWriter::Mesh> aMeshPtr;
-#ifdef HAVE_DRACO
-      ++aMeshIndex;
-      if (myDracoParameters.DracoCompression)
-      {
-        if (aMeshIndex <= aMeshes.size())
-        {
-          aMeshPtr = aMeshes.at(aMeshIndex - 1);
-        }
-        else
-        {
-          aMeshes.push_back(std::make_shared<RWGltf_CafWriter::Mesh>(RWGltf_CafWriter::Mesh()));
-          aMeshPtr = aMeshes.back();
-        }
-      }
-#endif
-
       for (RWGltf_GltfFaceList::Iterator aGltfFaceIter (*aGltfFaceList); aGltfFaceIter.More() && aPSentryBin.More(); aGltfFaceIter.Next())
       {
         const Handle(RWGltf_GltfFace)& aGltfFace = aGltfFaceIter.Value();
+
+        std::shared_ptr<RWGltf_CafWriter::Mesh> aMeshPtr;
+#ifdef HAVE_DRACO
+        ++aMeshIndex;
+        if (myDracoParameters.DracoCompression)
+        {
+            if (aMeshIndex <= aMeshes.size())
+            {
+                aMeshPtr = aMeshes.at(aMeshIndex - 1);
+            }
+            else
+            {
+                aMeshes.push_back(std::make_shared<RWGltf_CafWriter::Mesh>(RWGltf_CafWriter::Mesh()));
+                aMeshPtr = aMeshes.back();
+            }
+        }
+#endif
 
         Handle(RWGltf_GltfFace) anOldGltfFace;
         if (aWrittenPrimData.Find (aGltfFace->Shape, anOldGltfFace))
@@ -1899,23 +1899,21 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
       for (RWGltf_GltfFaceList::Iterator aFaceGroupIter (*aGltfFaceList); aFaceGroupIter.More(); aFaceGroupIter.Next())
       {
         const Handle(RWGltf_GltfFace)& aGltfFace = aFaceGroupIter.Value();
-        const int aPrevSize = aDracoBufIndMap.Size();
-        const int aTempDracoBufInd = aDracoBufInd;
-        if (myDracoParameters.DracoCompression
-        && !aDracoBufIndMap.FindFromKey (aGltfFace->NodePos.Id, aDracoBufInd))
+        int aCurrentDracoBufInd = 0;
+
+        if (myDracoParameters.DracoCompression)
         {
-          aDracoBufIndMap.Add (aGltfFace->NodePos.Id, aDracoBufInd);
+            // Check if we've seen this NodePos.Id before
+            if (!aDracoBufIndMap.FindFromKey(aGltfFace->NodePos.Id, aCurrentDracoBufInd))
+            {
+                // New Draco buffer entry needed
+                aCurrentDracoBufInd = aDracoBufInd;
+                aDracoBufIndMap.Add(aGltfFace->NodePos.Id, aCurrentDracoBufInd);
+                ++aDracoBufInd;
+            }
         }
 
-        writePrimArray (*aGltfFace, aNodeName, aDracoBufInd, toStartPrims);
-        if (aTempDracoBufInd != aDracoBufInd)
-        {
-          aDracoBufInd = aTempDracoBufInd;
-        }
-        if (!myDracoParameters.DracoCompression || aDracoBufIndMap.Size() > aPrevSize)
-        {
-          ++aDracoBufInd;
-        }
+        writePrimArray(*aGltfFace, aNodeName, aCurrentDracoBufInd, toStartPrims);
       }
     }
     else
@@ -1935,23 +1933,21 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
         }
 
         const Handle(RWGltf_GltfFace)& aGltfFace = aGltfFaceList->First();
-        const int aPrevSize = aDracoBufIndMap.Size();
-        const int aTempDracoBufInd = aDracoBufInd;
-        if (myDracoParameters.DracoCompression
-        && !aDracoBufIndMap.FindFromKey(aGltfFace->NodePos.Id, aDracoBufInd))
+        int aCurrentDracoBufInd = 0;
+
+        if (myDracoParameters.DracoCompression)
         {
-          aDracoBufIndMap.Add(aGltfFace->NodePos.Id, aDracoBufInd);
+            // Check if we've seen this NodePos.Id before
+            if (!aDracoBufIndMap.FindFromKey(aGltfFace->NodePos.Id, aCurrentDracoBufInd))
+            {
+                // New Draco buffer entry needed
+                aCurrentDracoBufInd = aDracoBufInd;
+                aDracoBufIndMap.Add(aGltfFace->NodePos.Id, aCurrentDracoBufInd);
+                ++aDracoBufInd;
+            }
         }
 
-        writePrimArray (*aGltfFace, aNodeName, aDracoBufInd, toStartPrims);
-        if (aTempDracoBufInd != aDracoBufInd)
-        {
-          aDracoBufInd = aTempDracoBufInd;
-        }
-        if (!myDracoParameters.DracoCompression || aDracoBufIndMap.Size() > aPrevSize)
-        {
-          ++aDracoBufInd;
-        }
+        writePrimArray(*aGltfFace, aNodeName, aCurrentDracoBufInd, toStartPrims);
       }
     }
 
