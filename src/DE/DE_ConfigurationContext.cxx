@@ -72,8 +72,8 @@ static DE_ConfigurationContext_KindOfLine WhatKindOfLine(const TCollection_Ascii
   TCollection_AsciiString              aLine(theLine);
   aLine.LeftAdjust();
   aLine.RightAdjust();
-  if (!aLine.EndsWith(':') &&
-      (!aLine.EndsWith(' ') || !aLine.EndsWith('\t') || !aLine.EndsWith('\n')))
+  if (!aLine.EndsWith(':')
+      && (!aLine.EndsWith(' ') || !aLine.EndsWith('\t') || !aLine.EndsWith('\n')))
   {
     aLine.InsertAfter(aLine.Length(), " ");
   }

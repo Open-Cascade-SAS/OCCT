@@ -377,8 +377,8 @@ void ApproxInt_KnotTools::FilterKnots(NCollection_Sequence<Standard_Integer>& th
         anIdx--;
 
         Standard_Integer aMidIdx = (theInds(anIdx) + anIndsPrev) / 2;
-        if (aMidIdx - anIndsPrev < theMinNbPnts && aMidIdx - theInds(anIdx) < theMinNbPnts &&
-            theInds(anIdx) - anIndsPrev >= aMinNbStep)
+        if (aMidIdx - anIndsPrev < theMinNbPnts && aMidIdx - theInds(anIdx) < theMinNbPnts
+            && theInds(anIdx) - anIndsPrev >= aMinNbStep)
         {
           if (theInds(anIdx) - anIndsPrev > 2 * theMinNbPnts)
           {
@@ -479,8 +479,8 @@ Standard_Boolean ApproxInt_KnotTools::InsKnotBefI(
     // Non-null curvature.
     if (theCurv(j) > Precision::Confusion() && theCurv(anInd) > Precision::Confusion())
     {
-      if (theCurv(j) / theCurv(anInd) > aLimitCurvatureChange ||
-          theCurv(j) / theCurv(anInd) < 1.0 / aLimitCurvatureChange)
+      if (theCurv(j) / theCurv(anInd) > aLimitCurvatureChange
+          || theCurv(j) / theCurv(anInd) < 1.0 / aLimitCurvatureChange)
       {
         // Curvature on current interval changed more than 3 times.
         mid = j;

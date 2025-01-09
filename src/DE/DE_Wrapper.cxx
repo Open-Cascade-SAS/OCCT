@@ -521,11 +521,11 @@ Standard_Boolean DE_Wrapper::FindProvider(const TCollection_AsciiString& thePath
          aVendorIter.Next())
     {
       const Handle(DE_ConfigurationNode)& aNode = aVendorIter.Value();
-      if (aNode->IsEnabled() &&
-          ((theToImport && aNode->IsImportSupported()) ||
-           (!theToImport && aNode->IsExportSupported())) &&
-          (aNode->CheckExtension(anExtr) || (theToImport && aNode->CheckContent(aBuffer))) &&
-          aNode->UpdateLoad(theToImport, myKeepUpdates))
+      if (aNode->IsEnabled()
+          && ((theToImport && aNode->IsImportSupported())
+              || (!theToImport && aNode->IsExportSupported()))
+          && (aNode->CheckExtension(anExtr) || (theToImport && aNode->CheckContent(aBuffer)))
+          && aNode->UpdateLoad(theToImport, myKeepUpdates))
       {
         theProvider             = aNode->BuildProvider();
         aNode->GlobalParameters = GlobalParameters;

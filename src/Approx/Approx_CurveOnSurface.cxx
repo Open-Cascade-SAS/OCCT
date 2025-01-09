@@ -450,8 +450,8 @@ void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
 
   AdvApprox_Cutting* CutTool;
 
-  if (aContinuity <= myC2D->Continuity() && aContinuity <= mySurf->UContinuity() &&
-      aContinuity <= mySurf->VContinuity())
+  if (aContinuity <= myC2D->Continuity() && aContinuity <= mySurf->UContinuity()
+      && aContinuity <= mySurf->VContinuity())
   {
     CutTool = new AdvApprox_DichoCutting();
   }

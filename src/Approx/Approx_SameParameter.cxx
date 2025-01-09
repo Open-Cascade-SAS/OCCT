@@ -170,8 +170,8 @@ static Standard_Real ComputeTolReached(const Handle(Adaptor3d_Curve)&  c3d,
       d2 = Precision::Infinite();
       break;
     }
-    if (Precision::IsInfinite(Pcons.X()) || Precision::IsInfinite(Pcons.Y()) ||
-        Precision::IsInfinite(Pcons.Z()))
+    if (Precision::IsInfinite(Pcons.X()) || Precision::IsInfinite(Pcons.Y())
+        || Precision::IsInfinite(Pcons.Z()))
     {
       d2 = Precision::Infinite();
       break;
@@ -683,8 +683,8 @@ Standard_Boolean Approx_SameParameter::CheckSameParameter(Approx_SameParameter_D
     // Same parameter point.
     Standard_Boolean isUseParam =
       (dist2 <= Tol2 && // Good distance.
-       (theData.myPC3d[ii] >
-        theData.myPC3d[count - 1] + myDeltaMin)); // Point is separated from previous.
+       (theData.myPC3d[ii]
+        > theData.myPC3d[count - 1] + myDeltaMin)); // Point is separated from previous.
     if (isUseParam)
     {
       if (dmax2 < dist2)

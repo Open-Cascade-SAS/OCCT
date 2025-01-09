@@ -635,8 +635,8 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Defines the mode for fix selfintersecting of edge\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "selfintersecting.edge :\t " +
-             (int)HealingParameters.FixSelfIntersectingEdgeMode + "\n";
+  aResult += aScope + "selfintersecting.edge :\t "
+             + (int)HealingParameters.FixSelfIntersectingEdgeMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -651,8 +651,8 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Defines the mode for fix non adjacent intersecting edges\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "nonadjacent.intersecting.edges :\t " +
-             (int)HealingParameters.FixNonAdjacentIntersectingEdgesMode + "\n";
+  aResult += aScope + "nonadjacent.intersecting.edges :\t "
+             + (int)HealingParameters.FixNonAdjacentIntersectingEdgesMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
