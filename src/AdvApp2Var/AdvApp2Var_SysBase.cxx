@@ -2520,7 +2520,7 @@ int AdvApp2Var_SysBase::mcrlist_(integer *ier) const
   /* Builtin functions */
   
   /* Local variables */
-  char cfmt[1];
+  char cfmt[1] {};
   doublereal dfmt;
   integer ifmt, i__, nufmt, ntotal;
   char subrou[7];
