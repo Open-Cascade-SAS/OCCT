@@ -118,29 +118,29 @@ static void findfourpoints(const Standard_Real,
 }
 */
 
-Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor3d_Curve)& C, const Standard_Real Tol) :
-    myC3D(C),
-    myCase(1),
-    myFirstS(0),
-    myLastS(1),
-    myTolLen(Tol),
-    myPrevS(0.0),
-    myPrevU(0.0)
+Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor3d_Curve)& C, const Standard_Real Tol)
+    : myC3D(C),
+      myCase(1),
+      myFirstS(0),
+      myLastS(1),
+      myTolLen(Tol),
+      myPrevS(0.0),
+      myPrevU(0.0)
 {
   Init();
 }
 
 Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D,
                                        const Handle(Adaptor3d_Surface)& S,
-                                       const Standard_Real              Tol) :
-    myC2D1(C2D),
-    mySurf1(S),
-    myCase(2),
-    myFirstS(0),
-    myLastS(1),
-    myTolLen(Tol),
-    myPrevS(0.0),
-    myPrevU(0.0)
+                                       const Standard_Real              Tol)
+    : myC2D1(C2D),
+      mySurf1(S),
+      myCase(2),
+      myFirstS(0),
+      myLastS(1),
+      myTolLen(Tol),
+      myPrevS(0.0),
+      myPrevU(0.0)
 {
   Init();
 }
@@ -149,17 +149,17 @@ Approx_CurvlinFunc::Approx_CurvlinFunc(const Handle(Adaptor2d_Curve2d)& C2D1,
                                        const Handle(Adaptor2d_Curve2d)& C2D2,
                                        const Handle(Adaptor3d_Surface)& S1,
                                        const Handle(Adaptor3d_Surface)& S2,
-                                       const Standard_Real              Tol) :
-    myC2D1(C2D1),
-    myC2D2(C2D2),
-    mySurf1(S1),
-    mySurf2(S2),
-    myCase(3),
-    myFirstS(0),
-    myLastS(1),
-    myTolLen(Tol),
-    myPrevS(0.0),
-    myPrevU(0.0)
+                                       const Standard_Real              Tol)
+    : myC2D1(C2D1),
+      myC2D2(C2D2),
+      mySurf1(S1),
+      mySurf2(S2),
+      myCase(3),
+      myFirstS(0),
+      myLastS(1),
+      myTolLen(Tol),
+      myPrevS(0.0),
+      myPrevU(0.0)
 {
   Init();
 }

@@ -50,9 +50,9 @@ public:
   Approx_CurveOnSurface_Eval(const Handle(Adaptor3d_Curve)&   theFunc,
                              const Handle(Adaptor2d_Curve2d)& theFunc2d,
                              Standard_Real                    First,
-                             Standard_Real                    Last) :
-      fonct(theFunc),
-      fonct2d(theFunc2d)
+                             Standard_Real                    Last)
+      : fonct(theFunc),
+        fonct2d(theFunc2d)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
@@ -149,8 +149,8 @@ class Approx_CurveOnSurface_Eval3d : public AdvApprox_EvaluatorFunction
 public:
   Approx_CurveOnSurface_Eval3d(const Handle(Adaptor3d_Curve)& theFunc,
                                Standard_Real                  First,
-                               Standard_Real                  Last) :
-      fonct(theFunc)
+                               Standard_Real                  Last)
+      : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
@@ -232,8 +232,8 @@ class Approx_CurveOnSurface_Eval2d : public AdvApprox_EvaluatorFunction
 public:
   Approx_CurveOnSurface_Eval2d(const Handle(Adaptor2d_Curve2d)& theFunc2d,
                                Standard_Real                    First,
-                               Standard_Real                    Last) :
-      fonct2d(theFunc2d)
+                               Standard_Real                    Last)
+      : fonct2d(theFunc2d)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
@@ -317,17 +317,17 @@ Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& C2
                                              const Standard_Integer           MaxDegree,
                                              const Standard_Integer           MaxSegments,
                                              const Standard_Boolean           only3d,
-                                             const Standard_Boolean           only2d) :
-    myC2D(C2D),
-    mySurf(Surf),
-    myFirst(First),
-    myLast(Last),
-    myTol(Tol),
-    myIsDone(Standard_False),
-    myHasResult(Standard_False),
-    myError3d(0.0),
-    myError2dU(0.0),
-    myError2dV(0.0)
+                                             const Standard_Boolean           only2d)
+    : myC2D(C2D),
+      mySurf(Surf),
+      myFirst(First),
+      myLast(Last),
+      myTol(Tol),
+      myIsDone(Standard_False),
+      myHasResult(Standard_False),
+      myError3d(0.0),
+      myError2dU(0.0),
+      myError2dV(0.0)
 {
   Perform(MaxSegments, MaxDegree, S, only3d, only2d);
 }
@@ -338,17 +338,17 @@ Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_Curve2d)& th
                                              const Handle(Adaptor3d_Surface)& theSurf,
                                              const Standard_Real              theFirst,
                                              const Standard_Real              theLast,
-                                             const Standard_Real              theTol) :
-    myC2D(theC2D),
-    mySurf(theSurf),
-    myFirst(theFirst),
-    myLast(theLast),
-    myTol(theTol),
-    myIsDone(Standard_False),
-    myHasResult(Standard_False),
-    myError3d(0.0),
-    myError2dU(0.0),
-    myError2dV(0.0)
+                                             const Standard_Real              theTol)
+    : myC2D(theC2D),
+      mySurf(theSurf),
+      myFirst(theFirst),
+      myLast(theLast),
+      myTol(theTol),
+      myIsDone(Standard_False),
+      myHasResult(Standard_False),
+      myError3d(0.0),
+      myError2dU(0.0),
+      myError2dV(0.0)
 {
 }
 

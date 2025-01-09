@@ -69,8 +69,8 @@ class Approx_CurvilinearParameter_EvalCurv : public AdvApprox_EvaluatorFunction
 public:
   Approx_CurvilinearParameter_EvalCurv(const Handle(Approx_CurvlinFunc)& theFunc,
                                        Standard_Real                     First,
-                                       Standard_Real                     Last) :
-      fonct(theFunc)
+                                       Standard_Real                     Last)
+      : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
@@ -131,9 +131,9 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
                                                          const Standard_Real            Tol,
                                                          const GeomAbs_Shape            Order,
                                                          const Standard_Integer         MaxDegree,
-                                                         const Standard_Integer MaxSegments) :
-    myMaxError2d1(0.0),
-    myMaxError2d2(0.0)
+                                                         const Standard_Integer         MaxSegments)
+    : myMaxError2d1(0.0),
+      myMaxError2d2(0.0)
 {
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;
@@ -222,8 +222,8 @@ class Approx_CurvilinearParameter_EvalCurvOnSurf : public AdvApprox_EvaluatorFun
 public:
   Approx_CurvilinearParameter_EvalCurvOnSurf(const Handle(Approx_CurvlinFunc)& theFunc,
                                              Standard_Real                     First,
-                                             Standard_Real                     Last) :
-      fonct(theFunc)
+                                             Standard_Real                     Last)
+      : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
@@ -397,8 +397,8 @@ class Approx_CurvilinearParameter_EvalCurvOn2Surf : public AdvApprox_EvaluatorFu
 public:
   Approx_CurvilinearParameter_EvalCurvOn2Surf(const Handle(Approx_CurvlinFunc)& theFunc,
                                               Standard_Real                     First,
-                                              Standard_Real                     Last) :
-      fonct(theFunc)
+                                              Standard_Real                     Last)
+      : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;

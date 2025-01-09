@@ -20,8 +20,6 @@ BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializers: AfterColon
-BreakInheritanceList: AfterComma
 ColumnLimit: 100
 ContinuationIndentWidth: 2
 IndentCaseLabels: true

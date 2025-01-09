@@ -39,10 +39,10 @@ class Approx_SameParameter_Evaluator : public AdvApprox_EvaluatorFunction
 public:
   Approx_SameParameter_Evaluator(const TColStd_Array1OfReal&      theFlatKnots,
                                  const TColStd_Array1OfReal&      thePoles,
-                                 const Handle(Adaptor2d_Curve2d)& theHCurve2d) :
-      FlatKnots(theFlatKnots),
-      Poles(thePoles),
-      HCurve2d(theHCurve2d)
+                                 const Handle(Adaptor2d_Curve2d)& theHCurve2d)
+      : FlatKnots(theFlatKnots),
+        Poles(thePoles),
+        HCurve2d(theHCurve2d)
   {
   }
 
@@ -268,10 +268,10 @@ static Standard_Boolean Check(const TColStd_Array1OfReal&     FlatKnots,
 Approx_SameParameter::Approx_SameParameter(const Handle(Geom_Curve)&   C3D,
                                            const Handle(Geom2d_Curve)& C2D,
                                            const Handle(Geom_Surface)& S,
-                                           const Standard_Real         Tol) :
-    myDeltaMin(Precision::PConfusion()),
-    mySameParameter(Standard_True),
-    myDone(Standard_False)
+                                           const Standard_Real         Tol)
+    : myDeltaMin(Precision::PConfusion()),
+      mySameParameter(Standard_True),
+      myDone(Standard_False)
 {
   myHCurve2d = new Geom2dAdaptor_Curve(C2D);
   myC3d      = new GeomAdaptor_Curve(C3D);
@@ -284,10 +284,10 @@ Approx_SameParameter::Approx_SameParameter(const Handle(Geom_Curve)&   C3D,
 Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_Curve)&   C3D,
                                            const Handle(Geom2d_Curve)&      C2D,
                                            const Handle(Adaptor3d_Surface)& S,
-                                           const Standard_Real              Tol) :
-    myDeltaMin(Precision::PConfusion()),
-    mySameParameter(Standard_True),
-    myDone(Standard_False)
+                                           const Standard_Real              Tol)
+    : myDeltaMin(Precision::PConfusion()),
+      mySameParameter(Standard_True),
+      myDone(Standard_False)
 {
   myC3d      = C3D;
   mySurf     = S;
@@ -300,10 +300,10 @@ Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_Curve)&   C3D,
 Approx_SameParameter::Approx_SameParameter(const Handle(Adaptor3d_Curve)&   C3D,
                                            const Handle(Adaptor2d_Curve2d)& C2D,
                                            const Handle(Adaptor3d_Surface)& S,
-                                           const Standard_Real              Tol) :
-    myDeltaMin(Precision::PConfusion()),
-    mySameParameter(Standard_True),
-    myDone(Standard_False)
+                                           const Standard_Real              Tol)
+    : myDeltaMin(Precision::PConfusion()),
+      mySameParameter(Standard_True),
+      myDone(Standard_False)
 {
   myC3d      = C3D;
   mySurf     = S;
@@ -471,7 +471,6 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
 
     if (!interpolok)
       hasCountChanged = IncreaseNbPoles(Poles, FlatKnots, aData, besttol2);
-
   } while (!interpolok && hasCountChanged);
 
   if (!myDone)

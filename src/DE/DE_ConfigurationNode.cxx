@@ -25,8 +25,8 @@ IMPLEMENT_STANDARD_RTTIEXT(DE_ConfigurationNode, Standard_Transient)
 
 //=================================================================================================
 
-DE_ConfigurationNode::DE_ConfigurationNode() :
-    myIsEnabled(Standard_True)
+DE_ConfigurationNode::DE_ConfigurationNode()
+    : myIsEnabled(Standard_True)
 {
 }
 

@@ -30,16 +30,16 @@ static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
 
 //=================================================================================================
 
-DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode() :
-    DE_ConfigurationNode()
+DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode()
+    : DE_ConfigurationNode()
 {
 }
 
 //=================================================================================================
 
 DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode(
-  const Handle(DE_ShapeFixConfigurationNode)& theNode) :
-    DE_ConfigurationNode(theNode)
+  const Handle(DE_ShapeFixConfigurationNode)& theNode)
+    : DE_ConfigurationNode(theNode)
 {
 }
 

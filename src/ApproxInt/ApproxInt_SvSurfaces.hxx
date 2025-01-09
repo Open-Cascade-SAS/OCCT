@@ -43,8 +43,8 @@ class ApproxInt_SvSurfaces
 public:
   DEFINE_STANDARD_ALLOC
 
-  ApproxInt_SvSurfaces() :
-      myUseSolver(false)
+  ApproxInt_SvSurfaces()
+      : myUseSolver(false)
   {
   }
 

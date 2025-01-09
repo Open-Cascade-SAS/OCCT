@@ -24,8 +24,8 @@ DE_Provider::DE_Provider() {}
 
 //=================================================================================================
 
-DE_Provider::DE_Provider(const Handle(DE_ConfigurationNode)& theNode) :
-    myNode(theNode)
+DE_Provider::DE_Provider(const Handle(DE_ConfigurationNode)& theNode)
+    : myNode(theNode)
 {
 }
 

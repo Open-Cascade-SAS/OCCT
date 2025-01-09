@@ -44,15 +44,15 @@ static Handle(DE_Wrapper)& THE_GLOBAL_CONFIGURATION()
 
 //=================================================================================================
 
-DE_Wrapper::DE_Wrapper() :
-    myKeepUpdates(Standard_False)
+DE_Wrapper::DE_Wrapper()
+    : myKeepUpdates(Standard_False)
 {
 }
 
 //=================================================================================================
 
-DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper) :
-    DE_Wrapper()
+DE_Wrapper::DE_Wrapper(const Handle(DE_Wrapper)& theWrapper)
+    : DE_Wrapper()
 {
   if (theWrapper.IsNull())
   {

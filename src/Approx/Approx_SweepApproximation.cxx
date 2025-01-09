@@ -31,8 +31,8 @@
 class Approx_SweepApproximation_Eval : public AdvApprox_EvaluatorFunction
 {
 public:
-  Approx_SweepApproximation_Eval(Approx_SweepApproximation& theTool) :
-      Tool(theTool)
+  Approx_SweepApproximation_Eval(Approx_SweepApproximation& theTool)
+      : Tool(theTool)
   {
   }
 

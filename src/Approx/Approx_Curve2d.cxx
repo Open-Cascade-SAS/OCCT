@@ -29,8 +29,8 @@ class Approx_Curve2d_Eval : public AdvApprox_EvaluatorFunction
 public:
   Approx_Curve2d_Eval(const Handle(Adaptor2d_Curve2d)& theFunc,
                       Standard_Real                    First,
-                      Standard_Real                    Last) :
-      fonct(theFunc)
+                      Standard_Real                    Last)
+      : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;

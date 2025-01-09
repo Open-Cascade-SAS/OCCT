@@ -34,8 +34,8 @@ class Approx_Curve3d_Eval : public AdvApprox_EvaluatorFunction
 public:
   Approx_Curve3d_Eval(const Handle(Adaptor3d_Curve)& theFunc,
                       Standard_Real                  First,
-                      Standard_Real                  Last) :
-      fonct(theFunc)
+                      Standard_Real                  Last)
+      : fonct(theFunc)
   {
     StartEndSav[0] = First;
     StartEndSav[1] = Last;
