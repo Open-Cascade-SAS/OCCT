@@ -1,0 +1,216 @@
+# This workflow validates the build on Windows using MinGW and MSYS2.
+# It is triggered on pushes to the master branch.
+# The workflow includes steps to install dependencies, configure, build, and clean up the project.
+
+name: MinGW build validation
+
+on:
+  push:
+    branches:
+      - 'master'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  main_job:
+    name: Windows MinGW validation
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "GCC",
+              cc: "x86_64-w64-mingw32-gcc",
+              cxx: "x86_64-w64-mingw32-g++",
+              package: "mingw-w64-x86_64-toolchain",
+              thirdparty_dir: "/mingw64",
+              dependencies: "mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-rapidjson mingw-w64-x86_64-freetype mingw-w64-x86_64-draco mingw-w64-x86_64-freeimage mingw-w64-x86_64-tbb mingw-w64-x86_64-tk mingw-w64-x86_64-tcl mingw-w64-x86_64-openvr mingw-w64-x86_64-jemalloc mingw-w64-x86_64-mesa mingw-w64-x86_64-angleproject mingw-w64-x86_64-llvm-openmp mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+            }
+          - {
+              name: "Clang",
+              cc: "clang",
+              cxx: "clang++",
+              package: "mingw-w64-clang-x86_64-toolchain",
+              thirdparty_dir: "/clang64",
+              dependencies: "mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja mingw-w64-clang-x86_64-rapidjson mingw-w64-clang-x86_64-freetype mingw-w64-clang-x86_64-draco mingw-w64-clang-x86_64-freeimage mingw-w64-clang-x86_64-tbb mingw-w64-clang-x86_64-tk mingw-w64-clang-x86_64-tcl mingw-w64-clang-x86_64-openvr mingw-w64-clang-x86_64-jemalloc mingw-w64-clang-x86_64-mesa mingw-w64-clang-x86_64-angleproject mingw-w64-clang-x86_64-llvm-openmp mingw-w64-clang-x86_64-winpthreads-git mingw-w64-clang-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+            }
+          - {
+              name: "UCRT",
+              cc: "x86_64-w64-mingw32-gcc",
+              cxx: "x86_64-w64-mingw32-g++",
+              package: "mingw-w64-ucrt-x86_64-toolchain",
+              thirdparty_dir: "/ucrt64",
+              dependencies: "mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gcc-libs mingw-w64-ucrt-x86_64-omp mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-rapidjson mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-draco mingw-w64-ucrt-x86_64-freeimage mingw-w64-ucrt-x86_64-tbb mingw-w64-ucrt-x86_64-tk mingw-w64-ucrt-x86_64-tcl mingw-w64-ucrt-x86_64-openvr mingw-w64-ucrt-x86_64-jemalloc mingw-w64-ucrt-x86_64-mesa mingw-w64-ucrt-x86_64-angleproject mingw-w64-ucrt-x86_64-llvm-openmp mingw-w64-ucrt-x86_64-winpthreads-git mingw-w64-ucrt-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+            }
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Set up MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ matrix.config.name == 'Clang' && 'CLANG64' || matrix.config.name == 'UCRT' && 'UCRT64' || 'MINGW64' }}
+        update: true
+        install: ${{ matrix.config.package }} ${{ matrix.config.dependencies }}
+
+    - name: Setup environment
+      shell: msys2 {0}
+      run: |
+        echo "Checking compiler version:"
+        ${{ matrix.config.cc }} --version
+        echo "Checking CMake version:"
+        cmake --version
+        echo "Setting up environment variables..."
+        echo "$MSYSTEM_PREFIX/bin" >> $GITHUB_PATH
+        echo "CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX" >> $GITHUB_ENV
+
+    - name: Configure basic
+      shell: msys2 {0}
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Ninja" \
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+              -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
+              -D CMAKE_CXX_FLAGS="-Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Wall -Wextra" ..
+
+    - name: Build basic
+      shell: msys2 {0}
+      run: |
+        cd build
+        cmake --build . -- -j 4
+
+    - name: Clear up after build
+      shell: pwsh
+      run: |
+        Remove-Item -Recurse -Force build
+
+    - name: Configure full shared
+      shell: msys2 {0}
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Ninja" \
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+              -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
+              -D BUILD_USE_PCH=OFF \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_LIBRARY_TYPE=Shared \
+              -D USE_TK=ON \
+              -D CMAKE_BUILD_TYPE=Debug \
+              -D USE_MMGR_TYPE=JEMALLOC \
+              -D INSTALL_DIR="${{ github.workspace }}/install" \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=OFF \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON \
+              -D CMAKE_CXX_FLAGS="-Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Wall -Wextra" ..
+
+    - name: Build full shared
+      shell: msys2 {0}
+      run: |
+        cd build
+        cmake --build . --target install --config Debug -- -j 4
+    
+    - name: Clear up after build
+      shell: pwsh
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install
+
+    - name: Configure full static
+      shell: msys2 {0}
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Ninja" \
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+              -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
+              -D BUILD_USE_PCH=OFF \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_LIBRARY_TYPE=Static \
+              -D USE_TK=ON \
+              -D CMAKE_BUILD_TYPE=Debug \
+              -D USE_MMGR_TYPE=JEMALLOC \
+              -D INSTALL_DIR="${{ github.workspace }}/install" \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=OFF \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON \
+              -D CMAKE_CXX_FLAGS="-Wall -Wextra" \
+              -D CMAKE_C_FLAGS="-Wall -Wextra" ..
+
+    - name: Build full static
+      shell: msys2 {0}
+      run: |
+        cd build
+        cmake --build . --target install --config Debug -- -j 4
+
+    - name: Clear up after build
+      shell: pwsh
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install
+
+    - name: Configure full with DEBUG define
+      shell: msys2 {0}
+      run: |
+        mkdir -p build
+        cd build
+        cmake -G "Ninja" \
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+              -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
+              -D BUILD_WITH_DEBUG=ON \
+              -D BUILD_USE_PCH=OFF \
+              -D BUILD_INCLUDE_SYMLINK=ON \
+              -D BUILD_OPT_PROFILE=Production \
+              -D BUILD_LIBRARY_TYPE=Shared \
+              -D USE_TK=ON \
+              -D CMAKE_BUILD_TYPE=Debug \
+              -D INSTALL_DIR="${{ github.workspace }}/install" \
+              -D USE_FREETYPE=ON \
+              -D USE_DRACO=ON \
+              -D USE_FFMPEG=OFF \
+              -D USE_FREEIMAGE=ON \
+              -D USE_GLES2=ON \
+              -D USE_OPENVR=ON \
+              -D USE_VTK=OFF \
+              -D USE_TBB=OFF \
+              -D USE_RAPIDJSON=ON \
+              -D USE_OPENGL=ON ..
+
+    - name: Build full with DEBUG define
+      shell: msys2 {0}
+      run: |
+        cd build
+        cmake --build . --target install --config Debug -- -j 4
+      
+    - name: Clear up after build
+      shell: pwsh
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install

@@ -177,6 +177,14 @@ if (IS_BUILTIN_SEARCH_REQUIRED)
       set (3RDPARTY_FREETYPE_LIBRARY_DIR "" CACHE PATH "The directory containing freetype library" FORCE)
     endif()
   endif()
+
+  # In case of MinGW some libraries can have .dll.a extension, so we should check it and use instead of .a
+  if (MINGW AND 3RDPARTY_FREETYPE_LIBRARY AND EXISTS "${3RDPARTY_FREETYPE_LIBRARY}")
+    string (REPLACE ".a" ".dll.a" 3RDPARTY_FREETYPE_LIBRARY_TEST "${3RDPARTY_FREETYPE_LIBRARY}")
+    if (EXISTS "${3RDPARTY_FREETYPE_LIBRARY_TEST}")
+      set (3RDPARTY_FREETYPE_LIBRARY "${3RDPARTY_FREETYPE_LIBRARY_TEST}" CACHE FILEPATH "The path to freetype library" FORCE)
+    endif()
+  endif()
 endif()
 
 # the SECOND step in search for freetype library and header folders (additional search algorithms)

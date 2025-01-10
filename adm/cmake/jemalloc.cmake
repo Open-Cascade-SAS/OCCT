@@ -68,7 +68,7 @@ endfunction()
 
 macro (SEARCH_JEMALLOC)
   # find static jemalloc lib
-  SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".a")
+  SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll.a" ".lib" ".a")
   if (WIN32)
     JEMALLOC_LIB_SEARCH ("jemalloc" "STATIC")
   elseif(NOT WIN32)

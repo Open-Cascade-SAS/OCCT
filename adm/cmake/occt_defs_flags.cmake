@@ -193,6 +193,8 @@ if(MINGW)
   #set (CMAKE_SYSTEM_VERSION "6.1")
   # workaround bugs in mingw with vtable export
   set (CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wattributes")
+  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wattributes")
 endif()
 if (CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
   # Optimize size of binaries
