@@ -1,0 +1,213 @@
+# This workflow validates the build on Windows using MSVC and Clang compilers.
+# It is triggered on pushes to the master branch.
+# The workflow includes steps to install dependencies, configure, build, and clean up the project for different configurations.
+
+name: MSVC build validation
+
+on:
+  push:
+    branches:
+      - 'master'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  main_job:
+    name: Windows MSVC/Clang validation
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "MSVC",
+              cc: "cl",
+              cxx: "cl",
+              generator: "Visual Studio 17 2022",
+              toolset: "host=x64",
+              c_flags: "/W4 /WX",
+              cxx_flags: "/W4 /WX"
+            }
+          - {
+              name: "Clang",
+              cc: "clang",
+              cxx: "clang++",
+              generator: "Ninja",
+              toolset: "",
+              c_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option",
+              cxx_flags: "-Werror -Wall -Wextra -Wno-unknown-warning-option"
+            }
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1.13.0
+      with:
+        arch: x64
+
+    - name: Download and extract 3rdparty dependencies
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Download and extract Mesa3D
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
+      shell: cmd
+
+    - name: Configure basic
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ matrix.config.generator }}" ${{ matrix.config.toolset }} `
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+              -D CMAKE_CXX_FLAGS="${{ matrix.config.cxx_flags }}" `
+              -D CMAKE_C_FLAGS="${{ matrix.config.c_flags }}" ..
+      shell: pwsh
+
+    - name: Build basic
+      run: |
+        cd build
+        cmake --build . --config Release
+      shell: pwsh
+
+    - name: Clear up after build
+      run: |
+        Remove-Item -Recurse -Force build
+      shell: pwsh
+
+    - name: Configure full shared
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ matrix.config.generator }}" ${{ matrix.config.toolset }} `
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} `
+              -D BUILD_USE_PCH=OFF `
+              -D BUILD_INCLUDE_SYMLINK=ON `
+              -D BUILD_OPT_PROFILE=Production `
+              -D BUILD_LIBRARY_TYPE=Shared `
+              -D CMAKE_BUILD_TYPE=Debug `
+              -D INSTALL_DIR=${{ github.workspace }}/install `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+              -D USE_MMGR_TYPE=JEMALLOC `
+              -D USE_FREETYPE=ON `
+              -D USE_DRACO=ON `
+              -D USE_FFMPEG=ON `
+              -D USE_FREEIMAGE=ON `
+              -D USE_GLES2=ON `
+              -D USE_OPENVR=ON `
+              -D USE_VTK=${{ matrix.config.name == 'MSVC' && 'ON' || 'OFF' }} `
+              -D USE_TBB=ON `
+              -D USE_RAPIDJSON=ON `
+              -D USE_OPENGL=ON `
+              -D CMAKE_CXX_FLAGS="${{ matrix.config.cxx_flags }}" `
+              -D CMAKE_C_FLAGS="${{ matrix.config.c_flags }}" ..
+      shell: pwsh
+
+    - name: Build full shared
+      run: |
+        cd build
+        cmake --build . --target install --config Debug
+      shell: pwsh
+
+    - name: Clear up after build
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install
+      shell: pwsh
+
+    - name: Configure full static
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ matrix.config.generator }}" ${{ matrix.config.toolset }} `
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} `
+              -D BUILD_USE_PCH=OFF `
+              -D BUILD_INCLUDE_SYMLINK=ON `
+              -D BUILD_OPT_PROFILE=Production `
+              -D BUILD_LIBRARY_TYPE=Static `
+              -D CMAKE_BUILD_TYPE=Debug `
+              -D INSTALL_DIR=${{ github.workspace }}/install `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+              -D USE_MMGR_TYPE=JEMALLOC `
+              -D USE_FREETYPE=ON `
+              -D USE_DRACO=ON `
+              -D USE_FFMPEG=ON `
+              -D USE_FREEIMAGE=ON `
+              -D USE_GLES2=ON `
+              -D USE_OPENVR=ON `
+              -D USE_VTK=OFF `
+              -D USE_TBB=ON `
+              -D USE_RAPIDJSON=ON `
+              -D USE_OPENGL=ON `
+              -D CMAKE_CXX_FLAGS="${{ matrix.config.cxx_flags }}" `
+              -D CMAKE_C_FLAGS="${{ matrix.config.c_flags }}" ..
+      shell: pwsh
+
+    - name: Build full static
+      run: |
+        cd build
+        cmake --build . --target install --config Debug
+      shell: pwsh
+
+    - name: Clear up after build
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install
+      shell: pwsh
+
+    - name: Configure full with DEBUG define
+      run: |
+        mkdir build
+        cd build
+        cmake -G "${{ matrix.config.generator }}" ${{ matrix.config.toolset }} `
+              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} `
+              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} `
+              -D BUILD_WITH_DEBUG=ON `
+              -D BUILD_USE_PCH=OFF `
+              -D BUILD_INCLUDE_SYMLINK=ON `
+              -D BUILD_OPT_PROFILE=Production `
+              -D BUILD_LIBRARY_TYPE=Shared `
+              -D CMAKE_BUILD_TYPE=Debug `
+              -D INSTALL_DIR=${{ github.workspace }}/install `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+              -D USE_FREETYPE=ON `
+              -D USE_DRACO=ON `
+              -D USE_FFMPEG=ON `
+              -D USE_FREEIMAGE=ON `
+              -D USE_GLES2=ON `
+              -D USE_OPENVR=ON `
+              -D USE_VTK=${{ matrix.config.name == 'MSVC' && 'ON' || 'OFF' }} `
+              -D USE_TBB=ON `
+              -D USE_RAPIDJSON=ON `
+              -D USE_OPENGL=ON ` ..
+      shell: pwsh
+
+    - name: Build full with DEBUG define
+      run: |
+        cd build
+        cmake --build . --target install --config Debug
+      shell: pwsh
+
+    - name: Clear up after build
+      run: |
+        Remove-Item -Recurse -Force build
+        Remove-Item -Recurse -Force ${{ github.workspace }}/install
+      shell: pwsh
