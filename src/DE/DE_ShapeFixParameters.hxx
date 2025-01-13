@@ -14,6 +14,7 @@
 #ifndef _DE_ShapeFixParameters_HeaderFile
 #define _DE_ShapeFixParameters_HeaderFile
 
+#include <Standard_Macro.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
 //! Struct for shape healing parameters storage
@@ -30,7 +31,7 @@ struct DE_ShapeFixParameters
   double           Tolerance3d                         = 1.e-6;
   double           MaxTolerance3d                      = 1.0;
   double           MinTolerance3d                      = 1.e-7;
-  TopAbs_ShapeEnum DetalizationLevel                   = TopAbs_ShapeEnum::TopAbs_FACE;
+  TopAbs_ShapeEnum DetalizationLevel                   = TopAbs_ShapeEnum::TopAbs_VERTEX;
   bool             NonManifold                         = false;
   FixMode          FixFreeShellMode                    = FixMode::FixOrNot;
   FixMode          FixFreeFaceMode                     = FixMode::FixOrNot;
@@ -81,6 +82,17 @@ struct DE_ShapeFixParameters
   FixMode          FixNonAdjacentIntersectingEdgesMode = FixMode::FixOrNot;
   FixMode          FixVertexPositionMode               = FixMode::NotFix;
   FixMode          FixVertexToleranceMode              = FixMode::FixOrNot;
-};
 
+  //! Returns default parameters for reading IGES files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultReadingParamsIGES();
+
+  //! Returns default parameters for writing IGES files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultWritingParamsIGES();
+
+  //! Returns default parameters for reading STEP files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultReadingParamsSTEP();
+
+  //! Returns default parameters for writing STEP files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultWritingParamsSTEP();
+};
 #endif // _DE_ShapeFixParameters_HeaderFile

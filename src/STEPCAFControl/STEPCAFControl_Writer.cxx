@@ -563,6 +563,35 @@ Standard_Boolean STEPCAFControl_Writer::ExternFile(const Standard_CString theNam
   return Standard_True;
 }
 
+//=============================================================================
+
+void STEPCAFControl_Writer::SetParameters(const ParameterMap& theParameters)
+{
+  myWriter.SetParameters(theParameters);
+}
+
+//=============================================================================
+
+void STEPCAFControl_Writer::SetParameters(ParameterMap&& theParameters)
+{
+  myWriter.SetParameters(std::move(theParameters));
+}
+
+//=============================================================================
+
+void STEPCAFControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters,
+                                          const ParameterMap&          theAdditionalParameters)
+{
+  myWriter.SetParameters(theParameters, theAdditionalParameters);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Writer::ParameterMap& STEPCAFControl_Writer::GetParameters() const
+{
+  return myWriter.GetParameters();
+}
+
 //=======================================================================
 //function : Transfer
 //purpose  :

@@ -43,8 +43,6 @@ class STEPControl_ActorWrite : public Transfer_ActorOfFinderProcess
 {
 
 public:
-
-  
   Standard_EXPORT STEPControl_ActorWrite();
   
   Standard_EXPORT virtual Standard_Boolean Recognize (const Handle(Transfer_Finder)& start) Standard_OVERRIDE;
@@ -98,19 +96,9 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsAssembly (const Handle(StepData_StepModel)& theModel,
                                                        TopoDS_Shape& S) const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(STEPControl_ActorWrite,Transfer_ActorOfFinderProcess)
 
-protected:
-
-
-
-
 private:
-
-  
   //! Non-manifold shapes are stored in NMSSR group
   //! (NON_MANIFOLD_SURFACE_SHAPE_REPRESENTATION).
   //! Use this method to get the corresponding NMSSR (or
@@ -128,8 +116,7 @@ private:
   Standard_Boolean separateShapeToSoloVertex(const TopoDS_Shape& theShape,
                                              TopTools_SequenceOfShape& theVertices);
 
-
-
+private:
   Standard_Integer mygroup;
   Standard_Real mytoler;
   STEPConstruct_ContextTool myContext;

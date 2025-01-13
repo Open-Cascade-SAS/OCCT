@@ -24,6 +24,7 @@
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Message_ProgressRange.hxx>
 
+struct DE_ShapeFixParameters;
 class Interface_InterfaceModel;
 class Standard_Transient;
 class Transfer_Binder;
@@ -39,10 +40,7 @@ DEFINE_STANDARD_HANDLE(IGESToBRep_Actor, Transfer_ActorOfTransientProcess)
 //! then returns the Binder which contains the Result
 class IGESToBRep_Actor : public Transfer_ActorOfTransientProcess
 {
-
 public:
-
-  
   Standard_EXPORT IGESToBRep_Actor();
   
   Standard_EXPORT void SetModel (const Handle(Interface_InterfaceModel)& model);
@@ -66,30 +64,12 @@ public:
   //! the file or from statics
   Standard_EXPORT Standard_Real UsedTolerance() const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(IGESToBRep_Actor,Transfer_ActorOfTransientProcess)
 
-protected:
-
-
-
-
 private:
-
-
   Handle(Interface_InterfaceModel) themodel;
   Standard_Integer thecontinuity;
   Standard_Real theeps;
-
-
 };
-
-
-
-
-
-
 
 #endif // _IGESToBRep_Actor_HeaderFile

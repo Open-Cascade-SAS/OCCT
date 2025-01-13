@@ -52,8 +52,9 @@ class STEPCAFControl_Writer
 public:
   DEFINE_STANDARD_ALLOC
 
-public:
+  using ParameterMap = STEPControl_Writer::ParameterMap;
 
+public:
   //! Creates a writer with an empty
   //! STEP model and sets ColorMode, LayerMode, NameMode and
   //! PropsMode to Standard_True.
@@ -212,8 +213,29 @@ public:
 
   Standard_Boolean GetMaterialMode() const { return myMatMode; }
 
-protected:
+  //! Sets parameters for shape processing.
+  //! @param theParameters the parameters for shape processing.
+  Standard_EXPORT void SetParameters(const ParameterMap& theParameters);
 
+  //! Sets parameters for shape processing.
+  //! Parameters are moved from the input map.
+  //! @param theParameters the parameters for shape processing.
+  Standard_EXPORT void SetParameters(ParameterMap&& theParameters);
+
+  //! Sets parameters for shape processing.
+  //! Parameters from @p theParameters are copied to the internal map.
+  //! Parameters from @p theAdditionalParameters are copied to the internal map
+  //! if they are not present in @p theParameters.
+  //! @param theParameters the parameters for shape processing.
+  //! @param theAdditionalParameters the additional parameters for shape processing.
+  Standard_EXPORT void SetParameters(const DE_ShapeFixParameters& theParameters,
+                                     const ParameterMap&          theAdditionalParameters = {});
+
+  //! Returns parameters for shape processing that was set by SetParameters() method.
+  //! @return the parameters for shape processing. Empty map if no parameters were set.
+  Standard_EXPORT const ParameterMap& GetParameters() const;
+
+protected:
   //! Transfers labels to a STEP model
   //! Returns True if translation is OK
   //! isExternFile setting from transferExternFiles method

@@ -8,5 +8,6 @@ DE_Provider.hxx
 DE_ShapeFixConfigurationNode.cxx
 DE_ShapeFixConfigurationNode.hxx
 DE_ShapeFixParameters.hxx
+DE_ShapeFixParameters.cxx
 DE_Wrapper.cxx
 DE_Wrapper.hxx

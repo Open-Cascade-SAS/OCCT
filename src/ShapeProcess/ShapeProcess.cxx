@@ -218,6 +218,26 @@ Standard_Boolean ShapeProcess::Perform(const Handle(ShapeProcess_Context)& theCo
   return anIsAnySuccess;
 }
 
+//=================================================================================================
+
+std::pair<ShapeProcess::Operation, bool> ShapeProcess::ToOperationFlag(const char* theName)
+{
+  if (!theName)
+  {
+    return {Operation::First, false};
+  }
+
+  for (std::underlying_type<Operation>::type anOperation = Operation::First; anOperation <= Operation::Last; ++anOperation)
+  {
+    const char* anOperationName = toOperationName(static_cast<Operation>(anOperation));
+    if (anOperationName && !strcmp(theName, anOperationName))
+    {
+      return {static_cast<Operation>(anOperation), true};
+    }
+  }
+  return {Operation::First, false};
+}
+
 //=======================================================================
 //function : getOperators
 //purpose  :

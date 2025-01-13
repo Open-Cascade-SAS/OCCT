@@ -29,11 +29,18 @@
 #include <Transfer_TransientMapper.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESControl_ActorWrite,Transfer_ActorOfFinderProcess)
 
-IGESControl_ActorWrite::IGESControl_ActorWrite ()  {  ModeTrans() = 0;  }
+//=============================================================================
+
+IGESControl_ActorWrite::IGESControl_ActorWrite()
+{
+  ModeTrans() = 0;
+}
+
+//=============================================================================
 
 Standard_Boolean  IGESControl_ActorWrite::Recognize
   (const Handle(Transfer_Finder)& start)
@@ -50,12 +57,14 @@ Standard_Boolean  IGESControl_ActorWrite::Recognize
   return Standard_False;
 }
 
+//=============================================================================
+
 Handle(Transfer_Binder)  IGESControl_ActorWrite::Transfer
   (const Handle(Transfer_Finder)& start,
    const Handle(Transfer_FinderProcess)& FP,
    const Message_ProgressRange& theProgress)
 {
-  XSAlgo::AlgoContainer()->PrepareForTransfer();
+  XSAlgo_ShapeProcessor::PrepareForTransfer();
     
   DeclareAndCast(IGESData_IGESModel,modl,FP->Model());
   if (modl.IsNull()) return NullResult();
@@ -63,27 +72,23 @@ Handle(Transfer_Binder)  IGESControl_ActorWrite::Transfer
   Handle(Standard_Transient) ent;
 
   DeclareAndCast(TransferBRep_ShapeMapper,shmap,start);
-  if (!shmap.IsNull()) {
+  if (!shmap.IsNull())
+  {
     TopoDS_Shape shape = shmap->Value();
-    if (shape.IsNull()) return NullResult();
-//  modified by NIZHNY-EAP Tue Aug 29 11:16:54 2000 ___BEGIN___
-    Handle(Standard_Transient) info;
-    Standard_Real Tol = Interface_Static::RVal("write.precision.val");
-    Standard_Real maxTol = Interface_Static::RVal("read.maxprecision.val");
-    shape = XSAlgo::AlgoContainer()->ProcessShape( shape, Tol, maxTol, 
-                                                   "write.iges.resource.name", 
-                                                   "write.iges.sequence", info,
-                                                   theProgress, false, TopAbs_EDGE);
-//  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
+    if (shape.IsNull())
+    {
+      return NullResult();
+    }
+
+    XSAlgo_ShapeProcessor aShapeProcessor(GetParameters());
+    shape = aShapeProcessor.ProcessShape(shape, GetShapeProcessFlags().first, theProgress);
 
     BRepToIGES_BREntity   BR0; BR0.SetModel(modl);  BR0.SetTransferProcess(FP);
     BRepToIGESBRep_Entity BR1; BR1.SetModel(modl);  BR1.SetTransferProcess(FP);
 
     if (themodetrans == 0) ent = BR0.TransferShape(shape, theProgress);
     if (themodetrans == 1) ent = BR1.TransferShape(shape, theProgress);
-//  modified by NIZHNY-EAP Tue Aug 29 11:37:18 2000 ___BEGIN___
-    XSAlgo::AlgoContainer()->MergeTransferInfo(FP, info);
-//  modified by NIZHNY-EAP Tue Aug 29 11:37:25 2000 ___END___
+    aShapeProcessor.MergeTransferInfo(FP);
     if (!ent.IsNull()) return TransientResult(ent);
   }
   DeclareAndCast(Transfer_TransientMapper,gemap,start);

@@ -126,22 +126,20 @@ public:
   //! Performs only if a model is not NULL
   Standard_EXPORT Standard_Real SystemLengthUnit() const;
 
-
 protected:
+  //! Returns default parameters for shape fixing.
+  //! This method is used by the base class to get default parameters for shape fixing.
+  //! @return default parameters for shape fixing.
+  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultParameters() const Standard_OVERRIDE;
 
-
-
+  //! Returns default flags for shape processing.
+  //! @return Default flags for shape processing.
+  Standard_EXPORT virtual ShapeProcess::OperationsFlags GetDefaultShapeProcessFlags() const Standard_OVERRIDE;
 
 
 private:
-
-  
   //! Returns  units for length , angle and solidangle for shape representations
   Standard_EXPORT Standard_Boolean findUnits (const Handle(StepRepr_RepresentationContext)& theReprContext, TColStd_Array1OfAsciiString& theNameUnits, TColStd_Array1OfReal& theFactorUnits);
-
-
-
-
 };
 
 

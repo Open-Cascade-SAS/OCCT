@@ -17,16 +17,19 @@
 #ifndef _IGESControl_Writer_HeaderFile
 #define _IGESControl_Writer_HeaderFile
 
+#include <ShapeProcess.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <IGESData_BasicEditor.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_OStream.hxx>
 #include <Message_ProgressRange.hxx>
 
+#include <unordered_map>
+
+struct DE_ShapeFixParameters;
 class Transfer_FinderProcess;
 class IGESData_IGESModel;
 class TopoDS_Shape;
@@ -47,9 +50,15 @@ class IGESData_IGESEntity;
 class IGESControl_Writer 
 {
 public:
-
   DEFINE_STANDARD_ALLOC
-  
+
+  using ParameterMap = std::unordered_map<std::string, std::string>;
+  // Flags defining operations to be performed on shapes. Since there is no std::optional in C++11,
+  // we use a pair. The first element is the flags, the second element is a boolean value that indicates
+  // whether the flags were set.
+  using ProcessingFlags = std::pair<ShapeProcess::OperationsFlags, bool>;
+
+public:
   //! Creates a writer object with the
   //! default unit (millimeters) and write mode (Face).
   //! IGESControl_Writer (const Standard_CString unit,
@@ -58,19 +67,21 @@ public:
   
   //! Creates a writer with given
   //! values for units and for write mode.
-  //! unit may be any unit that is accepted by the IGES standard.
+  //! theUnit may be any unit that is accepted by the IGES standard.
   //! By default, it is the millimeter.
-  //! modecr defines the write mode and may be:
+  //! theModecr defines the write mode and may be:
   //! - 0: Faces (default)
   //! - 1: BRep.
-  Standard_EXPORT IGESControl_Writer(const Standard_CString unit, const Standard_Integer modecr = 0);
+  Standard_EXPORT IGESControl_Writer(const Standard_CString theUnit,
+                                     const Standard_Integer theModecr = 0);
   
   //! Creates a writer object with the
-  //! prepared IGES model model in write mode.
-  //! modecr defines the write mode and may be:
+  //! prepared IGES model theModel in write mode.
+  //! theModecr defines the write mode and may be:
   //! - 0: Faces (default)
   //! - 1: BRep.
-  Standard_EXPORT IGESControl_Writer(const Handle(IGESData_IGESModel)& model, const Standard_Integer modecr = 0);
+  Standard_EXPORT IGESControl_Writer(const Handle(IGESData_IGESModel)& theModel,
+                                     const Standard_Integer            theModecr = 0);
   
   //! Returns the IGES model to be written in output.
   const Handle(IGESData_IGESModel) & Model() const
@@ -114,13 +125,49 @@ public:
   //! if the processor could not create the file).
   Standard_EXPORT Standard_Boolean Write (const Standard_CString file, const Standard_Boolean fnes = Standard_False);
 
- private:
+  //! Sets parameters for shape processing.
+  //! @param theParameters the parameters for shape processing.
+  Standard_EXPORT void SetParameters(const ParameterMap& theParameters);
 
+  //! Sets parameters for shape processing.
+  //! Parameters are moved from the input map.
+  //! @param theParameters the parameters for shape processing.
+  Standard_EXPORT void SetParameters(ParameterMap&& theParameters);
+
+  //! Sets parameters for shape processing.
+  //! Parameters from @p theParameters are copied to the internal map.
+  //! Parameters from @p theAdditionalParameters are copied to the internal map
+  //! if they are not present in @p theParameters.
+  //! @param theParameters the parameters for shape processing.
+  //! @param theAdditionalParameters the additional parameters for shape processing.
+  Standard_EXPORT void SetParameters(const DE_ShapeFixParameters& theParameters,
+                                     const ParameterMap&          theAdditionalParameters = {});
+
+  //! Returns parameters for shape processing that was set by SetParameters() method.
+  //! @return the parameters for shape processing. Empty map if no parameters were set.
+  inline const ParameterMap& GetParameters() const { return myShapeProcParams; }
+
+  //! Sets flags defining operations to be performed on shapes.
+  //! @param theFlags The flags defining operations to be performed on shapes.
+  Standard_EXPORT void SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags);
+
+  //! Returns flags defining operations to be performed on shapes.
+  //! @return The flags defining operations to be performed on shapes.
+  inline const ShapeProcess::OperationsFlags& GetShapeProcessFlags() const { return myShapeProcFlags.first; }
+
+  private:
+  //! If parameters haven't yet been provided, initializes them with default values
+  //! provided by GetDefaultParameters() method.
+  void InitializeMissingParameters();
+
+ private:
   Handle(Transfer_FinderProcess) myTP;
-  Handle(IGESData_IGESModel) myModel;
-  IGESData_BasicEditor myEditor;
-  Standard_Integer myWriteMode;
-  Standard_Boolean myIsComputed;
+  Handle(IGESData_IGESModel)     myModel;
+  IGESData_BasicEditor           myEditor;
+  Standard_Integer               myWriteMode;
+  Standard_Boolean               myIsComputed;
+  ParameterMap                   myShapeProcParams; //!< Parameters for shape processing.
+  ProcessingFlags                myShapeProcFlags;  //!< Flags defining operations to be performed on shapes.
 };
 
 #endif // _IGESControl_Writer_HeaderFile

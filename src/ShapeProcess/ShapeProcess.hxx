@@ -99,6 +99,11 @@ public:
                                                   const OperationsFlags&              theOperations,
                                                   const Message_ProgressRange&        theProgress = Message_ProgressRange());
 
+  //! Converts operation name to operation flag.
+  //! @param theName Operation name.
+  //! @return Operation flag and true if the operation name is valid, false otherwise.
+  Standard_EXPORT static std::pair<Operation, bool> ToOperationFlag(const char* theName);
+
 private:
   //! Returns operators to be performed according to the specified flags.
   //! @param theFlags Bitset of operations flags.

@@ -5368,6 +5368,49 @@ Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
   return myViewMode;
 }
 
+//=============================================================================
+
+void STEPCAFControl_Reader::SetParameters(const ParameterMap& theParameters)
+{
+  myReader.SetParameters(theParameters);
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetParameters(ParameterMap&& theParameters)
+{
+  myReader.SetParameters(std::move(theParameters));
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetParameters(const DE_ShapeFixParameters& theParameters,
+                                          const ParameterMap&          theAdditionalParameters)
+{
+  myReader.SetParameters(theParameters, theAdditionalParameters);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Reader::ParameterMap& STEPCAFControl_Reader::GetParameters() const
+{
+  return myReader.GetParameters();
+}
+
+//=============================================================================
+
+void STEPCAFControl_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags& theFlags)
+{
+  return myReader.SetShapeProcessFlags(theFlags);
+}
+
+//=============================================================================
+
+const STEPCAFControl_Reader::ProcessingFlags& STEPCAFControl_Reader::GetShapeProcessFlags() const
+{
+  return myReader.GetShapeProcessFlags();
+}
+
 //=======================================================================
 //function : ReadMetadata
 //purpose  : 

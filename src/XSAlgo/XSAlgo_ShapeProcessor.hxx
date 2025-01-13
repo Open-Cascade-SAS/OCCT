@@ -35,6 +35,7 @@ class XSAlgo_ShapeProcessor
 public:
   using OperationsFlags = ShapeProcess::OperationsFlags;
   using ParameterMap    = std::unordered_map<std::string, std::string>;
+  using ProcessingData  = std::pair<ParameterMap, OperationsFlags>;
 
 public:
   //! Constructor.
@@ -84,10 +85,49 @@ public:
                                                       const Standard_Real    thePrecision,
                                                       const Standard_Boolean theIsSeam);
 
+  //! Reads the parameter map from and operation flags from the file specified in static interface.
+  //! @param theFileResourceName Name of the parameter in interface static that contains the name
+  //!        of the file. For example, parameter "read.iges.resource.name" may contain string "IGES".
+  //! @param theScopeResourceName Name of the parameter in interface static that contains the name
+  //!        of the scope. For example, parameter "read.iges.sequence" may contain string "FromIGES".
+  //! @return Read parameter map.
+  Standard_EXPORT static ProcessingData ReadProcessingData(const std::string& theFileResourceName,
+                                                           const std::string& theScopeResourceName);
+
   //! Fill the parameter map with the values from the specified parameters.
   //! @param theParameters Parameters to be used in the processing.
+  //! @param theIsForce Flag indicating whether parameter should be replaced if it already exists in the map.
   //! @param theMap Map to fill.
-  Standard_EXPORT static void FillParameterMap(const DE_ShapeFixParameters& theParameters, ParameterMap& theMap);
+  Standard_EXPORT static void FillParameterMap(const DE_ShapeFixParameters& theParameters,
+                                               const bool                   theIsReplace,
+                                               ParameterMap&                theMap);
+
+  //! Set the parameter in the map.
+  //! @param theKey Key of the parameter.
+  //! @param theValue Value of the parameter.
+  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theMap Map to set the parameter in.
+  Standard_EXPORT static void SetParameter(const char*                    theKey,
+                                           DE_ShapeFixParameters::FixMode theValue,
+                                           const bool                     theIsReplace,
+                                           ParameterMap&                  theMap);
+
+  //! Set the parameter in the map.
+  //! @param theKey Key of the parameter.
+  //! @param theValue Value of the parameter.
+  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theMap Map to set the parameter in.
+  Standard_EXPORT static void SetParameter(const char* theKey, double theValue, const bool theIsReplace, ParameterMap& theMap);
+
+  //! Set the parameter in the map.
+  //! @param theKey Key of the parameter.
+  //! @param theValue Value of the parameter.
+  //! @param theIsReplace Flag indicating whether parameter should be replaced if it already exists in the map.
+  //! @param theMap Map to set the parameter in.
+  Standard_EXPORT static void SetParameter(const char*   theKey,
+                                           std::string&& theValue,
+                                           const bool    theIsReplace,
+                                           ParameterMap& theMap);
 
   //! The function is designed to set the length unit for the application before performing a
   //! transfer operation. It ensures that the length unit is correctly configured based on the

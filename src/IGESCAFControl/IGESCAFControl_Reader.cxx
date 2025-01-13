@@ -169,7 +169,6 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (const Handle(TDocStd_Document)
     XCAFDoc_DocumentTool::SetLengthUnit(doc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter);
   }
   aModel->ChangeGlobalSection().SetCascadeUnit(aScaleFactorMM);
-
   TransferRoots(theProgress); // replaces the above
   num = NbShapes();
   if ( num <=0 ) return Standard_False;

@@ -94,7 +94,7 @@
 #include <TransferBRep_ShapeMapper.hxx>
 #include <UnitsMethods.hxx>
 #include <XSAlgo.hxx>
-#include <XSAlgo_AlgoContainer.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorWrite,Transfer_ActorOfFinderProcess)
 
@@ -540,7 +540,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::Transfer (const Handle(Transfer_
   myContext.SetLevel ( 1 ); // set assembly level to 1 (to ensure)
   if (!model->IsInitializedUnit())
   {
-    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    XSAlgo_ShapeProcessor::PrepareForTransfer(); // update unit info
     model->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
   }
   Standard_Real aLFactor = model->WriteLengthUnit();
@@ -633,33 +633,6 @@ Standard_Boolean STEPControl_ActorWrite::IsAssembly (const Handle(StepData_StepM
   S = shape;
   return IsAssembly ( theModel, S );
 }
-
-//=======================================================================
-//function : TransferShape
-//purpose  : 
-//=======================================================================
-
-/*
-static void UpdateMap (const TopoDS_Shape &shape, 
-		       BRepTools_Modifier &M1, 
-		       BRepTools_Modifier &M2, 
-		       const Handle(Transfer_FinderProcess) &FinderProcess)
-{
-  TopoDS_Shape S = M1.ModifiedShape ( shape );
-  S = M2.ModifiedShape ( S );
-  if ( S == shape ) return;
-
-  Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FinderProcess, S );
-  Handle(Transfer_Binder) binder = FinderProcess->Find ( mapper );
-  if ( ! binder.IsNull() ) {
-    mapper = TransferBRep::ShapeMapper ( FinderProcess, shape );
-    FinderProcess->Bind ( mapper, binder );
-  }
-  
-  for ( TopoDS_Iterator it(shape); it.More(); it.Next() ) 
-    UpdateMap ( it.Value(), M1, M2, FinderProcess );
-}
-*/
 
 // PTV 16.09.2002 added for transferring vertices.
 static Standard_Boolean transferVertex (const Handle(Transfer_FinderProcess)& FP,
@@ -984,37 +957,32 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
         default : trmode =STEPControl_GeometricCurveSet; break;
       }
     }
-    //:abv 24Jan99 CAX-IF TRJ3: expanded Shape Processing
-//    TopoDS_Shape aShape = xShape;
-    // eliminate conical surfaces with negative semiangles
-//    Handle(TopoDSToStep_ConicalSurfModif) CSM = new TopoDSToStep_ConicalSurfModif();
-//    BRepTools_Modifier CSMT(aShape,CSM);
-//    if ( CSMT.IsDone() ) aShape = CSMT.ModifiedShape ( aShape );
-//    // eliminate indirect elementary surfaces
-//    Handle(TopoDSToStep_DirectModification) DM = new TopoDSToStep_DirectModification();
-//    BRepTools_Modifier DMT(aShape,DM);
-//    if ( DMT.IsDone() ) aShape = DMT.ModifiedShape ( aShape );
-////    aShape = TopoDSToStep::DirectFaces(xShape);
+
     Message_ProgressScope aPS1(aPS.Next(), NULL, 2);
 
     TopoDS_Shape aShape = xShape;
-    Handle(Standard_Transient) info;
 
-    if (hasGeometry(aShape)) 
+    Transfer_ActorOfFinderProcess::ParameterMap aParameters = GetParameters();
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", Tol, true, aParameters);
+    XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d",
+                                        aStepModel->InternalParameters.ReadMaxPrecisionVal,
+                                        true,
+                                        aParameters);
+    XSAlgo_ShapeProcessor aShapeProcessor(aParameters);
+
+    if (hasGeometry(aShape))
     {
-      Standard_Real maxTol = aStepModel->InternalParameters.ReadMaxPrecisionVal;
+      aShape = aShapeProcessor.ProcessShape(xShape, GetShapeProcessFlags().first, aPS1.Next());
 
-      aShape = XSAlgo::AlgoContainer()->ProcessShape(xShape, Tol, maxTol,
-        "write.step.resource.name",
-        "write.step.sequence", info,
-        aPS1.Next());
       if (aPS1.UserBreak())
+      {
         return Handle(Transfer_Binder)();
+      }
     }
 
     if (!isManifold) 
     {
-      mergeInfoForNM(FP, info);
+      mergeInfoForNM(FP, aShapeProcessor.GetContext());
     }
 
     // create a STEP entity corresponding to shape
@@ -1248,10 +1216,8 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape
         subbind->AddResult(TransientResult(itemTess));
     }
 
-    //:abv 24Jan99 CAX-IF TRJ3: Update FinderProcess map to take into account shape processing
-//    UpdateMap ( xShape, CSMT, DMT, FP );
-    if (!info.IsNull())
-      XSAlgo::AlgoContainer()->MergeTransferInfo(FP, info);
+    // If shape is not processed, this function does nothing. Intentionally.
+    aShapeProcessor.MergeTransferInfo(FP);
   }
   
   // - Make Shape Representation 
