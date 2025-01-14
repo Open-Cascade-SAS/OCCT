@@ -274,21 +274,17 @@ protected:
   //! @param[out] theGltfFace  glTF face definition
   //! @param[out] theBinFile   output file to write into
   //! @param[in] theFaceIter   current face to write
-  //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveEdgeIndices (RWGltf_GltfFace& theGltfFace,
                                                 std::ostream& theBinFile,
-                                                const RWMesh_EdgeIterator& theEdgeIter,
-                                                const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
+                                                const RWMesh_EdgeIterator& theEdgeIter);
 
   //! Write mesh indexes into binary file.
   //! @param[out] theGltfFace  glTF face definition
   //! @param[out] theBinFile   output file to write into
   //! @param[in] theFaceIter   current face to write
-  //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveVertexIndices (RWGltf_GltfFace& theGltfFace,
                                                   std::ostream& theBinFile,
-                                                  const RWMesh_VertexIterator& theVertexIter,
-                                                  const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
+                                                  const RWMesh_VertexIterator& theVertexIter);
 
 protected:
 
