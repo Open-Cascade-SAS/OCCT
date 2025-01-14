@@ -299,12 +299,12 @@ TCollection_AsciiString RWGltf_CafWriter::formatName (RWMesh_NameFormat theForma
 }
 
 //================================================================
-// Function : toSkipFaceMesh
+// Function : toSkipShape
 // Purpose  :
 //================================================================
-Standard_Boolean RWGltf_CafWriter::toSkipFaceMesh (const RWMesh_ShapeIterator& theFaceIter) const
+Standard_Boolean RWGltf_CafWriter::toSkipShape (const RWMesh_ShapeIterator& theShapeIter) const
 {
-  return theFaceIter.IsEmpty();
+  return theShapeIter.IsEmpty();
 }
 
 // =======================================================================
@@ -662,7 +662,7 @@ void RWGltf_CafWriter::dispatchShapes (const XCAFPrs_DocumentNode& theDocNode,
     myBinDataMap.Add (aStyledShape, aGltfFaceList);
     for (; theShapeIter.More() && thePSentryBin.More(); theShapeIter.Next())
     {
-      if (toSkipFaceMesh (theShapeIter))
+      if (toSkipShape (theShapeIter))
       {
         continue;
       }
@@ -709,8 +709,8 @@ void RWGltf_CafWriter::dispatchShapes (const XCAFPrs_DocumentNode& theDocNode,
     for (; theShapeIter.More() && thePSentryBin.More(); theShapeIter.Next())
     {
       RWGltf_StyledShape aStyledShape (theShapeIter.Shape(), theShapeIter.Style());
-      if (toSkipFaceMesh (theShapeIter)
-       || myBinDataMap.Contains(aStyledShape))
+      if (toSkipShape (theShapeIter)
+       || myBinDataMap.Contains (aStyledShape))
       {
         continue;
       }
@@ -1102,7 +1102,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
       for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
            aFaceIter.More(); aFaceIter.Next())
       {
-        if (toSkipFaceMesh (aFaceIter))
+        if (toSkipShape (aFaceIter))
         {
           continue;
         }
@@ -1180,28 +1180,46 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
       continue;
     }
 
-    bool hasMeshData = false;
+    bool hasShapeData = false;
     if (!aDocNode.IsAssembly)
     {
-      for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next())
+      auto checkShapeData = [&](RWMesh_ShapeIterator& anIter)
       {
-        if (!toSkipFaceMesh (aFaceIter))
+        for (; anIter.More(); anIter.Next())
         {
-          hasMeshData = true;
-          break;
+          if (!toSkipShape (anIter))
+          {
+            return true;
+          }
         }
+        return false;
+      };
+      {
+        RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+        hasShapeData = checkShapeData (aFaceIter);
+      }
+      if (!hasShapeData)
+      {
+        RWMesh_EdgeIterator anEdgeIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+        hasShapeData = checkShapeData (anEdgeIter);
+      }
+      if (!hasShapeData)
+      {
+        RWMesh_VertexIterator aVertIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+        hasShapeData = checkShapeData (aVertIter);
       }
     }
-    //if (hasMeshData)
+
+    if (hasShapeData)
     {
       aSceneNodeMap.Add (aDocNode);
     }
-    //else
-    //{
-    //  // glTF disallows empty meshes / primitive arrays
-    //  const TCollection_AsciiString aNodeName = formatName (RWMesh_NameFormat_ProductOrInstance, aDocNode.Label, aDocNode.RefLabel);
-    //  Message::SendWarning (TCollection_AsciiString("RWGltf_CafWriter skipped node '") + aNodeName + "' without triangulation data");
-    //}
+    else
+    {
+      // glTF disallows empty shapes / primitive arrays
+      const TCollection_AsciiString aNodeName = formatName (RWMesh_NameFormat_ProductOrInstance, aDocNode.Label, aDocNode.RefLabel);
+      Message::SendWarning (TCollection_AsciiString("RWGltf_CafWriter skipped node '") + aNodeName + "' without geometry data");
+    }
   }
 
   rapidjson::OStreamWrapper aFileStream (*aGltfContentFile);
@@ -2038,7 +2056,7 @@ void RWGltf_CafWriter::writeShapes (RWMesh_ShapeIterator&          theShapeIter,
 {
   for ( ; theShapeIter.More(); theShapeIter.Next(), ++theNbFacesInNode)
   {
-    if (toSkipFaceMesh (theShapeIter))
+    if (toSkipShape (theShapeIter))
     {
       continue;
     }

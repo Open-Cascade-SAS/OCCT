@@ -201,8 +201,8 @@ protected:
 
 protected:
 
-  //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
-  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh (const RWMesh_ShapeIterator& theFaceIter) const;
+  //! Return TRUE if face shape should be skipped (e.g. because it is invalid or empty).
+  Standard_EXPORT virtual Standard_Boolean toSkipShape (const RWMesh_ShapeIterator& theShapeIter) const;
 
   //! Generate name for specified labels.
   //! @param[in] theFormat   name format to apply
