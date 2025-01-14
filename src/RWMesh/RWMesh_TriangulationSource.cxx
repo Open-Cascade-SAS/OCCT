@@ -49,9 +49,24 @@ Standard_Boolean RWMesh_TriangulationSource::loadDeferredData (const Handle(OSD_
   {
     return false;
   }
-  if (myReader->Load (this, theDestTriangulation, theFileSystem))
+  Handle(RWMesh_TriangulationSource) aDestTriangulation = Handle(RWMesh_TriangulationSource)::DownCast (theDestTriangulation);
+  if (aDestTriangulation.IsNull())
+  {
+    return false;
+  }
+  if (myReader->Load (this, aDestTriangulation, theFileSystem))
   {
     return true;
   }
   return false;
+}
+
+// =======================================================================
+// function : ResizeEdges
+// purpose  :
+// =======================================================================
+void RWMesh_TriangulationSource::ResizeEdges (Standard_Integer theNbEdges,
+                                              Standard_Boolean theToCopyOld)
+{
+  myEdges.Resize (1, theNbEdges, theToCopyOld);
 }

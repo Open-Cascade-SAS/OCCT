@@ -82,7 +82,7 @@ RWObj_CafWriter::~RWObj_CafWriter()
 //================================================================
 Standard_Boolean RWObj_CafWriter::toSkipFaceMesh (const RWMesh_FaceIterator& theFaceIter)
 {
-  return theFaceIter.IsEmptyMesh();
+  return theFaceIter.IsEmpty();
 }
 
 // =======================================================================
@@ -252,8 +252,8 @@ void RWObj_CafWriter::addFaceInfo (const RWMesh_FaceIterator& theFace,
   }
 
   theToCreateMatFile = theToCreateMatFile
-                   ||  theFace.HasFaceColor()
-                   || (!theFace.FaceStyle().BaseColorTexture().IsNull() && theFace.HasTexCoords());
+                   ||  theFace.HasColor()
+                   || (!theFace.Style().BaseColorTexture().IsNull() && theFace.HasTexCoords());
 }
 
 // =======================================================================
@@ -298,10 +298,10 @@ bool RWObj_CafWriter::writeShape (RWObj_ObjWriterContext&        theWriter,
     toCreateGroup = false;
 
     TCollection_AsciiString aMatName;
-    if (aFaceIter.HasFaceColor()
-    || !aFaceIter.FaceStyle().BaseColorTexture().IsNull())
+    if (aFaceIter.HasColor()
+    || !aFaceIter.Style().BaseColorTexture().IsNull())
     {
-      aMatName = theMatMgr.AddMaterial (aFaceIter.FaceStyle());
+      aMatName = theMatMgr.AddMaterial (aFaceIter.Style());
     }
     if (aMatName != theWriter.ActiveMaterial())
     {

@@ -26,6 +26,7 @@
 #include <OSD_FileSystem.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
+#include <TopoDS.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(RWGltf_CafReader, RWMesh_CafReader)
 
@@ -35,11 +36,11 @@ class RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
 public:
 
   //! Main constructor.
-  CafReader_GltfBaseLoadingFunctor (NCollection_Vector<TopoDS_Face>& theFaceList,
+  CafReader_GltfBaseLoadingFunctor (NCollection_Vector<TopoDS_Shape>& theShapeList,
                                     const Message_ProgressRange& theProgress,
                                     const OSD_ThreadPool::Launcher& theThreadPool)
-  : myFaceList  (&theFaceList),
-    myProgress  (theProgress, "Loading glTF triangulation", Max (1, theFaceList.Size())),
+  : myShapeList (&theShapeList),
+    myProgress  (theProgress, "Loading glTF triangulation", Max (1, theShapeList.Size())),
     myThreadPool(theThreadPool)
   {
     //
@@ -49,14 +50,36 @@ public:
   void operator() (int theThreadIndex,
                    int theFaceIndex) const
   {
-    TopLoc_Location aDummyLoc;
-    TopoDS_Face& aFace = myFaceList->ChangeValue (theFaceIndex);
-    Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (aFace, aDummyLoc));
-    Handle(Poly_Triangulation) aPolyData = loadData (aLateData, theThreadIndex);
-    if (!aPolyData.IsNull())
+    TopoDS_Shape& aShape = myShapeList->ChangeValue (theFaceIndex);
+    switch (aShape.ShapeType())
     {
-      BRep_Builder aBuilder;
-      aBuilder.UpdateFace (aFace, aPolyData); // replace all "proxy"-triangulations of face by loaded active one.
+      case TopAbs_FACE:
+      {
+        TopLoc_Location aDummyLoc;
+        TopoDS_Face& aFace = TopoDS::Face (aShape);
+        Handle(RWGltf_GltfLatePrimitiveArray) aLateData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast (BRep_Tool::Triangulation (aFace, aDummyLoc));
+        Handle(Poly_Triangulation) aPolyData = loadData (aLateData, theThreadIndex);
+        if (!aPolyData.IsNull())
+        {
+          BRep_Builder aBuilder;
+          aBuilder.UpdateFace (aFace, aPolyData); // replace all "proxy"-triangulations of face by loaded active one.
+        }
+        break;
+      }
+      case TopAbs_EDGE:
+      {
+        TopoDS_Edge& aFace = TopoDS::Edge (aShape);
+        break;
+      }
+      case TopAbs_VERTEX:
+      {
+        TopoDS_Vertex& aFace = TopoDS::Vertex (aShape);
+        break;
+      }
+      default:
+      {
+        break;
+      }
     }
     if (myThreadPool.HasThreads())
     {
@@ -77,10 +100,10 @@ protected:
 
 protected:
 
-  NCollection_Vector<TopoDS_Face>* myFaceList;
-  mutable Standard_Mutex           myMutex;
-  mutable Message_ProgressScope    myProgress;
-  const OSD_ThreadPool::Launcher&  myThreadPool;
+  NCollection_Vector<TopoDS_Shape>* myShapeList;
+  mutable Standard_Mutex            myMutex;
+  mutable Message_ProgressScope     myProgress;
+  const OSD_ThreadPool::Launcher&   myThreadPool;
 };
 //! Functor for parallel execution of all glTF data loading.
 class RWGltf_CafReader::CafReader_GltfFullDataLoadingFunctor : public RWGltf_CafReader::CafReader_GltfBaseLoadingFunctor
@@ -94,7 +117,7 @@ public:
 
   //! Main constructor.
   CafReader_GltfFullDataLoadingFunctor (RWGltf_CafReader* myCafReader,
-                                        NCollection_Vector<TopoDS_Face>& theFaceList,
+                                        NCollection_Vector<TopoDS_Shape>& theFaceList,
                                         const Message_ProgressRange& theProgress,
                                         const OSD_ThreadPool::Launcher& theThreadPool)
   : CafReader_GltfBaseLoadingFunctor (theFaceList, theProgress, theThreadPool),
@@ -124,6 +147,12 @@ protected:
     if (myCafReader->ToKeepLateData())
     {
       theLateData->LoadDeferredData (aTlsData.FileSystem);
+      Message::SendInfo() << "Load Late Data, Name : " << theLateData->Name();
+      for (Standard_Integer i = 1; i <= theLateData->NbNodes(); ++i)
+      {
+        gp_Pnt point = theLateData->Node (i);
+        Message::SendInfo() << "Node " << i << ": (" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
+      }
       return Handle(Poly_Triangulation)();
     }
     return theLateData->DetachedLoadDeferredData (aTlsData.FileSystem);
@@ -141,7 +170,7 @@ class RWGltf_CafReader::CafReader_GltfStreamDataLoadingFunctor : public RWGltf_C
 public:
 
   //! Main constructor.
-  CafReader_GltfStreamDataLoadingFunctor (NCollection_Vector<TopoDS_Face>& theFaceList,
+  CafReader_GltfStreamDataLoadingFunctor (NCollection_Vector<TopoDS_Shape>& theFaceList,
                                           const Message_ProgressRange& theProgress,
                                           const OSD_ThreadPool::Launcher& theThreadPool)
   : CafReader_GltfBaseLoadingFunctor (theFaceList, theProgress, theThreadPool)
@@ -331,7 +360,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (std::istream& theStream,
   }
 
   if (!theToProbe
-   && !readLateData (aDoc.FaceList(), theFile, aPSentry.Next()))
+   && !readLateData (aDoc.ShapeList(), theFile, aPSentry.Next()))
   {
     return false;
   }
@@ -357,7 +386,7 @@ Handle(RWMesh_TriangulationReader) RWGltf_CafReader::createMeshReaderContext() c
 // Function : readLateData
 // Purpose  :
 //================================================================
-Standard_Boolean RWGltf_CafReader::readLateData (NCollection_Vector<TopoDS_Face>& theFaces,
+Standard_Boolean RWGltf_CafReader::readLateData (NCollection_Vector<TopoDS_Shape>& theFaces,
                                                  const TCollection_AsciiString& theFile,
                                                  const Message_ProgressRange& theProgress)
 {
@@ -396,13 +425,17 @@ Standard_Boolean RWGltf_CafReader::readLateData (NCollection_Vector<TopoDS_Face>
 // Function : updateLateDataReader
 // Purpose  :
 //================================================================
-void RWGltf_CafReader::updateLateDataReader (NCollection_Vector<TopoDS_Face>& theFaces,
+void RWGltf_CafReader::updateLateDataReader (NCollection_Vector<TopoDS_Shape>& theFaces,
                                              const Handle(RWMesh_TriangulationReader)& theReader) const
 {
   TopLoc_Location aDummyLoc;
-  for (NCollection_Vector<TopoDS_Face>::Iterator aFaceIter(theFaces); aFaceIter.More(); aFaceIter.Next())
+  for (NCollection_Vector<TopoDS_Shape>::Iterator aFaceIter(theFaces); aFaceIter.More(); aFaceIter.Next())
   {
-    const TopoDS_Face& aFace = aFaceIter.Value();
+    if (aFaceIter.Value().ShapeType() != TopAbs_FACE)
+    {
+      continue;
+    }
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Value());
     for (Poly_ListOfTriangulation::Iterator anIter(BRep_Tool::Triangulations (aFace, aDummyLoc)); anIter.More(); anIter.Next())
     {
       Handle(RWGltf_GltfLatePrimitiveArray) aData = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(anIter.Value());

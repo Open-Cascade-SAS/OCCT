@@ -15,6 +15,7 @@
 #define _RWMesh_TriangulationSource_HeaderFile
 
 #include <Poly_Triangulation.hxx>
+#include <NCollection_Array1.hxx>
 
 class RWMesh_TriangulationReader;
 
@@ -44,13 +45,35 @@ public:
   //! Gets access to number of degenerated triangles to collect them during data reading.
   Standard_Integer& ChangeDegeneratedTriNb() { return myStatisticOfDegeneratedTriNb; }
 
+  //! Returns TRUE if triangulation has some geometry.
+  virtual Standard_Boolean HasGeometry() const Standard_OVERRIDE
+  {
+    return !myNodes.IsEmpty() && (!myTriangles.IsEmpty() || !myEdges.IsEmpty());
+  }
+
+  //! Returns the number of edges for this triangulation.
+  Standard_Integer NbEdges() const { return myEdges.Length(); }
+
+  //! Returns edge at the given index.
+  //! @param[in] theIndex edge index within [1, NbEdges()] range
+  //! @return edge node indices, with each node defined within [1, NbNodes()] range
+  Standard_Integer Edge (Standard_Integer theIndex) const { return myEdges.Value (theIndex); }
+
+  //! Sets an edge.
+  //! @param[in] theIndex edge index within [1, NbEdges()] range
+  //! @param[in] theEdge edge node indices, with each node defined within [1, NbNodes()] range
+  void SetEdge (Standard_Integer theIndex, Standard_Integer theEdge)
+  {
+    myEdges.SetValue (theIndex, theEdge);
+  }
+
 public: //! @name late-load deferred data interface
 
   //! Returns number of nodes for deferred loading.
   //! Note: this is estimated values defined in object header, which might be different from actually loaded values
   //! (due to broken header or extra mesh processing).
   //! Always check triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual Standard_Integer NbDeferredNodes() const Standard_OVERRIDE { return myNbDefNodes; }
+  virtual Standard_Integer NbDeferredNodes() const { return myNbDefNodes; }
 
   //! Sets number of nodes for deferred loading.
   void SetNbDeferredNodes (const Standard_Integer theNbNodes) { myNbDefNodes = theNbNodes; }
@@ -59,10 +82,20 @@ public: //! @name late-load deferred data interface
   //! Note: this is estimated values defined in object header, which might be different from actually loaded values
   //! (due to broken header or extra mesh processing).
   //! Always check triangulation size of actually loaded data in code to avoid out-of-range issues.
-  virtual Standard_Integer NbDeferredTriangles() const Standard_OVERRIDE { return myNbDefTriangles; }
+  virtual Standard_Integer NbDeferredTriangles() const { return myNbDefTriangles; }
 
   //! Sets number of triangles for deferred loading.
   void SetNbDeferredTriangles (const Standard_Integer theNbTris) { myNbDefTriangles = theNbTris; }
+
+  //! Returns an internal array of edges.
+  //! Edge()/SetEdge() should be used instead in portable code.
+  NCollection_Array1<Standard_Integer>& InternalEdges() { return myEdges; }
+
+  //! Method resizing an internal array of triangles.
+  //! @param[in] theNbTriangles  new number of triangles
+  //! @param[in] theToCopyOld    copy old triangles into the new array
+  Standard_EXPORT void ResizeEdges (Standard_Integer theNbEdges,
+                                    Standard_Boolean theToCopyOld);
 
 protected:
 
@@ -72,10 +105,11 @@ protected:
 
 protected:
 
-  Handle(RWMesh_TriangulationReader) myReader;
-  Standard_Integer                   myNbDefNodes;
-  Standard_Integer                   myNbDefTriangles;
-  mutable Standard_Integer           myStatisticOfDegeneratedTriNb;
+  Handle(RWMesh_TriangulationReader)   myReader;
+  NCollection_Array1<Standard_Integer> myEdges;
+  Standard_Integer                     myNbDefNodes;
+  Standard_Integer                     myNbDefTriangles;
+  mutable Standard_Integer             myStatisticOfDegeneratedTriNb;
 
 };
 

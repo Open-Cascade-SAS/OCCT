@@ -97,7 +97,7 @@ RWMesh_TriangulationReader::~RWMesh_TriangulationReader()
 // purpose  :
 // =======================================================================
 bool RWMesh_TriangulationReader::Load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                       const Handle(Poly_Triangulation)& theDestMesh,
+                                       const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                        const Handle(OSD_FileSystem)& theFileSystem) const
 {
   Standard_ASSERT_RETURN (!theDestMesh.IsNull(), "The destination mesh should be initialized before loading data to it", false);
@@ -122,7 +122,7 @@ bool RWMesh_TriangulationReader::Load (const Handle(RWMesh_TriangulationSource)&
 // purpose  :
 // =======================================================================
 bool RWMesh_TriangulationReader::finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                  const Handle(Poly_Triangulation)& theDestMesh) const
+                                                  const Handle(RWMesh_TriangulationSource)& theDestMesh) const
 {
   if (!theSourceMesh->CachedMinMax().IsVoid())
   {
@@ -146,4 +146,158 @@ bool RWMesh_TriangulationReader::finalizeLoading (const Handle(RWMesh_Triangulat
     Message::SendTrace (aStatisticInfo);
   }
   return true;
+}
+
+// =======================================================================
+// function : setNbPositionNodes
+// purpose  :
+// =======================================================================
+bool RWMesh_TriangulationReader::setNbPositionNodes (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                     Standard_Integer theNbNodes,
+                                                     Standard_Boolean theToCopyData) const
+{
+  if (theNbNodes <= 0)
+  {
+    return false;
+  }
+  theMesh->ResizeNodes(theNbNodes, theToCopyData);
+  return true;
+}
+
+// =======================================================================
+// function : setNodePosition
+// purpose  :
+// =======================================================================
+void RWMesh_TriangulationReader::setNodePosition (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                  Standard_Integer theIndex,
+                                                  const gp_Pnt& thePnt) const
+{
+  theMesh->SetNode(theIndex, thePnt);
+}
+
+// =======================================================================
+// function : setNbUVNodes
+// purpose  :
+// =======================================================================
+bool RWMesh_TriangulationReader::setNbUVNodes (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                               Standard_Integer theNbNodes) const
+{
+  if (theNbNodes <= 0
+    || theMesh->NbNodes() != theNbNodes)
+  {
+    return false;
+  }
+  theMesh->AddUVNodes();
+  return true;
+}
+
+// =======================================================================
+// function : setNodeUV
+// purpose  :
+// =======================================================================
+void RWMesh_TriangulationReader::setNodeUV (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                            Standard_Integer theIndex,
+                                            const gp_Pnt2d& theUV) const
+{
+  theMesh->SetUVNode (theIndex, theUV);
+}
+
+// =======================================================================
+// function : setNbNormalNodes
+// purpose  :
+// =======================================================================
+bool RWMesh_TriangulationReader::setNbNormalNodes (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                   Standard_Integer theNbNodes) const
+{
+  if (theNbNodes <= 0
+    || theMesh->NbNodes() != theNbNodes)
+  {
+    return false;
+  }
+  theMesh->AddNormals();
+  return true;
+}
+
+// =======================================================================
+// function : setNodeNormal
+// purpose  :
+// =======================================================================
+void RWMesh_TriangulationReader::setNodeNormal (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                Standard_Integer theIndex,
+                                                const gp_Vec3f& theNormal) const
+{
+  theMesh->SetNormal(theIndex, theNormal);
+}
+
+// =======================================================================
+// function : setNbTriangles
+// purpose  :
+// =======================================================================
+bool RWMesh_TriangulationReader::setNbTriangles (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                 Standard_Integer theNbTris,
+                                                 Standard_Boolean theToCopyData) const
+{
+  if (theNbTris >= 1)
+  {
+    theMesh->ResizeTriangles (theNbTris, theToCopyData);
+    return true;
+  }
+  return false;
+}
+
+// =======================================================================
+// function : setTriangle
+// purpose  :
+// =======================================================================
+Standard_Integer RWMesh_TriangulationReader::setTriangle (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                          Standard_Integer theIndex,
+                                                          const Poly_Triangle& theTriangle) const
+{
+  if (theTriangle.Value(1) < 1 || theTriangle.Value(1) > theMesh->NbNodes()
+    || theTriangle.Value(2) < 1 || theTriangle.Value(2) > theMesh->NbNodes()
+    || theTriangle.Value(3) < 1 || theTriangle.Value(3) > theMesh->NbNodes())
+  {
+    return 0;
+  }
+  if (myToSkipDegenerateTris
+    && (theTriangle.Value(1) == theTriangle.Value(2)
+      || theTriangle.Value(1) == theTriangle.Value(3)
+      || theTriangle.Value(2) == theTriangle.Value(3)))
+  {
+    return -1;
+  }
+  theMesh->SetTriangle (theIndex, theTriangle);
+  return 1;
+}
+
+// =======================================================================
+// function : setNbEdges
+// purpose  :
+// =======================================================================
+bool RWMesh_TriangulationReader::setNbEdges (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                             Standard_Integer theNbTris,
+                                             Standard_Boolean theToCopyData) const
+{
+  if (theNbTris >= 1)
+  {
+    theMesh->ResizeEdges (theNbTris, theToCopyData);
+    return true;
+  }
+  return false;
+}
+
+// =======================================================================
+// function : setEdge
+// purpose  :
+// =======================================================================
+Standard_Integer RWMesh_TriangulationReader::setEdge (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                      Standard_Integer theIndex,
+                                                      const Standard_Integer theEdge) const
+{
+  if (theEdge < 1 || theEdge > theMesh->NbNodes())
+  {
+    return 0;
+  }
+  theMesh->SetEdge(theIndex, theEdge);
+  return 1;
 }

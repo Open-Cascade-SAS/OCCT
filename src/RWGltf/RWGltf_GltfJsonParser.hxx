@@ -120,8 +120,8 @@ public:
   //! Parse glTF document.
   Standard_EXPORT bool Parse (const Message_ProgressRange& theProgress);
 
-  //! Return face list for loading triangulation.
-  NCollection_Vector<TopoDS_Face>& FaceList() { return myFaceList; }
+  //! Return shape list for loading geometry.
+  NCollection_Vector<TopoDS_Shape>& ShapeList() { return myShapeList; }
 
 protected:
 #ifdef HAVE_RAPIDJSON
@@ -454,7 +454,7 @@ protected:
 
   NCollection_DataMap<TCollection_AsciiString, bool> myProbedFiles;
   NCollection_DataMap<TCollection_AsciiString, Handle(NCollection_Buffer)> myDecodedBuffers;
-  NCollection_Vector<TopoDS_Face> myFaceList; //!< face list for loading triangulation
+  NCollection_Vector<TopoDS_Shape> myShapeList; //!< shape list for loading geometry
 
   TCollection_AsciiString   myFilePath;       //!< file path
   TCollection_AsciiString   myFolder;         //!< folder

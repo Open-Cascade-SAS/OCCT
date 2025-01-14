@@ -12,6 +12,7 @@ RWGltf_GltfAlphaMode.hxx
 RWGltf_GltfArrayType.hxx
 RWGltf_GltfBufferView.hxx
 RWGltf_GltfBufferViewTarget.hxx
+RWGltf_GltfEdge.hxx
 RWGltf_GltfFace.hxx
 RWGltf_GltfJsonParser.cxx
 RWGltf_GltfJsonParser.hxx
@@ -24,6 +25,8 @@ RWGltf_GltfPrimArrayData.hxx
 RWGltf_GltfPrimitiveMode.hxx
 RWGltf_GltfRootElement.hxx
 RWGltf_GltfSceneNodeMap.hxx
+RWGltf_GltfShape.hxx
+RWGltf_GltfVertex.hxx
 RWGltf_MaterialCommon.hxx
 RWGltf_MaterialMetallicRoughness.hxx
 RWGltf_Provider.cxx

@@ -94,12 +94,12 @@ protected:
   Standard_EXPORT virtual Handle(RWMesh_TriangulationReader) createMeshReaderContext() const;
 
   //! Read late data from RWGltf_GltfLatePrimitiveArray stored as Poly_Triangulation within faces.
-  Standard_EXPORT virtual Standard_Boolean readLateData (NCollection_Vector<TopoDS_Face>& theFaces,
+  Standard_EXPORT virtual Standard_Boolean readLateData (NCollection_Vector<TopoDS_Shape>& theFaces,
                                                          const TCollection_AsciiString& theFile,
                                                          const Message_ProgressRange& theProgress);
 
   //! Set reader for each late data.
-  Standard_EXPORT void updateLateDataReader (NCollection_Vector<TopoDS_Face>& theFaces,
+  Standard_EXPORT void updateLateDataReader (NCollection_Vector<TopoDS_Shape>& theFaces,
                                              const Handle(RWMesh_TriangulationReader)& theReader) const;
 
 protected:

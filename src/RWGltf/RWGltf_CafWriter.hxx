@@ -14,23 +14,30 @@
 #ifndef _RWGltf_CafWriter_HeaderFiler
 #define _RWGltf_CafWriter_HeaderFiler
 
+#include <Message_ProgressScope.hxx>
+#include <NCollection_DataMap.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>
 #include <TColStd_MapOfAsciiString.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <RWGltf_DracoParameters.hxx>
+#include <RWGltf_GltfArrayType.hxx>
 #include <RWGltf_GltfBufferView.hxx>
 #include <RWGltf_GltfFace.hxx>
 #include <RWGltf_WriterTrsfFormat.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <RWMesh_NameFormat.hxx>
+#include <XCAFPrs_DocumentNode.hxx>
 #include <XCAFPrs_Style.hxx>
 #include <Poly_Triangle.hxx>
 
 #include <memory>
 
 class Message_ProgressRange;
+class RWMesh_ShapeIterator;
 class RWMesh_FaceIterator;
+class RWMesh_EdgeIterator;
+class RWMesh_VertexIterator;
 class RWGltf_GltfOStreamWriter;
 class RWGltf_GltfMaterialMap;
 class RWGltf_GltfSceneNodeMap;
@@ -195,7 +202,7 @@ protected:
 protected:
 
   //! Return TRUE if face mesh should be skipped (e.g. because it is invalid or empty).
-  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh (const RWMesh_FaceIterator& theFaceIter);
+  Standard_EXPORT virtual Standard_Boolean toSkipFaceMesh (const RWMesh_ShapeIterator& theFaceIter) const;
 
   //! Generate name for specified labels.
   //! @param[in] theFormat   name format to apply
@@ -213,7 +220,7 @@ protected:
   //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveNodes (RWGltf_GltfFace& theGltfFace,
                                           std::ostream& theBinFile,
-                                          const RWMesh_FaceIterator& theFaceIter,
+                                          const RWMesh_ShapeIterator& theFaceIter,
                                           Standard_Integer& theAccessorNb,
                                           const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
@@ -225,7 +232,7 @@ protected:
   //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveNormals (RWGltf_GltfFace& theGltfFace,
                                             std::ostream& theBinFile,
-                                            RWMesh_FaceIterator& theFaceIter,
+                                            const RWMesh_FaceIterator& theFaceIter,
                                             Standard_Integer& theAccessorNb,
                                             const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh) const;
 
@@ -249,9 +256,39 @@ protected:
   //! @param[in][out] theMesh   mesh
   Standard_EXPORT virtual void saveIndices (RWGltf_GltfFace& theGltfFace,
                                             std::ostream& theBinFile,
-                                            const RWMesh_FaceIterator& theFaceIter,
+                                            const RWMesh_ShapeIterator& theFaceIter,
                                             Standard_Integer& theAccessorNb,
                                             const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
+
+  //! Write mesh indexes into binary file.
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theMesh   mesh
+  Standard_EXPORT virtual void saveTriangleIndices (RWGltf_GltfFace& theGltfFace,
+                                                    std::ostream& theBinFile,
+                                                    const RWMesh_FaceIterator& theFaceIter,
+                                                    const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
+
+  //! Write mesh indexes into binary file.
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theMesh   mesh
+  Standard_EXPORT virtual void saveEdgeIndices (RWGltf_GltfFace& theGltfFace,
+                                                std::ostream& theBinFile,
+                                                const RWMesh_EdgeIterator& theEdgeIter,
+                                                const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
+
+  //! Write mesh indexes into binary file.
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theMesh   mesh
+  Standard_EXPORT virtual void saveVertexIndices (RWGltf_GltfFace& theGltfFace,
+                                                  std::ostream& theBinFile,
+                                                  const RWMesh_VertexIterator& theVertexIter,
+                                                  const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh);
 
 protected:
 
@@ -352,7 +389,41 @@ protected:
 
   //! Write nodes.extras section with key-value attributes.
   //! @param[in] theNamedData  attributes map to process.
-  Standard_EXPORT virtual void writeExtrasAttributes(const Handle(TDataStd_NamedData)& theNamedData);
+  Standard_EXPORT virtual void writeExtrasAttributes (const Handle(TDataStd_NamedData)& theNamedData);
+
+  //! Dispatch shapes
+  //! @param[in] theDocNode 
+  //! @param[in] thePSentryBin 
+  //! @param[in,out] theMergedFaces 
+  //! @param[in,out] theShapeIter 
+  Standard_EXPORT virtual void dispatchShapes (const XCAFPrs_DocumentNode& theDocNode,
+                                               const Message_ProgressScope& thePSentryBin,
+                                               NCollection_DataMap<XCAFPrs_Style, Handle(RWGltf_GltfFace)>& theMergedFaces,
+                                               RWMesh_ShapeIterator& theShapeIter);
+
+  //! Dispatch shapes
+  //! @param[out] theGltfFace  glTF face definition
+  //! @param[out] theBinFile   output file to write into
+  //! @param[in] theFaceIter   current face to write
+  //! @param[in][out] theAccessorNb   last accessor index
+  //! @param[in][out] theMesh   mesh
+  //! @param[in] theArrType   
+  Standard_EXPORT virtual bool writeShapesToBin (RWGltf_GltfFace&              theGltfFace,
+                                                 std::ostream&                 theBinFile,
+                                                 const RWMesh_ShapeIterator&   theShapeIter,
+                                                 Standard_Integer&             theAccessorNb,
+                                                 const std::shared_ptr<RWGltf_CafWriter::Mesh>& theMesh,
+                                                 const RWGltf_GltfArrayType    theArrType);
+
+  //! Write shapes to RWGltf_GltfRootElement_Meshes section
+  //! @param[out] theGltfFace  glTF face definition
+  Standard_EXPORT virtual void writeShapes (RWMesh_ShapeIterator&          theShapeIter,
+                                            Standard_Integer&              theNbFacesInNode,
+                                            Standard_Integer&              theDracoBufInd,
+                                            Standard_Boolean&              theToStartPrims,
+                                            const TCollection_AsciiString& theNodeName,
+                                            NCollection_Map<Handle(RWGltf_GltfFaceList)>& theWrittenShapes,
+                                            NCollection_IndexedDataMap<int, int>& theDracoBufIndMap);
 
 protected:
 

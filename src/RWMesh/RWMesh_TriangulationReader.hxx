@@ -126,19 +126,19 @@ public:
 
   //! Loads primitive array.
   Standard_EXPORT bool Load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                             const Handle(Poly_Triangulation)& theDestMesh,
+                             const Handle(RWMesh_TriangulationSource)& theDestMesh,
                              const Handle(OSD_FileSystem)& theFileSystem) const;
 
 protected:
 
   //! Loads primitive array.
   Standard_EXPORT virtual bool load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                     const Handle(Poly_Triangulation)& theDestMesh,
+                                     const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                      const Handle(OSD_FileSystem)& theFileSystem) const = 0;
 
   //! Performs additional actions to finalize data loading.
   Standard_EXPORT virtual bool finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                const Handle(Poly_Triangulation)& theDestMesh) const;
+                                                const Handle(RWMesh_TriangulationSource)& theDestMesh) const;
 
 protected: //! @name interface for filling triangulation data
 
@@ -147,99 +147,56 @@ protected: //! @name interface for filling triangulation data
   //! @param[in] theNbNodes  nodes number
   //! @param[in] theToCopyData  copy old nodes into new array
   //! @return TRUE in case of success operation
-  virtual bool setNbPositionNodes (const Handle(Poly_Triangulation)& theMesh,
-                                   Standard_Integer theNbNodes,
-                                   Standard_Boolean theToCopyData = false) const
-  {
-    if (theNbNodes <= 0)
-    {
-      return false;
-    }
-    theMesh->ResizeNodes (theNbNodes, theToCopyData);
-    return true;
-  }
+  Standard_EXPORT virtual bool setNbPositionNodes (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                   Standard_Integer theNbNodes,
+                                                   Standard_Boolean theToCopyData = false) const;
 
   //! Sets node position.
   //! @param[in] theMesh  triangulation to be modified
   //! @param[in] theIndex  node index starting from 1
   //! @param[in] thePnt  node position
-  virtual void setNodePosition (const Handle(Poly_Triangulation)& theMesh,
-                                Standard_Integer theIndex,
-                                const gp_Pnt& thePnt) const
-  {
-    theMesh->SetNode (theIndex, thePnt);
-  }
+  Standard_EXPORT virtual void setNodePosition (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                Standard_Integer theIndex,
+                                                const gp_Pnt& thePnt) const;
 
   //! Resizes array of UV nodes to specified size.
   //! @param[in] theMesh  triangulation to be modified
   //! @param[in] theNbNodes  nodes number
   //! @return TRUE in case of success operation
-  virtual bool setNbUVNodes (const Handle(Poly_Triangulation)& theMesh,
-                             Standard_Integer theNbNodes) const
-  {
-    if (theNbNodes <= 0
-     || theMesh->NbNodes() != theNbNodes)
-    {
-      return false;
-    }
-    theMesh->AddUVNodes();
-    return true;
-  }
+  Standard_EXPORT virtual bool setNbUVNodes (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                             Standard_Integer theNbNodes) const;
 
   //! Sets node UV texture coordinates.
   //! @param[in] theMesh  triangulation to be modified
   //! @param[in] theIndex  node index starting from 1
   //! @param[in] theUV  node UV coordinates
-  virtual void setNodeUV (const Handle(Poly_Triangulation)& theMesh,
-                          Standard_Integer theIndex,
-                          const gp_Pnt2d& theUV) const
-  {
-    theMesh->SetUVNode (theIndex, theUV);
-  }
+  Standard_EXPORT virtual void setNodeUV (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                          Standard_Integer theIndex,
+                                          const gp_Pnt2d& theUV) const;
 
   //! Resizes array of nodes normals to specified size.
   //! @param[in] theMesh  triangulation to be modified
   //! @param[in] theNbNodes  nodes number
   //! @return TRUE in case of success operation
-  virtual bool setNbNormalNodes (const Handle(Poly_Triangulation)& theMesh,
-                                 Standard_Integer theNbNodes) const
-  {
-    if (theNbNodes <= 0
-     || theMesh->NbNodes() != theNbNodes)
-    {
-      return false;
-    }
-    theMesh->AddNormals();
-    return true;
-  }
+  Standard_EXPORT virtual bool setNbNormalNodes (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                 Standard_Integer theNbNodes) const;
 
   //! Sets node normal.
   //! @param[in] theMesh  triangulation to be modified
   //! @param theIndex  node index starting from 1
   //! @param theNormal node normal vector
-  virtual void setNodeNormal (const Handle(Poly_Triangulation)& theMesh,
-                              Standard_Integer theIndex,
-                              const gp_Vec3f& theNormal) const
-  {
-    theMesh->SetNormal (theIndex, theNormal);
-  }
+  Standard_EXPORT virtual void setNodeNormal (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                              Standard_Integer theIndex,
+                                              const gp_Vec3f& theNormal) const;
 
   //! Resizes array of triangles to specified size.
   //! @param[in] theMesh  triangulation to be modified
   //! @param[in] theNbTris  elements number
   //! @param[in] theToCopyData  copy old triangles into new array
   //! @return TRUE in case of success operation
-  virtual bool setNbTriangles (const Handle(Poly_Triangulation)& theMesh,
-                               Standard_Integer theNbTris,
-                               Standard_Boolean theToCopyData = false) const
-  {
-    if (theNbTris >= 1)
-    {
-      theMesh->ResizeTriangles (theNbTris, theToCopyData);
-      return true;
-    }
-    return false;
-  }
+  Standard_EXPORT virtual bool setNbTriangles (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                               Standard_Integer theNbTris,
+                                               Standard_Boolean theToCopyData = false) const;
 
   //! Adds triangle element.
   //! @param[in] theMesh  triangulation to be modified
@@ -248,26 +205,29 @@ protected: //! @name interface for filling triangulation data
   //! @return 0 if node indexes are out of range,
   //!        -1 if triangle is degenerated and should be skipped,
   //!         1 in case of success operation.
-  virtual Standard_Integer setTriangle (const Handle(Poly_Triangulation)& theMesh,
-                                        Standard_Integer theIndex,
-                                        const Poly_Triangle& theTriangle) const
-  {
-    if (theTriangle.Value (1) < 1 || theTriangle.Value (1) > theMesh->NbNodes()
-     || theTriangle.Value (2) < 1 || theTriangle.Value (2) > theMesh->NbNodes()
-     || theTriangle.Value (3) < 1 || theTriangle.Value (3) > theMesh->NbNodes())
-    {
-      return 0;
-    }
-    if (myToSkipDegenerateTris
-        && (theTriangle.Value (1) == theTriangle.Value (2)
-         || theTriangle.Value (1) == theTriangle.Value (3)
-         || theTriangle.Value (2) == theTriangle.Value (3)))
-    {
-      return -1;
-    }
-    theMesh->SetTriangle (theIndex, theTriangle);
-    return 1;
-  }
+  Standard_EXPORT virtual Standard_Integer setTriangle (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                        Standard_Integer theIndex,
+                                                        const Poly_Triangle& theTriangle) const;
+
+  //! Resizes array of triangles to specified size.
+  //! @param[in] theMesh  triangulation to be modified
+  //! @param[in] theNbTris  elements number
+  //! @param[in] theToCopyData  copy old triangles into new array
+  //! @return TRUE in case of success operation
+  Standard_EXPORT virtual bool setNbEdges (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                           Standard_Integer theNbTris,
+                                           Standard_Boolean theToCopyData = false) const;
+
+  //! Adds triangle element.
+  //! @param[in] theMesh  triangulation to be modified
+  //! @param theIndex    triangle index starting from 1
+  //! @param theTriangle triangle nodes starting from 1
+  //! @return 0 if node indexes are out of range,
+  //!        -1 if triangle is degenerated and should be skipped,
+  //!         1 in case of success operation.
+  Standard_EXPORT virtual Standard_Integer setEdge (const Handle(RWMesh_TriangulationSource)& theMesh,
+                                                    Standard_Integer theIndex,
+                                                    const Standard_Integer theEdge) const;
 
 protected:
 

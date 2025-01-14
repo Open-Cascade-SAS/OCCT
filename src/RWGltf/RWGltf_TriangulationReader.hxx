@@ -34,7 +34,7 @@ public:
   //! Loads only primitive arrays saved as stream buffer
   //! (it is primarily glTF data encoded in base64 saved to temporary buffer during glTF file reading).
   Standard_EXPORT bool LoadStreamData (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                       const Handle(Poly_Triangulation)& theDestMesh) const;
+                                       const Handle(RWMesh_TriangulationSource)& theDestMesh) const;
 
 protected:
 
@@ -47,14 +47,14 @@ protected:
   //! @param theFileSystem    shared file system to read from
   //! Note: this method skips "stream data" that should be loaded by LoadStreamData() call.
   Standard_EXPORT virtual bool load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                     const Handle(Poly_Triangulation)& theDestMesh,
+                                     const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                      const Handle(OSD_FileSystem)& theFileSystem) const Standard_OVERRIDE;
 
   //! Performs additional actions to finalize data loading.
   //! @param theSourceMesh source triangulation
   //! @param theDestMesh   triangulation to be modified
   Standard_EXPORT virtual bool finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                const Handle(Poly_Triangulation)& theDestMesh) const Standard_OVERRIDE;
+                                                const Handle(RWMesh_TriangulationSource)& theDestMesh) const Standard_OVERRIDE;
 
   //! Loads only primitive arrays saved as stream buffer
   //! (it is primarily glTF data encoded in base64 saved to temporary buffer during glTF file reading).
@@ -62,7 +62,7 @@ protected:
   //! @param theDestMesh      triangulation to be modified
   //! @param theToResetStream if TRUE reset input stream data buffer after its loading.
   Standard_EXPORT bool loadStreamData (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                       const Handle(Poly_Triangulation)& theDestMesh,
+                                       const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                        bool theToResetStream = true) const;
 
   //! Reads primitive array from stream data.
@@ -71,7 +71,7 @@ protected:
   //! @param theDestMesh       triangulation to be modified
   Standard_EXPORT bool readStreamData (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
                                        const RWGltf_GltfPrimArrayData& theGltfData,
-                                       const Handle(Poly_Triangulation)& theDestMesh) const;
+                                       const Handle(RWMesh_TriangulationSource)& theDestMesh) const;
 
   //! Reads primitive array from file data.
   //! @param theSourceGltfMesh source glTF triangulation
@@ -80,7 +80,7 @@ protected:
   //! @param theFileSystem     shared file system to read from
   Standard_EXPORT bool readFileData (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
                                      const RWGltf_GltfPrimArrayData& theGltfData,
-                                     const Handle(Poly_Triangulation)& theDestMesh,
+                                     const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                      const Handle(OSD_FileSystem)& theFileSystem) const;
 
   //! Fills triangulation data and ignore non-triangulation primitives.
@@ -91,7 +91,7 @@ protected:
   //! @param theType           array type
   //! @return FALSE on error
   Standard_EXPORT virtual bool readBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
-                                           const Handle(Poly_Triangulation)& theDestMesh,
+                                           const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                            std::istream& theStream,
                                            const RWGltf_GltfAccessor& theAccessor,
                                            RWGltf_GltfArrayType theType) const;
@@ -103,12 +103,12 @@ protected:
   //! @param theFileSystem     shared file system to read from
   Standard_EXPORT virtual bool readDracoBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
                                                 const RWGltf_GltfPrimArrayData& theGltfData,
-                                                const Handle(Poly_Triangulation)& theDestMesh,
+                                                const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                                 const Handle(OSD_FileSystem)& theFileSystem) const;
 
 protected:
 
-  Handle(Poly_Triangulation) myTriangulation;
+  Handle(RWMesh_TriangulationSource) myTriangulation;
 
 };
 

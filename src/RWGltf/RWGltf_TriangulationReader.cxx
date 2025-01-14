@@ -107,7 +107,7 @@ void RWGltf_TriangulationReader::reportError (const TCollection_AsciiString& the
 // purpose  :
 // =======================================================================
 bool RWGltf_TriangulationReader::LoadStreamData (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                 const Handle(Poly_Triangulation)& theDestMesh) const
+                                                 const Handle(RWMesh_TriangulationSource)& theDestMesh) const
 {
   Standard_ASSERT_RETURN (!theDestMesh.IsNull(), "The destination mesh should be initialized before loading data to it", false);
   theDestMesh->Clear();
@@ -132,7 +132,7 @@ bool RWGltf_TriangulationReader::LoadStreamData (const Handle(RWMesh_Triangulati
 // =======================================================================
 bool RWGltf_TriangulationReader::readStreamData (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
                                                  const RWGltf_GltfPrimArrayData& theGltfData,
-                                                 const Handle(Poly_Triangulation)& theDestMesh) const
+                                                 const Handle(RWMesh_TriangulationSource)& theDestMesh) const
 {
   Standard_ArrayStreamBuffer aStreamBuffer ((const char* )theGltfData.StreamData->Data(), theGltfData.StreamData->Size());
   std::istream aStream (&aStreamBuffer);
@@ -150,7 +150,7 @@ bool RWGltf_TriangulationReader::readStreamData (const Handle(RWGltf_GltfLatePri
 // =======================================================================
 bool RWGltf_TriangulationReader::readFileData (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
                                                const RWGltf_GltfPrimArrayData& theGltfData,
-                                               const Handle(Poly_Triangulation)& theDestMesh,
+                                               const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                                const Handle(OSD_FileSystem)& theFileSystem) const
 {
   const Handle(OSD_FileSystem)& aFileSystem = !theFileSystem.IsNull() ? theFileSystem : OSD_FileSystem::DefaultFileSystem();
@@ -174,7 +174,7 @@ bool RWGltf_TriangulationReader::readFileData (const Handle(RWGltf_GltfLatePrimi
 // purpose  :
 // =======================================================================
 bool RWGltf_TriangulationReader::loadStreamData (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                 const Handle(Poly_Triangulation)& theDestMesh,
+                                                 const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                                  bool theToResetStream) const
 {
   const Handle(RWGltf_GltfLatePrimitiveArray) aSourceGltfMesh = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(theSourceMesh);
@@ -210,7 +210,7 @@ bool RWGltf_TriangulationReader::loadStreamData (const Handle(RWMesh_Triangulati
 // =======================================================================
 bool RWGltf_TriangulationReader::readDracoBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceGltfMesh,
                                                   const RWGltf_GltfPrimArrayData& theGltfData,
-                                                  const Handle(Poly_Triangulation)& theDestMesh,
+                                                  const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                                   const Handle(OSD_FileSystem)& theFileSystem) const
 {
   const TCollection_AsciiString& aName = theSourceGltfMesh->Id();
@@ -422,7 +422,7 @@ bool RWGltf_TriangulationReader::readDracoBuffer (const Handle(RWGltf_GltfLatePr
 // purpose  :
 // =======================================================================
 bool RWGltf_TriangulationReader::load (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                       const Handle(Poly_Triangulation)& theDestMesh,
+                                       const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                        const Handle(OSD_FileSystem)& theFileSystem) const
 {
   const Handle(RWGltf_GltfLatePrimitiveArray) aSourceGltfMesh = Handle(RWGltf_GltfLatePrimitiveArray)::DownCast(theSourceMesh);
@@ -477,7 +477,7 @@ bool RWGltf_TriangulationReader::load (const Handle(RWMesh_TriangulationSource)&
 // purpose  :
 // =======================================================================
 bool RWGltf_TriangulationReader::finalizeLoading (const Handle(RWMesh_TriangulationSource)& theSourceMesh,
-                                                  const Handle(Poly_Triangulation)& theDestMesh) const
+                                                  const Handle(RWMesh_TriangulationSource)& theDestMesh) const
 {
   if (theDestMesh->NbNodes() < 1)
   {
@@ -514,18 +514,18 @@ bool RWGltf_TriangulationReader::finalizeLoading (const Handle(RWMesh_Triangulat
 // purpose  :
 // =======================================================================
 bool RWGltf_TriangulationReader::readBuffer (const Handle(RWGltf_GltfLatePrimitiveArray)& theSourceMesh,
-                                             const Handle(Poly_Triangulation)& theDestMesh,
+                                             const Handle(RWMesh_TriangulationSource)& theDestMesh,
                                              std::istream& theStream,
                                              const RWGltf_GltfAccessor& theAccessor,
                                              RWGltf_GltfArrayType theType) const
 
 {
   const TCollection_AsciiString& aName = theSourceMesh->Id();
-  if (theSourceMesh->PrimitiveMode() != RWGltf_GltfPrimitiveMode_Triangles)
-  {
-    Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' skipped unsupported primitive array");
-    return true;
-  }
+  //if (theSourceMesh->PrimitiveMode() != RWGltf_GltfPrimitiveMode_Triangles)
+  //{
+  //  Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' skipped unsupported primitive array");
+  //  return true;
+  //}
 
   switch (theType)
   {
@@ -545,18 +545,48 @@ bool RWGltf_TriangulationReader::readBuffer (const Handle(RWGltf_GltfLatePrimiti
           return false;
         }
 
-        const Standard_Integer aNbTris = (Standard_Integer )(theAccessor.Count / 3);
-        if (!setNbTriangles (theDestMesh, aNbTris))
+        const Standard_Boolean isTriangles = theSourceMesh->PrimitiveMode() == RWGltf_GltfPrimitiveMode_Triangles;
+        const Standard_Integer aCounter = isTriangles
+                                        ? (Standard_Integer )(theAccessor.Count / 3)
+                                        : (Standard_Integer )(theAccessor.Count);
+
+        if ((isTriangles && !setNbTriangles (theDestMesh, aCounter))
+         || !setNbEdges (theDestMesh, aCounter))
         {
           return false;
         }
+
         const size_t aStride = theAccessor.ByteStride != 0
                              ? theAccessor.ByteStride
                              : sizeof(uint16_t);
         Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
         Standard_Integer aLastTriIndex = 0;
-        for (Standard_Integer aTriIter = 0; aTriIter < aNbTris; ++aTriIter)
+        for (Standard_Integer aTriIter = 0; aTriIter < aCounter; ++aTriIter)
         {
+          if (!isTriangles)
+          {
+            if (const uint16_t* anIndex = aBuffer.ReadChunk<uint16_t>(theStream))
+            {
+              const Standard_Integer wasSet = setEdge (theDestMesh,
+                                                       THE_LOWER_TRI_INDEX + aLastTriIndex,
+                                                       THE_LOWER_NODE_INDEX + *anIndex);
+              if (!wasSet)
+              {
+                reportError(TCollection_AsciiString("Buffer '") + aName + "' refers to invalid indices.");
+              }
+              if (wasSet > 0)
+              {
+                aLastTriIndex++;
+              }
+            }
+            else
+            {
+              reportError (TCollection_AsciiString("Buffer '") + aName + "' reading error.");
+              return false;
+            }
+            continue;
+          }
+
           if (const uint16_t* anIndex0 = aBuffer.ReadChunk<uint16_t> (theStream))
           {
             aVec3.ChangeValue (1) = THE_LOWER_NODE_INDEX + *anIndex0;
@@ -585,10 +615,10 @@ bool RWGltf_TriangulationReader::readBuffer (const Handle(RWGltf_GltfLatePrimiti
             aLastTriIndex++;
           }
         }
-        const Standard_Integer aNbDegenerate = aNbTris - aLastTriIndex;
+        const Standard_Integer aNbDegenerate = aCounter - aLastTriIndex;
         if (aNbDegenerate > 0)
         {
-          if (aNbDegenerate == aNbTris)
+          if (aNbDegenerate == aCounter)
           {
             Message::SendWarning (TCollection_AsciiString("Buffer '") + aName + "' has been skipped (all elements are degenerative in)");
             return false;
