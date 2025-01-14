@@ -516,11 +516,11 @@ void RWGltf_CafWriter::saveEdgeIndices (RWGltf_GltfFace& theGltfFace,
   {
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
     {
-      writeEdge16 (theBinFile, (uint16_t)(anElemIter - 1));
+      writeEdge16 (theBinFile, (uint16_t)(anElemIter + aNodeFirst));
     }
     else
     {
-      writeEdge32 (theBinFile, anElemIter - 1);
+      writeEdge32 (theBinFile, anElemIter + aNodeFirst);
     }
   }
 }
@@ -540,11 +540,11 @@ void RWGltf_CafWriter::saveVertexIndices (RWGltf_GltfFace& theGltfFace,
   {
     if (theGltfFace.Indices.ComponentType == RWGltf_GltfAccessorCompType_UInt16)
     {
-      writeEdge16 (theBinFile, (uint16_t)(anElemIter - 1));
+      writeEdge16 (theBinFile, (uint16_t)(anElemIter + aNodeFirst));
     }
     else
     {
-      writeEdge32 (theBinFile, anElemIter - 1);
+      writeEdge32 (theBinFile, anElemIter + aNodeFirst);
     }
   }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2019 OPEN CASCADE SAS
+// Copyright (c) 2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -52,7 +52,7 @@ public:
   const TopoDS_Edge& Edge() const { return myEdge; }
 
   //! Return current edge.
-  const TopoDS_Shape& Shape() const { return myEdge; }
+  const TopoDS_Shape& Shape() const Standard_OVERRIDE { return myEdge; }
 
   //! Return current edge data.
   const Handle(Poly_Polygon3D)& Polygon3D() const { return myPolygon3D; }

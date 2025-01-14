@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2019 OPEN CASCADE SAS
+// Copyright (c) 2025 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -52,7 +52,7 @@ public:
   const TopoDS_Vertex& Vertex() const { return myVertex; }
 
   //! Return current vertex.
-  const TopoDS_Shape& Shape() const { return myVertex; }
+  const TopoDS_Shape& Shape() const Standard_OVERRIDE { return myVertex; }
 
   //! Return current vertex data.
   const gp_Pnt& Point() const { return myPoint; }

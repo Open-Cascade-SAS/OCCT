@@ -49,7 +49,7 @@ public:
   const TopoDS_Face& Face() const { return myFace; }
 
   //! Return current face.
-  const TopoDS_Shape& Shape() const { return myFace; }
+  const TopoDS_Shape& Shape() const Standard_OVERRIDE { return myFace; }
 
   //! Return current face triangulation.
   const Handle(Poly_Triangulation)& Triangulation() const { return myPolyTriang; }
