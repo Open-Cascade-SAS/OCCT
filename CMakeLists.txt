@@ -723,6 +723,9 @@ endif()
 # the name of the project
 project (OCCT)
 
+# copying clang-format file to the root of the project
+file(COPY ${CMAKE_SOURCE_DIR}/.clang-format DESTINATION ${CMAKE_SOURCE_DIR})
+
 # Get all used variables: OS_WITH_BIT, COMPILER
 OCCT_MAKE_OS_WITH_BITNESS()
 OCCT_MAKE_COMPILER_SHORT_NAME()

@@ -23,110 +23,163 @@
 
 #include <Approx_Status.hxx>
 
-//================================================================================
-inline Standard_Integer ApproxInt_MultiLineTool::NbP2d(const TheMultiLine& ML) { 
-  return(ML.NbP2d());
-}
-//--------------------------------------------------------------------------------
-inline Standard_Integer ApproxInt_MultiLineTool::NbP3d(const TheMultiLine& ML) { 
-  return(ML.NbP3d()); 
-}
-//--------------------------------------------------------------------------------
-inline Standard_Integer ApproxInt_MultiLineTool::FirstPoint(const TheMultiLine& ML) { 
-  return(ML.FirstPoint());
-}
-//--------------------------------------------------------------------------------
-inline Standard_Integer ApproxInt_MultiLineTool::LastPoint(const TheMultiLine& ML) { 
-  return(ML.LastPoint());
-}
-//--------------------------------------------------------------------------------
-inline void ApproxInt_MultiLineTool::Value( const TheMultiLine&     ML
-					   ,const Standard_Integer Index
-					   ,TColgp_Array1OfPnt&        TabPnt) { 
-  ML.Value(Index,TabPnt);
-}
-//--------------------------------------------------------------------------------
-inline void ApproxInt_MultiLineTool::Value( const TheMultiLine&     ML
-					   ,const Standard_Integer Index
-					   ,TColgp_Array1OfPnt2d&       TabPnt2d) { 
-  ML.Value(Index,TabPnt2d);
-}
-//--------------------------------------------------------------------------------
-inline void ApproxInt_MultiLineTool::Value( const TheMultiLine&     ML
-					   ,const Standard_Integer Index
-					   ,TColgp_Array1OfPnt&        TabPnt
-					   ,TColgp_Array1OfPnt2d&      TabPnt2d) { 
-  ML.Value(Index,TabPnt,TabPnt2d);
-}
-//--------------------------------------------------------------------------------
-inline Standard_Boolean ApproxInt_MultiLineTool::Tangency( const TheMultiLine&    ML
-							  ,const Standard_Integer Index
-							  ,TColgp_Array1OfVec&        TabVec) { 
-  return(ML.Tangency(Index,TabVec));
-}
-//--------------------------------------------------------------------------------
-inline Standard_Boolean ApproxInt_MultiLineTool::Tangency( const TheMultiLine&     ML
-							  ,const Standard_Integer Index
-							  ,TColgp_Array1OfVec2d&      TabVec2d) { 
-  return(ML.Tangency(Index,TabVec2d));
-}
-//--------------------------------------------------------------------------------
-inline Standard_Boolean ApproxInt_MultiLineTool::Tangency( const TheMultiLine&     ML
-							  ,const Standard_Integer Index
-							  ,TColgp_Array1OfVec&        TabVec
-							  ,TColgp_Array1OfVec2d&      TabVec2d) { 
-  return(ML.Tangency(Index,TabVec,TabVec2d));
+//=================================================================================================
+
+inline Standard_Integer ApproxInt_MultiLineTool::NbP2d(const TheMultiLine& ML)
+{
+  return (ML.NbP2d());
 }
 
-//--------------------------------------------------------------------------------
-inline Standard_Boolean ApproxInt_MultiLineTool::Curvature( const TheMultiLine&     //ML
-							  ,const Standard_Integer   //Index
-							  ,TColgp_Array1OfVec&  ) { //TabVec 
+//=================================================================================================
+
+inline Standard_Integer ApproxInt_MultiLineTool::NbP3d(const TheMultiLine& ML)
+{
+  return (ML.NbP3d());
+}
+
+//=================================================================================================
+
+inline Standard_Integer ApproxInt_MultiLineTool::FirstPoint(const TheMultiLine& ML)
+{
+  return (ML.FirstPoint());
+}
+
+//=================================================================================================
+
+inline Standard_Integer ApproxInt_MultiLineTool::LastPoint(const TheMultiLine& ML)
+{
+  return (ML.LastPoint());
+}
+
+//=================================================================================================
+
+inline void ApproxInt_MultiLineTool::Value(const TheMultiLine&    ML,
+                                           const Standard_Integer Index,
+                                           TColgp_Array1OfPnt&    TabPnt)
+{
+  ML.Value(Index, TabPnt);
+}
+
+//=================================================================================================
+
+inline void ApproxInt_MultiLineTool::Value(const TheMultiLine&    ML,
+                                           const Standard_Integer Index,
+                                           TColgp_Array1OfPnt2d&  TabPnt2d)
+{
+  ML.Value(Index, TabPnt2d);
+}
+
+//=================================================================================================
+
+inline void ApproxInt_MultiLineTool::Value(const TheMultiLine&    ML,
+                                           const Standard_Integer Index,
+                                           TColgp_Array1OfPnt&    TabPnt,
+                                           TColgp_Array1OfPnt2d&  TabPnt2d)
+{
+  ML.Value(Index, TabPnt, TabPnt2d);
+}
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::Tangency(const TheMultiLine&    ML,
+                                                          const Standard_Integer Index,
+                                                          TColgp_Array1OfVec&    TabVec)
+{
+  return (ML.Tangency(Index, TabVec));
+}
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::Tangency(const TheMultiLine&    ML,
+                                                          const Standard_Integer Index,
+                                                          TColgp_Array1OfVec2d&  TabVec2d)
+{
+  return (ML.Tangency(Index, TabVec2d));
+}
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::Tangency(const TheMultiLine&    ML,
+                                                          const Standard_Integer Index,
+                                                          TColgp_Array1OfVec&    TabVec,
+                                                          TColgp_Array1OfVec2d&  TabVec2d)
+{
+  return (ML.Tangency(Index, TabVec, TabVec2d));
+}
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::Curvature(const TheMultiLine& // ML
+                                                           ,
+                                                           const Standard_Integer // Index
+                                                           ,
+                                                           TColgp_Array1OfVec&)
+{ // TabVec
   return Standard_False;
 }
-//--------------------------------------------------------------------------------
-inline Standard_Boolean ApproxInt_MultiLineTool::Curvature( const TheMultiLine&      //ML
-							  ,const Standard_Integer    //Index
-							  ,TColgp_Array1OfVec2d& ) { //TabVec2d
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::Curvature(const TheMultiLine& // ML
+                                                           ,
+                                                           const Standard_Integer // Index
+                                                           ,
+                                                           TColgp_Array1OfVec2d&)
+{ // TabVec2d
   return Standard_False;
 }
-//--------------------------------------------------------------------------------
-inline Standard_Boolean ApproxInt_MultiLineTool::Curvature( const TheMultiLine&      //ML
-							  ,const Standard_Integer    //Index
-							  ,TColgp_Array1OfVec&       //TabVec
-							  ,TColgp_Array1OfVec2d& ) { //TabVec2d
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::Curvature(const TheMultiLine& // ML
+                                                           ,
+                                                           const Standard_Integer // Index
+                                                           ,
+                                                           TColgp_Array1OfVec& // TabVec
+                                                           ,
+                                                           TColgp_Array1OfVec2d&)
+{ // TabVec2d
   return Standard_False;
 }
-//--------------------------------------------------------------------------------
-inline Approx_Status ApproxInt_MultiLineTool::WhatStatus(const TheMultiLine& ML
-							 ,const Standard_Integer
-							 ,const Standard_Integer) { 
+
+//=================================================================================================
+
+inline Approx_Status ApproxInt_MultiLineTool::WhatStatus(const TheMultiLine& ML,
+                                                         const Standard_Integer,
+                                                         const Standard_Integer)
+{
   //--  PointsAdded,
   //--  NoPointsAdded,
   //--  NoApproximation
   //--  Approx_PointsAdded
-  return(ML.WhatStatus());
+  return (ML.WhatStatus());
 }
-//--------------------------------------------------------------------------------	
-inline TheMultiLine ApproxInt_MultiLineTool::MakeMLBetween(const TheMultiLine& ML,
-							   const Standard_Integer I1,
-							   const Standard_Integer I2,
-							   const Standard_Integer NbPMin) { 
-  
-  return(ML.MakeMLBetween(I1,I2,NbPMin));
+
+//=================================================================================================
+
+inline TheMultiLine ApproxInt_MultiLineTool::MakeMLBetween(const TheMultiLine&    ML,
+                                                           const Standard_Integer I1,
+                                                           const Standard_Integer I2,
+                                                           const Standard_Integer NbPMin)
+{
+
+  return (ML.MakeMLBetween(I1, I2, NbPMin));
 }
-//--------------------------------------------------------------------------------	
-inline Standard_Boolean ApproxInt_MultiLineTool::MakeMLOneMorePoint(const TheMultiLine& ML,
+
+//=================================================================================================
+
+inline Standard_Boolean ApproxInt_MultiLineTool::MakeMLOneMorePoint(const TheMultiLine&    ML,
                                                                     const Standard_Integer I1,
                                                                     const Standard_Integer I2,
                                                                     const Standard_Integer indbad,
                                                                     TheMultiLine& OtherLine)
-{ 
-  return (ML.MakeMLOneMorePoint(I1,I2,indbad,OtherLine));
+{
+  return (ML.MakeMLOneMorePoint(I1, I2, indbad, OtherLine));
 }
 
 inline void ApproxInt_MultiLineTool::Dump(const TheMultiLine& ML)
-{ 
+{
   ML.Dump();
 }
-//================================================================================
+
+//=================================================================================================

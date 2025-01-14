@@ -17,10 +17,9 @@
 #ifndef Approx_SequenceOfHArray1OfReal_HeaderFile
 #define Approx_SequenceOfHArray1OfReal_HeaderFile
 
-#include <TColStd_HArray1OfReal.hxx>
 #include <NCollection_Sequence.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 typedef NCollection_Sequence<Handle(TColStd_HArray1OfReal)> Approx_SequenceOfHArray1OfReal;
-
 
 #endif

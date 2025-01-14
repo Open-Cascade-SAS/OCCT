@@ -22,5 +22,4 @@
 
 typedef NCollection_Array1<Handle(Adaptor3d_Surface)> Approx_Array1OfAdHSurface;
 
-
 #endif

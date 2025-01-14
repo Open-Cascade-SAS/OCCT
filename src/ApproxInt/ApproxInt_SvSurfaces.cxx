@@ -12,13 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <ApproxInt_SvSurfaces.hxx>
 
-//=======================================================================
-//function : ~ApproxInt_SvSurfaces
-//purpose  : Destructor
-//=======================================================================
-ApproxInt_SvSurfaces::~ApproxInt_SvSurfaces()
-{
-}
+//=================================================================================================
+// function : ~ApproxInt_SvSurfaces
+// purpose  : Destructor
+//=================================================================================================
+
+ApproxInt_SvSurfaces::~ApproxInt_SvSurfaces() {}

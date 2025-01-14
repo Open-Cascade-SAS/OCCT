@@ -18,153 +18,133 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(DE_Provider, Standard_Transient)
 
-//=======================================================================
-// function : DE_Provider
-// purpose  :
-//=======================================================================
-DE_Provider::DE_Provider()
-{}
+//=================================================================================================
 
-//=======================================================================
-// function : DE_Provider
-// purpose  :
-//=======================================================================
+DE_Provider::DE_Provider() {}
+
+//=================================================================================================
+
 DE_Provider::DE_Provider(const Handle(DE_ConfigurationNode)& theNode)
-  :myNode(theNode)
-{}
+    : myNode(theNode)
+{
+}
 
-//=======================================================================
-// function : Read
-// purpose  :
-//=======================================================================
-Standard_Boolean DE_Provider::Read(const TCollection_AsciiString& thePath,
+//=================================================================================================
+
+Standard_Boolean DE_Provider::Read(const TCollection_AsciiString&  thePath,
                                    const Handle(TDocStd_Document)& theDocument,
-                                   Handle(XSControl_WorkSession)& theWS,
-                                   const Message_ProgressRange& theProgress)
+                                   Handle(XSControl_WorkSession)&  theWS,
+                                   const Message_ProgressRange&    theProgress)
 {
   (void)thePath;
   (void)theDocument;
   (void)theWS;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() <<" doesn't support read operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support read operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Write
-// purpose  :
-//=======================================================================
-Standard_Boolean DE_Provider::Write(const TCollection_AsciiString& thePath,
+//=================================================================================================
+
+Standard_Boolean DE_Provider::Write(const TCollection_AsciiString&  thePath,
                                     const Handle(TDocStd_Document)& theDocument,
-                                    Handle(XSControl_WorkSession)& theWS,
-                                    const Message_ProgressRange& theProgress)
+                                    Handle(XSControl_WorkSession)&  theWS,
+                                    const Message_ProgressRange&    theProgress)
 {
   (void)thePath;
   (void)theDocument;
   (void)theWS;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support write operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support write operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Read
-// purpose  :
-//=======================================================================
-Standard_Boolean DE_Provider::Read(const TCollection_AsciiString& thePath,
+//=================================================================================================
+
+Standard_Boolean DE_Provider::Read(const TCollection_AsciiString&  thePath,
                                    const Handle(TDocStd_Document)& theDocument,
-                                   const Message_ProgressRange& theProgress)
+                                   const Message_ProgressRange&    theProgress)
 {
   (void)thePath;
   (void)theDocument;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support read operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support read operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Write
-// purpose  :
-//=======================================================================
-Standard_Boolean DE_Provider::Write(const TCollection_AsciiString& thePath,
+//=================================================================================================
+
+Standard_Boolean DE_Provider::Write(const TCollection_AsciiString&  thePath,
                                     const Handle(TDocStd_Document)& theDocument,
-                                    const Message_ProgressRange& theProgress)
+                                    const Message_ProgressRange&    theProgress)
 {
   (void)thePath;
   (void)theDocument;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support write operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support write operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Read
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean DE_Provider::Read(const TCollection_AsciiString& thePath,
-                                   TopoDS_Shape& theShape,
+                                   TopoDS_Shape&                  theShape,
                                    Handle(XSControl_WorkSession)& theWS,
-                                   const Message_ProgressRange& theProgress)
+                                   const Message_ProgressRange&   theProgress)
 {
   (void)thePath;
   (void)theShape;
   (void)theWS;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support read operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support read operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Write
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean DE_Provider::Write(const TCollection_AsciiString& thePath,
-                                    const TopoDS_Shape& theShape,
+                                    const TopoDS_Shape&            theShape,
                                     Handle(XSControl_WorkSession)& theWS,
-                                    const Message_ProgressRange& theProgress)
+                                    const Message_ProgressRange&   theProgress)
 {
   (void)thePath;
   (void)theShape;
   (void)theWS;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support write operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support write operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Read
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean DE_Provider::Read(const TCollection_AsciiString& thePath,
-                                   TopoDS_Shape& theShape,
-                                   const Message_ProgressRange& theProgress)
+                                   TopoDS_Shape&                  theShape,
+                                   const Message_ProgressRange&   theProgress)
 {
   (void)thePath;
   (void)theShape;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support read operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support read operation";
   return Standard_False;
 }
 
-//=======================================================================
-// function : Write
-// purpose  :
-//=======================================================================
+//=================================================================================================
+
 Standard_Boolean DE_Provider::Write(const TCollection_AsciiString& thePath,
-                                    const TopoDS_Shape& theShape,
-                                    const Message_ProgressRange& theProgress)
+                                    const TopoDS_Shape&            theShape,
+                                    const Message_ProgressRange&   theProgress)
 {
   (void)thePath;
   (void)theShape;
   (void)theProgress;
-  Message::SendFail() << "Error: provider " << GetFormat() <<
-    " " << GetVendor() << " doesn't support write operation";
+  Message::SendFail() << "Error: provider " << GetFormat() << " " << GetVendor()
+                      << " doesn't support write operation";
   return Standard_False;
 }

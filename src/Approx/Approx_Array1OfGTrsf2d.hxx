@@ -17,10 +17,9 @@
 #ifndef Approx_Array1OfGTrsf2d_HeaderFile
 #define Approx_Array1OfGTrsf2d_HeaderFile
 
-#include <gp_GTrsf2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <gp_GTrsf2d.hxx>
 
 typedef NCollection_Array1<gp_GTrsf2d> Approx_Array1OfGTrsf2d;
-
 
 #endif
