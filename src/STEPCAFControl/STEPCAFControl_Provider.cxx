@@ -75,7 +75,7 @@ bool STEPCAFControl_Provider::Read(const TCollection_AsciiString& thePath,
   aReader.SetMetaMode(aNode->InternalParameters.ReadMetadata);
 
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
-  StepData_ConfParameters aParams;
+  StepData_ConfParameters aParams = aNode->InternalParameters;
   aReadStat = aReader.ReadFile(thePath.ToCString(), aParams);
   if (aReadStat != IFSelect_RetDone)
   {
@@ -119,7 +119,7 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   aWriter.SetNameMode(aNode->InternalParameters.WriteName);
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
   aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
-  StepData_ConfParameters aParams;
+  StepData_ConfParameters aParams = aNode->InternalParameters;
   Standard_Real aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
   {
@@ -209,7 +209,7 @@ bool STEPCAFControl_Provider::Read(const TCollection_AsciiString& thePath,
   STEPControl_Reader aReader;
   aReader.SetWS(theWS);
   IFSelect_ReturnStatus aReadstat = IFSelect_RetVoid;
-  StepData_ConfParameters aParams;
+  StepData_ConfParameters aParams = aNode->InternalParameters;
   aReadstat = aReader.ReadFile(thePath.ToCString(), aParams);
   Handle(StepData_StepModel) aModel = aReader.StepModel();
   if (aReadstat != IFSelect_RetDone)
@@ -251,7 +251,7 @@ bool STEPCAFControl_Provider::Write(const TCollection_AsciiString& thePath,
   aWriter.SetWS(theWS);
   IFSelect_ReturnStatus aWritestat = IFSelect_RetVoid;
   Handle(StepData_StepModel) aModel = aWriter.Model();;
-  StepData_ConfParameters aParams;
+  StepData_ConfParameters aParams = aNode->InternalParameters;
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
   UnitsMethods_LengthUnit aTargetUnit = UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit, UnitsMethods_LengthUnit_Millimeter);
   aParams.WriteUnit = aTargetUnit;

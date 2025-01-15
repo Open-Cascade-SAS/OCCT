@@ -397,7 +397,7 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Writing assembly mode\n";
-  aResult += "!Default value: 0(\"Off\"). Available values: 0(\"Off\"), 1(\"On\"), 2(\"Auto\")\n";
+  aResult += "!Default value: 2(\"Auto\"). Available values: 0(\"Off\"), 1(\"On\"), 2(\"Auto\")\n";
   aResult += aScope + "write.assembly :\t " + InternalParameters.WriteAssembly + "\n";
   aResult += "!\n";
 
