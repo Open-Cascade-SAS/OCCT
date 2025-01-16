@@ -647,12 +647,14 @@ protected:
 
   NCollection_Sequence<Handle(Graphic3d_CView)> mySubviews; //!< list of child views
   Graphic3d_CView*              myParentView;               //!< back-pointer to the parent view
+// clang-format off
   Standard_Boolean              myIsSubviewComposer;        //!< flag to skip rendering of viewer contents
   Aspect_TypeOfTriedronPosition mySubviewCorner;            //!< position within parent view
   Graphic3d_Vec2i               mySubviewTopLeft;           //!< subview top-left position relative to parent view
   Graphic3d_Vec2i               mySubviewMargins;           //!< subview margins in pixels
   Graphic3d_Vec2d               mySubviewSize;              //!< subview size
   Graphic3d_Vec2d               mySubviewOffset;            //!< subview corner offset within parent view
+// clang-format on
 
   Handle(Graphic3d_StructureManager) myStructureManager;
   Handle(Graphic3d_Camera)           myCamera;
@@ -665,8 +667,10 @@ protected:
   Graphic3d_TypeOfBackfacingModel    myBackfacing;
   Graphic3d_TypeOfVisualization      myVisualization;
 
+// clang-format off
   Graphic3d_ZLayerId      myZLayerTarget;      //!< ZLayerId for redrawing the content of specific zlayers.
   Standard_Boolean        myZLayerRedrawMode;  //!< If true redraws single layer, otherwise redraws group of layers.
+// clang-format on
 
   Quantity_ColorRGBA           myBgColor;
   Handle(Graphic3d_TextureMap) myBackgroundImage;
@@ -679,11 +683,13 @@ protected:
   Standard_Boolean             myToUpdateSkydome;
 
   Handle(Aspect_XRSession) myXRSession;
+// clang-format off
   Handle(Graphic3d_Camera) myBackXRCamera;       //!< camera projection parameters to restore after closing XR session (FOV, aspect and similar)
   Handle(Graphic3d_Camera) myBaseXRCamera;       //!< neutral camera orientation defining coordinate system in which head tracking is defined
   Handle(Graphic3d_Camera) myPosedXRCamera;      //!< transient XR camera orientation with tracked head orientation applied (based on myBaseXRCamera)
   Handle(Graphic3d_Camera) myPosedXRCameraCopy;  //!< neutral camera orientation copy at the beginning of processing input
   Standard_Real            myUnitFactor;         //!< unit scale factor defined as scale factor for m (meters)
+// clang-format on
 
 };
 

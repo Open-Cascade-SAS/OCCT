@@ -229,12 +229,14 @@ void OSD_MemInfo::Update()
     else if (IsActive (MemWorkingSet)
           && strncmp (aBuff, "VmRSS:", strlen ("VmRSS:")) == 0)
     {
+// clang-format off
       myCounters[MemWorkingSet] = atol (aBuff + strlen ("VmRSS:")) * 1024; // RSS - resident set size
     }
     else if (IsActive (MemWorkingSetPeak)
           && strncmp (aBuff, "VmHWM:", strlen ("VmHWM:")) == 0)
     {
       myCounters[MemWorkingSetPeak] = atol (aBuff + strlen ("VmHWM:")) * 1024; // HWM - high water mark
+// clang-format on
     }
     else if (IsActive (MemPrivate)
           && strncmp (aBuff, "VmData:", strlen ("VmData:")) == 0)

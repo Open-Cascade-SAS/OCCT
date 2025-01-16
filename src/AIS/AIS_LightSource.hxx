@@ -252,6 +252,7 @@ protected:
 
   Handle(Graphic3d_CLight)         myLightSource;           //!< displayed light source
 
+// clang-format off
   Handle(Graphic3d_AspectMarker3d) myDisabledMarkerAspect;  //!< disabled light source marker style
   Handle(Graphic3d_AspectLine3d)   myArrowLineAspectShadow; //!< arrow shadow style
   Handle(Graphic3d_MarkerImage)    myMarkerImages[2];       //!< icon of disabled (0) and enabled (1) light
@@ -268,6 +269,7 @@ protected:
   Standard_Integer mySensSphereArcSize; //! sensitive sphere arc size in pixels
   Standard_Boolean myIsZoomable;        //!< flag to allow/disallow transform-persistence when possible
   Standard_Boolean myIsDraggable;       //!< flag to allow/disallow rotate directional light source by dragging
+// clang-format on
   Standard_Boolean myToDisplayName;     //!< flag to show/hide name
   Standard_Boolean myToDisplayRange;    //!< flag to show/hide range of positional/spot light
   Standard_Boolean myToSwitchOnClick;   //!< flag to handle mouse click to turn light on/off

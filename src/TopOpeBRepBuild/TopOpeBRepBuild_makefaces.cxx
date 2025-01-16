@@ -386,6 +386,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 		  if      (oE == TopAbs_INTERNAL) neINTERNAL++;
 		  else if (oE == TopAbs_EXTERNAL) neEXTERNAL++;
 	  
+// clang-format off
 		  Standard_Boolean hasPC = FC2D_HasCurveOnSurface(newEdge,newFace);                                     // jyl980402+
 		  if (!hasPC)                                                                                           // jyl980402+
 		    {                                                                                                   // jyl980402+
@@ -398,6 +399,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 		      BRep_Builder BB_PC; BB_PC.UpdateEdge(newEdge,C2D,newFace,tol);                                    // jyl980402+
 		    }                                                                                                   // jyl980402+
 		} // FABU.MoreEdge()
+// clang-format on
 
 	      //--ofv:
 	      if((neINTERNAL == 0 && neEXTERNAL == 0) || (ne == neINTERNAL || ne == neEXTERNAL))

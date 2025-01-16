@@ -644,7 +644,9 @@ static Standard_Integer GetTransi(const TopoDS_Face& f1,
   }
 
   gp_Vec N = nf1^nf2;
+// clang-format off
   gp_Dir ProjL = N.XYZ() ^ LDir.XYZ() ^ N.XYZ(); //proj LDir on the plane defined by nf1/nf2 directions
+// clang-format on
 
   Standard_Real fAD = nf1.Dot(ProjL); 
   Standard_Real sAD = nf2.Dot(ProjL);  

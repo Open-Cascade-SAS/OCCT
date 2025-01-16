@@ -90,7 +90,9 @@ public:
 private:
 
   typedef std::pair<Standard_Real, Standard_Real> StartToStopValue;
+// clang-format off
   NCollection_IndexedDataMap<Message_MetricType, StartToStopValue> myMetrics; //!< computed metrics
+// clang-format on
 };
 
 #endif // _Message_AttributeMeter_HeaderFile

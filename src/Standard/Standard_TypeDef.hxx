@@ -82,7 +82,9 @@ typedef char16_t      Standard_ExtCharacter;
 typedef char16_t      Standard_Utf16Char;    //!< UTF-16 char (always unsigned)
 typedef char32_t      Standard_Utf32Char;    //!< UTF-32 char (always unsigned)
 #endif
+// clang-format off
 typedef wchar_t       Standard_WideChar;     //!< wide char (unsigned UTF-16 on Windows platform and signed UTF-32 on Linux)
+// clang-format on
 
 //
 typedef const Standard_Character*    Standard_CString;

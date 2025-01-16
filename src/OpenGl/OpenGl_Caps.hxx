@@ -28,6 +28,7 @@ class OpenGl_Caps : public Standard_Transient
 public: //! @name flags to disable particular functionality, should be used only for testing purposes!
 
   Standard_Boolean sRGBDisable;       //!< Disables sRGB rendering (OFF by default)
+// clang-format off
   Standard_Boolean compressedTexturesDisable; //!< Disables uploading of compressed texture formats native to GPU (OFF by default)
   Standard_Boolean vboDisable;        //!< disallow VBO usage for debugging purposes (OFF by default)
   Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
@@ -37,6 +38,7 @@ public: //! @name flags to disable particular functionality, should be used only
   Standard_Boolean useSystemBuffer;   //!< Enables usage of system backbuffer for blitting (OFF by default on desktop OpenGL and ON on OpenGL ES for testing)
   Standard_Integer swapInterval;      //!< controls swap interval - 0 for VSync off and 1 for VSync on, 1 by default
   Standard_Boolean useZeroToOneDepth; //!< use [0, 1] depth range instead of [-1, 1] range, when possible (OFF by default)
+// clang-format on
 
 public: //! @name context creation parameters
 

@@ -47,6 +47,7 @@ void  IGESDimen_ToolDimensionTolerance::ReadOwnParams
   Standard_Integer tempPrecision;
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadInteger(PR.Current(), "Number of properties", tempNbProps); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempNbProps = 8;
@@ -65,6 +66,7 @@ void  IGESDimen_ToolDimensionTolerance::ReadOwnParams
   PR.ReadBoolean(PR.Current(), "Sign Suppression Flag",
 		 tempSignSupFlag); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Fraction Flag", tempFracFlag); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   PR.ReadInteger(PR.Current(), "Precision", tempPrecision); //szv#4:S4163:12Mar99 `st=` not needed
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);

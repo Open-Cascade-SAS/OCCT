@@ -15,7 +15,9 @@ static const char Shaders_DeclarationsImpl_glsl[] =
   "  ivec2  aFragCoord = ivec2 (gl_FragCoord.xy);\n"
   "  vec2   aLastDepth = texelFetch (occDepthPeelingDepth, aFragCoord, 0).rg;\n"
   "  occPeelFrontColor = texelFetch (occDepthPeelingFrontColor, aFragCoord, 0);\n"
+// clang-format off
   "  occPeelDepth.rg   = vec2 (THE_DEPTH_CLEAR_VALUE); // depth value always increases, so that MAX blend equation can be used\n"
+// clang-format on
   "  occPeelBackColor  = vec4 (0.0); // back color is blend after each peeling pass\n"
   "\n"
   "  float aNearDepth = -aLastDepth.x;\n"
@@ -68,8 +70,10 @@ static const char Shaders_DeclarationsImpl_glsl[] =
   "\n"
   "#if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)\n"
   "// arrays of light sources\n"
+// clang-format off
   "uniform               vec4 occLightSources[THE_MAX_LIGHTS * 4]; //!< packed light sources parameters\n"
   "uniform THE_PREC_ENUM int occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types\n"
+// clang-format on
   "#endif\n"
   "\n"
   "#if defined(THE_IS_PBR)\n"

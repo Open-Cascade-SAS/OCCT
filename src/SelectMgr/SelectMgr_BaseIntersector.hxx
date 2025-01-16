@@ -285,7 +285,9 @@ public:
 
 protected:
 
+// clang-format off
   Handle(Graphic3d_Camera) myCamera;        //!< camera definition (if builder isn't NULL it is the same as its camera)
+// clang-format on
   SelectMgr_SelectionType  mySelectionType; //!< type of selection
 };
 

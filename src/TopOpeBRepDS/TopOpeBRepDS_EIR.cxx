@@ -51,7 +51,9 @@ static void FDS_reduceONFACEinterferences(TopOpeBRepDS_ListOfInterference& LI,
 //------------------------------------------------------
 {
 
+// clang-format off
   TopOpeBRepDS_ListIteratorOfListOfInterference it1;  // set hasONFACE = True if LI contains interfs with (ON,FACE) transition(s).
+// clang-format on
   Standard_Boolean hasONFACE = Standard_False;
   for (it1.Initialize(LI); it1.More(); it1.Next() ) {
     Handle(TopOpeBRepDS_Interference)& I1 = it1.ChangeValue();

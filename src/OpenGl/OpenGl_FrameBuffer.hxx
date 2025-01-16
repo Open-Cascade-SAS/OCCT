@@ -355,6 +355,7 @@ protected:
 
 protected:
 
+// clang-format off
   Standard_Integer       myInitVPSizeX;         //!< viewport width  specified during initialization (kept even on failure)
   Standard_Integer       myInitVPSizeY;         //!< viewport height specified during initialization (kept even on failure)
   Standard_Integer       myVPSizeX;             //!< viewport width  (should be <= texture width)
@@ -368,6 +369,7 @@ protected:
   bool                   myIsOwnBuffer;         //!< flag indicating that FBO should be deallocated by this class
   bool                   myIsOwnColor;          //!< flag indicating that color textures should be deallocated by this class
   bool                   myIsOwnDepth;          //!< flag indicating that depth texture  should be deallocated by this class
+// clang-format on
   OpenGl_TextureArray    myColorTextures;       //!< color texture objects
   Handle(OpenGl_Texture) myDepthStencilTexture; //!< depth-stencil texture object
 

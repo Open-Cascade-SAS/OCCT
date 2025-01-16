@@ -630,11 +630,13 @@ void IntPatch_GLine::ComputeVertexParameters(const Standard_Real /*Tol*/)
                       {
                         if(VTXM1.IsVertexOnS1())
                         {
+// clang-format off
                           kill=Standard_True;              //-- OnS2 == OnS2  OnS1 == OnS1  Vtx PasVtx
                         }
                         else
                         {
                           killm1=Standard_True;            //-- OnS2 == OnS2  OnS1 == OnS1  PasVtx Vtx
+// clang-format on
                         }
                       }
                     }

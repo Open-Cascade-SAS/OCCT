@@ -843,6 +843,7 @@ Standard_Real CompLocalDev(const Adaptor3d_Curve& theCurve,
   //
   aLowBorder(1) = u1;
   aUppBorder(1) = u2;
+// clang-format off
   aSteps(1) =(aUppBorder(1) - aLowBorder(1)) * 0.01; // Run PSO on even distribution with 100 points.
   //
   GCPnts_DistFunction aFunc1(theCurve,  u1, u2);
@@ -852,6 +853,7 @@ Standard_Real CompLocalDev(const Adaptor3d_Curve& theCurve,
   GCPnts_DistFunctionMV aFunc(aFunc1);
 
   math_PSO aFinder(&aFunc, aLowBorder, aUppBorder, aSteps); // Choose 32 best points from 100 above.
+// clang-format on
   aFinder.Perform(aSteps, aValue, aT);
   Standard_Real d = 0.;
 

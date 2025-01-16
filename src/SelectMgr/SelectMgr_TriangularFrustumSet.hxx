@@ -195,6 +195,7 @@ private:
 private:
 
   SelectMgr_TriangFrustums      myFrustums;          //!< set of triangular frustums
+// clang-format off
   SelectionPolyline             mySelPolyline;       //!< parameters of selection polyline (it is used to build triangle frustum set)
   TColgp_Array1OfPnt            myBoundaryPoints;    //!< boundary points
                                                      //!       1_____2
@@ -204,6 +205,7 @@ private:
                                                      //!    | /       \ |
                                                      //!   8|/_________\|7
   Standard_Boolean              myToAllowOverlap;    //!< flag to detect only fully included sensitives or not
+// clang-format on
 };
 
 #endif // _SelectMgr_TriangularFrustumSet_HeaderFile

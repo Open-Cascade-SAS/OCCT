@@ -117,7 +117,9 @@ void IGESDraw_ToolViewsVisibleWithAttr::ReadOwnParams
       Standard_Integer curnum = PR.CurrentNumber();
       //  Reading Color : Value (>0) or Definition (<0 = D.E. Pointer)
       if (PR.DefinedElseSkip())
+// clang-format off
 	PR.ReadInteger( PR.Current(), "Color Value", tempColorValue); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
       else {
 	tempColorValue = 0;
 	PR.AddWarning ("Color Value : undefined, set to Zero");

@@ -50,7 +50,9 @@ void  IGESSolid_ToolConeFrustum::ReadOwnParams
   PR.ReadReal(PR.Current(), "Larger face radius", tempR1); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadReal(PR.Current(), "Smaller face radius", tempR2); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else
     tempR2 = 0.0;
 

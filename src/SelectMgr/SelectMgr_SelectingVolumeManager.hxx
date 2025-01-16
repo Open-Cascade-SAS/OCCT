@@ -288,10 +288,12 @@ public:
 
 private:
   Handle(SelectMgr_BaseIntersector)      myActiveSelectingVolume;
+// clang-format off
   Handle(Graphic3d_SequenceOfHClipPlane) myViewClipPlanes;                  //!< view clipping planes
   Handle(Graphic3d_SequenceOfHClipPlane) myObjectClipPlanes;                //!< object clipping planes
   SelectMgr_ViewClipRange                myViewClipRange;
   Standard_Boolean                       myToAllowOverlap;                  //!< Defines if partially overlapped entities will me detected or not
+// clang-format on
 };
 
 #endif

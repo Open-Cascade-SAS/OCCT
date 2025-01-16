@@ -249,7 +249,9 @@ static const XmlObjMgt_DOMString& EvolutionString(const TNaming_Evolution i)
     case TNaming_MODIFY       : return ::EvolModifyString();
     case TNaming_DELETE       : return ::EvolDeleteString();
     case TNaming_SELECTED     : return ::EvolSelectedString();
+// clang-format off
     case TNaming_REPLACE      : return ::EvolModifyString();  //    case TNaming_REPLACE      : return ::EvolReplaceString(); for compatibility
+// clang-format on
   default:
     throw Standard_DomainError("TNaming_Evolution; enum term unknown");
   }

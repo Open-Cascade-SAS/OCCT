@@ -96,7 +96,9 @@ void IGESDraw_ToolDrawingWithRotation::ReadOwnParams
   //st = PR.ReadInteger(PR.Current(), "Count of array of Annotation entities", nbval); //szv#4:S4163:12Mar99 moved in if
   if (PR.ReadInteger(PR.Current(), "Count of array of Annotation entities", nbval)) {
     if ( nbval > 0 )
+// clang-format off
       PR.ReadEnts (IR,PR.CurrentList(nbval), "Annotation Entities", annotations); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 /*
       {
 	// Reading annotations(HArray1OfIGESEntity)

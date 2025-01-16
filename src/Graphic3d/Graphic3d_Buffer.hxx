@@ -45,7 +45,9 @@ enum Graphic3d_TypeOfData
 //! Vertex attribute definition.
 struct Graphic3d_Attribute
 {
+// clang-format off
   Graphic3d_TypeOfAttribute Id;       //!< attribute identifier in vertex shader, 0 is reserved for vertex position
+// clang-format on
   Graphic3d_TypeOfData      DataType; //!< vec2,vec3,vec4,vec4ub
 
   Standard_Integer Stride() const { return Stride (DataType); }
@@ -325,8 +327,10 @@ public:
 
 public:
 
+// clang-format off
   Standard_Integer Stride;       //!< the distance to the attributes of the next vertex within interleaved array
   Standard_Integer NbElements;   //!< number of the elements (@sa NbMaxElements() specifying the number of initially allocated number of elements)
+// clang-format on
   Standard_Integer NbAttributes; //!< number of vertex attributes
 
 };

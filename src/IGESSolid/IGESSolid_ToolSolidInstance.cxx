@@ -39,7 +39,9 @@ void  IGESSolid_ToolSolidInstance::ReadOwnParams
   Handle(IGESData_IGESEntity) tempEntity;
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
+// clang-format off
   PR.ReadEntity(IR, PR.Current(), "Solid Entity", tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempEntity);

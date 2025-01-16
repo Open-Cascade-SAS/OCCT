@@ -123,7 +123,9 @@ void BSplSLib_Cache::D0(const Standard_Real& theU,
     aParameters[1] = aNewV;
   }
 
+// clang-format off
   NCollection_LocalArray<Standard_Real> aTransientCoeffs(aCacheCols); // array for intermediate results
+// clang-format on
 
   // Calculate intermediate value of cached polynomial along columns
   PLib::NoDerivativeEvalPolynomial(aParameters[1], aMinMaxDegree[1],
@@ -184,7 +186,9 @@ void BSplSLib_Cache::D1(const Standard_Real& theU,
     aParameters[1] = aNewV;
   }
 
+// clang-format off
   NCollection_LocalArray<Standard_Real> aTransientCoeffs(aCacheCols<<1); // array for intermediate results
+// clang-format on
 
   // Calculate intermediate values and derivatives of bivariate polynomial along variable with maximal degree
   PLib::EvalPolynomial(aParameters[1], 1, aMinMaxDegree[1], aCacheCols, aPolesArray[0], aTransientCoeffs[0]);
@@ -270,9 +274,11 @@ void BSplSLib_Cache::D2(const Standard_Real& theU,
     aParameters[1] = aNewV;
   }
 
+// clang-format off
   NCollection_LocalArray<Standard_Real> aTransientCoeffs(3 * aCacheCols); // array for intermediate results
   // Calculating derivative to be evaluate and
   // nulling transient coefficients when max or min derivative is less than 2
+// clang-format on
   Standard_Integer aMinMaxDeriv[2] = {Min(2, aMinMaxDegree[0]), 
                                       Min(2, aMinMaxDegree[1])};
   for (Standard_Integer i = aMinMaxDeriv[1] + 1; i < 3; i++)

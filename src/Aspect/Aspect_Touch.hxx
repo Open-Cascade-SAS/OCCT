@@ -23,7 +23,9 @@ public:
 
   NCollection_Vec2<Standard_Real> From;            //!< original touch position
   NCollection_Vec2<Standard_Real> To;              //!< current  touch position
+// clang-format off
   Standard_Boolean                IsPreciseDevice; //!< precise device input (e.g. mouse cursor, NOT emulated from touch screen)
+// clang-format on
 
   //! Return values delta.
   NCollection_Vec2<Standard_Real> Delta() const { return To - From; }

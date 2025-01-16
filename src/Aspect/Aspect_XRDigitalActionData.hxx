@@ -20,10 +20,12 @@
 struct Aspect_XRDigitalActionData
 {
   uint64_t ActiveOrigin; //!< The origin that caused this action's current state
+// clang-format off
   float    UpdateTime;   //!< Time relative to now when this event happened. Will be negative to indicate a past time
   bool     IsActive;     //!< whether or not this action is currently available to be bound in the active action set
   bool     IsPressed;    //!< Aspect_InputActionType_Digital state - The current state of this action; will be true if currently pressed
   bool     IsChanged;    //!< Aspect_InputActionType_Digital state - this is true if the state has changed since the last frame
+// clang-format on
 
   //! Empty constructor.
   Aspect_XRDigitalActionData() : ActiveOrigin (0), UpdateTime (0.0f), IsActive (false), IsPressed (false), IsChanged (false) {}

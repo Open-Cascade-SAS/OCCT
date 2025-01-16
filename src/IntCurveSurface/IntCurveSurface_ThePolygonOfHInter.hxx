@@ -53,7 +53,9 @@ public:
 
   void Closed (const Standard_Boolean flag) { ClosedPolygon = flag; }
 
+// clang-format off
   Standard_Boolean Closed() const { return Standard_False; } // -- Voir si le cas Closed est traitable
+// clang-format on
 
   //! Give the number of Segments in the polyline.
   Standard_Integer NbSegments() const { return NbPntIn - 1; }

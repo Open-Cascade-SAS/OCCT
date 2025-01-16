@@ -415,6 +415,7 @@ private:
 private:
 
   Handle(Graphic3d_AspectFillArea3d) myAspect;    //!< fill area aspect
+// clang-format off
   Handle(Graphic3d_ClipPlane)   myNextInChain;    //!< next     plane in a chain of planes defining logical AND operation
   Graphic3d_ClipPlane*          myPrevInChain;    //!< previous plane in a chain of planes defining logical AND operation
   TCollection_AsciiString myId;                   //!< resource id
@@ -422,6 +423,7 @@ private:
   Graphic3d_Vec4d         myEquation;             //!< plane equation vector
   Graphic3d_Vec4d         myEquationRev;          //!< reversed plane equation
   Standard_Integer        myChainLenFwd;          //!< chain length in forward direction (including this item)
+// clang-format on
   unsigned int            myFlags;                //!< capping flags
   unsigned int            myEquationMod;          //!< modification counter for equation
   unsigned int            myAspectMod;            //!< modification counter of aspect

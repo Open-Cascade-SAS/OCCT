@@ -93,7 +93,9 @@ protected:
 
 private:
 
+// clang-format off
   Standard_Boolean myUseMainAxis; //!< Defines whether to search for the best split or use the widest axis
+// clang-format on
 
 };
 
@@ -215,7 +217,9 @@ typename BVH_QueueBuilder<T, N>::BVH_ChildNodes BVH_BinnedBuilder<T, N, Bins>::b
   const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive (theNode);
   if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
   {
+// clang-format off
     return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(); // node does not require partitioning
+// clang-format on
   }
 
   const BVH_Box<T, N> anAABB (theBVH->MinPoint (theNode),

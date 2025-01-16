@@ -55,10 +55,12 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams
   gp_XYZ                        corner;
 
   // Reading boxWidth(Real)
+// clang-format off
   PR.ReadReal(PR.Current(), "Character box width", boxWidth); //szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading boxHeight(Real)
   PR.ReadReal(PR.Current(), "Character box height", boxHeight); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   Standard_Integer curnum = PR.CurrentNumber();
   if (PR.DefinedElseSkip())
@@ -81,7 +83,9 @@ void IGESGraph_ToolTextDisplayTemplate::ReadOwnParams
     slantAngle = M_PI/2.0; // Default Value
 
   // Reading rotationAngle(Real)
+// clang-format off
   PR.ReadReal (PR.Current(), "Rotation Angle", rotationAngle); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   // Reading mirrorFlag(Integer)
   PR.ReadInteger (PR.Current(), "Mirror Flag", mirrorFlag); //szv#4:S4163:12Mar99 `st=` not needed

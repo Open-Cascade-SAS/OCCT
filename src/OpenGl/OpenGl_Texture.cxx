@@ -346,7 +346,9 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
   if (aDataPtr != NULL)
   {
+// clang-format off
     const GLint anAligment = Min ((GLint )theImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+// clang-format on
     theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
     const GLint anExtraBytes = GLint(theImage->RowExtraBytes());
     const GLint aPixelsWidth = GLint(theImage->SizeRowBytes() / theImage->SizePixelBytes());
@@ -1177,7 +1179,9 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
       if (!anImage.IsNull())
       {
+// clang-format off
         const GLint anAligment = Min ((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+// clang-format on
         const GLint anExtraBytes = GLint(anImage->RowExtraBytes());
         const GLint aPixelsWidth = GLint(anImage->SizeRowBytes() / anImage->SizePixelBytes());
         const GLint aRowLength = (anExtraBytes >= anAligment) ? aPixelsWidth : 0;
@@ -1197,7 +1201,9 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
             memcpy (aCopyImage->ChangeRow (y), anImage->ChangeRow (y), aRowBytesPacked);
           }
           anImage = aCopyImage;
+// clang-format off
           const GLint anAligment2 = Min((GLint)anImage->MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+// clang-format on
           theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment2);
         }
         else
@@ -1377,7 +1383,9 @@ bool OpenGl_Texture::ImageDump (Image_PixMap& theImage,
     return false;
   }
 
+// clang-format off
   const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+// clang-format on
   theCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
   if (theCtx->hasPackRowLength)
   {

@@ -354,7 +354,9 @@ void RWGltf_GltfMaterialMap::addTexture (RWGltf_GltfOStreamWriter* theWriter,
     return;
   }
 
+// clang-format off
   const Standard_Integer anImgKey = myImageMap.FindIndex (theTexture) - 1; // glTF indexation starts from 0
+// clang-format on
   myTextureMap.Add (theTexture);
 
   if (!theIsStarted)

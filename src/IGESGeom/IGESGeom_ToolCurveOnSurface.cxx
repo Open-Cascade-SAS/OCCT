@@ -100,7 +100,9 @@ void IGESGeom_ToolCurveOnSurface::ReadOwnParams
     }
     }
   } //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format off
   if (!PR.ReadEntity(IR, PR.Current(), aStatus, aCurve3D, Standard_True)){; //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
       Message_Msg Msg133("XSTEP_133");
       switch(aStatus) {
       case IGESData_ReferenceError: {  

@@ -57,8 +57,10 @@ Standard_EXPORT Standard_Boolean FUN_ds_redu2d1d(const TopOpeBRepDS_DataStructur
   if (!ok2) return Standard_False;
 
   const TopoDS_Edge& SE = TopoDS::Edge(BDS.Shape(ISE));
+// clang-format off
   const TopoDS_Face& F  = TopoDS::Face(BDS.Shape(IB2)); Standard_Real tolF = BRep_Tool::Tolerance(F)*1.e2;//nyitol
   const TopoDS_Edge& E  = TopoDS::Edge(BDS.Shape(S2)); Standard_Real tolE = BRep_Tool::Tolerance(E)*1.e2;//nyitol
+// clang-format on
   Standard_Boolean EclosingF = FUN_tool_IsClosingE(E,F,F);
   if (EclosingF) { 
     TopAbs_State stb = T2d.Before(), sta = T2d.After();

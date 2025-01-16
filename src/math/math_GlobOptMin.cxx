@@ -416,7 +416,9 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       aPrevVal = d;
       myFunc->Value(myX, d);
       r1 = (d + myZ * myC * myLastStep - myF) * myZ; // Evtushenko estimation.
+// clang-format off
       r2 = ((d + aPrevVal - myC * myLastStep) * 0.5 - myF) * myZ; // Shubert / Piyavsky estimation.
+// clang-format on
       r = Min(r1, r2);
       if(r > myE3)
       {

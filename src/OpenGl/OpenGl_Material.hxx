@@ -51,7 +51,9 @@ struct OpenGl_MaterialPBR
 {
 
   OpenGl_Vec4 BaseColor;   //!< base color of PBR material with alpha component
+// clang-format off
   OpenGl_Vec4 EmissionIOR; //!< light intensity which is emitted by PBR material and index of refraction
+// clang-format on
   OpenGl_Vec4 Params;      //!< extra packed parameters
 
   float  Metallic()  const { return Params.b(); }

@@ -232,6 +232,7 @@ protected:
   Handle(TopLoc_Datum3D)          myTrsf;
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
+// clang-format off
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //! Current highlight style; is set only if highlight flag is true
 
   Standard_Integer          myId;
@@ -250,6 +251,7 @@ public:
   unsigned stick          : 1; //!< displaying state - should be set when structure has been added to scene graph (but can be in hidden state)
   unsigned highlight      : 1;
   unsigned visible        : 1; //!< visibility flag - can be used to suppress structure while leaving it in the scene graph
+// clang-format on
   unsigned HLRValidation  : 1;
   unsigned IsForHighlight : 1;
   unsigned IsMutable      : 1;

@@ -91,7 +91,9 @@ private:
   Handle(MeshVS_DataSource)            myDataSource;   //!< mesh data source
   NCollection_Vector<Standard_Integer> myItemIndexes;  //!< indices for BVH tree reordering
   MeshVS_MeshSelectionMethod           mySelMethod;    //!< selection mode
+// clang-format off
   Standard_Integer                     myMaxFaceNodes; //!< maximum nodes within the element in mesh
+// clang-format on
   gp_Pnt                               myCOG;          //!< center of gravity
   Select3D_BndBox3d                    myBndBox;       //!< bounding box
 

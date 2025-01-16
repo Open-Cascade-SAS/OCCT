@@ -66,7 +66,9 @@ void  IGESSolid_ToolBooleanTree::ReadOwnParams
       for (Standard_Integer i = 3; i < length; i++)
 	{
 	  Standard_Integer curnum = PR.CurrentNumber();
+// clang-format off
 	  PR.ReadInteger(PR.Current(), "Operation code", intvalue); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 	  if (intvalue < 0) {
 	    entvalue = PR.ParamEntity (IR,curnum);
 	    if (entvalue.IsNull()) PR.AddFail("Operand : incorrect reference");

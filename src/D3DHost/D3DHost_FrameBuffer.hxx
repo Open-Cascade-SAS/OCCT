@@ -121,7 +121,9 @@ protected:
   void*              myGlD3dDevice;  //!< WGL/D3D device  handle
   void*              myGlD3dSurf;    //!< WGL/D3D surface handle
   Standard_Integer   myLockCount;    //!< locking counter
+// clang-format off
   Standard_Boolean   myD3dFallback;  //!< indicates that FBO has been initialized without WGL/D3D interop
+// clang-format on
   Standard_Boolean   myIsSRGBReady;  //!< indicates that color buffer is sRGB ready
 
 public:

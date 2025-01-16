@@ -74,8 +74,10 @@ Quantity_NameOfColor TDataXtd_Presentation::getColorNameFromOldEnum (Standard_In
 Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum (Quantity_NameOfColor theNew)
 {
   Standard_Integer anOld = theNew;
+// clang-format off
   if (theNew >= Quantity_NOC_CHARTREUSE2)  { ++anOld; }  // Quantity_NOC_CHARTREUSE1 merged to Quantity_NOC_CHARTREUSE1
   if (theNew >= Quantity_NOC_GOLD2)        { ++anOld; }  // Quantity_NOC_GOLD1 merged to Quantity_NOC_GOLD
+// clang-format on
   if (theNew >= Quantity_NOC_GRAY2 && theNew <= Quantity_NOC_GRAY89)
   {
     if (theNew == Quantity_NOC_GRAY2) { return 146; }
@@ -101,6 +103,7 @@ Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum (Quantity_Nam
   if (theNew == Quantity_NOC_GRAY99) { return 237; }
 
   if (theNew >= Quantity_NOC_GREEN)      { anOld -= 3; } // moved Quantity_NOC_GRAY96, 97, 98
+// clang-format off
   if (theNew >= Quantity_NOC_GREEN2)     { ++anOld; }    // Quantity_NOC_GREEN1 merged to Quantity_NOC_GREEN
   if (theNew >= Quantity_NOC_HONEYDEW)   { anOld += 3; } // moved Quantity_NOC_GRAY96, 97, 98
   if (theNew >= Quantity_NOC_ORANGE2)    { ++anOld; }    // Quantity_NOC_ORANGE1 merged to Quantity_NOC_ORANGE
@@ -108,6 +111,7 @@ Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum (Quantity_Nam
   if (theNew >= Quantity_NOC_RED2)       { ++anOld; }    // Quantity_NOC_RED1 merged to Quantity_NOC_RED
   if (theNew >= Quantity_NOC_TOMATO2)    { ++anOld; }    // Quantity_NOC_TOMATO1 merged to Quantity_NOC_TOMATO
   if (theNew >= Quantity_NOC_YELLOW2)    { ++anOld; }    // Quantity_NOC_YELLOW1 merged to Quantity_NOC_YELLOW
+// clang-format on
   return anOld;
 }
 

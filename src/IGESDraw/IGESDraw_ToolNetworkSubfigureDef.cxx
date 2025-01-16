@@ -58,8 +58,10 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams
     if (tempNbEntities1 < 0)
       PR.AddFail("Number Of Child Entities : Not Positive");
     else if (tempNbEntities1 > 0)
+// clang-format off
       PR.ReadEnts(IR,PR.CurrentList(tempNbEntities1),"Child Entities",tempEntities); //szv#4:S4163:12Mar99 `st=` not needed
 //      tempEntities = new IGESData_HArray1OfIGESEntity (1,tempNbEntities1);
+// clang-format on
   }
 
   // Read the HArray1 only if its Length was read without any Error
@@ -77,7 +79,9 @@ void IGESDraw_ToolNetworkSubfigureDef::ReadOwnParams
   PR.ReadInteger(PR.Current(), "Type Flag", tempTypeFlag); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadText(PR.Current(), "Primary Reference Designator", tempDesignator); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else PR.AddWarning("Primary Reference Designator : Null");
 
   Standard_Boolean st = PR.ReadEntity(IR, PR.Current(), "Primary Reference Designator",

@@ -44,6 +44,7 @@ void IGESGraph_ToolLineFontDefTemplate::ReadOwnParams
   Standard_Real    tempDistance, tempScale;
   Handle(IGESBasic_SubfigureDef) tempTemplateEntity;
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "Template Orientation", tempOrientation); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(),
@@ -54,6 +55,7 @@ void IGESGraph_ToolLineFontDefTemplate::ReadOwnParams
 	      tempDistance); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadReal(PR.Current(), "Scale Factor For Subfigure", tempScale); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init (tempOrientation, tempTemplateEntity, tempDistance, tempScale);

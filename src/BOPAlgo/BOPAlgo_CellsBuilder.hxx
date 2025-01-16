@@ -256,10 +256,12 @@ class BOPAlgo_CellsBuilder : public BOPAlgo_Builder
 
   // fields
   TopoDS_Shape myAllParts;                           //!< All split parts of the arguments
+// clang-format off
   TopTools_IndexedDataMapOfShapeListOfShape myIndex; //!< Connection map from all splits parts to the argument shapes from which they were created
   TopTools_DataMapOfIntegerListOfShape myMaterials;  //!< Map of assigned materials (material -> list of shape)
   TopTools_DataMapOfShapeInteger myShapeMaterial;    //!< Map of assigned materials (shape -> material)
   TopTools_DataMapOfShapeShape myMapModified;        //!< Local modification map to track unification of the splits
+// clang-format on
 };
 
 #endif //_BOPAlgo_CellsBuilder_HeaderFile

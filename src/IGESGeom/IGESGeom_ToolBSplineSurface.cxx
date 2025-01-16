@@ -123,6 +123,7 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams
     {
 //      allKnotsU = new TColStd_HArray1OfReal(-aDegU, anIndexU+1);  done by :
       Standard_Integer tempind = anIndexU+aDegU+2;
+// clang-format off
       PR.ReadReals(PR.CurrentList(tempind), Msg103, allKnotsU, -aDegU); //szv#4:S4163:12Mar99 `st=` not needed
       //st = PR.ReadReals(PR.CurrentList(tempind), "First knot sequence values", allKnotsU, -aDegU);
     }
@@ -133,6 +134,7 @@ void IGESGeom_ToolBSplineSurface::ReadOwnParams
       Standard_Integer tempind = anIndexV+aDegV+2;
       PR.ReadReals(PR.CurrentList(tempind), Msg103, allKnotsV, -aDegV); //szv#4:S4163:12Mar99 `st=` not needed
       //st = PR.ReadReals(PR.CurrentList(tempind), "Second knot sequence values", allKnotsV, -aDegV);
+// clang-format on
     }
 
   if ( FlagindexU && FlagindexV )

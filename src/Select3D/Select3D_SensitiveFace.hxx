@@ -80,7 +80,9 @@ public:
 private:
 
   Select3D_TypeOfSensitivity    mySensType;       //!< Type of sensitivity: interior or boundary
+// clang-format off
   Handle(Select3D_SensitiveSet) myFacePoints;     //!< Wrapper for overlap detection created depending on sensitivity type
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveFace, Select3D_SensitiveEntity)

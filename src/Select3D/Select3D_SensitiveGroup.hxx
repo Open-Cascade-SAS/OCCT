@@ -164,11 +164,13 @@ protected:
 private:
 
   Select3D_IndexedMapOfEntity          myEntities;           //!< Grouped sensitive entities
+// clang-format off
   Standard_Boolean                     myMustMatchAll;       //!< Determines whether all entities in the group should be overlapped or not
   Standard_Boolean                     myToCheckOverlapAll;  //!< flag to check overlapping with all entities within rectangular/polygonal selection
   gp_Pnt                               myCenter;             //!< Center of geometry of the group
   mutable Select3D_BndBox3d            myBndBox;             //!< Bounding box of the group
   NCollection_Vector<Standard_Integer> myBVHPrimIndexes;     //!< Vector of sub-entities indexes for BVH tree build
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveGroup, Select3D_SensitiveEntity)

@@ -28,6 +28,7 @@ struct RWGltf_DracoParameters
     UnifiedQuantization (false)
   {}
 
+// clang-format off
   bool DracoCompression;    //!< flag to use Draco compression (FALSE by default). If it is TRUE, compression is used
   int CompressionLevel;     //!< Draco compression level [0-10] (7 by default)
   int QuantizePositionBits; //!< quantization bits for position attribute (14 by default)
@@ -36,6 +37,7 @@ struct RWGltf_DracoParameters
   int QuantizeColorBits;    //!< quantization bits for color attributes (8 by default)
   int QuantizeGenericBits;  //!< quantization bits for skinning and custom attributes (12 by default)
   bool UnifiedQuantization; //!< quantize positions of all primitives using the same quantization grid (FALSE by default)
+// clang-format on
 };
 
 #endif

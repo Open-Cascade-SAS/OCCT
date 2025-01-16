@@ -89,9 +89,11 @@ protected:
 
 private:
 
+// clang-format off
   SelectMgr_IndexedMapOfHSensitive mySensitives;              //!< Map of entities and its corresponding index in BVH
   SelectMgr_MapOfOwners            myOwnersMap;               //!< Map of entity owners and its corresponding number of sensitives
   Standard_Integer                 myNbEntityWithPersistence; //!< number of sensitive entities that have own transform persistence
+// clang-format on
 };
 
 #endif // _SelectMgr_SensitiveEntitySet_HeaderFile

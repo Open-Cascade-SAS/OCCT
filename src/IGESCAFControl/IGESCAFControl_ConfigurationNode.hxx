@@ -135,6 +135,7 @@ public:
   struct IGESCAFControl_InternalSection
   {
     // Common
+// clang-format off
     ReadMode_BSplineContinuity ReadBSplineContinuity = ReadMode_BSplineContinuity_C1; //<! Manages the continuity of BSpline curves
     ReadMode_Precision ReadPrecisionMode = ReadMode_Precision_File; //<! Reads the precision mode value
     double ReadPrecisionVal = 0.0001; //<! ReadMode_Precision for shape construction (if enabled user mode)
@@ -166,6 +167,7 @@ public:
     WriteMode_PrecisionMode WritePrecisionMode = WriteMode_PrecisionMode_Average; //<! Specifies the mode of writing the resolution value into the IGES file
     double WritePrecisionVal = 0.0001; //<! Resolution value for an IGES file when WriteMode_PrecisionMode is Greatest
     WriteMode_PlaneMode WritePlaneMode = WriteMode_PlaneMode_Plane; //<! Flag to convert plane to the BSline
+// clang-format on
     bool WriteOffsetMode = false; //<! Writing offset curves like BSplines
     bool WriteColor = true; //<! ColorMode is used to indicate write Colors or not
     bool WriteName = true; //<! NameMode is used to indicate write Name or not

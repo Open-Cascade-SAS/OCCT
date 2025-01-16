@@ -324,7 +324,9 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, Standard
     ok = FUN_MkTonE(faxis,dirINcle,xxi,myngf, par1,par2, outin);
     if (!ok) return Standard_False;
     
+// clang-format off
     if (!onfi && !onli) {mkT = MKI12; return Standard_True;}// => the same for all edges of lei @190499
+// clang-format on
     if (closedi)        {mkT = MKI12; return Standard_True;}// onfi || onli @190499
     
     // xxri : 
@@ -363,7 +365,9 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, Standard
 /*
     // xxri : 
     Standard_Real ddot = tgin1di.Dot(faxis);
+// clang-format off
     Standard_Boolean tgaxis = Abs(1-(Abs(ddot))) < FUN_tola(); //=true : edge is tangent to sphere's axis
+// clang-format on
     if (tgaxis) {
       ok = TopOpeBRepTool_TOOL::XX(myuvi,myFi, pari,ei, xxri);
       if (!ok) return Standard_False;

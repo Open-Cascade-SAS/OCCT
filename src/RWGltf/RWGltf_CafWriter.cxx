@@ -807,7 +807,9 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
           {
             case RWGltf_GltfArrayType_Position:
             {
+// clang-format off
               aGltfFace->NbIndexedNodes = 0; // reset to zero before RWGltf_GltfArrayType_Indices step
+// clang-format on
               saveNodes (*aGltfFace, *aBinFile, aFaceIter, aNbAccessors, aMeshPtr);
               break;
             }

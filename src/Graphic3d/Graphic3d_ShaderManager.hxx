@@ -220,7 +220,9 @@ protected:
   Standard_Boolean myHasFlatShading;      //!< flag indicating flat shading usage
   Standard_Boolean myToReverseDFdxSign;   //!< flag to reverse flat shading normal (workaround)
   Standard_Boolean mySetPointSize;        //!< always set gl_PointSize variable
+// clang-format off
   Standard_Boolean myUseRedAlpha;         //!< use RED channel instead of ALPHA (e.g. GAPI supports only GL_RED textures and not GL_ALPHA)
+// clang-format on
   Standard_Boolean myToEmulateDepthClamp; //!< emulate depth clamping in GLSL program
   Standard_Boolean mySRgbState;           //!< track sRGB state
 

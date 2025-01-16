@@ -276,7 +276,9 @@ static Standard_Boolean GetShapeEvolutions(const TopoDS_Shape&               the
     TCollection_AsciiString aNam("GetShapeEvolutions");
     WriteNSOnLabel(aTarget,aNam);
 #endif
+// clang-format off
     if (aTarget->Label() == theSource->Label()) return Standard_True; // check if target is in the source
+// clang-format on
   } else return Standard_False;
 
   TNaming_Iterator anIter(aTarget);
@@ -294,7 +296,9 @@ static Standard_Boolean GetShapeEvolutions(const TopoDS_Shape&               the
     if (anIter.OldShape().IsNull() || anIter.NewShape().IsNull()) continue;
     if (!anIter.NewShape().IsSame(theTarget)) continue;
     if (GetShapeEvolutions(anIter.OldShape(),theSource,aList)) { // recursion: now target is old shape
+// clang-format off
       aList.Append(theTarget); // if oldshape has the source as parent (or belongs to it) , fill the list
+// clang-format on
       return Standard_True;
     }
   }
@@ -347,7 +351,9 @@ static Handle(TNaming_NamedShape) CompareInModification (const Handle(TNaming_Na
 	  aMap.Add(aNIter1.OldShape());
 	}
       }
+// clang-format off
       TNaming_Iterator aNIter2(aResult); // if some another shapes has oldshape from map, return namedshape with this oldshape
+// clang-format on
 
       for(;aNIter2.More();aNIter2.Next()) {
 	if (aNIter2.NewShape().IsSame(anIter.Value())) continue;
@@ -452,7 +458,9 @@ static Standard_Boolean TestSolution(const TNaming_Scope&      MDF,
     for (exp.Init(S,TopAbs_FACE) ; exp.More(); exp.Next()) {
       aMS.Add(exp.Current());
     }
+// clang-format off
     for (exp.Init(Res,TopAbs_FACE) ; exp.More(); exp.Next()) { //content of MS and Res should be the same 
+// clang-format on
       if (aMS.Contains(exp.Current())) {
 	aMS.Remove(exp.Current());
       }
@@ -1171,7 +1179,9 @@ static void BuildScope (TNaming_Scope&    MDF,
   // Is context the current state
   //----------------------------------------------------
   Handle(TNaming_NamedShape) NS   = TNaming_Tool::NamedShape(Context,Acces);
+// clang-format off
   Handle(TNaming_NamedShape) Next = NextModif(NS); // if NS has subsequent evolution = MODIFY, return it
+// clang-format on
   if (Next.IsNull()) {  
     MDF.WithValid(Standard_False);
     return;
@@ -1708,7 +1718,9 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 	      TopoDS_Iterator it(itw.Value());
 	      for(int i=1;it.More();it.Next(),i++) {
 		if(it.Value().IsEqual(S)) {
+// clang-format off
 		  theName.Index(i);//We use this field to save a Seam Shape Index; Before this field was used for GENERATED only
+// clang-format on
 		  found = Standard_True;
 #ifdef MDTV_OR
 		  std::cout << "ORDER = " << i <<std::endl;

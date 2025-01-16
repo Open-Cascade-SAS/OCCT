@@ -24,7 +24,9 @@ struct AIS_AnimationProgress
 {
   Standard_Real Pts;             //!< global presentation timestamp
   Standard_Real LocalPts;        //!< presentation within current animation
+// clang-format off
   Standard_Real LocalNormalized; //!< normalized position within current animation within 0..1 range
+// clang-format on
 
   AIS_AnimationProgress() : Pts (-1.0), LocalPts (-1.0), LocalNormalized (-1.0) {}
 };

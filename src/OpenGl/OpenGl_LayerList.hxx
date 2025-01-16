@@ -210,7 +210,9 @@ protected:
   Handle(BVH_Builder3d) myBVHBuilder;      //!< BVH tree builder for frustum culling
 
   Standard_Integer        myNbStructures;
+// clang-format off
   Standard_Integer        myImmediateNbStructures; //!< number of structures within immediate layers
+// clang-format on
 
   mutable Standard_Size   myModifStateOfRaytraceable;
 

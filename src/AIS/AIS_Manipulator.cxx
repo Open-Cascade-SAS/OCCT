@@ -1148,8 +1148,10 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
   // overlapping of sensitive areas when size of manipulator is small.
   // Sensitivity is calculated relative to the default size of the manipulator (100.0f).
   const Standard_ShortReal aSensitivityCoef = myAxes[0].Size() / 100.0f;
+// clang-format off
   const Standard_Integer aHighSensitivity = Max (Min (RealToInt (aSensitivityCoef * 15), 15), 3); // clamp sensitivity within range [3, 15]
   const Standard_Integer aLowSensitivity  = Max (Min (RealToInt (aSensitivityCoef * 10), 10), 2); // clamp sensitivity within range [2, 10]
+// clang-format on
 
   switch (aMode)
   {

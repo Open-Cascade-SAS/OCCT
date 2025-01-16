@@ -1616,7 +1616,9 @@ Handle(Geom_RectangularTrimmedSurface)
     Standard_Real uFact = 1.;
     Standard_Real vFact = 1.;
     const Standard_Real LengthFact = theLocalFactors.LengthFactor();
+// clang-format off
     const Standard_Real AngleFact = theLocalFactors.PlaneAngleFactor(); // abv 30.06.00 trj4_k1_geo-tc-214.stp #1477: PI/180.;
+// clang-format on
 
     if (theBasis->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||
         theBasis->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {

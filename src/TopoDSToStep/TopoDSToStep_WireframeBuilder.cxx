@@ -335,7 +335,9 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
   TopoDS_Shape curShape;
   TopoDS_Edge  curEdge;
   TopExp_Explorer  exp;
+// clang-format off
   Standard_Boolean result = Standard_False; //szv#4:S4163:12Mar99 `done` hid one from this, initialisation needed
+// clang-format on
 
   for (exp.Init(aFace,TopAbs_EDGE); exp.More(); exp.Next()){
     curShape = exp.Current();
@@ -352,7 +354,9 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
                            const StepData_Factors& theLocalFactors) const
 {
   TopoDS_Iterator  It;
+// clang-format off
   Standard_Boolean result = Standard_False; //szv#4:S4163:12Mar99 `done` hid one from this, initialisation needed
+// clang-format on
 
   //szv#4:S4163:12Mar99 optimized
   switch (aShape.ShapeType()) {

@@ -31,7 +31,9 @@ struct XCAFDoc_VisMaterialCommon
   Quantity_Color          SpecularColor;   //!< specular color
   Quantity_Color          EmissiveColor;   //!< emission color
   Standard_ShortReal      Shininess;       //!< shininess value
+// clang-format off
   Standard_ShortReal      Transparency;    //!< transparency value within [0, 1] range with 0 meaning opaque
+// clang-format on
   Standard_Boolean        IsDefined;       //!< defined flag; TRUE by default
 
   //! Empty constructor.

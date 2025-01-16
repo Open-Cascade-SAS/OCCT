@@ -321,7 +321,9 @@ Standard_Real GeomInt_LineTool::FirstParameter (const Handle(IntPatch_Line)& L)
     case IntPatch_Restriction:
     {
       Handle(IntPatch_RLine) rlin = Handle(IntPatch_RLine)::DownCast(L);
+// clang-format off
 	  return (rlin->HasFirstPoint()? rlin->FirstPoint().ParameterOnLine() : -Precision::Infinite()); // a voir selon le type de la ligne 2d
+// clang-format on
     }
 
     case IntPatch_Walking:
@@ -373,7 +375,9 @@ Standard_Real GeomInt_LineTool::LastParameter (const Handle(IntPatch_Line)& L)
     case IntPatch_Restriction:
     {
       Handle(IntPatch_RLine) rlin = Handle(IntPatch_RLine)::DownCast(L);
+// clang-format off
 	  return (rlin->HasLastPoint()? rlin->LastPoint().ParameterOnLine() : Precision::Infinite()); // a voir selon le type de la ligne 2d
+// clang-format on
     }
 
     case IntPatch_Walking:
@@ -775,8 +779,10 @@ Standard_Boolean GeomInt_LineTool::
 
 	  if(found) {
 	    // check point
+// clang-format off
 	    Standard_Real aCriteria =aTolSum;// BRep_Tool::Tolerance(theFace1) + BRep_Tool::Tolerance(theFace2);
 	    //GeomAPI_ProjectPointOnSurf& aProjector = (surfit == 0) ? aPrj2 : aPrj1;
+// clang-format on
 	    ProjectPointOnSurf& aProjector = (surfit == 0) ? aPrj2 : aPrj1;
 	    Handle(GeomAdaptor_Surface) aSurface = (surfit == 0) ? theSurface1 : theSurface2;
 

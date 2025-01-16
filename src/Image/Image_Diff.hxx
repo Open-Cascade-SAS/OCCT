@@ -140,9 +140,11 @@ protected:
 
   Handle(Image_PixMap)              myImageRef;           //!< reference image to compare (from)
   Handle(Image_PixMap)              myImageNew;           //!< new       image to compare (to)
+// clang-format off
   Standard_Real                     myColorTolerance;     //!< tolerance for equality check (0..1, 0 - any not equal, 1 - opposite colors)
 
   Standard_Boolean                  myIsBorderFilterOn;   //!< perform algorithm with border effect filter
+// clang-format on
 
   //! coordinates of different pixels, packed in one int using 16-bit integers to save memory
   NCollection_Vector<Standard_Integer> myDiffPixels;

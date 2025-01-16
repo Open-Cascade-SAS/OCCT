@@ -277,7 +277,9 @@ static Standard_Integer  DNaming_AddFunction(Draw_Interpretor& di,
     if(!aFun.IsNull()) {
       TCollection_AsciiString aFName = TCollection_AsciiString(a[3]) + "_Function";
       TDataStd_Name::Set(aFun->Label(), aFName);
+// clang-format off
       TDF_Reference::Set(objLabel, aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here
+// clang-format on
       DDF::ReturnLabel(di, aFun->Label());
       return 0;
     }
@@ -309,7 +311,9 @@ static Standard_Integer DNaming_AddBox (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "Box_Function");
     
+// clang-format off
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
     Standard_Real dx,dy,dz;
     dx = Draw::Atof(theArg[2]);
     dy = Draw::Atof(theArg[3]);
@@ -804,7 +808,9 @@ static Standard_Integer DNaming_AddCylinder (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "Cyl_Function");
     
+// clang-format off
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
 
     Standard_Real aR, aH;
     aR = Draw::Atof(theArg[2]);
@@ -880,7 +886,9 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "Fuse");
     
+// clang-format off
     TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
     DNaming::SetObjectArg(aFun, BOOL_TOOL, aTool); 
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
@@ -914,7 +922,9 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "Cut");
     
+// clang-format off
     TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
     DNaming::SetObjectArg(aFun, BOOL_TOOL, aTool); 
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
@@ -947,7 +957,9 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "Common");
     
+// clang-format off
     TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
     DNaming::SetObjectArg(aFun, BOOL_TOOL, aTool); 
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
@@ -979,7 +991,9 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "Section");
     
+// clang-format off
     TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
     DNaming::SetObjectArg(aFun, BOOL_TOOL, aTool); 
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
@@ -1013,7 +1027,9 @@ static Standard_Integer DNaming_AddFillet (Draw_Interpretor& theDI,
   if(aFun.IsNull()) return 1;
   TDataStd_Name::Set(aFun->Label(), "Fillet");
 
+// clang-format off
   TDF_Reference::Set(anObject->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
 
   Standard_Real aRadius = Draw::Atof(theArg[3]);
   DNaming::GetReal(aFun,FILLET_RADIUS)->Set(aRadius);  
@@ -1207,7 +1223,9 @@ static Standard_Integer DNaming_AddPrism (Draw_Interpretor& theDI,
   Handle(TFunction_Function) aFun = SetFunctionDS(anObj->Label(), funGUID);
   if(aFun.IsNull()) return 1;
   TDataStd_Name::Set(aFun->Label(), "Prism_Function");
+// clang-format off
   TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
 
   // arguments
   Handle(TDataStd_UAttribute) aBasisObj;
@@ -1296,7 +1314,9 @@ static Standard_Integer DNaming_AddRevol (Draw_Interpretor& theDI,
     TDataStd_Name::Set(aFun->Label(), "FulRevol_Function");
   else
     TDataStd_Name::Set(aFun->Label(), "SecRevol_Function");
+// clang-format off
   TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
   DNaming::SetObjectArg(aFun, REVOL_BASIS, aBasisObj); 
   DNaming::SetObjectArg(aFun, REVOL_AXIS, anAxObj); 
 
@@ -1369,7 +1389,9 @@ static Standard_Integer DNaming_AddSphere (Draw_Interpretor& theDI,
   Handle(TFunction_Function) aFun = SetFunctionDS(anObj->Label(), funGUID);
   if(aFun.IsNull()) return 1;
   TDataStd_Name::Set(aFun->Label(), "Sphere_Function");
+// clang-format off
   TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
  
   Handle(TDataStd_UAttribute) aCenterObj;
   if (!DDocStd::Find(aDocument, theArg[2], GEOMOBJECT_GUID, aCenterObj)) return 1;
@@ -1436,7 +1458,9 @@ static Standard_Integer DNaming_AddPoint (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "PntXYZ_Function");
     
+// clang-format off
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
     Standard_Real x,y,z;
     x = Draw::Atof(theArg[2]);
     y = Draw::Atof(theArg[3]);
@@ -1476,7 +1500,9 @@ static Standard_Integer DNaming_AddPointRlt (Draw_Interpretor& theDI,
     if(aFun.IsNull()) return 1;
     TDataStd_Name::Set(aFun->Label(), "PntRLT_Function");
     
+// clang-format off
     TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
 
     Handle(TDataStd_UAttribute) aRefPnt;
     if (!DDocStd::Find(aDocument, theArg[2], GEOMOBJECT_GUID, aRefPnt)) return 1;
@@ -1579,7 +1605,9 @@ static Standard_Integer DNaming_Line3D (Draw_Interpretor& theDI,
   Handle(TFunction_Function) aFun = SetFunctionDS(anObj->Label(), funGUID);
   if(aFun.IsNull()) return 1;
   TDataStd_Name::Set(aFun->Label(), "Line3D_Function");
+// clang-format off
   TDF_Reference::Set(anObj->Label(), aFun->Label().FindChild(FUNCTION_RESULT_LABEL)); //result is here 
+// clang-format on
  
   Standard_Integer aType = Draw::Atoi(theArg[2]);
   DNaming::GetInteger(aFun,LINE3D_TYPE)->Set(aType);

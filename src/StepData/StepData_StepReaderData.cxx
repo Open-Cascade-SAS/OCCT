@@ -111,7 +111,9 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
   Standard_Integer aResStringSize = aResString.Length() - 1; // skip the last apostrophe
   TCollection_ExtendedString aTempExtString; // string for characters within control directives
   Standard_Integer aSetCharInd = 1; // index to set value to result string
+// clang-format off
   Resource_FormatType aLocalFormatType = Resource_FormatType_iso8859_1; // a code page for a "\S\" control directive
+// clang-format on
   for (Standard_Integer aStringInd = 1; aStringInd <= aResStringSize; ++aStringInd)
   {
     const Standard_ExtCharacter aChar = aResString.Value(aStringInd);
@@ -161,7 +163,9 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
         Standard_Character aResChar = (char)convertCharacterTo16bit(aResString.Value(aStringInd + 3));
         aResChar = (aResChar << 4) | (char)convertCharacterTo16bit(aResString.Value(aStringInd + 4));
         const char aStrForConvert[2] = { aResChar, '\0' };
+// clang-format off
         aTempExtString = TCollection_ExtendedString(aStrForConvert, Standard_False); // pass through without conversion
+// clang-format on
         isConverted = Standard_True;
         aStringInd += 4;
       }
@@ -254,7 +258,9 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
       {
         if (toConversion) // else skip moving
         {
+// clang-format off
           aResStringSize -= aStringInd - aSetCharInd - aTempExtString.Length() + 1; // change the string size to remove unused symbols
+// clang-format on
           aResString.SetValue(aSetCharInd, aTempExtString);
           aSetCharInd += aTempExtString.Length(); // move to the new position
           aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd);
@@ -270,7 +276,9 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
       const Standard_ExtCharacter aCharNext = aResString.Value(aStringInd + 1);
       if (aCharNext == aChar && (aChar == '\'' || aChar == '\\'))
       {
+// clang-format off
         aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd); // move the string,removing one symbol
+// clang-format on
         aResStringSize--; // change the string size to remove unused symbol
         aResString.Trunc(aResStringSize);
       }
@@ -283,6 +291,7 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
           if (aCharNext == 'N')
           {
             aResString.SetValue(aSetCharInd++, '\n');
+// clang-format off
             aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd + 2); // move the string,removing two symbols
             aResStringSize-=2; // change the string size to remove unused symbols
             aResString.Trunc(aResStringSize);
@@ -292,6 +301,7 @@ void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& 
           {
             aResString.SetValue(aSetCharInd++, '\t');
             aResString.SetValue(aSetCharInd, aResString.ToExtString() + aStringInd + 2); // move the string,removing two symbols
+// clang-format on
             aResStringSize-=2; // change the string size to remove unused symbols
             aResString.Trunc(aResStringSize);
             continue;

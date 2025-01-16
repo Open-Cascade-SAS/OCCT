@@ -146,7 +146,9 @@ protected:
 
 protected:
 
+// clang-format off
   AIS_InteractiveContext*    myCTXPtr; //!< pointer to Interactive Context, where object is currently displayed; @sa SetContext()
+// clang-format on
   Handle(Standard_Transient) myOwner;  //!< application-specific owner object
 
 };

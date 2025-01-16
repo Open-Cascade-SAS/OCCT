@@ -348,7 +348,9 @@ static Standard_Boolean OCC23774Test(const TopoDS_Face& grossPlateFace, const To
   gp_Trsf2d mirror11 = mirror1;
   mirror11.PreMultiply(mirror1);
 
+// clang-format off
   BRepExtrema_DistShapeShape distShapeShape2(grossPlateFace,step2ModifiedShape);//,Extrema_ExtFlag_MIN);
+// clang-format on
   if(!distShapeShape2.IsDone())
     return Standard_False;
 
@@ -2247,8 +2249,10 @@ static Standard_Integer OCC24925 (Draw_Interpretor& theDI,
   Standard_Integer anArgIter = 1;
   TCollection_ExtendedString aFileName = theArgVec[anArgIter++];
   TCollection_AsciiString    aPlugin   = "TKXml";
+// clang-format off
   TCollection_AsciiString    aSaver    = "03a56820-8269-11d5-aab2-0050044b1af1"; // XmlStorageDriver   in XmlDrivers.cxx
   TCollection_AsciiString    aLoader   = "03a56822-8269-11d5-aab2-0050044b1af1"; // XmlRetrievalDriver in XmlDrivers.cxx
+// clang-format on
   if (anArgIter < theArgNb)
   {
     aPlugin = theArgVec[anArgIter++];

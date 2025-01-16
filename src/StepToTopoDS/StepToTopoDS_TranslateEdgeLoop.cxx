@@ -523,7 +523,9 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
           // isLikeSeam = Two faces on the same Surface
           StepPCurve1 = SurfCurve->AssociatedGeometryValue(1).Pcurve();
           StepPCurve2 = SurfCurve->AssociatedGeometryValue(2).Pcurve();
+// clang-format off
           if (StepPCurve1.IsNull() || StepPCurve2.IsNull()) hasPcurve = Standard_False; //smh : BUC60810
+// clang-format on
           else {
             C2d1 = myTranEdge.MakePCurve(StepPCurve1, ConvSurf, theLocalFactors);
             C2d2 = myTranEdge.MakePCurve(StepPCurve2, ConvSurf, theLocalFactors);

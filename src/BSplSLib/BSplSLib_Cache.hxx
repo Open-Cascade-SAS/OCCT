@@ -112,6 +112,7 @@ private:
   void operator = (const BSplSLib_Cache&);
 
 private:
+// clang-format off
   Standard_Boolean myIsRational;                //!< identifies the rationality of Bezier/B-spline surface
   BSplCLib_CacheParams myParamsU, myParamsV;    //!< cache parameters by U and V directions
   Handle(TColStd_HArray2OfReal) myPolesWeights; //!< array of poles and weights of calculated cache
@@ -120,6 +121,7 @@ private:
                                                 //       x21 y21 z21 [w21] x22 y22 z22 [w22] etc
                                                 // for non-rational surfaces there is no weight;
                                                 // size of array: (max(myDegree)+1) * A*(min(myDegree)+1), where A = 4 or 3
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(BSplSLib_Cache, Standard_Transient)

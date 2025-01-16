@@ -74,7 +74,9 @@ private:
     myContext->core11fwd->glDepthMask (GL_FALSE);
     myContext->core11fwd->glDisable (GL_BLEND);
     myContext->core11fwd->glDisable (GL_SCISSOR_TEST);
+// clang-format off
     myContext->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+// clang-format on
   }
 
   void restore()

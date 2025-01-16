@@ -475,7 +475,9 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                                           + aHeaderConstants
                                           + Shaders_Declarations_glsl      // common declarations (global constants and Vertex Shader inputs)
                                           + Shaders_DeclarationsImpl_glsl
+// clang-format off
                                           + anIter.Value()->Source();      // the source code itself (defining main() function)
+// clang-format on
     if (!aShader->LoadAndCompile (theCtx, myResourceId, aSource))
     {
       aShader->Release (theCtx.operator->());

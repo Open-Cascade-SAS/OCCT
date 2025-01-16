@@ -296,6 +296,7 @@ protected:
 
   // for caching clip points projections onto viewing area normals once per traverse
   // ORDER: LEFT, RIGHT, BOTTOM, TOP, NEAR, FAR
+// clang-format off
   Standard_Real myMaxClipProjectionPts[PlanesNB]; //!< Max view volume's vertices projections onto its normals
   Standard_Real myMinClipProjectionPts[PlanesNB]; //!< Min view volume's vertices projections onto its normals
 
@@ -303,6 +304,7 @@ protected:
   // ORDER: E0, E1, E2
   Standard_Real myMaxOrthoProjectionPts[3]; //!< Max view volume's vertices projections onto normalized dimensions of AABB
   Standard_Real myMinOrthoProjectionPts[3]; //!< Min view volume's vertices projections onto normalized dimensions of AABB
+// clang-format on
 
   Standard_Boolean myIsProjectionParallel;
 

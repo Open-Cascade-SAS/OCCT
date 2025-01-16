@@ -648,6 +648,7 @@ protected: //! Fields
   Standard_Boolean myAvoidBuildPCurve;
   BOPAlgo_GlueEnum myGlue;
 
+// clang-format off
   BOPAlgo_DataMapOfIntegerMapOfPaveBlock myFPBDone; //!< Fence map of intersected faces and pave blocks
   TColStd_MapOfInteger myIncreasedSS; //!< Sub-shapes with increased tolerance during the operation
   TColStd_MapOfInteger myVertsToAvoidExtension; //!< Vertices located close to E/E or E/F intersection points
@@ -659,6 +660,7 @@ protected: //! Fields
                        NCollection_List<EdgeRangeDistance>>
                                             myDistances; //!< Map to store minimal distances between shapes
                                                          //!  which have no real intersections
+// clang-format on
 
 };
 

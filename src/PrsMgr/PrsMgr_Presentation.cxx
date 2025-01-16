@@ -77,7 +77,9 @@ void PrsMgr_Presentation::display (const Standard_Boolean theIsHighlight)
 {
   if (!base_type::IsDisplayed())
   {
+// clang-format off
     base_type::SetIsForHighlight (theIsHighlight); // optimization - disable frustum culling for this presentation
+// clang-format on
     base_type::Display();
   }
   else if (!base_type::IsVisible())

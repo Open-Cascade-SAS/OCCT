@@ -465,6 +465,7 @@ private:
 
   Standard_Real                    myMin;             //!< values range - minimal value
   Standard_Real                    myMax;             //!< values range - maximal value
+// clang-format off
   Graphic3d_Vec3d                  myColorHlsMin;     //!< HLS color corresponding to minimum value
   Graphic3d_Vec3d                  myColorHlsMax;     //!< HLS color corresponding to maximum value
   TCollection_ExtendedString       myTitle;           //!< optional title string     
@@ -479,6 +480,7 @@ private:
   Aspect_SequenceOfColor           myColors;          //!< sequence of custom colors
   TColStd_SequenceOfExtendedString myLabels;          //!< sequence of custom text labels
   Aspect_TypeOfColorScalePosition  myLabelPos;        //!< label position relative to the color scale
+// clang-format on
   Aspect_TypeOfColorScalePosition  myTitlePos;        //!< title position
   Standard_Integer                 myXPos;            //!< left   position
   Standard_Integer                 myYPos;            //!< bottom position

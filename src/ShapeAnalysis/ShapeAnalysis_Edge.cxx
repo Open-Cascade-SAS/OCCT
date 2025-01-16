@@ -533,7 +533,9 @@ Standard_Boolean ShapeAnalysis_Edge::CheckVerticesWithPCurve (const TopoDS_Edge&
 {
   TopLoc_Location L;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(face, L);
+// clang-format off
   return CheckVerticesWithPCurve (edge, S, L, preci, vtx); //szv#4:S4163:12Mar99 `vtx,preci` wrong parameters order
+// clang-format on
 }
 
 

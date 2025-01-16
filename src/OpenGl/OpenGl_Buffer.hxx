@@ -282,9 +282,11 @@ protected:
 
   Standard_Byte*   myOffset;       //!< offset to data
   unsigned int     myBufferId;     //!< VBO name (index)
+// clang-format off
   unsigned int     myComponentsNb; //!< Number of components per generic vertex attribute, must be 1, 2, 3, or 4
   Standard_Integer myElemsNb;      //!< Number of vertex attributes / number of vertices
   unsigned int     myDataType;     //!< Data type (GL_FLOAT, GL_UNSIGNED_INT, GL_UNSIGNED_BYTE etc.)
+// clang-format on
 
 };
 

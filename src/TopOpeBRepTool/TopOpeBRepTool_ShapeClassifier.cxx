@@ -753,7 +753,9 @@ static Standard_Boolean FindAPointInTheFace
       
       T.Normalize();
       P.SetCoord(P.X()+TolInit*T.X(),P.Y()+TolInit*T.Y());
+// clang-format off
       FClassifier.Reset(gp_Lin2d(P,T),ParamInit,RealEpsilon());   //-- Longueur et Tolerance #######
+// clang-format on
       
       TopExp_Explorer otherfaceexplorer;
       for (otherfaceexplorer.Init(face,TopAbs_EDGE); 

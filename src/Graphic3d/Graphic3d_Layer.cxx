@@ -390,7 +390,9 @@ Standard_Real Graphic3d_Layer::considerZoomPersistenceObjects (Standard_Integer 
       }
 
       const Standard_Boolean isBigObject  = (Abs (aConvertedMaxX - aConvertedMinX) > 2.0)  // width  of zoom pers. object greater than width  of window
+// clang-format off
                                          || (Abs (aConvertedMaxY - aConvertedMinY) > 2.0); // height of zoom pers. object greater than height of window
+// clang-format on
       const Standard_Boolean isAlreadyInScreen = (aConvertedMinX > -1.0 && aConvertedMinX < 1.0)
                                               && (aConvertedMaxX > -1.0 && aConvertedMaxX < 1.0)
                                               && (aConvertedMinY > -1.0 && aConvertedMinY < 1.0)

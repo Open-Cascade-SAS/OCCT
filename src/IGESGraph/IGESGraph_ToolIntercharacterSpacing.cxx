@@ -42,12 +42,14 @@ void IGESGraph_ToolIntercharacterSpacing::ReadOwnParams
   Standard_Real    iSpace; 
 
   // Reading nbPropertyValues(Integer)
+// clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
   if (nbPropertyValues != 1)
     PR.AddFail("No. of Property values : Value is not 1");
 
   // Reading iSpace(Real)
   PR.ReadReal(PR.Current(), "Intercharacter space in % of text height", iSpace); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(nbPropertyValues, iSpace);

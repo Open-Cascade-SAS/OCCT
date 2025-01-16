@@ -703,6 +703,7 @@ protected:
   AIS_ViewInputBuffer myUI;                       //!< buffer for UI thread
   AIS_ViewInputBuffer myGL;                       //!< buffer for rendering thread
 
+// clang-format off
   Standard_Real       myLastEventsTime;           //!< last fetched events timer value for computing delta/progress
   Standard_Boolean    myToAskNextFrame;           //!< flag indicating that another frame should be drawn right after this one
   Standard_Boolean    myIsContinuousRedraw;       //!< continuous redrawing (without immediate rendering optimization)
@@ -743,6 +744,7 @@ protected:
 protected: //! @name XR input variables
 
   NCollection_Array1<Handle(AIS_XRTrackedDevice)> myXRPrsDevices; //!< array of XR tracked devices presentations
+// clang-format on
   Quantity_Color             myXRLaserTeleColor;  //!< color of teleport laser
   Quantity_Color             myXRLaserPickColor;  //!< color of picking  laser
   Aspect_XRTrackedDeviceRole myXRLastTeleportHand;//!< active hand for teleport
@@ -753,6 +755,7 @@ protected: //! @name XR input variables
   Standard_Real       myXRLastPickDepthLeft;      //!< last picking depth for left  hand
   Standard_Real       myXRLastPickDepthRight;     //!< last picking depth for right hand
   Standard_Real       myXRTurnAngle;              //!< discrete turn angle for XR trackpad
+// clang-format off
   Standard_Boolean    myToDisplayXRAuxDevices;    //!< flag to display auxiliary tracked XR devices
   Standard_Boolean    myToDisplayXRHands;         //!< flag to display XR hands
 
@@ -809,6 +812,7 @@ protected: //! @name rotation/panning transient state variables
   gp_Vec              myCamStartOpToCenter;       //!< vector from rotation gravity point to camera Center at the beginning of rotation
   gp_Vec              myCamStartOpToEye;          //!< vector from rotation gravity point to camera Eye    at the beginning of rotation
   Graphic3d_Vec3d     myRotateStartYawPitchRoll;  //!< camera yaw pitch roll at the beginning of rotation
+// clang-format on
 
 };
 

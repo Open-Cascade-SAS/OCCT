@@ -323,7 +323,9 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+// clang-format off
   const OpenGl_Aspects* aTextAspect = theWorkspace->ApplyAspects (false); // do not bind textures as they will be disabled anyway
+// clang-format on
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
   // Bind custom shader program or generate default version

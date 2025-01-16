@@ -137,7 +137,9 @@ void TNaming_Localizer::FindFeaturesInAncestors
   }
   else {
 #ifdef OCCT_DEBUG
+// clang-format off
     std::cout <<" TNaming_Localization : S n est pas dans le solide"<<std::endl;//S is not in the solid
+// clang-format on
 #endif
   }
 }

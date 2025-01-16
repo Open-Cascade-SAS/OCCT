@@ -62,7 +62,9 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
   // ========
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
+// clang-format off
   aFirstIndPrev = 1; // It is absent :-) because I didn't wrote it on the stage of writing the file.
+// clang-format on
 
   // Read the LastIndex; the attribute should present
   if (!anElement.getAttribute(::LastPreviousIndex()).GetInteger(aLastIndPrev)) 
@@ -112,7 +114,9 @@ Standard_Boolean XmlMFunction_GraphNodeDriver::Paste(const XmlObjMgt_Persistent&
   // ====
 
   // Read the FirstIndex; if the attribute is absent initialize to 1
+// clang-format off
   aFirstIndNext = aLastIndPrev + 1; // It is absent :-) because I didn't wrote it on the stage of writing the file.
+// clang-format on
 
   // Read the LastIndex; the attribute should present
   if (!anElement.getAttribute(::LastNextIndex()).GetInteger(aLastIndNext))

@@ -869,7 +869,9 @@ static TCollection_AsciiString prepareGeomMainSrc (Graphic3d_ShaderObject::Shade
       EOL"  float aQuadArea = abs (aSideB.x * aSideC.y - aSideB.y * aSideC.x);"
       EOL"  vec3 aLenABC    = vec3 (length (aSideA), length (aSideB), length (aSideC));"
       EOL"  vec3 aHeightABC = vec3 (aQuadArea) / aLenABC;"
+// clang-format off
       EOL"  aHeightABC = max (aHeightABC, vec3 (10.0 * occLineWidth));" // avoid shrunk presentation disappearing at distance
+// clang-format on
       EOL"  float aQuadModeHeightC = occIsQuadMode ? occLineWidth + 1.0 : 0.0;";
   }
 

@@ -49,6 +49,7 @@ void  IGESDimen_ToolWitnessLine::ReadOwnParams
   Standard_Integer nbval;
   Handle(TColgp_HArray1OfXY) dataPoints;
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "Interpretation Flag", datatype); //szv#4:S4163:12Mar99 `st=` not needed
 
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of data points", nbval);
@@ -57,6 +58,7 @@ void  IGESDimen_ToolWitnessLine::ReadOwnParams
   else  PR.AddFail("Number of data points: Not Positive");
 
   PR.ReadReal(PR.Current(), "Common Z Displacement", zDisplacement); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   if (! dataPoints.IsNull())
     for (Standard_Integer i = 1; i <= nbval; i++)

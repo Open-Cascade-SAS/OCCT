@@ -88,6 +88,7 @@ IGESControl_IGESBoundary::IGESControl_IGESBoundary(const IGESToBRep_CurveAndSurf
   if (!Result) {
     mysewd->Clear();
     if (okCurve3d && mysewd3d->NbEdges() > 0) {
+// clang-format off
       Message_Msg Msg1070("IGES_1070");//"Representations in the file are inconsistent. Recomputation from 3d"
       Msg1070.Arg(3);
       myCS.SendWarning(myentity,Msg1070);
@@ -95,6 +96,7 @@ IGESControl_IGESBoundary::IGESControl_IGESBoundary(const IGESToBRep_CurveAndSurf
     }
     else if (okCurve2d && mysewd2d->NbEdges() > 0) {
       Message_Msg Msg1070("IGES_1070");//"Representations in the file are inconsistent. Recomputation from 2d"
+// clang-format on
       Msg1070.Arg(2);
       myCS.SendWarning(myentity,Msg1070);
       mysewd = mysewd2d;
@@ -151,8 +153,10 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
                                                      Handle(ShapeExtend_WireData)& Gsewd) 
 {
   Gsewd                                = new ShapeExtend_WireData;//local translation (for mysewd)
+// clang-format off
   Handle(ShapeExtend_WireData) Gsewd3d = new ShapeExtend_WireData;//local translation (for mysewd3d)
   Handle(ShapeExtend_WireData) Gsewd2d = new ShapeExtend_WireData;//local translation (for mysewd2d)
+// clang-format on
 
   Standard_Boolean revsewd, revnextsewd;
   Standard_Real distmin, precision = myCS.GetEpsGeom() * myCS.GetUnitFactor(), maxtol = myCS.GetMaxTol();

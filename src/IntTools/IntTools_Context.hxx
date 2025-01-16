@@ -251,7 +251,9 @@ protected:
   NCollection_DataMap<TopoDS_Shape, IntTools_SurfaceRangeLocalizeData*, TopTools_ShapeMapHasher> myProjSDataMap;
   NCollection_DataMap<TopoDS_Shape, Bnd_Box*, TopTools_ShapeMapHasher> myBndBoxDataMap;
   NCollection_DataMap<TopoDS_Shape, BRepAdaptor_Surface*, TopTools_ShapeMapHasher> mySurfAdaptorMap;
+// clang-format off
   NCollection_DataMap<TopoDS_Shape, Bnd_OBB*, TopTools_ShapeMapHasher> myOBBMap; // Map of oriented bounding boxes
+// clang-format on
   Standard_Integer myCreateFlag;
   Standard_Real myPOnSTolerance;
 

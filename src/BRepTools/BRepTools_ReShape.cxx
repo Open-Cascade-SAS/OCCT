@@ -75,7 +75,9 @@ static void CopyRanges (const TopoDS_Shape& toedge, const TopoDS_Shape& fromedge
     else {
        if(fromGC->PCurve().IsNull()) continue; }
       
+// clang-format off
     if ( ! isC3d && ! fromGC->IsCurveOnSurface()) continue; // only 3d curves and pcurves are treated
+// clang-format on
 
     Handle(Geom_Surface) surface;
     TopLoc_Location L;
@@ -409,10 +411,12 @@ TopoDS_Shape BRepTools_ReShape::Apply (const TopoDS_Shape& shape,
     Standard_Integer nitems = 0;
     for ( TopoDS_Iterator subit(newsh); subit.More(); subit.Next(), nitems++ ) {
       const TopoDS_Shape& subsh = subit.Value();
+// clang-format off
       if ( subsh.ShapeType() == sh.ShapeType() ) B.Add ( result, subsh );//fix for SAMTECH bug OCC322 about absent internal vertices after sewing.
       else locStatus |= EncodeStatus(10);//ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
     }
     if ( ! nitems ) locStatus |= EncodeStatus(10);//ShapeExtend::EncodeStatus ( ShapeExtend_FAIL1 );
+// clang-format on
   }
   if ( ! modif ) return shape;
 

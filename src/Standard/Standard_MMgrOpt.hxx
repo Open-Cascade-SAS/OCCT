@@ -137,7 +137,9 @@ protected:
   Standard_Size *  myNextAddr;      //!< next free address in the active memory pool
   Standard_Size *  myEndBlock;      //!< end of the active memory pool
   
+// clang-format off
   Standard_Integer myMMap;          //!< non-null if using memory mapped files for allocation of large blocks
+// clang-format on
   Standard_Size    myThreshold;     //!< large block size  
   
   Standard_Mutex   myMutex;         //!< Mutex to protect free lists data

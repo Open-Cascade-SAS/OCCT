@@ -309,7 +309,9 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel (const Standard_Byte* theRawV
     case Image_Format_GrayF:
     {
       const Standard_ShortReal& aPixel = *reinterpret_cast<const Standard_ShortReal*> (theRawValue);
+// clang-format off
       return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel, aPixel, aPixel, 1.0f)); // opaque
+// clang-format on
     }
     case Image_Format_AlphaF:
     {
@@ -334,12 +336,14 @@ Quantity_ColorRGBA Image_PixMap::ColorFromRawPixel (const Standard_Byte* theRawV
     case Image_Format_RGBF:
     {
       const Image_ColorRGBF& aPixel = *reinterpret_cast<const Image_ColorRGBF*> (theRawValue);
+// clang-format off
       return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), 1.0f)); // opaque
     }
     case Image_Format_BGRF:
     {
       const Image_ColorBGRF& aPixel = *reinterpret_cast<const Image_ColorBGRF*> (theRawValue);
       return Quantity_ColorRGBA (NCollection_Vec4<float> (aPixel.r(), aPixel.g(), aPixel.b(), 1.0f)); // opaque
+// clang-format on
     }
     case Image_Format_GrayF_half:
     {

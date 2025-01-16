@@ -141,7 +141,9 @@ public:
     Numbers*       myArray;             //!< indexed from 0 to myMaxAllocSize-1
     ptrdiff_t      myTotalLeftSize;     //!< currently remained allocated size
     size_t         myTotalPeakSize;     //!< maximum cumulative allocated size
+// clang-format off
     size_t         myBreakSize;         //!< user defined allocation size to debug (see place_for_breakpoint())
+// clang-format on
     size_t         myBreakPeak;         //!< user defined peak size limit to debug
   };
 

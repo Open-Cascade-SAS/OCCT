@@ -820,7 +820,9 @@ static Standard_Integer DT_SplitSurface (Draw_Interpretor& di,
     return 1;
   }
 
+// clang-format off
   Handle(ShapeUpgrade_SplitSurfaceContinuity) theTool = new ShapeUpgrade_SplitSurfaceContinuity;//S4137
+// clang-format on
   
   Standard_Real      Tol=Draw::Atof(a[3]);
   Standard_Integer Split = Draw::Atoi(a[4]);

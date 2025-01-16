@@ -90,7 +90,9 @@ private:
     theIndex = ((theIndex & 0x0f0f0f0f) << 4) | ((theIndex & 0xf0f0f0f0) >> 4);
     theIndex = ((theIndex & 0x33333333) << 2) | ((theIndex & 0xcccccccc) >> 2);
     theIndex = ((theIndex & 0x55555555) << 1) | ((theIndex & 0xaaaaaaaa) >> 1);
+// clang-format off
     union Result { unsigned u; float f; } aResult; // Write reversed bits directly into floating-point mantissa.
+// clang-format on
     aResult.u = 0x3f800000u | (theIndex >> 9);
     return aResult.f - 1.0f;
   }

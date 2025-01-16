@@ -152,10 +152,12 @@ protected:
   gp_Vec myPlanes[N + 2];        //!< Plane equations
   gp_Pnt myVertices[N * 2];      //!< Vertices coordinates
 
+// clang-format off
   Standard_Real myMaxVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
   Standard_Real myMinVertsProjections[N + 2];      //!< Cached projections of vertices onto frustum plane directions
   Standard_Real myMaxOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
   Standard_Real myMinOrthoVertsProjections[3];     //!< Cached projections of vertices onto directions of ortho unit vectors
+// clang-format on
 
   gp_Vec myEdgeDirs[6];                    //!< Cached edge directions
 };

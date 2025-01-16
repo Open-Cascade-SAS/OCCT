@@ -744,7 +744,9 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
         BRep_Tool::CurveOnSurface ( sbwd->Edge(i), C, S, L, first, last );
         if ( C.IsNull() || Abs (last - first) < Precision::PConfusion())
         {
+// clang-format off
           SendWarning ( sbwd->Edge ( i ), Message_Msg ( "FixWire.FixCurve3d.Removed" ) );// Incomplete edge (with no pcurves or 3d curve) removed
+// clang-format on
           sbwd->Remove ( i-- );
           nb--;
           myStatusEdgeCurves |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );
@@ -1180,7 +1182,9 @@ Standard_Boolean ShapeFix_Wire::FixSmall (const Standard_Integer num,
   // action: remove edge
   if ( ! Context().IsNull() ) 
     Context()->Remove(WireData()->Edge(n));
+// clang-format off
   SendWarning ( WireData()->Edge ( n ), Message_Msg ( "FixAdvWire.FixSmall.MSG0" ) ); //Small edge(s) removed
+// clang-format on
   WireData()->Remove ( n );
   
   // call FixConnected in the case if vertices of the small edge were not the same
@@ -1973,7 +1977,9 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
   Seq2d->Append((t1+t2)/2);
   Handle(TColStd_HSequenceOfReal) Seq3d = SFTP.Perform(Seq2d,Standard_False);
   
+// clang-format off
   Standard_Real dist1 = pcurPnt.Distance(crv->Value(Seq3d->Value(1)));// correcting Seq3d already project 
+// clang-format on
   Standard_Real dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));
   Standard_Real dist3 = pcurPnt.Distance(crv->Value(Seq3d->Value(3)));
   Standard_Real ftrim,ltrim;
@@ -2105,7 +2111,9 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
   Seq2d->Append((t1+t2)/2);
   Handle (TColStd_HSequenceOfReal) Seq3d = SFTP.Perform(Seq2d,Standard_False);
   
+// clang-format off
   Standard_Real dist1 = pcurPnt.Distance(crv->Value(Seq3d->Value(1)));// correcting Seq3d already project 
+// clang-format on
   Standard_Real dist2 = pcurPnt.Distance(crv->Value(Seq3d->Value(2)));
   Standard_Real dist3 = pcurPnt.Distance(crv->Value(Seq3d->Value(3)));
   Standard_Real ftrim,ltrim;
@@ -2337,7 +2345,9 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge (const Standard_Integer 
   }
 
   if ( LastFixStatus ( ShapeExtend_DONE ) && ! myShape.IsNull() ) {
+// clang-format off
     SendWarning ( E, Message_Msg ( "FixAdvWire.FixIntersection.MSG5" ) );// Edge was self-intersecting, corrected
+// clang-format on
   }
 
   return LastFixStatus ( ShapeExtend_DONE );
@@ -2640,7 +2650,9 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
     myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE7 );
   }
   if ( ! myShape.IsNull() ) {
+// clang-format off
     SendWarning ( Message_Msg ( "FixAdvWire.FixIntersection.MSG10" ) );// Edges were intersecting, corrected
+// clang-format on
   }
   return Standard_True;
 }
@@ -2819,7 +2831,9 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
     if(newTolers(i)>0) B.UpdateVertex(TopoDS::Vertex(vertices(i)),newTolers(i));
   
   if ( ! myShape.IsNull() ) {
+// clang-format off
     SendWarning ( Message_Msg ( "FixAdvWire.FixIntersection.MSG10" ) );// Edges were intersecting, corrected
+// clang-format on
   }
   return Standard_True;
 }

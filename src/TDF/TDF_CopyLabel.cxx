@@ -156,7 +156,9 @@ void TDF_CopyLabel::Perform()
 {
   myIsDone = Standard_False;
   if(mySL.Data()->Root().IsDifferent(myTL.Data()->Root()) && //TDF_Data is not the same
+// clang-format off
      !TDF_Tool::IsSelfContained(mySL, myFilter)) return;               //source label isn't self-contained
+// clang-format on
 
   Standard_Boolean extReferers =
     ExternalReferences(mySL, myMapOfExt, myFilter);

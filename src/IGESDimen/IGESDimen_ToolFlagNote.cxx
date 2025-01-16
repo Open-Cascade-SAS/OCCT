@@ -50,7 +50,9 @@ void  IGESDimen_ToolFlagNote::ReadOwnParams
   Standard_Integer nbval;
   Handle(IGESDimen_HArray1OfLeaderArrow) leaders;
 
+// clang-format off
   PR.ReadXYZ (PR.CurrentList(1, 3), "Lower Left Corner Co-ords", lowerLeft); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadReal(PR.Current(), "Rotation Angle", angle); //szv#4:S4163:12Mar99 `st=` not needed
 

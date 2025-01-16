@@ -367,7 +367,9 @@ public:
 
 protected:
   opencascade::handle<BVH_BoxSet<Standard_Real, 3, TopoDS_Shape>> mySBSet1; //!< First ShapeBoxSet
+// clang-format off
   opencascade::handle<BVH_BoxSet<Standard_Real, 3, TopoDS_Shape>> mySBSet2; //!< Second ShapeBoxSet
+// clang-format on
   NCollection_List <std::pair <TopoDS_Shape, TopoDS_Shape> > myPairs; //!< Selected pairs
 };
 

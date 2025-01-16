@@ -185,7 +185,9 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
           // Bin(Brep)Tools_ShapeSet::AddGeometry() is called from Bin(Brep)Tools_ShapeSet::Add()
           // that processes shapes recursively from complex to elementary ones.
           // As a result, the TopAbs_FACE's will be processed earlier than the TopAbs_EDGE's.
+// clang-format off
           myTriangulations.Add(CR->Triangulation(), Standard_False); // edge triangulation does not need normals
+// clang-format on
           myNodes.Add(CR->PolygonOnTriangulation());
           ChangeLocations().Add(CR->Location());
           if (CR->IsPolygonOnClosedTriangulation())

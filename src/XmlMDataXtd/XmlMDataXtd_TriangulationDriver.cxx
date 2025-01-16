@@ -139,9 +139,11 @@ void XmlMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
     Standard_Integer nbNodes = PT->NbNodes();
     Standard_Integer nbTriangles = PT->NbTriangles();
     Standard_Integer size = PT->NbNodes();
+// clang-format off
     size *= 3 * 25; // 3 coordinates for a node * 25 characters are used to represent a coordinate (double) in XML
     if (PT->HasUVNodes()) 
       size += 2 * 25 * nbNodes; // 2 coordinates for a 2D node * 25 characters are used to represent a coordinate (double) in XML
+// clang-format on
     size += 3 * 10 * nbTriangles; // space for triangles
     size *= 2; // just in case :-)
     if (!size)
@@ -180,7 +182,9 @@ void XmlMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
 
     stream << std::ends;
 
+// clang-format off
     Standard_Character* dump = (Standard_Character*)stream.str(); // copying! Don't forget to delete it.
+// clang-format on
     XmlObjMgt::SetStringValue(theTarget, dump, Standard_True);
     delete[] dump;
   }

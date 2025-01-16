@@ -481,7 +481,9 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance
 	Standard_Real LengthUncertainty = aUMWU->ValueComponent();
 	// Update it according to the Length Unit Factor
 	//pdn r_47-sd.stp to choose minimal uncertainty
+// clang-format off
 	if(theUncertainty > LengthUncertainty) theUncertainty =  LengthUncertainty; // *lengthFactor; fait par appelant
+// clang-format on
 	hasUncertainty = Standard_True;
       }
     }

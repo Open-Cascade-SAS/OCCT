@@ -49,10 +49,12 @@ void  IGESSolid_ToolSolidOfRevolution::ReadOwnParams
   Standard_Real tempreal;
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
+// clang-format off
   PR.ReadEntity(IR, PR.Current(), "Curve Entity", tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
     PR.ReadReal(PR.Current(), "Fraction of rotation", tempFraction); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else
     tempFraction = 1.0;
   if (PR.DefinedElseSkip())

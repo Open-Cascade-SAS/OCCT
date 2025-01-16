@@ -273,7 +273,9 @@ protected:
   Quantity_ColorRGBA                myColor;       //!< light color
   Graphic3d_Vec4                    myDirection;   //!< direction of directional/spot light
   Graphic3d_Vec4                    myParams;      //!< packed light parameters
+// clang-format off
   Standard_ShortReal                mySmoothness;  //!< radius for point light or cone angle for directional light
+// clang-format on
   Standard_ShortReal                myIntensity;   //!< intensity multiplier for light
   const Graphic3d_TypeOfLightSource myType;        //!< Graphic3d_TypeOfLightSource enumeration
   Standard_Size                     myRevision;    //!< modification counter

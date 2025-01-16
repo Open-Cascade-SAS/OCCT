@@ -129,12 +129,14 @@ protected:
   Standard_Real    myFrameStartTime;          //!< time at the beginning of frame redraw
   Standard_Real    myFrameDuration;           //!< frame duration
   Standard_Real    myUpdateInterval;          //!< interval to update meters
+// clang-format off
   Standard_Size    myFpsFrameCount;           //!< FPS counter (within short measurement time slice)
   NCollection_Array1<Graphic3d_FrameStatsData> myCounters; //!< data frames history
   Graphic3d_FrameStatsDataTmp myCountersTmp;  //!< data frame values filled to be filled between FrameStart() and FrameEnd() calls
   Graphic3d_FrameStatsData    myCountersMax;  //!< data frame values with absolute maximum values in the history
   Standard_Integer myLastFrameIndex;          //!< last data frame index
   Standard_Boolean myIsLongLineFormat;        //!< prefer longer lines over greater number of lines
+// clang-format on
 
 };
 

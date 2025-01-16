@@ -42,11 +42,13 @@ void  IGESBasic_ToolAssocGroupType::ReadOwnParams
   Standard_Integer tempType;
   Handle(TCollection_HAsciiString) tempName;
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadInteger(PR.Current(), "Number of data fields", tempNbData); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempNbData = 2;
   PR.ReadInteger(PR.Current(), "Type of attached associativity",tempType); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadText(PR.Current(), "Name of attached associativity", tempName); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempNbData, tempType, tempName);
 }

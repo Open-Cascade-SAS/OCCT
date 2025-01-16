@@ -78,7 +78,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L,
       lpnt[0].SetValue(XS,YS,u,ang);
     }
     else { // 2 points d intersection
+// clang-format off
       Standard_Real h, XS1,YS1, XS2,YS2, ang1,ang2, u1,u2;//,cost,sint angt;                                        
+// clang-format on
       nbp=2;
       h=Sqrt(C.Radius()*C.Radius()-d*d);
       //modified by NIZNHY-PKV Fri Jun 15 09:55:47 2007f

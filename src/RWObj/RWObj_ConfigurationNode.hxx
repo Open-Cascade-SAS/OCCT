@@ -82,6 +82,7 @@ public:
   struct RWObj_InternalSection
   {
     // Common
+// clang-format off
     double FileLengthUnit = 1.; //!< File length units to convert from while reading the file, defined as scale factor for m (meters)
     RWMesh_CoordinateSystem SystemCS = RWMesh_CoordinateSystem_Zup; //!< System origin coordinate system to perform conversion into during read
     RWMesh_CoordinateSystem FileCS = RWMesh_CoordinateSystem_Yup; //!< File origin coordinate system to perform conversion during read
@@ -91,6 +92,7 @@ public:
     TCollection_AsciiString ReadRootPrefix; //!< Root folder for generating root labels names
     bool ReadFillDoc = true; //!< Flag for fill document from shape sequence
     bool ReadFillIncomplete = true; //!< Flag for fill the document with partially retrieved data even if reader has failed with error
+// clang-format on
     int ReadMemoryLimitMiB = -1; //!< Memory usage limit
     // Writing
     TCollection_AsciiString WriteComment; //!< Export special comment

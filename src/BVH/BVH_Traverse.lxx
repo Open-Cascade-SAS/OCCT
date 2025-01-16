@@ -47,7 +47,9 @@ Standard_Integer BVH_Traverse <NumType, Dimension, BVHSetType, MetricType>::Sele
   // Create stack
   BVH_NodeInStack<MetricType> aStack[BVH_Constants_MaxTreeDepth];
 
+// clang-format off
   BVH_NodeInStack<MetricType> aNode (0);         // Currently processed node, starting with the root node
+// clang-format on
   BVH_NodeInStack<MetricType> aPrevNode = aNode; // Previously processed node
 
   Standard_Integer aHead = -1;      // End of the stack

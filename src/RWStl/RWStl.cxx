@@ -26,7 +26,9 @@ namespace
 {
 
   static const Standard_Integer THE_STL_SIZEOF_FACET = 50;
+// clang-format off
   static const Standard_Integer IND_THRESHOLD = 1000; // increment the indicator every 1k triangles
+// clang-format on
   static const size_t THE_BUFFER_SIZE = 1024; // The length of buffer to read (in bytes)
 
   //! Writing a Little Endian 32 bits integer

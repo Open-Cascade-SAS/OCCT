@@ -159,8 +159,10 @@ protected:
 protected:
 
   TCollection_AsciiString          myFile;         //!< output OBJ file
+// clang-format off
   RWMesh_CoordinateSystemConverter myCSTrsf;       //!< transformation from OCCT to OBJ coordinate system
   XCAFPrs_Style                    myDefaultStyle; //!< default material definition to be used for nodes with only color defined
+// clang-format on
 
 };
 

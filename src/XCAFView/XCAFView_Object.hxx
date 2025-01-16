@@ -235,7 +235,9 @@ private:
   Standard_Boolean myBackPlaneClipping;
   Standard_Real myBackPlaneDistance;
   Standard_Boolean myViewVolumeSidesClipping;
+// clang-format off
   Handle(TColgp_HArray1OfPnt) myGDTPoints; // Point for each GDT to describe position of GDT frame in View.
+// clang-format on
 };
 
 #endif // _XCAFView_Object_HeaderFile

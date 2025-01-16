@@ -1529,7 +1529,9 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound
     shapeRep = new StepShape_ShapeRepresentation;
     SDR0->SetUsedRepresentation(shapeRep);  // to be used by MakeItem
   }
+// clang-format off
   binder = TransientResult(SDR0); // set SDR as first item in order to be found first (but not SDR of subshape!)
+// clang-format on
   binder->AddResult ( TransientResult(shapeRep) );
 
   // translate components

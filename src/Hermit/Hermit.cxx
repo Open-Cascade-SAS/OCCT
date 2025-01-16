@@ -41,9 +41,11 @@ static void HermiteCoeff(const Handle(Geom_BSplineCurve)& BS,
   TColStd_Array1OfReal    Knots(1,BS->NbKnots());         
   TColStd_Array1OfReal    Weights(1,BS->NbPoles()); 
   TColStd_Array1OfInteger Mults(1,BS->NbKnots());
+// clang-format off
   Standard_Integer        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
   Standard_Real           Denom0,Denom1,                            // denominator value for u=0 & u=1
                           Deriv0,Deriv1 ;                           // derivative denominator value for u=0 & 1
+// clang-format on
   Standard_Boolean        Periodic;
   
   BS->Knots(Knots);
@@ -79,8 +81,10 @@ static void HermiteCoeff(const Handle(Geom2d_BSplineCurve)& BS,
   TColStd_Array1OfInteger Mults(1,BS->NbKnots());
   Standard_Integer        Degree,Index0,Index1;
   Standard_Real           Denom0,Denom1,                            // denominateur value for u=0 & u=1
+// clang-format off
                           Deriv0,Deriv1 ;                           // denominator value for u=0 & u=1
   Standard_Boolean        Periodic;                                 // derivative denominatur value for u=0 & 1
+// clang-format on
   
   BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0,1.0,Knots);                           //affinity on the nodal vector
@@ -129,10 +133,12 @@ static void Polemax(const TColgp_Array1OfPnt2d& Poles,
 {
 //  Standard_Integer i,index=0;
   Standard_Integer i;
+// clang-format off
   Standard_Real Max,Min;                                         //intermediate value of max and min ordinates
   min=0;max=0;                                                   //initialisation of the indices
   
   Min=Poles(0).Y();                                              //initialisation of the intermediate value
+// clang-format on
   Max=Poles(0).Y();
   for (i=1;i<=(Poles.Length()-1);i++){
     if (Poles(i).Y()<Min){
@@ -167,10 +173,12 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
   Standard_Integer               index,i,                
                                  I1=0,I2=0,I3=0,I4=0;    //knots index
   TColgp_Array1OfPnt2d           Polesinit(0,3) ;        
+// clang-format off
   Handle(TColStd_HArray1OfReal)  Knots;                  //array of the BSpline knots + the ones inserted
   Standard_Integer               cas=0,mark=0,dercas=0,  //loop marks
                                  min,max;                //Pole min and max indices
   Standard_Real                  Us1,Us2,a;              //boundaries value of the knots to be inserted
+// clang-format on
   
   U4=0.0;U5=1.0;                                         //default value
   if (Ux!=1.0){
@@ -213,7 +221,9 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
   //sort of the array of knots
   std::sort (knots.begin(), knots.end());
 
+// clang-format off
   Polesinit(0).SetCoord(0.0,Herm(0));                 //poles of the Hermite polynome in the BSpline form
+// clang-format on
   Polesinit(1).SetCoord(0.0,Herm(0)+Herm(1)/3.0);
   Polesinit(2).SetCoord(0.0,Herm(3)-Herm(2)/3.0);
   Polesinit(3).SetCoord(0.0,Herm(3));
@@ -388,10 +398,12 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   Standard_Integer               index,i,
                                  I1=0,I2=0,I3=0,I4=0;    //knots index
   TColgp_Array1OfPnt2d           Polesinit(0,3) ;
+// clang-format off
   Handle(TColStd_HArray1OfReal)  Knots;                  //array of the BSpline knots + the ones inserted
   Standard_Integer               cas=0,mark=0,dercas=0,  //loop marks
                                  min,max;                //Pole min and max indices
   Standard_Real                  Us1,Us2,a;              //boundaries value of the knots to be inserted
+// clang-format on
   
   U4=0.0;U5=1.0;                                         //default value
   if (Ux!=1.0){
@@ -437,7 +449,9 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   //sort of the array of knots
   std::sort (knots.begin(), knots.end());
 
+// clang-format off
   Polesinit(0).SetCoord(0.0,Herm(0));              //poles of the Hermite polynome in the BSpline form
+// clang-format on
   Polesinit(1).SetCoord(0.0,Herm(0)+Herm(1)/3.0);
   Polesinit(2).SetCoord(0.0,Herm(3)-Herm(2)/3.0);
   Polesinit(3).SetCoord(0.0,Herm(3));
@@ -658,6 +672,7 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
   Standard_Integer           zeroboucle = 0 ;
   HermiteCoeff(BS,Herm);                             //computation of the Hermite coefficient
 
+// clang-format off
   Poles(1).SetCoord(0.0,Herm(0));                    //poles of the Hermite polynome in the BSpline form
   Poles(2).SetCoord(0.0,Herm(0)+Herm(1)/3.0);
   Poles(3).SetCoord(0.0,Herm(3)-Herm(2)/3.0);
@@ -671,6 +686,7 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
   Handle(Geom2d_BSplineCurve)  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//BSpline without modif
 
   PolyTest(Herm,BS,Upos1,Upos2,zeroboucle,Precision::Confusion(),Precision::Confusion(),1.0,0.0);//computation of the positivity knots
+// clang-format on
   InsertKnots(BS2,Upos1,Upos2);                      //and insertion
     
   if (Upos1!=0.0)
@@ -687,12 +703,14 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom_BSplineCurve)& BS
     Uy=Upos2;
   }
 
+// clang-format off
   Herm(0)=BS2->Pole(1).Y();                           //computation of the Hermite coefficient on the
   Herm(1)=3*(BS2->Pole(2).Y()-BS2->Pole(1).Y());      //positive BSpline
   Herm(2)=3*(BS2->Pole(BS2->NbPoles()).Y()-BS2->Pole(BS2->NbPoles()-1).Y());
   Herm(3)=BS2->Pole(BS2->NbPoles()).Y();
   
   PolyTest(Herm,BS,Utol1,Utol2,boucle,TolPoles,TolKnots,Ux,Uy);          //computation of the tolerance knots
+// clang-format on
   InsertKnots(BS2,Utol1,Utol2);                                          //and insertion
   
   if (boucle==2){                                     //insertion of two knots
@@ -748,6 +766,7 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
   Standard_Integer           zeroboucle = 0 ;
   HermiteCoeff(BS,Herm);                             //computation of the Hermite coefficient
 
+// clang-format off
   Poles(1).SetCoord(0.0,Herm(0));                    //poles of the Hermite polynome in the BSpline form
   Poles(2).SetCoord(0.0,Herm(0)+Herm(1)/3.0);
   Poles(3).SetCoord(0.0,Herm(3)-Herm(2)/3.0);
@@ -761,6 +780,7 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
   Handle(Geom2d_BSplineCurve)  BS2=new Geom2d_BSplineCurve(Poles,Knots,Multiplicities,3);//BSpline without modif
 
   PolyTest(Herm,BS,Upos1,Upos2,zeroboucle,Precision::Confusion(),Precision::Confusion(),1.0,0.0);//computation of the positivity knots
+// clang-format on
   InsertKnots(BS2,Upos1,Upos2);                      //and insertion
     
   if (Upos1!=0.0)
@@ -777,12 +797,14 @@ Handle(Geom2d_BSplineCurve) Hermit::Solution(const Handle(Geom2d_BSplineCurve)& 
     Uy=Upos2;
   }
   
+// clang-format off
   Herm(0)=BS2->Pole(1).Y();                           //computation of the Hermite coefficient on the
   Herm(1)=3*(BS2->Pole(2).Y()-BS2->Pole(1).Y());      //positive BSpline
   Herm(2)=3*(BS2->Pole(BS2->NbPoles()).Y()-BS2->Pole(BS2->NbPoles()-1).Y());
   Herm(3)=BS2->Pole(BS2->NbPoles()).Y();
   
   PolyTest(Herm,BS,Utol1,Utol2,boucle,TolPoles,TolKnots,Ux,Uy);          //computation of the tolerance knots
+// clang-format on
   InsertKnots(BS2,Utol1,Utol2);                                          //and insertion
   
   if (boucle==2){                                      //insertion of two knots
@@ -840,6 +862,7 @@ void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
   Standard_Integer           zeroboucle = 0 ;
   HermiteCoeff(BS,Herm);                             //computation of the Hermite coefficient
   
+// clang-format off
   Poles(1).SetCoord(0.0,Herm(0));                    //poles of the Hermite polynome in the BSpline form
   Poles(2).SetCoord(0.0,Herm(0)+Herm(1)/3.0);
   Poles(3).SetCoord(0.0,Herm(3)-Herm(2)/3.0);
@@ -853,6 +876,7 @@ void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
                                                                                          //BSpline without modif
   
   PolyTest(Herm,BS,Upos1,Upos2,zeroboucle,Precision::Confusion(),Precision::Confusion(),1.0,0.0);//computation of the positivity knots
+// clang-format on
   InsertKnots(BS2,Upos1,Upos2);                      //and insertion
   
   if (Upos1!=0.0)
@@ -869,12 +893,14 @@ void Hermit::Solutionbis(const Handle(Geom_BSplineCurve)& BS,
     Uy=Upos2;
   }
   
+// clang-format off
   Herm(0)=BS2->Pole(1).Y();                           //computation of the Hermite coefficient on the
   Herm(1)=3*(BS2->Pole(2).Y()-BS2->Pole(1).Y());      //positive BSpline
   Herm(2)=3*(BS2->Pole(BS2->NbPoles()).Y()-BS2->Pole(BS2->NbPoles()-1).Y());
   Herm(3)=BS2->Pole(BS2->NbPoles()).Y();
   
   PolyTest(Herm,BS,Utol1,Utol2,boucle,TolPoles,TolKnots,Ux,Uy);          //computation of the tolerance knots
+// clang-format on
   InsertKnots(BS2,Utol1,Utol2);                                          //and insertion
   
   if (boucle==2){                                      //insertion of two knots

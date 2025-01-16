@@ -395,6 +395,7 @@ protected:
 protected:
 
   TCollection_AsciiString                       myFile;              //!< output glTF file
+// clang-format off
   TCollection_AsciiString                       myBinFileNameFull;   //!< output file with binary data (full  path)
   TCollection_AsciiString                       myBinFileNameShort;  //!< output file with binary data (short path)
   RWGltf_WriterTrsfFormat                       myTrsfFormat;        //!< transformation format to write into glTF file
@@ -419,6 +420,7 @@ protected:
 
   std::vector<RWGltf_GltfBufferView>            myBuffViewsDraco;    //!< vector of buffers view with compression data
   Standard_Boolean                              myToParallel;        //!< flag to use multithreading; FALSE by default
+// clang-format on
   RWGltf_DracoParameters                        myDracoParameters;   //!< Draco parameters
 };
 

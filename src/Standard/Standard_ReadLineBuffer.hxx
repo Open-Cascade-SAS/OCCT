@@ -296,11 +296,13 @@ protected:
 
   std::vector<char> myReadBuffer;           //!< Temp read buffer
   std::vector<char> myReadBufferLastStr;    //!< Part of last string of myReadBuffer
+// clang-format off
   bool              myUseReadBufferLastStr; //!< Flag to use myReadBufferLastStr during next line reading
   bool              myIsMultilineMode;      //!< Flag to process of the special multi-line case at the end of the line
   bool              myToPutGapInMultiline;  //!< Flag to put gap space while joining lines in multi-line syntax
   size_t            myBufferPos;            //!< Current position in myReadBuffer
   size_t            myBytesLastRead;        //!< The number of characters that were read last time from myReadBuffer.
+// clang-format on
 };
 
 #endif // _Standard_ReadLineBuffer_HeaderFile

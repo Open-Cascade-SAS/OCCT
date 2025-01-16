@@ -42,7 +42,9 @@ Standard_EXPORT void debON2d(const Standard_Integer iF)
 {std::cout<<"++ debON2d "<<iF<<" "<<std::endl;}
 #endif
 
+// clang-format off
 Standard_EXPORT TopAbs_State FUN_build_TB(const TopOpeBRepBuild_PBuilder& PB,const Standard_Integer rank); // xpu290698
+// clang-format on
 Standard_EXPORT Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder& B,
 				const TopoDS_Shape& sEG,const TopoDS_Shape& sFOR,const TopoDS_Shape& sFS,
 				const Standard_Boolean EGBoundFOR,
@@ -232,7 +234,9 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
     }
 
 //    Standard_Real f,l; FUN_tool_bounds(EG,f,l); Standard_Real parON = (f+l)*.4352;
+// clang-format off
     Standard_Real f,l; FUN_tool_bounds(TopoDS::Edge(EspON),f,l); Standard_Real parON = (f+l)*.4352; // xpu120698
+// clang-format on
     Standard_Boolean ESO; ok = FUN_tool_curvesSO(TopoDS::Edge(EspON),parON,EG,ESO);
     if (!ok) return; // xpu120698
     if (!ESO) neworiE = TopAbs::Complement(neworiE);

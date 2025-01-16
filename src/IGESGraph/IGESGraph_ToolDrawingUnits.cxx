@@ -45,7 +45,9 @@ void IGESGraph_ToolDrawingUnits::ReadOwnParams
   Handle(TCollection_HAsciiString) unit;
 
   // Reading nbPropertyValues(Integer)
+// clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   if (nbPropertyValues != 2)
     PR.AddFail("No. of Property values : Value is not 2");
 

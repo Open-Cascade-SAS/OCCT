@@ -113,7 +113,9 @@ void XmlMXCAFDoc_NoteBinDataDriver::Paste(const Handle(TDF_Attribute)& theSource
     {
       anOSS << std::hex << aData->Value(i);
     }
+// clang-format off
     Standard_Character* dump = (Standard_Character*)anOSS.str(); // copying! Don't forget to delete it.
+// clang-format on
     XmlObjMgt::SetStringValue(theTarget, dump, Standard_True);
     delete[] dump;
   }

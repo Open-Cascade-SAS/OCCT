@@ -91,7 +91,9 @@ protected:
                           myStyles;            //!< map of processed styles
   NCollection_Map<Handle(Image_Texture)>
                           myImageFailMap;      //!< map of images failed to be copied
+// clang-format off
   XCAFPrs_Style           myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
+// clang-format on
   Standard_Integer        myNbMaterials;       //!< number of registered materials
   Standard_Boolean        myIsFailed;          //!< flag indicating failure
   Standard_Boolean        myMatNameAsKey;      //!< flag indicating usage of material name as key

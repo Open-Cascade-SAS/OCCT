@@ -222,7 +222,9 @@ myPts(Pts)
       gp_Vec NormVec = Pln.Axis().Direction();
       NormVec = (aVec * NormVec) * NormVec;
 
+// clang-format off
       ElSLib::Parameters( Pln, myPts->Value(i).Translated( -NormVec ), U, V ); //????? Real projecting?
+// clang-format on
       if (U > myUmax)
 	myUmax = U;
       if (U < myUmin)

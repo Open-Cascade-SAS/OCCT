@@ -212,7 +212,9 @@ static Standard_Integer QAHandleOps (Draw_Interpretor& theDI,
   gunc (cLine); // passing const handle as non-const reference to base type
   pLine = cLine.get(); // getting non-const pointer to contained object from const handle 
   Handle(Geom_Line) xLine = cCurve; // copy from handle to base type
+// clang-format off
   Handle(Geom_BSplineCurve) aBSpl (new Geom_Line (gp::Origin(), gp::DX())); // construction from pointer to incompatible type
+// clang-format on
 
   CHECK(theDI, aLine == aSurf,  "equality of handles of incompatible types");
   CHECK(theDI, aSurf == cLine,  "equality of const and non-const handle");

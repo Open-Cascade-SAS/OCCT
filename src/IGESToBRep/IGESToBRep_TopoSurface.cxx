@@ -1054,7 +1054,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface
 	geomSupport = BRep_Tool::Surface (TopoDS::Face(res));
 	if (geomSupport->Continuity() == GeomAbs_C0) {
 	  Message_Msg msg1266("IGES_1266");
+// clang-format off
 	  SendFail(st, msg1266);//Basis surface is C0-continuous and cannot be corrected to C1-continuous.
+// clang-format on
 	  res.Nullify();
 	  return res;
 	}

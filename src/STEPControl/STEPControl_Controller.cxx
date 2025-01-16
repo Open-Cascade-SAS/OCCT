@@ -276,6 +276,7 @@ STEPControl_Controller::STEPControl_Controller ()
     // Note: the numbers should be consistent with Resource_FormatType enumeration
     Interface_Static::Init("step", "read.step.codepage", 'e', "");
     Interface_Static::Init("step", "read.step.codepage", '&', "enum 0");
+// clang-format off
     Interface_Static::Init("step", "read.step.codepage", '&', "eval SJIS");         // Resource_FormatType_SJIS 0
     Interface_Static::Init("step", "read.step.codepage", '&', "eval EUC");          // Resource_FormatType_EUC 1
     Interface_Static::Init("step", "read.step.codepage", '&', "eval NoConversion"); // Resource_FormatType_NoConversion 2
@@ -301,6 +302,7 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-8");    // Resource_FormatType_iso8859_8 22
     Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-9");    // Resource_FormatType_iso8859_9 23
     Interface_Static::Init("step", "read.step.codepage", '&', "eval CP850");        // Resource_FormatType_CP850 24
+// clang-format on
     Interface_Static::SetCVal("read.step.codepage", "UTF8");
 
     // Tessellated geometry reading: Off by default
@@ -319,7 +321,9 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init("step", "write.step.tessellated", '&', "eval OnNoBRep"); // 2
     Interface_Static::SetCVal("write.step.tessellated", "OnNoBRep");
 
+// clang-format off
     Standard_STATIC_ASSERT((int)Resource_FormatType_CP850 - (int)Resource_FormatType_CP1250 == 18); // "Error: Invalid Codepage Enumeration"
+// clang-format on
 
     init = Standard_True;
   }

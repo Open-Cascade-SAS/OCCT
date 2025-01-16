@@ -142,7 +142,9 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
     TDF_ChildIDIterator cit(CNS->Label(), TNaming_NamedShape::GetID(), Standard_False);
     if(!cit.More()) {
       // Naming data structure is empty - no sub-shapes under resulting shape
+// clang-format off
       const Handle(TNaming_NamedShape) aNS = FindPrevNDS(CNS); //look to old shape data structure if exist
+// clang-format on
       if(!aNS.IsNull()) {
 #ifdef OCCT_DEBUG_BNP
 	PrintEntry (aNS->Label(),0);

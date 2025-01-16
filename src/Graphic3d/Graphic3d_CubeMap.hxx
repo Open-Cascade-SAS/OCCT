@@ -93,8 +93,10 @@ public:
 protected:
 
   Graphic3d_CubeMapSide myCurrentSide;  //!< Iterator state
+// clang-format off
   Standard_Boolean      myEndIsReached; //!< Indicates whether end of iteration has been reached or hasn't
   Standard_Boolean      myZIsInverted;  //!< Indicates whether Z axis is inverted that allows to synchronize vertical flip of cubemap
+// clang-format on
 
 };
 

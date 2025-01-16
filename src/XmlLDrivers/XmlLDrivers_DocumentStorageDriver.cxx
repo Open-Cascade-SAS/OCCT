@@ -264,7 +264,9 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
 
   // Document version
   Handle(TDocStd_Document) aDoc = Handle(TDocStd_Document)::DownCast (theDocument);
+// clang-format off
   TDocStd_FormatVersion aFormatVersion = TDocStd_Document::CurrentStorageFormatVersion(); // the last version of the format
+// clang-format on
   if (TDocStd_Document::CurrentStorageFormatVersion() < aDoc->StorageFormatVersion())
   {
     TCollection_ExtendedString anErrorString("Unacceptable storage format version, the last version is used");

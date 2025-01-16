@@ -51,8 +51,10 @@ void  IGESGeom_ToolCompositeCurve::ReadOwnParams
   // st = PR.ReadInteger(PR.Current(), "Number of Components", num);
   if (st && (num > 0)){
     Message_Msg Msg80("XSTEP_80");
+// clang-format off
     PR.ReadEnts (IR,PR.CurrentList(num),Msg80,tempEntities); //szv#4:S4163:12Mar99 `st=` not needed
   //else st = PR.ReadEnts (IR,PR.CurrentList(num),"List of Components",tempEntities);
+// clang-format on
   }
   //if (st && num <= 0) PR.SendFail(Msg79);
   else{

@@ -196,7 +196,9 @@ void TNaming_NamingTool::CurrentShape(const TDF_LabelMap&               Valid,
 //     LastModif(it, S, MS, Valid, Forbiden);
       TopTools_IndexedMapOfShape MS2; 
       LastModif(it, S, MS2, Valid, Forbiden);
+// clang-format off
       if (YaOrientationToApply) ApplyOrientation (MS2, OrientationToApply);//the solution to be refined
+// clang-format on
       for (Standard_Integer anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
         MS.Add (MS2 (anItMS2));
     }

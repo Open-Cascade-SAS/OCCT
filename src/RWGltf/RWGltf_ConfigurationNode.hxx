@@ -84,6 +84,7 @@ public:
   struct RWGltf_InternalSection
   {
     // Common
+// clang-format off
     double FileLengthUnit = 1.; //!< File length units to convert from while reading the file, defined as scale factor for m (meters)
     RWMesh_CoordinateSystem SystemCS = RWMesh_CoordinateSystem_Zup; //!< System origin coordinate system to perform conversion into during read
     RWMesh_CoordinateSystem FileCS = RWMesh_CoordinateSystem_Yup; //!< File origin coordinate system to perform conversion during read
@@ -111,6 +112,7 @@ public:
     bool WriteEmbedTexturesInGlb = true; //!< Flag to write image textures into GLB file
     bool WriteMergeFaces = false; //!< Flag to merge faces within a single part
     bool WriteSplitIndices16 = false; //!< Flag to prefer keeping 16-bit indexes while merging face
+// clang-format on
   } InternalParameters;
 };
 

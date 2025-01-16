@@ -272,12 +272,14 @@ protected: //! @name interface for filling triangulation data
 protected:
 
   RWMesh_CoordinateSystemConverter myCoordSysConverter;    //!< coordinate system converter
+// clang-format off
   TCollection_AsciiString          myFileName;             //!< file name to use during message printing
   mutable Standard_Mutex           myMutex;                //!< internal mutex to collect nodes/triangles statistic
   mutable LoadingStatistic*        myLoadingStatistic;     //!< statistic of loaded triangulation
   Standard_Boolean                 myIsDoublePrecision;    //!< flag to fill in triangulation using single or double precision
   Standard_Boolean                 myToSkipDegenerateTris; //!< flag to skip degenerate triangles during loading, FALSE by default
   Standard_Boolean                 myToPrintDebugMessages; //!< flag to print additional debug information
+// clang-format on
 };
 
 #endif // _RWMesh_TriangulationReader_HeaderFile

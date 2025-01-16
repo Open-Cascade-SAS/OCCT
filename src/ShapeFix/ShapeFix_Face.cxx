@@ -566,7 +566,9 @@ Standard_Boolean ShapeFix_Face::Perform()
         TopTools_SequenceOfShape aLoopWires;
         if(NeedFix ( myFixLoopWiresMode) && FixLoopWire(aLoopWires)) {
           if (aLoopWires.Length() > 1)
+// clang-format off
             SendWarning ( wire, Message_Msg ( "FixAdvFace.FixLoopWire.MSG0" ) );// Wire was split on several wires
+// clang-format on
           myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE7 );
           fixed = Standard_True;
           Standard_Integer k=1;
@@ -833,7 +835,9 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
     }
 
 //    B.UpdateFace (myFace,myPrecision);
+// clang-format off
     SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
+// clang-format on
     BRepTools::Update(myFace);
     myResult = myFace;
     return Standard_True;
@@ -986,7 +990,9 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
 #ifdef OCCT_DEBUG
   std::cout<<"Natural bound on sphere or torus with holes added"<<std::endl; // mise au point !
 #endif
+// clang-format off
   SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
+// clang-format on
   return Standard_True;
 }
 
@@ -1134,7 +1140,9 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
         new ShapeExtend_WireData(TopoDS::Wire(ws.Value(1)));
       sbdw->Reverse(myFace);
       ws.SetValue(1, sbdw->Wire());
+// clang-format off
       SendWarning(sbdw->Wire(), Message_Msg("FixAdvFace.FixOrientation.MSG5"));// Wire on face was reversed
+// clang-format on
       done = Standard_True;
     }
   }
@@ -1339,7 +1347,9 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       }
 
       if (sta == TopAbs_UNKNOWN) {    // ERREUR
+// clang-format off
         SendWarning ( aw, Message_Msg ( "FixAdvFace.FixOrientation.MSG11" ) );// Cannot orient wire
+// clang-format on
       } 
       else {
         MW.Bind(aw,IntWires);
@@ -1349,7 +1359,9 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);
             ws.SetValue (i,sewd.Wire());
+// clang-format off
             SendWarning ( sewd.Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
+// clang-format on
             aSeqReversed.Append(i);
             done = Standard_True;
             SI.Bind(ws.Value(i),1);
@@ -1379,7 +1391,9 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);
             ws.SetValue (i,sewd.Wire());
+// clang-format off
             SendWarning ( sewd.Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
+// clang-format on
             aSeqReversed.Append(i);
             done = Standard_True;
             MapWires.Bind(ws.Value(i),IW);
@@ -1392,7 +1406,9 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);
             ws.SetValue (i,sewd.Wire());
+// clang-format off
             SendWarning ( sewd.Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
+// clang-format on
             aSeqReversed.Append(i);
             done = Standard_True;
           }
@@ -1430,7 +1446,9 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     for( ; k <= aSeqReversed.Length(); k++ )
     {
 #ifdef OCCT_DEBUG
+// clang-format off
       std::cout<<"Wire no "<<aSeqReversed.Value(k)<<" of "<<nb<<" reversed"<<std::endl; // mise au point !
+// clang-format on
 #endif
     }
       

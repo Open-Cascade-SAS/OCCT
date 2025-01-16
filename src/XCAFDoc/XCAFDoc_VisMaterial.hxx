@@ -187,9 +187,11 @@ private:
   Handle(TCollection_HAsciiString) myRawName;       //!< material name / tag (transient data)
   XCAFDoc_VisMaterialPBR           myPbrMat;        //!< metal-roughness material definition
   XCAFDoc_VisMaterialCommon        myCommonMat;     //!< common material definition
+// clang-format off
   Graphic3d_AlphaMode              myAlphaMode;     //!< alpha mode; Graphic3d_AlphaMode_BlendAuto by default
   Standard_ShortReal               myAlphaCutOff;   //!< alpha cutoff value; 0.5 by default
   Graphic3d_TypeOfBackfacingModel  myFaceCulling;   //!< specifies whether the material is double/single sided
+// clang-format on
 
 };
 

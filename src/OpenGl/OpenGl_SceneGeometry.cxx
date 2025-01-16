@@ -395,7 +395,9 @@ Standard_Boolean OpenGl_RaytraceGeometry::AcquireTextures (const Handle(OpenGl_C
      || !aTexture->Sampler()->IsImmutable())
     {
       // need to recreate texture sampler handle
+// clang-format off
       aHandle = GLuint64(-1); // specs do not define value for invalid handle, set -1 to initialize something
+// clang-format on
       if (!aTexture->InitSamplerObject (theContext))
       {
         continue;
@@ -497,7 +499,9 @@ Standard_Boolean OpenGl_RaytraceGeometry::UpdateTextureHandles (const Handle(Ope
   for (NCollection_Vector<Handle(OpenGl_Texture)>::Iterator aTexSrcIter (myTextures); aTexSrcIter.More(); aTexSrcIter.Next(), ++aTexIter)
   {
     GLuint64& aHandle = myTextureHandles[aTexIter];
+// clang-format off
     aHandle = GLuint64(-1); // specs do not define value for invalid handle, set -1 to initialize something
+// clang-format on
 
     const Handle(OpenGl_Texture)& aTexture = aTexSrcIter.Value();
     if (!aTexture->Sampler()->IsValid()

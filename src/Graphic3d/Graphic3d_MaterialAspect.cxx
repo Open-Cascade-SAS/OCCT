@@ -29,8 +29,10 @@ namespace
     Standard_ShortReal       TransparencyCoef;
     Standard_ShortReal       RefractionIndex;
     Standard_ShortReal       Shininess;
+// clang-format off
     Standard_ShortReal       AmbientCoef;  //!< coefficient for Graphic3d_MaterialAspect::SetColor()
     Standard_ShortReal       DiffuseCoef;  //!< coefficient for Graphic3d_MaterialAspect::SetColor()
+// clang-format on
     Graphic3d_TypeOfMaterial MaterialType;
     Graphic3d_NameOfMaterial MaterialName;
 

@@ -554,7 +554,9 @@ Standard_EXPORT void FUN_ds_PURGEforE9(const Handle(TopOpeBRepDS_HDataStructure)
       TopAbs_ShapeEnum SB = TopAbs_SHAPE, SA = TopAbs_SHAPE;Standard_Integer IB = 0, IA = 0;TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN; Standard_Integer G = 0, S = 0;
       FDS_Idata(I,SB,IB,SA,IA,GT,G,ST,S);      
       Standard_Boolean FhasGE = FDS_SIisGIofIofSBAofTofI(BDS,IE,I);
+// clang-format off
       if (FhasGE) {removed = Standard_True; l3dF.Remove(it); continue;} // E has split ON F (cto904A3;e19,f14)
+// clang-format on
       const TopoDS_Shape& F = BDS.Shape(S);
       Standard_Boolean hsdm = HDS->HasSameDomain(F);
       if (!hsdm) {it.Next(); continue;}
@@ -1103,8 +1105,10 @@ Standard_EXPORT Standard_Integer FUN_ds_oriEinF(const TopOpeBRepDS_DataStructure
     Standard_Boolean hsdm = (sdmFs.Extent() > 0);
 
     if (hsdm) {
+// clang-format off
       Standard_Boolean hasFOR=Standard_False, hasREV=Standard_False; // xpu120898 (PRO14785 : e36 shared by f34 & f39,
                                   // faces sdm with f16)
+// clang-format on
       TopOpeBRepDS_Config C = BDS.SameDomainOri(FF);
 
       for (TopTools_ListIteratorOfListOfShape it(sdmFs); it.More(); it.Next()){
@@ -1709,10 +1713,12 @@ Standard_EXPORT void FUN_ds_completeforSE8(const Handle(TopOpeBRepDS_HDataStruct
       }
       // li -> l1dE + l2dFE + lFE(<=>l3dFE) + li(<=>lFF)
       TopOpeBRepDS_ListOfInterference li; FDS_assign(loi,li);
+// clang-format off
       TopOpeBRepDS_ListOfInterference l1dE;  Standard_Integer n1d = FUN_selectTRASHAinterference(li,TopAbs_EDGE,l1dE);  // li->l1dE+li(<=>lF?)
       TopOpeBRepDS_ListOfInterference lFE;
       FUN_selectSKinterference(li,TopOpeBRepDS_EDGE,lFE); // li(<=>lF?)->lFE+li(<=>lFF)
       TopOpeBRepDS_ListOfInterference l2dFE; Standard_Integer n2d = FUN_selectpure2dI(li,lFE,l2dFE);                    // lFE->l2dFE+lFE(<=>l3dFE)
+// clang-format on
       Standard_Boolean redu2d = (n1d > 0)&&(n2d > 0);
       // -------------------------------
       if (redu2d) { // {I1d=(Tr(Esd),vG,Esd), I2d=(Tr(F),vG,E)}	

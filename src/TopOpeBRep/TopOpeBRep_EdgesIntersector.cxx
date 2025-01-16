@@ -640,6 +640,7 @@ Standard_Boolean TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   Standard_Real r1 = c1.Radius();
   Standard_Real r2 = c2.Radius();
 //  Standard_Boolean rr = (r1 == r2);
+// clang-format off
   Standard_Boolean rr = (Abs(r1-r2) < Precision::Confusion()); //xpu281098 (cto019D2) tolerance a revoir
   if (!rr) return SetSameDomain(Standard_False);
 
@@ -649,6 +650,7 @@ Standard_Boolean TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   const BRepAdaptor_Surface& BAS1 = Surface(1);
   Standard_Real u1,v1; p1.Coord(u1,v1); gp_Pnt P1 = BAS1.Value(u1,v1);
   Standard_Real u2,v2; p2.Coord(u2,v2); gp_Pnt P2 = BAS1.Value(u2,v2);// recall myCurve2=C2d(myEdge2,myFace1);
+// clang-format on
   Standard_Real dpp = P1.Distance(P2);
   Standard_Real tol1 = BRep_Tool::Tolerance(TopoDS::Edge(Edge(1)));
   Standard_Real tol2 = BRep_Tool::Tolerance(TopoDS::Edge(Edge(2)));

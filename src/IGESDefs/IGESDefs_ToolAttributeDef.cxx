@@ -59,9 +59,11 @@ void IGESDefs_ToolAttributeDef::ReadOwnParams
   Standard_Integer fn = ent->FormNumber();
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadText(PR.Current(), "Attribute Table Name", aName); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadInteger(PR.Current(), "Attribute List Type", aListType); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Attributes", nbval);
   if (st && nbval > 0)

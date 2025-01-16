@@ -158,8 +158,10 @@ protected:
   mutable Handle(OpenGl_Font)                             myFont;
   mutable NCollection_Vector<GLuint>                      myTextures;   //!< textures' IDs
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myVertsVbo;   //!< VBOs of vertices
+// clang-format off
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myTCrdsVbo;   //!< VBOs of texture coordinates
   mutable Handle(OpenGl_VertexBuffer)                     myBndVertsVbo;//!< VBOs of vertices for bounding box
+// clang-format on
   mutable Font_Rect                                       myBndBox;
 
 protected:

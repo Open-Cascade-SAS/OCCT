@@ -116,7 +116,9 @@ void BSplCLib_Cache::CalculateDerivative(const Standard_Real&    theParameter,
     for (Standard_Integer ind = myParams.Degree * aDimension; ind < (theDerivative + 1) * aDimension; ind++)
     {
       aPntDeriv[ind] = 0.0;
+// clang-format off
       (&theDerivArray)[ind] = 0.0; // should be cleared separately, because aPntDeriv may look to another memory area
+// clang-format on
     }
   }
 

@@ -132,7 +132,9 @@ public:
     {}
 
   private:
+// clang-format off
     Message_Messenger* myMessenger; // don't make a Handle since this object should be created on stack
+// clang-format on
     Message_Gravity    myGravity;
     Standard_SStream   myStream;
   };

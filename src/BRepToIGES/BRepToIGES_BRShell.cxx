@@ -209,7 +209,9 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
           B.Range(aCopyEdge, aFace, f, l);
         }
       }
+// clang-format off
       aShapeShapeMap.Bind(aCopyEdge, anOrigEdge); // Bind the reversed copy of Edge to the original
+// clang-format on
     }
     aShapeShapeMap.Bind(start, aFace); // Bind the original face to the reversed copy
   }

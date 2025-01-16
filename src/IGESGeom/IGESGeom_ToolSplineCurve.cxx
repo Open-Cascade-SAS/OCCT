@@ -88,7 +88,9 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams
       allBreakPoints  = new TColStd_HArray1OfReal (1, (nbSegments + 1));
     }
     Message_Msg Msg95("XSTEP_95");
+// clang-format off
     PR.ReadReals(PR.CurrentList(nbSegments + 1), Msg95, allBreakPoints); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 /*
     st = PR.ReadReals(PR.CurrentList(nbSegments + 1), "Break Points",
 		      allBreakPoints);

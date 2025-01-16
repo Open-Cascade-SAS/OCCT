@@ -263,7 +263,9 @@ void Standard_MMgrOpt::Initialize()
   }
   
   // initialize free lists
+// clang-format off
   myFreeListMax = INDEX_CELL(ROUNDUP_CELL(myThreshold-BLOCK_SHIFT)); // all blocks less than myThreshold are to be recycled
+// clang-format on
   myFreeList = (Standard_Size **) calloc (myFreeListMax+1, sizeof(Standard_Size *));
   myCellSize = ROUNDUP16(myCellSize);
 }

@@ -285,7 +285,9 @@ namespace
     : SelectMgr_SelectionImageFiller (thePixMap, theSelector)
     {
       // generate standard modes in proper order, consider custom objects would use similar scheme
+// clang-format off
       myMapSelectionModeColors.Bind (     0, Quantity_NOC_WHITE);          // default (entire object selection)
+// clang-format on
       myMapSelectionModeColors.Bind (     1, Quantity_NOC_YELLOW);         // TopAbs_VERTEX
       myMapSelectionModeColors.Bind (     2, Quantity_NOC_GREEN);          // TopAbs_EDGE
       myMapSelectionModeColors.Bind (     3, Quantity_NOC_RED);            // TopAbs_WIRE

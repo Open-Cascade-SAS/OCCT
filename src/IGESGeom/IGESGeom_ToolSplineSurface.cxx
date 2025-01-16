@@ -89,6 +89,7 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams
 
   if (!allUBreakPoints.IsNull()){
     Message_Msg Msg143("XSTEP_143");
+// clang-format off
     PR.ReadReals(PR.CurrentList(allNbUSegments+1), Msg143, allUBreakPoints); //szv#4:S4163:12Mar99 `st=` not needed
     //st = PR.ReadReals(PR.CurrentList(allNbUSegments+1), "U Break Points", allUBreakPoints);
   }
@@ -97,6 +98,7 @@ void IGESGeom_ToolSplineSurface::ReadOwnParams
     Message_Msg Msg144("XSTEP_144");
     PR.ReadReals(PR.CurrentList(allNbVSegments+1), Msg144, allVBreakPoints); //szv#4:S4163:12Mar99 `st=` not needed
     //st = PR.ReadReals(PR.CurrentList(allNbVSegments+1), "V Break Points", allVBreakPoints);
+// clang-format on
   }
 
   if (ubreak && vbreak)

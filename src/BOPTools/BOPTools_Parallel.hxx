@@ -115,7 +115,9 @@ class BOPTools_Parallel
     //! Binds main thread context
     void SetContext (const opencascade::handle<TypeContext>& theContext)
     {
+// clang-format off
       myContextArray.ChangeLast() = theContext; // OSD_ThreadPool::Launcher::UpperThreadIndex() is reserved for a main thread
+// clang-format on
     }
 
     //! Defines functor interface with serialized thread index.

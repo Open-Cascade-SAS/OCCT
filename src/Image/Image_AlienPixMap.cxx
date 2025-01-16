@@ -403,7 +403,9 @@ namespace
       case Image_Format_RGB:    return GUID_WICPixelFormat24bppRGB;
       case Image_Format_BGR:    return GUID_WICPixelFormat24bppBGR;
       case Image_Format_Gray:   return GUID_WICPixelFormat8bppGray;
+// clang-format off
       case Image_Format_Alpha:  return GUID_WICPixelFormat8bppGray; // GUID_WICPixelFormat8bppAlpha
+// clang-format on
       case Image_Format_Gray16: return GUID_WICPixelFormat16bppGray;
       case Image_Format_GrayF:  // GUID_WICPixelFormat32bppGrayFloat
       case Image_Format_AlphaF:

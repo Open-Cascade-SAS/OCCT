@@ -516,7 +516,9 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 	}
 #endif
 //	Standard_Real tolpc; MGhc2 PC = FC2D_CurveOnSurface(eon,F,esdF,f,l,tolpc);
+// clang-format off
 	Standard_Real tolpc; MGhc2 PC = FC2D_CurveOnSurface(eon,F,esdF,f,l,tolpc,Standard_True);//xpu051198 :PRO15049
+// clang-format on
 	hasPC = (!PC.IsNull());
 	if (!hasPC) throw Standard_ProgramError("TopOpeBRepBuild_Builder::SSE null PC on F");
 	Standard_Real tol = Max(tolE,tolpc);
@@ -663,7 +665,9 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
   TopOpeBRepDS_DataStructure& BDS = myDataStructure->ChangeDS();
   const TopoDS_Edge& EOR = TopoDS::Edge(EA);
   TopoDS_Edge EF = EOR; EF.Orientation(TopAbs_FORWARD);
+// clang-format off
   Standard_Integer rankEF = myDataStructure->DS().AncestorRank(EF); // GShapeRank <- GMapShapes, appele par Merge
+// clang-format on
   
 //  FUN_removeonGB(myDataStructure,EOR); //xpu041198
 

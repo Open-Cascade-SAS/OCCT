@@ -55,6 +55,7 @@ void IGESDimen_ToolSectionedArea::ReadOwnParams
   PR.ReadReal(PR.Current(), "Distance between lines", tempDistance);
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadReal(PR.Current(), "Angle between line and X axis", tempAngle); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempAngle = M_PI / 4.0;
@@ -62,6 +63,7 @@ void IGESDimen_ToolSectionedArea::ReadOwnParams
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of island curves", nbislands);
   if (st && nbislands > 0)
     PR.ReadEnts (IR,PR.CurrentList(nbislands),"Island curves",tempIslands); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 /*
     {
       tempIslands = new IGESData_HArray1OfIGESEntity(1, nbislands);

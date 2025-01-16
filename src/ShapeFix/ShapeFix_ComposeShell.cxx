@@ -530,7 +530,9 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
       
       if(nbNMEdges)
       {
+// clang-format off
         ShapeFix_WireSegment seg ( sbwdNM, TopAbs_INTERNAL); //(( isOuter ? TopAbs_REVERSED : TopAbs_FORWARD ) );
+// clang-format on
         seqw.Append ( seg );
       }
       
@@ -581,7 +583,9 @@ void ShapeFix_ComposeShell::LoadWires (ShapeFix_SequenceOfWireSegment &seqw) con
             sbwdM->Reverse(face);
         }
       
+// clang-format off
         ShapeFix_WireSegment seg ( sbwdM, TopAbs_REVERSED ); //(( isOuter ? TopAbs_REVERSED : TopAbs_FORWARD ) );
+// clang-format on
         seqw.Append ( seg );
       }
     }
@@ -1318,7 +1322,9 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
     if ( iedge ==1 ) { firstCode = code; firstPos = pos; firstDev = dev; }
     else if ( code == IOR_UNDEF || code != prevCode ) { 
       if ( ! closedDir || Abs ( dev - prevDev ) < halfPeriod ) {
+// clang-format off
         IntLinePar.Append ( ParamPointsOnLine ( pos, prevPos, line ) ); // !! - maybe compute exactly ?
+// clang-format on
         IntEdgePar.Append ( isreversed ? l : f );
         IntEdgeInd.Append ( iedge );
       }
@@ -1798,7 +1804,9 @@ void ShapeFix_ComposeShell::SplitByGrid (ShapeFix_SequenceOfWireSegment &seqw)
   // split by u lines
 
   for ( i = ( myUClosed ? 1 : 2 ); i <= myGrid->NbUPatches(); i++ ) {
+// clang-format off
     gp_Pnt2d pos ( myGrid->UJointValue(i), 0. ); // 0. - for infinite ranges: myGrid->VJointValue(1) ;
+// clang-format on
     gp_Lin2d line ( pos, gp_Dir2d ( 0., 1. ) );
     if ( ! myClosedMode && myUClosed ) {
       Standard_Real period = Umax - Umin;
@@ -2289,7 +2297,9 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
       // Handle(ShapeExtend_WireData)
       sbwd = wires(j).WireData();
       for ( Standard_Integer k=1; k <= sbwd->NbEdges(); k++ ) {
+// clang-format off
         if ( !V.IsSame ( sae.FirstVertex ( sbwd->Edge(k) ) ) ) continue; //pdn I suppose that short segment should be inserted into the SAME vertex.
+// clang-format on
 
         Standard_Boolean sp = IsSamePatch ( wires(j), myGrid->NbUPatches(), myGrid->NbVPatches(),
                                             iumin, iumax, ivmin, ivmax );

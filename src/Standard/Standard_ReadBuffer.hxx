@@ -153,9 +153,11 @@ private:
   const char* myBufferEnd;    //!< end of the buffer
   int64_t     myDataLen;      //!< length of entire data to read
   int64_t     myDataRead;     //!< amount of data already processed
+// clang-format off
   size_t      myChunkLen;     //!< length of single chunk that caller would like to read (e.g. iterator increment)
   size_t      myNbChunks;     //!< number of cached chunks
   size_t      myBufferLen;    //!< effective length of the buffer to be read at once (multiple of chunk length)
+// clang-format on
 
 };
 

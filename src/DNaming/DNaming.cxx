@@ -260,7 +260,9 @@ static void LoadC0Edges(const TopoDS_Shape& S,
   }
   
   TopTools_MapOfShape anEdgesToDelete;
+// clang-format off
   TopExp_Explorer anEx(S,TopAbs_EDGE); // mpv: new explorer iterator because we need keep edges order
+// clang-format on
   for(;anEx.More();anEx.Next()) {
     Standard_Boolean aC0 = Standard_False;
     const TopoDS_Shape& anEdge1 = anEx.Current();

@@ -89,8 +89,10 @@ void  IGESBasic_ToolSingleParent::ReadOwnParams
     }
   }
 
+// clang-format off
   if (nbval > 0) PR.ReadEnts (IR,PR.CurrentList(nbval),Msg207,tempChildren); //szv#4:S4163:12Mar99 `st=` not needed
   //st = PR.ReadEnts (IR,PR.CurrentList(nbval),"Child Entities",tempChildren);
+// clang-format on
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempNbParentEntities,tempParent,tempChildren);
 }

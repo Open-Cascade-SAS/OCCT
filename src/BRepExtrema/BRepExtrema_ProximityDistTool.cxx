@@ -286,10 +286,12 @@ Standard_Boolean BRepExtrema_ProximityDistTool::IsNodeOnBorder (const Standard_I
     aContTrg = aPolyConnect.Value();
 
     Standard_Integer aContTrgNodes[3];
+// clang-format off
     theTr->Triangle (aContTrg).Get (aContTrgNodes[0], aContTrgNodes[1], aContTrgNodes[2]); //indices of nodes of the triangle
 
     Standard_Integer aAdjTrg[3];
     aPolyConnect.Triangles (aContTrg, aAdjTrg[0], aAdjTrg[1], aAdjTrg[2]); //indices of adjacent triangles
+// clang-format on
   
     for (Standard_Integer j = 0; j < 3; j++)
     {
@@ -320,7 +322,9 @@ Standard_Boolean BRepExtrema_ProximityDistTool::IsEdgeOnBorder (const Standard_I
   Poly_Connect aPolyConnect (theTr);
 
   Standard_Integer aAdjTrg[3];
+// clang-format off
   aPolyConnect.Triangles (theTrgIdx, aAdjTrg[0], aAdjTrg[1], aAdjTrg[2]); //indices of adjacent triangles
+// clang-format on
 
   for (Standard_Integer j = 0; j < 3; j++)
   {

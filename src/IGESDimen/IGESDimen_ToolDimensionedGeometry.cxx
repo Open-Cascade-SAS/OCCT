@@ -43,11 +43,13 @@ void  IGESDimen_ToolDimensionedGeometry::ReadOwnParams
   Standard_Integer nbgeom = 0;
   Handle(IGESData_HArray1OfIGESEntity) GeomEntities;
 
+// clang-format off
   PR.ReadInteger(PR.Current(),"Number of Dimensions",tempNbDimen); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadInteger(PR.Current(),"number of entities",nbgeom); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR,PR.Current(),"Dimension Entity",aDimEntity); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   if (nbgeom > 0)
     PR.ReadEnts (IR,PR.CurrentList(nbgeom),

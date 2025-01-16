@@ -519,6 +519,7 @@ protected:
 
 protected:
 
+// clang-format off
   PrsMgr_PresentableObject*              myParent;                  //!< pointer to the parent object
   PrsMgr_Presentations                   myPresentations;           //!< list of presentations
   Handle(Graphic3d_ViewAffinity)         myViewAffinity;            //!< view affinity mask
@@ -545,6 +546,7 @@ protected:
   Standard_Boolean                       myHasOwnPresentations;     //!< flag indicating if object should have own presentations
 
   Standard_Boolean                       myToPropagateVisualState;  //!< flag indicating if visual state (display/erase/color) should be propagated to all children
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(PrsMgr_PresentableObject, Standard_Transient)

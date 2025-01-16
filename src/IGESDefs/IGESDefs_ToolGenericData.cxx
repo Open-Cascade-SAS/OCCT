@@ -49,7 +49,9 @@ void  IGESDefs_ToolGenericData::ReadOwnParams
   Handle(TColStd_HArray1OfInteger) tempTypes;
   Handle(TColStd_HArray1OfTransient) tempValues;
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "Number of property values", tempNbPropVal); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadText(PR.Current(), "Property Name", tempName); //szv#4:S4163:12Mar99 `st=` not needed
 

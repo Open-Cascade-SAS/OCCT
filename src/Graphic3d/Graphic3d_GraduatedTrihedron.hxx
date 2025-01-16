@@ -208,10 +208,12 @@ public:
 
 protected:
 
+// clang-format off
   MinMaxValuesCallback myCubicAxesCallback; //!< Callback function to define boundary box of displayed objects
 
   TCollection_AsciiString myNamesFont;  //!< Font name of names of axes: Courier, Arial, ...
   Font_FontAspect         myNamesStyle; //!< Style of names of axes: OSD_FA_Regular, OSD_FA_Bold,..
+// clang-format on
   Standard_Integer        myNamesSize;  //!< Size of names of axes: 8, 10,..
 
 protected:

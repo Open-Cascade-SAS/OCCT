@@ -79,7 +79,9 @@ public:
 
 protected:
 
+// clang-format off
   Handle(Message_CompositeAlerts) myCompositAlerts; //!< class provided hierarchical structure of alerts
+// clang-format on
   Handle(Message_Attribute) myAttribute; //!< container of the alert attributes
 };
 

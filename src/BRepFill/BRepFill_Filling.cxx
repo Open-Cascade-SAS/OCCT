@@ -681,9 +681,11 @@ void BRepFill_Filling::Build()
    }
   else
     {
+// clang-format off
       GeomPlate_MakeApprox Approx( GPlate, myTol3d, myMaxSegments, myMaxDeg, dmax, 0 ); //?????????????
       //GeomConvert_ApproxSurface Approx( GPlate, myTol3d, GeomAbs_C1, GeomAbs_C1, myMaxDeg, myMaxDeg, myMaxSegments, 1 );
       //Approx.Dump( std::cout );
+// clang-format on
       Surface = Approx.Surface();
     }
 

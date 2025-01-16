@@ -65,7 +65,9 @@ static Standard_Boolean IsTimeStamp
     case  7 : if (uncar != '.') return Standard_False;  break;
     case  8 : if (uncar < '0' || uncar > '2') return Standard_False; break;
     case  9 : if (uncar < '0' || uncar > '9') return Standard_False;
+// clang-format off
       if (dizheur == '2' && (uncar < '0' || uncar > '3')) return Standard_False; //szv#4:S4163:12Mar99 extra break
+// clang-format on
       break;
     case 10 : if (uncar < '0' || uncar > '5') return Standard_False; break;
     case 11 : if (uncar < '0' || uncar > '9') return Standard_False; break;

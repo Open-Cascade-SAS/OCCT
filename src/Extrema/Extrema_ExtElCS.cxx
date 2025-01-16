@@ -674,7 +674,9 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
   Extrema_ExtElC anExtC(C, aCInt);
   Standard_Boolean isExtremaCircCircValid =  anExtC.IsDone() // Check if intersection is done
                                           && !anExtC.IsParallel() // Parallel case has already been considered
+// clang-format off
                                           && anExtC.NbExt() > 0; // Check that some solutions have been found
+// clang-format on
   if (!isExtremaCircCircValid)
     // not done
     return;

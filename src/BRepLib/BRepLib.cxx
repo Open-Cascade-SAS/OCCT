@@ -1169,7 +1169,9 @@ static void GetCurve3d(const TopoDS_Edge& theEdge, Handle(Geom_Curve)& theC3d, S
   Standard_Real& theL3d, TopLoc_Location& theLoc3d, BRep_ListOfCurveRepresentation& theCList)
 {
   const Handle(BRep_TEdge)& aTE = *((Handle(BRep_TEdge)*) &theEdge.TShape());
+// clang-format off
   theCList = aTE->ChangeCurves(); // current function (i.e. GetCurve3d()) will not change any of this curves
+// clang-format on
   BRep_ListIteratorOfListOfCurveRepresentation anIt(theCList);
   Standard_Boolean NotDone = Standard_True;
   while (NotDone && anIt.More()) {
@@ -1242,8 +1244,10 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
   }
   else
   {
+// clang-format off
     aNE = TopoDS::Edge(theEdge.EmptyCopied()); //will be modified a little bit later, so copy anyway  
     GetCurve3d(aNE, C3d, f3d, l3d, L3d, CList); //C3d pointer and CList will be differ after copying
+// clang-format on
     aNTE = *((Handle(BRep_TEdge)*) &aNE.TShape());
     TopoDS_Iterator sit(theEdge);
     for (;sit.More();sit.Next()) //add vertices from old edge to the new ones

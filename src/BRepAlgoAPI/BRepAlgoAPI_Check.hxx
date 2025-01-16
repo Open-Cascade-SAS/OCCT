@@ -167,9 +167,11 @@ protected: //! @name Fields
   // Inputs
   TopoDS_Shape myS1;                        //!< The first shape
   TopoDS_Shape myS2;                        //!< The second shape
+// clang-format off
   Standard_Boolean myTestSE;                //!< Flag defining whether to look for small edges in the given shapes or not
   Standard_Boolean myTestSI;                //!< Flag defining whether to check the input edges on self-interference or not
   BOPAlgo_Operation myOperation;            //!< Type of Boolean operation for which the validity of input shapes should be checked
+// clang-format on
 
   // Results
   BOPAlgo_ListOfCheckResult myFaultyShapes; //!< Found faulty shapes

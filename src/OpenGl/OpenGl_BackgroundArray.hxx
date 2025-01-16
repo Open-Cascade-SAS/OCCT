@@ -97,12 +97,14 @@ protected:
 
 protected:
 
+// clang-format off
   Graphic3d_TypeOfBackground        myType;           //!< Type of background: texture or gradient.
   Aspect_FillMethod                 myFillMethod;     //!< Texture parameters
   mutable OpenGl_GradientParameters myGradientParams; //!< Gradient parameters
   mutable Standard_Integer          myViewWidth;      //!< view width  used for array initialization
   mutable Standard_Integer          myViewHeight;     //!< view height used for array initialization
   mutable Standard_Boolean          myToUpdate;       //!< Shows if array parameters were changed and data (myAttribs storage) is to be updated
+// clang-format on
 
 };
 

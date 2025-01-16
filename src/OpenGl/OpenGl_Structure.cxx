@@ -683,7 +683,9 @@ void OpenGl_Structure::applyPersistence (const Handle(OpenGl_Context)& theCtx,
     Graphic3d_Vec4 anAnchorPoint = aModelWorld * Graphic3d_Vec4 ((Standard_ShortReal)aStartPnt.X(),
                                                                  (Standard_ShortReal)aStartPnt.Y(),
                                                                  (Standard_ShortReal)aStartPnt.Z(), 1.0f);
+// clang-format off
     aModelWorld.SetColumn (3, Graphic3d_Vec4 (Graphic3d_Vec3 (0.0), 1.0)); // reset translation part
+// clang-format on
     aStartPnt.SetCoord (anAnchorPoint.x(), anAnchorPoint.y(), anAnchorPoint.z());
 
     theTrsfPers->Apply (theCtx->Camera(),

@@ -688,7 +688,9 @@ void Font_FontMgr::InitFontDataBase()
                       (LPBYTE )aPathBuff, &aPathSize) != ERROR_NO_MORE_ITEMS;
       ++anIter, aNameSize = aBufferSize, aPathSize = aBufferSize)
   {
+// clang-format off
     aPathBuff[(aPathSize < aBufferSize) ? aPathSize : (aBufferSize - 1)] = '\0'; // ensure string is NULL-terminated
+// clang-format on
 
     TCollection_AsciiString aFontName (aNameBuff), aFontPath (aPathBuff);
     if (aFontPath.Search ("\\") == -1)

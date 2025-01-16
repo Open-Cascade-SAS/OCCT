@@ -210,8 +210,10 @@ protected: //! @name protected fields
 
 protected: //! @name fields related to status
 
+// clang-format off
   Standard_Integer myNbSkippedTranspElems; //!< counter of skipped transparent elements for OpenGl_LayerList two rendering passes method
   Standard_Integer myRenderFilter;         //!< active filter for skipping rendering of elements by some criteria (multiple render passes)
+// clang-format on
 
   OpenGl_Aspects   myDefaultAspects;
   const OpenGl_Aspects*      myAspectsSet;

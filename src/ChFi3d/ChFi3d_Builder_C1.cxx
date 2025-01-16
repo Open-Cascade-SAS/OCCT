@@ -1102,7 +1102,9 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
           Geom2dAPI_ProjectPointOnCurve Projector( P2d, Cd );
           Standard_Real par = Projector.LowerDistanceParameter();
           Standard_Integer Ideg = DStr.AddShape(Edeg);
+// clang-format off
           TopAbs_Orientation ori = (par < fd)? TopAbs_FORWARD : TopAbs_REVERSED; //if par<fd => par>ld
+// clang-format on
           Interfp1 = ChFi3d_FilPointInDS( ori, Ideg, indvertex, par, Standard_True );
           DStr.ChangeShapeInterferences(Ideg).Append(Interfp1);
         }

@@ -51,7 +51,9 @@ public :
 DEFINE_STANDARD_RTTIEXT(StepKinematics_PairRepresentationRelationship, StepGeom_GeometricRepresentationItem)
 
 private:
+// clang-format off
   Handle(StepRepr_RepresentationRelationshipWithTransformation) myRepresentationRelationshipWithTransformation; //!< supertype
+// clang-format on
 
 };
 #endif // _StepKinematics_PairRepresentationRelationship_HeaderFile_

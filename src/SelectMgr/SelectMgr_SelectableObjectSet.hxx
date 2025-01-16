@@ -240,12 +240,14 @@ private:
 
 private:
 
+// clang-format off
   NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)> myObjects[BVHSubsetNb]; //!< Map of objects for each subset
   opencascade::handle<BVH_Tree<Standard_Real, 3> >           myBVH[BVHSubsetNb];     //!< BVH tree computed for each subset
   Handle(Select3D_BVHBuilder3d)                              myBuilder[BVHSubsetNb]; //!< Builder allocated for each subset
   Standard_Boolean                                           myIsDirty[BVHSubsetNb]; //!< Dirty flag for each subset
   Graphic3d_WorldViewProjState                               myLastViewState;        //!< Last view-projection state used for construction of BVH
   Graphic3d_Vec2i                                            myLastWinSize;          //!< Last viewport's (window's) width used for construction of BVH
+// clang-format on
   friend class Iterator;
 };
 

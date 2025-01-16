@@ -48,7 +48,9 @@ Standard_EXPORT Standard_Boolean FUN_ds_sdm(const TopOpeBRepDS_DataStructure& BD
 
 Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure& BDS,const TopoDS_Shape& ES,const TopoDS_Shape& F1,const TopoDS_Shape& F2);
 Standard_EXPORT Standard_Boolean FDS_aresamdom(const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SI,const Standard_Integer isb1,const Standard_Integer isb2);
+// clang-format off
 Standard_EXPORT Standard_Boolean FDS_EdgeIsConnexToSameDomainFaces(const TopoDS_Shape& E,const Handle(TopOpeBRepDS_HDataStructure)& HDS);  // not used
+// clang-format on
 Standard_EXPORT Standard_Boolean FDS_SIisGIofIofSBAofTofI(const TopOpeBRepDS_DataStructure& BDS,const Standard_Integer SI,const Handle(TopOpeBRepDS_Interference)& I);
 Standard_EXPORT Standard_Real FDS_Parameter(const Handle(TopOpeBRepDS_Interference)& I);
 Standard_EXPORT Standard_Boolean FDS_Parameter(const Handle(TopOpeBRepDS_Interference)& I, Standard_Real& par);

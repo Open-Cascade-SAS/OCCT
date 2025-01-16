@@ -202,6 +202,7 @@ private:
 
 private:
 
+// clang-format off
   unsigned int        myPow2Size;            //!< size of IBL maps sides (real size can be calculated as 2^myPow2Size)
   unsigned int        mySpecMapLevelsNumber; //!< number of mipmap levels used in specular IBL map
 
@@ -212,6 +213,7 @@ private:
   Standard_Boolean    myIsComplete;          //!< completeness of PBR environment
   Standard_Boolean    myIsNeededToBeBound;   //!< indicates whether IBL map's textures have to be bound or it is not obligate
   Standard_Boolean    myCanRenderFloat;      //!< indicates whether driver supports rendering into floating point texture or not
+// clang-format on
 
 };
 

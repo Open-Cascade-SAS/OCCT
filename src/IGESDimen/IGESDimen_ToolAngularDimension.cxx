@@ -58,6 +58,7 @@ void  IGESDimen_ToolAngularDimension::ReadOwnParams
 		STANDARD_TYPE(IGESDimen_GeneralNote), note); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR, PR.Current(), "First Witness Entity",
+// clang-format off
 		 STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR,PR.Current(),"Second Witness Entity",
@@ -66,6 +67,7 @@ void  IGESDimen_ToolAngularDimension::ReadOwnParams
   PR.ReadXY(PR.CurrentList(1, 2), "Vertex Point Co-ords", vertex); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadReal(PR.Current(), "Radius of Leader arcs", radius); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadEntity(IR, PR.Current(), "First Leader Entity",
 		STANDARD_TYPE(IGESDimen_LeaderArrow), firstLeader); //szv#4:S4163:12Mar99 `st=` not needed

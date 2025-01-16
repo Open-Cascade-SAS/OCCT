@@ -40,7 +40,9 @@ void SelectMgr_RectangularFrustum::segmentSegmentDistance (const gp_Pnt& theSegP
                                                            SelectBasics_PickResult& thePickResult) const
 {
   gp_XYZ anU = theSegPnt2.XYZ() - theSegPnt1.XYZ();
+// clang-format off
   gp_XYZ aV = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ(); // use unnormalized vector instead of myViewRayDir to clip solutions behind Far plane
+// clang-format on
   gp_XYZ aW = theSegPnt1.XYZ() - myNearPickedPnt.XYZ();
 
   Standard_Real anA = anU.Dot (anU);
@@ -110,7 +112,9 @@ bool SelectMgr_RectangularFrustum::segmentPlaneIntersection (const gp_Vec& thePl
                                                              const gp_Pnt& thePntOnPlane,
                                                              SelectBasics_PickResult& thePickResult) const
 {
+// clang-format off
   gp_XYZ anU = myFarPickedPnt.XYZ() - myNearPickedPnt.XYZ(); // use unnormalized vector instead of myViewRayDir to clip solutions behind Far plane by > 1.0 check
+// clang-format on
   gp_XYZ aW = myNearPickedPnt.XYZ() - thePntOnPlane.XYZ();
   Standard_Real aD = thePlane.Dot (anU);
   Standard_Real aN = -thePlane.Dot (aW);
@@ -234,7 +238,9 @@ void SelectMgr_RectangularFrustum::cacheVertexProjections (SelectMgr_Rectangular
     // to simplify calculations.
     Standard_Integer aVertIdxs[6] = { LeftTopNear, LeftBottomNear,       // opposite planes in height direction
                                       LeftBottomNear, RightBottomNear,   // opposite planes in width direction
+// clang-format off
                                       LeftBottomFar, RightBottomNear };  // opposite planes in depth direction
+// clang-format on
     for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < 5; aPlaneIdx += 2)
     {
       Standard_Real aProj1 = theFrustum->myPlanes[aPlaneIdx].XYZ().Dot (theFrustum->myVertices[aVertIdxs[aPlaneIdx]].XYZ());

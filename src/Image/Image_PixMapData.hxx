@@ -197,7 +197,9 @@ public:
 
 protected:
 
+// clang-format off
   Standard_Byte* myTopRowPtr;  //!< pointer to the topmost row (depending on scanlines order in memory)
+// clang-format on
 
 public:
 

@@ -346,7 +346,9 @@ void TopOpeBRepBuild_Builder::MakeSolids(TopOpeBRepBuild_SolidBuilder& SOBU,TopT
 	  myBuildTool.AddShellFace(newShell,F);
 	}
       }
+// clang-format off
       myBuildTool.Closed(newShell,Standard_True); // NYI : check exact du caractere closed du shell
+// clang-format on
       myBuildTool.AddSolidShell(newSolid,newShell);
     }
     L.Append(newSolid);

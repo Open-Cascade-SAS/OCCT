@@ -101,7 +101,9 @@ namespace
       }
     }
 
+// clang-format off
     for (Standard_Integer aNodeIdx = 0; aNodeIdx < aNbPolyNodes - 2; ++aNodeIdx) // triangulate polygon
+// clang-format on
     {
       for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
       {

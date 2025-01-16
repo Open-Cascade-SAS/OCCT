@@ -101,7 +101,9 @@ protected:
   Standard_Integer           mySizeY;             //!< surface height
   Image_Format               myBaseFormat;        //!< base (uncompressed) pixel format
   Image_CompressedFormat     myFormat;            //!< compressed format
+// clang-format off
   Standard_Boolean           myIsCompleteMips;    //!< flag indicating complete mip map level set (up to 1x1 resolution)
+// clang-format on
 
 };
 

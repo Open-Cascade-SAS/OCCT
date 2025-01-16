@@ -144,15 +144,15 @@ public:
   //!< Internal parameters for transfer process
   struct DE_SectionGlobal
   {
-    Standard_Real LengthUnit =
-      1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
+// clang-format off
+    Standard_Real LengthUnit = 1.0; //!< Target Unit (scaling based on MM) for the transfer process, default 1.0 (MM)
     Standard_Real SystemUnit = 1.0; //!< System Unit (scaling based on MM) to be used when initial
                                     //!< unit is unknown, default 1.0 (MM)
   } GlobalParameters;
 
 private:
-  Standard_Boolean
-    myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper
+  Standard_Boolean myIsEnabled; //!< Flag to use a current provider for Read or Write process via DE_Wrapper
+// clang-format on
 };
 
 #endif // _DE_ConfigurationNode_HeaderFile

@@ -246,7 +246,9 @@ void Font_TextFormatter::Format()
       {
         aMaxLineWidth = Max (aMaxLineWidth, LineWidth (aLineIt));
       }
+// clang-format off
       aMaxLineWidth = Max (aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
+// clang-format on
     }
   }
 

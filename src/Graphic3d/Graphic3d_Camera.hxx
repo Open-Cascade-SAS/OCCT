@@ -870,7 +870,9 @@ private:
   Aspect_FrustumLRBT<Standard_Real> myCustomFrustumL; //!< left  custom frustum
   Aspect_FrustumLRBT<Standard_Real> myCustomFrustumR; //!< right custom frustum
   Standard_Boolean myIsCustomProjMatM;  //!< flag indicating usage of custom projection matrix
+// clang-format off
   Standard_Boolean myIsCustomProjMatLR; //!< flag indicating usage of custom stereo projection matrices
+// clang-format on
   Standard_Boolean myIsCustomFrustomLR; //!< flag indicating usage of custom stereo frustums
 
   mutable TransformMatrices<Standard_Real>      myMatricesD;

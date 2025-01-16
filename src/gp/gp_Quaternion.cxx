@@ -208,7 +208,9 @@ struct gp_EulerSequence_Parameters
   Standard_Integer i;           // first rotation axis
   Standard_Integer j;           // next axis of rotation
   Standard_Integer k;           // third axis
+// clang-format off
   Standard_Boolean isOdd;       // true if order of two first rotation axes is odd permutation, e.g. XZ
+// clang-format on
   Standard_Boolean isTwoAxes;   // true if third rotation is about the same axis as first 
   Standard_Boolean isExtrinsic; // true if rotations are made around fixed axes
 

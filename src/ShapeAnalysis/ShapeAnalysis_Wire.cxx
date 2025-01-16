@@ -629,11 +629,13 @@ Standard_Boolean ShapeAnalysis_Wire::CheckOrder(ShapeAnalysis_WireOrder &sawo,
   {
   case   0: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);    break;
   case   1: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE1); break;
+// clang-format off
   case   2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2); break; // this value is not returned
   case  -1: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE3); break;
   case  -2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE4); break; // this value is not returned
   case   3: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE5); break; // only shifted
   case -10: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL1); break; // this value is not returned
+// clang-format on
   }
   return LastCheckStatus (ShapeExtend_DONE);
 }
@@ -1248,7 +1250,9 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges (const Standard_Inte
     return Standard_False;
   }
   if ( Abs ( a1 - b1 ) <= ::Precision::PConfusion() ||
+// clang-format off
        Abs ( a2 - b2 ) <= ::Precision::PConfusion() ) return Standard_False; //:f7 abv 6 May 98: BUC50070 on #42276
+// clang-format on
 
   Standard_Boolean isForward1 = ( edge1.Orientation() == TopAbs_FORWARD );
   Standard_Boolean isForward2 = ( edge2.Orientation() == TopAbs_FORWARD );
@@ -1323,8 +1327,10 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges (const Standard_Inte
 	 param2-b2 > ::Precision::PConfusion() ) continue;
 
     //:82 abv 21 Jan 98: point of intersection on Crv1 and Crv2 is different
+// clang-format off
     gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, C1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
     gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, C2, param2 ); //:h0: thesurf.Value ( Crv2->Value ( param2 ) );
+// clang-format on
     gp_Pnt pint = 0.5 * ( pi1.XYZ() + pi2.XYZ() );
     Standard_Real di1 = pi1.SquareDistance ( pnt );
     Standard_Real di2 = pi2.SquareDistance ( pnt );
@@ -1454,7 +1460,9 @@ Standard_Boolean ShapeAnalysis_Wire::CheckIntersectingEdges(const Standard_Integ
 	 Tr2.PositionOnCurve() != IntRes2d_Middle ) continue;
     Standard_Real param1 = IP.ParamOnFirst(); 
     Standard_Real param2 = IP.ParamOnSecond();
+// clang-format off
     gp_Pnt pi1 = GetPointOnEdge ( edge1, mySurf, C1, param1 ); //:h0: thesurf.Value ( Crv1->Value ( param1 ) );
+// clang-format on
     gp_Pnt pi2 = GetPointOnEdge ( edge2, mySurf, C2, param2 );
     Standard_Boolean OK1 = Standard_False;
     Standard_Boolean OK2 = Standard_False;

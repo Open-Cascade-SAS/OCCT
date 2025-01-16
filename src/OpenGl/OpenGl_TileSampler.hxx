@@ -142,6 +142,7 @@ protected:
 
 protected:
 
+// clang-format off
   Image_PixMapTypedData<unsigned int>    myTiles;         //!< number of samples per tile (initially all 1)
   Image_PixMapTypedData<unsigned int>    myTileSamples;   //!< number of samples for all pixels within the tile (initially equals to Tile area)
   Image_PixMapTypedData<float>           myVarianceMap;   //!< Estimation of visual error per tile
@@ -152,6 +153,7 @@ protected:
   OpenGl_HaltonSampler                   mySampler;       //!< Halton sequence generator
   unsigned int                           myLastSample;    //!< Index of generated sample
   float                                  myScaleFactor;   //!< scale factor for quantization of visual error (float) into signed integer
+// clang-format on
   int                                    myTileSize;      //!< tile size
   Graphic3d_Vec2i                        myViewSize;      //!< ray-tracing viewport
 

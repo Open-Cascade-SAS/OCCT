@@ -706,7 +706,9 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
   Standard_Real f,l; FUN_tool_bounds(e,f,l); Standard_Real eps = 0.45678; Standard_Real pare = (1-eps)*f+eps*l;
 
   // RONd (x,y,z) = (xxref,ntref,x^y)
+// clang-format off
   Standard_Real tola = Precision::Angular()*1.e3; //gp_Dir xapp,yapp; Standard_Boolean refapp = Standard_False;
+// clang-format on
   gp_Dir x,y; Standard_Boolean ok = ::FUN_vectors(fref,e,pare,y,x,tola,Standard_False);
   if (!ok) {FUN_Raise(); return Standard_False;}
   

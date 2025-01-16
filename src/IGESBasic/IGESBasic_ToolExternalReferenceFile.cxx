@@ -47,7 +47,9 @@ void  IGESBasic_ToolExternalReferenceFile::ReadOwnParams
   if (st && num > 0) tempNames = new Interface_HArray1OfHAsciiString(1, num);
   else  PR.AddFail("Number of list entries: Not Positive");
   if (!tempNames.IsNull())
+// clang-format off
     PR.ReadTexts(PR.CurrentList(num), "External Reference Entity", tempNames); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempNames);

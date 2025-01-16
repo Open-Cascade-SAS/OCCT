@@ -49,7 +49,9 @@ protected:
     const Standard_Integer aNodeNbPrimitives = theBVH->NbPrimitives (theNode);
     if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
     {
+// clang-format off
       return typename BVH_QueueBuilder<T, N>::BVH_ChildNodes(); // node does not require partitioning
+// clang-format on
     }
 
     // Parameters for storing best split

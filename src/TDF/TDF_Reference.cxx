@@ -135,7 +135,9 @@ void TDF_Reference::Paste (const Handle(TDF_Attribute)& Into,
 
 void TDF_Reference::References(const Handle(TDF_DataSet)& aDataSet) const
 {
+// clang-format off
   if (!Label().IsImported()) aDataSet->AddLabel( myOrigin); //pour real et entier mais surtout pas les parts ...
+// clang-format on
 }
 
 //=======================================================================

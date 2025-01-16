@@ -95,7 +95,9 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
   if(!IsInDomain)
   {
     const Standard_Real uLast = ElCLib::Parameter ( anEllipse, anEndOfArrow );
+// clang-format off
     const Standard_Real Alpha = DsgPrs::DistanceFromApex(anEllipse, anEndOfArrow, uFirst);//length of ellipse arc
+// clang-format on
     gp_Vec Vapex(aCenter, ElCLib::Value( uLast, anEllipse )) ;
     gp_Vec Vpnt(aCenter,  ElCLib::Value( uFirst, anEllipse )) ;
     gp_Dir dir(Vpnt ^ Vapex);
@@ -142,7 +144,9 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
     aBEllipse.SetMajorRadius(aBEllipse.MajorRadius() + Offset);
     aBEllipse.SetMinorRadius(aBEllipse.MinorRadius() + Offset);
     const Standard_Real uLast = ElCLib::Parameter ( aBEllipse, anEndOfArrow );
+// clang-format off
     const Standard_Real Alpha = DsgPrs::DistanceFromApex(aBEllipse, anEndOfArrow, uFirst);//length of ellipse arc
+// clang-format on
     gp_Pnt p1;
     aCurve->D0(uFirst, p1);
     gp_Vec Vapex(aCenter, anEndOfArrow) ;

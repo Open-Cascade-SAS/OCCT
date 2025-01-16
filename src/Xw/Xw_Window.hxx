@@ -130,7 +130,9 @@ protected:
   Standard_Integer myYTop;     //!< top    position in pixels
   Standard_Integer myXRight;   //!< right  position in pixels
   Standard_Integer myYBottom;  //!< bottom position in pixels
+// clang-format off
   Standard_Boolean myIsOwnWin; //!< flag to indicate own window handle (to be deallocated on destruction)
+// clang-format on
 
 };
 

@@ -148,7 +148,9 @@ void BRepBuilderAPI_FindPlane::Init(const TopoDS_Shape&    S,
 	Standard_Real dist = p0.SquareDistance(points(i));
 	if (dist > disMax) {
 	  disMax = dist;
+// clang-format off
 	  p1 = points(i); // it will be faster to store the point, otherwise it is necessary to find a value in a sequence
+// clang-format on
 	}
       }
 

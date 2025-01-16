@@ -89,9 +89,11 @@ public:
   struct XCAFDoc_InternalSection
   {
     // Read
+// clang-format off
     PCDM_ReaderFilter::AppendMode ReadAppendMode = PCDM_ReaderFilter::AppendMode::AppendMode_Forbid; //!< Setting up the append mode
     TColStd_ListOfAsciiString ReadSkipValues; //!< Overwrites the existing attributes by the loaded ones
     TColStd_ListOfAsciiString ReadValues; //!< Adds sub-tree path or adds attribute to read by typename
+// clang-format on
 
   } InternalParameters;
 };

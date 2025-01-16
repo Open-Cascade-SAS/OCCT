@@ -2255,7 +2255,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Underflow (Real) ===============================================
     try{
       OCC_CATCH_SIGNALS
+// clang-format off
       std::cout << "(Real) Underflow" << std::endl; // to have message in log even if process crashed
+// clang-format on
       di << "(Real) Underflow";
       //std::cout.flush();
       di << "\n";

@@ -238,7 +238,9 @@ Handle(Geom_Surface) BRepOffset::CollapseSingularities (const Handle(Geom_Surfac
       // determine if all poles of the side fit into:
       Standard_Boolean isCollapsed = Standard_True; // aCenter precisely (with gp::Resolution())
       Standard_Boolean isSingular = Standard_True;  // aCenter with thePrecision
+// clang-format off
       NCollection_LocalArray<Standard_Boolean,4> isDegenerated (aDegenPnt.Extent()); // degenerated vertex
+// clang-format on
       for (size_t iDegen = 0; iDegen < isDegenerated.Size(); ++iDegen) isDegenerated[iDegen] = Standard_True;
       for (int iPole = 0; iPole < NbSteps[iSide]; iPole++)
       {

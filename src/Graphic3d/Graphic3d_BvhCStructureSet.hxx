@@ -68,7 +68,9 @@ public:
 
 private:
 
+// clang-format off
   NCollection_IndexedMap<const Graphic3d_CStructure*> myStructs;    //!< Indexed map of structures.
+// clang-format on
 
 };
 

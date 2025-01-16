@@ -147,8 +147,10 @@ protected:
   mutable gp_Pnt                   myCOG;            //!< Center of the poly
   Handle(TColStd_HArray1OfInteger) mySegmentIndexes; //!< Segment indexes for BVH tree build
   Select3D_BndBox3d                myBndBox;         //!< Bounding box of the poly
+// clang-format off
   Select3D_TypeOfSensitivity       mySensType;       //!< Type of sensitivity: boundary or interior
   mutable Standard_Boolean         myIsComputed;     //!< Is true if all the points and data structures of polygon are initialized
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitivePoly, Select3D_SensitiveSet)

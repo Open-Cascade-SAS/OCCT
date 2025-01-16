@@ -51,10 +51,12 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams
   Standard_Real tempColumnSeparation, tempRowSeparation, tempRotationAngle;
   Standard_Integer tempNbColumns, tempNbRows, tempDoDontFlag, tempListCount;
 
+// clang-format off
   PR.ReadEntity(IR, PR.Current(), "Base Entity", tempBaseEntity); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
     PR.ReadReal(PR.Current(), "Scale Factor", tempScaleFactor); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else
     tempScaleFactor = 1.0;      // Setting to default value of 1.0
 
@@ -75,7 +77,9 @@ void IGESDraw_ToolRectArraySubfigure::ReadOwnParams
       PR.AddFail("DO-DONT List Count : Less than Zero");
   }
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "DO-DONT Flag", tempDoDontFlag); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   // Read the HArray1 only if its Length was read without any Error
   if (! tempPositions.IsNull()) {

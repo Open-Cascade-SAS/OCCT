@@ -87,7 +87,9 @@ static void DisplayText (const TDF_Label& aLabel,
     Standard_Integer i = 1;
     for (i = 1; i <= seq.Length(); i++) {
       TDF_Label aL = seq.Value (i);
+// clang-format off
       DisplayText (aL, aPrs, anAspect, aLocation); //suppose that subshapes do not contain locations
+// clang-format on
     }
   }
   
@@ -236,7 +238,9 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager)& thePr
   {
     // Displaying Name attributes
     thePrs->SetDisplayPriority (Graphic3d_DisplayPriority_Topmost);
+// clang-format off
     DisplayText (myLabel, thePrs, Attributes()->DimensionAspect()->TextAspect(), TopLoc_Location());//no location
+// clang-format on
   }
 }
 

@@ -57,10 +57,12 @@ void  IGESDimen_ToolLinearDimension::ReadOwnParams
 		STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "First Witness Entity",
+// clang-format off
 		STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR,PR.Current(),"Second Witness Entity",
 		STANDARD_TYPE(IGESDimen_WitnessLine), secondWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init (note, firstLeader, secondLeader, firstWitness, secondWitness);

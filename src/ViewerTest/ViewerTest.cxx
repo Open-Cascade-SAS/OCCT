@@ -1660,8 +1660,10 @@ private:
 
 private:
 
+// clang-format off
   Handle(AIS_InteractiveContext) mySelIter;    //!< iterator for current (selected) objects (IterSource_Selected)
   ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName myMapIter; //!< iterator for map of all objects (IterSource_All)
+// clang-format on
   NCollection_Sequence<TCollection_AsciiString>           mySeq;
   NCollection_Sequence<TCollection_AsciiString>::Iterator mySeqIter;
 
@@ -4775,7 +4777,9 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
     }
     if (toSetTrsfAngle)
     {
+// clang-format off
       aTexturedIO->Attributes()->ShadingAspect()->Aspect()->TextureMap()->GetParams()->SetRotation (aTrsfRotAngle); // takes degrees
+// clang-format on
     }
     if (toSetTrsfTrans)
     {

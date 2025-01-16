@@ -204,8 +204,10 @@ private:
   BVH_Array3d myAddVertices1; //!< Additional vertices on the 1st shape if its mesh is coarser.
   BVH_Array3d myAddVertices2; //!< Additional vertices on the 2nd shape if its mesh is coarser.
 
+// clang-format off
   NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape.
   NCollection_Vector<ProxPnt_Status> myAddStatus2; //!< Status of additional vertices on the 2nd shape.
+// clang-format on
 
   Standard_Boolean myIsInitS1; //!< Is the 1st shape initialized?
   Standard_Boolean myIsInitS2; //!< Is the 2nd shape initialized?

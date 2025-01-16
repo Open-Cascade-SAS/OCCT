@@ -165,12 +165,14 @@ protected:
 protected:
 
   OpenGl_Structure*          myInstancedStructure;
+// clang-format off
   Graphic3d_Mat4             myRenderTrsf; //!< transformation, actually used for rendering (includes Local Origin shift)
 
   mutable Standard_Boolean   myIsRaytracable;
   mutable Standard_Size      myModificationState;
 
   Standard_Boolean           myIsMirrored; //!< Used to tell OpenGl to interpret polygons in clockwise order.
+// clang-format on
 
 };
 

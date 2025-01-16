@@ -1679,7 +1679,9 @@ void OSD_Path::FileNameAndExtension (const TCollection_AsciiString& theFilePath,
                                      TCollection_AsciiString&       theName,
                                      TCollection_AsciiString&       theExtension)
 {
+// clang-format off
   const Standard_Integer THE_EXT_MAX_LEN = 20; // this method is supposed to be used with normal extension
+// clang-format on
   const Standard_Integer aLen = theFilePath.Length();
   for (Standard_Integer anExtLen = 1; anExtLen < aLen && anExtLen < THE_EXT_MAX_LEN; ++anExtLen)
   {

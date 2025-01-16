@@ -304,7 +304,9 @@ void  IGESControl_Reader::PrintTransferInfo
       for(; aMapCountIter.More(); aMapCountIter.Next()) {
         char mess[80];
         sprintf(mess, aMapCountIter.Key().ToCString(), aMapCountIter.Value());
+// clang-format off
         TF->SendInfo() << mess << std::endl; //dicoCountIter.Value() << dicoCountIter.Name() << std::endl;
+// clang-format on
       }
       break;
     }

@@ -962,7 +962,9 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
       theOitAccumFbo->BindBuffer (aCtx);
 
       aCtx->SetDrawBuffers (2, THE_DRAW_BUFFERS01);
+// clang-format off
       aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+// clang-format on
       aCtx->core11fwd->glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
       aCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
       aCtx->core15fwd->glBlendFuncSeparate (GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
@@ -978,7 +980,9 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
       // initialize min/max depth buffer
       aGlBlendBackFBO->BindDrawBuffer (aCtx);
       aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+// clang-format off
       aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+// clang-format on
       aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
       aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
 

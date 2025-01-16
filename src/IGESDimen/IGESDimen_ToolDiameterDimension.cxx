@@ -57,9 +57,11 @@ void  IGESDimen_ToolDiameterDimension::ReadOwnParams
 		STANDARD_TYPE(IGESDimen_LeaderArrow), firstLeader); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR,PR.Current(),"Second Leader Entity",
+// clang-format off
 		 STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadXY(PR.CurrentList(1, 2), "Arc Center Co-ords", center); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(note, firstLeader, secondLeader, center);

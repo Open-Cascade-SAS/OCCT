@@ -645,6 +645,7 @@ protected:
 
   GLuint                          myProgramID;     //!< Handle of OpenGL shader program
   OpenGl_ShaderList               myShaderObjects; //!< List of attached shader objects
+// clang-format off
   Handle(Graphic3d_ShaderProgram) myProxy;         //!< Proxy shader program (from application layer)
   Standard_Integer                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
   Standard_Integer                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
@@ -659,6 +660,7 @@ protected:
 protected:
 
   Standard_Size myCurrentState[OpenGl_UniformStateType_NB]; //!< defines last modification for variables of each state type
+// clang-format on
 
   //! Stores locations of OCCT state uniform variables.
   OpenGl_ShaderUniformLocation myStateLocations[OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES];

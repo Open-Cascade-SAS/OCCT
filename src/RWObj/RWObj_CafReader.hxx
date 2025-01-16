@@ -58,7 +58,9 @@ protected:
 protected:
 
   NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myObjMaterialMap;
+// clang-format off
   Standard_Boolean myIsSinglePrecision; //!< flag for reading vertex data with single or double floating point precision
+// clang-format on
 };
 
 #endif // _RWObj_CafReader_HeaderFile

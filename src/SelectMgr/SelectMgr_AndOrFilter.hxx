@@ -54,7 +54,9 @@ private:
 
   Handle(Graphic3d_NMapOfTransient) myDisabledObjects; //!< disabled objects.
                                                        //!  Selection isn't applied to these objects.
+// clang-format off
   SelectMgr_FilterType myFilterType; //!< selection filter type. SelectMgr_TypeFilter_OR by default.
+// clang-format on
 };
 
 #endif // _SelectMgr_AndOrFilter_HeaderFile

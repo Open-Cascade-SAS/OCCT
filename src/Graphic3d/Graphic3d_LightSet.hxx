@@ -184,6 +184,7 @@ public:
 
 protected:
   NCollection_IndexedDataMap<Handle(Graphic3d_CLight), Standard_Size>
+// clang-format off
                           myLights;                 //!< list of light sources with their cached state (revision)
   Graphic3d_Vec4          myAmbient;                //!< cached value of cumulative ambient color
   TCollection_AsciiString myKeyEnabledLong;         //!< key identifying the list of enabled light sources by their type
@@ -192,6 +193,7 @@ protected:
   Standard_Integer        myLightTypesEnabled[Graphic3d_TypeOfLightSource_NB]; //!< counters per each light source type enabled in the list
   Standard_Integer        myNbEnabled;              //!< number of enabled light sources, excluding ambient
   Standard_Integer        myNbCastShadows;          //!< number of enabled light sources casting shadows
+// clang-format on
   Standard_Size           myRevision;               //!< current revision of light source set
   Standard_Size           myCacheRevision;          //!< revision of cached state
 };

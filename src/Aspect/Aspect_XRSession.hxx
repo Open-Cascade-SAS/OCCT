@@ -243,6 +243,7 @@ protected:
 protected:
 
   NCollection_Array1<Handle(Aspect_XRAction)>
+// clang-format off
                                   myRoleActions[Aspect_XRTrackedDeviceRole_NB]; //!< generic actions
   Aspect_XRActionSetMap           myActionSets;   //!< actions sets
   TrackingUniverseOrigin          myTrackOrigin;  //!< tracking origin
@@ -252,6 +253,7 @@ protected:
   Aspect_FrustumLRBT<double>      myFrustumL;     //!< left  eye projection frustum
   Aspect_FrustumLRBT<double>      myFrustumR;     //!< right eye projection frustum
   Standard_Real                   myUnitFactor;   //!< unit scale factor defined as scale factor for m (meters)
+// clang-format on
   Standard_Real                   myAspect;       //!< aspect ratio
   Standard_Real                   myFieldOfView;  //!< field of view
   Standard_Real                   myIod;          //!< intra-ocular distance in meters

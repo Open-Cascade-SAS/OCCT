@@ -97,7 +97,9 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams
 	Standard_Integer curnum = PR.CurrentNumber();
 
 	//  Reading Color : Value (>0) or Definition (<0 = D.E. Pointer)
+// clang-format off
 	PR.ReadInteger( PR.Current(), "array colorValues", tempColorValue); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 	if (tempColorValue < 0) {
 	  colorValues->SetValue(i, -1);
 	  tempColorDef = GetCasted(IGESGraph_Color,PR.ParamEntity(IR,curnum));
@@ -110,7 +112,9 @@ void IGESDraw_ToolSegmentedViewsVisible::ReadOwnParams
 
 	curnum = PR.CurrentNumber();
 	//  Reading Line Font : Value (>0) or Definition (<0 = D.E. Pointer)
+// clang-format off
 	PR.ReadInteger( PR.Current(), "array lineFontValues", tempLineFontValue ); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 	if (tempLineFontValue < 0 ) {
 	  lineFontValues->SetValue(i, -1);
 	  tempLineFontDef = GetCasted(IGESData_LineFontEntity,

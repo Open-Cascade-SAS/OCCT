@@ -123,7 +123,9 @@ namespace
     Handle(TDataStd_NamedData)& getResult();
 
   private:
+// clang-format off
     const TCollection_AsciiString& myParentID;    //!< ID of the Json object that contains "extras" value. For printing messages.
+// clang-format on
     const RWGltf_JsonValue&        myExtrasValue; //!< "extras" value to parse.
     Handle(TDataStd_NamedData)     myResult;      //!< Result of parsing.
   };
@@ -1952,7 +1954,9 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor (const Handle(RWGltf_GltfLatePrimi
   const RWGltf_JsonValue* aByteOffset     = theCompBuffView == NULL
                                           ? findObjectMember (theAccessor, "byteOffset")
                                           : 0;
+// clang-format off
   const RWGltf_JsonValue* aByteStride     = findObjectMember (theAccessor, "byteStride"); // byteStride was part of bufferView in glTF 1.0
+// clang-format on
   const RWGltf_JsonValue* aCompType       = findObjectMember (theAccessor, "componentType");
   const RWGltf_JsonValue* aCount          = findObjectMember (theAccessor, "count");
   if (aTypeStr == NULL
@@ -2109,7 +2113,9 @@ bool RWGltf_GltfJsonParser::gltfParseBufferView (const Handle(RWGltf_GltfLatePri
   const RWGltf_JsonValue* aBufferName = findObjectMember (theBufferView, "buffer");
   const RWGltf_JsonValue* aByteLength = findObjectMember (theBufferView, "byteLength");
   const RWGltf_JsonValue* aByteOffset = findObjectMember (theBufferView, "byteOffset");
+// clang-format off
   const RWGltf_JsonValue* aByteStride = findObjectMember (theBufferView, "byteStride"); // byteStride is part of bufferView since glTF 2.0
+// clang-format on
   const RWGltf_JsonValue* aTarget     = findObjectMember (theBufferView, "target");
   if (aBufferName == NULL)
   {

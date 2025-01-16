@@ -74,7 +74,9 @@ namespace
                  Standard_Boolean theIsFullInside = false) : Id (theId), IsFullInside (theIsFullInside) {}
 
     Standard_Integer Id;           //!< node identifier
+// clang-format off
     Standard_Boolean IsFullInside; //!< if the node is completely inside the current selection volume
+// clang-format on
   };
 }
 

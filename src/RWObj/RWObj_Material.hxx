@@ -22,8 +22,10 @@
 struct RWObj_Material
 {
   TCollection_AsciiString Name;            //!< material name (identifier) as defined in MTL file
+// clang-format off
   TCollection_AsciiString DiffuseTexture;  //!< path to the texture image file defining diffuse color
   TCollection_AsciiString SpecularTexture; //!< path to the texture image file defining specular color
+// clang-format on
   TCollection_AsciiString BumpTexture;     //!< path to the texture image file defining normal map
   Quantity_Color          AmbientColor;
   Quantity_Color          DiffuseColor;

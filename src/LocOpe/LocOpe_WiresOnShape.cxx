@@ -1290,9 +1290,11 @@ void FindInternalIntersections(const TopoDS_Edge& theEdge,
   Standard_Real aTolV[2];
   aTolV[0] =BRep_Tool::Tolerance(theVertices[0]);
   aTolV[1] =BRep_Tool::Tolerance(theVertices[1]);
+// clang-format off
   Standard_Real ext = 16.; // = 4 * 4 - to avoid creating microedges, area around vertices is increased
                            // up to 4 vertex tolerance. Such approach is usual for other topological
                            // algorithms, for example, Boolean Operations.
+// clang-format on
   Standard_Real aTolVExt[2] = { ext * aTolV[0] * aTolV[0], ext * aTolV[1] * aTolV[1] };
 
   BRepAdaptor_Curve2d thePCurve(theEdge, theFace);

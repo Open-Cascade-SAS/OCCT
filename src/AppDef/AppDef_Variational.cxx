@@ -1666,7 +1666,9 @@ void AppDef_Variational::Project(const Handle(FEmTool_Curve)& C,
     AveErr += Dist;
   }
 
+// clang-format off
   NumPoints = NumPoints + myFirstPoint - 1;// Setting NumPoints to interval [myFirstPoint, myLastPoint]
+// clang-format on
 
 }
 

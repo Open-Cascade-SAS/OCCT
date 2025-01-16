@@ -164,7 +164,9 @@ Standard_Boolean  StepToTopoDS_GeometricTool::IsLikeSeam
           Abs(line1->Dir()->Orientation()->DirectionRatiosValue(2) -
           line2->Dir()->Orientation()->DirectionRatiosValue(2));
 
+// clang-format off
         Standard_Real preci2d = Precision::PConfusion(); //:S4136: Parametric(BRepAPI::Precision(),10);
+// clang-format on
 
         if ((DeltaX < preci2d) || (DeltaY < preci2d))
           return ((DeltaDirX < preci2d) && (DeltaDirY < preci2d));
@@ -242,7 +244,9 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
 
   if (theCurve->IsPeriodic())
   {
+// clang-format off
     ElCLib::AdjustPeriodic(cf, cl, Precision::PConfusion(), w1, w2); //:a7 abv 11 Feb 98: preci -> PConfusion()
+// clang-format on
   }
   else if (theCurve->IsClosed())
   {

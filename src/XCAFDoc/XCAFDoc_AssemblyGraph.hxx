@@ -209,7 +209,9 @@ private:
 
   Handle(XCAFDoc_ShapeTool)                       myShapeTool;    //!< Document shape tool.
   TColStd_PackedMapOfInteger                      myRoots;        //!< IDs of the root nodes.
+// clang-format off
   TDF_LabelIndexedMap                             myNodes;        //!< Maps assembly/part entries to graph node IDs.
+// clang-format on
   AdjacencyMap                                    myAdjacencyMap; //!< "Part-of" relations.
   NCollection_DataMap<Standard_Integer, NodeType> myNodeTypes;    //!< Node types.
   NCollection_DataMap<Standard_Integer, 

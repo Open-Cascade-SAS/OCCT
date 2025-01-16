@@ -55,7 +55,9 @@ void  IGESSolid_ToolToroidalSurface::ReadOwnParams
   PR.ReadReal(PR.Current(), "Minor Radius", minRad); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (ent->FormNumber() == 1)      // Parametrised surface
+// clang-format off
     PR.ReadEntity(IR, PR.Current(), "Reference direction", tempRefdir); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init (tempCenter, tempAxis, majRad, minRad, Handle(IGESGeom_Direction)::DownCast (tempRefdir));

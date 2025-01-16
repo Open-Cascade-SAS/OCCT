@@ -250,7 +250,9 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferCompositeCurveGeneral(const Handle(I
     //added by rln 26/12/97 CSR# UKI60028 entity 3117
     if (i > 1 && IgesEnt == start->Curve (i-1)) {
 //      char mess[80];
+// clang-format off
       Message_Msg Msg1045("IGES_1045"); //"The entities of the CompositeCurve are the same: %d & %d"
+// clang-format on
       Msg1045.Arg(i);
       SendWarning(start,Msg1045);
       //sprintf (mess, "The entities of the CompositeCurve are the same: %d & %d", i-1, i);
@@ -287,7 +289,9 @@ TopoDS_Shape  IGESToBRep_TopoCurve::TransferCompositeCurveGeneral(const Handle(I
 										    revsewd, revnextsewd);
 	if (isConnected) {
 	  if (revsewd) {
+// clang-format off
 	    Message_Msg Msg1051("IGES_1051");   //"All curvAll curves %dd before rank %d have been to be reversed."
+// clang-format on
 	    Msg1051.Arg((is2d ? 2 : 3));
 	    Msg1051.Arg(i);
 	    SendWarning(start,Msg1051);

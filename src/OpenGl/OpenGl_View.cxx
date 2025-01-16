@@ -610,7 +610,9 @@ Standard_Boolean OpenGl_View::ShadowMapDump (Image_PixMap& theImage, const TColl
           aGlCtx->core11fwd->glReadBuffer (aDrawBufferPrev);
         }
         // Setup alignment.
+// clang-format off
         const GLint anAligment = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL.
+// clang-format on
         aGlCtx->core11fwd->glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
         // Read data.
         aGlCtx->core11fwd->glReadPixels (0, 0, GLsizei(theImage.SizeX()), GLsizei(theImage.SizeY()), GL_DEPTH_COMPONENT, GL_FLOAT, theImage.ChangeData());
@@ -2190,7 +2192,9 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection,
   aCtx->core11fwd->glClearDepth (1.0);
 
   const OpenGl_Vec4 aBgColor = aCtx->Vec4FromQuantityColor (myBgColor);
+// clang-format off
   aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+// clang-format on
   aCtx->core11fwd->glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), aCtx->caps->buffersOpaqueAlpha ? 1.0f : 0.0f);
   aCtx->core11fwd->glClear (toClear);
   aCtx->SetColorMask (true); // restore default alpha component write state
@@ -2315,7 +2319,9 @@ bool OpenGl_View::blitSubviews (const Graphic3d_Camera::Projection ,
       aCtx->SetFrameBufferSRGB (false);
     }
 
+// clang-format off
     Graphic3d_Vec2i aWinSize (aCtx->Viewport()[2], aCtx->Viewport()[3]); //aSubView->GlWindow()->PlatformWindow()->Dimensions();
+// clang-format on
     Graphic3d_Vec2i aSubViewSize = aChildFbo->GetVPSize();
     Graphic3d_Vec2i aSubViewPos  = aSubView->SubviewTopLeft();
     Graphic3d_Vec2i aDestSize    = aSubViewSize;
@@ -2882,7 +2888,9 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
   const Standard_Integer aViewport[4] = { 0, 0, aDrawSizeX, aDrawSizeY };
   aCtx->ResizeViewport (aViewport);
 
+// clang-format off
   aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+// clang-format on
   aCtx->core20fwd->glClearDepth (1.0);
   aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, aCtx->caps->buffersOpaqueAlpha ? 1.0f : 0.0f);
   aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

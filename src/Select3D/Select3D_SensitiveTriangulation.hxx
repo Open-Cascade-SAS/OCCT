@@ -150,10 +150,12 @@ protected:
   TopLoc_Location                  myInitLocation;
   gp_Pnt                           myCDG3D;              //!< Center of the whole triangulation
   Handle(TColStd_HArray1OfInteger) myFreeEdges;
+// clang-format off
   Standard_Boolean                 mySensType;            //!< Type of sensitivity: boundary or interior
   Standard_Integer                 myPrimitivesNb;       //!< Amount of free edges or triangles depending on sensitivity type
   Handle(TColStd_HArray1OfInteger) myBVHPrimIndexes;     //!< Indexes of edges or triangles for BVH build
   mutable Select3D_BndBox3d        myBndBox;             //!< Bounding box of the whole triangulation
+// clang-format on
   gp_GTrsf                         myInvInitLocation;
 };
 

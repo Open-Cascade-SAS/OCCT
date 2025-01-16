@@ -732,7 +732,9 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
                 
                 //gka protection against joining seem edges with other edges
 		Standard_Boolean same_set1 = (theList1.Extent()==theList2.Extent() && 
+// clang-format off
                                               ((!isSeam && !isSeam1)|| (isSeam && isSeam1))); //gka
+// clang-format on
 		Standard_Boolean same_set2 = (theList3.Extent()==theList2.Extent() && 
                                               ((!isSeam && !isSeam2)|| (isSeam && isSeam2)));
 		TopTools_MapOfShape theSetOfFaces;
@@ -1181,7 +1183,9 @@ Standard_Boolean ShapeFix_Wireframe::MergeSmallEdges(TopTools_MapOfShape& theSma
                 
                 //gka protection against joining seem edges with other edges
 		Standard_Boolean same_set1 = (theList1.Extent()==theList2.Extent() && 
+// clang-format off
                                               ((!isSeam && !isSeam1)|| (isSeam && isSeam1))); //gka
+// clang-format on
 		Standard_Boolean same_set2 = (theList3.Extent()==theList2.Extent() && 
                                               ((!isSeam && !isSeam2)|| (isSeam && isSeam2)));
 		TopTools_MapOfShape theSetOfFaces;

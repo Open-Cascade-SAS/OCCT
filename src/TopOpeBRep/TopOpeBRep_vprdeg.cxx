@@ -145,7 +145,9 @@ Standard_EXPORT void FUN_GetdgData(TopOpeBRepDS_PDataStructure& pDS,const TopOpe
   //           with shapes with same rank
 
   TopTools_DataMapOfShapeInteger shaperk;          // rkshape = {shape,rank=1,2}
+// clang-format off
   TopTools_DataMapOfShapeListOfShape mapvec, mapved; // mapvec = {(v,lec),(ec,lv)}, mapved = {(v,led),(ed,lv)}
+// clang-format on
   TopTools_DataMapOfShapeShape mapvvsd;          // mapvvsd = {(v,v)}
 
   TopOpeBRep_VPointInterIterator itvp(L);
@@ -344,7 +346,9 @@ static Standard_Integer FUN_putInterfonDegenEd
       if (!found) return NOI;
       // modified by NIZHNY-MKK  Tue Nov 21 17:45:50 2000.END
     }
+// clang-format off
     if (rkv != rkdg) {TopoDS_Vertex tmp = v; v = ov; ov = tmp; rkv = rkdg;} // ensure v is vertex of dge
+// clang-format on
   }
 
   Standard_Integer mkt = 0; Standard_Real par1 = 0.,par2 = 0.;

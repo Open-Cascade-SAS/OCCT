@@ -104,7 +104,9 @@ void  IGESAppli_ToolElementResults::ReadOwnParams
       allNbResultDataLocs->SetValue (nume,nrl);
     if (PR.ReadInts (PR.CurrentList(nrl), "Result data locations", rdrl))
       allResultDataLoc->SetValue (nume,rdrl);
+// clang-format off
     PR.ReadInteger (PR.Current(), "Nb. of result data locations", numv); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
     if (PR.ReadReals (PR.CurrentList(numv), "Result Data", vres))
       allResultData->SetValue(nume,vres);
   }

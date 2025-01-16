@@ -40,7 +40,9 @@ void  IGESBasic_ToolExternalRefLibName::ReadOwnParams
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
   Handle(TCollection_HAsciiString) tempLibName;
   Handle(TCollection_HAsciiString) tempExtRefEntitySymbName;
+// clang-format off
   PR.ReadText(PR.Current(), "Name of Library", tempLibName); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   PR.ReadText(PR.Current(), "External Reference Symbolic Name",
 	      tempExtRefEntitySymbName); //szv#4:S4163:12Mar99 `st=` not needed
 

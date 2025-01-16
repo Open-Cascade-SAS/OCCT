@@ -575,8 +575,10 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
 //    if (!ok) {FUN_Raise(); return;}
     
     // new topologies :
+// clang-format off
     TopTools_IndexedDataMapOfShapeListOfShape fcnewfcSMA;// faces connexed to fSMA built up with the split of outerwSMA
     TopTools_IndexedDataMapOfShapeListOfShape fcnewfcGRE;// faces connexed to fGRE built up with the split of outerwGRE    
+// clang-format on
     Standard_Boolean ok = ::FUN_rebuildfc((*this),myDataStructure,staSMA,*pfSMA,EnewE,fcnewfcSMA);
     if (!ok) {FUN_Raise(); return;}
     Standard_Integer nfcSMA = fcnewfcSMA.Extent();

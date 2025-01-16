@@ -476,8 +476,10 @@ public:
     const uint32_t m = (theHalf & 0x03FF) << 13; // mantissa
     FloatUint32 mf, aRes;
     mf.Float32 = (float )m;
+// clang-format off
     const uint32_t v = mf.UInt32 >> 23; // evil log2 bit hack to count leading zeros in denormalized format
     aRes.UInt32 = (theHalf & 0x8000)<<16 | (e != 0) * ((e + 112) << 23 | m) | ((e == 0) & (m != 0)) * ((v - 37) << 23 | ((m << (150 - v)) & 0x007FE000)); // sign : normalized : denormalized
+// clang-format on
     return aRes.Float32;
   }
 
@@ -488,11 +490,13 @@ public:
     union FloatUint32 { float Float32; uint32_t UInt32; };
     FloatUint32 anInput;
     anInput.Float32 = theFloat;
+// clang-format off
     const uint32_t b = anInput.UInt32 + 0x00001000; // round-to-nearest-even: add last bit after truncated mantissa
     const uint32_t e = (b & 0x7F800000) >> 23; // exponent
     const uint32_t m =  b & 0x007FFFFF; // mantissa; in line below: 0x007FF000 = 0x00800000-0x00001000 = decimal indicator flag - initial rounding
     return (uint16_t)((b & 0x80000000) >> 16 | (e > 112) * ((((e - 112) << 10) & 0x7C00) | m >> 13)
          | ((e < 113) & (e > 101)) * ((((0x007FF000 + m) >> (125 - e)) + 1) >> 1) | (e > 143) * 0x7FFF); // sign : normalized : denormalized : saturate
+// clang-format on
   }
 
 protected:

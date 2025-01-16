@@ -3323,9 +3323,11 @@ void HLRBRep_PolyAlgo::TMultiply (Standard_Real& theX,
                                   Standard_Real& theZ,
                                   const Standard_Boolean theVPO) const
 {
+// clang-format off
   Standard_Real Xt = TMat[0][0] * theX + TMat[0][1] * theY + TMat[0][2] * theZ + (theVPO ? 0 : TLoc[0]);//OCC349
   Standard_Real Yt = TMat[1][0] * theX + TMat[1][1] * theY + TMat[1][2] * theZ + (theVPO ? 0 : TLoc[1]);//OCC349
   theZ             = TMat[2][0] * theX + TMat[2][1] * theY + TMat[2][2] * theZ + (theVPO ? 0 : TLoc[2]);//OCC349
+// clang-format on
   theX             = Xt;
   theY             = Yt;
 }
@@ -3339,9 +3341,11 @@ void HLRBRep_PolyAlgo::TTMultiply (Standard_Real& theX,
                                    Standard_Real& theZ,
                                    const Standard_Boolean theVPO) const
 {
+// clang-format off
   Standard_Real Xt = TTMa[0][0] * theX + TTMa[0][1] * theY + TTMa[0][2] * theZ + (theVPO ? 0 : TTLo[0]);//OCC349
   Standard_Real Yt = TTMa[1][0] * theX + TTMa[1][1] * theY + TTMa[1][2] * theZ + (theVPO ? 0 : TTLo[1]);//OCC349
   theZ             = TTMa[2][0] * theX + TTMa[2][1] * theY + TTMa[2][2] * theZ + (theVPO ? 0 : TTLo[2]);//OCC349
+// clang-format on
   theX             = Xt;
   theY             = Yt;
 }
@@ -3355,9 +3359,11 @@ void HLRBRep_PolyAlgo::TIMultiply (Standard_Real& theX,
                                    Standard_Real& theZ,
                                    const Standard_Boolean theVPO) const
 {
+// clang-format off
   Standard_Real Xt = TIMa[0][0] * theX + TIMa[0][1] * theY + TIMa[0][2] * theZ + (theVPO ? 0 : TILo[0]);//OCC349
   Standard_Real Yt = TIMa[1][0] * theX + TIMa[1][1] * theY + TIMa[1][2] * theZ + (theVPO ? 0 : TILo[1]);//OCC349
   theZ             = TIMa[2][0] * theX + TIMa[2][1] * theY + TIMa[2][2] * theZ + (theVPO ? 0 : TILo[2]);//OCC349
+// clang-format on
   theX             = Xt;
   theY             = Yt;
 }

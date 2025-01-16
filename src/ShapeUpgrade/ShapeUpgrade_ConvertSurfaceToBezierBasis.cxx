@@ -150,7 +150,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const Standard_Boolean Se
     //pdn
     Standard_Real u1,u2,v1,v2;
     bspline->Bounds(u1,u2,v1,v2);
+// clang-format off
     GeomConvert_BSplineSurfaceToBezierSurface converter(bspline);//,UFirst,ULast,VFirst,VLast,precision;
+// clang-format on
     Standard_Integer nbUPatches = converter.NbUPatches();
     Standard_Integer nbVPatches = converter.NbVPatches();
     TColStd_Array1OfReal UJoints(1, nbUPatches+1);

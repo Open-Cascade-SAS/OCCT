@@ -218,6 +218,7 @@ private:
   Graphic3d_ShaderObjectList    myShaderObjects; //!< the list of attached shader objects
   Graphic3d_ShaderVariableList  myVariables;     //!< the list of custom uniform variables
   Graphic3d_ShaderAttributeList myAttributes;    //!< the list of custom vertex attributes
+// clang-format off
   TCollection_AsciiString       myHeader;        //!< GLSL header with version code and used extensions
   Standard_Integer              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer              myNbShadowMaps;  //!< length of array of shadow maps (THE_NB_SHADOWMAPS)
@@ -228,6 +229,7 @@ private:
   Standard_Boolean              myHasDefSampler; //!< flag indicating that program defines default texture sampler occSampler0
   Standard_Boolean              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
   Standard_Boolean              myIsPBR;         //!< flag indicating that program defines functions and variables used in PBR pipeline
+// clang-format on
 
 };
 

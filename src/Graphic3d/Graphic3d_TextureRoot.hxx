@@ -147,6 +147,7 @@ protected:
 protected:
 
   Handle(Graphic3d_TextureParams) myParams;     //!< associated texture parameters
+// clang-format off
   TCollection_AsciiString         myTexId;      //!< unique identifier of this resource (for sharing graphic resource); should never be modified outside constructor
   Handle(Image_PixMap)            myPixMap;     //!< image pixmap - as one of the ways for defining the texture source
   OSD_Path                        myPath;       //!< image file path - as one of the ways for defining the texture source
@@ -155,6 +156,7 @@ protected:
   Standard_Boolean                myIsColorMap; //!< flag indicating color nature of values within the texture
   Standard_Boolean                myIsTopDown;  //!< Stores rows's memory layout
   Standard_Boolean                myHasMipmaps; //!< Indicates whether mipmaps should be generated or not
+// clang-format on
 
 };
 

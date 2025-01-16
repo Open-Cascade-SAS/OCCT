@@ -46,7 +46,9 @@ void  IGESBasic_ToolOrderedGroup::ReadOwnParams
   Handle(IGESData_HArray1OfIGESEntity)  EntArray;
 
   if (PR.ReadInteger( PR.Current(), "Count of Entities", nbval)) { //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format off
     PR.ReadEnts (IR,PR.CurrentList(nbval),"Entities",EntArray); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 /*
     EntArray = new IGESData_HArray1OfIGESEntity(1,nbval);
     for (Standard_Integer i = 1;i <= nbval;i++)

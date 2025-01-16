@@ -78,7 +78,9 @@ public:
 
 private:
   Standard_OStream* myStream; ///< pointer to the stream
+// clang-format off
   uint64_t myPosition; ///< the current position relatively to the OStream position at the moment of creation of this class instance
+// clang-format on
   Standard_Real myRealBuf[12]; ///< buffer for 12 reals storage
   Standard_Integer myIntBuf[3]; ///< buffer for 3 integers storage
   float myFloatBuf[3]; ///< buffer for 3 floats storage

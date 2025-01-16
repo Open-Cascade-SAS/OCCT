@@ -80,6 +80,7 @@ void  BRepGProp_EdgeTool::D1(const BRepAdaptor_Curve& C,
 // modified by NIZHNY-MKK  Thu Jun  9 12:15:15 2005.BEGIN
 Standard_Integer BRepGProp_EdgeTool::NbIntervals(const BRepAdaptor_Curve& C,const GeomAbs_Shape S) 
 {
+// clang-format off
   BRepAdaptor_Curve* pC = (BRepAdaptor_Curve*) &C; // at the moment actually NbIntervals() does not modify the 
                                                    // object "C". So it is safe to do such a cast.
   return pC->NbIntervals(S);
@@ -89,6 +90,7 @@ void BRepGProp_EdgeTool::Intervals(const BRepAdaptor_Curve& C,TColStd_Array1OfRe
 {
   BRepAdaptor_Curve* pC = (BRepAdaptor_Curve*) &C; // at the moment actually Intervals() does not modify the
                                                    // object "C". So it is safe to do such a cast.
+// clang-format on
   pC->Intervals(T, S);
 }
 // modified by NIZHNY-MKK  Thu Jun  9 12:15:18 2005.END

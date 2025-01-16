@@ -49,7 +49,9 @@ void IGESGraph_ToolDefinitionLevel::ReadOwnParams
     {
       // Reading levelNumbers(HArray1OfInteger)
 //      levelNumbers = new TColStd_HArray1OfInteger(1, nbval);   done by :
+// clang-format off
       PR.ReadInts(PR.CurrentList(nbval), "array levelNumbers", levelNumbers, 1); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
     }
   else  PR.AddFail("No. of Property Values : Not Positive");
 

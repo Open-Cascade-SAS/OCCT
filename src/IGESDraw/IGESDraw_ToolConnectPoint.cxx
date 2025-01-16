@@ -53,6 +53,7 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams
   Handle(IGESGraph_TextDisplayTemplate) tempFunctionTemplate;
   Handle(IGESGraph_TextDisplayTemplate) tempIdentifierTemplate;
 
+// clang-format off
   PR.ReadXYZ(PR.CurrentList(1, 3), "Connect Point Coordinate", tempPoint); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity(IR, PR.Current(), "Display Symbol Geometry Entity",
@@ -61,6 +62,7 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams
   PR.ReadInteger(PR.Current(), "Type Flag", tempTypeFlag); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadInteger(PR.Current(), "Function Flag", tempFunctionFlag); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadText(PR.Current(), "Function Identifier",
 	      tempFunctionIdentifier); //szv#4:S4163:12Mar99 `st=` not needed
@@ -83,7 +85,9 @@ void IGESDraw_ToolConnectPoint::ReadOwnParams
 		 tempFunctionCode); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadInteger(PR.Current(), "Swap Flag", tempSwapFlag); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else tempSwapFlag = 0;  // default
 
   PR.ReadEntity(IR, PR.Current(), "Owner Network Subfigure Entity",

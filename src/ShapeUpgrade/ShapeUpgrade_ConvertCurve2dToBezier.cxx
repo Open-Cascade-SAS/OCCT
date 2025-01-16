@@ -132,7 +132,9 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
     Handle(Geom2d_BSplineCurve) aBSpline2d;
     Standard_Real Shift = 0.;
     if(myCurve->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
+// clang-format off
       Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(myCurve,First,Last); //protection against parabols ets
+// clang-format on
       Geom2dConvert_ApproxCurve approx (tcurve, Precision::Approximation(), 
 					GeomAbs_C1, 100, 6 );
       if ( approx.HasResult() )

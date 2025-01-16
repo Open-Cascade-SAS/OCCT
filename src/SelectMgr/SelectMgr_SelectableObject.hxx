@@ -191,8 +191,10 @@ protected:
 protected:
 
   SelectMgr_SequenceOfSelection myselections;    //!< list of selections
+// clang-format off
   Handle(Prs3d_Presentation)    mySelectionPrs;  //!< optional presentation for highlighting selected object
   Handle(Prs3d_Presentation)    myHilightPrs;    //!< optional presentation for highlighting detected object
+// clang-format on
   Standard_Integer              myGlobalSelMode; //!< global selection mode
   Standard_Boolean              myAutoHilight;   //!< auto-highlighting flag defining
 

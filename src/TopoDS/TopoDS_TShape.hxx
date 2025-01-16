@@ -78,7 +78,9 @@ public:
     setFlag (TopoDS_TShape_Flags_Modified, theIsModified);
     if (theIsModified)
     {
+// clang-format off
       setFlag (TopoDS_TShape_Flags_Checked, false); // when a TShape is modified it is also unchecked
+// clang-format on
     }
   }
 

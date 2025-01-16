@@ -140,7 +140,9 @@ void Interface_Graph::Evaluate()
   //  Evaluation d un Graphe de dependances : sur chaque Entite, on prend sa
   //  liste "Shared". On en deduit les "Sharing"  directement
   Standard_Integer n = Size();
+// clang-format off
   thesharings = new TColStd_HArray1OfListOfInteger(1,n);//TColStd_HArray1OfTransient(1,n);//Clear();
+// clang-format on
   if(themodel->GTool().IsNull())
     return;
   

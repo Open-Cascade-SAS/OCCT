@@ -49,7 +49,9 @@ XSControl_SelectForTransfer::XSControl_SelectForTransfer ()    {  }
 {
   Handle(Transfer_ActorOfTransientProcess) act = theAC;
   if (act.IsNull() && !theTR.IsNull()) act = theTR->Actor();
+// clang-format off
   if (!act.IsNull()) return act->Recognize(ent);//,theTR->TransientProcess());//act->Recognize(ent);
+// clang-format on
   return Standard_False;
 }
 

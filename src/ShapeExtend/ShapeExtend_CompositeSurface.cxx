@@ -322,7 +322,9 @@ Standard_Real ShapeExtend_CompositeSurface::ULocalToGlobal (const Standard_Integ
   Standard_Real u1, u2, v1, v2;
   myPatches->Value(i,j)->Bounds ( u1, u2, v1, v2 );
   Standard_Real scale = ( myUJointValues->Value(i+1) - myUJointValues->Value(i) ) / ( u2 - u1 );
+// clang-format off
   return u * scale + ( myUJointValues->Value(i) - u1 * scale ); // ! this formula is stable if u1 is infinite
+// clang-format on
 }
 
 //=======================================================================
@@ -337,7 +339,9 @@ Standard_Real ShapeExtend_CompositeSurface::VLocalToGlobal (const Standard_Integ
   Standard_Real u1, u2, v1, v2;
   myPatches->Value(i,j)->Bounds ( u1, u2, v1, v2 );
   Standard_Real scale = ( myVJointValues->Value(j+1) - myVJointValues->Value(j) ) / ( v2 - v1 );
+// clang-format off
   return v * scale + ( myVJointValues->Value(j) - v1 * scale ); // ! this formula is stable if v1 is infinite
+// clang-format on
 }
 
 //=======================================================================
@@ -369,7 +373,9 @@ Standard_Real ShapeExtend_CompositeSurface::UGlobalToLocal (const Standard_Integ
   Standard_Real u1, u2, v1, v2;
   myPatches->Value(i,j)->Bounds ( u1, u2, v1, v2 );
   Standard_Real scale = ( u2 - u1 ) / ( myUJointValues->Value(i+1) - myUJointValues->Value(i) );
+// clang-format off
   return U * scale + ( u1 - myUJointValues->Value(i) * scale ); // ! this formula is stable if u1 is infinite
+// clang-format on
 }
 
 //=======================================================================
@@ -384,7 +390,9 @@ Standard_Real ShapeExtend_CompositeSurface::VGlobalToLocal (const Standard_Integ
   Standard_Real u1, u2, v1, v2;
   myPatches->Value(i,j)->Bounds ( u1, u2, v1, v2 );
   Standard_Real scale = ( v2 - v1 ) / ( myVJointValues->Value(j+1) - myVJointValues->Value(j) );
+// clang-format off
   return V * scale + ( v1 - myVJointValues->Value(j) * scale ); // ! this formula is stable if v1 is infinite
+// clang-format on
 }
 
 //=======================================================================

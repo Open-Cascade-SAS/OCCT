@@ -56,7 +56,9 @@ void  IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams
   Handle(TColgp_HArray1OfXYZ) tempPoints;
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadInteger(PR.Current(), "Number of Dimensions", tempNbDimens); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else
     tempNbDimens = 1;
 
@@ -79,11 +81,13 @@ void  IGESDimen_ToolNewDimensionedGeometry::ReadOwnParams
       {
 	Handle(IGESData_IGESEntity) tempEnt;
 	//szv#4:S4163:12Mar99 `st=` not needed
+// clang-format off
 	PR.ReadEntity(IR, PR.Current(), "Geometry Entity", tempEnt, (i == num)); // The last one may be Null
 	tempGeomEnts->SetValue(i, tempEnt);
 
 	Standard_Integer tempInt;
 	PR.ReadInteger(PR.Current(), "Dimension Location Flag", tempInt); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 	tempDimLocFlags->SetValue(i, tempInt);
 
 	gp_XYZ tempPnt;

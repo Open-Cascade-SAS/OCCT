@@ -612,7 +612,9 @@ protected: //! @name Selection geometry
     gp_Dir           TextDir;            //!< Direction of text label.
     Standard_Real    TextWidth;          //!< Width of text label.
     Standard_Real    TextHeight;         //!< Height of text label.
+// clang-format off
     SeqOfCurves      DimensionLine;      //!< Sequence of points for composing the segments of dimension line.
+// clang-format on
     SeqOfArrows      Arrows;             //!< Sequence of arrow geometries.
     Standard_Boolean IsComputed;         //!< Shows if the selection geometry was filled.
 
@@ -663,7 +665,9 @@ protected: //! @name Value properties
   ValueType        myValueType; //! type of value (computed or user-defined)
   Standard_Real    myCustomValue;   //!< Value of the dimension (computed or user-defined).
 
+// clang-format off
   TCollection_ExtendedString myCustomStringValue; //!< Value of the dimension (computed or user-defined).
+// clang-format on
 
 protected: //! @name Fixed text position properties
 
@@ -677,10 +681,12 @@ protected: //! @name Units properties
 
 protected: //! @name Geometrical properties
 
+// clang-format off
   GeometryType myGeometryType;  //!< defines type of shapes on which the dimension is to be built. 
 
   gp_Pln           myPlane;           //!< Plane where dimension will be built (computed or user defined).
   Standard_Boolean myIsPlaneCustom;   //!< Is plane defined by user (otherwise it will be computed automatically).
+// clang-format on
   Standard_Real    myFlyout;          //!< Flyout distance.
   Standard_Boolean myIsGeometryValid; //!< Is dimension geometry properly defined.
 

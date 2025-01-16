@@ -247,7 +247,9 @@ public:
     Launcher& operator=(const Launcher& theCopy);
 
   private:
+// clang-format off
     NCollection_Array1<EnumeratedThread*> myThreads; //!< array of locked threads (including self-thread)
+// clang-format on
     EnumeratedThread mySelfThread;
     int myNbThreads; //!< amount of locked threads
   };
@@ -325,7 +327,9 @@ private:
 
 private:
 
+// clang-format off
   NCollection_Array1<EnumeratedThread> myThreads; //!< array of defined threads (excluding self-thread)
+// clang-format on
   int  myNbDefThreads; //!< maximum number of threads to be locked by a single Launcher by default
   bool myShutDown;     //!< flag to shut down (destroy) the thread pool
 

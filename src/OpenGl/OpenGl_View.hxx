@@ -453,7 +453,9 @@ protected:
 
   Handle(Graphic3d_LightSet)      myNoShadingLight;
   Handle(Graphic3d_LightSet)      myLights;
+// clang-format off
   OpenGl_LayerList                myZLayers; //!< main list of displayed structure, sorted by layers
+// clang-format on
 
   Graphic3d_WorldViewProjState    myWorldViewProjState; //!< camera modification state
   OpenGl_StateCounter*            myStateCounter;
@@ -482,6 +484,7 @@ protected: //! @name Rendering properties
   //! of the view (without presentation of immediate layers).
   Standard_Integer           mySRgbState;             //!< track sRGB state
   GLint                      myFboColorFormat;        //!< sized format for color attachments
+// clang-format off
   GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
   OpenGl_ColorFormats        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments
   Handle(OpenGl_FrameBuffer) myMainSceneFbos[2];
@@ -509,6 +512,7 @@ protected: //! @name Background parameters
   OpenGl_Aspects*            myCubeMapParams;                     //!< Stores cubemap and its parameters for cubemap background
   OpenGl_Aspects*            myColoredQuadParams;                 //!< Stores parameters for gradient (corner mode) background
   OpenGl_BackgroundArray*    myBackgrounds[Graphic3d_TypeOfBackground_NB]; //!< Array of primitive arrays of different background types
+// clang-format on
   Handle(OpenGl_TextureSet)  myTextureEnv;
   Handle(OpenGl_Texture)     mySkydomeTexture;
 

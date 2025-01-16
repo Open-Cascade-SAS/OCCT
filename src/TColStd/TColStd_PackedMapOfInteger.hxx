@@ -473,7 +473,9 @@ private:
   TColStd_intMapNode** myData1;            //!< data array
   Standard_Integer     myNbBuckets;        //!< number of buckets (size of data array)
   Standard_Integer     myNbPackedMapNodes; //!< amount of packed map nodes
+// clang-format off
   Standard_Size        myExtent;           //!< extent of this map (number of unpacked integer keys)
+// clang-format on
 };
 
 #endif

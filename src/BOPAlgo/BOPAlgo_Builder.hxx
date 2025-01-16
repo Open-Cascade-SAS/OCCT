@@ -521,6 +521,7 @@ protected: //! @name Post treatment
 protected: //! @name Fields
 
   TopTools_ListOfShape myArguments;             //!< Arguments of the operation
+// clang-format off
   TopTools_MapOfShape myMapFence;               //!< Fence map providing the uniqueness of the shapes in the list of arguments
   BOPAlgo_PPaveFiller myPaveFiller;             //!< Pave Filler - algorithm for sub-shapes intersection
   BOPDS_PDS myDS;                               //!< Data Structure - holder of intersection information
@@ -533,6 +534,7 @@ protected: //! @name Fields
   Standard_Boolean myNonDestructive;            //!< Safe processing option allows avoiding modification of the input shapes
   BOPAlgo_GlueEnum myGlue;                      //!< Gluing option allows speeding up the intersection of the input shapes
   Standard_Boolean myCheckInverted;             //!< Check inverted option allows disabling the check of input solids on inverted status
+// clang-format on
 
 };
 

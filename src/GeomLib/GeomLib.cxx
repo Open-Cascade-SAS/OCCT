@@ -1993,7 +1993,9 @@ static Standard_Boolean CanBeTreated(Handle(Geom_BSplineSurface)& BSurf)
    return Standard_False;
  else {
    lambda=(BSurf->Weight(1,1)/BSurf->Weight(BSurf->NbUPoles(),1));
+// clang-format off
    for (i=1;i<=BSurf->NbVPoles();i++)      //test of the proportionnality of the denominator on the boundaries
+// clang-format on
      if ((BSurf->Weight(1,i)/(lambda*BSurf->Weight(BSurf->NbUPoles(),i))<(1-Precision::Confusion()))||
 	 (BSurf->Weight(1,i)/(lambda*BSurf->Weight(BSurf->NbUPoles(),i))>(1+Precision::Confusion())))
        return Standard_False;

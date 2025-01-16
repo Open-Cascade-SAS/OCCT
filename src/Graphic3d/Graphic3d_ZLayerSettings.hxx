@@ -190,6 +190,7 @@ protected:
   TCollection_AsciiString     myName;                  //!< user-provided name
   Handle(Graphic3d_LightSet)  myLights;                //!< lights list
   Handle(TopLoc_Datum3D)      myOriginTrsf;            //!< transformation to the origin
+// clang-format off
   gp_XYZ                      myOrigin;                //!< the origin of all objects within the layer
   Standard_Real               myCullingDistance;       //!< distance to discard objects
   Standard_Real               myCullingSize;           //!< size to discard objects
@@ -201,6 +202,7 @@ protected:
   Standard_Boolean            myToEnableDepthWrite;    //!< option to enable write depth values
   Standard_Boolean            myToClearDepth;          //!< option to clear depth values before drawing the layer
   Standard_Boolean            myToRenderInDepthPrepass;//!< option to render layer within depth pre-pass
+// clang-format on
 
 };
 

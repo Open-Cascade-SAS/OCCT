@@ -765,7 +765,9 @@ Standard_Boolean TDocStd_Document::PerformDeltaCompaction()
 	delete pIDMap;
 	}
       if(aMap(aDeltasIterator.Value()->Label()).Add(aDeltasIterator.Value()->ID())) //The attribute is not 
+// clang-format off
 	aCompoundDelta->AddAttributeDelta(aDeltasIterator.Value());                 //already in the delta
+// clang-format on
     }
   } 
 

@@ -78,7 +78,9 @@ static const Standard_Integer SIZEUV = 8;
 
 class TableauRejection { 
 public:
+// clang-format off
   Standard_Real **UV;               //-- UV[i][j]     contient le param (U sur Ci) de l intersection de Ci avec C(IndUV[j])
+// clang-format on
   Standard_Integer **IndUV;         //-- IndUV[i][j]  = J0   -> Intersection entre i et J0
   Standard_Integer *nbUV;           //-- nbUV[i][j]   nombre de valeurs pour la ligne i
   Standard_Integer N;
@@ -2119,7 +2121,9 @@ HLRBRep_Data::RejectedPoint (const IntRes2d_IntersectionPoint& PInter,
 
   if (st != TopAbs_OUT) {
     if (Tr2->PositionOnCurve() != IntRes2d_Middle) { // correction de la transition  sur myFE
+// clang-format off
       if (mySameVertex) return Standard_True;        // si intersection a une extremite verticale !
+// clang-format on
 
       Standard_Boolean douteux = Standard_False;
       Standard_Real psav = p2;

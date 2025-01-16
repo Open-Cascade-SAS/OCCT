@@ -169,7 +169,9 @@ protected:
 
   Handle(Message_CompositeAlerts) myCompositAlerts; //!< container of alerts
 
+// clang-format off
   NCollection_Sequence<Message_Level*> myAlertLevels;   //!< container of active levels, new alerts are added below the latest level
+// clang-format on
   NCollection_IndexedMap<Message_MetricType>  myActiveMetrics; //!< metrics to compute on alerts
 
   Standard_Integer myLimit; //!< Maximum number of collected alerts on the top level

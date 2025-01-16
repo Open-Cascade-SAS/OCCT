@@ -232,7 +232,9 @@ static Handle(IGESData_DefaultSpecific)   speci;
   GS.SetEndMark   (';');
   GS.SetSendName (new TCollection_HAsciiString(Interface_Static::CVal("write.iges.header.product")));
   GS.SetFileName (new TCollection_HAsciiString("Filename.iges"));
+// clang-format off
   GS.SetSystemId (new TCollection_HAsciiString(XSTEP_SYSTEM_VERSION));//#58 rln "MATRA-DATAVISION EUCLID-QUANTUM"
+// clang-format on
   GS.SetInterfaceVersion (gsys);
   GS.SetIntegerBits      ( IntegerSize() );
   GS.SetMaxPower10Single ( RealLast10Exp() );

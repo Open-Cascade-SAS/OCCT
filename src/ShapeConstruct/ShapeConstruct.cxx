@@ -76,7 +76,9 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
     if(C3D->IsKind(STANDARD_TYPE(Geom_Conic))) 
       MaxDeg = Min(MaxDeg,6);
  
+// clang-format off
     Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(C3D,First,Last); //protection against parabols ets
+// clang-format on
     try {
       OCC_CATCH_SIGNALS
       GeomConvert_ApproxCurve approx (tcurve, Tol3d, Continuity, MaxSegments, MaxDeg);
@@ -112,7 +114,9 @@ Handle(Geom2d_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(G
 {
   Handle(Geom2d_BSplineCurve) aBSpline2d;
   if(C2D->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
+// clang-format off
     Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(C2D,First,Last); //protection against parabols ets
+// clang-format on
     Geom2dConvert_ApproxCurve approx (tcurve, Tol2d, Continuity, MaxSegments, MaxDegree);
     if ( approx.HasResult() )
       aBSpline2d = approx.Curve();

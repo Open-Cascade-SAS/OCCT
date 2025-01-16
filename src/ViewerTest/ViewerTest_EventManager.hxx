@@ -157,7 +157,9 @@ private:
 
   Handle(AIS_InteractiveContext) myCtx;
   Handle(V3d_View) myView;
+// clang-format off
   NCollection_DataMap<unsigned int, Aspect_VKey> myNavKeyMap; //!< map of Hot-Key (key+modifiers) to Action
+// clang-format on
 
   TCollection_AsciiString myPickPntArgVec[3];
   Standard_Boolean myToPickPnt;

@@ -60,10 +60,12 @@ void IGESDraw_ToolNetworkSubfigure::ReadOwnParams
 
   // Reading definition(Instance of NetworkSubfigureDef)
   PR.ReadEntity(IR, PR.Current(), "Instance of NetworkSubfigureDef",
+// clang-format off
 		STANDARD_TYPE(IGESDraw_NetworkSubfigureDef), definition); //szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading translation(XYZ)
   PR.ReadXYZ( PR.CurrentList(1, 3), "Translation data", translation); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   // Reading scale(XYZ)
   if (PR.DefinedElseSkip())        // Reading scale(X)
@@ -90,7 +92,9 @@ void IGESDraw_ToolNetworkSubfigure::ReadOwnParams
 
   // Reading designator(String)
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadText(PR.Current(), "Primary reference designator", designator); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else PR.AddWarning("Primary reference designator : Null definition");
 
   // Reading textTemplate(Instance of TextDisplayTemplate or Null)
@@ -100,7 +104,9 @@ void IGESDraw_ToolNetworkSubfigure::ReadOwnParams
 
   // Reading nbval(Integer)
   if (PR.DefinedElseSkip()) 
+// clang-format off
     st = PR.ReadInteger(PR.Current(),"Count of Connect Points", nbval); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else nbval = 0;
   if (st && nbval > 0)
     {

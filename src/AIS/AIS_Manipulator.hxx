@@ -678,6 +678,7 @@ protected:
 
   Axis myAxes[3]; //!< Tree axes of the manipulator.
   Sphere myCenter; //!< Visual part displaying the center sphere of the manipulator.
+// clang-format off
   gp_Ax2 myPosition; //!< Position of the manipulator object. it displays its location and position of its axes.
 
   Standard_Integer myCurrentIndex; //!< Index of active axis.
@@ -691,6 +692,7 @@ protected: //! @name Fields for interactive transformation. Fields only for inte
 
   NCollection_Sequence<gp_Trsf> myStartTrsfs; //!< Owning object transformation for start. It is used internally.
   Standard_Boolean myHasStartedTransformation; //!< Shows if transformation is processed (sequential calls of Transform()).
+// clang-format on
   gp_Ax2 myStartPosition; //! Start position of manipulator.
   gp_Pnt myStartPick; //! 3d point corresponding to start mouse pick.
   Standard_Real myPrevState; //! Previous value of angle during rotation.

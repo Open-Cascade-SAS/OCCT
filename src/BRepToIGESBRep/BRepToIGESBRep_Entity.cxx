@@ -453,7 +453,9 @@ Handle(IGESSolid_Loop) BRepToIGESBRep_Entity::TransferWire (const TopoDS_Wire& m
     index->SetValue(itab, myindex);
     myorient = Seqorient.Value(itab);
     orient->SetValue(itab, myorient);
+// clang-format off
     mynbcurve = ( Seq2d->Value(itab).IsNull() ? 0 : 1 ); // abv 31 Jan 00: to be able not to write pcurves: was 1
+// clang-format on
     nbcurves->SetValue(itab, mynbcurve);
     myisoflag = 0;
     flag = new TColStd_HArray1OfInteger(1,1);  
@@ -602,7 +604,9 @@ Handle(IGESSolid_Shell) BRepToIGESBRep_Entity ::TransferShell(const TopoDS_Shell
   Message_ProgressScope aPS(theProgress, NULL, nbf);
   for (Ex.Init(start,TopAbs_FACE); Ex.More() && aPS.More(); Ex.Next(), aPS.Next()) {
     TopoDS_Face F = TopoDS::Face(Ex.Current());
+// clang-format off
     if ( start.Orientation() == TopAbs_REVERSED ) F.Reverse(); //:l4 abv 12 Jan 99: CTS22022-2: writing reversed shells
+// clang-format on
     if (F.IsNull()) {
       AddWarning(start," a Face is a null entity");
     }

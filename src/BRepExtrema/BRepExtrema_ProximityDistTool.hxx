@@ -82,8 +82,10 @@ public:
 
     Standard_Integer myTrgIdx; //!< Index of triangle on which the projection is located
     BVH_PrjState myPrjState; //!< Position of a projection on the triangle (vertex, edge, inner)
+// clang-format off
     Standard_Integer myNumberOfFirstNode; //!< The 1st vtx of the triangle edge on which the projection is located
     Standard_Integer myNumberOfLastNode; //!< The 2nd vtx of the triangle edge on which the projection is located
+// clang-format on
   };
 
 public:
@@ -181,7 +183,9 @@ private:
 
 protected:
 
+// clang-format off
   Standard_Real myMinDistance; //!< Minimal distance from point to BVH, could be not equal to myDistance
+// clang-format on
   BVH_Vec3d myMinDistPoint; //!< Point on BVH providing the minimal distance
 
   BVH_Vec3d myExtremaPoint; //!< Point on BVH providing the extrema
@@ -211,7 +215,9 @@ private:
   //! Is vertex corresponding to proximity point of 1st shape from additional set
   Standard_Integer myIsProxVtx1FromAddSet;
   BVH_Array3d myAddVertices1; //!< Additional vertices on the 1st shape
+// clang-format off
   NCollection_Vector<ProxPnt_Status> myAddStatus1; //!< Status of additional vertices on the 1st shape
+// clang-format on
 
   //! Vertex index from 1st BVH corresponding to proximity point of 1st shape
   Standard_Integer myProxVtxIdx1;

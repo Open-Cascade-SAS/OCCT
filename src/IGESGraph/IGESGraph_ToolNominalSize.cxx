@@ -46,6 +46,7 @@ void IGESGraph_ToolNominalSize::ReadOwnParams
   Handle(TCollection_HAsciiString) standardName; 
 
   // Reading nbPropertyValues(Integer)
+// clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
   if ( (nbPropertyValues != 2) && (nbPropertyValues != 3) )
     PR.AddFail("No. of Property values : Value is not 2/3");
@@ -55,6 +56,7 @@ void IGESGraph_ToolNominalSize::ReadOwnParams
 
   // Reading nominalSizeName(String)
   PR.ReadText (PR.Current(), "Nominal size name", nominalSizeName); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   if ( PR.NbParams() >= PR.CurrentNumber() )
     {

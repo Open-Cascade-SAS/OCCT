@@ -190,7 +190,9 @@ protected:
 
 protected:
 
+// clang-format off
   Standard_Real myMajorRadius; //!< distance from the center of the pipe to the center of the torus
+// clang-format on
   Standard_Real myMinorRadius; //!< radius of the pipe
   Standard_Real myAngle;       //!< angle to create a torus pipe segment
   Standard_Real myVMin;        //!< first angle to create a torus ring segment

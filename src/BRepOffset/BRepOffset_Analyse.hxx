@@ -186,6 +186,7 @@ private: //! @name Fields
   // Results
   Standard_Boolean myDone; //!< Status of the algorithm
 
+// clang-format off
   BRepOffset_DataMapOfShapeListOfInterval myMapEdgeType; //!< Map containing the list of intervals on the edge
   TopTools_IndexedDataMapOfShapeListOfShape myAncestors; //!< Ancestors map
   NCollection_DataMap<TopoDS_Shape,
@@ -197,6 +198,7 @@ private: //! @name Fields
   TopTools_ListOfShape myNewFaces; //!< New faces generated to close the gaps between adjacent
                                    //!  tangential faces having different offset values
   TopTools_DataMapOfShapeShape myGenerated; //!< Binding between edge and face generated from the edge
+// clang-format on
 };
 
 #endif // _BRepOffset_Analyse_HeaderFile

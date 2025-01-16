@@ -26,8 +26,10 @@ public:
 
   Graphic3d_Vec2i TotalSize; //!< total size of the View area, in pixels
   Graphic3d_Vec2i TileSize;  //!< size of the Tile, in pixels
+// clang-format off
   Graphic3d_Vec2i Offset;    //!< the lower-left corner of the Tile relative to the View area (or upper-left if IsTopDown is true), in pixels
   bool            IsTopDown; //!< indicate the offset coordinate system - lower-left (default) or top-down
+// clang-format on
 
 public:
 

@@ -48,6 +48,7 @@ void  IGESDimen_ToolDimensionUnits::ReadOwnParams
   Handle(TCollection_HAsciiString) tempFormatString;
 
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadInteger(PR.Current(), "Number of Properties", tempNbProps); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempNbProps = 6;
@@ -62,6 +63,7 @@ void  IGESDimen_ToolDimensionUnits::ReadOwnParams
 
   PR.ReadText(PR.Current(), "Format String", tempFormatString); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadInteger(PR.Current(), "Fraction Flag", tempFracFlag); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   PR.ReadInteger(PR.Current(), "Precision", tempPrecision); //szv#4:S4163:12Mar99 `st=` not needed
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);

@@ -275,8 +275,10 @@ void ShapeFix_EdgeConnect::Build ()
 	theBuilder.Add( theEdge, theNewVertex );
 	if (use_start && use_end) {
 	  // process special case for closed edge
+// clang-format off
 	  theBuilder.Remove( theEdge, theOldVertex.Oriented(TopAbs_REVERSED) ); // remove reversed from closed edge
 	  theBuilder.Add( theEdge, theNewVertex.Oriented(TopAbs_REVERSED) ); // add reversed to closed edge
+// clang-format on
 	}
 	theEdge.Free(freeflag);
       }

@@ -45,6 +45,7 @@ void IGESDraw_ToolView::ReadOwnParams
   Handle(IGESGeom_Plane) tempLeftPlane,   tempTopPlane,  tempRightPlane;
   Handle(IGESGeom_Plane) tempBottomPlane, tempBackPlane, tempFrontPlane;
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "View Number", tempViewNumber); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.DefinedElseSkip())
@@ -69,6 +70,7 @@ void IGESDraw_ToolView::ReadOwnParams
 
   PR.ReadEntity(IR, PR.Current(), "Front Side Of View Volume",
 		STANDARD_TYPE(IGESGeom_Plane), tempFrontPlane,  Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init

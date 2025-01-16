@@ -744,6 +744,8 @@ void Interface_Check::Print(Standard_OStream& S, const Standard_Integer level,
 void Interface_Check::Trace(const Standard_Integer level,
                             const Standard_Integer final) const
 {
+// clang-format off
   Message_Messenger::StreamBuffer sout = Message::SendInfo(); // shouldn't it be changed to SendTrace()?
+// clang-format on
   Print (sout, level, final);
 }

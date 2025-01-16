@@ -304,7 +304,9 @@ TopoDS_Wire  BRepAlgo::ConcatenateWire(const TopoDS_Wire& W,
       Standard_True,Standard_True, 
       toler, TolAngular)>=GeomAbs_G1)) 
     {
+// clang-format off
       closed_tolerance =toler;                                        //if ClosedG1!=0 it will be True and
+// clang-format on
       closed_flag = Standard_True ;
     }                                                        //with the toler value
     Handle(TColGeom_HArray1OfBSplineCurve)  concatcurve;     //array of the concatenated curves

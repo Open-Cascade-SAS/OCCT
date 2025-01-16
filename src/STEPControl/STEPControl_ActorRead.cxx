@@ -1387,7 +1387,9 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::OldWay
 
   //:j2
   shbinder = new TransferBRep_ShapeBinder;
+// clang-format off
   TP->Bind ( start, shbinder ); //:j3 abv 23 Oct 98: rp1sd.stp: bind something to protect against loops
+// clang-format on
   if (!binder.IsNull()) {
     TopoDS_Shape theResult = TransferBRep::ShapeResult (binder);
     if (!theResult.IsNull()) {

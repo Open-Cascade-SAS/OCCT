@@ -56,7 +56,9 @@ void  IGESDimen_ToolGeneralSymbol::ReadOwnParams
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "Number of Geometries", num);
   if (!st || num <= 0) PR.AddFail("Number of Geometries: Not Positive");
   if (num > 0) {
+// clang-format off
     PR.ReadEnts (IR,PR.CurrentList(num),"Geometry Entities",tempGeoms); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 /*
     tempGeoms = new IGESData_HArray1OfIGESEntity(1, num);
     for ( i = 1; i <= num; i++)

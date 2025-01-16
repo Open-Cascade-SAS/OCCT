@@ -42,6 +42,7 @@ void IGESGraph_ToolDrawingSize::ReadOwnParams
   Standard_Real    ySize; 
 
   // Reading nbPropertyValues(Integer)
+// clang-format off
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
   if (nbPropertyValues != 2)
     PR.AddFail("No. of Property values : Value is not 2");
@@ -51,6 +52,7 @@ void IGESGraph_ToolDrawingSize::ReadOwnParams
 
   // Reading ySize(Real)
   PR.ReadReal (PR.Current(), "Drawing extent along +ve YD axis", ySize); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(nbPropertyValues, xSize, ySize);

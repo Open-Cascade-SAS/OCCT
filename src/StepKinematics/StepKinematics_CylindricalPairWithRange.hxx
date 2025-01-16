@@ -92,8 +92,10 @@ private:
   Standard_Real myUpperLimitActualTranslation; //!< optional
   Standard_Real myLowerLimitActualRotation; //!< optional
   Standard_Real myUpperLimitActualRotation; //!< optional
+// clang-format off
   Standard_Boolean defLowerLimitActualTranslation; //!< flag "is LowerLimitActualTranslation defined"
   Standard_Boolean defUpperLimitActualTranslation; //!< flag "is UpperLimitActualTranslation defined"
+// clang-format on
   Standard_Boolean defLowerLimitActualRotation; //!< flag "is LowerLimitActualRotation defined"
   Standard_Boolean defUpperLimitActualRotation; //!< flag "is UpperLimitActualRotation defined"
 

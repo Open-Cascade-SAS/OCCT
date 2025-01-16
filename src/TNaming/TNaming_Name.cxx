@@ -914,6 +914,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
   TDF_LabelMap        Forbiden;
   
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden);//fill Forbidden
+// clang-format off
   TNaming_NamingTool::CurrentShape  (Valid, Forbiden,it.Value(),MS); // fill MS with last modifications of the first argument
   TopoDS_Shape  CS = MakeShape(MS);
 
@@ -921,6 +922,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
   if(isOr)
     KeepInList(CS,ShapeType,aListS);
   TNaming_ShapesSet S(CS,ShapeType);//fill internal map of shapeset by shapes of the specified type
+// clang-format on
 #ifdef OCCT_DEBUG_UNN
   TCollection_AsciiString entry; 
   TDF_Tool::Entry(it.Value()->Label(), entry);
@@ -935,7 +937,9 @@ static Standard_Boolean Union (const TDF_Label&                  L,
     TDF_Tool::Entry(it.Value()->Label(), entry);
 #endif
       MS.Clear();
+// clang-format off
       TNaming_NamingTool::CurrentShape (Valid, Forbiden,it.Value(),MS);// fill MS with last modifications of the it.Value()
+// clang-format on
       CS = MakeShape(MS);
       if(isOr)
 	KeepInList(CS,ShapeType,aListS); 
@@ -1346,7 +1350,9 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
 
   TDF_LabelMap        Forbiden;
   if(!ValidArgs(Args)) return Standard_False;
+// clang-format off
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); //all descendants of Stop (New shapes) are forbidden
+// clang-format on
   if (!Stop.IsNull())    Forbiden.Remove(Stop->Label());
   //----------------------------------------
   // First argument: collection has to be filtered.
@@ -1365,7 +1371,9 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
 #endif
 
   TopTools_IndexedMapOfShape SCand;
+// clang-format off
   TNaming_NamingTool::CurrentShape  (Valid, Forbiden,Cand,SCand);//fills SCand with last modifications of Cand. CandNS should be at the same level (before) as NS of FilterByNBS
+// clang-format on
 
 #ifdef OCCT_DEBUG_FNB
   TCollection_AsciiString aNam2("SCand");
@@ -1379,7 +1387,9 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   //------------------------------------------------------------
   TopAbs_ShapeEnum              TC = TopAbs_EDGE;
   if (ShapeType == TopAbs_EDGE) TC = TopAbs_VERTEX;
+// clang-format off
   if (ShapeType == TopAbs_VERTEX) TC = TopAbs_VERTEX; // szy 31.03.10 - to process case when Candidate is of type Vertex
+// clang-format on
  
 #ifdef OCCT_DEBUG_FNB
   i=1;
@@ -1402,7 +1412,9 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
     if(S.ShapeType() == TopAbs_VERTEX) //# szy 31.03.10
       Boundaries.Add (S); //#
     else  //#
+// clang-format off
       for (TopExp_Explorer exp(S,TC); exp.More(); exp.Next()) { //put boundaries of each candidate (from SCand) to the Boundaries map
+// clang-format on
 	Boundaries.Add (exp.Current());
 #ifdef OCCT_DEBUG_FNB
 	TCollection_AsciiString aName = aNam + i++ + ext;      
@@ -1431,7 +1443,9 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
 #endif
       
       TopTools_IndexedMapOfShape SVois;
+// clang-format off
       TNaming_NamingTool::CurrentShape  (Valid, Forbiden,NSVois,SVois); // fills SVois with last modifications of NSVois
+// clang-format on
 
 #ifdef OCCT_DEBUG_FNB
       TCollection_AsciiString aNam2("SVois");
@@ -1752,10 +1766,12 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
     TDF_LabelMap        Forbiden;
   
     TNaming_NamingTool::BuildDescendants (Stop, Forbiden);//fill Forbidden
+// clang-format off
     TNaming_NamingTool::CurrentShape  (Valid, Forbiden, anIter.Value(),MS); // fill MS with last modifications of the first additional argument
     TopoDS_Shape  CS = MakeShape(MS);
 
     TNaming_ShapesSet aSet(CS,TopAbs_EDGE);//fill internal map of shapeset by shapes of the specified type
+// clang-format on
 #ifdef OCCT_DEBUG_WIN
     TCollection_AsciiString entry; 
     TDF_Tool::Entry(it.Value()->Label(), entry);
@@ -1770,7 +1786,9 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
       TDF_Tool::Entry(it.Value()->Label(), entry);
 #endif
       MS.Clear();
+// clang-format off
       TNaming_NamingTool::CurrentShape (Valid, Forbiden,anIter.Value(),MS);// fill MS with last modifications of the it.Value()
+// clang-format on
       CS = MakeShape(MS); 
       TNaming_ShapesSet OS(CS,TopAbs_EDGE);
       aSet.Add(OS); //concatenate both shapesets
@@ -1897,10 +1915,12 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
     TDF_LabelMap        Forbiden;
   
     TNaming_NamingTool::BuildDescendants (Stop, Forbiden);//fill Forbidden
+// clang-format off
     TNaming_NamingTool::CurrentShape  (Valid, Forbiden, anIter.Value(),MS); // fill MS with last modifications of the first additional argument
     TopoDS_Shape  CS = MakeShape(MS);
 
     TNaming_ShapesSet aSet(CS,TopAbs_FACE);//fill internal map of shapeset by shapes of the specified type
+// clang-format on
 #ifdef OCCT_DEBUG_SHELL
     TCollection_AsciiString entry; 
     TDF_Tool::Entry(anIter.Value()->Label(), entry);
@@ -1915,7 +1935,9 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
       TDF_Tool::Entry(anIter.Value()->Label(), entry);
 #endif
       MS.Clear();
+// clang-format off
       TNaming_NamingTool::CurrentShape (Valid, Forbiden,anIter.Value(),MS);// fill MS with last modifications of the it.Value()
+// clang-format on
       CS = MakeShape(MS); 
       TNaming_ShapesSet OS(CS,TopAbs_FACE);
       aSet.Add(OS); //concatenate both shapesets

@@ -3376,7 +3376,9 @@ void IFSelect_WorkSession::DumpModel
 void IFSelect_WorkSession::TraceDumpModel
   (const Standard_Integer mode)
 {
+// clang-format off
   Message_Messenger::StreamBuffer sout = Message::SendInfo(); // should it be changed to SendTrace()?
+// clang-format on
   DumpModel (mode, sout);
 //  if      (mode <= 4)  {  DumpModel (mode,sout);  return;  }
 
@@ -3415,7 +3417,9 @@ void IFSelect_WorkSession::DumpEntity
 void IFSelect_WorkSession::TraceDumpEntity
   (const Handle(Standard_Transient)& ent, const Standard_Integer level) const
 {
+// clang-format off
   Message_Messenger::StreamBuffer sout = Message::SendInfo(); // should it be changed to SendTrace()?
+// clang-format on
   DumpEntity (ent, level, sout);
 }
 

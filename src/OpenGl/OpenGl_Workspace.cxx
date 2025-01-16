@@ -66,7 +66,9 @@ void OpenGl_Material::init (const OpenGl_Context& theCtx,
   const OpenGl_Vec3& aSrcDif = theMat.DiffuseColor();
   const OpenGl_Vec3& aSrcSpe = theMat.SpecularColor();
   const OpenGl_Vec3& aSrcEms = theMat.EmissiveColor();
+// clang-format off
   aCommon.SpecularShininess.SetValues (aSrcSpe,128.0f * theMat.Shininess()); // interior color is ignored for Specular
+// clang-format on
   switch (theMat.MaterialType())
   {
     case Graphic3d_MATERIAL_ASPECT:

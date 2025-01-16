@@ -883,7 +883,9 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
 
   if (aCurve->IsKind(STANDARD_TYPE(Geom_Conic)) && myParameters->ConvertCurve3d()) {
     Handle(Geom_BSplineCurve) aBSpline;
+// clang-format off
     Handle(Geom_Curve) tcurve = new Geom_TrimmedCurve(aCurve,First,Last); //protection against parabols ets
+// clang-format on
     GeomConvert_ApproxCurve approx (tcurve, myTol3d/*Precision::Approximation()*/, myContinuity2d, myNbMaxSeg, 6 );
     if ( approx.HasResult() )
       aBSpline = approx.Curve();
@@ -1191,7 +1193,9 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
 
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_Conic)) && myParameters->ConvertCurve2d()) {
     Handle(Geom2d_BSplineCurve) aBSpline2d;
+// clang-format off
     Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(aCurve,First,Last); //protection against parabols ets
+// clang-format on
     Geom2dConvert_ApproxCurve approx (tcurve, myTol2d,myContinuity2d,myNbMaxSeg , 6 );
     if ( approx.HasResult() )
       aBSpline2d = approx.Curve();

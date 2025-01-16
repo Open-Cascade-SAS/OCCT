@@ -51,6 +51,7 @@ void IGESGeom_ToolFlash::ReadOwnParams
   aDim1 = aDim2 = aRotation = 0.;    // default values
 
   // Reading reference of flash
+// clang-format off
   PR.ReadXY(PR.CurrentList(1, 2), "Reference of Flash", aPoint); //szv#4:S4163:12Mar99 `st=` not needed
 
   // Reading first flash sizing parameter
@@ -76,6 +77,7 @@ void IGESGeom_ToolFlash::ReadOwnParams
     // Reading the referenced entity
     PR.ReadEntity(IR, PR.Current(), "Referenced entity", aReference); //szv#4:S4163:12Mar99 `st=` not needed
   // "else" not necessary as this is the last field
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init (aPoint, aDim1, aDim2, aRotation, aReference);

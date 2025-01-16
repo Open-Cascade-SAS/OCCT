@@ -330,7 +330,9 @@ private: //! @name private fields
 
   Type*            myString; //!< string buffer
   Standard_Integer mySize;   //!< buffer size in bytes, excluding NULL-termination symbol
+// clang-format off
   Standard_Integer myLength; //!< length of the string in Unicode symbols (cached value, excluding NULL-termination symbol)
+// clang-format on
 
 };
 

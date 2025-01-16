@@ -47,11 +47,13 @@ void  IGESDimen_ToolBasicDimension::ReadOwnParams
   gp_XY tempur;
   gp_XY tempul;
 
+// clang-format off
   PR.ReadInteger(PR.Current(),"Number of Property Values",nbPropVal); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadXY(PR.CurrentList(1, 2),"Lower Left Corner", templl); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadXY(PR.CurrentList(1, 2),"Lower Right Corner", templr); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadXY(PR.CurrentList(1, 2),"Upper Right Corner", tempur); //szv#4:S4163:12Mar99 `st=` not needed
   PR.ReadXY(PR.CurrentList(1, 2),"Upper Left Corner", tempul); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(nbPropVal, templl, templr, tempur, tempul);

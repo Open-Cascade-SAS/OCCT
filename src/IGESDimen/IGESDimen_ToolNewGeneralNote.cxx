@@ -181,8 +181,10 @@ void  IGESDimen_ToolNewGeneralNote::ReadOwnParams
 	if (PR.DefinedElseSkip())
 	  {
 	    // Reading fontCode(Integer, must be positive)
+// clang-format off
 	    PR.ReadInteger(PR.Current(), "Character Set Interpretation Code",charSetCode); //szv#4:S4163:12Mar99 `st=` not needed
 	    // Reading charSetEnt
+// clang-format on
 	    if (charSetCode < 0) {
 	      charSetEntity = PR.ParamEntity (IR,curnum);
 	      if (charSetEntity.IsNull())

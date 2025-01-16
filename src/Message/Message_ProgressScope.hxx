@@ -408,7 +408,9 @@ private:
   Standard_CString   myName;        //!< Name of the operation being done in this scope, or null
 
   Standard_Real      myStart;       //!< Start position on the global scale [0, 1]
+// clang-format off
   Standard_Real      myPortion;     //!< The portion of the global scale covered by this scope [0, 1]
+// clang-format on
 
   Standard_Real      myMax;         //!< Maximal value of progress in this scope
   Standard_Real      myValue;       //!< Current position advanced within this scope [0, Max]

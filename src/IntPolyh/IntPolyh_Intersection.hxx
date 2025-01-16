@@ -201,11 +201,13 @@ private: //! @name Fields
   // Inputs
   Handle(Adaptor3d_Surface) mySurf1;          //!< First surface
   Handle(Adaptor3d_Surface) mySurf2;          //!< Second surface
+// clang-format off
   Standard_Integer myNbSU1;                    //!< Number of samples in U direction for first surface
   Standard_Integer myNbSV1;                    //!< Number of samples in V direction for first surface
   Standard_Integer myNbSU2;                    //!< Number of samples in U direction for second surface
   Standard_Integer myNbSV2;                    //!< Number of samples in V direction for second surface
   // Results
+// clang-format on
   Standard_Boolean myIsDone;                   //!< State of the operation
   IntPolyh_ArrayOfSectionLines mySectionLines; //!< Section lines
   IntPolyh_ArrayOfTangentZones myTangentZones; //!< Tangent zones

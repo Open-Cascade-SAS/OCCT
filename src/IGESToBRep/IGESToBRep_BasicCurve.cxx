@@ -589,7 +589,9 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dConicArc
 
     if (!st->IsClosed()) {
 
+// clang-format off
       gp_Elips2d elips = Handle(Geom2d_Ellipse)::DownCast(res)->Elips2d();//#45 rln (frame, majorRadius, minorRadius);
+// clang-format on
       
       t1  = ElCLib::Parameter(elips, startPoint);
       t2  = ElCLib::Parameter(elips, endPoint);
@@ -609,7 +611,9 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dConicArc
     if (st->TransformedAxis().IsOpposite (st->Axis(), GetEpsilon()))
       res->Reverse();
 
+// clang-format off
     gp_Hypr2d hpr = Handle(Geom2d_Hyperbola)::DownCast(res)->Hypr2d();//#45 rln (frame, majorRadius, minorRadius);
+// clang-format on
    
     t1 = ElCLib::Parameter(hpr, startPoint);
     t2 = ElCLib::Parameter(hpr, endPoint);
@@ -719,7 +723,9 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dCircularArc
   if (!st->TransformedAxis().IsParallel /*#45 rln 23.11.98 IsEqual*/(st->Axis(), GetEpsilon())) {
     SetModeTransfer(Standard_True);          // Only not to use Trsf
     Message_Msg msg1165("IGES_1165");
+// clang-format off
     SendWarning(st, msg1165); //"The Trsf is not compatible with a transfer2d, it will not applied."
+// clang-format on
   }
 
   if (!GetModeTransfer() && st->HasTransf()) {

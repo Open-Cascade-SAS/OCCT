@@ -97,7 +97,9 @@ private:
   gp_Pnt                  myObjPickedPnt; //!< User-picked selection point onto object
   NCollection_Vec3<float> myNormal;       //!< surface normal
   Standard_Real           myDepth;        //!< Depth to detected point
+// clang-format off
   Standard_Real           myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
+// clang-format on
 };
 
 #endif // _SelectBasics_PickResult_HeaderFile

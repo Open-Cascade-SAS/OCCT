@@ -54,7 +54,9 @@ void IGESDefs_ToolTabularData::ReadOwnParams
   //Standard_Boolean st; //szv#4:S4163:12Mar99 moved down
   Standard_Integer i;
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "Number of Property values", nbProps); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadInteger(PR.Current(), "Property type", propType); //szv#4:S4163:12Mar99 `st=` not needed
 
@@ -74,7 +76,9 @@ void IGESDefs_ToolTabularData::ReadOwnParams
 	      "Type of independent variables", typesInd); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadInts(PR.CurrentList(nbIndeps),
+// clang-format off
 	      "No. of values of independent variables", nbValuesInd); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   for (i=1; i<=nbIndeps; i++)
     {
@@ -108,7 +112,9 @@ void IGESDefs_ToolTabularData::ReadOwnParams
   if (nbd > 0) somedeps = new TColStd_HArray1OfReal(1,nbd);
   for (i = 1; i <= nbd; i ++) {
     Standard_Real treal;
+// clang-format off
     PR.ReadReal(PR.Current(), "Value of dependent variable", treal); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
     somedeps->SetValue(i, treal);
   }
   if (nbDeps > 0) valuesDep->SetValue(1,somedeps);

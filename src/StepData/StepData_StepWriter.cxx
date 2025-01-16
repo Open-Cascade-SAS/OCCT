@@ -511,7 +511,9 @@ void StepData_StepWriter::StartEntity(const TCollection_AsciiString& atype)
 {
   if (atype.Length() == 0) return;
   if (themult) {
+// clang-format off
     if (thelevel != 1) throw Interface_InterfaceMismatch("StepWriter : StartEntity");   // decompte de parentheses mauvais ...
+// clang-format on
     AddString(textendlist);
     AddString(" ",1); //skl 29.01.2003
   }
@@ -1057,7 +1059,9 @@ void StepData_StepWriter::SendDerived ()
 
 void StepData_StepWriter::EndEntity ()
 {
+// clang-format off
   if (thelevel != 1) throw Interface_InterfaceMismatch("StepWriter : EndEntity");   // decompte de parentheses mauvais ...
+// clang-format on
   AddString(textendent);
   thelevel  = 0;        // on garde theindval : sera traite au prochain NewLine
   Standard_Boolean indent = theindent; theindent = Standard_False;

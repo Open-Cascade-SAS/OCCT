@@ -46,7 +46,9 @@ void  IGESSolid_ToolRightAngularWedge::ReadOwnParams
   Standard_Real tempreal;
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
+// clang-format off
   PR.ReadXYZ(PR.CurrentList(1, 3), "Size of RightAngularWedge", tempSize); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadReal(PR.Current(), "Small X length", lowX); //szv#4:S4163:12Mar99 `st=` not needed
 

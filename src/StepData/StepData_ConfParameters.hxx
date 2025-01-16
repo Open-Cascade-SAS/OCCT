@@ -135,6 +135,7 @@ public:
 
 public:
   // Common
+// clang-format off
   ReadMode_BSplineContinuity ReadBSplineContinuity = ReadMode_BSplineContinuity_C1; //<! Manages the continuity of BSpline curves
   ReadMode_Precision ReadPrecisionMode = ReadMode_Precision_File; //<! Reads the precision mode value
   double ReadPrecisionVal = 0.0001; //<! ReadMode_Precision for shape construction (if enabled user mode)
@@ -187,6 +188,7 @@ public:
   bool WriteLayer = true; //<! LayerMode is used to indicate write Layers or not
   bool WriteProps = true; //<! PropsMode is used to indicate write Validation properties or not
   STEPControl_StepModelType WriteModelType = STEPControl_AsIs; //<! Gives you the choice of translation mode for an Open CASCADE shape that is being translated to STEP
+// clang-format on
 };
 
 #endif // _StepData_ConfParameters_HeaderFile

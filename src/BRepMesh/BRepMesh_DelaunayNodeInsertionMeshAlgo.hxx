@@ -92,7 +92,9 @@ protected:
     {
       return;
     }
+// clang-format off
     InsertionBaseClass::postProcessMesh (theMesher, Message_ProgressRange()); // shouldn't be range passed here?
+// clang-format on
 
     if (!myIsPreProcessSurfaceNodes)
     {

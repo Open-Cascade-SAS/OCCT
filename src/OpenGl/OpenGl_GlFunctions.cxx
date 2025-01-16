@@ -1721,12 +1721,14 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
                            || checkExtensionShort ("GL_OES_fbo_render_mipmap");
   theCtx.hasSRGBControl = checkExtensionShort ("GL_EXT_sRGB_write_control");
   theCtx.hasPackRowLength   = isGlGreaterEqualShort (3, 0);
+// clang-format off
   theCtx.hasUnpackRowLength = isGlGreaterEqualShort (3, 0); // || checkExtensionShort ("GL_EXT_unpack_subimage");
   // NPOT textures has limited support within OpenGL ES 2.0
   // which are relaxed by OpenGL ES 3.0 or some extensions
   //theCtx.arbNPTW = isGlGreaterEqualShort (3, 0)
   //           || checkExtensionShort ("GL_OES_texture_npot")
   //           || checkExtensionShort ("GL_NV_texture_npot_2D_mipmap");
+// clang-format on
   theCtx.arbNPTW     = true;
   theCtx.arbTexRG    = isGlGreaterEqualShort (3, 0)
                     || checkExtensionShort ("GL_EXT_texture_rg");
@@ -2082,7 +2084,9 @@ void OpenGl_GlFunctions::load (OpenGl_Context& theCtx,
     theCtx.checkWrongVersion (3, 2, aLastFailedProc);
   }
 
+// clang-format off
   theCtx.arbTboRGB32 = isGlGreaterEqualShort (3, 2); // OpenGL ES 3.2 introduces TBO already supporting RGB32 format
+// clang-format on
   theCtx.extDrawBuffers = checkExtensionShort ("GL_EXT_draw_buffers") && theCtx.FindProc ("glDrawBuffersEXT", this->glDrawBuffers);
   theCtx.arbDrawBuffers = checkExtensionShort ("GL_ARB_draw_buffers") && theCtx.FindProc ("glDrawBuffersARB", this->glDrawBuffers);
 

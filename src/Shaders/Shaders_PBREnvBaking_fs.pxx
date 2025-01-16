@@ -16,8 +16,10 @@ static const char Shaders_PBREnvBaking_fs[] =
   "#endif\n"
   "\n"
   "#ifdef THE_TO_BAKE_SPECULAR\n"
+// clang-format off
   "uniform int   uCurrentLevel;        //!< current level of specular IBL map (ignored in case of diffuse map's processing)\n"
   "uniform float uEnvSolidAngleSource; //!< source solid angle sample computed from one edge's size of source environment map's zero mipmap level\n"
+// clang-format on
   "#endif\n"
   "\n"
   "//! Returns coordinates of point theNumber from Hammersley point set having size theSize.\n"

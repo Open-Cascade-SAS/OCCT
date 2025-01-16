@@ -61,6 +61,7 @@ void  IGESDimen_ToolDimensionDisplayData::ReadOwnParams
   PR.ReadInteger(PR.Current(),"Dimension Type", tempDimType);
   PR.ReadInteger(PR.Current(),"Label Position", tempLabelPos);
   if (PR.DefinedElseSkip())
+// clang-format off
     PR.ReadInteger(PR.Current(),"Character Set", tempCharSet); //szv#4:S4163:12Mar99 `st=` not needed
   else
     tempCharSet = 1;
@@ -81,6 +82,7 @@ void  IGESDimen_ToolDimensionDisplayData::ReadOwnParams
 
   if (PR.DefinedElseSkip())
     PR.ReadInteger(PR.Current(),"Text Place",tempTextPlace); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   else
     tempTextPlace = 0;
 

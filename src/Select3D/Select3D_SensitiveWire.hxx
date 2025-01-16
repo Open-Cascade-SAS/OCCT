@@ -91,10 +91,12 @@ protected:
 
 private:
 
+// clang-format off
   NCollection_Vector<Handle(Select3D_SensitiveEntity)> myEntities;          //!< Vector of sub-entities
   NCollection_Vector<Standard_Integer>                 myEntityIndexes;     //!< Indexes of entities for BVH build
   gp_Pnt                                               myCenter;            //!< Center of the whole wire
   mutable Select3D_BndBox3d                            myBndBox;            //!< Bounding box of the whole wire
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveWire, Select3D_SensitiveEntity)

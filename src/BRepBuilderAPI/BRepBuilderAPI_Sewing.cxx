@@ -715,7 +715,9 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
     }
     // Add the vertices in the good sense
     TopoDS_Shape anEdge = edge.Oriented(TopAbs_FORWARD);
+// clang-format off
     TopoDS_Shape aLocalEdge = V1New.Oriented(TopAbs_FORWARD); //(listNode.First()).Oriented(TopAbs_FORWARD);
+// clang-format on
     aBuilder.Add(anEdge,aLocalEdge);
     aLocalEdge = V2New.Oriented(TopAbs_REVERSED); //(listNode.Last()).Oriented(TopAbs_REVERSED);
     aBuilder.Add(anEdge,aLocalEdge);
@@ -3857,7 +3859,9 @@ static Standard_Boolean IsDegeneratedWire(const TopoDS_Shape& wire)
     }
   }
   if(isSmall == nume) return Standard_True;
+// clang-format off
   Standard_Real tol = BRep_Tool::Tolerance(V1)+BRep_Tool::Tolerance(V2);//Max(BRep_Tool::Tolerance(V1),BRep_Tool::Tolerance(V2));
+// clang-format on
   if (wireLength > tol) return Standard_False;
   return Standard_True;
 }
@@ -4209,7 +4213,9 @@ void BRepBuilderAPI_Sewing::CreateOutputInformations()
   // Construct edgeSections
   Standard_Integer i;
   //TopTools_DataMapOfShapeListOfShape edgeSections;
+// clang-format off
   TopTools_IndexedDataMapOfShapeListOfShape edgeSections; //use index map for regulating free edges
+// clang-format on
   for (i = 1; i <= myBoundFaces.Extent(); i++) {
     const TopoDS_Shape& bound = myBoundFaces.FindKey(i);
     TopTools_ListOfShape lsect;
@@ -4293,7 +4299,9 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
   locProj.Initialize(GAC, first, last);
   gp_Pnt pfirst = GAC.Value(first), plast = GAC.Value(last);
   Standard_Integer find = 1;//(isConsiderEnds ? 1 : 2);
+// clang-format off
   Standard_Integer lind = arrPnt.Length();//(isConsiderEnds ? arrPnt.Length() : arrPnt.Length() -1);
+// clang-format on
   
   for (Standard_Integer i1 = find; i1 <= lind ; i1++) {
     gp_Pnt pt = arrPnt(i1);

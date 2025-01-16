@@ -89,7 +89,9 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   gp_Pnt P1 = ElCLib::Value(0., myCircle);
   gp_Pnt P2 = ElCLib::Value(M_PI, myCircle);
 
+// clang-format off
   gce_MakePln mkPln(P1, P2, Apex); // create a plane which defines plane for projection aPosition on it
+// clang-format on
 
   gp_Vec aVector( mkPln.Value().Location(), aPosition );     //project aPosition on a plane
   gp_Vec Normal = mkPln.Value().Axis().Direction(); 
@@ -110,6 +112,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     OppositePnt = P1;
   }
 
+// clang-format off
   aPnt = AttachmentPnt ;                          // Creating of circle which defines a plane for a dimension arc
   gp_Vec Vec(AttachmentPnt, Apex);                // Dimension arc is a part of the circle 
   Vec.Scale(2.);
@@ -119,6 +122,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
   Standard_Integer i;
   Standard_Real AttParam = ElCLib::Parameter(aCircle2, AttachmentPnt);  //must be equal to zero (look circle construction)
+// clang-format on
   Standard_Real OppParam = ElCLib::Parameter(aCircle2, OppositePnt);    
   
   while ( AttParam >= 2. * M_PI ) AttParam -= 2. * M_PI;
@@ -135,7 +139,9 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 
   Standard_Boolean IsArrowOut = Standard_True;    //Is arrows inside or outside of the cone
   if( ElCLib::Parameter(aCircle2, tmpPnt) < OppParam )
+// clang-format off
     if( 2. * myCircle.Radius() > 4. * myArrowSize ) IsArrowOut = Standard_False;  //four times more than an arrow size
+// clang-format on
 
   Standard_Real angle = OppParam - AttParam;
   Standard_Real param = AttParam;

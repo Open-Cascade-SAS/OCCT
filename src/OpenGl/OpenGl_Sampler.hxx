@@ -155,9 +155,11 @@ protected:
 protected:
 
   Handle(Graphic3d_TextureParams) myParams;          //!< texture parameters
+// clang-format off
   unsigned int                    mySamplerRevision; //!< modification counter of parameters related to sampler state
   unsigned int                    mySamplerID;       //!< OpenGL sampler object ID
   bool                            myIsImmutable;     //!< immutable flag preventing further modifications of sampler parameters, FALSE by default
+// clang-format on
 
 };
 

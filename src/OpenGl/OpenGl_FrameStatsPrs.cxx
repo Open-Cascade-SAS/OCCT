@@ -164,7 +164,9 @@ void OpenGl_FrameStatsPrs::updateChart (const Handle(OpenGl_Workspace)& theWorks
       aMaxDuration = Max (aMaxDuration, aFrame.TimerValue (Graphic3d_FrameStatsTimer_ElapsedFrame));
     }
     aMaxDuration = Ceiling (aMaxDuration * 1000.0 * 0.1) * 0.001 * 10.0; // round number
+// clang-format off
     aMaxDuration = Max (Min (aMaxDuration, 0.1), 0.005); // limit by 100 ms (10 FPS) and 5 ms (200 FPS)
+// clang-format on
   }
 
   const Standard_Integer aNbTimers = 4;

@@ -382,7 +382,9 @@ void Interface_FileReaderTool::LoadModel
     //   Attention : la recuperation peut elle-meme planter ... (cf ierr)
     catch (Standard_Failure const& anException) {
       //      Au passage suivant, on attaquera le record suivant
+// clang-format off
       num0 = thereader->FindNextRecord(num); //:g9 abv 28 May 98: tr8_as2_ug.stp - infinite cycle: (0);
+// clang-format on
 
 #ifdef _WIN32
       if (anException.IsKind(STANDARD_TYPE(OSD_Exception))) ierr = 2;

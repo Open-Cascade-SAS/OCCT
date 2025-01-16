@@ -97,10 +97,12 @@ private:
 
   TCollection_AsciiString       myImageId;      //!< resource identifier
   TCollection_AsciiString       myImageAlphaId; //!< resource identifier
+// clang-format off
   Handle(TColStd_HArray1OfByte) myBitMap;       //!< bytes array with bitmap definition (for compatibility with old code)
   Handle(Image_PixMap)          myImage;        //!< full-color  marker definition
   Handle(Image_PixMap)          myImageAlpha;   //!< alpha-color marker definition (for dynamic hi-lighting)
   Standard_Integer              myMargin;       //!< extra margin from boundaries for bitmap -> point sprite conversion, 1 px by default
+// clang-format on
   Standard_Integer              myWidth;        //!< marker width
   Standard_Integer              myHeight;       //!< marker height
 

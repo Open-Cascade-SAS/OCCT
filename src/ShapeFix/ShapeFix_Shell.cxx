@@ -146,7 +146,9 @@ Standard_Boolean ShapeFix_Shell::Perform(const Message_ProgressRange& theProgres
       if (aSas.HasFreeEdges())
       {
         aCurShell.Closed (Standard_False);
+// clang-format off
         SendWarning (Message_Msg ("FixAdvShell.FixClosedFlag.MSG0"));//Shell has incorrect flag isClosed
+// clang-format on
       }
       aSas.Clear();
 	}
@@ -883,7 +885,9 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(
   if (BRep_Tool::IsClosed(myShell)? isFreeBoundaries : !isFreeBoundaries)
   {
     myShell.Closed (!isFreeBoundaries);
+// clang-format off
     SendWarning (Message_Msg ("FixAdvShell.FixClosedFlag.MSG0"));//Shell has incorrect flag isClosed
+// clang-format on
   }
   Standard_Boolean isGetShells = Standard_True;
   //Gets possible shells with taking in account of multiconnexity.
@@ -946,7 +950,9 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(
     
     done = Standard_True;
     myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL);
+// clang-format off
     SendWarning ( Message_Msg ( "FixAdvShell.FixOrientation.MSG20" ) );// Impossible to orient faces in shell, several shells created
+// clang-format on
     return Standard_True;
   }
   if(aNumMultShell >1) {
@@ -1002,9 +1008,11 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(
     if(!Context().IsNull())
       Context()->Replace(shell, myShape);
     if ( myNbShells == 1 )
+// clang-format off
       SendWarning ( Message_Msg ( "FixAdvShell.FixOrientation.MSG0" ) );// Faces were incorrectly oriented in the shell, corrected
     else
       SendWarning ( Message_Msg ( "FixAdvShell.FixOrientation.MSG30" ) );// Improperly connected shell split into parts
+// clang-format on
     return Standard_True;
   }
   else return Standard_False;

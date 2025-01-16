@@ -112,11 +112,13 @@ protected:
 
   Standard_Boolean myToParallel;            //!< flag to use multithreading; FALSE by default
   Standard_Boolean myToSkipEmptyNodes;      //!< ignore nodes without Geometry; TRUE by default
+// clang-format off
   Standard_Boolean myToLoadAllScenes;       //!< flag to load all scenes in the document, FALSE by default
   Standard_Boolean myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   Standard_Boolean myIsDoublePrecision;     //!< flag to fill in triangulation using single or double precision
   Standard_Boolean myToSkipLateDataLoading; //!< flag to skip triangulation loading
   Standard_Boolean myToKeepLateData;        //!< flag to keep information about deferred storage to load/unload triangulation later
+// clang-format on
   Standard_Boolean myToPrintDebugMessages;  //!< flag to print additional debug information
 
 };

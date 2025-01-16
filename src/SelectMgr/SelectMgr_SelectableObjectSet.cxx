@@ -414,7 +414,9 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
        || myLastViewState.IsChanged (aViewState)
        || isWinSizeChanged))
     {
+// clang-format off
       Handle(Graphic3d_Camera) aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
+// clang-format on
       aNewOrthoCam->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
 
       // construct adaptor over private fields to provide direct access for the BVH builder
@@ -434,7 +436,9 @@ void SelectMgr_SelectableObjectSet::UpdateBVH (const Handle(Graphic3d_Camera)& t
        || myLastViewState.IsProjectionChanged (aViewState)
        || isWinSizeChanged))
     {
+// clang-format off
       Handle(Graphic3d_Camera) aNewOrthoCam = new Graphic3d_Camera (*theCam); // If OrthoPers, copy camera and set to orthographic projection
+// clang-format on
       aNewOrthoCam->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
 
       // construct adaptor over private fields to provide direct access for the BVH builder

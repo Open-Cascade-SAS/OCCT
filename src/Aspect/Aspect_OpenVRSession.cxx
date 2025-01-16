@@ -164,7 +164,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_OpenVRSession, Aspect_XRSession)
 struct Aspect_OpenVRSession::VRContext
 {
 #ifdef HAVE_OPENVR
+// clang-format off
   vr::TrackedDevicePose_t TrackedPoses[vr::k_unMaxTrackedDeviceCount]; //!< array of tracked devices poses
+// clang-format on
   vr::IVRSystem*          System; //!< OpenVR session object
 
   //! Empty constructor.

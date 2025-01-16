@@ -169,9 +169,11 @@ public: //! @name Definition of the structure to keep all periodicity parameters
     Standard_Real myPeriod[3];       //!< Array of XYZ period values. Defining the period for any
                                      //! direction the corresponding flag for that direction in
                                      //! myPeriodic should be set to true
+// clang-format off
     Standard_Boolean myIsTrimmed[3]; //!< Array of flags defining whether the input shape has to be
                                      //! trimmed to fit the required period in the required direction
     Standard_Real myPeriodFirst[3];  //!< Array of start parameters of the XYZ periods: required for trimming
+// clang-format on
   };
 
 
@@ -585,8 +587,10 @@ protected: //! @name Fields
   TopoDS_Shape myShape;                //!< Resulting periodic shape (base for repetitions)
   TopoDS_Shape myRepeatedShape;        //!< Resulting shape after making repetitions of the base
   Standard_Real myRepeatPeriod[3];     //!< XYZ repeat period
+// clang-format off
   TopTools_DataMapOfShapeListOfShape myRepeatedTwins; //!< Map of associations of the identical sub-shapes
                                                       //! after repetition of the periodic shape
+// clang-format on
 
   // Twins
   TopTools_DataMapOfShapeListOfShape myTwins; //!< Map of associations of the identical sub-shapes

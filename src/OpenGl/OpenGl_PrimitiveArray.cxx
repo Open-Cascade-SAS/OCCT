@@ -915,7 +915,9 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   }
 
   Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TypeOfShadingModel_Unlit;
+// clang-format off
   anAspectFace = theWorkspace->ApplyAspects (false); // do not bind textures before binding the program
+// clang-format on
   const Handle(OpenGl_TextureSet)& aTextureSet = theWorkspace->TextureSet();
   const bool toEnableEnvMap = !aTextureSet.IsNull()
                             && aTextureSet == theWorkspace->EnvironmentTexture();

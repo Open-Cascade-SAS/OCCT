@@ -90,7 +90,9 @@ protected:
 protected:
 
   Handle(OpenGl_Context) myGlContext;
+// clang-format off
   Standard_Boolean       myOwnGContext;    //!< set to TRUE if GL context was not created by this class
+// clang-format on
   Handle(Aspect_Window)  myPlatformWindow; //!< software platform window wrapper
   Handle(Aspect_Window)  mySizeWindow;     //!< window object defining dimensions
 #if defined(__APPLE__)

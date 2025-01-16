@@ -161,6 +161,7 @@ public:
 
 protected:
 
+// clang-format off
   NCollection_List<Handle(Select3D_SensitiveEntity)> myBVHToBuildList; //!< list of queued sensitive entities
   NCollection_Array1<BVHThread> myBVHThreads;                          //!< threads to build BVH
   Standard_Boolean myToStopBVHThread;                                  //!< flag to stop BVH threads
@@ -168,6 +169,7 @@ protected:
   Standard_Condition myWakeEvent;                                      //!< raises when any sensitive is added to the BVH list
   Standard_Condition myIdleEvent;                                      //!< raises when BVH list become empty
   Standard_Boolean myIsStarted;                                        //!< indicates that threads are running
+// clang-format on
 };
 
 #endif

@@ -583,7 +583,9 @@ void AIS_ColoredShape::addShapesWithCustomProps (const Handle(Prs3d_Presentation
          aMapIter.More(); aMapIter.Next())
     {
       const Handle(AIS_ColoredDrawer)& aCustomDrawer = aMapIter.Key();
+// clang-format off
       const TopoDS_Compound& aShapeDraw = aMapIter.Value(); // compound of subshapes with <aShType> type
+// clang-format on
       Handle(Prs3d_Drawer) aDrawer;
       if (!aCustomDrawer.IsNull())
       {

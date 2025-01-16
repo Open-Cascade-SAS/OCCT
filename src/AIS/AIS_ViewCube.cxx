@@ -196,8 +196,10 @@ void AIS_ViewCube::setDefaultAttributes()
   myDrawer->TextAspect()->SetColor (Quantity_NOC_BLACK);
   myDrawer->TextAspect()->SetFont (Font_NOF_SANS_SERIF);
   myDrawer->TextAspect()->SetHeight (16.0);
+// clang-format off
   myDrawer->TextAspect()->Aspect()->SetTextZoomable (true); // the whole object is drawn within transformation-persistence
   // this should be forced back-face culling regardless Closed flag
+// clang-format on
   myDrawer->TextAspect()->Aspect()->SetFaceCulling (Graphic3d_TypeOfBackfacingModel_BackCulled);
 
   Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_UserDefined);
@@ -661,7 +663,9 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager)& ,
         }
 
         const Standard_Integer aFirstNode = aSegs->VertexNumber();
+// clang-format off
         for (Standard_Integer aVertIter = (aNbTris - aTriFrom) > 2 ? aTriNodesFrom + 2 : aTriNodesFrom + 1; // skip triangle fan center
+// clang-format on
              aVertIter <= aTris->VertexNumber(); ++aVertIter)
         {
           aSegs->AddVertex (aTris->Vertice (aVertIter));

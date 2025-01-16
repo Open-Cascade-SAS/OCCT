@@ -45,7 +45,9 @@ static Standard_Character EvolutionToChar (const TNaming_Evolution theEvol)
     case TNaming_MODIFY       : return 'M';
     case TNaming_DELETE       : return 'D';
     case TNaming_SELECTED     : return 'S';
+// clang-format off
     case TNaming_REPLACE      : return 'M'; // for compatibility case TNaming_REPLACE      : return 'R';
+// clang-format on
   default:
     throw Standard_DomainError("TNaming_Evolution:: Evolution Unknown");
   }
@@ -239,7 +241,9 @@ Standard_Boolean BinMNaming_NamedShapeDriver::Paste
         aBuilder.Select (aNewIt.Value(), anOldIt.Value());
         break;
       case TNaming_REPLACE:
+// clang-format off
         aBuilder.Modify (anOldIt.Value(), aNewIt.Value()); // for compatibility aBuilder.Replace(anOldShape, aNewShape);
+// clang-format on
         break;
       default:
           throw Standard_DomainError("TNaming_Evolution:: Evolution Unknown");

@@ -2859,7 +2859,9 @@ Standard_Boolean OpenGl_View::runRaytrace (const Standard_Integer        theSize
 
   if (myRenderParams.IsAntialiasingEnabled)
   {
+// clang-format off
     theGlContext->core11fwd->glDisable (GL_DEPTH_TEST); // improve jagged edges without depth buffer
+// clang-format on
 
     // bind ray-tracing output image as input
     myRaytraceFBO1[aFBOIdx]->ColorTexture()->Bind (theGlContext, OpenGl_RT_FsaaInputTexture);
@@ -3018,11 +3020,13 @@ Standard_Boolean OpenGl_View::runPathtrace (const Standard_Integer              
   {
     // extend viewport here, so that tiles at boundaries (cut tile size by target rendering viewport)
     // redirected to inner tiles (full tile size) are drawn entirely
+// clang-format off
     const Graphic3d_Vec2i anOffsetViewport = myTileSampler.OffsetTilesViewport (myAccumFrames > 1); // shrunk offsets texture will be uploaded since 3rd frame
     theGlContext->core11fwd->glViewport (0, 0, anOffsetViewport.x(), anOffsetViewport.y());
   }
   const NCollection_Vec4<bool> aColorMask = theGlContext->ColorMaskRGBA();
   theGlContext->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+// clang-format on
 
   // Generate for the given RNG seed
   theGlContext->core11fwd->glDisable (GL_DEPTH_TEST);

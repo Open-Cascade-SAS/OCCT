@@ -305,6 +305,7 @@ private:
   Handle(Graphic3d_Buffer)            myVerts;              //!< source data - nodes position
   Handle(Graphic3d_IndexBuffer)       myIndices;            //!< source data - primitive indexes
   const Standard_Byte*                myPosData;            //!< position vertex attribute data
+// clang-format off
   Standard_Size                       myPosStride;          //!< position vertex attribute stride in bytes
   Graphic3d_TypeOfPrimitiveArray      myPrimType;           //!< primitives type
   Standard_Integer                    myIndexLower;         //!< index range - first index in myIndices (inclusive)
@@ -329,6 +330,7 @@ private:
   bool                                myToDetectElem;       //!< flag to keep info about last detected element
   bool                                myToDetectNode;       //!< flag to keep info about last detected node
   bool                                myToDetectEdge;       //!< flag to keep info about last detected edge
+// clang-format on
 
 public:
 

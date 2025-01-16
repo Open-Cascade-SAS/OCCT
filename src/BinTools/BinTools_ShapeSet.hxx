@@ -186,8 +186,10 @@ private:
   NCollection_IndexedMap<Handle(Poly_Polygon2D)> myPolygons2D;
   NCollection_IndexedMap<Handle(Poly_Polygon3D)> myPolygons3D;
   NCollection_IndexedDataMap<Handle(Poly_Triangulation),
+// clang-format off
                              Standard_Boolean> myTriangulations; //!< Contains a boolean flag with information
                                                                  //!  to save normals for triangulation
+// clang-format on
   NCollection_IndexedMap<Handle(Poly_PolygonOnTriangulation)> myNodes;
 };
 

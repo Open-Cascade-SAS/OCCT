@@ -107,7 +107,9 @@ void IGESGeom_ToolBoundary::ReadOwnParams(const Handle(IGESGeom_Boundary)& ent,
   }
 
   if (!tempSenses.IsNull() && !tempModelCurves.IsNull() && !tempParameterCurves.IsNull() ) {
+// clang-format off
     for ( Standard_Integer i = 1;  i <= num;  i++ ) //szv#4:S4163:12Mar99 Standard_Integer moved in `for`
+// clang-format on
       {
 	Handle(IGESData_IGESEntity) tempEnt;
 	//st = PR.ReadEntity(IR, PR.Current(), Msg127, tempEnt); //szv#4:S4163:12Mar99 moved in if
@@ -176,7 +178,9 @@ void IGESGeom_ToolBoundary::ReadOwnParams(const Handle(IGESGeom_Boundary)& ent,
 	      Handle(IGESData_HArray1OfIGESEntity) tempParCurves;
 	      if (tempCount > 0){
 		Message_Msg Msg130("XTSEP_130");
+// clang-format off
 		PR.ReadEnts (IR,PR.CurrentList(tempCount), Msg130, tempParCurves); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 	      }
 	      tempParameterCurves->SetValue(i, tempParCurves);
 	}

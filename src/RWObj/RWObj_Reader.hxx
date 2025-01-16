@@ -361,11 +361,13 @@ protected:
   RWMesh_CoordinateSystemConverter   myCSTrsf;        //!< coordinate system flipper
   Standard_Size                      myMemLimitBytes; //!< memory limit in bytes
   Standard_Size                      myMemEstim;      //!< estimated memory occupation in bytes
+// clang-format off
   Standard_Integer                   myNbLines;       //!< number of parsed lines (e.g. current line)
   Standard_Integer                   myNbProbeNodes;  //!< number of probed nodes
   Standard_Integer                   myNbProbeElems;  //!< number of probed elements
   Standard_Integer                   myNbElemsBig;    //!< number of big elements (polygons with 5+ nodes)
   Standard_Boolean                   myToAbort;       //!< flag indicating abort state (e.g. syntax error)
+// clang-format on
 
   // Each node in the Element specifies independent indices of Vertex position, Texture coordinates and Normal.
   // This scheme does not match natural definition of Primitive Array

@@ -3615,7 +3615,9 @@ TestArret(const Standard_Boolean DejaReparti,
       DPc       = Param(i)-Uvp[im1];                //--     Current   - Previous
       DPb       = Uvf[im1]-Uvp[im1];                //--     Bound Sup - Previous 
       ParC[im1] = Uvf[im1];                         //--     Param Corrige
+// clang-format off
       dv        = Param(k)-Uvp[k-1];                //--     Current   - Previous (other Direction)
+// clang-format on
       dv2       = dv*dv;
       if(dv2>RealEpsilon()) {                       //--     Progress in other Direction ?
         Duv[im1]  =  DPc*DPb + dv2;

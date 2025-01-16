@@ -1005,7 +1005,9 @@ protected:
   Standard_Boolean              myUnFreeBoundaryDraw;
   Standard_Boolean              myHasOwnUnFreeBoundaryDraw;
   Handle(Prs3d_LineAspect)      myFaceBoundaryAspect;
+// clang-format off
   Standard_Integer              myFaceBoundaryUpperContinuity; //!< the most edge continuity class (GeomAbs_Shape) to be included to face boundaries presentation, or -1 if undefined
+// clang-format on
   Standard_Boolean              myFaceBoundaryDraw;
   Standard_Boolean              myHasOwnFaceBoundaryDraw;
 

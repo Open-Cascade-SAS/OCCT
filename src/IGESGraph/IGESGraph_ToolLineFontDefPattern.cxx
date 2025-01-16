@@ -60,7 +60,9 @@ void IGESGraph_ToolLineFontDefPattern::ReadOwnParams
     }
   }
 
+// clang-format off
   PR.ReadText(PR.Current(), "Visible-Blank Display Pattern", tempDisplayPattern); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempSegmentLengths, tempDisplayPattern);

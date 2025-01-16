@@ -1032,7 +1032,9 @@ static Standard_Integer QATestAtof (Draw_Interpretor& di, Standard_Integer argc,
     // random values within specified range
 //    std::default_random_engine aRandomEngine;
 //    std::uniform_real_distribution<double> aRandomDistr (aRangeMin, aRangeMax);
+// clang-format off
     const uint64_t aMaxUInt64 = ~(uint64_t)0; // could be (not supported by old GCC): std::numeric_limits<uint64_t>::max()
+// clang-format on
     for (int i = 0; i < aNbToTest; i++)
     {
 //      double aVal = aRandomDistr (aRandomEngine);
@@ -1057,6 +1059,7 @@ static Standard_Integer QATestAtof (Draw_Interpretor& di, Standard_Integer argc,
     strcpy (&aValuesStr(i++,0), "-INF");
 
     strcpy (&aValuesStr(i++,0), "  ."); // standalone period should not be considered as a  number
+// clang-format off
     strcpy (&aValuesStr(i++,0), "nanabcdef_128  xx"); // extra non-parenthised sequence after "nan"
 
     strcpy (&aValuesStr(i++,0), "905791934.11394954"); // value that gets rounded in a wrong way by fast Strtod()
@@ -1069,6 +1072,7 @@ static Standard_Integer QATestAtof (Draw_Interpretor& di, Standard_Integer argc,
     strcpy (&aValuesStr(i++,0), "1000000000000000000000000000012345678901234567890"); // huge mantissa
     strcpy (&aValuesStr(i++,0), "0000000000.00000000000000000012345678901234567890"); // leading zeros
     strcpy (&aValuesStr(i++,0), "1.00000000000000000000000000012345678901234567890"); // long fractional part
+// clang-format on
 
     strcpy (&aValuesStr(i++,0), "0.0000000001e318"); // large exponent but no overflow
     strcpy (&aValuesStr(i++,0), "-1.7976931348623158e+308"); // -DBL_MAX 

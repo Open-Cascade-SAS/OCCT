@@ -1525,7 +1525,9 @@ void AIS_ViewController::handlePanning (const Handle(V3d_View)& theView)
   const gp_Dir& aDir = aCam->Direction();
   const gp_Ax3 aCameraCS (aCam->Center(), aDir.Reversed(), aDir ^ aCam->Up());
   const gp_XYZ anEyeToPnt = myPanPnt3d.XYZ() - aCam->Eye().XYZ();
+// clang-format off
   const gp_Pnt aViewDims = aCam->ViewDimensions (anEyeToPnt.Dot (aCam->Direction().XYZ())); // view dimensions at 3D point
+// clang-format on
   const Graphic3d_Vec2d aDxy (-aViewDims.X() * myGL.Panning.Delta.x() / double(aWinSize.x()),
                               -aViewDims.X() * myGL.Panning.Delta.y() / double(aWinSize.x()));
 
@@ -3501,7 +3503,9 @@ void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)&
   }
   handleMoveTo (theCtx, theView);
   handleCameraActions (theCtx, theView, aWalk);
+// clang-format off
   theView->View()->SynchronizeXRPosedToBaseCamera(); // handleCameraActions() may modify posed camera position - copy this modifications also to the base camera
+// clang-format on
   handleXRPresentations (theCtx, theView);
 
   handleViewRedraw (theCtx, theView);

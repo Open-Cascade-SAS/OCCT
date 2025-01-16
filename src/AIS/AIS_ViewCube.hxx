@@ -652,6 +652,7 @@ protected:
   Standard_Real                 myBoxEdgeGap;        //!< gap between box side and box edge
   Standard_Real                 myBoxFacetExtension; //!< box facet extension
   Standard_Real                 myAxesPadding;       //!< Padding between box and axes
+// clang-format off
   Standard_Real                 myAxesRadius;        //!< radius of axes of the trihedron; 1.0 by default
   Standard_Real                 myAxesConeRadius;    //!< radius of cone of axes of the trihedron; 3.0 by default
   Standard_Real                 myAxesSphereRadius;  //!< radius of sphere (central point) of the trihedron; 4.0 by default
@@ -661,6 +662,7 @@ protected:
   Standard_Boolean              myToDisplayEdges;    //!< box edges visibility
   Standard_Boolean              myToDisplayVertices; //!< box corners (vertices) visibility
   Standard_Boolean              myIsYup;             //!< flag indicating that application expects Y-up viewer orientation instead of Z-up
+// clang-format on
 
 protected: //! @name Animation options
 
@@ -670,7 +672,9 @@ protected: //! @name Animation options
   Standard_Boolean              myToAutoStartAnim;   //!< start animation automatically on click
   Standard_Boolean              myIsFixedAnimation;  //!< fixed-loop animation
   Standard_Boolean              myToFitSelected;     //!< fit selected or fit entire scene
+// clang-format off
   Standard_Boolean              myToResetCameraUp;   //!< always reset camera up direction to default
+// clang-format on
 
 };
 

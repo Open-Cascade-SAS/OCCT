@@ -257,11 +257,13 @@ private:
 
 private:
 
+// clang-format off
   SelectionRectangle      mySelRectangle;              //!< parameters for selection by point or box (it is used to build frustum)
   gp_Pnt                  myNearPickedPnt;             //!< 3d projection of user-picked selection point onto near view plane
   gp_Pnt                  myFarPickedPnt;              //!< 3d projection of user-picked selection point onto far view plane
   gp_Dir                  myViewRayDir;                //!< view ray direction
   Standard_Real           myScale;                     //!< Scale factor of applied transformation, if there was any
+// clang-format on
 
 };
 

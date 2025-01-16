@@ -178,12 +178,14 @@ private:
   Standard_Boolean defUpperLimitActualRotationY; //!< flag "is UpperLimitActualRotationY defined"
   Standard_Boolean defLowerLimitActualRotationZ; //!< flag "is LowerLimitActualRotationZ defined"
   Standard_Boolean defUpperLimitActualRotationZ; //!< flag "is UpperLimitActualRotationZ defined"
+// clang-format off
   Standard_Boolean defLowerLimitActualTranslationX; //!< flag "is LowerLimitActualTranslationX defined"
   Standard_Boolean defUpperLimitActualTranslationX; //!< flag "is UpperLimitActualTranslationX defined"
   Standard_Boolean defLowerLimitActualTranslationY; //!< flag "is LowerLimitActualTranslationY defined"
   Standard_Boolean defUpperLimitActualTranslationY; //!< flag "is UpperLimitActualTranslationY defined"
   Standard_Boolean defLowerLimitActualTranslationZ; //!< flag "is LowerLimitActualTranslationZ defined"
   Standard_Boolean defUpperLimitActualTranslationZ; //!< flag "is UpperLimitActualTranslationZ defined"
+// clang-format on
 
 };
 #endif // _StepKinematics_LowOrderKinematicPairWithRange_HeaderFile_

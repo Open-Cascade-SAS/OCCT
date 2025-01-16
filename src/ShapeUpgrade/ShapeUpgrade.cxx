@@ -105,7 +105,9 @@ Standard_Boolean ShapeUpgrade::Debug()
     Standard_Integer NewNbPoles = BSplCLib::NbPoles(deg, Standard_False, newMults);
     TColgp_Array1OfPnt   newPoles (1, NewNbPoles);
     TColStd_Array1OfReal newWeights (1, NewNbPoles);
+// clang-format off
     Standard_Integer PoleIndex = StartFlatIndex - deg;//Index of starting pole when splitting B-Spline is an index of starting knot
+// clang-format on
     for (j = 1; j <= NewNbPoles; j++) {
       newWeights (j) = Weights (j + PoleIndex - 1);
       newPoles   (j) = Poles   (j + PoleIndex - 1);

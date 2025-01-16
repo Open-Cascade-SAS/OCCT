@@ -760,6 +760,7 @@ protected:
 
   Graphic3d_TypeOfShadingModel       myShadingModel;       //!< lighting shading model
   OpenGl_ShaderProgramList           myProgramList;        //!< The list of shader programs
+// clang-format off
   Handle(OpenGl_SetOfShaderPrograms) myLightPrograms;      //!< pointer to active lighting programs matrix
   Handle(OpenGl_SetOfPrograms)       myUnlitPrograms;      //!< programs matrix without lighting
   Handle(OpenGl_SetOfPrograms)       myOutlinePrograms;    //!< programs matrix without lighting for outline presentation
@@ -797,6 +798,7 @@ protected:
 
   gp_XYZ                             myLocalOrigin;        //!< local camera transformation
   Standard_Boolean                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set
+// clang-format on
 
   mutable NCollection_Array1<Standard_Integer>             myLightTypeArray;
   mutable NCollection_Array1<OpenGl_ShaderLightParameters> myLightParamsArray;

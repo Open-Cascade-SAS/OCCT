@@ -734,7 +734,9 @@ void Graphic3d_CView::Compute()
     const Graphic3d_TypeOfAnswer anAnswer = acceptDisplay (aStructIter.Key()->Visual());
     if (anAnswer == Graphic3d_TOA_COMPUTE)
     {
+// clang-format off
       aStructsSeq.Append (aStructIter.Key()); // if the structure was calculated, it is recalculated
+// clang-format on
     }
   }
 

@@ -125,7 +125,9 @@ Standard_Real ShapeAnalysis_Curve::Project(const Handle(Geom_Curve)& C3D,
   
   GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve))) {
+// clang-format off
     Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
+// clang-format on
     gp_Pnt LowBound = GAC.Value(uMin);
     gp_Pnt HigBound = GAC.Value(uMax);
     distmin = LowBound.Distance(P3D);
@@ -181,7 +183,9 @@ Standard_Real ShapeAnalysis_Curve::Project(const Adaptor3d_Curve& C3D,
     return ProjectAct(C3D, P3D, preci, proj, param);
 
   Standard_Real distmin_L = Precision::Infinite(), distmin_H = Precision::Infinite();
+// clang-format off
   Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
+// clang-format on
   gp_Pnt LowBound = C3D.Value(uMin);
   gp_Pnt HigBound = C3D.Value(uMax);
   distmin_L = LowBound.Distance(P3D);
@@ -420,7 +424,9 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real paramPrev,
   Standard_Real distmin = Precision::Infinite();
   GeomAdaptor_Curve GAC(C3D, uMin, uMax);
   if (C3D->IsKind(STANDARD_TYPE(Geom_BoundedCurve))) {
+// clang-format off
     Standard_Real prec = ( AdjustToEnds ? preci : Precision::Confusion() ); //:j8 abv 10 Dec 98: tr10_r0501_db.stp #9423: protection against densing of points near one end
+// clang-format on
     gp_Pnt LowBound = GAC.Value(uMin);
     gp_Pnt HigBound = GAC.Value(uMax);
     distmin = LowBound.Distance(P3D);
@@ -523,7 +529,9 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
 
   // 15.11.2002 PTV OCC966
   if (ShapeAnalysis_Curve::IsPeriodic(theCurve)) {
+// clang-format off
     ElCLib::AdjustPeriodic(cf,cl,Precision::PConfusion(),First,Last); //:a7 abv 11 Feb 98: preci -> PConfusion()
+// clang-format on
   }
   else if (First < Last) {
     // nothing to fix

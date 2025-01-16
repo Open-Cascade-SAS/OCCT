@@ -22,6 +22,7 @@
 struct V3d_ImageDumpOptions
 {
 
+// clang-format off
   Standard_Integer      Width;          //!< Width  of image dump to allocate an image, 0 by default (meaning that image should be already allocated).
   Standard_Integer      Height;         //!< Height of image dump to allocate an image, 0 by default (meaning that image should be already allocated).
   Graphic3d_BufferType  BufferType;     //!< Which buffer to dump (color / depth), Graphic3d_BT_RGB by default.
@@ -31,6 +32,7 @@ struct V3d_ImageDumpOptions
   Graphic3d_ZLayerId    TargetZLayerId; //!< Target z layer id which defines the last layer to be drawn before image dump.
   Standard_Boolean      IsSingleLayer;  //<! Flags if dumping is to be done to a single or to multiple layers.
   Standard_CString      LightName;      //<! Name of the target light whose shadowmap is to be dumped.
+// clang-format on
 
 public:
 

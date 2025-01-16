@@ -142,8 +142,10 @@ IGESToBRep_IGESBoundary::IGESToBRep_IGESBoundary(const IGESToBRep_CurveAndSurfac
 						    Handle(ShapeExtend_WireData)& Gsewd) 
 {
   Gsewd                                = new ShapeExtend_WireData;//local translation (for mysewd)
+// clang-format off
   Handle(ShapeExtend_WireData) Gsewd3d = new ShapeExtend_WireData;//local translation (for mysewd3d)
   Handle(ShapeExtend_WireData) Gsewd2d = new ShapeExtend_WireData;//local translation (for mysewd2d)
+// clang-format on
 
   Standard_Boolean GTranslate3d = Standard_True, GTranslate2d = Standard_True,
                    Preferred3d  = Standard_True, Preferred2d  = Standard_True;

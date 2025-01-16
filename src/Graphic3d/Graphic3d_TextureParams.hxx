@@ -131,6 +131,7 @@ private:
 
 private:
 
+// clang-format off
   Graphic3d_Vec4                     myGenPlaneS;       //!< texture coordinates generation plane S
   Graphic3d_Vec4                     myGenPlaneT;       //!< texture coordinates generation plane T
   Graphic3d_Vec2                     myScale;           //!< texture coordinates scale factor vector; (1,1) by default
@@ -145,6 +146,7 @@ private:
   Standard_ShortReal                 myRotAngle;        //!< texture coordinates rotation angle in degrees, 0 by default
   Standard_Boolean                   myToModulate;      //!< flag to modulate texture with material color, FALSE by default
   Standard_Boolean                   myToRepeat;        //!< flag to repeat (true) or wrap (false) texture coordinates out of [0,1] range
+// clang-format on
 
 };
 

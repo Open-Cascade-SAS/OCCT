@@ -72,8 +72,10 @@ DEFINE_STANDARD_RTTIEXT(StepKinematics_PrismaticPairWithRange, StepKinematics_Pr
 private:
   Standard_Real myLowerLimitActualTranslation; //!< optional
   Standard_Real myUpperLimitActualTranslation; //!< optional
+// clang-format off
   Standard_Boolean defLowerLimitActualTranslation; //!< flag "is LowerLimitActualTranslation defined"
   Standard_Boolean defUpperLimitActualTranslation; //!< flag "is UpperLimitActualTranslation defined"
+// clang-format on
 
 };
 #endif // _StepKinematics_PrismaticPairWithRange_HeaderFile_

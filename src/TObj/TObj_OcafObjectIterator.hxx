@@ -45,7 +45,9 @@ protected:
 
 protected:
   Handle(Standard_Type) myType; //!< type of objects to iterate on
+// clang-format off
   Standard_Boolean myAllSubChildren; //!< to iterate all sub-children, do not stop on the first level
+// clang-format on
   
 public:
   //! CASCADE RTTI

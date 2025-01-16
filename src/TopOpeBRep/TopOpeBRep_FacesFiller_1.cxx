@@ -661,8 +661,10 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
     Standard_Boolean sdmeds = FUN_ds_sdm((*myDS),Erest,OOE);
     if (sdmeds) continue;
     
+// clang-format off
     Standard_Integer obRest = TopOpeBRepTool_TOOL::OnBoundary(parRest,Erest); //vertex can be missed
     Standard_Integer obOO   = TopOpeBRepTool_TOOL::OnBoundary(OOpar,OOE);     //vertex can be missed
+// clang-format on
 
     if ((obRest == EXTERNAL)||(obOO == EXTERNAL)){
 #ifdef OCCT_DEBUG
@@ -673,7 +675,9 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
 
     Standard_Boolean tgeds = FUN_tool_EtgOOE(parRest,Erest, OOpar,OOE, tola);
 
+// clang-format off
     TopOpeBRepDS_Kind PVKind = TopOpeBRepDS_POINT; Standard_Integer PVIndex = 0;  // POINT or VERTEX index
+// clang-format on
 
     for (Standard_Integer ShapeIndex = 1; ShapeIndex<=2; ShapeIndex++) {    
       Standard_Integer OOShapeIndex = (ShapeIndex == 1) ? 2 : 1;

@@ -50,7 +50,9 @@ void IGESDimen_ToolPointDimension::ReadOwnParams
 		STANDARD_TYPE(IGESDimen_LeaderArrow), leadArr); //szv#4:S4163:12Mar99 `st=` not needed
 
   if (PR.IsParamEntity(PR.CurrentNumber()))
+// clang-format off
     PR.ReadEntity(IR, PR.Current(), "Enclosing entity", tempGeom); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempNote, leadArr, tempGeom);

@@ -113,8 +113,10 @@ void  IGESDimen_ToolGeneralNote::ReadOwnParams
 	  if (PR.DefinedElseSkip())
 	    {
 	      // Reading fontCode(Integer, must be positive)
+// clang-format off
 	      PR.ReadInteger (PR.Current(), "Font Code", fontCode); //szv#4:S4163:12Mar99 `st=` not needed
 	      // Reading fontEnt(TextFontDef) ?
+// clang-format on
 	      if (fontCode < 0) {
 		fontEntity = GetCasted(IGESGraph_TextFontDef,PR.ParamEntity (IR,curnum));
 		if (fontEntity.IsNull()) PR.AddFail ("Font Entity : incorrect reference");

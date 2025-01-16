@@ -66,7 +66,9 @@ namespace
       theDst->GetPointData()->SetNormals (aNewNormals);
     }
 
+// clang-format off
     vtkSmartPointer<vtkIdList> aPntMap = vtkSmartPointer<vtkIdList>::New(); // maps old pt ids into new
+// clang-format on
     aPntMap->SetNumberOfIds (aNbPts);
     for (vtkIdType i = 0; i < aNbPts; ++i)
     {

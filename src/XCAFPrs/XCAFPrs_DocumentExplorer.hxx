@@ -170,7 +170,9 @@ protected:
   NCollection_Vector<XCAFPrs_DocumentNode>
                                   myNodeStack;  //!< node stack
   Standard_Integer                myTop;        //!< top position in the node stack
+// clang-format off
   Standard_Boolean                myHasMore;    //!< global flag indicating that iterator points to the label
+// clang-format on
   XCAFPrs_Style                   myDefStyle;   //!< default style
   XCAFPrs_DocumentNode            myCurrent;    //!< current label info
   XCAFPrs_DocumentExplorerFlags   myFlags;      //!< iteration flags

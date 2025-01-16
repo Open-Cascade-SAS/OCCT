@@ -48,7 +48,9 @@ void  IGESDefs_ToolMacroDef::ReadOwnParams
 
   PR.ReadText(PR.Current(), "MACRO", macro); //szv#4:S4163:12Mar99 `st=` not needed
 
+// clang-format off
   PR.ReadInteger(PR.Current(), "Entity Type ID", entityTypeID); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   Standard_Integer tempCurrent = PR.CurrentNumber();
   // Counting the no. of language statements.

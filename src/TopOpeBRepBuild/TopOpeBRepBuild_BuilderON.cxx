@@ -418,7 +418,9 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   TopAbs_Orientation oFOR = BDS.Shape(iFOR).Orientation();
   TopAbs_Orientation oFS  = BDS.Shape(iFS).Orientation();
 
+// clang-format off
   Standard_Boolean isclosedFF=FUN_tool_IsClosingE(EG,FOR,FOR); //xpu240898 : cto900J5 faulty yapc2(FOR17,FS18,EG15)
+// clang-format on
   Standard_Boolean isclosedFS=FUN_tool_IsClosingE(EG,FS,FS); //xpu240898
   Standard_Boolean isclosed=(isclosedFF || isclosedFS);
   Standard_Boolean isrest=BDS.IsSectionEdge(EG);
@@ -461,7 +463,9 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 #endif
   Standard_Boolean opeCut = myPB->Opec12() || myPB->Opec21();
   Standard_Boolean opeCom = myPB->Opecom();
+// clang-format off
   Standard_Boolean ComOfCut = opeCut && (TB1 == TB2) && (TB1 == TopAbs_IN); //xpu200598 only if FFSDSO
+// clang-format on
 
   TopAbs_State TBFOR = FUN_build_TB(myPB,rankFOR);  
 

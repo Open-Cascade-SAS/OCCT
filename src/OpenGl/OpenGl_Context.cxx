@@ -1653,12 +1653,14 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     }
   }
 
+// clang-format off
   myDepthPeelingDepthTexUnit      = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_DepthPeelingDepth);      // -6
   myDepthPeelingFrontColorTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_DepthPeelingFrontColor); // -5
   myShadowMapTexUnit              = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_ShadowMap);              // -4
   myPBREnvLUTTexUnit              = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrEnvironmentLUT);      // -3
   myPBRDiffIBLMapSHTexUnit        = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrIblDiffuseSH);        // -2
   myPBRSpecIBLMapTexUnit          = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrIblSpecular);         // -1
+// clang-format on
   if (!myHasPBR)
   {
     myDepthPeelingDepthTexUnit      = static_cast<Graphic3d_TextureUnit>(myDepthPeelingDepthTexUnit + 3);

@@ -115,7 +115,9 @@ TopoDS_Edge ShapeBuild_Edge::CopyReplaceVertices (const TopoDS_Edge& edge,
   if ( GC->IsCurve3D() ) 
   B.Range ( E, first, last );
   else if ( GC->IsCurveOnSurface() )
+// clang-format off
   B.Range (E, GC->Surface(), edge.Location().Multiplied (GC->Location()), first, last);//BUC50003 entity 132 edge 1
+// clang-format on
   }
   */
   return E;
@@ -199,7 +201,9 @@ void ShapeBuild_Edge::CopyRanges (const TopoDS_Edge& toedge,
       else {
         if(fromGC->PCurve().IsNull()) continue; }
 
+// clang-format off
       if ( ! isC3d && ! fromGC->IsCurveOnSurface()) continue; // only 3d curves and pcurves are treated
+// clang-format on
 
       Handle(Geom_Surface) surface;
       TopLoc_Location L;
@@ -545,7 +549,9 @@ Handle(Geom2d_Curve) ShapeBuild_Edge::TransformPCurve(const Handle(Geom2d_Curve)
     if(result->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
       //gp_Pln pln(gp_Pnt(0,0,0),gp_Dir(0,0,1));
       //Handle(Geom_Curve) curve = GeomAPI::To3d(result,pln);
+// clang-format off
       Handle(Geom2d_Curve) tcurve = new Geom2d_TrimmedCurve(result,aFirst,aLast); //protection against parabols ets
+// clang-format on
       Geom2dConvert_ApproxCurve approx (tcurve, Precision::Approximation(), 
         GeomAbs_C1, 100, 6 );
       if ( approx.HasResult() )

@@ -781,6 +781,7 @@ private: //! @name Private methods performing the operation
 private: //! @name Fields
 
   // Inputs
+// clang-format off
   Standard_Boolean myRunParallel;                     //!< Defines the mode of processing of the single feature
   TopoDS_Shape myFeature;                             //!< Feature to remove
   TopTools_IndexedDataMapOfShapeListOfShape* myEFMap; //!< EF Connection map to find adjacent faces
@@ -793,6 +794,7 @@ private: //! @name Fields
   TopTools_IndexedMapOfShape mySolids;                //!< Solids participating in the feature removal
   TopTools_IndexedDataMapOfShapeListOfShape myFaces;  //!< Reconstructed adjacent faces
   Handle(BRepTools_History) myHistory;                //!< History of the adjacent faces reconstruction
+// clang-format on
 };
 
 typedef NCollection_Vector<FillGap> VectorOfFillGap;

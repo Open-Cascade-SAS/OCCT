@@ -367,7 +367,9 @@ void  TopOpeBRepBuild_WireEdgeClassifier::ResetElement(const TopoDS_Shape& EE)
   Standard_Real f2,l2,tolpc;Handle(Geom2d_Curve) C2D; //jyl980406+
   Standard_Boolean haspc = FC2D_HasCurveOnSurface(E,F); //jyl980406+
   if (!haspc) { //jyl980406+
+// clang-format off
     Standard_Boolean trim3d = Standard_True; C2D = FC2D_CurveOnSurface(E,F,f2,l2,tolpc,trim3d); //jyl980406+
+// clang-format on
     Standard_Real tolE = BRep_Tool::Tolerance(E); //jyl980406+  
     Standard_Real tol = Max(tolE,tolpc); //jyl980406+
     BRep_Builder BB; BB.UpdateEdge(E,C2D,F,tol); //jyl980406+
@@ -402,8 +404,10 @@ Standard_Boolean TopOpeBRepBuild_WireEdgeClassifier::CompareElement(const TopoDS
   Standard_Real f2,l2,tolpc;Handle(Geom2d_Curve) C2D; //jyl980402+
   Standard_Boolean haspc = FC2D_HasCurveOnSurface(E,F); //jyl980402+
   if (!haspc) { //jyl980402+
+// clang-format off
     Standard_Boolean trim3d = Standard_True; C2D = FC2D_CurveOnSurface(E,F,f2,l2,tolpc,trim3d); //jyl980406+
     // C2D = FC2D_CurveOnSurface(E,F,f2,l2,tolpc,trim3d); //jyl980406-
+// clang-format on
     Standard_Real tolE = BRep_Tool::Tolerance(E); //jyl980402+  
     Standard_Real tol = Max(tolE,tolpc); //jyl980402+
     BRep_Builder BB; BB.UpdateEdge(E,C2D,F,tol); //jyl980402+

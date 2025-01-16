@@ -1869,7 +1869,9 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
     }
   }
   if (DistMin2 < RealLast())
+// clang-format off
     preci = 0.9 * Sqrt (DistMin2); // preci est la distance min entre les points on la reduit un peu
+// clang-format on
   if (nbPntDropped == 0)
     return;
 
@@ -2142,7 +2144,9 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
     if (mp[0] > 0 && 
 	( ! p1OnIso || currd2[0] < mind2[0] ) ) {
       p1OnIso = Standard_True;
+// clang-format off
       mind2[0] = currd2[0]; // LP2.stp #105899: FLT_INVALID_OPERATION on Windows 7 VC 9 Release mode on the whole file 
+// clang-format on
       if (isoU) valueP1.SetCoord(isoVal, tp[0]);
       else      valueP1.SetCoord(tp[0], isoVal);
     }
@@ -2209,7 +2213,9 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
       for (Standard_Integer i=2; i < nbrPnt && isoByDistance; i++) {
 	Standard_Real dist = sac.NextProject (prevParam,cIso,points(i),
 					      prec,pt,t,Cf,Cl,
+// clang-format off
 					      Standard_False); //:j8 abv 10.12.98: TR10 r0501_db.stp #9423: avoid adjusting to ends
+// clang-format on
 	prevParam = t;
 	pout(i)=t;
 	if( (dist > prec) || (t < Cf) || (t > Cl) ) 

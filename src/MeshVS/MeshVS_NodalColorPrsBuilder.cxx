@@ -301,7 +301,9 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
       if (aType == MeshVS_ET_Face)
       {
+// clang-format off
         for (Standard_Integer aNodeIdx = 0; aNodeIdx < NbNodes - 2; ++aNodeIdx) // triangulate polygon
+// clang-format on
         {
           for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
           {
@@ -527,7 +529,9 @@ void MeshVS_NodalColorPrsBuilder::AddVolumePrs (const Handle(MeshVS_HArray1OfSeq
         }
       }
 
+// clang-format off
       for (Standard_Integer aNodeIdx = 0; aNodeIdx < aFaceNodes.Length() - 2; ++aNodeIdx) // triangulate polygon
+// clang-format on
       {
         for (Standard_Integer aSubIdx = 0; aSubIdx < 3; ++aSubIdx) // generate sub-triangle
         {

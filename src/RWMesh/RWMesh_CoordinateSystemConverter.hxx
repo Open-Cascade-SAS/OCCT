@@ -177,6 +177,7 @@ private:
 
   gp_Ax3           myInputAx3;         //!< source      coordinate system
   gp_Ax3           myOutputAx3;        //!< destination coordinate system
+// clang-format off
   Standard_Real    myInputLengthUnit;  //!< source      length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
   Standard_Real    myOutputLengthUnit; //!< destination length units, defined as scale factor to m (meters); -1.0 by default which means UNDEFINED
   Standard_Boolean myHasInputAx3;      //!< flag indicating if source coordinate system is defined or not
@@ -187,6 +188,7 @@ private:
   Graphic3d_Mat4   myNormTrsf;         //!< transformation 4x4 matrix from input Ax3 to output Ax3
   Standard_Real    myUnitFactor;       //!< unit scale factor
   Standard_Boolean myHasScale;         //!< flag indicating that length unit transformation should be performed
+// clang-format on
   Standard_Boolean myIsEmpty;          //!< flag indicating that transformation is empty
 
 };

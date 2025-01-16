@@ -47,9 +47,11 @@ void  IGESSolid_ToolSolidOfLinearExtrusion::ReadOwnParams
   Standard_Real tempreal;
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
+// clang-format off
   PR.ReadEntity(IR, PR.Current(), "Curve Entity", tempEntity); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadReal(PR.Current(), "Length of extrusion", tempLength); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   if (PR.DefinedElseSkip())
     {

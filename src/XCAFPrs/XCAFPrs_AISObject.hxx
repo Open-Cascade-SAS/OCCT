@@ -73,7 +73,9 @@ protected:
 protected:
 
   TDF_Label        myLabel;        //!< label pointing onto the shape
+// clang-format off
   Standard_Boolean myToSyncStyles; //!< flag indicating that shape and sub-shapes should be updates within Compute()
+// clang-format on
 
 public:
 

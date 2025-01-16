@@ -871,6 +871,7 @@ private:
   Handle(BRepAlgo_AsDes) myAsDes;       //!< Ascendants/descendants of the edges faces
   const BRepOffset_Analyse* myAnalyzer; //!< Analyzer of the input parameters
 
+// clang-format off
   TopTools_DataMapOfShapeListOfShape* myEdgesOrigins; //!< Origins of the offset edges (binding between offset edge and original edge)
   TopTools_DataMapOfShapeShape* myFacesOrigins;       //!< Origins of the offset faces (binding between offset face and original face)
   TopTools_DataMapOfShapeShape* myETrimEInf;          //!< Binding between trimmed and infinite edge
@@ -904,6 +905,7 @@ private:
 
   TopTools_IndexedDataMapOfShapeListOfShape myFacesToRebuild; //!< Faces that have to be rebuilt (invalid and close to invalid faces)
   TopTools_MapOfShape myFSelfRebAvoid;                        //!< Faces that have to be avoided when rebuilding splits of the same offset face
+// clang-format on
 
   TopoDS_Shape mySolids; //!< Solids built from the splits of faces
 

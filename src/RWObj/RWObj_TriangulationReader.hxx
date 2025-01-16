@@ -115,7 +115,9 @@ protected:
   RWObj_IShapeReceiver*   myShapeReceiver;   //!< optional shape receiver
   TopoDS_Compound         myResultShape;     //!< result shape as Compound of objects
   TopoDS_Compound         myLastObjectShape; //!< Compound containing current object groups
+// clang-format off
   TopoDS_Shape            myLastGroupShape;  //!< current group shape - either a single Face or Compound of Faces
+// clang-format on
   TCollection_AsciiString myLastGroupName;   //!< current group name
   TCollection_AsciiString myLastFaceMaterial;//!< last face material name
   Standard_Boolean        myToCreateShapes;  //!< create a single triangulation

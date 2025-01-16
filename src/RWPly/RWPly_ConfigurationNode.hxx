@@ -90,6 +90,7 @@ public:
   struct RWPly_InternalSection
   {
     // Common
+// clang-format off
     double FileLengthUnit = 1.; //!< File length units to convert from while reading the file, defined as scale factor for m (meters)
     RWMesh_CoordinateSystem SystemCS = RWMesh_CoordinateSystem_Zup; //!< System origin coordinate system to perform conversion into during read
     RWMesh_CoordinateSystem FileCS = RWMesh_CoordinateSystem_Yup; //!< File origin coordinate system to perform conversion during read
@@ -99,6 +100,7 @@ public:
     bool WriteTexCoords = false; //!< Flag for write UV / texture coordinates
     bool WritePartId = true; //!< Flag for write part Id as element attribute
     bool WriteFaceId = false; //!< Flag for write face Id as element attribute. Cannot be combined with HasPartId
+// clang-format on
     TCollection_AsciiString WriteComment; //!< Export special comment
     TCollection_AsciiString WriteAuthor; //!< Author of exported file name
   } InternalParameters;

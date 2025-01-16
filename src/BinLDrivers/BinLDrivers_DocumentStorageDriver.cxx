@@ -513,7 +513,9 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
                                               theData->ApplicationVersion(),
                                               theData->DataType(),
                                               theData->UserInfo(),
+// clang-format off
                                               Standard_True); // only count the size of the section
+// clang-format on
 
   // calculate comment section
   TColStd_SequenceOfExtendedString aComments;

@@ -330,8 +330,10 @@ Standard_Boolean Image_VideoRecorder::openVideoCodec (const Image_VideoParams& t
         || aCodecCtx->codec == avcodec_find_encoder_by_name ("libx264"))
   {
     // use CRF (Constant Rate Factor) as best single-pass compressing method
+// clang-format off
     av_dict_set (&anOptions, "crf",     "20",        0); // quality 18-28, 23 is default (normal), 18 is almost lossless
     av_dict_set (&anOptions, "preset",  "slow",      0); // good compression (see also "veryslow", "ultrafast")
+// clang-format on
 
     // live-capturing
     //av_dict_set (&anOptions, "qp",     "0",         0); // instead of crf

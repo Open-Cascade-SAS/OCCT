@@ -179,7 +179,9 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
           Standard_Integer i;
           // read array
           for(i=1; i<=aNbArgs;i++) {
+// clang-format off
             if(!aNewF && i > OBSOLETE_NUM) break;//interrupt reading as old format can have only 4 items
+// clang-format on
             ok = theSource >> anIndx;
             if (!ok)
               break;

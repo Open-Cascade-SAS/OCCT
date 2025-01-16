@@ -207,7 +207,9 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
   Handle(OpenGl_PointSprite)& aSpriteA = mySpriteA;
   if (!aNewKey.IsEmpty())
   {
+// clang-format off
     theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, aSpriteA); // alpha sprite could be shared
+// clang-format on
     theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  aSprite);
   }
 
@@ -302,7 +304,9 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
 
       theCtx->core11ffp->glNewList (aBitmapList, GL_COMPILE);
       const Standard_Integer aWidth = (Standard_Integer )anImage->Width(), aHeight = (Standard_Integer )anImage->Height();
+// clang-format off
       theCtx->core11ffp->glBitmap (0, 0, 0, 0, GLfloat(-0.5f * aWidth), GLfloat(-0.5f * aHeight), NULL); // make offsets that will be added to the current raster position
+// clang-format on
       theCtx->core11ffp->glDrawPixels (GLsizei(anImage->Width()), GLsizei(anImage->Height()), aFormat.PixelFormat(), aFormat.DataType(), anImage->Data());
       theCtx->core11ffp->glEndList();
       theCtx->core11fwd->glPixelStorei (GL_UNPACK_ALIGNMENT, 1);

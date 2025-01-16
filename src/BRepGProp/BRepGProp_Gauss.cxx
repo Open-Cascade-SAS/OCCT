@@ -583,7 +583,9 @@ Standard_Real BRepGProp_Gauss::Compute(
   //
   const Standard_Integer NumSubs = SUBS_POWER;
   const TopoDS_Face& aF = theSurface.GetFace(); 
+// clang-format off
   const Standard_Boolean isNaturalRestriction = (aF.NbChildren () == 0); //theSurface.NaturalRestriction();
+// clang-format on
 
   Standard_Real CIx, CIy, CIz, CIxy, CIxz, CIyz;
   Standard_Real CDim[2], CIxx[2], CIyy[2], CIzz[2];

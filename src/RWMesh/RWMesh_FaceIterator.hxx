@@ -184,6 +184,7 @@ private:
 
   NCollection_DataMap<TopoDS_Shape, XCAFPrs_Style, TopTools_ShapeMapHasher>
                                   myStyles;       //!< Face -> Style map
+// clang-format off
   XCAFPrs_Style                   myDefStyle;     //!< default style for faces without dedicated style
   Standard_Boolean                myToMapColors;  //!< flag to dispatch styles
 
@@ -199,6 +200,7 @@ private:
   XCAFPrs_Style                   myFaceStyle;    //!< current face style
   Quantity_ColorRGBA              myFaceColor;    //!< current face color
   Standard_Boolean                myHasFaceColor; //!< flag indicating that current face has assigned color
+// clang-format on
 
 };
 

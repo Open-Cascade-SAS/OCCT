@@ -271,7 +271,9 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
 {
   const Standard_Integer aValWidth = 5;
   std::stringstream aBuf;
+// clang-format off
   const Standard_Boolean isCompact = theFlags == Graphic3d_RenderingParams::PerfCounters_FrameRate; // only FPS is displayed
+// clang-format on
   const Graphic3d_FrameStatsData& aStats = LastDataFrame();
   if (myIsLongLineFormat
    && (theFlags & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0

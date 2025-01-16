@@ -1246,7 +1246,9 @@ void TObj_Object::CopyChildren
 {
   TDF_Label aSourceChildLabel = GetChildLabel();
   Handle(TObj_ObjectIterator) aChildren = // GetChildren();
+// clang-format off
     new TObj_OcafObjectIterator (aSourceChildLabel, NULL, Standard_True); // to support children on sublabels of child label
+// clang-format on
   for(;aChildren->More(); aChildren->Next())
   {
     Handle(TObj_Object) aChild = aChildren->Value();

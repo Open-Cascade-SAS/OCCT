@@ -8509,7 +8509,9 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric&    Quad1,
           situC2 = IntSurf_Outside;
           if (aR1 > aR2)
           {                           // Intersection line parametrizes from Apex1 to Apex2,
+// clang-format off
             situC1 = IntSurf_Outside; // So the distance between ptbid and aLAx1 is greater than the
+// clang-format on
             situC2 = IntSurf_Inside;  // distance between ptbid and aLAx2 and in that case Cone2
                                       // is inside Cone 1
           }

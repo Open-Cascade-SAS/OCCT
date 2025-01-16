@@ -483,7 +483,9 @@ void ShapeUpgrade_WireDivide::Perform ()
       //gp_Pnt pntV2 = BRep_Tool::Pnt(V2); // pntV2 not used - see below (skl)
       //Standard_Real V2Tol = LimitTolerance( BRep_Tool::Tolerance(V2) ); // V2Tol not used - see below (skl)
       
+// clang-format off
       Handle(ShapeUpgrade_FixSmallCurves) FixSmallCurveTool = GetFixSmallCurveTool(); //gka Precision
+// clang-format on
       FixSmallCurveTool->SetMinTolerance(MinTolerance());
       FixSmallCurveTool->Init(E, myFace);
       FixSmallCurveTool->SetSplitCurve3dTool(theSplit3dTool);

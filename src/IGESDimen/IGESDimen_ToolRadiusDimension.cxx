@@ -59,7 +59,9 @@ void IGESDimen_ToolRadiusDimension::ReadOwnParams
 
   if (ent->FormNumber() == 1)
     PR.ReadEntity(IR, PR.Current(), "Leader arrow 2",
+// clang-format off
 		  STANDARD_TYPE(IGESDimen_LeaderArrow), leadArr2, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init(tempNote, leadArr, arcCenter, leadArr2);

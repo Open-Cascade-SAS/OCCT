@@ -210,9 +210,11 @@ public:
 protected:
 
   SelectMgr_SelectableObject* mySelectable;        //!< raw pointer to selectable object
+// clang-format off
   Standard_Integer            mypriority;          //!< selection priority (for result with the same depth)
   Standard_Boolean            myIsSelected;        //!< flag indicating selected state
   Standard_Boolean            myFromDecomposition; //!< flag indicating this owner points to a part of object (TRUE) or to entire object (FALSE)
+// clang-format on
 
 };
 

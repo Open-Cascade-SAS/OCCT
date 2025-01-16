@@ -57,10 +57,12 @@ protected:
 protected:
 
   Handle(OpenGl_FrameStats)          myStatsPrev;         //!< currently displayed stats
+// clang-format off
   Handle(Graphic3d_TransformPers)    myCountersTrsfPers;  //!< transformation persistence for counters presentation
   OpenGl_Text                        myCountersText;      //!< counters presentation
   OpenGl_Aspects                     myTextAspect;        //!< text aspect
   Handle(Graphic3d_TransformPers)    myChartTrsfPers;     //!< transformation persistence for chart presentation
+// clang-format on
   Handle(Graphic3d_ArrayOfTriangles) myChartArray;        //!< array of chart triangles
   Handle(OpenGl_VertexBuffer)        myChartVertices;     //!< VBO with chart triangles
   Handle(OpenGl_IndexBuffer)         myChartIndices;      //!< VBO with chart triangle indexes

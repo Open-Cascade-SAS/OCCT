@@ -75,6 +75,7 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams
 
       // Reading supersededEntity(TextFontDef)
       PR.ReadEntity (IR, PR.Current(), "Text Definition Entity",
+// clang-format off
 		     STANDARD_TYPE(IGESGraph_TextFontDef), supersededEntity); //szv#4:S4163:12Mar99 `st=` not needed
     }
   else
@@ -83,6 +84,7 @@ void IGESGraph_ToolTextFontDef::ReadOwnParams
 
   // Reading scale(Integer)
   PR.ReadInteger(PR.Current(), "Grid units eqvt to one text height", scale); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   // Reading nbval(Integer)
   Standard_Boolean st = PR.ReadInteger(PR.Current(), "No. of characters in this defn", nbval);

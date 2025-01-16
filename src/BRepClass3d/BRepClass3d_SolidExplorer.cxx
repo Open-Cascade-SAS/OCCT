@@ -130,7 +130,9 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
 
     T.Normalize();
     P.SetCoord (P.X() + TolInit * T.X(), P.Y() + TolInit * T.Y());
+// clang-format off
     FClassifier.Reset (gp_Lin2d (P, T), ParamInit, RealEpsilon()); //-- Length and Tolerance #######
+// clang-format on
 
     TopExp_Explorer otherfaceexplorer;
     Standard_Integer aNbEdges = 0;

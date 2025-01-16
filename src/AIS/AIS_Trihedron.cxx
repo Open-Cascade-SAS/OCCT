@@ -61,7 +61,9 @@ AIS_Trihedron::AIS_Trihedron (const Handle(Geom_Axis2Placement)& theComponent)
 
   // selection priorities
   memset (mySelectionPriority, 0, sizeof(mySelectionPriority));
+// clang-format off
   mySelectionPriority[Prs3d_DatumParts_None] =    5; // complete trihedron: priority 5 (same as faces)
+// clang-format on
   mySelectionPriority[Prs3d_DatumParts_Origin] =  8; // origin: priority 8
   for (int aPartIter = Prs3d_DatumParts_XAxis; aPartIter <= Prs3d_DatumParts_ZAxis; ++aPartIter)
   {

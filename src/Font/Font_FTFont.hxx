@@ -37,11 +37,13 @@ class Font_FTLibrary;
 struct Font_FTFontParams
 {
   unsigned int PointSize;                  //!< face size in points (1/72 inch)
+// clang-format off
   unsigned int Resolution;                 //!< resolution of the target device in dpi for FT_Set_Char_Size()
   Font_Hinting FontHinting;                //!< request hinting (exclude FT_LOAD_NO_HINTING flag), Font_Hinting_Off by default;
                                            //!  hinting improves readability of thin text on low-resolution screen,
                                            //!  but adds distortions to original font depending on font family and font library version
   bool         ToSynthesizeItalic;         //!< generate italic style (e.g. for font family having no italic style); FALSE by default
+// clang-format on
   bool         IsSingleStrokeFont;         //!< single-stroke (one-line) font, FALSE by default
 
   //! Empty constructor.
@@ -398,7 +400,9 @@ protected:
 
   Image_PixMap               myGlyphImg;     //!< cached glyph plane
   Standard_Utf32Char         myUChar;        //!< currently loaded unicode character
+// clang-format off
   Standard_Boolean           myToUseUnicodeSubsetFallback; //!< use default fallback fonts for extended Unicode sub-sets (Korean, CJK, etc.)
+// clang-format on
 
 };
 

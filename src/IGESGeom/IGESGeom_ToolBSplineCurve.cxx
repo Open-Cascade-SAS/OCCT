@@ -126,6 +126,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
   Standard_Integer nbKnots = anIndex + aDegree + 2;
   // Reading all the knot sequences 
 
+// clang-format off
   PR.ReadReals(PR.CurrentList(nbKnots), Msg103 , allKnots, -aDegree); //szv#4:S4163:12Mar99 `st=` not needed
 
 //st = PR.ReadReals
@@ -137,6 +138,7 @@ void IGESGeom_ToolBSplineCurve::ReadOwnParams(const Handle(IGESGeom_BSplineCurve
       Message_Msg Msg105("XSTEP_105");
       PR.ReadReals(PR.CurrentList(anIndex+1), Msg104, allWeights,0); //szv#4:S4163:12Mar99 `st=` not needed
       //st = PR.ReadReals(PR.CurrentList(anIndex+1), "Weights", allWeights,0);
+// clang-format on
 
       for (Standard_Integer I = 0; I <= anIndex; I ++) 
 	{

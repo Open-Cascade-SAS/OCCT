@@ -329,7 +329,9 @@ protected:
   Standard_Integer myNbSamples;  //!< number of MSAA samples
   Standard_Integer myMaxMipLevel;//!< upper mipmap level index (0 means no mipmaps)
   bool             myIsAlpha;    //!< indicates alpha format
+// clang-format off
   bool             myIsTopDown;  //!< indicates if 2D surface is defined top-down (TRUE) or bottom-up (FALSE)
+// clang-format on
 
 };
 

@@ -617,7 +617,9 @@ Standard_Integer TopOpeBRepTool_CORRISO::EdgeOUTofBoundsUV(const TopoDS_Edge& E,
   Standard_Real f,l,tol; const Handle(Geom2d_Curve)& PC = C2DF.PC(f,l,tol);
  
   Standard_Real xfirst  = onU ? myGAS.FirstUParameter() : myGAS.FirstVParameter();
+// clang-format off
   Standard_Real xlast   = onU ? myGAS.LastUParameter() : myGAS.LastVParameter(); // xlast=xfirst+xperiod
+// clang-format on
   Standard_Real xperiod = onU ? myUper : myVper;
 
   Standard_Boolean isou,isov; gp_Pnt2d o2d; gp_Dir2d d2d; 

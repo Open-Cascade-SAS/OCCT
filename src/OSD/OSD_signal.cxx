@@ -131,7 +131,9 @@ static LONG CallHandler (DWORD theExceptionCode,
     ExceptionInformation0 = theExcPtr->ExceptionRecord->ExceptionInformation[0];
   }
 
+// clang-format off
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+// clang-format on
   static char aBuffer[2048];
 
   bool isFloatErr = false;
@@ -324,7 +326,9 @@ static LONG CallHandler (DWORD theExceptionCode,
 //=======================================================================
 static void SIGWntHandler (int signum, int sub_code)
 {
+// clang-format off
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+// clang-format on
   switch( signum ) {
     case SIGFPE :
       if ( signal( signum , (void(*)(int))SIGWntHandler ) == SIG_ERR )
@@ -388,7 +392,9 @@ static void SIGWntHandler (int signum, int sub_code)
 
 static void TranslateSE( unsigned int theCode, EXCEPTION_POINTERS* theExcPtr )
 {
+// clang-format off
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+// clang-format on
   CallHandler (theCode, theExcPtr);
 }
 #endif
@@ -456,7 +462,9 @@ void OSD::SetThreadLocalSignal (OSD_SignalMode theSignalMode,
 void OSD::SetSignal (OSD_SignalMode theSignalMode,
                      Standard_Boolean theFloatingSignal)
 {
+// clang-format off
   Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
+// clang-format on
   OSD_WasSetSignal = theSignalMode;
 
 #if !defined(OCCT_UWP) || defined(NTDDI_WIN10_TH2)

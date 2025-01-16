@@ -384,7 +384,9 @@ private:
 private:
 
   Standard_PExtCharacter mystring{}; //!< NULL-terminated string
+// clang-format off
   Standard_Integer       mylength{}; //!< length in 16-bit code units (excluding terminating NULL symbol)
+// clang-format on
 };
 
 namespace std

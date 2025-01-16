@@ -41,7 +41,9 @@ void  IGESBasic_ToolName::ReadOwnParams
   Handle(TCollection_HAsciiString) tempName;
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
+// clang-format off
   PR.ReadInteger(PR.Current(),"Number of property values",tempNbPropertyValues); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
   PR.ReadText(PR.Current(),"Name",tempName); //szv#4:S4163:12Mar99 `st=` not needed
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);

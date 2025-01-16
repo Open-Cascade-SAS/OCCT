@@ -481,7 +481,9 @@ void V3d_View::AutoZFit() const
 void V3d_View::ZFitAll (const Standard_Real theScaleFactor) const
 {
   Bnd_Box aMinMaxBox   = myView->MinMaxValues (Standard_False); // applicative min max boundaries
+// clang-format off
   Bnd_Box aGraphicBox  = myView->MinMaxValues (Standard_True);  // real graphical boundaries (not accounting infinite flag).
+// clang-format on
 
   myView->Camera()->ZFitAll (theScaleFactor, aMinMaxBox, aGraphicBox);
 }

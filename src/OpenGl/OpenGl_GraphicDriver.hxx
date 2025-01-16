@@ -198,7 +198,9 @@ protected:
 
 protected:
 
+// clang-format off
   Standard_Boolean        myIsOwnContext; //!< indicates that shared context has been created within OpenGl_GraphicDriver
+// clang-format on
 
   Aspect_Display          myEglDisplay;   //!< EGL connection to the Display : EGLDisplay
   Aspect_RenderingContext myEglContext;   //!< EGL rendering context         : EGLContext

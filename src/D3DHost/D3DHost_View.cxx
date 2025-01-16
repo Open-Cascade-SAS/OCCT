@@ -312,7 +312,9 @@ bool D3DHost_View::d3dCreateRenderTarget()
                                                   myIsD3dEx,
                                                   myWindow->Width(),
                                                   myWindow->Height(),
+// clang-format off
                                                   0); // do not request depth-stencil attachment since buffer will be flipped using addition FBO (myToFlipOutput)
+// clang-format on
   }
   if (toD3dFallback)
   {

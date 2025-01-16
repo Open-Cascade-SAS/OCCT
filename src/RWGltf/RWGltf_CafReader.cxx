@@ -56,7 +56,9 @@ public:
     if (!aPolyData.IsNull())
     {
       BRep_Builder aBuilder;
+// clang-format off
       aBuilder.UpdateFace (aFace, aPolyData); // replace all "proxy"-triangulations of face by loaded active one.
+// clang-format on
     }
     if (myThreadPool.HasThreads())
     {

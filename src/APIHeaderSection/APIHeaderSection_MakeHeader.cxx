@@ -78,7 +78,9 @@ void  APIHeaderSection_MakeHeader::Init (const Standard_CString nameval)
   if (fn.IsNull()) fn = new HeaderSection_FileName;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString(nameval);
   fn->SetName(name);
+// clang-format off
   Interface_MSG::TDate (timestamp,0,0,0,0,0,1,"C:%4.4d-%2.2d-%2.2dT%2.2d:%2.2d:%2.2d");  // actually
+// clang-format on
   Handle(TCollection_HAsciiString) tst = 
     new TCollection_HAsciiString(timestamp);
   fn->SetTimeStamp(tst);

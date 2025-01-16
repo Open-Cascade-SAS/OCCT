@@ -948,7 +948,9 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 		    PreLast,First,
 		    Standard_True,
 		    Standard_True)<GeomAbs_C0)
+// clang-format off
        throw Standard_ConstructionError("Geom2dConvert curves not C0") ;                //renvoi d'une erreur
+// clang-format on
      else{
        if (Continuity(ArrayOfCurves(i-1),
 		      ArrayOfCurves(i),
@@ -1116,6 +1118,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
  }
  
  else
+// clang-format off
    for (i=0;i<=nb_group-1;i++){                             //boucle principale sur chaque groupe de 
      nb_vertexG1=0;                                         //continuite interne G1
      
@@ -1130,6 +1133,7 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        else{
 	 Geom2dConvert_CompCurveToBSplineCurve  C(ArrayOfConcatenated->Value(i));
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes               
+// clang-format on
 	 if (fusion==Standard_False)
 	   throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
 	 ArrayOfConcatenated->SetValue(i,C.BSplineCurve());
@@ -1201,7 +1205,9 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 		    Standard_True,
 		    ArrayOfToler(i-1),
 		    AngularTolerance)<GeomAbs_C0)
+// clang-format off
        throw Standard_ConstructionError("Geom2dConvert curves not C0") ;                //renvoi d'une erreur
+// clang-format on
      else{
        if (Continuity(ArrayOfCurves(i-1),
 		      ArrayOfCurves(i),
@@ -1364,7 +1370,9 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
  }
  
  else
+// clang-format off
    for (i=0;i<=nb_group-1;i++){                             //boucle principale sur chaque groupe de 
+// clang-format on
      nb_vertexG1=0;                                         //continuite interne G1
       
      while (((index+nb_vertexG1)<=nb_curve-2)&&(tabG1(index+nb_vertexG1)==Standard_True))
@@ -1383,7 +1391,9 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 ArrayOfIndices->SetValue(k,nb_vertex_group0+1);
      }
       
+// clang-format off
      for (j=index;j<=index+nb_vertexG1;j++){                //boucle secondaire a l'interieur de chaque groupe
+// clang-format on
        if (NeedToBeTreated(ArrayOfCurves(j)))
 	 Curve1=MultNumandDenom(Hermit::Solution(ArrayOfCurves(j)),ArrayOfCurves(j));
        else
@@ -1393,7 +1403,9 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else{
 	 Geom2dConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
+// clang-format off
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));          //fusion de deux courbes adjacentes               
+// clang-format on
 	 if (fusion==Standard_False)
 	   throw Standard_ConstructionError("Geom2dConvert Concatenation Error") ;
 	 ArrayOfConcatenated->SetValue(i,C.BSplineCurve());

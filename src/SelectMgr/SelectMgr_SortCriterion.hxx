@@ -31,12 +31,14 @@ public:
   gp_Pnt             Point;             //!< 3D point
   Graphic3d_Vec3     Normal;            //!< surface normal or 0 vector if undefined
   Standard_Real      Depth;             //!< distance from the view plane to the entity
+// clang-format off
   Standard_Real      MinDist;           //!< distance from the clicked point to the entity on the view plane
   Standard_Real      Tolerance;         //!< tolerance used for selecting candidates
   Standard_Integer   SelectionPriority; //!< selection priority
   Standard_Integer   DisplayPriority;   //!< display priority
   Standard_Integer   ZLayerPosition;    //!< ZLayer rendering order index, stronger than a depth
   Standard_Integer   NbOwnerMatches;    //!< overall number of entities collected for the same owner
+// clang-format on
   Standard_Boolean   IsPreferPriority;  //!< flag to signal comparison to be done over priority
 
 public:

@@ -184,8 +184,10 @@ protected:
 protected:
 
   TCollection_AsciiString          myFile;         //!< output PLY file
+// clang-format off
   RWMesh_CoordinateSystemConverter myCSTrsf;       //!< transformation from OCCT to PLY coordinate system
   XCAFPrs_Style                    myDefaultStyle; //!< default material definition to be used for nodes with only color defined
+// clang-format on
   Standard_Boolean                 myIsDoublePrec;
   Standard_Boolean                 myHasNormals;
   Standard_Boolean                 myHasColors;

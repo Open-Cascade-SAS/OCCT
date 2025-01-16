@@ -1174,8 +1174,10 @@ void ComputeInternalPoints
   const Handle(Adaptor3d_Surface)& Surf = SFunc.Surface();
   Contap_TFunction TypeFunc(SFunc.FunctionType());
 
+// clang-format off
   toler(1) = ureso; //-- Trop long !!! Adaptor3d_HSurfaceTool::UResolution(Surf,SFunc.Tolerance());
   toler(2) = vreso; //---Beaucoup trop long !!! Adaptor3d_HSurfaceTool::VResolution(Surf,SFunc.Tolerance());
+// clang-format on
   infb(1) = Adaptor3d_HSurfaceTool::FirstUParameter(Surf);
   infb(2) = Adaptor3d_HSurfaceTool::FirstVParameter(Surf);
   supb(1) = Adaptor3d_HSurfaceTool::LastUParameter(Surf);

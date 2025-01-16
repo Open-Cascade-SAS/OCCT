@@ -236,7 +236,9 @@ protected: //! @name Protected fields
   Handle(Geom_Surface) mySurface;          //!< surface to place glyphs on to
   Standard_Real        myPrecision;        //!< algorithm precision
   Standard_Real        myScaleUnits;       //!< scale font rendering units into model units
+// clang-format off
   Standard_Boolean     myIsCompositeCurve; //!< flag to merge C1 curves of each contour into single C0 curve, OFF by default
+// clang-format on
 
 protected: //! @name Shared temporary variables for glyph construction
 

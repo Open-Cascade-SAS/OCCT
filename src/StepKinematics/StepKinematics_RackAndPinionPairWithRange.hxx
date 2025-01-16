@@ -67,8 +67,10 @@ DEFINE_STANDARD_RTTIEXT(StepKinematics_RackAndPinionPairWithRange, StepKinematic
 private:
   Standard_Real myLowerLimitRackDisplacement; //!< optional
   Standard_Real myUpperLimitRackDisplacement; //!< optional
+// clang-format off
   Standard_Boolean defLowerLimitRackDisplacement; //!< flag "is LowerLimitRackDisplacement defined"
   Standard_Boolean defUpperLimitRackDisplacement; //!< flag "is UpperLimitRackDisplacement defined"
+// clang-format on
 
 };
 #endif // _StepKinematics_RackAndPinionPairWithRange_HeaderFile_

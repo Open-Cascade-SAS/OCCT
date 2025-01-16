@@ -1189,7 +1189,9 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 
   Standard_Integer i=1,nbvtx;
   Standard_Real firstp,lastp;
+// clang-format off
   Standard_Real Tol = Precision::PConfusion()*100.; // JMB le 13 Jan 2000. Report de la correction du PRO19653
+// clang-format on
   GeomAbs_SurfaceType typs1 = mySurf1->GetType();
   GeomAbs_SurfaceType typs2 = mySurf2->GetType();
 
@@ -1382,7 +1384,9 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	      //-- std::cout<<"WLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
 	      TabIndex[i]=TabIndex[i+1]=++numline;
 	      AddLine(L,i,i+1,typs1,typs2,TabIndex,slin);
+// clang-format off
 	      TestWLineToRLine(slinref,slin,mySurf1,myDom1,mySurf2,myDom2,TolArc); //-- on teste la derniere entree de slin
+// clang-format on
 	    }
 	  } //end of if (in1 != TopAbs_OUT && in2 != TopAbs_OUT)
       } //end of if(firstp!=lastp && !IsSegmentSmall(WLine,i,i+1/*,TolArc*/))

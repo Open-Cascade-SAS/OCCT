@@ -444,7 +444,9 @@ protected:
   RWMesh_NodeAttributeMap*         myAttribMap;     //!< shape attributes
   NCollection_IndexedMap<TCollection_AsciiString>*
                                    myExternalFiles; //!< list of external file references
+// clang-format off
   RWMesh_CoordinateSystemConverter myCSTrsf;        //!< transformation from glTF to OCCT coordinate system
+// clang-format on
   TColStd_IndexedDataMapOfStringString* myMetadata; //!< file metadata
 
   NCollection_DataMap<TCollection_AsciiString, Handle(RWGltf_MaterialMetallicRoughness)> myMaterialsPbr;
@@ -464,10 +466,12 @@ protected:
   bool                      myIsBinary;       //!< binary document
   bool                      myIsGltf1;        //!< obsolete glTF 1.0 version format
   bool                      myToSkipEmptyNodes; //!< ignore nodes without Geometry
+// clang-format off
   bool                      myToLoadAllScenes;  //!< flag to load all scenes in the document, FALSE by default
   bool                      myUseMeshNameAsFallback; //!< flag to use Mesh name in case if Node name is empty, TRUE by default
   bool                      myToProbeHeader;  //!< flag to probe header without full reading, FALSE by default
   bool                      myToReadAssetExtras; //!< flag to translate asset.extras into metadata, TRUE by default
+// clang-format on
 
 #ifdef HAVE_RAPIDJSON
   GltfElementMap myGltfRoots[RWGltf_GltfRootElement_NB]; //!< glTF format root elements

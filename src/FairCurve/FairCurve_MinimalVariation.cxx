@@ -56,7 +56,9 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(FairCurve_AnalysisCode& ACo
 //======================================================================================
 {
   Standard_Boolean Ok=Standard_True, End=Standard_False;
+// clang-format off
   Standard_Real AngleMax = 0.7;      // parameter regulating the function of increment ( 40 degrees )
+// clang-format on
   Standard_Real AngleMin = 2*M_PI/100; // parameter regulating the function of increment 
                                      // full passage should not contain more than 100 steps.
   Standard_Real DAngle1, DAngle2,  DRho1, DRho2, Ratio, Fraction, Toler;
@@ -173,7 +175,9 @@ Standard_Boolean FairCurve_MinimalVariation::Compute(const gp_Vec2d& DeltaP1,
    gp_Vec2d VOld(OldP1, OldP2), VNew( -(OldP1.XY()+DeltaP1.XY()) + (OldP2.XY()+DeltaP2.XY()) );
    Standard_Real DAngleRef = VNew.Angle(VOld);
    Standard_Real DAngle1 = DeltaAngle1 - DAngleRef,
+// clang-format off
                  DAngle2 = DAngleRef   - DeltaAngle2; // Correction of Delta by the Delta induced by the points.
+// clang-format on
 
 
    ADelta(1) = DeltaP1.XY();

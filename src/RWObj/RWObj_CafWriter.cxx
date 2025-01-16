@@ -279,7 +279,9 @@ bool RWObj_CafWriter::writeShape (RWObj_ObjWriterContext&        theWriter,
     ++theWriter.NbFaces;
     {
       const bool hasNormals   = aFaceIter.HasNormals();
+// clang-format off
       const bool hasTexCoords = aFaceIter.HasTexCoords(); //&& !aFaceIter.FaceStyle().Texture().IsEmpty();
+// clang-format on
       if (theWriter.NbFaces != 1)
       {
         toCreateGroup = toCreateGroup

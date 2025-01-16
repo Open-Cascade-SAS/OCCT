@@ -185,7 +185,9 @@ private:
 
 protected:
 
+// clang-format off
   SelectionTriangle mySelTriangle; //!< parameters of selection triangle (it is used to build triangle frustum)
+// clang-format on
 
 public:
 

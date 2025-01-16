@@ -173,8 +173,10 @@ private:
   TColStd_IndexedMapOfTransient myPolygons2D;
   TColStd_IndexedMapOfTransient myPolygons3D;
   NCollection_IndexedDataMap<Handle(Poly_Triangulation),
+// clang-format off
                              Standard_Boolean> myTriangulations; //!< Contains a boolean flag with information
                                                                  //!  to save normals for triangulation
+// clang-format on
   TColStd_IndexedMapOfTransient myNodes;
   Standard_Boolean myWithTriangles;
   Standard_Boolean myWithNormals;

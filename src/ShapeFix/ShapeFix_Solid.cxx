@@ -452,7 +452,9 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
       if(!aShell.IsNull()) {
         TopoDS_Solid aSol = SolidFromShell(aShell);
         if(ShapeExtend::DecodeStatus(myStatus,ShapeExtend_DONE2)) {
+// clang-format off
           SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientation of shell was corrected.
+// clang-format on
           Context()->Replace(tmpShape,aSol);
           tmpShape = aSol;
         }
@@ -464,6 +466,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
       TopoDS_Iterator aIt(tmpShape,Standard_False);
       Context()->Replace(tmpShape,aIt.Value());
+// clang-format off
       SendFail (Message_Msg ("FixAdvSolid.FixShell.MSG10")); // Solid can not be created from open shell. 
     }
   }
@@ -473,6 +476,7 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
     TopTools_IndexedMapOfShape aMapSolids;
     if(CreateSolids(aResShape,aMapSolids)) {
       SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG20"));// Orientation of shell was corrected.. 
+// clang-format on
       if(aMapSolids.Extent() ==1) {
         const TopoDS_Shape& aResSol = aMapSolids.FindKey(1);
         if(aResShape.ShapeType() == TopAbs_SHELL && myCreateOpenSolidMode) {
@@ -485,12 +489,14 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
         else {
           mySolid =aResSol;
           if(aResSol.ShapeType() == TopAbs_SHELL)
+// clang-format off
             SendFail (Message_Msg ("FixAdvSolid.FixShell.MSG10")); // Solid can not be created from open shell. 
         }
         Context()->Replace(aResShape,mySolid);
       }
       else if(aMapSolids.Extent() >1) {
         SendWarning (Message_Msg ("FixAdvSolid.FixOrientation.MSG30"));// Bad connected solid a few solids were created.
+// clang-format on
         BRep_Builder aB;
         TopoDS_Compound aComp;
         aB.MakeCompound(aComp);
@@ -508,7 +514,9 @@ Standard_Boolean ShapeFix_Solid::Perform(const Message_ProgressRange& theProgres
             aResSh = solid;
           }
           else if (aResShape.ShapeType() == TopAbs_SHELL)
+// clang-format off
             SendFail(Message_Msg ("FixAdvSolid.FixShell.MSG10")); // Solid can not be created from open shell. 
+// clang-format on
           aB.Add(aComp,aResSh);
           
         }

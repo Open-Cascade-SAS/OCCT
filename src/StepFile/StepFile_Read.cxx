@@ -113,7 +113,9 @@ static Standard_Integer StepFile_Read (const char* theName,
   Standard_Integer nbhead, nbrec, nbpar;
   aFileDataModel.GetFileNbR (&nbhead,&nbrec,&nbpar);  // renvoi par lex/yacc
   Handle(StepData_StepReaderData) undirec =
+// clang-format off
     new StepData_StepReaderData(nbhead,nbrec,nbpar, theStepModel->SourceCodePage());  // creation tableau de records
+// clang-format on
   for ( Standard_Integer nr = 1; nr <= nbrec; nr ++) {
     int nbarg; char* ident; char* typrec = 0;
     aFileDataModel.GetRecordDescription(&ident, &typrec, &nbarg);

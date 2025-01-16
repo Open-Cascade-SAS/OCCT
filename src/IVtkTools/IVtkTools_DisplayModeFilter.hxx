@@ -72,12 +72,14 @@ protected:
   virtual ~IVtkTools_DisplayModeFilter();
 
 protected:
+// clang-format off
   IVtk_DisplayMode      myDisplayMode;             //!< Display mode defining mesh types to pass through this filter
   IVtk_IdTypeMap        myModesDefinition[2];
   bool                  myDoDisplaySharedVertices;
 
   bool                  myDrawFaceBoundaries;      //!< Draw Face boundaries within shading display mode
   bool                  myIsSmoothShading;         //!< include vertex normals for smooth shading or not
+// clang-format on
 };
 
 #ifdef _MSC_VER

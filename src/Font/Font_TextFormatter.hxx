@@ -133,10 +133,12 @@ public:
 
   protected:
     IterationFilter      myFilter; //!< possibility to filter not-necessary symbols
+// clang-format off
     NCollection_Utf8Iter myIter; //!< the next symbol iterator value over the text formatter string
     Standard_Integer     mySymbolPosition; //!< the current position
     Standard_Utf32Char   mySymbolChar; //!< the current symbol
     Standard_Integer     mySymbolNext; //!< position of the next symbol in iterator, if zero, the iterator is finished
+// clang-format on
     Standard_Utf32Char   mySymbolCharNext; //!< the current symbol
   };
 
@@ -300,11 +302,13 @@ protected: //! @name configuration
 
   Graphic3d_HorizontalTextAlignment myAlignX;  //!< horizontal alignment style
   Graphic3d_VerticalTextAlignment   myAlignY;  //!< vertical   alignment style
+// clang-format off
   Standard_Integer                  myTabSize; //!< horizontal tabulation width (number of space symbols)
   Standard_ShortReal                myWrappingWidth; //!< text is wrapped by the width if defined (more 0)
   Standard_Boolean                  myIsWordWrapping;  //!< if TRUE try not to break words when wrapping text (true by default)
   Standard_ShortReal                myLastSymbolWidth; //!< width of the last symbol
   Standard_ShortReal                myMaxSymbolWidth; //!< maximum symbol width of the formatter string
+// clang-format on
 
 protected: //! @name input data
 
@@ -315,6 +319,7 @@ protected: //! @name input data
                      myCorners;       //!< The bottom left corners of a formatted rectangles.
   NCollection_Vector<Standard_ShortReal>
                      myNewLines;      //!< position at LF
+// clang-format off
   Standard_ShortReal myLineSpacing;   //!< line spacing (computed as maximum of all fonts involved in text formatting)
   Standard_ShortReal myAscender;      //!< line spacing for the first line
   bool               myIsFormatted;   //!< formatting state
@@ -322,6 +327,7 @@ protected: //! @name input data
 protected: //! @name temporary variables for formatting routines
 
   Standard_Integer   myLinesNb;       //!< overall (new)lines number (including splitting by width limit)
+// clang-format on
   Standard_Integer   myRectLineStart; //!< id of first rectangle on the current line
   Standard_Integer   myNewLineNb;
 

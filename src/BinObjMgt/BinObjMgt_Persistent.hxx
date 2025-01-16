@@ -360,7 +360,9 @@ private:
   Standard_OStream* myOStream; ///< stream to write in case direct writing is enabled
   Standard_IStream* myIStream; ///< stream to write in case direct reading is enabled
   Standard_Boolean myDirectWritingIsEnabled;
+// clang-format off
   Handle(BinObjMgt_Position) myStreamStart; ///< position where the direct writing to the script is started
+// clang-format on
 };
 
 

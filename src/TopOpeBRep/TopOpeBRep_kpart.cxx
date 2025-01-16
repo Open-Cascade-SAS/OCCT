@@ -654,7 +654,9 @@ Standard_EXPORT Standard_Boolean FUNBREP_topokpart
 
   Standard_Boolean CPIfound = !Ifound.IsNull();
   Standard_Boolean couture = TopOpeBRepTool_ShapeTool::Closed(TopoDS::Edge(E),TopoDS::Face(F));
+// clang-format off
   Standard_Boolean samepar = Standard_False; // = True if current VPoint falls on an existing geometry with an equal parameter.
+// clang-format on
   if (!CPIfound) samepar = Standard_False;
   else           samepar = CPIfound ? TopoParameter(L,Ifound,parline,couture) : Standard_False;
 

@@ -867,8 +867,10 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
       TopoDS_Shape newE = EOR;
        
       if      (newO)                 newE.Orientation(oEinF);// xpu060598  
+// clang-format off
       else if (Oinref == FORREVOPPO) newE.Orientation(TopAbs_INTERNAL);// xpu120898 (PRO14785 : e36 shared by f34 & f39,
                                                                        // faces sdm with f16)
+// clang-format on
       else                           newE.Orientation(neworiE); 
 #ifdef OCCT_DEBUG
       if(tSPS){

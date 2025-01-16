@@ -2936,7 +2936,9 @@ static void UpdateInitOffset (BRepAlgo_Image&         myInitOffset,
 //=======================================================================
 void BRepOffset_MakeOffset::MakeMissingWalls (const Message_ProgressRange& theRange)
 {
+// clang-format off
   TopTools_IndexedDataMapOfShapeListOfShape Contours; //Start vertex + list of connected edges (free boundary)
+// clang-format on
   TopTools_DataMapOfShapeShape MapEF; //Edges of contours: edge + face
   Standard_Real OffsetVal = Abs(myOffset);
 

@@ -77,7 +77,9 @@ public:
 
 protected:
   Graphic3d_BufferRange myInvalidatedRange; //!< invalidated buffer data range (as byte offsets)
+// clang-format off
   Standard_Boolean      myIsInterleaved;    //!< flag indicating the vertex attributes being interleaved
+// clang-format on
   Standard_Boolean      myIsMutable;        //!< flag indicating that data can be invalidated
 };
 

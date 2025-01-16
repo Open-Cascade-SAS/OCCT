@@ -190,6 +190,7 @@ public:
 
 public: //! @name general parameters
 
+// clang-format off
   Graphic3d_RenderingMode           Method;                      //!< specifies rendering mode, Graphic3d_RM_RASTERIZATION by default
   Graphic3d_TypeOfShadingModel      ShadingModel;                //!< specified default shading model, Graphic3d_TypeOfShadingModel_Phong by default
   Graphic3d_RenderTransparentMethod TransparencyMethod;          //!< specifies rendering method for transparent graphics
@@ -284,6 +285,7 @@ public: //! @name on-screen display parameters
   Standard_Boolean                  ToShowStats;                 //!< display performance statistics, FALSE by default;
                                                                  //!  note that counters specified within CollectedStats will be updated nevertheless
                                                                  //!  of visibility of widget managed by ToShowStats flag (e.g. stats can be retrieved by application for displaying using other methods)
+// clang-format on
 
 };
 

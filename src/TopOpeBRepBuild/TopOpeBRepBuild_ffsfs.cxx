@@ -286,7 +286,9 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 	// NYI : + argument a la methode GSplitFaceSFS ?? a voir
 
 	// ici : GLOBAL_lfrtoprocess = t
+// clang-format off
 	if (GLOBAL_lfr1==NULL) GLOBAL_lfr1=(TopTools_ListOfShape*)new TopTools_ListOfShape(); //flo150998
+// clang-format on
 	GLOBAL_lfr1->Clear();
 	GSplitFaceSFS(FOR,LSO2,GM,SFS);
 	GLOBAL_lfrtoprocess = Standard_False;
@@ -419,7 +421,9 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 #endif
 
 	// NYI : Builder += methode pour le process fufa
+// clang-format off
 	TopOpeBRepBuild_FuseFace fufa; TopTools_ListOfShape ldum; Standard_Integer addinternal = 1; // disparition
+// clang-format on
 	fufa.Init(ldum,*GLOBAL_lfr1,addinternal);
 	fufa.PerformFace();
 	Standard_Boolean isdone = fufa.IsDone();

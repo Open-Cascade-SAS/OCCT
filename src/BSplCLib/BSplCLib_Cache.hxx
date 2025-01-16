@@ -136,6 +136,7 @@ protected:
   void operator = (const BSplCLib_Cache&);
 
 private:
+// clang-format off
   Standard_Boolean myIsRational;                //!< identifies the rationality of Bezier/B-spline curve
   BSplCLib_CacheParams myParams;                //!< cache parameters
   Handle(TColStd_HArray2OfReal) myPolesWeights; //!< array of poles and weights of calculated cache
@@ -143,6 +144,7 @@ private:
                                                 //       x1 y1 [z1] [w1]
                                                 //       x2 y2 [z2] [w2] etc
                                                 // for 2D-curves there is no z conponent, for non-rational curves there is no weight
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(BSplCLib_Cache, Standard_Transient)

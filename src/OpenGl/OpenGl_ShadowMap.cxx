@@ -85,7 +85,9 @@ const Handle(OpenGl_Texture)& OpenGl_ShadowMap::Texture() const
 bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView,
                                      const gp_XYZ* theOrigin)
 {
+// clang-format off
   const Bnd_Box aMinMaxBox  = theOrigin == NULL ? theView.MinMaxValues (false) : Bnd_Box(); // applicative min max boundaries
+// clang-format on
   const Bnd_Box aGraphicBox = aMinMaxBox;
 
   switch (myShadowLight->Type())
@@ -125,7 +127,9 @@ bool OpenGl_ShadowMap::UpdateCamera (const Graphic3d_CView& theView,
       // so that shadow range will be limited to some reasonable distance from current eye.
       if (myShadowCamera->FitMinMax (aMinMaxBox, 10.0 * Precision::Confusion(), false))
       {
+// clang-format off
         myShadowCamera->SetScale (Max (myShadowCamera->ViewDimensions().X() * 1.1, myShadowCamera->ViewDimensions().Y() * 1.1)); // add margin
+// clang-format on
       }
       myShadowCamera->ZFitAll (1.0, aMinMaxBox, aGraphicBox);
       myLightMatrix = myShadowCamera->ProjectionMatrixF() * myShadowCamera->OrientationMatrixF();

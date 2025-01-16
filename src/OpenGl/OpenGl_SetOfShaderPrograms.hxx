@@ -69,7 +69,9 @@ public:
   }
 
 protected:
+// clang-format off
   Handle(OpenGl_SetOfPrograms) myPrograms[Graphic3d_TypeOfShadingModel_NB - 1]; //!< programs array, excluding Graphic3d_TypeOfShadingModel_Unlit
+// clang-format on
 };
 
 typedef NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_SetOfShaderPrograms)> OpenGl_MapOfShaderPrograms;

@@ -52,7 +52,9 @@ public:
                                   XmlObjMgt_RRelocationTable&  theRelocTable) const Standard_OVERRIDE
   {
     Standard_Boolean aResult = myBaseDirver->Paste (theSource, theTarget, theRelocTable);
+// clang-format off
     theTarget->AfterRetrieval(); // to allow synchronization of the derived attribute with the base content
+// clang-format on
     return aResult;
   }
 

@@ -794,7 +794,9 @@ private:
  gp_Vec                       Vec1,Vec2;                   //consecutive tangential vectors 
  gp_Pnt                       Pint;
  Handle(Geom_BSplineCurve)    Curve1,Curve2;                       
+// clang-format off
  TColStd_Array1OfBoolean      tabG1(0,nb_curve-2);         //array of the G1 continuity at the intersections
+// clang-format on
  TColStd_Array1OfReal         local_tolerance(0,
 					      ArrayOfToler.Length()-1) ;
  
@@ -953,7 +955,9 @@ private:
  }
  
  else
+// clang-format off
    for (i=0;i<=nb_group-1;i++){                             //principal loop on each G1 continuity 
+// clang-format on
      nb_vertexG1=0;                                         //group
      
      while (((index+nb_vertexG1)<=nb_curve-2)&&(tabG1(index+nb_vertexG1)==Standard_True))
@@ -966,7 +970,9 @@ private:
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else{
 	 GeomConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
+// clang-format off
 	 fusion=C.Add(Curve1,ArrayOfToler(j-1));            //merge of two consecutive curves               
+// clang-format on
 	 if (fusion==Standard_False)
 	   throw Standard_ConstructionError("GeomConvert Concatenation Error") ;
 	 ArrayOfConcatenated->SetValue(i,C.BSplineCurve());
@@ -1022,7 +1028,9 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
  gp_Vec                       Vec1,Vec2;                   //consecutive tangential vectors
  gp_Pnt                       Pint;
  Handle(Geom_BSplineCurve)    Curve1,Curve2;                       
+// clang-format off
  TColStd_Array1OfBoolean      tabG1(0,nb_curve-2);         //array of the G1 continuity at the intersections
+// clang-format on
  TColStd_Array1OfReal         local_tolerance(0,
 					      ArrayOfToler.Length()-1) ;
  
@@ -1197,7 +1205,9 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
  }
  
  else
+// clang-format off
    for (i=0;i<=nb_group-1;i++){                             //principal loop on each G1 continuity 
+// clang-format on
      nb_vertexG1=0;                                         //group
       
      while (((index+nb_vertexG1)<=nb_curve-2)&&(tabG1(index+nb_vertexG1)==Standard_True))
@@ -1305,7 +1315,9 @@ void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(
 
  BS->Knots(BSKnots);
  BS->Multiplicities(BSMults);
+// clang-format off
  for (i=BS->FirstUKnotIndex() ;i<=(BS->LastUKnotIndex()-1);i++){                                 //give the number of C1 curves
+// clang-format on
    if (BSMults(i)==BS->Degree())
      nbcurveC1++;   
  }

@@ -73,7 +73,9 @@ public:
 protected:
   // store messages in a lists sorted by gravity;
   // here we rely on knowledge that Message_Fail is the last element of the enum
+// clang-format off
   Message_ListOfAlert myAlerts[Message_Fail + 1]; //!< container of child alert for each type of gravity
+// clang-format on
 };
 
 DEFINE_STANDARD_HANDLE(Message_CompositeAlerts, Standard_Transient)

@@ -359,7 +359,9 @@ public:
     Handle(Graphic3d_Camera) aProxyCamera = theCamera;
     if (IsOrthoPers() && !aProxyCamera->IsOrthographic())
     {
+// clang-format off
       aProxyCamera = new Graphic3d_Camera(*theCamera); // If OrthoPers, copy camera and set to orthographic projection
+// clang-format on
       aProxyCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
     }
 

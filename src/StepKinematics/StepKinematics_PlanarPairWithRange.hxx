@@ -114,10 +114,12 @@ private:
   Standard_Real myUpperLimitActualTranslationY; //!< optional
   Standard_Boolean defLowerLimitActualRotation; //!< flag "is LowerLimitActualRotation defined"
   Standard_Boolean defUpperLimitActualRotation; //!< flag "is UpperLimitActualRotation defined"
+// clang-format off
   Standard_Boolean defLowerLimitActualTranslationX; //!< flag "is LowerLimitActualTranslationX defined"
   Standard_Boolean defUpperLimitActualTranslationX; //!< flag "is UpperLimitActualTranslationX defined"
   Standard_Boolean defLowerLimitActualTranslationY; //!< flag "is LowerLimitActualTranslationY defined"
   Standard_Boolean defUpperLimitActualTranslationY; //!< flag "is UpperLimitActualTranslationY defined"
+// clang-format on
 
 };
 #endif // _StepKinematics_PlanarPairWithRange_HeaderFile_

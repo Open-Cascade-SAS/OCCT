@@ -4054,7 +4054,9 @@ void SplitWire (const TopoDS_Wire&                theWire,
       {
         aBB.Add (aNewWire, CurEdge);
         
+// clang-format off
         const TopoDS_Vertex& aVertex = TopExp::LastVertex (CurEdge, Standard_True); //with orientation
+// clang-format on
         if (aVertex.IsSame(anOrigin))
           break;
 

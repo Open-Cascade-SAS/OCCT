@@ -333,7 +333,9 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   // 0.
   //---
   const TopOpeBRepDS_ListOfInterference& lIE = BDS.ShapeInterferences(E);
+// clang-format off
   Standard_Boolean scanall = (isspin || isspou || isspon); // xpu161198: BUC60382 //xpu011098: CTS21180(e8on); cto900I7(e12on)
+// clang-format on
 
   // loiSHAINT = interferences avec les 2 proprietes 
   // - fournies par un PointIterator

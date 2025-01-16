@@ -101,7 +101,9 @@ public:
 
 private:
 
+// clang-format off
   NCollection_Vector<typename OpenGl::MatrixType<T>::Mat4> myStack;     //!< Collection used to maintenance matrix stack
+// clang-format on
   typename OpenGl::MatrixType<T>::Mat4                     myCurrent;   //!< Current matrix
   Standard_Integer                                         myStackHead; //!< Index of stack head
 };

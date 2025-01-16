@@ -62,7 +62,9 @@ public:
 
 protected:
 
+// clang-format off
   GLuint myBitmapList; //!< if of display list to draw sprite using glBitmap (for backward compatibility)
+// clang-format on
 
 };
 

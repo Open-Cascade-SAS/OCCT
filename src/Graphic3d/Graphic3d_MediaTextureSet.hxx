@@ -105,8 +105,10 @@ protected:
   Standard_Real                   myDuration;          //!< stream duration
   Standard_Integer                myFront;             //!< index of front texture
   Standard_Boolean                myToPresentFrame;    //!< flag
+// clang-format off
   Standard_Boolean                myIsPlanarYUV;       //!< front frame contains planar YUV data or native texture format
   Standard_Boolean                myIsFullRangeYUV;    //!< front frame defines full-range or reduced-range YUV
+// clang-format on
 
 };
 

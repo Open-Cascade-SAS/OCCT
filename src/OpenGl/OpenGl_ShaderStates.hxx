@@ -157,7 +157,9 @@ public:
 private:
 
   Handle(Graphic3d_LightSet) myLightSources;     //!< List of OCCT light sources
+// clang-format off
   Standard_Integer           mySpecIBLMapLevels; //!< Number of mipmap levels used in specular IBL map (0 by default or in case of using non-PBR shading model)
+// clang-format on
   Handle(OpenGl_ShadowMapArray) myShadowMaps;    //!< active shadowmap
   Standard_Boolean           myToCastShadows;    //!< enable/disable shadowmap
 
@@ -218,7 +220,9 @@ public:
 
 private:
 
+// clang-format off
   Graphic3d_RenderTransparentMethod myOitMode;     //!< active OIT method for the main GLSL program
+// clang-format on
   float                             myDepthFactor; //!< factor of depth influence to coverage
 };
 

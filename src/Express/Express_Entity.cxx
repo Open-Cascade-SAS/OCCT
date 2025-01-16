@@ -356,7 +356,9 @@ Standard_Boolean Express_Entity::GenerateClass() const
       for (Standard_Integer i = 2; i <= myInherit->Length(); i++)
       {
         Handle(Express_Entity) anEntity = myInherit->Value (i);
+// clang-format off
         anOS << "  Handle(" << anEntity->CPPName() << ") my" << anEntity->Name() << "; //!< supertype\n";
+// clang-format on
       }
       for (Standard_Integer i = 1; i <= myFields->Length(); i++)
       {
@@ -692,7 +694,9 @@ Standard_Boolean Express_Entity::GenerateClass() const
     // write method Share
     Express::WriteMethodStamp (anOS, "Share");
     std::ostringstream aStringOS;
+// clang-format off
     Standard_Integer aNnFileds2 = writeRWShareCode (aStringOS, 1, Standard_True); // write code for filling graph of references
+// clang-format on
     if (aRWCPPName.Length() < 40)
     {
       anOS << "void " << aRWCPPName << "::Share (const Handle(" << aCPPName << ")&" << ((aNnFileds2 > 1) ? "theEnt," : ",") << "\n";

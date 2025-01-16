@@ -53,7 +53,9 @@ void  IGESDimen_ToolCurveDimension::ReadOwnParams
   PR.ReadEntity(IR, PR.Current(), "General Note Entity",
 		STANDARD_TYPE(IGESDimen_GeneralNote), note); //szv#4:S4163:12Mar99 `st=` not needed
 
+// clang-format off
   PR.ReadEntity(IR, PR.Current(), "First Curve Entity", firstCurve); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   PR.ReadEntity(IR,PR.Current(),"Second Curve Entity",
 		secondCurve,Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
@@ -65,10 +67,12 @@ void  IGESDimen_ToolCurveDimension::ReadOwnParams
 		STANDARD_TYPE(IGESDimen_LeaderArrow), secondLeader); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR, PR.Current(), "First Witness Entity",
+// clang-format off
 		 STANDARD_TYPE(IGESDimen_WitnessLine), firstWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
 
   PR.ReadEntity (IR,PR.Current(),"Second Witness Entity",
 		 STANDARD_TYPE(IGESDimen_WitnessLine), secondWitness, Standard_True); //szv#4:S4163:12Mar99 `st=` not needed
+// clang-format on
 
   DirChecker(ent).CheckTypeAndForm(PR.CCheck(),ent);
   ent->Init

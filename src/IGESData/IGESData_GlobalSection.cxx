@@ -130,7 +130,9 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
   theDate.Nullify();
   theResolution        = 0.; theMaxCoord          = 0.; hasMaxCoord = Standard_False;
   theAuthorName.Nullify();  theCompanyName.Nullify();
+// clang-format off
   theIGESVersion       = 11;//3 //#66 rln Setting IGES 5.3 by default(To avoid misleading fails below)
+// clang-format on
   theDraftingStandard  = 0;
   theCascadeUnit       = UnitsMethods::GetCasCadeLengthUnit();
   theLastChangeDate.Nullify();  // nouveaute 5.1 (peut etre absente)

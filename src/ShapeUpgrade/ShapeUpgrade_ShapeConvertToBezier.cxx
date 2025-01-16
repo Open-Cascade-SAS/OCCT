@@ -254,7 +254,9 @@ Standard_Boolean ShapeUpgrade_ShapeConvertToBezier::Perform (const Standard_Bool
 	    B.Range(edgenext,face,0,1);
 	  }
 	   
+// clang-format off
 	  if(bezier.IsNull()  || beziernext.IsNull() ) continue; //gka fix against small edges ; merging ends of pcurves 
+// clang-format on
 	  Standard_Real f1,l1,f2,l2;
 	  f1 = bezier->FirstParameter();
 	  l1 = bezier->LastParameter();

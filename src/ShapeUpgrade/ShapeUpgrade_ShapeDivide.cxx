@@ -283,7 +283,9 @@ Standard_Boolean ShapeUpgrade_ShapeDivide::Perform(const Standard_Boolean newCon
     for (exp.Init (myShape, TopAbs_EDGE, TopAbs_WIRE); exp.More(); exp.Next()) {
 //smh#8
       TopoDS_Shape tmpE = exp.Current().Oriented ( TopAbs_FORWARD );
+// clang-format off
       TopoDS_Edge E = TopoDS::Edge (tmpE );                                       // protection against INTERNAL shapes
+// clang-format on
       TopoDS_Vertex V1,V2;
       TopExp::Vertices(E,V2,V1);
       if( V1.IsNull() && V2.IsNull() ) continue; // skl 27.10.2004 for OCC5624
