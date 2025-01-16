@@ -143,7 +143,7 @@ private:
   STEPConstruct_AP203Context theAP203;
   Handle(StepGeom_Axis2Placement3d) myAxis;
   StepData_Factors myGlobalFactor;
-  StepData_ConfParameters::WriteMode_StepSchema mySchema;
+  DESTEP_Parameters::WriteMode_StepSchema mySchema;
   TCollection_AsciiString myProductName;
 
 };

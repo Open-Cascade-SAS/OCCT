@@ -136,7 +136,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filena
 //purpose  : 
 //=======================================================================
 IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const Standard_CString filename,
-                                                   const StepData_ConfParameters& theParams)
+                                                   const DESTEP_Parameters& theParams)
 {
   Handle(IFSelect_WorkLibrary) aLibrary = WS()->WorkLibrary();
   Handle(Interface_Protocol) aProtocol = WS()->Protocol();
@@ -208,7 +208,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theN
 //purpose  : 
 //=======================================================================
 IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const Standard_CString theName,
-                                                     const StepData_ConfParameters& theParams,
+                                                     const DESTEP_Parameters& theParams,
                                                      std::istream& theIStream)
 {
   Handle(IFSelect_WorkLibrary) aLibrary = WS()->WorkLibrary();
@@ -326,7 +326,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
       }
       // determinate roots used ProductDefinitionContext
       if(IsRoot) {
-        StepData_ConfParameters::ReadMode_ProductContext aProdContMode = aStepModel->InternalParameters.ReadProductContext;
+        DESTEP_Parameters::ReadMode_ProductContext aProdContMode = aStepModel->InternalParameters.ReadProductContext;
         TCollection_AsciiString str1 = aStepModel->InternalParameters.GetString(aProdContMode);
         Standard_Integer ICS = aStepModel->InternalParameters.ReadProductContext;
         if(ICS>1) {

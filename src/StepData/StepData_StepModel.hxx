@@ -22,7 +22,7 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Resource_FormatType.hxx>
 #include <StepData_Factors.hxx>
-#include <StepData_ConfParameters.hxx>
+#include <DESTEP_Parameters.hxx>
 
 class Standard_Transient;
 class Interface_EntityIterator;
@@ -124,7 +124,7 @@ public:
 
 public:
 
-  StepData_ConfParameters InternalParameters;
+  DESTEP_Parameters InternalParameters;
 
   DEFINE_STANDARD_RTTIEXT(StepData_StepModel,Interface_InterfaceModel)
 

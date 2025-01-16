@@ -1,7 +1,6 @@
 StepData.cxx
 StepData.hxx
 StepData_Array1OfField.hxx
-StepData_ConfParameters.cxx
 StepData_ConfParameters.hxx
 StepData_DefaultGeneral.cxx
 StepData_DefaultGeneral.hxx

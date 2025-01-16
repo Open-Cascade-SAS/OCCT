@@ -17,7 +17,7 @@
 #include <Interface_Macros.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
-#include <StepData_ConfParameters.hxx>
+#include <DESTEP_Parameters.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_Protocol.hxx>
 #include <StepData_StepWriter.hxx>
@@ -140,7 +140,7 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
 IFSelect_ReturnStatus STEPControl_Writer::Transfer
   (const TopoDS_Shape& sh,
   const STEPControl_StepModelType mode,
-  const StepData_ConfParameters& theParams,
+  const DESTEP_Parameters& theParams,
   const Standard_Boolean compgraph,
   const Message_ProgressRange& theProgress)
 {

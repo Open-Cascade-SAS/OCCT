@@ -24,7 +24,7 @@
 #include <STEPCAFControl_DataMapOfLabelExternFile.hxx>
 #include <STEPControl_Writer.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
-#include <StepData_ConfParameters.hxx>
+#include <DESTEP_Parameters.hxx>
 #include <StepData_Factors.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
@@ -103,7 +103,7 @@ public:
   //! @param theProgress progress indicator
   //! Returns True if translation is OK
   Standard_EXPORT Standard_Boolean Transfer(const Handle(TDocStd_Document)& theDoc,
-                                            const StepData_ConfParameters& theParams,
+                                            const DESTEP_Parameters& theParams,
                                             const STEPControl_StepModelType theMode = STEPControl_AsIs,
                                             const Standard_CString theIsMulti = 0,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -118,7 +118,7 @@ public:
   //! This method uses if need to set parameters avoiding
   //! initialization from Interface_Static
   Standard_EXPORT Standard_Boolean Transfer(const TDF_Label& theLabel,
-                                            const StepData_ConfParameters& theParams,
+                                            const DESTEP_Parameters& theParams,
                                             const STEPControl_StepModelType theMode = STEPControl_AsIs,
                                             const Standard_CString theIsMulti = 0,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -133,7 +133,7 @@ public:
   //! This method uses if need to set parameters avoiding
   //! initialization from Interface_Static
   Standard_EXPORT Standard_Boolean Transfer(const TDF_LabelSequence& theLabelSeq,
-                                            const StepData_ConfParameters& theParams,
+                                            const DESTEP_Parameters& theParams,
                                             const STEPControl_StepModelType theMode = STEPControl_AsIs,
                                             const Standard_CString theIsMulti = 0,
                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
@@ -154,7 +154,7 @@ public:
   //! Returns True if translation is OK
   Standard_EXPORT Standard_Boolean Perform(const Handle(TDocStd_Document)& theDoc,
                                            const Standard_CString theFileName,
-                                           const StepData_ConfParameters& theParams,
+                                           const DESTEP_Parameters& theParams,
                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Returns data on external files

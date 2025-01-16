@@ -284,7 +284,7 @@ static Standard_Integer testreadstep(Draw_Interpretor& theDI,
   STEPControl_Controller::Init();
   XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
   IFSelect_ReturnStatus aReadStat;
-  StepData_ConfParameters aParameters;
+  DESTEP_Parameters aParameters;
   aParameters.InitFromStatic();
   int aNbSubShape = 0;
   OSD_Parallel::For
@@ -497,7 +497,7 @@ static Standard_Integer testwrite(Draw_Interpretor& theDI,
     return 1;
   }
 
-  StepData_ConfParameters aParameters;
+  DESTEP_Parameters aParameters;
   aParameters.InitFromStatic();
 
   OSD_Parallel::For

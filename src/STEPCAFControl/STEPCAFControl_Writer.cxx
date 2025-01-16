@@ -401,7 +401,7 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const Handle(TDocStd_Document)&
 //purpose  :
 //=======================================================================
 Standard_Boolean STEPCAFControl_Writer::Transfer(const Handle(TDocStd_Document)& theDoc,
-                                                 const StepData_ConfParameters& theParams,
+                                                 const DESTEP_Parameters& theParams,
                                                  const STEPControl_StepModelType theMode,
                                                  const Standard_CString theMulti,
                                                  const Message_ProgressRange& theProgress)
@@ -438,7 +438,7 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_Label& theLabel,
 //purpose  :
 //=======================================================================
 Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_Label& theLabel,
-                                                 const StepData_ConfParameters& theParams,
+                                                 const DESTEP_Parameters& theParams,
                                                  const STEPControl_StepModelType theMode,
                                                  const Standard_CString theIsMulti,
                                                  const Message_ProgressRange& theProgress)
@@ -475,7 +475,7 @@ Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_LabelSequence& theLab
 //purpose  :
 //=======================================================================
 Standard_Boolean STEPCAFControl_Writer::Transfer(const TDF_LabelSequence& theLabels,
-                                                 const StepData_ConfParameters& theParams,
+                                                 const DESTEP_Parameters& theParams,
                                                  const STEPControl_StepModelType theMode,
                                                  const Standard_CString theIsMulti,
                                                  const Message_ProgressRange& theProgress)
@@ -514,7 +514,7 @@ Standard_Boolean STEPCAFControl_Writer::Perform(const Handle(TDocStd_Document)& 
 //=======================================================================
 Standard_Boolean STEPCAFControl_Writer::Perform(const Handle(TDocStd_Document)& theDoc,
                                                 const Standard_CString theFileName,
-                                                const StepData_ConfParameters& theParams,
+                                                const DESTEP_Parameters& theParams,
                                                 const Message_ProgressRange& theProgress)
 {
   if (!Transfer(theDoc, theParams, STEPControl_AsIs, 0L, theProgress))
@@ -687,8 +687,8 @@ Standard_Boolean STEPCAFControl_Writer::transfer(STEPControl_Writer& theWriter,
       if (aPS1.UserBreak())
         return Standard_False;
 
-      StepData_ConfParameters::WriteMode_Assembly assemblymode = aModel->InternalParameters.WriteAssembly;
-      aModel->InternalParameters.WriteAssembly = StepData_ConfParameters::WriteMode_Assembly_On;
+      DESTEP_Parameters::WriteMode_Assembly assemblymode = aModel->InternalParameters.WriteAssembly;
+      aModel->InternalParameters.WriteAssembly = DESTEP_Parameters::WriteMode_Assembly_On;
       theWriter.Transfer(aSass, STEPControl_AsIs, aModel->InternalParameters, Standard_True, aPS1.Next());
       aModel->InternalParameters.WriteAssembly = assemblymode;
     }
@@ -849,8 +849,8 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label& theLabe
     anExtFile->SetWS(aNewWS);
     anExtFile->SetName(aNewName);
     anExtFile->SetLabel(theLabel);
-    StepData_ConfParameters::WriteMode_Assembly anAssemblymode = aStepWriter.Model()->InternalParameters.WriteAssembly;
-    aStepWriter.Model()->InternalParameters.WriteAssembly = StepData_ConfParameters::WriteMode_Assembly_Off;
+    DESTEP_Parameters::WriteMode_Assembly anAssemblymode = aStepWriter.Model()->InternalParameters.WriteAssembly;
+    aStepWriter.Model()->InternalParameters.WriteAssembly = DESTEP_Parameters::WriteMode_Assembly_Off;
     const Standard_CString anIsMulti = 0;
     anExtFile->SetTransferStatus(transfer(aStepWriter, aLabelSeq, theMode, anIsMulti, Standard_True, theProgress));
     aStepWriter.Model()->InternalParameters.WriteAssembly = anAssemblymode;

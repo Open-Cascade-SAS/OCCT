@@ -14,10 +14,10 @@
 #ifndef _DESTEP_ConfigurationNode_HeaderFile
 #define _DESTEP_ConfigurationNode_HeaderFile
 
+#include <DESTEP_Parameters.hxx>
 #include <DE_ConfigurationNode.hxx>
 #include <Resource_FormatType.hxx>
 #include <STEPControl_StepModelType.hxx>
-#include <StepData_ConfParameters.hxx>
 #include <UnitsMethods_LengthUnit.hxx>
 
 //! The purpose of this class is to configure the transfer process for STEP format
@@ -87,7 +87,7 @@ public:
     Standard_OVERRIDE;
 
 public:
-  StepData_ConfParameters InternalParameters;
+  DESTEP_Parameters InternalParameters;
 };
 
 #endif // _DESTEP_ConfigurationNode_HeaderFile

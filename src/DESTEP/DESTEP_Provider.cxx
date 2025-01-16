@@ -14,12 +14,12 @@
 #include <DESTEP_Provider.hxx>
 
 #include <DESTEP_ConfigurationNode.hxx>
+#include <DESTEP_Parameters.hxx>
 #include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPCAFControl_Writer.hxx>
-#include <StepData_ConfParameters.hxx>
 #include <StepData_StepModel.hxx>
 #include <UnitsMethods.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -70,9 +70,9 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
   aReader.SetPropsMode(aNode->InternalParameters.ReadProps);
   aReader.SetMetaMode(aNode->InternalParameters.ReadMetadata);
 
-  IFSelect_ReturnStatus   aReadStat = IFSelect_RetVoid;
-  StepData_ConfParameters aParams   = aNode->InternalParameters;
-  aReadStat                         = aReader.ReadFile(thePath.ToCString(), aParams);
+  IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
+  DESTEP_Parameters     aParams   = aNode->InternalParameters;
+  aReadStat                       = aReader.ReadFile(thePath.ToCString(), aParams);
   if (aReadStat != IFSelect_RetDone)
   {
     Message::SendFail() << "Error in the DESTEP_Provider during reading the file " << thePath
@@ -114,8 +114,8 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetNameMode(aNode->InternalParameters.WriteName);
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
   aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
-  StepData_ConfParameters aParams        = aNode->InternalParameters;
-  Standard_Real           aScaleFactorMM = 1.;
+  DESTEP_Parameters aParams        = aNode->InternalParameters;
+  Standard_Real     aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
                                           aScaleFactorMM,
                                           UnitsMethods_LengthUnit_Millimeter))
@@ -200,8 +200,8 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
   personizeWS(theWS);
   STEPControl_Reader aReader;
   aReader.SetWS(theWS);
-  IFSelect_ReturnStatus   aReadstat = IFSelect_RetVoid;
-  StepData_ConfParameters aParams   = aNode->InternalParameters;
+  IFSelect_ReturnStatus aReadstat   = IFSelect_RetVoid;
+  DESTEP_Parameters     aParams     = aNode->InternalParameters;
   aReadstat                         = aReader.ReadFile(thePath.ToCString(), aParams);
   Handle(StepData_StepModel) aModel = aReader.StepModel();
   if (aReadstat != IFSelect_RetDone)
@@ -242,7 +242,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
   IFSelect_ReturnStatus      aWritestat = IFSelect_RetVoid;
   Handle(StepData_StepModel) aModel     = aWriter.Model();
   ;
-  StepData_ConfParameters aParams = aNode->InternalParameters;
+  DESTEP_Parameters aParams = aNode->InternalParameters;
   aModel->SetLocalLengthUnit(aNode->GlobalParameters.SystemUnit);
   UnitsMethods_LengthUnit aTargetUnit =
     UnitsMethods::GetLengthUnitByFactorValue(aNode->GlobalParameters.LengthUnit,

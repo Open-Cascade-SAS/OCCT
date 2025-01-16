@@ -1,4 +1,6 @@
 DESTEP_ConfigurationNode.cxx
 DESTEP_ConfigurationNode.hxx
+DESTEP_Parameters.cxx
+DESTEP_Parameters.hxx
 DESTEP_Provider.cxx
 DESTEP_Provider.hxx

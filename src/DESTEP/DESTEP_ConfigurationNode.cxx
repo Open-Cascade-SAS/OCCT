@@ -55,17 +55,17 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
   InternalParameters.ReadBSplineContinuity =
-    (StepData_ConfParameters::ReadMode_BSplineContinuity)theResource->IntegerVal(
+    (DESTEP_Parameters::ReadMode_BSplineContinuity)theResource->IntegerVal(
       "read.iges.bspline.continuity",
       InternalParameters.ReadBSplineContinuity,
       aScope);
   InternalParameters.ReadPrecisionMode =
-    (StepData_ConfParameters::ReadMode_Precision)
+    (DESTEP_Parameters::ReadMode_Precision)
       theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
   InternalParameters.ReadMaxPrecisionMode =
-    (StepData_ConfParameters::ReadMode_MaxPrecision)theResource->IntegerVal(
+    (DESTEP_Parameters::ReadMode_MaxPrecision)theResource->IntegerVal(
       "read.maxprecision.mode",
       InternalParameters.ReadMaxPrecisionMode,
       aScope);
@@ -76,16 +76,16 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                             InternalParameters.ReadSameParamMode,
                             aScope);
   InternalParameters.ReadSurfaceCurveMode =
-    (StepData_ConfParameters::ReadMode_SurfaceCurve)theResource->IntegerVal(
+    (DESTEP_Parameters::ReadMode_SurfaceCurve)theResource->IntegerVal(
       "read.surfacecurve.mode",
       InternalParameters.ReadSurfaceCurveMode,
       aScope);
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
   InternalParameters.AngleUnit =
-    (StepData_ConfParameters::AngleUnitMode)theResource->IntegerVal("angleunit.mode",
-                                                                    InternalParameters.AngleUnit,
-                                                                    aScope);
+    (DESTEP_Parameters::AngleUnitMode)theResource->IntegerVal("angleunit.mode",
+                                                              InternalParameters.AngleUnit,
+                                                              aScope);
 
   InternalParameters.ReadResourceName =
     theResource->StringVal("read.resource.name", InternalParameters.ReadResourceName, aScope);
@@ -94,18 +94,19 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
   InternalParameters.ReadProductMode =
     theResource->BooleanVal("read.product.mode", InternalParameters.ReadProductMode, aScope);
   InternalParameters.ReadProductContext =
-    (StepData_ConfParameters::ReadMode_ProductContext)theResource->IntegerVal(
+    (DESTEP_Parameters::ReadMode_ProductContext)theResource->IntegerVal(
       "read.product.context",
       InternalParameters.ReadProductContext,
       aScope);
   InternalParameters.ReadShapeRepr =
-    (StepData_ConfParameters::ReadMode_ShapeRepr)
-      theResource->IntegerVal("read.shape.repr", InternalParameters.ReadShapeRepr, aScope);
+    (DESTEP_Parameters::ReadMode_ShapeRepr)theResource->IntegerVal("read.shape.repr",
+                                                                   InternalParameters.ReadShapeRepr,
+                                                                   aScope);
   InternalParameters.ReadTessellated =
-    (StepData_ConfParameters::RWMode_Tessellated)
+    (DESTEP_Parameters::RWMode_Tessellated)
       theResource->IntegerVal("read.tessellated", InternalParameters.ReadTessellated, aScope);
   InternalParameters.ReadAssemblyLevel =
-    (StepData_ConfParameters::ReadMode_AssemblyLevel)
+    (DESTEP_Parameters::ReadMode_AssemblyLevel)
       theResource->IntegerVal("read.assembly.level", InternalParameters.ReadAssemblyLevel, aScope);
   InternalParameters.ReadRelationship =
     theResource->BooleanVal("read.shape.relationship", InternalParameters.ReadRelationship, aScope);
@@ -145,20 +146,22 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("read.metadata", InternalParameters.ReadMetadata, aScope);
 
   InternalParameters.WritePrecisionMode =
-    (StepData_ConfParameters::WriteMode_PrecisionMode)theResource->IntegerVal(
+    (DESTEP_Parameters::WriteMode_PrecisionMode)theResource->IntegerVal(
       "write.precision.mode",
       InternalParameters.WritePrecisionMode,
       aScope);
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
   InternalParameters.WriteAssembly =
-    (StepData_ConfParameters::WriteMode_Assembly)
-      theResource->IntegerVal("write.assembly", InternalParameters.WriteAssembly, aScope);
+    (DESTEP_Parameters::WriteMode_Assembly)theResource->IntegerVal("write.assembly",
+                                                                   InternalParameters.WriteAssembly,
+                                                                   aScope);
   InternalParameters.WriteSchema =
-    (StepData_ConfParameters::WriteMode_StepSchema)
-      theResource->IntegerVal("write.schema", InternalParameters.WriteSchema, aScope);
+    (DESTEP_Parameters::WriteMode_StepSchema)theResource->IntegerVal("write.schema",
+                                                                     InternalParameters.WriteSchema,
+                                                                     aScope);
   InternalParameters.WriteTessellated =
-    (StepData_ConfParameters::RWMode_Tessellated)
+    (DESTEP_Parameters::RWMode_Tessellated)
       theResource->IntegerVal("write.tessellated", InternalParameters.WriteTessellated, aScope);
   InternalParameters.WriteProductName =
     theResource->StringVal("write.product.name", InternalParameters.WriteProductName, aScope);
@@ -175,7 +178,7 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
   InternalParameters.WriteSequence =
     theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
   InternalParameters.WriteVertexMode =
-    (StepData_ConfParameters::WriteMode_VertexMode)
+    (DESTEP_Parameters::WriteMode_VertexMode)
       theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
   InternalParameters.WriteSubshapeNames =
     theResource->BooleanVal("write.stepcaf.subshapes.name",
