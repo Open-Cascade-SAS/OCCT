@@ -442,7 +442,7 @@ jobs:
       run: |
         cd install
         call env.bat vc14 win64 release
-        DRAWEXE.exe -v -c testgrid
+        DRAWEXE.exe -v -c testgrid -outdir results/windows-x64
       shell: cmd
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -522,7 +522,7 @@ jobs:
       run: |
         cd install
         call env.bat clang win64 release
-        DRAWEXE.exe -v -c testgrid
+        DRAWEXE.exe -v -c testgrid -outdir results/windows-clang-x64
       shell: cmd
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -576,7 +576,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid caf basic
+         ./DRAWEXE -v -c testgrid -outdir results/macos-x64 caf basic
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -631,7 +631,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid caf basic
+         ./DRAWEXE -v -c testgrid -outdir results/macos-gcc-x64 caf basic
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -686,7 +686,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid -outdir results/linux-clang-x64
       shell: bash
       env:
         DISPLAY: :99
@@ -742,7 +742,7 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid
+         ./DRAWEXE -v -c testgrid -outdir results/linux-gcc-x64
       shell: bash
       env:
         DISPLAY: :99
@@ -894,24 +894,12 @@ jobs:
           cd install
           cd bin
           source env.sh
-          for dir in results/current/windows-x64/*; do RESULTS_CURRENT_WINDOWS_X64=$dir; done
-          for dir in results/master/windows-x64/*; do RESULTS_MASTER_WINDOWS_X64=$dir; done
-          for dir in results/current/windows-clang-x64/*; do RESULTS_CURRENT_WINDOWS_CLANG_X64=$dir; done
-          for dir in results/master/windows-clang-x64/*; do RESULTS_MASTER_WINDOWS_CLANG_X64=$dir; done
-          for dir in results/current/macos-x64/*; do RESULTS_CURRENT_MACOS_X64=$dir; done
-          for dir in results/master/macos-x64/*; do RESULTS_MASTER_MACOS_X64=$dir; done
-          for dir in results/current/macos-gcc-x64/*; do RESULTS_CURRENT_MACOS_GCC_X64=$dir; done
-          for dir in results/master/macos-gcc-x64/*; do RESULTS_MASTER_MACOS_GCC_X64=$dir; done
-          for dir in results/current/linux-clang-x64/*; do RESULTS_CURRENT_LINUX_CLANG_X64=$dir; done
-          for dir in results/master/linux-clang-x64/*; do RESULTS_MASTER_LINUX_CLANG_X64=$dir; done
-          for dir in results/current/linux-gcc-x64/*; do RESULTS_CURRENT_LINUX_GCC_X64=$dir; done
-          for dir in results/master/linux-gcc-x64/*; do RESULTS_MASTER_LINUX_GCC_X64=$dir; done
-          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_WINDOWS_X64 $RESULTS_MASTER_WINDOWS_X64 & 
-          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_WINDOWS_CLANG_X64 $RESULTS_MASTER_WINDOWS_CLANG_X64 &
-          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_MACOS_X64 $RESULTS_MASTER_MACOS_X64 &
-          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_MACOS_GCC_X64 $RESULTS_MASTER_MACOS_GCC_X64 &
-          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_LINUX_CLANG_X64 $RESULTS_MASTER_LINUX_CLANG_X64 &
-          ./DRAWEXE -v -c testdiff $RESULTS_CURRENT_LINUX_GCC_X64 $RESULTS_MASTER_LINUX_GCC_X64 &
+          ./DRAWEXE -v -c testdiff results/windows-x64 results/master/windows-x64 &
+          ./DRAWEXE -v -c testdiff results/windows-clang-x64 results/master/windows-clang-x64 &
+          ./DRAWEXE -v -c testdiff results/macos-x64 results/master/macos-x64 &
+          ./DRAWEXE -v -c testdiff results/macos-gcc-x64 results/master/macos-gcc-x64 &
+          ./DRAWEXE -v -c testdiff results/linux-clang-x64 results/master/linux-clang-x64 &
+          ./DRAWEXE -v -c testdiff results/linux-gcc-x64 results/master/linux-gcc-x64 &
           wait
         shell: bash
         env:
