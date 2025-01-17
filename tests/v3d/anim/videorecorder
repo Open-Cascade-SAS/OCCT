@@ -14,7 +14,8 @@ pload VISUALIZATION
 pload OPENGL
 if { $::tcl_platform(os) == "Darwin" } { vcaps -core }
 
-source $env(CSF_OCCTTestsPath)/v3d/anim/propeller
+set test_dir [file dirname [info script]]
+source [file join $test_dir "propeller"]
 vraytrace 1
 vrenderparams -msaa 8
 vrenderparams -fsaa 1
