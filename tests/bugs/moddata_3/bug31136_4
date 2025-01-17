@@ -3,7 +3,7 @@ puts "0031136: BinXCAF persistence loses normals from triangulation-only Faces"
 puts "=========="
 puts ""
 
-pload MODELING XDE OCAF VISUALIZATION
+pload MODELING OCAF XDE VISUALIZATION
 source $env(CSF_OCCTSamplesPath)/tcl/cad.tcl
 trinfo res
 wavefront res $imagedir/${test_image}

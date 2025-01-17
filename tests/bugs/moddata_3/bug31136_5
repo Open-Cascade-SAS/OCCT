@@ -3,7 +3,7 @@ puts "0031136: BinXCAF persistence loses normals from triangulation-only Faces"
 puts "=========="
 puts ""
 
-pload XDE OCAF
+pload OCAF XDE
 
 StoreTriangulation 1 -normals
 set res [StoreTriangulation -getnormals]
