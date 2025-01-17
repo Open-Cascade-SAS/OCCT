@@ -13,6 +13,10 @@ puts ""
 set draftAngle 15
 set slabThick 30
 
+# Ubuntu have some critical issue on GH
+# originally tests have less then 1s test execution time
+cpulimit 30
+
 if [catch {OCC712 ${draftAngle} ${slabThick} } catch_result] {
     puts "Faulty OCC712"
 } else {
