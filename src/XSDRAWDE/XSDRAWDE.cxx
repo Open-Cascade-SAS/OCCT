@@ -19,7 +19,7 @@
 #include <DE_ConfigurationContext.hxx>
 #include <DE_Provider.hxx>
 #include <DE_Wrapper.hxx>
-#include <DEBRepCascade_ConfigurationNode.hxx>
+#include <DEBREP_ConfigurationNode.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_PluginMacro.hxx>
@@ -423,7 +423,7 @@ void XSDRAWDE::Factory(Draw_Interpretor& theDI)
   XSDRAW::LoadDraw(theDI);
 
   // Workaround to force load TKDECascade lib
-  DEBRepCascade_ConfigurationNode aTmpObj;
+  DEBREP_ConfigurationNode aTmpObj;
   (void)aTmpObj;
 }
 

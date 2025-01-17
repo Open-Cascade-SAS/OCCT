@@ -11,91 +11,101 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <IGESCAFControl_ConfigurationNode.hxx>
+#include <DEIGES_ConfigurationNode.hxx>
 
+#include <DEIGES_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
 #include <DE_PluginHolder.hxx>
-#include <IGESCAFControl_Provider.hxx>
 #include <NCollection_Buffer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(IGESCAFControl_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ConfigurationNode)
 
 namespace
 {
-  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
-  {
-    static const TCollection_AsciiString aScope = "provider";
-    return aScope;
-  }
-
-  // Wrapper to auto-load DE component
-  DE_PluginHolder<IGESCAFControl_ConfigurationNode> THE_OCCT_IGES_COMPONENT_PLUGIN;
+static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+{
+  static const TCollection_AsciiString aScope = "provider";
+  return aScope;
 }
 
-//=======================================================================
-// function : IGESCAFControl_ConfigurationNode
-// purpose  : 
-//=======================================================================
-IGESCAFControl_ConfigurationNode::IGESCAFControl_ConfigurationNode() :
-  DE_ConfigurationNode()
-{}
+// Wrapper to auto-load DE component
+DE_PluginHolder<DEIGES_ConfigurationNode> THE_OCCT_IGES_COMPONENT_PLUGIN;
+} // namespace
 
-//=======================================================================
-// function : IGESCAFControl_ConfigurationNode
-// purpose  : 
-//=======================================================================
-IGESCAFControl_ConfigurationNode::IGESCAFControl_ConfigurationNode(const Handle(IGESCAFControl_ConfigurationNode)& theNode)
-  :DE_ConfigurationNode(theNode)
+//=================================================================================================
+
+DEIGES_ConfigurationNode::DEIGES_ConfigurationNode()
+    : DE_ConfigurationNode()
+{
+}
+
+//=================================================================================================
+
+DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(const Handle(DEIGES_ConfigurationNode)& theNode)
+    : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
 }
 
-//=======================================================================
-// function : Load
-// purpose  : 
-//=======================================================================
-bool IGESCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
-{
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+//=================================================================================================
 
-  InternalParameters.ReadBSplineContinuity = (ReadMode_BSplineContinuity)
-    theResource->IntegerVal("read.iges.bspline.continuity", InternalParameters.ReadBSplineContinuity, aScope);
-  InternalParameters.ReadPrecisionMode = (ReadMode_Precision)
-    theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
+bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+{
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+
+  InternalParameters.ReadBSplineContinuity =
+    (ReadMode_BSplineContinuity)theResource->IntegerVal("read.iges.bspline.continuity",
+                                                        InternalParameters.ReadBSplineContinuity,
+                                                        aScope);
+  InternalParameters.ReadPrecisionMode =
+    (ReadMode_Precision)theResource->IntegerVal("read.precision.mode",
+                                                InternalParameters.ReadPrecisionMode,
+                                                aScope);
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
-  InternalParameters.ReadMaxPrecisionMode = (ReadMode_MaxPrecision)
-    theResource->IntegerVal("read.maxprecision.mode", InternalParameters.ReadMaxPrecisionMode, aScope);
+  InternalParameters.ReadMaxPrecisionMode =
+    (ReadMode_MaxPrecision)theResource->IntegerVal("read.maxprecision.mode",
+                                                   InternalParameters.ReadMaxPrecisionMode,
+                                                   aScope);
   InternalParameters.ReadMaxPrecisionVal =
     theResource->RealVal("read.maxprecision.val", InternalParameters.ReadMaxPrecisionVal, aScope);
-  InternalParameters.ReadSameParamMode = 
-    theResource->BooleanVal("read.stdsameparameter.mode", InternalParameters.ReadSameParamMode, aScope);
-  InternalParameters.ReadSurfaceCurveMode = (ReadMode_SurfaceCurve)
-    theResource->IntegerVal("read.surfacecurve.mode", InternalParameters.ReadSurfaceCurveMode, aScope);
+  InternalParameters.ReadSameParamMode =
+    theResource->BooleanVal("read.stdsameparameter.mode",
+                            InternalParameters.ReadSameParamMode,
+                            aScope);
+  InternalParameters.ReadSurfaceCurveMode =
+    (ReadMode_SurfaceCurve)theResource->IntegerVal("read.surfacecurve.mode",
+                                                   InternalParameters.ReadSurfaceCurveMode,
+                                                   aScope);
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
 
-  InternalParameters.ReadApproxd1 = 
+  InternalParameters.ReadApproxd1 =
     theResource->BooleanVal("read.bspline.approxd1.mode", InternalParameters.ReadApproxd1, aScope);
   InternalParameters.ReadResourceName =
     theResource->StringVal("read.resource.name", InternalParameters.ReadResourceName, aScope);
   InternalParameters.ReadSequence =
     theResource->StringVal("read.sequence", InternalParameters.ReadSequence, aScope);
-  InternalParameters.ReadFaultyEntities = 
+  InternalParameters.ReadFaultyEntities =
     theResource->BooleanVal("read.fau_lty.entities", InternalParameters.ReadFaultyEntities, aScope);
-  InternalParameters.ReadOnlyVisible = 
+  InternalParameters.ReadOnlyVisible =
     theResource->BooleanVal("read.onlyvisible", InternalParameters.ReadOnlyVisible, aScope);
-  InternalParameters.ReadColor = 
+  InternalParameters.ReadColor =
     theResource->BooleanVal("read.color", InternalParameters.ReadColor, aScope);
-  InternalParameters.ReadName = 
+  InternalParameters.ReadName =
     theResource->BooleanVal("read.name", InternalParameters.ReadName, aScope);
-  InternalParameters.ReadLayer = 
+  InternalParameters.ReadLayer =
     theResource->BooleanVal("read.layer", InternalParameters.ReadLayer, aScope);
 
-  InternalParameters.WriteBRepMode = (WriteMode_BRep)
-    theResource->IntegerVal("write.brep.mode", InternalParameters.WriteBRepMode, aScope);
-  InternalParameters.WriteConvertSurfaceMode = (WriteMode_ConvertSurface)
-    theResource->IntegerVal("write.convertsurface.mode", InternalParameters.WriteConvertSurfaceMode, aScope);
+  InternalParameters.WriteBRepMode =
+    (WriteMode_BRep)theResource->IntegerVal("write.brep.mode",
+                                            InternalParameters.WriteBRepMode,
+                                            aScope);
+  InternalParameters.WriteConvertSurfaceMode =
+    (WriteMode_ConvertSurface)theResource->IntegerVal("write.convertsurface.mode",
+                                                      InternalParameters.WriteConvertSurfaceMode,
+                                                      aScope);
   InternalParameters.WriteHeaderAuthor =
     theResource->StringVal("write.header.author", InternalParameters.WriteHeaderAuthor, aScope);
   InternalParameters.WriteHeaderCompany =
@@ -108,34 +118,38 @@ bool IGESCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->StringVal("write.resource.name", InternalParameters.WriteResourceName, aScope);
   InternalParameters.WriteSequence =
     theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
-  InternalParameters.WritePrecisionMode = (WriteMode_PrecisionMode)
-    theResource->IntegerVal("write.precision.mode", InternalParameters.WritePrecisionMode, aScope);
+  InternalParameters.WritePrecisionMode =
+    (WriteMode_PrecisionMode)theResource->IntegerVal("write.precision.mode",
+                                                     InternalParameters.WritePrecisionMode,
+                                                     aScope);
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
-  InternalParameters.WritePlaneMode = (WriteMode_PlaneMode)
-    theResource->IntegerVal("write.plane.mode", InternalParameters.WritePlaneMode, aScope);
-  InternalParameters.WriteOffsetMode = 
+  InternalParameters.WritePlaneMode =
+    (WriteMode_PlaneMode)theResource->IntegerVal("write.plane.mode",
+                                                 InternalParameters.WritePlaneMode,
+                                                 aScope);
+  InternalParameters.WriteOffsetMode =
     theResource->BooleanVal("write.offset", InternalParameters.WriteOffsetMode, aScope);
-  InternalParameters.WriteColor = 
+  InternalParameters.WriteColor =
     theResource->BooleanVal("write.color", InternalParameters.WriteColor, aScope);
-  InternalParameters.WriteName = 
+  InternalParameters.WriteName =
     theResource->BooleanVal("write.name", InternalParameters.WriteName, aScope);
-  InternalParameters.WriteLayer = 
+  InternalParameters.WriteLayer =
     theResource->BooleanVal("write.layer", InternalParameters.WriteLayer, aScope);
 
   return true;
 }
 
-//=======================================================================
-// function : Save
-// purpose  :
-//=======================================================================
-TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
+//=================================================================================================
+
+TCollection_AsciiString DEIGES_ConfigurationNode::Save() const
 {
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
-  aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
+  aResult =
+    aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Common parameters:\n";
@@ -145,7 +159,8 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "!Manages the continuity of BSpline curves (IGES entities 106, 112 and 126) ";
   aResult += "after translation to Open CASCADE Technology\n";
   aResult += "!Default value: 1. Available values: 0, 1, 2\n";
-  aResult += aScope + "read.iges.bspline.continuity :\t " + InternalParameters.ReadBSplineContinuity + "\n";
+  aResult +=
+    aScope + "read.iges.bspline.continuity :\t " + InternalParameters.ReadBSplineContinuity + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -163,12 +178,15 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Defines the mode of applying the maximum allowed tolerance\n";
-  aResult += "!Default value: \"Preferred\"(0). Available values: \"Preferred\"(0), \"Forced\"(1)\n";
-  aResult += aScope + "read.maxprecision.mode :\t " + InternalParameters.ReadMaxPrecisionMode + "\n";
+  aResult +=
+    "!Default value: \"Preferred\"(0). Available values: \"Preferred\"(0), \"Forced\"(1)\n";
+  aResult +=
+    aScope + "read.maxprecision.mode :\t " + InternalParameters.ReadMaxPrecisionMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the maximum allowable tolerance (in internal units, which are specified in xstep.cascade.unit)";
+  aResult += "!Defines the maximum allowable tolerance (in internal units, which are specified in "
+             "xstep.cascade.unit)";
   aResult += " of the shape\n";
   aResult += "!Default value: 1. Available values: any real positive (non null) value\n";
   aResult += aScope + "read.maxprecision.val :\t " + InternalParameters.ReadMaxPrecisionVal + "\n";
@@ -177,22 +195,28 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Defines the using of BRepLib::SameParameter\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(0)\n";
-  aResult += aScope + "read.stdsameparameter.mode :\t " + InternalParameters.ReadSameParamMode + "\n";
+  aResult +=
+    aScope + "read.stdsameparameter.mode :\t " + InternalParameters.ReadSameParamMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Preference for the computation of curves in case of 2D/3D inconsistency in an entity ";
+  aResult +=
+    "!Preference for the computation of curves in case of 2D/3D inconsistency in an entity ";
   aResult += "which has both 2D and 3D representations.\n";
-  aResult += "!Default value: \"Default\"(0). Available values: \"Default\"(0), \"2DUse_Preferred\"(2), ";
+  aResult +=
+    "!Default value: \"Default\"(0). Available values: \"Default\"(0), \"2DUse_Preferred\"(2), ";
   aResult += "\"2DUse_Forced\"(-2), \"3DUse_Preferred\"(3), \"3DUse_Forced\"(-3)\n";
-  aResult += aScope + "read.surfacecurve.mode :\t " + InternalParameters.ReadSurfaceCurveMode + "\n";
+  aResult +=
+    aScope + "read.surfacecurve.mode :\t " + InternalParameters.ReadSurfaceCurveMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!This parameter is used within the BRepLib::EncodeRegularity() function ";
   aResult += "which is called for a shape read ";
-  aResult += "from an IGES or a STEP file at the end of translation process.This function sets the regularity flag of";
-  aResult += " an edge in a shell when this edge is shared by two faces.This flag shows the continuity, ";
+  aResult += "from an IGES or a STEP file at the end of translation process.This function sets the "
+             "regularity flag of";
+  aResult +=
+    " an edge in a shell when this edge is shared by two faces.This flag shows the continuity, ";
   aResult += "which these two faces are connected with at that edge.\n";
   aResult += "!Default value (in degrees): 0.57295779513. Available values: <double>\n";
   aResult += aScope + "read.encoderegularity.angle :\t " + InternalParameters.EncodeRegAngle + "\n";
@@ -203,8 +227,10 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!If set to True, it affects the translation of bspline curves of degree 1 from IGES: ";
-  aResult += "these curves(which geometrically are polylines) are split by duplicated points, and the translator ";
+  aResult +=
+    "!If set to True, it affects the translation of bspline curves of degree 1 from IGES: ";
+  aResult += "these curves(which geometrically are polylines) are split by duplicated points, and "
+             "the translator ";
   aResult += "attempts to convert each of the obtained parts to a bspline of a higher continuity\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(1)\n";
   aResult += aScope + "read.bspline.approxd1.mode :\t " + InternalParameters.ReadApproxd1 + "\n";
@@ -229,7 +255,8 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Controls transferring invisible sub entities which logically depend on the grouping entities\n";
+  aResult += "!Controls transferring invisible sub entities which logically depend on the grouping "
+             "entities\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(1)\n";
   aResult += aScope + "read.onlyvisible :\t " + InternalParameters.ReadOnlyVisible + "\n";
   aResult += "!\n";
@@ -263,11 +290,15 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!When writing to IGES in the BRep mode, this parameter indicates whether elementary surfaces";
-  aResult += "(cylindrical, conical, spherical, and toroidal) are converted into corresponding IGES 5.3 entities";
-  aResult += "(if the value of a parameter value is On), or written as surfaces of revolution(by default)\n";
+  aResult +=
+    "!When writing to IGES in the BRep mode, this parameter indicates whether elementary surfaces";
+  aResult += "(cylindrical, conical, spherical, and toroidal) are converted into corresponding "
+             "IGES 5.3 entities";
+  aResult +=
+    "(if the value of a parameter value is On), or written as surfaces of revolution(by default)\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(1)\n";
-  aResult += aScope + "write.convertsurface.mode :\t " + InternalParameters.WriteConvertSurfaceMode + "\n";
+  aResult +=
+    aScope + "write.convertsurface.mode :\t " + InternalParameters.WriteConvertSurfaceMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -278,7 +309,8 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Gives the name of the sending company\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.header.company :\t " + InternalParameters.WriteHeaderCompany + "\n";
   aResult += "!\n";
 
@@ -292,7 +324,8 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Gives the name of the receiving company\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.header.receiver :\t " + InternalParameters.WriteHeaderReciever + "\n";
   aResult += "!\n";
 
@@ -316,7 +349,8 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!This parameter gives the resolution value for an IGES file when the write.precision.mode parameter value is 1\n";
+  aResult += "!This parameter gives the resolution value for an IGES file when the "
+             "write.precision.mode parameter value is 1\n";
   aResult += "!Default value: 0.0001. Available values: any real positive (non null) value\n";
   aResult += aScope + "write.precision.val :\t " + InternalParameters.WritePrecisionVal + "\n";
   aResult += "!\n";
@@ -355,65 +389,51 @@ TCollection_AsciiString IGESCAFControl_ConfigurationNode::Save() const
   return aResult;
 }
 
-//=======================================================================
-// function : Copy
-// purpose  :
-//=======================================================================
-Handle(DE_ConfigurationNode) IGESCAFControl_ConfigurationNode::Copy() const
+//=================================================================================================
+
+Handle(DE_ConfigurationNode) DEIGES_ConfigurationNode::Copy() const
 {
-  return new IGESCAFControl_ConfigurationNode(*this);
+  return new DEIGES_ConfigurationNode(*this);
 }
 
-//=======================================================================
-// function : BuildProvider
-// purpose  :
-//=======================================================================
-Handle(DE_Provider) IGESCAFControl_ConfigurationNode::BuildProvider()
+//=================================================================================================
+
+Handle(DE_Provider) DEIGES_ConfigurationNode::BuildProvider()
 {
-  return new IGESCAFControl_Provider(this);
+  return new DEIGES_Provider(this);
 }
 
-//=======================================================================
-// function : IsImportSupported
-// purpose  :
-//=======================================================================
-bool IGESCAFControl_ConfigurationNode::IsImportSupported() const
+//=================================================================================================
+
+bool DEIGES_ConfigurationNode::IsImportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : IsExportSupported
-// purpose  :
-//=======================================================================
-bool IGESCAFControl_ConfigurationNode::IsExportSupported() const
+//=================================================================================================
+
+bool DEIGES_ConfigurationNode::IsExportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : GetFormat
-// purpose  :
-//=======================================================================
-TCollection_AsciiString IGESCAFControl_ConfigurationNode::GetFormat() const
+//=================================================================================================
+
+TCollection_AsciiString DEIGES_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("IGES");
 }
 
-//=======================================================================
-// function : GetVendor
-// purpose  :
-//=======================================================================
-TCollection_AsciiString IGESCAFControl_ConfigurationNode::GetVendor() const
+//=================================================================================================
+
+TCollection_AsciiString DEIGES_ConfigurationNode::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
 
-//=======================================================================
-// function : GetExtensions
-// purpose  :
-//=======================================================================
-TColStd_ListOfAsciiString IGESCAFControl_ConfigurationNode::GetExtensions() const
+//=================================================================================================
+
+TColStd_ListOfAsciiString DEIGES_ConfigurationNode::GetExtensions() const
 {
   TColStd_ListOfAsciiString anExt;
   anExt.Append("igs");
@@ -421,11 +441,9 @@ TColStd_ListOfAsciiString IGESCAFControl_ConfigurationNode::GetExtensions() cons
   return anExt;
 }
 
-//=======================================================================
-// function : CheckContent
-// purpose  :
-//=======================================================================
-bool IGESCAFControl_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+//=================================================================================================
+
+bool DEIGES_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 83)
   {

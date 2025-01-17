@@ -11,125 +11,151 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWGltf_ConfigurationNode.hxx>
+#include <DEGLTF_ConfigurationNode.hxx>
 
+#include <DEGLTF_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
 #include <DE_PluginHolder.hxx>
-#include <RWGltf_Provider.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(RWGltf_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DEGLTF_ConfigurationNode, DE_ConfigurationNode)
 
 namespace
 {
-  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
-  {
-    static const TCollection_AsciiString aScope = "provider";
-    return aScope;
-  }
-
-  // Wrapper to auto-load DE component
-  DE_PluginHolder<RWGltf_ConfigurationNode> THE_OCCT_GLTF_COMPONENT_PLUGIN;
+static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+{
+  static const TCollection_AsciiString aScope = "provider";
+  return aScope;
 }
 
-//=======================================================================
-// function : RWGltf_ConfigurationNode
-// purpose  :
-//=======================================================================
-RWGltf_ConfigurationNode::RWGltf_ConfigurationNode() :
-  DE_ConfigurationNode()
-{}
+// Wrapper to auto-load DE component
+DE_PluginHolder<DEGLTF_ConfigurationNode> THE_OCCT_GLTF_COMPONENT_PLUGIN;
+} // namespace
 
-//=======================================================================
-// function : RWGltf_ConfigurationNode
-// purpose  :
-//=======================================================================
-RWGltf_ConfigurationNode::RWGltf_ConfigurationNode(const Handle(RWGltf_ConfigurationNode)& theNode)
-  :DE_ConfigurationNode(theNode)
+//=================================================================================================
+
+DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode()
+    : DE_ConfigurationNode()
+{
+}
+
+//=================================================================================================
+
+DEGLTF_ConfigurationNode::DEGLTF_ConfigurationNode(const Handle(DEGLTF_ConfigurationNode)& theNode)
+    : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
 }
 
-//=======================================================================
-// function : Load
-// purpose  :
-//=======================================================================
-bool RWGltf_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+//=================================================================================================
+
+bool DEGLTF_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
 
-  InternalParameters.FileLengthUnit = 
+  InternalParameters.FileLengthUnit =
     theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
-  InternalParameters.SystemCS = (RWMesh_CoordinateSystem)
-    (theResource->IntegerVal("system.cs", (int)InternalParameters.SystemCS, aScope) % 2);
-  InternalParameters.FileCS = (RWMesh_CoordinateSystem)
-    (theResource->IntegerVal("file.cs", (int)InternalParameters.SystemCS, aScope) % 2);
+  InternalParameters.SystemCS =
+    (RWMesh_CoordinateSystem)(theResource->IntegerVal("system.cs",
+                                                      (int)InternalParameters.SystemCS,
+                                                      aScope)
+                              % 2);
+  InternalParameters.FileCS =
+    (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs",
+                                                      (int)InternalParameters.SystemCS,
+                                                      aScope)
+                              % 2);
 
-  InternalParameters.ReadSinglePrecision = 
-    theResource->BooleanVal("read.single.precision", InternalParameters.ReadSinglePrecision, aScope);
-  InternalParameters.ReadCreateShapes = 
+  InternalParameters.ReadSinglePrecision =
+    theResource->BooleanVal("read.single.precision",
+                            InternalParameters.ReadSinglePrecision,
+                            aScope);
+  InternalParameters.ReadCreateShapes =
     theResource->BooleanVal("read.create.shapes", InternalParameters.ReadCreateShapes, aScope);
-  InternalParameters.ReadRootPrefix = 
+  InternalParameters.ReadRootPrefix =
     theResource->StringVal("read.root.prefix", InternalParameters.ReadRootPrefix, aScope);
-  InternalParameters.ReadFillDoc = 
+  InternalParameters.ReadFillDoc =
     theResource->BooleanVal("read.fill.doc", InternalParameters.ReadFillDoc, aScope);
-  InternalParameters.ReadFillIncomplete = 
+  InternalParameters.ReadFillIncomplete =
     theResource->BooleanVal("read.fill.incomplete", InternalParameters.ReadFillIncomplete, aScope);
-  InternalParameters.ReadMemoryLimitMiB = 
+  InternalParameters.ReadMemoryLimitMiB =
     theResource->IntegerVal("read.memory.limit.mib", InternalParameters.ReadMemoryLimitMiB, aScope);
-  InternalParameters.ReadParallel = 
+  InternalParameters.ReadParallel =
     theResource->BooleanVal("read.parallel", InternalParameters.ReadParallel, aScope);
-  InternalParameters.ReadSkipEmptyNodes = 
+  InternalParameters.ReadSkipEmptyNodes =
     theResource->BooleanVal("read.skip.empty.nodes", InternalParameters.ReadSkipEmptyNodes, aScope);
-  InternalParameters.ReadLoadAllScenes = 
+  InternalParameters.ReadLoadAllScenes =
     theResource->BooleanVal("read.load.all.scenes", InternalParameters.ReadLoadAllScenes, aScope);
-  InternalParameters.ReadUseMeshNameAsFallback = 
-    theResource->BooleanVal("read.use.mesh.name.as.fallback", InternalParameters.ReadUseMeshNameAsFallback, aScope);
-  InternalParameters.ReadSkipLateDataLoading = 
-    theResource->BooleanVal("read.skip.late.data.loading", InternalParameters.ReadSkipLateDataLoading, aScope);
-  InternalParameters.ReadKeepLateData = 
+  InternalParameters.ReadUseMeshNameAsFallback =
+    theResource->BooleanVal("read.use.mesh.name.as.fallback",
+                            InternalParameters.ReadUseMeshNameAsFallback,
+                            aScope);
+  InternalParameters.ReadSkipLateDataLoading =
+    theResource->BooleanVal("read.skip.late.data.loading",
+                            InternalParameters.ReadSkipLateDataLoading,
+                            aScope);
+  InternalParameters.ReadKeepLateData =
     theResource->BooleanVal("read.keep.late.data", InternalParameters.ReadKeepLateData, aScope);
-  InternalParameters.ReadPrintDebugMessages = 
-    theResource->BooleanVal("read.print.debug.message", InternalParameters.ReadPrintDebugMessages, aScope);
+  InternalParameters.ReadPrintDebugMessages =
+    theResource->BooleanVal("read.print.debug.message",
+                            InternalParameters.ReadPrintDebugMessages,
+                            aScope);
 
-  InternalParameters.WriteComment = 
+  InternalParameters.WriteComment =
     theResource->StringVal("write.comment", InternalParameters.WriteComment, aScope);
-  InternalParameters.WriteAuthor = 
+  InternalParameters.WriteAuthor =
     theResource->StringVal("write.author", InternalParameters.WriteAuthor, aScope);
 
-  InternalParameters.WriteTrsfFormat = (RWGltf_WriterTrsfFormat)
-    (theResource->IntegerVal("write.trsf.format", InternalParameters.WriteTrsfFormat, aScope) % (RWGltf_WriterTrsfFormat_UPPER + 1));
-  InternalParameters.WriteNodeNameFormat = (RWMesh_NameFormat)
-    (theResource->IntegerVal("write.node.name.format", InternalParameters.WriteNodeNameFormat, aScope) % (RWMesh_NameFormat_ProductAndInstanceAndOcaf + 1));
-  InternalParameters.WriteMeshNameFormat = (RWMesh_NameFormat)
-    (theResource->IntegerVal("write.mesh.name.format", InternalParameters.WriteMeshNameFormat, aScope) % (RWMesh_NameFormat_ProductAndInstanceAndOcaf + 1));
-  InternalParameters.WriteForcedUVExport = 
-    theResource->BooleanVal("write.forced.uv.export", InternalParameters.WriteForcedUVExport, aScope);
-  InternalParameters.WriteEmbedTexturesInGlb = 
-    theResource->BooleanVal("write.embed.textures.in.glb", InternalParameters.WriteEmbedTexturesInGlb, aScope);
-  InternalParameters.WriteMergeFaces = 
+  InternalParameters.WriteTrsfFormat =
+    (RWGltf_WriterTrsfFormat)(theResource->IntegerVal("write.trsf.format",
+                                                      InternalParameters.WriteTrsfFormat,
+                                                      aScope)
+                              % (RWGltf_WriterTrsfFormat_UPPER + 1));
+  InternalParameters.WriteNodeNameFormat =
+    (RWMesh_NameFormat)(theResource->IntegerVal("write.node.name.format",
+                                                InternalParameters.WriteNodeNameFormat,
+                                                aScope)
+                        % (RWMesh_NameFormat_ProductAndInstanceAndOcaf + 1));
+  InternalParameters.WriteMeshNameFormat =
+    (RWMesh_NameFormat)(theResource->IntegerVal("write.mesh.name.format",
+                                                InternalParameters.WriteMeshNameFormat,
+                                                aScope)
+                        % (RWMesh_NameFormat_ProductAndInstanceAndOcaf + 1));
+  InternalParameters.WriteForcedUVExport =
+    theResource->BooleanVal("write.forced.uv.export",
+                            InternalParameters.WriteForcedUVExport,
+                            aScope);
+  InternalParameters.WriteEmbedTexturesInGlb =
+    theResource->BooleanVal("write.embed.textures.in.glb",
+                            InternalParameters.WriteEmbedTexturesInGlb,
+                            aScope);
+  InternalParameters.WriteMergeFaces =
     theResource->BooleanVal("write.merge.faces", InternalParameters.WriteMergeFaces, aScope);
-  InternalParameters.WriteSplitIndices16 = 
-    theResource->BooleanVal("write.split.indices16", InternalParameters.WriteSplitIndices16, aScope);
+  InternalParameters.WriteSplitIndices16 =
+    theResource->BooleanVal("write.split.indices16",
+                            InternalParameters.WriteSplitIndices16,
+                            aScope);
   return true;
 }
 
-//=======================================================================
-// function : Save
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
+//=================================================================================================
+
+TCollection_AsciiString DEGLTF_ConfigurationNode::Save() const
 {
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
-  aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
+  aResult =
+    aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Common parameters:\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!File length units to convert from while reading the file, defined as scale factor for m (meters)\n";
+  aResult += "!File length units to convert from while reading the file, defined as scale factor "
+             "for m (meters)\n";
   aResult += "!Default value: 1.0(M)\n";
   aResult += aScope + "file.length.unit :\t " + InternalParameters.FileLengthUnit + "\n";
   aResult += "!\n";
@@ -164,7 +190,8 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Root folder for generating root labels names\n";
-  aResult += "!Default value: ""(empty). Available values: <path>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <path>\n";
   aResult += aScope + "read.root.prefix :\t " + InternalParameters.ReadRootPrefix + "\n";
   aResult += "!\n";
 
@@ -175,7 +202,8 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Flag for fill the document with partially retrieved data even if reader has fa-iled with er-ror\n";
+  aResult += "!Flag for fill the document with partially retrieved data even if reader has fa-iled "
+             "with er-ror\n";
   aResult += "!Default value: 1(true). Available values: 0(false), 1(true)\n";
   aResult += aScope + "read.fill.incomplete :\t " + InternalParameters.ReadFillIncomplete + "\n";
   aResult += "!\n";
@@ -207,17 +235,20 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Flag to use Mesh name in case if Node name is empty\n";
   aResult += "!Default value: 1(true). Available values: 0(false), 1(true)\n";
-  aResult += aScope + "read.use.mesh.name.as.fallback :\t " + InternalParameters.ReadUseMeshNameAsFallback + "\n";
+  aResult += aScope + "read.use.mesh.name.as.fallback :\t "
+             + InternalParameters.ReadUseMeshNameAsFallback + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Flag to skip triangulation loading\n";
   aResult += "!Default value: 0(false). Available values: 0(false), 1(true)\n";
-  aResult += aScope + "read.skip.late.data.loading :\t " + InternalParameters.ReadSkipLateDataLoading + "\n";
+  aResult +=
+    aScope + "read.skip.late.data.loading :\t " + InternalParameters.ReadSkipLateDataLoading + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Flag to keep information about deferred storage to load/unload triangulation later\n";
+  aResult +=
+    "!Flag to keep information about deferred storage to load/unload triangulation later\n";
   aResult += "!Default value: 1(true). Available values: 0(false), 1(true)\n";
   aResult += aScope + "read.keep.late.data :\t " + InternalParameters.ReadKeepLateData + "\n";
   aResult += "!\n";
@@ -225,7 +256,8 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Flag to print additional debug information\n";
   aResult += "!Default value: 0(false). Available values: 0(false), 1(true)\n";
-  aResult += aScope + "read.print.debug.message :\t " + InternalParameters.ReadPrintDebugMessages + "\n";
+  aResult +=
+    aScope + "read.print.debug.message :\t " + InternalParameters.ReadPrintDebugMessages + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -234,13 +266,15 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Export special comment\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.comment :\t " + InternalParameters.WriteComment + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Author of exported file name\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.author :\t " + InternalParameters.WriteAuthor + "\n";
   aResult += "!\n";
 
@@ -252,13 +286,17 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "! Name format for exporting Nodes\n";
-  aResult += "!Default value: 3(InstanceOrProduct). Available values: 0(Compact), 1(Mat4), 2(TRS), 3(InstanceOrProduct), 4(ProductOrInstance), 5(ProductAndInstance), 6(ProductAndInstanceAndOcaf)\n";
+  aResult += "!Default value: 3(InstanceOrProduct). Available values: 0(Compact), 1(Mat4), 2(TRS), "
+             "3(InstanceOrProduct), 4(ProductOrInstance), 5(ProductAndInstance), "
+             "6(ProductAndInstanceAndOcaf)\n";
   aResult += aScope + "write.node.name.format :\t " + InternalParameters.WriteNodeNameFormat + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Name format for exporting Meshes\n";
-  aResult += "!Default value: 1(Product). Available values: 0(Compact), 1(Mat4), 2(TRS), 3(InstanceOrProduct), 4(ProductOrInstance), 5(ProductAndInstance), 6(ProductAndInstanceAndOcaf)\n";
+  aResult += "!Default value: 1(Product). Available values: 0(Compact), 1(Mat4), 2(TRS), "
+             "3(InstanceOrProduct), 4(ProductOrInstance), 5(ProductAndInstance), "
+             "6(ProductAndInstanceAndOcaf)\n";
   aResult += aScope + "write.mesh.name.format :\t " + InternalParameters.WriteMeshNameFormat + "\n";
   aResult += "!\n";
 
@@ -271,7 +309,8 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Flag to write image textures into GLB file\n";
   aResult += "!Default value: 1(true). Available values: 0(false), 1(true)\n";
-  aResult += aScope + "write.embed.textures.in.glb :\t " + InternalParameters.WriteEmbedTexturesInGlb + "\n";
+  aResult +=
+    aScope + "write.embed.textures.in.glb :\t " + InternalParameters.WriteEmbedTexturesInGlb + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -290,65 +329,51 @@ TCollection_AsciiString RWGltf_ConfigurationNode::Save() const
   return aResult;
 }
 
-//=======================================================================
-// function : Copy
-// purpose  :
-//=======================================================================
-Handle(DE_ConfigurationNode) RWGltf_ConfigurationNode::Copy() const
+//=================================================================================================
+
+Handle(DE_ConfigurationNode) DEGLTF_ConfigurationNode::Copy() const
 {
-  return new RWGltf_ConfigurationNode(*this);
+  return new DEGLTF_ConfigurationNode(*this);
 }
 
-//=======================================================================
-// function : BuildProvider
-// purpose  :
-//=======================================================================
-Handle(DE_Provider) RWGltf_ConfigurationNode::BuildProvider()
+//=================================================================================================
+
+Handle(DE_Provider) DEGLTF_ConfigurationNode::BuildProvider()
 {
-  return new RWGltf_Provider(this);
+  return new DEGLTF_Provider(this);
 }
 
-//=======================================================================
-// function : IsImportSupported
-// purpose  :
-//=======================================================================
-bool RWGltf_ConfigurationNode::IsImportSupported() const
+//=================================================================================================
+
+bool DEGLTF_ConfigurationNode::IsImportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : IsExportSupported
-// purpose  :
-//=======================================================================
-bool RWGltf_ConfigurationNode::IsExportSupported() const
+//=================================================================================================
+
+bool DEGLTF_ConfigurationNode::IsExportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : GetFormat
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWGltf_ConfigurationNode::GetFormat() const
+//=================================================================================================
+
+TCollection_AsciiString DEGLTF_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("GLTF");
 }
 
-//=======================================================================
-// function : GetVendor
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWGltf_ConfigurationNode::GetVendor() const
+//=================================================================================================
+
+TCollection_AsciiString DEGLTF_ConfigurationNode::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
 
-//=======================================================================
-// function : GetExtensions
-// purpose  :
-//=======================================================================
-TColStd_ListOfAsciiString RWGltf_ConfigurationNode::GetExtensions() const
+//=================================================================================================
+
+TColStd_ListOfAsciiString DEGLTF_ConfigurationNode::GetExtensions() const
 {
   TColStd_ListOfAsciiString anExt;
   anExt.Append("gltf");

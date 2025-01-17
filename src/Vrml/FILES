@@ -6,7 +6,6 @@ Vrml_AsciiTextJustification.hxx
 Vrml_Cone.cxx
 Vrml_Cone.hxx
 Vrml_ConeParts.hxx
-Vrml_ConfigurationNode.cxx
 Vrml_ConfigurationNode.hxx
 Vrml_Coordinate3.cxx
 Vrml_Coordinate3.hxx
@@ -53,7 +52,6 @@ Vrml_PointLight.cxx
 Vrml_PointLight.hxx
 Vrml_PointSet.cxx
 Vrml_PointSet.hxx
-Vrml_Provider.cxx
 Vrml_Provider.hxx
 Vrml_Rotation.cxx
 Vrml_Rotation.hxx

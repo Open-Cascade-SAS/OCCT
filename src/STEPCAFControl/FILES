@@ -1,6 +1,5 @@
 STEPCAFControl_ActorWrite.cxx
 STEPCAFControl_ActorWrite.hxx
-STEPCAFControl_ConfigurationNode.cxx
 STEPCAFControl_ConfigurationNode.hxx
 STEPCAFControl_Controller.cxx
 STEPCAFControl_Controller.hxx
@@ -21,7 +20,6 @@ STEPCAFControl_ExternFile.hxx
 STEPCAFControl_ExternFile.lxx
 STEPCAFControl_GDTProperty.hxx
 STEPCAFControl_GDTProperty.cxx
-STEPCAFControl_Provider.cxx
 STEPCAFControl_Provider.hxx
 STEPCAFControl_Reader.cxx
 STEPCAFControl_Reader.hxx

@@ -11,70 +11,81 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <STEPCAFControl_ConfigurationNode.hxx>
+#include <DESTEP_ConfigurationNode.hxx>
 
+#include <DESTEP_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
 #include <DE_PluginHolder.hxx>
 #include <NCollection_Buffer.hxx>
-#include <STEPCAFControl_Provider.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(STEPCAFControl_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DESTEP_ConfigurationNode, DE_ConfigurationNode)
 
 namespace
 {
-  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
-  {
-    static const TCollection_AsciiString aScope = "provider";
-    return aScope;
-  }
-
-  // Wrapper to auto-load DE component
-  DE_PluginHolder<STEPCAFControl_ConfigurationNode> THE_OCCT_STEP_COMPONENT_PLUGIN;
+static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+{
+  static const TCollection_AsciiString aScope = "provider";
+  return aScope;
 }
 
-//=======================================================================
-// function : STEPCAFControl_ConfigurationNode
-// purpose  :
-//=======================================================================
-STEPCAFControl_ConfigurationNode::STEPCAFControl_ConfigurationNode() :
-  DE_ConfigurationNode()
-{}
+// Wrapper to auto-load DE component
+DE_PluginHolder<DESTEP_ConfigurationNode> THE_OCCT_STEP_COMPONENT_PLUGIN;
+} // namespace
 
-//=======================================================================
-// function : STEPCAFControl_ConfigurationNode
-// purpose  :
-//=======================================================================
-STEPCAFControl_ConfigurationNode::STEPCAFControl_ConfigurationNode(const Handle(STEPCAFControl_ConfigurationNode)& theNode)
-  :DE_ConfigurationNode(theNode),
-  InternalParameters(theNode->InternalParameters)
-{}
+//=================================================================================================
 
-//=======================================================================
-// function : Load
-// purpose  :
-//=======================================================================
-bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+DESTEP_ConfigurationNode::DESTEP_ConfigurationNode()
+    : DE_ConfigurationNode()
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+}
 
-  InternalParameters.ReadBSplineContinuity = (StepData_ConfParameters::ReadMode_BSplineContinuity)
-    theResource->IntegerVal("read.iges.bspline.continuity", InternalParameters.ReadBSplineContinuity, aScope);
-  InternalParameters.ReadPrecisionMode = (StepData_ConfParameters::ReadMode_Precision)
-    theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
+//=================================================================================================
+
+DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(const Handle(DESTEP_ConfigurationNode)& theNode)
+    : DE_ConfigurationNode(theNode),
+      InternalParameters(theNode->InternalParameters)
+{
+}
+
+//=================================================================================================
+
+bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+{
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+
+  InternalParameters.ReadBSplineContinuity =
+    (StepData_ConfParameters::ReadMode_BSplineContinuity)theResource->IntegerVal(
+      "read.iges.bspline.continuity",
+      InternalParameters.ReadBSplineContinuity,
+      aScope);
+  InternalParameters.ReadPrecisionMode =
+    (StepData_ConfParameters::ReadMode_Precision)
+      theResource->IntegerVal("read.precision.mode", InternalParameters.ReadPrecisionMode, aScope);
   InternalParameters.ReadPrecisionVal =
     theResource->RealVal("read.precision.val", InternalParameters.ReadPrecisionVal, aScope);
-  InternalParameters.ReadMaxPrecisionMode = (StepData_ConfParameters::ReadMode_MaxPrecision)
-    theResource->IntegerVal("read.maxprecision.mode", InternalParameters.ReadMaxPrecisionMode, aScope);
+  InternalParameters.ReadMaxPrecisionMode =
+    (StepData_ConfParameters::ReadMode_MaxPrecision)theResource->IntegerVal(
+      "read.maxprecision.mode",
+      InternalParameters.ReadMaxPrecisionMode,
+      aScope);
   InternalParameters.ReadMaxPrecisionVal =
     theResource->RealVal("read.maxprecision.val", InternalParameters.ReadMaxPrecisionVal, aScope);
   InternalParameters.ReadSameParamMode =
-    theResource->BooleanVal("read.stdsameparameter.mode", InternalParameters.ReadSameParamMode, aScope);
-  InternalParameters.ReadSurfaceCurveMode = (StepData_ConfParameters::ReadMode_SurfaceCurve)
-    theResource->IntegerVal("read.surfacecurve.mode", InternalParameters.ReadSurfaceCurveMode, aScope);
+    theResource->BooleanVal("read.stdsameparameter.mode",
+                            InternalParameters.ReadSameParamMode,
+                            aScope);
+  InternalParameters.ReadSurfaceCurveMode =
+    (StepData_ConfParameters::ReadMode_SurfaceCurve)theResource->IntegerVal(
+      "read.surfacecurve.mode",
+      InternalParameters.ReadSurfaceCurveMode,
+      aScope);
   InternalParameters.EncodeRegAngle =
     theResource->RealVal("read.encoderegularity.angle", InternalParameters.EncodeRegAngle, aScope);
-  InternalParameters.AngleUnit = (StepData_ConfParameters::AngleUnitMode)
-    theResource->IntegerVal("angleunit.mode", InternalParameters.AngleUnit, aScope);
+  InternalParameters.AngleUnit =
+    (StepData_ConfParameters::AngleUnitMode)theResource->IntegerVal("angleunit.mode",
+                                                                    InternalParameters.AngleUnit,
+                                                                    aScope);
 
   InternalParameters.ReadResourceName =
     theResource->StringVal("read.resource.name", InternalParameters.ReadResourceName, aScope);
@@ -82,24 +93,36 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->StringVal("read.sequence", InternalParameters.ReadSequence, aScope);
   InternalParameters.ReadProductMode =
     theResource->BooleanVal("read.product.mode", InternalParameters.ReadProductMode, aScope);
-  InternalParameters.ReadProductContext = (StepData_ConfParameters::ReadMode_ProductContext)
-    theResource->IntegerVal("read.product.context", InternalParameters.ReadProductContext, aScope);
-  InternalParameters.ReadShapeRepr = (StepData_ConfParameters::ReadMode_ShapeRepr)
-    theResource->IntegerVal("read.shape.repr", InternalParameters.ReadShapeRepr, aScope);
-  InternalParameters.ReadTessellated = (StepData_ConfParameters::RWMode_Tessellated)
-    theResource->IntegerVal("read.tessellated", InternalParameters.ReadTessellated, aScope);
-  InternalParameters.ReadAssemblyLevel = (StepData_ConfParameters::ReadMode_AssemblyLevel)
-    theResource->IntegerVal("read.assembly.level", InternalParameters.ReadAssemblyLevel, aScope);
+  InternalParameters.ReadProductContext =
+    (StepData_ConfParameters::ReadMode_ProductContext)theResource->IntegerVal(
+      "read.product.context",
+      InternalParameters.ReadProductContext,
+      aScope);
+  InternalParameters.ReadShapeRepr =
+    (StepData_ConfParameters::ReadMode_ShapeRepr)
+      theResource->IntegerVal("read.shape.repr", InternalParameters.ReadShapeRepr, aScope);
+  InternalParameters.ReadTessellated =
+    (StepData_ConfParameters::RWMode_Tessellated)
+      theResource->IntegerVal("read.tessellated", InternalParameters.ReadTessellated, aScope);
+  InternalParameters.ReadAssemblyLevel =
+    (StepData_ConfParameters::ReadMode_AssemblyLevel)
+      theResource->IntegerVal("read.assembly.level", InternalParameters.ReadAssemblyLevel, aScope);
   InternalParameters.ReadRelationship =
     theResource->BooleanVal("read.shape.relationship", InternalParameters.ReadRelationship, aScope);
   InternalParameters.ReadShapeAspect =
     theResource->BooleanVal("read.shape.aspect", InternalParameters.ReadShapeAspect, aScope);
   InternalParameters.ReadConstrRelation =
-    theResource->BooleanVal("read.constructivegeom.relationship", InternalParameters.ReadConstrRelation, aScope);
+    theResource->BooleanVal("read.constructivegeom.relationship",
+                            InternalParameters.ReadConstrRelation,
+                            aScope);
   InternalParameters.ReadSubshapeNames =
-    theResource->BooleanVal("read.stepcaf.subshapes.name", InternalParameters.ReadSubshapeNames, aScope);
-  InternalParameters.ReadCodePage = (Resource_FormatType)
-    theResource->IntegerVal("read.codepage", InternalParameters.ReadCodePage, aScope);
+    theResource->BooleanVal("read.stepcaf.subshapes.name",
+                            InternalParameters.ReadSubshapeNames,
+                            aScope);
+  InternalParameters.ReadCodePage =
+    (Resource_FormatType)theResource->IntegerVal("read.codepage",
+                                                 InternalParameters.ReadCodePage,
+                                                 aScope);
   InternalParameters.ReadNonmanifold =
     theResource->BooleanVal("read.nonmanifold", InternalParameters.ReadNonmanifold, aScope);
   InternalParameters.ReadIdeas =
@@ -107,7 +130,9 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
   InternalParameters.ReadAllShapes =
     theResource->BooleanVal("read.all.shapes", InternalParameters.ReadAllShapes, aScope);
   InternalParameters.ReadRootTransformation =
-    theResource->BooleanVal("read.root.transformation", InternalParameters.ReadRootTransformation, aScope);
+    theResource->BooleanVal("read.root.transformation",
+                            InternalParameters.ReadRootTransformation,
+                            aScope);
   InternalParameters.ReadColor =
     theResource->BooleanVal("read.color", InternalParameters.ReadColor, aScope);
   InternalParameters.ReadName =
@@ -119,30 +144,43 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
   InternalParameters.ReadMetadata =
     theResource->BooleanVal("read.metadata", InternalParameters.ReadMetadata, aScope);
 
-  InternalParameters.WritePrecisionMode = (StepData_ConfParameters::WriteMode_PrecisionMode)
-    theResource->IntegerVal("write.precision.mode", InternalParameters.WritePrecisionMode, aScope);
+  InternalParameters.WritePrecisionMode =
+    (StepData_ConfParameters::WriteMode_PrecisionMode)theResource->IntegerVal(
+      "write.precision.mode",
+      InternalParameters.WritePrecisionMode,
+      aScope);
   InternalParameters.WritePrecisionVal =
     theResource->RealVal("write.precision.val", InternalParameters.WritePrecisionVal, aScope);
-  InternalParameters.WriteAssembly = (StepData_ConfParameters::WriteMode_Assembly)
-    theResource->IntegerVal("write.assembly", InternalParameters.WriteAssembly, aScope);
-  InternalParameters.WriteSchema = (StepData_ConfParameters::WriteMode_StepSchema)
-    theResource->IntegerVal("write.schema", InternalParameters.WriteSchema, aScope);
-  InternalParameters.WriteTessellated = (StepData_ConfParameters::RWMode_Tessellated)
-    theResource->IntegerVal("write.tessellated", InternalParameters.WriteTessellated, aScope);
+  InternalParameters.WriteAssembly =
+    (StepData_ConfParameters::WriteMode_Assembly)
+      theResource->IntegerVal("write.assembly", InternalParameters.WriteAssembly, aScope);
+  InternalParameters.WriteSchema =
+    (StepData_ConfParameters::WriteMode_StepSchema)
+      theResource->IntegerVal("write.schema", InternalParameters.WriteSchema, aScope);
+  InternalParameters.WriteTessellated =
+    (StepData_ConfParameters::RWMode_Tessellated)
+      theResource->IntegerVal("write.tessellated", InternalParameters.WriteTessellated, aScope);
   InternalParameters.WriteProductName =
     theResource->StringVal("write.product.name", InternalParameters.WriteProductName, aScope);
   InternalParameters.WriteSurfaceCurMode =
-    theResource->BooleanVal("write.surfacecurve.mode", InternalParameters.WriteSurfaceCurMode, aScope);
-  InternalParameters.WriteUnit = (UnitsMethods_LengthUnit)
-    theResource->IntegerVal("write.unit", InternalParameters.WriteUnit, aScope);
+    theResource->BooleanVal("write.surfacecurve.mode",
+                            InternalParameters.WriteSurfaceCurMode,
+                            aScope);
+  InternalParameters.WriteUnit =
+    (UnitsMethods_LengthUnit)theResource->IntegerVal("write.unit",
+                                                     InternalParameters.WriteUnit,
+                                                     aScope);
   InternalParameters.WriteResourceName =
     theResource->StringVal("write.resource.name", InternalParameters.WriteResourceName, aScope);
   InternalParameters.WriteSequence =
     theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
-  InternalParameters.WriteVertexMode = (StepData_ConfParameters::WriteMode_VertexMode)
-    theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
+  InternalParameters.WriteVertexMode =
+    (StepData_ConfParameters::WriteMode_VertexMode)
+      theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
   InternalParameters.WriteSubshapeNames =
-    theResource->BooleanVal("write.stepcaf.subshapes.name", InternalParameters.WriteSubshapeNames, aScope);
+    theResource->BooleanVal("write.stepcaf.subshapes.name",
+                            InternalParameters.WriteSubshapeNames,
+                            aScope);
   InternalParameters.WriteColor =
     theResource->BooleanVal("write.color", InternalParameters.WriteColor, aScope);
   InternalParameters.WriteName =
@@ -151,22 +189,24 @@ bool STEPCAFControl_ConfigurationNode::Load(const Handle(DE_ConfigurationContext
     theResource->BooleanVal("write.layer", InternalParameters.WriteLayer, aScope);
   InternalParameters.WriteProps =
     theResource->BooleanVal("write.props", InternalParameters.WriteProps, aScope);
-  InternalParameters.WriteModelType = (STEPControl_StepModelType)
-    theResource->IntegerVal("write.model.type", InternalParameters.WriteModelType, aScope);
+  InternalParameters.WriteModelType =
+    (STEPControl_StepModelType)theResource->IntegerVal("write.model.type",
+                                                       InternalParameters.WriteModelType,
+                                                       aScope);
 
   return true;
 }
 
-//=======================================================================
-// function : Save
-// purpose  :
-//=======================================================================
-TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
+//=================================================================================================
+
+TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
 {
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
-  aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
+  aResult =
+    aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Common parameters:\n";
@@ -176,7 +216,8 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!Manages the continuity of BSpline curves (IGES entities 106, 112 and 126) ";
   aResult += "after translation to Open CASCADE Technology\n";
   aResult += "!Default value: 1. Available values: 0, 1, 2\n";
-  aResult += aScope + "read.iges.bspline.continuity :\t " + InternalParameters.ReadBSplineContinuity + "\n";
+  aResult +=
+    aScope + "read.iges.bspline.continuity :\t " + InternalParameters.ReadBSplineContinuity + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -194,12 +235,15 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Defines the mode of applying the maximum allowed tolerance\n";
-  aResult += "!Default value: \"Preferred\"(0). Available values: \"Preferred\"(0), \"Forced\"(1)\n";
-  aResult += aScope + "read.maxprecision.mode :\t " + InternalParameters.ReadMaxPrecisionMode + "\n";
+  aResult +=
+    "!Default value: \"Preferred\"(0). Available values: \"Preferred\"(0), \"Forced\"(1)\n";
+  aResult +=
+    aScope + "read.maxprecision.mode :\t " + InternalParameters.ReadMaxPrecisionMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the maximum allowable tolerance (in internal units, which are specified in xstep.cascade.unit)";
+  aResult += "!Defines the maximum allowable tolerance (in internal units, which are specified in "
+             "xstep.cascade.unit)";
   aResult += " of the shape\n";
   aResult += "!Default value: 1. Available values: any real positive (non null) value\n";
   aResult += aScope + "read.maxprecision.val :\t " + InternalParameters.ReadMaxPrecisionVal + "\n";
@@ -208,22 +252,28 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Defines the using of BRepLib::SameParameter\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(1)\n";
-  aResult += aScope + "read.stdsameparameter.mode :\t " + InternalParameters.ReadSameParamMode + "\n";
+  aResult +=
+    aScope + "read.stdsameparameter.mode :\t " + InternalParameters.ReadSameParamMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Preference for the computation of curves in case of 2D/3D inconsistency in an entity ";
+  aResult +=
+    "!Preference for the computation of curves in case of 2D/3D inconsistency in an entity ";
   aResult += "which has both 2D and 3D representations.\n";
-  aResult += "!Default value: \"Default\"(0). Available values: \"Default\"(0), \"2DUse_Preferred\"(2), ";
+  aResult +=
+    "!Default value: \"Default\"(0). Available values: \"Default\"(0), \"2DUse_Preferred\"(2), ";
   aResult += "\"2DUse_Forced\"(-2), \"3DUse_Preferred\"(3), \"3DUse_Forced\"(-3)\n";
-  aResult += aScope + "read.surfacecurve.mode :\t " + InternalParameters.ReadSurfaceCurveMode + "\n";
+  aResult +=
+    aScope + "read.surfacecurve.mode :\t " + InternalParameters.ReadSurfaceCurveMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!This parameter is used within the BRepLib::EncodeRegularity() function ";
   aResult += "which is called for a shape read ";
-  aResult += "from an IGES or a STEP file at the end of translation process.This function sets the regularity flag of";
-  aResult += " an edge in a shell when this edge is shared by two faces.This flag shows the continuity, ";
+  aResult += "from an IGES or a STEP file at the end of translation process.This function sets the "
+             "regularity flag of";
+  aResult +=
+    " an edge in a shell when this edge is shared by two faces.This flag shows the continuity, ";
   aResult += "which these two faces are connected with at that edge.\n";
   aResult += "!Default value (in degrees): 0.57295779513. Available values: <double>\n";
   aResult += aScope + "read.encoderegularity.angle :\t " + InternalParameters.EncodeRegAngle + "\n";
@@ -252,23 +302,29 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the approach used for selection of top-level STEP entities for translation, ";
+  aResult +=
+    "!Defines the approach used for selection of top-level STEP entities for translation, ";
   aResult += "and for recognition of assembly structures\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
   aResult += aScope + "read.product.mode :\t " + InternalParameters.ReadProductMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!When reading AP 209 STEP files, allows selecting either only 'design' or 'analysis', ";
+  aResult +=
+    "!When reading AP 209 STEP files, allows selecting either only 'design' or 'analysis', ";
   aResult += "or both types of products for translation\n";
-  aResult += "!Default value: 1(\"all\"). Available values: 1(\"all\"), 2(\"design\"), 3(\"analysis\")\n";
+  aResult +=
+    "!Default value: 1(\"all\"). Available values: 1(\"all\"), 2(\"design\"), 3(\"analysis\")\n";
   aResult += aScope + "read.product.context :\t " + InternalParameters.ReadProductContext + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Specifies preferred type of representation of the shape of the product, in case if a STEP file contains";
-  aResult += " more than one representation(i.e.multiple PRODUCT_DEFINITION_SHAPE entities) for a single product\n";
-  aResult += "!Default value: 1(\"All\"). Available values: 1(\"All\"), 2(\"ABSR\"), 3(\"MSSR\"), 4(\"GBSSR\"), ";
+  aResult += "!Specifies preferred type of representation of the shape of the product, in case if "
+             "a STEP file contains";
+  aResult += " more than one representation(i.e.multiple PRODUCT_DEFINITION_SHAPE entities) for a "
+             "single product\n";
+  aResult += "!Default value: 1(\"All\"). Available values: 1(\"All\"), 2(\"ABSR\"), 3(\"MSSR\"), "
+             "4(\"GBSSR\"), ";
   aResult += "5(\"FBSR\"), 6(\"EBWSR\"), 7(\"GBWSR\")\n";
   aResult += aScope + "read.shape.repr :\t " + InternalParameters.ReadShapeRepr + "\n";
   aResult += "!\n";
@@ -287,40 +343,52 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines whether shapes associated with the main SHAPE_DEFINITION_REPRESENTATION entity";
+  aResult +=
+    "!Defines whether shapes associated with the main SHAPE_DEFINITION_REPRESENTATION entity";
   aResult += "of the product via SHAPE_REPRESENTATIONSHIP_RELATION should be translated\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
   aResult += aScope + "read.shape.relationship :\t " + InternalParameters.ReadRelationship + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines whether shapes associated with the PRODUCT_DEFINITION_SHAPE entity of the product ";
+  aResult +=
+    "!Defines whether shapes associated with the PRODUCT_DEFINITION_SHAPE entity of the product ";
   aResult += "via SHAPE_ASPECT should be translated.\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
   aResult += aScope + "read.shape.aspect :\t " + InternalParameters.ReadShapeAspect + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Boolean flag regulating translation of \"CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP\" ";
+  aResult += "!Boolean flag regulating translation of "
+             "\"CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP\" ";
   aResult += "entities that define position of constructive geometry entities contained in ";
-  aResult += "\"CONSTRUCTIVE_GEOMETRY_REPRESENTATION\" with respect to the main representation of the shape (product).\n";
+  aResult += "\"CONSTRUCTIVE_GEOMETRY_REPRESENTATION\" with respect to the main representation of "
+             "the shape (product).\n";
   aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
-  aResult += aScope + "read.constructivegeom.relationship :\t " + InternalParameters.ReadConstrRelation + "\n";
+  aResult += aScope + "read.constructivegeom.relationship :\t "
+             + InternalParameters.ReadConstrRelation + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Indicates whether to read sub-shape names from 'Name' attributes of STEP Representation Items\n";
+  aResult += "!Indicates whether to read sub-shape names from 'Name' attributes of STEP "
+             "Representation Items\n";
   aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
-  aResult += aScope + "read.stepcaf.subshapes.name :\t " + InternalParameters.ReadSubshapeNames + "\n";
+  aResult +=
+    aScope + "read.stepcaf.subshapes.name :\t " + InternalParameters.ReadSubshapeNames + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!STEP file encoding for names translation\n";
-  aResult += "!Default value: 4(\"UTF8\"). Available values: 0(\"SJIS\"), 1(\"EUC\"), 2(\"NoConversion\"), ";
-  aResult += "3(\"GB\"), 4(\"UTF8\"), 5(\"SystemLocale\"), 6(\"CP1250\"), 7(\"CP1251\"), 8(\"CP1252\"), ";
-  aResult += "9(\"CP1253\"), 10(\"CP1254\"), 11(\"CP1255\"), 12(\"CP1256\"), 13(\"CP1257\"), 14(\"CP1258\"), ";
-  aResult += "15(\"iso8859-1\"), 16(\"iso8859-2\"), 17(\"iso8859-3\"), 18(\"iso8859-4\"), 19(\"iso8859-5\"), ";
-  aResult += "20(\"iso8859-6\"), 21(\"iso8859-7\"), 22(\"iso8859-8\"), 23(\"iso8859-9\"), 24(\"CP850\")\n";
+  aResult +=
+    "!Default value: 4(\"UTF8\"). Available values: 0(\"SJIS\"), 1(\"EUC\"), 2(\"NoConversion\"), ";
+  aResult +=
+    "3(\"GB\"), 4(\"UTF8\"), 5(\"SystemLocale\"), 6(\"CP1250\"), 7(\"CP1251\"), 8(\"CP1252\"), ";
+  aResult += "9(\"CP1253\"), 10(\"CP1254\"), 11(\"CP1255\"), 12(\"CP1256\"), 13(\"CP1257\"), "
+             "14(\"CP1258\"), ";
+  aResult += "15(\"iso8859-1\"), 16(\"iso8859-2\"), 17(\"iso8859-3\"), 18(\"iso8859-4\"), "
+             "19(\"iso8859-5\"), ";
+  aResult +=
+    "20(\"iso8859-6\"), 21(\"iso8859-7\"), 22(\"iso8859-8\"), 23(\"iso8859-9\"), 24(\"CP850\")\n";
   aResult += aScope + "read.codepage :\t " + InternalParameters.ReadCodePage + "\n";
   aResult += "!\n";
 
@@ -343,9 +411,11 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Mode to variate apply or not transformation placed in the root shape representation.\n";
+  aResult +=
+    "!Mode to variate apply or not transformation placed in the root shape representation.\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
-  aResult += aScope + "read.root.transformation :\t " + InternalParameters.ReadRootTransformation + "\n";
+  aResult +=
+    aScope + "read.root.transformation :\t " + InternalParameters.ReadRootTransformation + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -367,13 +437,15 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Setting up the read.props parameter which is used to indicate read Validation properties or not\n";
+  aResult += "!Setting up the read.props parameter which is used to indicate read Validation "
+             "properties or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "read.props :\t " + InternalParameters.ReadProps + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Setting up the read.metadata parameter which is used to indicate read Metadata or not\n";
+  aResult +=
+    "!Setting up the read.metadata parameter which is used to indicate read Metadata or not\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
   aResult += aScope + "read.metadata :\t " + InternalParameters.ReadMetadata + "\n";
   aResult += "!\n";
@@ -403,7 +475,8 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Defines the version of schema used for the output STEP file\n";
-  aResult += "!Default value: 1 or AP214CD. Available values: 1 or AP214CD, 2 or AP214DIS, 3 or AP203, ";
+  aResult +=
+    "!Default value: 1 or AP214CD. Available values: 1 or AP214CD, 2 or AP214DIS, 3 or AP203, ";
   aResult += "4 or AP214IS, 5 or AP242DIS\n";
   aResult += aScope + "write.schema :\t " + InternalParameters.WriteSchema + "\n";
   aResult += "!\n";
@@ -415,20 +488,25 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the text string that will be used for field 'name' of PRODUCT entities written to the STEP file\n";
-  aResult += "!Default value: OCCT STEP translator (current OCCT version number). Available values: <string>\n";
+  aResult += "!Defines the text string that will be used for field 'name' of PRODUCT entities "
+             "written to the STEP file\n";
+  aResult += "!Default value: OCCT STEP translator (current OCCT version number). Available "
+             "values: <string>\n";
   aResult += aScope + "write.product.name :\t " + InternalParameters.WriteProductName + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!This parameter indicates whether parametric curves should be written into the STEP file\n";
+  aResult +=
+    "!This parameter indicates whether parametric curves should be written into the STEP file\n";
   aResult += "!Default value: 1(\"ON\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
-  aResult += aScope + "write.surfacecurve.mode :\t " + InternalParameters.WriteSurfaceCurMode + "\n";
+  aResult +=
+    aScope + "write.surfacecurve.mode :\t " + InternalParameters.WriteSurfaceCurMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines a unit in which the STEP file should be written.\n";
-  aResult += "!Default value: MM(2). Available values: \"INCH\"(1), \"MM\"(2), \"??\"(3), \"FT\"(4), \"MI\"(5), ";
+  aResult += "!Default value: MM(2). Available values: \"INCH\"(1), \"MM\"(2), \"??\"(3), "
+             "\"FT\"(4), \"MI\"(5), ";
   aResult += "\"M\"(6), \"KM\"(7), \"MIL\"(8), \"UM\"(9), \"CM\"(10), \"UIN\"(11)\n";
   aResult += aScope + "write.unit :\t " + InternalParameters.WriteUnit + "\n";
   aResult += "!\n";
@@ -447,14 +525,17 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!This parameter indicates which of free vertices writing mode is switch on\n";
-  aResult += "!Default value: 0(\"One Compound\"). Available values: 0(\"One Compound\"), 1(\"Signle Vertex\")\n";
+  aResult += "!Default value: 0(\"One Compound\"). Available values: 0(\"One Compound\"), "
+             "1(\"Signle Vertex\")\n";
   aResult += aScope + "write.vertex.mode :\t " + InternalParameters.WriteVertexMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Indicates whether to write sub-shape names to 'Name' attributes of STEP Representation Items\n";
+  aResult += "!Indicates whether to write sub-shape names to 'Name' attributes of STEP "
+             "Representation Items\n";
   aResult += "!Default value: 0(\"OFF\"). Available values: 0(\"OFF\"), 1(\"ON\")\n";
-  aResult += aScope + "write.stepcaf.subshapes.name :\t " + InternalParameters.WriteSubshapeNames + "\n";
+  aResult +=
+    aScope + "write.stepcaf.subshapes.name :\t " + InternalParameters.WriteSubshapeNames + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -470,19 +551,22 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Setting up the write.layer parameter which is used to indicate write Layers or not\n";
+  aResult +=
+    "!Setting up the write.layer parameter which is used to indicate write Layers or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.layer :\t " + InternalParameters.WriteLayer + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Setting up the write.props parameter which is used to indicate write Validation properties or not\n";
+  aResult += "!Setting up the write.props parameter which is used to indicate write Validation "
+             "properties or not\n";
   aResult += "!Default value: +. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.props :\t " + InternalParameters.WriteProps + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Setting up the Model Type which gives you the choice of translation mode for an Open CASCADE shape that ";
+  aResult += "!Setting up the Model Type which gives you the choice of translation mode for an "
+             "Open CASCADE shape that ";
   aResult += "is being translated to STEP\n";
   aResult += "!Default value: 0. Available values: 0, 1, 2, 3, 4\n";
   aResult += aScope + "write.model.type :\t " + InternalParameters.WriteModelType + "\n";
@@ -493,65 +577,51 @@ TCollection_AsciiString STEPCAFControl_ConfigurationNode::Save() const
   return aResult;
 }
 
-//=======================================================================
-// function : Copy
-// purpose  :
-//=======================================================================
-Handle(DE_ConfigurationNode) STEPCAFControl_ConfigurationNode::Copy() const
+//=================================================================================================
+
+Handle(DE_ConfigurationNode) DESTEP_ConfigurationNode::Copy() const
 {
-  return new STEPCAFControl_ConfigurationNode(*this);
+  return new DESTEP_ConfigurationNode(*this);
 }
 
-//=======================================================================
-// function : BuildProvider
-// purpose  :
-//=======================================================================
-Handle(DE_Provider) STEPCAFControl_ConfigurationNode::BuildProvider()
+//=================================================================================================
+
+Handle(DE_Provider) DESTEP_ConfigurationNode::BuildProvider()
 {
-  return new STEPCAFControl_Provider(this);
+  return new DESTEP_Provider(this);
 }
 
-//=======================================================================
-// function : IsImportSupported
-// purpose  :
-//=======================================================================
-bool STEPCAFControl_ConfigurationNode::IsImportSupported() const
+//=================================================================================================
+
+bool DESTEP_ConfigurationNode::IsImportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : IsExportSupported
-// purpose  :
-//=======================================================================
-bool STEPCAFControl_ConfigurationNode::IsExportSupported() const
+//=================================================================================================
+
+bool DESTEP_ConfigurationNode::IsExportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : GetFormat
-// purpose  :
-//=======================================================================
-TCollection_AsciiString STEPCAFControl_ConfigurationNode::GetFormat() const
+//=================================================================================================
+
+TCollection_AsciiString DESTEP_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("STEP");
 }
 
-//=======================================================================
-// function : GetVendor
-// purpose  :
-//=======================================================================
-TCollection_AsciiString STEPCAFControl_ConfigurationNode::GetVendor() const
+//=================================================================================================
+
+TCollection_AsciiString DESTEP_ConfigurationNode::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
 
-//=======================================================================
-// function : GetExtensions
-// purpose  :
-//=======================================================================
-TColStd_ListOfAsciiString STEPCAFControl_ConfigurationNode::GetExtensions() const
+//=================================================================================================
+
+TColStd_ListOfAsciiString DESTEP_ConfigurationNode::GetExtensions() const
 {
   TColStd_ListOfAsciiString anExt;
   anExt.Append("stp");
@@ -560,11 +630,9 @@ TColStd_ListOfAsciiString STEPCAFControl_ConfigurationNode::GetExtensions() cons
   return anExt;
 }
 
-//=======================================================================
-// function : CheckContent
-// purpose  :
-//=======================================================================
-bool STEPCAFControl_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+//=================================================================================================
+
+bool DESTEP_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 100)
   {

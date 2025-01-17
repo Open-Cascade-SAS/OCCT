@@ -2,7 +2,5 @@ RWStl.cxx
 RWStl.hxx
 RWStl_Reader.cxx
 RWStl_Reader.hxx
-RWStl_ConfigurationNode.cxx
 RWStl_ConfigurationNode.hxx
-RWStl_Provider.cxx
 RWStl_Provider.hxx

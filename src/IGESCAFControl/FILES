@@ -1,8 +1,6 @@
 IGESCAFControl.cxx
 IGESCAFControl.hxx
-IGESCAFControl_ConfigurationNode.cxx
 IGESCAFControl_ConfigurationNode.hxx
-IGESCAFControl_Provider.cxx
 IGESCAFControl_Provider.hxx
 IGESCAFControl_Reader.cxx
 IGESCAFControl_Reader.hxx

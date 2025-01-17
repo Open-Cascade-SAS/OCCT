@@ -4,7 +4,6 @@ RWObj_CafReader.cxx
 RWObj_CafReader.hxx
 RWObj_CafWriter.cxx
 RWObj_CafWriter.hxx
-RWObj_ConfigurationNode.cxx
 RWObj_ConfigurationNode.hxx
 RWObj_Material.hxx
 RWObj_MtlReader.cxx
@@ -13,7 +12,6 @@ RWObj_ObjMaterialMap.cxx
 RWObj_ObjMaterialMap.hxx
 RWObj_ObjWriterContext.cxx
 RWObj_ObjWriterContext.hxx
-RWObj_Provider.cxx
 RWObj_Provider.hxx
 RWObj_Reader.cxx
 RWObj_Reader.hxx

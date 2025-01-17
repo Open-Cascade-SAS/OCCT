@@ -11,95 +11,100 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWObj_ConfigurationNode.hxx>
+#include <DEOBJ_ConfigurationNode.hxx>
 
+#include <DEOBJ_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
 #include <DE_PluginHolder.hxx>
-#include <RWObj_Provider.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(RWObj_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DEOBJ_ConfigurationNode, DE_ConfigurationNode)
 
 namespace
 {
-  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
-  {
-    static const TCollection_AsciiString aScope = "provider";
-    return aScope;
-  }
-
-  // Wrapper to auto-load DE component
-  DE_PluginHolder<RWObj_ConfigurationNode> THE_OCCT_OBJ_COMPONENT_PLUGIN;
+static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+{
+  static const TCollection_AsciiString aScope = "provider";
+  return aScope;
 }
 
-//=======================================================================
-// function : RWObj_ConfigurationNode
-// purpose  :
-//=======================================================================
-RWObj_ConfigurationNode::RWObj_ConfigurationNode() :
-  DE_ConfigurationNode()
-{}
+// Wrapper to auto-load DE component
+DE_PluginHolder<DEOBJ_ConfigurationNode> THE_OCCT_OBJ_COMPONENT_PLUGIN;
+} // namespace
 
-//=======================================================================
-// function : RWObj_ConfigurationNode
-// purpose  :
-//=======================================================================
-RWObj_ConfigurationNode::RWObj_ConfigurationNode(const Handle(RWObj_ConfigurationNode)& theNode)
-  :DE_ConfigurationNode(theNode)
+//=================================================================================================
+
+DEOBJ_ConfigurationNode::DEOBJ_ConfigurationNode()
+    : DE_ConfigurationNode()
+{
+}
+
+//=================================================================================================
+
+DEOBJ_ConfigurationNode::DEOBJ_ConfigurationNode(const Handle(DEOBJ_ConfigurationNode)& theNode)
+    : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
 }
 
-//=======================================================================
-// function : Load
-// purpose  :
-//=======================================================================
-bool RWObj_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
-{
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
-  InternalParameters.FileLengthUnit = 
-    theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
-  InternalParameters.SystemCS = (RWMesh_CoordinateSystem)
-    (theResource->IntegerVal("system.cs", (int)InternalParameters.SystemCS, aScope) % 2);
-  InternalParameters.FileCS = (RWMesh_CoordinateSystem)
-    (theResource->IntegerVal("file.cs", (int)InternalParameters.SystemCS, aScope) % 2);
+//=================================================================================================
 
-  InternalParameters.ReadSinglePrecision = 
-    theResource->BooleanVal("read.single.precision", InternalParameters.ReadSinglePrecision, aScope);
-  InternalParameters.ReadCreateShapes = 
+bool DEOBJ_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+{
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+  InternalParameters.FileLengthUnit =
+    theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
+  InternalParameters.SystemCS =
+    (RWMesh_CoordinateSystem)(theResource->IntegerVal("system.cs",
+                                                      (int)InternalParameters.SystemCS,
+                                                      aScope)
+                              % 2);
+  InternalParameters.FileCS =
+    (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs",
+                                                      (int)InternalParameters.SystemCS,
+                                                      aScope)
+                              % 2);
+
+  InternalParameters.ReadSinglePrecision =
+    theResource->BooleanVal("read.single.precision",
+                            InternalParameters.ReadSinglePrecision,
+                            aScope);
+  InternalParameters.ReadCreateShapes =
     theResource->BooleanVal("read.create.shapes", InternalParameters.ReadCreateShapes, aScope);
   InternalParameters.ReadRootPrefix =
     theResource->StringVal("read.root.prefix", InternalParameters.ReadRootPrefix, aScope);
-  InternalParameters.ReadFillDoc = 
+  InternalParameters.ReadFillDoc =
     theResource->BooleanVal("read.fill.doc", InternalParameters.ReadFillDoc, aScope);
-  InternalParameters.ReadFillIncomplete = 
+  InternalParameters.ReadFillIncomplete =
     theResource->BooleanVal("read.fill.incomplete", InternalParameters.ReadFillIncomplete, aScope);
-  InternalParameters.ReadMemoryLimitMiB = 
+  InternalParameters.ReadMemoryLimitMiB =
     theResource->IntegerVal("read.memory.limit.mib", InternalParameters.ReadMemoryLimitMiB, aScope);
 
-  InternalParameters.WriteComment = 
+  InternalParameters.WriteComment =
     theResource->StringVal("write.comment", InternalParameters.WriteComment, aScope);
-  InternalParameters.WriteAuthor = 
+  InternalParameters.WriteAuthor =
     theResource->StringVal("write.author", InternalParameters.WriteAuthor, aScope);
   return true;
 }
 
-//=======================================================================
-// function : Save
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWObj_ConfigurationNode::Save() const
+//=================================================================================================
+
+TCollection_AsciiString DEOBJ_ConfigurationNode::Save() const
 {
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
-  aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
+  aResult =
+    aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Common parameters:\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!File length units to convert from while reading the file, defined as scale factor for m (meters)\n";
+  aResult += "!File length units to convert from while reading the file, defined as scale factor "
+             "for m (meters)\n";
   aResult += "!Default value: 1.0(M)\n";
   aResult += aScope + "file.length.unit :\t " + InternalParameters.FileLengthUnit + "\n";
   aResult += "!\n";
@@ -134,7 +139,8 @@ TCollection_AsciiString RWObj_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Root folder for generating root labels names\n";
-  aResult += "!Default value: ""(empty). Available values: <path>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <path>\n";
   aResult += aScope + "read.root.prefix :\t " + InternalParameters.ReadRootPrefix + "\n";
   aResult += "!\n";
 
@@ -145,7 +151,8 @@ TCollection_AsciiString RWObj_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Flag for fill the document with partially retrieved data even if reader has fa-iled with er-ror\n";
+  aResult += "!Flag for fill the document with partially retrieved data even if reader has fa-iled "
+             "with er-ror\n";
   aResult += "!Default value: 1(true). Available values: 0(false), 1(true)\n";
   aResult += aScope + "read.fill.incomplete :\t " + InternalParameters.ReadFillIncomplete + "\n";
   aResult += "!\n";
@@ -162,13 +169,15 @@ TCollection_AsciiString RWObj_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Export special comment\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.comment :\t " + InternalParameters.WriteComment + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Author of exported file name\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.author :\t " + InternalParameters.WriteAuthor + "\n";
   aResult += "!\n";
 
@@ -176,65 +185,51 @@ TCollection_AsciiString RWObj_ConfigurationNode::Save() const
   return aResult;
 }
 
-//=======================================================================
-// function : Copy
-// purpose  :
-//=======================================================================
-Handle(DE_ConfigurationNode) RWObj_ConfigurationNode::Copy() const
+//=================================================================================================
+
+Handle(DE_ConfigurationNode) DEOBJ_ConfigurationNode::Copy() const
 {
-  return new RWObj_ConfigurationNode(*this);
+  return new DEOBJ_ConfigurationNode(*this);
 }
 
-//=======================================================================
-// function : BuildProvider
-// purpose  :
-//=======================================================================
-Handle(DE_Provider) RWObj_ConfigurationNode::BuildProvider()
+//=================================================================================================
+
+Handle(DE_Provider) DEOBJ_ConfigurationNode::BuildProvider()
 {
-  return new RWObj_Provider(this);
+  return new DEOBJ_Provider(this);
 }
 
-//=======================================================================
-// function : IsImportSupported
-// purpose  :
-//=======================================================================
-bool RWObj_ConfigurationNode::IsImportSupported() const
+//=================================================================================================
+
+bool DEOBJ_ConfigurationNode::IsImportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : IsExportSupported
-// purpose  :
-//=======================================================================
-bool RWObj_ConfigurationNode::IsExportSupported() const
+//=================================================================================================
+
+bool DEOBJ_ConfigurationNode::IsExportSupported() const
 {
   return true;
 }
 
-//=======================================================================
-// function : GetFormat
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWObj_ConfigurationNode::GetFormat() const
+//=================================================================================================
+
+TCollection_AsciiString DEOBJ_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("OBJ");
 }
 
-//=======================================================================
-// function : GetVendor
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWObj_ConfigurationNode::GetVendor() const
+//=================================================================================================
+
+TCollection_AsciiString DEOBJ_ConfigurationNode::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
 
-//=======================================================================
-// function : GetExtensions
-// purpose  :
-//=======================================================================
-TColStd_ListOfAsciiString RWObj_ConfigurationNode::GetExtensions() const
+//=================================================================================================
+
+TColStd_ListOfAsciiString DEOBJ_ConfigurationNode::GetExtensions() const
 {
   TColStd_ListOfAsciiString anExt;
   anExt.Append("obj");

@@ -11,58 +11,60 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <RWPly_ConfigurationNode.hxx>
+#include <DEPLY_ConfigurationNode.hxx>
 
+#include <DEPLY_Provider.hxx>
 #include <DE_ConfigurationContext.hxx>
 #include <DE_PluginHolder.hxx>
 #include <NCollection_Buffer.hxx>
-#include <RWPly_Provider.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(RWPly_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DEPLY_ConfigurationNode, DE_ConfigurationNode)
 
 namespace
 {
-  static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
-  {
-    static const TCollection_AsciiString aScope = "provider";
-    return aScope;
-  }
-
-  // Wrapper to auto-load DE component
-  DE_PluginHolder<RWPly_ConfigurationNode> THE_OCCT_PLY_COMPONENT_PLUGIN;
+static const TCollection_AsciiString& THE_CONFIGURATION_SCOPE()
+{
+  static const TCollection_AsciiString aScope = "provider";
+  return aScope;
 }
 
-//=======================================================================
-// function : RWPly_ConfigurationNode
-// purpose  :
-//=======================================================================
-RWPly_ConfigurationNode::RWPly_ConfigurationNode() :
-  DE_ConfigurationNode()
-{}
+// Wrapper to auto-load DE component
+DE_PluginHolder<DEPLY_ConfigurationNode> THE_OCCT_PLY_COMPONENT_PLUGIN;
+} // namespace
 
-//=======================================================================
-// function : RWPly_ConfigurationNode
-// purpose  :
-//=======================================================================
-RWPly_ConfigurationNode::RWPly_ConfigurationNode(const Handle(RWPly_ConfigurationNode)& theNode)
-  :DE_ConfigurationNode(theNode)
+//=================================================================================================
+
+DEPLY_ConfigurationNode::DEPLY_ConfigurationNode()
+    : DE_ConfigurationNode()
+{
+}
+
+//=================================================================================================
+
+DEPLY_ConfigurationNode::DEPLY_ConfigurationNode(const Handle(DEPLY_ConfigurationNode)& theNode)
+    : DE_ConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
 }
 
-//=======================================================================
-// function : Load
-// purpose  :
-//=======================================================================
-bool RWPly_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
+//=================================================================================================
+
+bool DEPLY_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theResource)
 {
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
-  InternalParameters.FileLengthUnit = 
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor();
+  InternalParameters.FileLengthUnit =
     theResource->RealVal("file.length.unit", InternalParameters.FileLengthUnit, aScope);
-  InternalParameters.SystemCS = 
-    (RWMesh_CoordinateSystem)(theResource->IntegerVal("system.cs", (int)InternalParameters.SystemCS, aScope) % 2);
-  InternalParameters.FileCS = 
-    (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs", (int)InternalParameters.SystemCS, aScope) % 2);
+  InternalParameters.SystemCS =
+    (RWMesh_CoordinateSystem)(theResource->IntegerVal("system.cs",
+                                                      (int)InternalParameters.SystemCS,
+                                                      aScope)
+                              % 2);
+  InternalParameters.FileCS =
+    (RWMesh_CoordinateSystem)(theResource->IntegerVal("file.cs",
+                                                      (int)InternalParameters.SystemCS,
+                                                      aScope)
+                              % 2);
 
   InternalParameters.WriteNormals =
     theResource->BooleanVal("write.normals", InternalParameters.WriteNormals, aScope);
@@ -81,23 +83,24 @@ bool RWPly_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRes
   return Standard_True;
 }
 
-//=======================================================================
-// function : Save
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWPly_ConfigurationNode::Save() const
+//=================================================================================================
+
+TCollection_AsciiString DEPLY_ConfigurationNode::Save() const
 {
   TCollection_AsciiString aResult;
   aResult += "!*****************************************************************************\n";
-  aResult = aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
-  TCollection_AsciiString aScope = THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
+  aResult =
+    aResult + "!Configuration Node " + " Vendor: " + GetVendor() + " Format: " + GetFormat() + "\n";
+  TCollection_AsciiString aScope =
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".";
 
   aResult += "!\n";
   aResult += "!Common parameters:\n";
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!File length units to convert from while reading the file, defined as scale factor for m (meters)\n";
+  aResult += "!File length units to convert from while reading the file, defined as scale factor "
+             "for m (meters)\n";
   aResult += "!Default value: 1.0(MM)\n";
   aResult += aScope + "file.length.unit :\t " + InternalParameters.FileLengthUnit + "\n";
   aResult += "!\n";
@@ -150,13 +153,15 @@ TCollection_AsciiString RWPly_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Export special comment\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.comment :\t " + InternalParameters.WriteComment + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Author of exported file name\n";
-  aResult += "!Default value: ""(empty). Available values: <string>\n";
+  aResult += "!Default value: "
+             "(empty). Available values: <string>\n";
   aResult += aScope + "write.author :\t " + InternalParameters.WriteAuthor + "\n";
   aResult += "!\n";
 
@@ -164,76 +169,60 @@ TCollection_AsciiString RWPly_ConfigurationNode::Save() const
   return aResult;
 }
 
-//=======================================================================
-// function : Copy
-// purpose  :
-//=======================================================================
-Handle(DE_ConfigurationNode) RWPly_ConfigurationNode::Copy() const
+//=================================================================================================
+
+Handle(DE_ConfigurationNode) DEPLY_ConfigurationNode::Copy() const
 {
-  return new RWPly_ConfigurationNode(*this);
+  return new DEPLY_ConfigurationNode(*this);
 }
 
-//=======================================================================
-// function : BuildProvider
-// purpose  :
-//=======================================================================
-Handle(DE_Provider) RWPly_ConfigurationNode::BuildProvider()
+//=================================================================================================
+
+Handle(DE_Provider) DEPLY_ConfigurationNode::BuildProvider()
 {
-  return new RWPly_Provider(this);
+  return new DEPLY_Provider(this);
 }
 
-//=======================================================================
-// function : IsImportSupported
-// purpose  :
-//=======================================================================
-bool RWPly_ConfigurationNode::IsImportSupported() const
+//=================================================================================================
+
+bool DEPLY_ConfigurationNode::IsImportSupported() const
 {
   return Standard_False;
 }
 
-//=======================================================================
-// function : IsExportSupported
-// purpose  :
-//=======================================================================
-bool RWPly_ConfigurationNode::IsExportSupported() const
+//=================================================================================================
+
+bool DEPLY_ConfigurationNode::IsExportSupported() const
 {
   return Standard_True;
 }
 
-//=======================================================================
-// function : GetFormat
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWPly_ConfigurationNode::GetFormat() const
+//=================================================================================================
+
+TCollection_AsciiString DEPLY_ConfigurationNode::GetFormat() const
 {
   return TCollection_AsciiString("PLY");
 }
 
-//=======================================================================
-// function : GetVendor
-// purpose  :
-//=======================================================================
-TCollection_AsciiString RWPly_ConfigurationNode::GetVendor() const
+//=================================================================================================
+
+TCollection_AsciiString DEPLY_ConfigurationNode::GetVendor() const
 {
   return TCollection_AsciiString("OCC");
 }
 
-//=======================================================================
-// function : GetExtensions
-// purpose  :
-//=======================================================================
-TColStd_ListOfAsciiString RWPly_ConfigurationNode::GetExtensions() const
+//=================================================================================================
+
+TColStd_ListOfAsciiString DEPLY_ConfigurationNode::GetExtensions() const
 {
   TColStd_ListOfAsciiString anExt;
   anExt.Append("ply");
   return anExt;
 }
 
-//=======================================================================
-// function : CheckContent
-// purpose  :
-//=======================================================================
-bool RWPly_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
+//=================================================================================================
+
+bool DEPLY_ConfigurationNode::CheckContent(const Handle(NCollection_Buffer)& theBuffer) const
 {
   if (theBuffer.IsNull() || theBuffer->Size() < 4)
   {

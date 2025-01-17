@@ -1,8 +1,6 @@
 RWPly_CafWriter.cxx
 RWPly_CafWriter.hxx
-RWPly_ConfigurationNode.cxx
 RWPly_ConfigurationNode.hxx
 RWPly_PlyWriterContext.cxx
 RWPly_PlyWriterContext.hxx
-RWPly_Provider.cxx
 RWPly_Provider.hxx
