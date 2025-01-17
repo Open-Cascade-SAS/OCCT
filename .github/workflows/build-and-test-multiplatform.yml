@@ -431,6 +431,13 @@ jobs:
         refreshenv
       shell: cmd
 
+    - name: Install CJK Fonts
+      run: |
+        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
+        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
+        Remove-Item Noto-hinted.zip
+      shell: pwsh
+
     - name: Run tests
       run: |
         cd install
@@ -503,6 +510,13 @@ jobs:
         choco install -y vcredist2010
         refreshenv
       shell: cmd
+
+    - name: Install CJK Fonts
+      run: |
+        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
+        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
+        Remove-Item Noto-hinted.zip
+      shell: pwsh
 
     - name: Run tests
       run: |
@@ -643,8 +657,7 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
-
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
     - name: Install Xvfb and Mesa
       run: |
         sudo apt-get update
@@ -700,8 +713,7 @@ jobs:
       uses: actions/checkout@v4.1.7
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
-
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
     - name: Install Xvfb and Mesa
       run: |
         sudo apt-get update
