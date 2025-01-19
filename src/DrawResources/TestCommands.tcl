@@ -537,7 +537,21 @@ proc testgrid {args} {
                         if { $nbskip > 0 } {
                             incr nbskip -1
                         } else {
-                            lappend tests_list [list $dir $group $grid $casename $casefile]
+                            # Check if current test matches exclude pattern
+                            set should_exclude 0
+                            if { ${exc_case} > 0 } {
+                              foreach excl $exclude_case {
+                                  if {[string match "$group" [lindex $excl 0]] && 
+                                      [string match "$grid" [lindex $excl 1]] && 
+                                      [string match "$casename" [lindex $excl 2]]} {
+                                      set should_exclude 1
+                                      break
+                                  }
+                              }
+                            }
+                            if {!$should_exclude} {
+                                lappend tests_list [list $dir $group $grid $casename $casefile]
+                            }
                         }
                     }
                 }
@@ -549,7 +563,6 @@ proc testgrid {args} {
     } else {
         puts "Running tests (total [llength $tests_list] test cases)..."
     }
-
     ######################################################
     # run tests
     ######################################################
@@ -2903,4 +2916,54 @@ proc checktrend {listval delta tolerance message} {
 
     # check if deviation is clearly within a range
     return [expr abs ($mean - $delta) <= $sigma && $sigma <= $tolerance]
+}
+
+# Procedure to clean up test results by removing skipped test directories
+help cleanuptest {
+  Clean up test results by removing skipped test case directories and non-essential files.
+  Use: cleanuptest results_dir
+  Where results_dir is the directory containing test results including tests.log
+}
+proc cleanuptest {results_dir} {
+    # Function to extract test case path from test case name
+    proc get_test_path {test_case} {
+        # Extract directory parts from test case string
+        # Format: "CASE group grid case: status"
+        if { [regexp {^CASE ([^ ]+) (.*[^ ]) ([^ ]+):} $test_case -> group grid case] } {
+            # Remove any extra spaces from grid
+            set grid [string trim $grid]
+            return [file join $group $grid $case]
+        }
+        puts "Error: Cannot parse test case: $test_case"
+        return ""
+    }
+
+    set log_file [file join $results_dir "tests.log"]
+    if { ! [file exists $log_file] } {
+        puts "Error: No tests.log found in $results_dir"
+        return
+    }
+
+    # Process tests.log and find skipped tests
+    set fd [open $log_file r]
+    while {[gets $fd line] >= 0} {
+        if {[regexp {^CASE.*: SKIPPED \(data file is missing\)$} $line]} {
+            set test_path [get_test_path $line]
+            if { $test_path != "" } {
+                set full_path [file join $results_dir $test_path]
+                # Delete any files with this base path (any extension)
+                set files_to_delete [glob -nocomplain "${full_path}*"]
+                foreach file $files_to_delete {
+                    if {[file exists $file]} {
+                        file delete -force $file
+                    }
+                }
+                # Delete directory if it exists
+                if {[file isdirectory $full_path]} {
+                    file delete -force $full_path
+                }
+            }
+        }
+    }
+    close $fd
 }

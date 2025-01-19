@@ -27,11 +27,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    - name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1.13.0
-      with:
-        arch: x64
-
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -98,11 +93,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    - name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1.13.0
-      with:
-        arch: x64
-
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -121,6 +111,12 @@ jobs:
         .\systemwidedeploy.cmd 1
         .\systemwidedeploy.cmd 5
       shell: cmd
+
+    - name: Install Ninja
+      run: |
+        choco install ninja -y
+        ninja --version
+      shell: pwsh
 
     - name: Configure OCCT
       run: |
@@ -176,7 +172,7 @@ jobs:
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew freetype freeimage draco glfw
+                     glew freeimage draco glfw
 
     - name: Install rapidjson
       run: |
@@ -227,9 +223,9 @@ jobs:
     - name: Install dependencies
       run: |
         brew update
-        brew install gcc tcl-tk tbb gl2ps xerces-c \
+        brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew freetype freeimage draco glfw
+                     glew freeimage draco glfw
 
     - name: Install rapidjson
       run: |
@@ -387,11 +383,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
 
-    - name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1.13.0
-      with:
-        arch: x64
-
     - name: Download and extract 3rdparty dependencies
       run: |
           Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
@@ -442,7 +433,18 @@ jobs:
       run: |
         cd install
         call env.bat vc14 win64 release
-        DRAWEXE.exe -v -c testgrid -outdir results/windows-x64
+        DRAWEXE.exe -v -f ${{ github.workspace }}/.github/actions/testgrid/testwindows.tcl
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results
+      run: |
+        cd install
+        call env.bat vc14 win64 release
+        DRAWEXE.exe -v -c cleanuptest results/windows-x64
       shell: cmd
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -451,11 +453,158 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
+      with:
+        name: results-windows-x64
+        path: |
+          install/results/**/*.log
+          install/results/**/*.png
+          install/results/**/*.html
+        retention-days: 15
+
+  retest-windows-x64:
+    name: Regression Test on Windows (x64)
+    runs-on: windows-2022
+    needs: test-windows-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
       with:
         name: results-windows-x64
         path: install/results
+
+    - name: Check for test failures
+      id: check_failures
+      run: |
+        $failedCount = 0
+        if (Test-Path "install/results/windows-x64/tests.log") {
+          $content = Get-Content "install/results/windows-x64/tests.log"
+          $totalLine = $content | Select-String "Total cases:"
+          if ($totalLine) {
+            if ($totalLine -match "FAILED") {
+              $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
+            }
+          }
+          echo "failed_count=$failedCount" >> $env:GITHUB_OUTPUT
+          if ($failedCount -gt 0) {
+            echo "Tests failed count: $failedCount"
+          }
+        }
+      shell: pwsh
+
+    - name: Download and extract 3rdparty dependencies
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Download test data
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd data
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.zip -OutFile opencascade-dataset-7.8.0.zip
+        Expand-Archive -Path opencascade-dataset-7.8.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.8.0.zip
+      shell: pwsh
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-windows-x64
+        path: install
+
+    - name: Download and extract Mesa3D
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
+      shell: cmd
+
+    - name: Install Visual C++ 2010 Redistributable
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        choco install -y vcredist2010
+        refreshenv
+      shell: cmd
+
+    - name: Install CJK Fonts
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
+        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
+        Remove-Item Noto-hinted.zip
+      shell: pwsh
+
+    - name: Run regression tests
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install
+        call env.bat vc14 win64 release
+        DRAWEXE.exe -v -c testgrid -regress results/windows-x64 -outdir results/windows-x64-retest -parallel 0
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-windows-x64-retest
+        path: install/results/windows-x64-retest
         retention-days: 15
+
+    - name: Copy retest results back to original location
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/results/windows-x64-retest
+        if exist "*" (
+          xcopy /s /y /i . ..\windows-x64\
+          cd ..\..\
+          call env.bat vc14 win64 release
+          DRAWEXE.exe -v -c "testsummarize results/windows-x64"
+        ) else (
+          echo No retest results to copy - directory is empty
+        )
+      shell: cmd
+
+    - name: Upload updated test results
+      if: ${{ hashFiles('install/results/windows-x64-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-windows-x64
+        path: install/results/
+        retention-days: 15
+        overwrite: true
+
+    - name: Check test failures
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/results/windows-x64-retest
+        if (Test-Path tests.log) {
+          $failedCount = (Select-String -Path tests.log -Pattern "Total cases:.*FAILED" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }) -as [int]
+          if ($failedCount -gt 0) {
+            Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
+            echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
+            exit 1
+          }
+          Write-Output "Found $failedCount FAILED tests"
+        }
+      shell: pwsh
 
   test-windows-clang-x64:
     name: Test on Windows with Clang (x64)
@@ -466,11 +615,6 @@ jobs:
 
     - name: Checkout repository
       uses: actions/checkout@v4.1.7
-
-    - name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1.13.0
-      with:
-        arch: x64
 
     - name: Download and extract 3rdparty dependencies
       run: |
@@ -522,7 +666,18 @@ jobs:
       run: |
         cd install
         call env.bat clang win64 release
-        DRAWEXE.exe -v -c testgrid -outdir results/windows-clang-x64
+        DRAWEXE.exe -v -f ${{ github.workspace }}/.github/actions/testgrid/testwindowsclang.tcl
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results
+      run: |
+        cd install
+        call env.bat clang win64 release
+        DRAWEXE.exe -v -c cleanuptest results/windows-clang-x64
       shell: cmd
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -531,11 +686,158 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
+      with:
+        name: results-windows-clang-x64
+        path: |
+          install/results/**/*.log
+          install/results/**/*.png
+          install/results/**/*.html
+        retention-days: 15
+
+  retest-windows-clang-x64:
+    name: Regression Test on Windows with Clang (x64)
+    runs-on: windows-2022
+    needs: test-windows-clang-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
       with:
         name: results-windows-clang-x64
         path: install/results
+
+    - name: Check for test failures
+      id: check_failures
+      run: |
+        $failedCount = 0
+        if (Test-Path "install/results/windows-clang-x64/tests.log") {
+          $content = Get-Content "install/results/windows-clang-x64/tests.log"
+          $totalLine = $content | Select-String "Total cases:"
+          if ($totalLine) {
+            if ($totalLine -match "FAILED") {
+              $failedCount = ($totalLine | ForEach-Object { $_.Line -replace '.*?(\d+) FAILED.*','$1' }) -as [int]
+            }
+          }
+          echo "failed_count=$failedCount" >> $env:GITHUB_OUTPUT
+          if ($failedCount -gt 0) {
+            echo "Tests failed count: $failedCount"
+          }
+        }
+      shell: pwsh
+
+    - name: Download and extract 3rdparty dependencies
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+          Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/3rdparty-vc14-64.zip -OutFile 3rdparty-vc14-64.zip
+          Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+          Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Download test data
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd data
+        Invoke-WebRequest -Uri https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.zip -OutFile opencascade-dataset-7.8.0.zip
+        Expand-Archive -Path opencascade-dataset-7.8.0.zip -DestinationPath .
+        Remove-Item opencascade-dataset-7.8.0.zip
+      shell: pwsh
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-windows-clang-x64
+        path: install
+
+    - name: Download and extract Mesa3D
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        curl -L -o mesa3d.7z https://github.com/pal1000/mesa-dist-win/releases/download/24.3.2/mesa3d-24.3.2-release-mingw.7z
+        7z x mesa3d.7z -omesa3d
+
+    - name: Run system-wide deployment
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd mesa3d
+        .\systemwidedeploy.cmd 1
+        .\systemwidedeploy.cmd 5
+      shell: cmd
+
+    - name: Install Visual C++ 2010 Redistributable
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        choco install -y vcredist2010
+        refreshenv
+      shell: cmd
+
+    - name: Install CJK Fonts
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        Invoke-WebRequest -Uri https://noto-website-2.storage.googleapis.com/pkgs/Noto-hinted.zip -OutFile Noto-hinted.zip
+        Expand-Archive -Path Noto-hinted.zip -DestinationPath $env:windir\Fonts
+        Remove-Item Noto-hinted.zip
+      shell: pwsh
+
+    - name: Run regression tests
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install
+        call env.bat clang win64 release
+        DRAWEXE.exe -v -c testgrid -regress results/windows-clang-x64 -outdir results/windows-clang-x64-retest -parallel 0
+      shell: cmd
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-windows-clang-x64-retest
+        path: install/results/windows-clang-x64-retest
         retention-days: 15
+
+    - name: Copy retest results back to original location
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/results/windows-clang-x64-retest
+        if exist "*" (
+          xcopy /s /y /i . ..\windows-clang-x64\
+          cd ..\..\
+          call env.bat clang win64 release
+          DRAWEXE.exe -v -c "testsummarize results/windows-clang-x64"
+        ) else (
+          echo No retest results to copy - directory is empty
+        )
+      shell: cmd
+
+    - name: Upload updated test results
+      if: ${{ hashFiles('install/results/windows-clang-x64-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-windows-clang-x64
+        path: install/results/
+        retention-days: 15
+        overwrite: true
+
+    - name: Check test failures
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/results/windows-clang-x64-retest
+        if (Test-Path tests.log) {
+          $failedCount = (Select-String -Path tests.log -Pattern "Total cases:.*FAILED" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value }) -as [int]
+          if ($failedCount -gt 0) {
+            Write-Error "Number of FAILED tests ($failedCount) exceeds threshold of 0"
+            echo "FAILED_COUNT=$failedCount" >> $env:GITHUB_ENV
+            exit 1
+          }
+          Write-Output "Found $failedCount FAILED tests"
+        }
+      shell: pwsh
 
   test-macos-x64:
     name: Test on macOS (x64)
@@ -551,7 +853,7 @@ jobs:
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew freetype freeimage draco glfw
+                     glew freeimage draco glfw
 
     - name: Download test data
       run: |
@@ -576,7 +878,19 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid -outdir results/macos-x64 caf basic
+         ./DRAWEXE -v -f ${{ github.workspace }}/.github/actions/testgrid/testmacos.tcl
+      shell: bash
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c cleanuptest results/macos-x64
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -585,11 +899,134 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
+      with:
+        name: results-macos-x64
+        path: |
+          install/bin/results/**/*.log
+          install/bin/results/**/*.png
+          install/bin/results/**/*.html
+        retention-days: 15
+
+  retest-macos-x64:
+    name: Regression Test on macOS (x64)
+    runs-on: macos-15
+    needs: test-macos-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: results-macos-x64
+        path: install/bin/results
+
+    - name: Check for test failures
+      id: check_failures
+      run: |
+        failed_count=0
+        if [ -f "install/bin/results/macos-x64/tests.log" ]; then
+          total_line=$(grep "Total cases:" install/bin/results/macos-x64/tests.log)
+          if [ ! -z "$total_line" ]; then
+            if [[ $total_line =~ "FAILED" ]]; then
+              failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
+            fi
+          fi
+          echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+          if [ "$failed_count" -gt 0 ]; then
+            echo "Tests failed count: $failed_count"
+          fi
+        fi
+      shell: bash
+
+    - name: Install dependencies
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew freeimage draco glfw
+
+    - name: Download test data
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd data
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
+        tar -xf opencascade-dataset-7.8.0.tar.xz
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-macos-x64
+        path: install
+
+    - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
+      if: steps.check_failures.outputs.failed_count > 0
+      run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+
+    - name: Set execute permissions on DRAWEXE
+      if: steps.check_failures.outputs.failed_count > 0
+      run: chmod +x install/bin/DRAWEXE
+
+    - name: Run regression tests
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c testgrid -regress results/macos-x64 -outdir results/macos-x64-retest -parallel 0
+      shell: bash
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Copy retest results back to original location
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/macos-x64-retest
+        if [ "$(ls -A)" ]; then
+          cp -rf * ../macos-x64/
+          
+          cd ../../
+          source env.sh
+          ./DRAWEXE -v -c testsummarize results/macos-x64
+        else
+          echo "No retest results to copy - directory is empty"
+        fi
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-macos-x64-retest
+        path: install/bin/results/macos-x64-retest
+        retention-days: 15
+
+    - name: Upload updated test results
+      if: ${{ hashFiles('install/bin/results/macos-x64-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
       with:
         name: results-macos-x64
         path: install/bin/results
         retention-days: 15
+        overwrite: true
+
+    - name: Check test failures
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/macos-x64-retest
+        if [ -f tests.log ]; then
+          FAILED_COUNT=$(grep "Total cases:" tests.log | grep -o "[0-9]* FAILED" | awk '{print $1}')
+          if [ ! -z "$FAILED_COUNT" ] && [ $FAILED_COUNT -gt 0 ]; then
+            echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+            echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo "Found $FAILED_COUNT FAILED tests"
+        fi
 
   test-macos-gcc-x64:
     name: Test on macOS with GCC (x64)
@@ -606,7 +1043,7 @@ jobs:
         brew update
         brew install tcl-tk tbb gl2ps xerces-c \
                      libxmu libxi libxft libxpm \
-                     glew freetype freeimage draco glfw
+                     glew freeimage draco glfw
 
     - name: Download test data
       run: |
@@ -631,7 +1068,19 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid -outdir results/macos-gcc-x64 caf basic
+         ./DRAWEXE -v -f ${{ github.workspace }}/.github/actions/testgrid/testmacosgcc.tcl
+      shell: bash
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c cleanuptest results/macos-gcc-x64
       shell: bash
       env:
         LIBGL_ALWAYS_SOFTWARE: 1
@@ -640,11 +1089,134 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
+      with:
+        name: results-macos-gcc-x64
+        path: |
+          install/bin/results/**/*.log
+          install/bin/results/**/*.png
+          install/bin/results/**/*.html
+        retention-days: 15
+
+  retest-macos-gcc-x64:
+    name: Regression Test on macOS with GCC (x64)
+    runs-on: macos-15
+    needs: test-macos-gcc-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
       with:
         name: results-macos-gcc-x64
         path: install/bin/results
+
+    - name: Check for test failures
+      id: check_failures
+      run: |
+        failed_count=0
+        if [ -f "install/bin/results/macos-gcc-x64/tests.log" ]; then
+          total_line=$(grep "Total cases:" install/bin/results/macos-gcc-x64/tests.log)
+          if [ ! -z "$total_line" ]; then
+            if [[ $total_line =~ "FAILED" ]]; then
+              failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
+            fi
+          fi
+          echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+          if [ "$failed_count" -gt 0 ]; then
+            echo "Tests failed count: $failed_count"
+          fi
+        fi
+      shell: bash
+
+    - name: Install dependencies
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        brew update
+        brew install tcl-tk tbb gl2ps xerces-c \
+                     libxmu libxi libxft libxpm \
+                     glew draco glfw
+
+    - name: Download test data
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd data
+        curl -L -O https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
+        tar -xf opencascade-dataset-7.8.0.tar.xz
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-macos-gcc-x64
+        path: install
+
+    - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
+      if: steps.check_failures.outputs.failed_count > 0
+      run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+
+    - name: Set execute permissions on DRAWEXE
+      if: steps.check_failures.outputs.failed_count > 0
+      run: chmod +x install/bin/DRAWEXE
+
+    - name: Run regression tests
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c testgrid -regress results/macos-gcc-x64 -outdir results/macos-gcc-x64-retest -parallel 0
+      shell: bash
+      env:
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-macos-gcc-x64-retest
+        path: install/bin/results/macos-gcc-x64-retest
         retention-days: 15
+
+    - name: Copy retest results back to original location
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/macos-gcc-x64-retest
+        if [ "$(ls -A)" ]; then
+          cp -rf * ../macos-gcc-x64/
+          
+          cd ../../
+          source env.sh
+          ./DRAWEXE -v -c testsummarize results/macos-gcc-x64
+        else
+          echo "No retest results to copy - directory is empty"
+        fi
+
+    - name: Upload updated test results
+      if: ${{ hashFiles('install/bin/results/macos-gcc-x64-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-macos-gcc-x64
+        path: install/bin/results/
+        retention-days: 15
+        overwrite: true
+
+    - name: Check test failures
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/macos-gcc-x64-retest
+        if [ -f tests.log ]; then
+          FAILED_COUNT=$(grep "Total cases:" tests.log | grep -o "[0-9]* FAILED" | awk '{print $1}')
+          if [ ! -z "$FAILED_COUNT" ] && [ $FAILED_COUNT -gt 0 ]; then
+            echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+            echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo "Found $FAILED_COUNT FAILED tests"
+        fi
 
   test-linux-clang-x64:
     name: Test on Linux with Clang (x64)
@@ -658,13 +1230,9 @@ jobs:
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
-    - name: Install Xvfb and Mesa
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
 
-    - name: Start Xvfb
-      run: Xvfb :99 -screen 0 1920x1080x24 &
+    - name: Setup Xvfb and Mesa
+      uses: ./.github/actions/setup-xvfb-mesa
 
     - name: Download test data
       run: |
@@ -686,7 +1254,20 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid -outdir results/linux-clang-x64
+         ./DRAWEXE -v -f ${{ github.workspace }}/.github/actions/testgrid/testlinuxclang.tcl
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c cleanuptest results/linux-clang-x64
       shell: bash
       env:
         DISPLAY: :99
@@ -696,11 +1277,131 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
+      with:
+        name: results-linux-clang-x64
+        path: |
+          install/bin/results/**/*.log
+          install/bin/results/**/*.png
+          install/bin/results/**/*.html
+        retention-days: 15
+
+  retest-linux-clang-x64:
+    name: Regression Test on Linux with Clang (x64)
+    runs-on: ubuntu-24.04
+    needs: test-linux-clang-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
       with:
         name: results-linux-clang-x64
         path: install/bin/results
+
+    - name: Check for test failures
+      id: check_failures
+      run: |
+        failed_count=0
+        if [ -f "install/bin/results/linux-clang-x64/tests.log" ]; then
+          total_line=$(grep "Total cases:" install/bin/results/linux-clang-x64/tests.log)
+          if [ ! -z "$total_line" ]; then
+            if [[ $total_line =~ "FAILED" ]]; then
+              failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
+            fi
+          fi
+          echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+          if [ "$failed_count" -gt 0 ]; then
+            echo "Tests failed count: $failed_count"
+          fi
+        fi
+      shell: bash
+
+    - name: Install dependencies
+      if: steps.check_failures.outputs.failed_count > 0
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake clang make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
+
+    - name: Setup Xvfb and Mesa
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Download test data
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd data
+        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
+        tar -xf opencascade-dataset-7.8.0.tar.xz
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-linux-clang-x64
+        path: install
+
+    - name: Set execute permissions on DRAWEXE
+      if: steps.check_failures.outputs.failed_count > 0
+      run: chmod +x install/bin/DRAWEXE
+
+    - name: Run regression tests
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c testgrid -regress results/linux-clang-x64 -outdir results/linux-clang-x64-retest -parallel 0
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-linux-clang-x64-retest
+        path: install/bin/results/linux-clang-x64-retest
         retention-days: 15
+
+    - name: Copy retest results back to original location
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/linux-clang-x64-retest
+        if [ "$(ls -A)" ]; then
+          cp -rf * ../linux-clang-x64/
+          
+          cd ../../
+          source env.sh
+          ./DRAWEXE -v -c testsummarize results/linux-clang-x64
+        else
+          echo "No retest results to copy - directory is empty"
+        fi
+
+    - name: Upload updated test results
+      if: ${{ hashFiles('install/bin/results/linux-clang-x64-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-linux-clang-x64
+        path: install/bin/results/
+        retention-days: 15
+        overwrite: true
+
+    - name: Check test failures
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/linux-clang-x64-retest
+        if [ -f tests.log ]; then
+          FAILED_COUNT=$(grep "Total cases:" tests.log | grep -o "[0-9]* FAILED" | awk '{print $1}')
+          if [ ! -z "$FAILED_COUNT" ] && [ $FAILED_COUNT -gt 0 ]; then
+            echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+            echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo "Found $FAILED_COUNT FAILED tests"
+        fi
 
   test-linux-gcc-x64:
     name: Test on Linux with GCC (x64)
@@ -714,13 +1415,9 @@ jobs:
 
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
-    - name: Install Xvfb and Mesa
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
 
-    - name: Start Xvfb
-      run: Xvfb :99 -screen 0 1920x1080x24 &
+    - name: Setup Xvfb and Mesa
+      uses: ./.github/actions/setup-xvfb-mesa
 
     - name: Download test data
       run: |
@@ -742,7 +1439,20 @@ jobs:
          cd install
          cd bin
          source env.sh
-         ./DRAWEXE -v -c testgrid -outdir results/linux-gcc-x64
+         ./DRAWEXE -v -f ${{ github.workspace }}/.github/actions/testgrid/testlinuxgcc.tcl
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Clean up test results
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c cleanuptest results/linux-gcc-x64
       shell: bash
       env:
         DISPLAY: :99
@@ -752,36 +1462,152 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4.4.3
-      id: artifact-upload-step
+      with:
+        name: results-linux-gcc-x64
+        path: |
+          install/bin/results/**/*.log
+          install/bin/results/**/*.png
+          install/bin/results/**/*.html
+        retention-days: 15
+
+  retest-linux-gcc-x64:
+    name: Regression Test on Linux with GCC (x64)
+    runs-on: ubuntu-24.04
+    needs: test-linux-gcc-x64
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.7
+
+    - name: Download previous test results
+      uses: actions/download-artifact@v4.1.7
       with:
         name: results-linux-gcc-x64
         path: install/bin/results
+
+    - name: Check for test failures
+      id: check_failures
+      run: |
+        failed_count=0
+        if [ -f "install/bin/results/linux-gcc-x64/tests.log" ]; then
+          total_line=$(grep "Total cases:" install/bin/results/linux-gcc-x64/tests.log)
+          if [ ! -z "$total_line" ]; then
+            if [[ $total_line =~ "FAILED" ]]; then
+              failed_count=$(echo "$total_line" | grep -o "[0-9]* FAILED" | awk '{print $1}')
+            fi
+          fi
+          echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
+          if [ "$failed_count" -gt 0 ]; then
+            echo "Tests failed count: $failed_count"
+          fi
+        fi
+      shell: bash
+
+    - name: Install dependencies
+      if: steps.check_failures.outputs.failed_count > 0
+      run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev fonts-noto-cjk fonts-liberation fonts-ubuntu fonts-liberation fonts-ubuntu fonts-noto-cjk fonts-ipafont-gothic fonts-ipafont-mincho fonts-unfonts-core
+
+    - name: Setup Xvfb and Mesa
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: ./.github/actions/setup-xvfb-mesa
+
+    - name: Download test data
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd data
+        wget https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_8_0/opencascade-dataset-7.8.0.tar.xz
+        tar -xf opencascade-dataset-7.8.0.tar.xz
+
+    - name: Download and extract install directory
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/download-artifact@v4.1.7
+      with:
+        name: install-linux-gcc-x64
+        path: install
+
+    - name: Set execute permissions on DRAWEXE
+      if: steps.check_failures.outputs.failed_count > 0
+      run: chmod +x install/bin/DRAWEXE
+
+    - name: Run regression tests
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+         cd install
+         cd bin
+         source env.sh
+         ./DRAWEXE -v -c testgrid -regress results/linux-gcc-x64 -outdir results/linux-gcc-x64-retest -parallel 0
+      shell: bash
+      env:
+        DISPLAY: :99
+        LIBGL_ALWAYS_SOFTWARE: 1
+        CSF_TestScriptsPath: ${{ github.workspace }}/tests
+        CSF_TestDataPath: ${{ github.workspace }}/data
+
+    - name: Upload regression test results
+      if: steps.check_failures.outputs.failed_count > 0
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-linux-gcc-x64-retest
+        path: install/bin/results/linux-gcc-x64-retest
         retention-days: 15
 
-  summarize:
-      name: Summarize and Send PR Message
-      runs-on: ubuntu-24.04
-      if: github.event_name == 'pull_request'
-      needs: [test-windows-x64, test-windows-clang-x64, test-macos-x64, test-macos-gcc-x64, test-linux-clang-x64, test-linux-gcc-x64]
-  
-      steps:
+    - name: Copy retest results back to original location
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/linux-gcc-x64-retest
+        if [ "$(ls -A)" ]; then
+          cp -rf * ../linux-gcc-x64/
+          
+          cd ../../
+          source env.sh
+          ./DRAWEXE -v -c testsummarize results/linux-gcc-x64
+        else
+          echo "No retest results to copy - directory is empty"
+        fi
+
+    - name: Upload updated test results
+      if: ${{ hashFiles('install/bin/results/linux-gcc-x64-retest/*') != '' }}
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: results-linux-gcc-x64
+        path: install/bin/results/
+        retention-days: 15
+        overwrite: true
+
+    - name: Check test failures
+      if: steps.check_failures.outputs.failed_count > 0
+      run: |
+        cd install/bin/results/linux-gcc-x64-retest
+        if [ -f tests.log ]; then
+          FAILED_COUNT=$(grep "Total cases:" tests.log | grep -o "[0-9]* FAILED" | awk '{print $1}')
+          if [ ! -z "$FAILED_COUNT" ] && [ $FAILED_COUNT -gt 0 ]; then
+            echo "::error::Number of FAILED tests ($FAILED_COUNT) exceeds threshold of 0"
+            echo "FAILED_COUNT=$FAILED_COUNT" >> $GITHUB_ENV
+            exit 1
+          fi
+          echo "Found $FAILED_COUNT FAILED tests"
+        fi
+
+  test-summary:
+    name: 'Summarize Test Results'
+    runs-on: ubuntu-24.04
+    if: always() && github.event_name == 'pull_request'
+    needs: [retest-windows-x64, retest-windows-clang-x64, retest-macos-x64, retest-macos-gcc-x64, retest-linux-clang-x64, retest-linux-gcc-x64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y tcl-dev tk-dev cmake gcc g++ make libbtbb-dev libx11-dev libglu1-mesa-dev tcllib tcl-thread tcl libvtk9-dev libopenvr-dev libdraco-dev libfreeimage-dev libegl1-mesa-dev libgles2-mesa-dev libfreetype-dev
-  
-      - name: Install Xvfb and Mesa
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
-  
-      - name: Start Xvfb
-        run: Xvfb :99 -screen 0 1920x1080x24 &
-  
-      - name: Set DISPLAY environment variable
-        run: echo "DISPLAY=:99" >> $GITHUB_ENV
 
-      - name: Set LIBGL_ALWAYS_SOFTWARE environment variable
-        run: echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
+      - name: Setup Xvfb and Mesa
+        uses: ./.github/actions/setup-xvfb-mesa
+
+      - name: Set environment variables
+        run: |
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+          echo "LIBGL_ALWAYS_SOFTWARE=1" >> $GITHUB_ENV
 
       - name: Download and extract install directory
         uses: actions/download-artifact@v4.1.7
@@ -795,160 +1621,41 @@ jobs:
       - name: Get latest workflow run ID from target branch
         id: get_run_id
         run: |
-          workflow_name="Build and Test OCCT on Multiple Platforms"
-          target_branch="${{ github.event.pull_request.base.ref }}"
-          echo "Fetching latest run ID for workflow: $workflow_name on branch: $target_branch"
           response=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=$target_branch")
-          latest_run_id=$(echo "$response" | jq -r --arg workflow_name "$workflow_name" '.workflow_runs[] | select(.name==$workflow_name) | .id' | head -n 1)
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.event.pull_request.base.ref }}")
+          latest_run_id=$(echo "$response" | jq -r '.workflow_runs[] | select(.name=="Build and Test OCCT on Multiple Platforms") | .id' | head -n 1)
           echo "latest_run_id=$latest_run_id" >> $GITHUB_ENV
 
-      - name: Download all test results (Windows x64) from master
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-windows-x64
-          path: install/bin/results/master/windows-x64
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
+      - name: Download master branch test results
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+            echo "Downloading results for $platform"
+            gh run download ${{ env.latest_run_id }} -n "results-$platform" -D "install/bin/results/master/"
+          done
 
-      - name: Download all test results (Windows Clang x64) from master
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-windows-clang-x64
-          path: install/bin/results/master/windows-clang-x64
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
+      - name: Download current branch test results
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+            echo "Downloading results for $platform"
+            gh run download -n "results-$platform" -D "install/bin/results/current/"
+          done
 
-      - name: Download all test results (macOS x64) from master
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-macos-x64
-          path: install/bin/results/master/macos-x64
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
-
-      - name: Download all test results (macOS GCC x64) from master
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-macos-gcc-x64
-          path: install/bin/results/master/macos-gcc-x64
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
-
-      - name: Download all test results (Linux Clang x64) from master
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-linux-clang-x64
-          path: install/bin/results/master/linux-clang-x64
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
-
-      - name: Download all test results (Linux GCC x64) from master
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-linux-gcc-x64
-          path: install/bin/results/master/linux-gcc-x64
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ env.latest_run_id }}
-
-      - name: Download all test results (Windows x64)
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-windows-x64
-          path: install/bin/results/current/windows-x64
-
-      - name: Download all test results (Windows Clang x64)
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-windows-clang-x64
-          path: install/bin/results/current/windows-clang-x64
-
-      - name: Download all test results (macOS x64)
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-macos-x64
-          path: install/bin/results/current/macos-x64
-
-      - name: Download all test results (macOS GCC x64)
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-macos-gcc-x64
-          path: install/bin/results/current/macos-gcc-x64
-
-      - name: Download all test results (Linux Clang x64)
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-linux-clang-x64
-          path: install/bin/results/current/linux-clang-x64
-
-      - name: Download all test results (Linux GCC x64)
-        uses: actions/download-artifact@v4.1.7
-        with:
-          name: results-linux-gcc-x64
-          path: install/bin/results/current/linux-gcc-x64
-
-      - name: Run tests
+      - name: Compare test results
         run: |
           echo "Comparing test results..."
-          cd install
-          cd bin
+          cd install/bin
           source env.sh
-          ./DRAWEXE -v -c testdiff results/windows-x64 results/master/windows-x64 &
-          ./DRAWEXE -v -c testdiff results/windows-clang-x64 results/master/windows-clang-x64 &
-          ./DRAWEXE -v -c testdiff results/macos-x64 results/master/macos-x64 &
-          ./DRAWEXE -v -c testdiff results/macos-gcc-x64 results/master/macos-gcc-x64 &
-          ./DRAWEXE -v -c testdiff results/linux-clang-x64 results/master/linux-clang-x64 &
-          ./DRAWEXE -v -c testdiff results/linux-gcc-x64 results/master/linux-gcc-x64 &
+          for platform in windows-x64 windows-clang-x64 macos-x64 macos-gcc-x64 linux-clang-x64 linux-gcc-x64; do
+            ./DRAWEXE -v -c testdiff "results/current/$platform" "results/master/$platform" &
+          done
           wait
-        shell: bash
-        env:
-          DISPLAY: :99
-          LIBGL_ALWAYS_SOFTWARE: 1
 
-      - name: Upload updated test results (Windows x64)
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: results-windows-x64
-          overwrite: true
-          path: install/bin/results/current/windows-x64
-
-      - name: Upload updated test results (Windows Clang x64)
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: results-windows-clang-x64
-          overwrite: true
-          path: install/bin/results/current/windows-clang-x64
-
-      - name: Upload updated test results (macOS x64)
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: results-macos-x64
-          overwrite: true
-          path: install/bin/results/current/macos-x64
-
-      - name: Upload updated test results (macOS GCC x64)
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: results-macos-gcc-x64
-          overwrite: true
-          path: install/bin/results/current/macos-gcc-x64
-
-      - name: Upload updated test results (Linux Clang x64)
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: results-linux-clang-x64
-          overwrite: true
-          path: install/bin/results/current/linux-clang-x64
-
-      - name: Upload updated test results (Linux GCC x64)
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: results-linux-gcc-x64
-          overwrite: true
-          path: install/bin/results/current/linux-gcc-x64
-
-      - name: Upload test compare result logs
+      - name: Upload comparison results
         uses: actions/upload-artifact@v4.4.3
         with:
           name: test-compare-results
