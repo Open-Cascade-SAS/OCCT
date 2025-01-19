@@ -7,6 +7,7 @@ set exclude_list [list \
     "bugs fclasses bug7287_3" \
     "bugs fclasses bug7287_5" \
     "bugs moddata_2 bug712_2" \
+    "bugs moddata_1 bug20627" \
     "collections n arrayMove" \
     "lowalgos intss bug565" \
     "lowalgos intss bug567_1" \

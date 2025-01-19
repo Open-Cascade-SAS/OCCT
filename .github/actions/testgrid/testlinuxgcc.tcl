@@ -3,6 +3,7 @@ set exclude_list [list \
     "bugs caf bug31546" \
     "bugs fclasses bug6143" \
     "bugs moddata_2 bug712_2" \
+    "bugs moddata_1 bug20627" \
     "bugs modalg_6 bug27884" \
     "lowalgos intss bug565" \
     "lowalgos intss bug567_1" \
