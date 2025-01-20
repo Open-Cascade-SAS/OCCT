@@ -17,6 +17,7 @@
 #define _Graphic3d_ShaderObject_HeaderFile
 
 #include <Graphic3d_TypeOfShaderObject.hxx>
+#include <Graphic3d_TypeOfPrimitiveArray.hxx>
 #include <NCollection_Sequence.hxx>
 #include <OSD_Path.hxx>
 
@@ -72,7 +73,9 @@ public:
                                                                           const ShaderVariableList& theStageInOuts,
                                                                           const TCollection_AsciiString& theInName  = TCollection_AsciiString(),
                                                                           const TCollection_AsciiString& theOutName = TCollection_AsciiString(),
-                                                                          Standard_Integer theNbGeomInputVerts = 0);
+                                                                          Standard_Integer theNbGeomInputVerts = 0,
+                                                                          Standard_Integer theNbGeomOutputVerts = 0,
+                                                                          Graphic3d_TypeOfPrimitiveArray theGeometryInputType = Graphic3d_TOPA_TRIANGLES);
 
 private:
 

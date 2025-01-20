@@ -16,6 +16,7 @@
 #include <Graphic3d_LightSet.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureSetBits.hxx>
+#include <Graphic3d_TypeOfPrimitiveArray.hxx>
 #include <Message.hxx>
 
 #include "../Shaders/Shaders_LightShadow_glsl.pxx"
@@ -50,6 +51,12 @@ namespace
     for (; aMaxLimit < theNbLights; aMaxLimit *= 2) {}
     return aMaxLimit;
   }
+
+  //! Number of points used for rendering points rendered as physical circles
+  const Standard_Integer THE_NB_POINT_CIRCLE_SEGMENTS = 7;
+
+  //! Number of points used for rendering circular end caps of lines
+  const Standard_Integer THE_LINE_END_CAP_SEGMENTS = 4;
 
 #define EOL "\n"
 
@@ -214,6 +221,10 @@ EOL"}";
 //! Compute gl_Position vertex shader output.
 const char THE_VERT_gl_Position[] =
 EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;";
+
+//! Compute gl_Position as world position for later processing in a geometry shader
+const char THE_VERT_gl_ViewPosition[] =
+EOL"  gl_Position = occWorldViewMatrix * occModelWorldMatrix * occVertex;";
 
 //! Displace gl_Position alongside vertex normal for outline rendering.
 //! This code adds silhouette only for smooth surfaces of closed primitive, and produces visual artifacts on sharp edges.
@@ -830,11 +841,44 @@ TCollection_AsciiString Graphic3d_ShaderManager::pointSpriteShadingSrc (const TC
   return aSrcFragGetColor;
 }
 
-//! Prepare GLSL source for geometry shader according to parameters.
-static TCollection_AsciiString prepareGeomMainSrc (Graphic3d_ShaderObject::ShaderVariableList& theUnifoms,
-                                                   Graphic3d_ShaderObject::ShaderVariableList& theStageInOuts,
-                                                   Standard_Integer theBits)
+static TCollection_AsciiString genGeomPassthroughCode(Graphic3d_ShaderObject::ShaderVariableList &theStageInOuts, Standard_Integer theInVertIdx)
 {
+  TCollection_AsciiString passthrough = TCollection_AsciiString();
+  const TCollection_AsciiString aVertIndex (theInVertIdx);
+
+  // pass variables from Vertex shader to Fragment shader through Geometry shader
+  for (Graphic3d_ShaderObject::ShaderVariableList::Iterator aVarListIter (theStageInOuts); aVarListIter.More(); aVarListIter.Next())
+  {
+    if (aVarListIter.Value().Stages == (Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT))
+    {
+      const TCollection_AsciiString aVarName = aVarListIter.Value().Name.Token (" ", 2);
+      if (aVarName.Value (aVarName.Length()) == ']')
+      {
+        // copy the whole array
+        const TCollection_AsciiString aVarName2 = aVarName.Token ("[", 1);
+        passthrough += TCollection_AsciiString()
+          + EOL"  geomOut." + aVarName2 + " = geomIn[" + aVertIndex + "]." + aVarName2 + ";";
+      }
+      else
+      {
+        passthrough += TCollection_AsciiString()
+          + EOL"  geomOut." + aVarName + " = geomIn[" + aVertIndex + "]." + aVarName + ";";
+        }
+    }
+  }
+
+  return passthrough;
+}
+
+//! Prepare GLSL source for geometry shader according to parameters.
+static TCollection_AsciiString prepareGeomMainSrc(Graphic3d_ShaderObject::ShaderVariableList &theUnifoms,
+                                                  Graphic3d_ShaderObject::ShaderVariableList &theStageInOuts,
+                                                  Standard_Integer theBits, int &theNbInputPoints, int &theNbOutputPoints,
+                                                  Graphic3d_TypeOfPrimitiveArray &theInputArrayType)
+{
+  theNbInputPoints = 0;
+  theNbOutputPoints = 0;
+
   if ((theBits & Graphic3d_ShaderFlags_NeedsGeomShader) == 0)
   {
     return TCollection_AsciiString();
@@ -873,48 +917,150 @@ static TCollection_AsciiString prepareGeomMainSrc (Graphic3d_ShaderObject::Shade
       EOL"  aHeightABC = max (aHeightABC, vec3 (10.0 * occLineWidth));" // avoid shrunk presentation disappearing at distance
 // clang-format on
       EOL"  float aQuadModeHeightC = occIsQuadMode ? occLineWidth + 1.0 : 0.0;";
-  }
 
-  for (Standard_Integer aVertIter = 0; aVertIter < 3; ++aVertIter)
-  {
-    const TCollection_AsciiString aVertIndex (aVertIter);
-    // pass variables from Vertex shader to Fragment shader through Geometry shader
-    for (Graphic3d_ShaderObject::ShaderVariableList::Iterator aVarListIter (theStageInOuts); aVarListIter.More(); aVarListIter.Next())
+    for (Standard_Integer aVertIter = 0; aVertIter < 3; ++aVertIter)
     {
-      if (aVarListIter.Value().Stages == (Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT))
-      {
-        const TCollection_AsciiString aVarName = aVarListIter.Value().Name.Token (" ", 2);
-        if (aVarName.Value (aVarName.Length()) == ']')
-        {
-          // copy the whole array
-          const TCollection_AsciiString aVarName2 = aVarName.Token ("[", 1);
-          aSrcMainGeom += TCollection_AsciiString()
-            + EOL"  geomOut." + aVarName2 + " = geomIn[" + aVertIndex + "]." + aVarName2 + ";";
-        }
-        else
-        {
-          aSrcMainGeom += TCollection_AsciiString()
-           + EOL"  geomOut." + aVarName + " = geomIn[" + aVertIndex + "]." + aVarName + ";";
-         }
-      }
-    }
+      const TCollection_AsciiString aVertIndex (aVertIter);
+      aSrcMainGeom += genGeomPassthroughCode(theStageInOuts, aVertIter);
 
-    if ((theBits & Graphic3d_ShaderFlags_MeshEdges) != 0)
-    {
       switch (aVertIter)
       {
         case 0: aSrcMainGeom += EOL"  EdgeDistance = vec3 (aHeightABC[0], 0.0, aQuadModeHeightC);"; break;
         case 1: aSrcMainGeom += EOL"  EdgeDistance = vec3 (0.0, aHeightABC[1], aQuadModeHeightC);"; break;
         case 2: aSrcMainGeom += EOL"  EdgeDistance = vec3 (0.0, 0.0, aHeightABC[2]);"; break;
       }
+    
+      aSrcMainGeom += TCollection_AsciiString()
+      + EOL"  gl_Position = gl_in[" + aVertIndex + "].gl_Position;"
+        EOL"  EmitVertex();";
     }
-    aSrcMainGeom += TCollection_AsciiString()
-     + EOL"  gl_Position = gl_in[" + aVertIndex + "].gl_Position;"
-       EOL"  EmitVertex();";
+
+    aSrcMainGeom +=
+        EOL "  EndPrimitive();";
+
+    theInputArrayType = Graphic3d_TOPA_TRIANGLES;
+
+    theNbOutputPoints = 3;
+    theNbInputPoints = 3;      
   }
-  aSrcMainGeom +=
-    EOL"  EndPrimitive();"
-    EOL"}";
+
+  if ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+  {
+    aSrcMainGeom += TCollection_AsciiString()
+    + EOL"  vec4 center = gl_in[0].gl_Position;"
+    + EOL"  vec4 centerNdc = occProjectionMatrix * center;"
+    + EOL"  vec3 normNdc = centerNdc.xyz / centerNdc.w;"
+    + EOL""
+    + EOL"  if (!((normNdc.x >= -1.0 && normNdc.x <= 1.0) &&"
+    + EOL"        (normNdc.y >= -1.0 && normNdc.y <= 1.0) &&"
+    + EOL"        (normNdc.z >= -1.0 && normNdc.z <= 1.0))) {"
+    + EOL"    EndPrimitive();"
+    + EOL"    return;"
+    + EOL"  }"
+    + EOL""
+    + EOL"  float pRadius = occPointSize / 2.0;"
+    + genGeomPassthroughCode(theStageInOuts, 0)
+    + EOL""
+    + EOL"  const int nbSegments = " + THE_NB_POINT_CIRCLE_SEGMENTS + ";"
+    + EOL""
+    + EOL"  gl_Position = occProjectionMatrix * (center + vec4(pRadius, 0.0, 0.0, 0.0));"
+    + EOL"  EmitVertex();"
+    + EOL"  for (int i = (nbSegments - 2); i >= 1; --i) {"
+    + EOL"    float phi = -PI_DIV_2 + (i / float(nbSegments - 1)) * PI;"
+    + EOL""
+    + EOL"    float x = pRadius * sin(phi);"
+    + EOL"    float y = pRadius * cos(phi);"
+    + EOL""
+    + EOL"    gl_Position = occProjectionMatrix * (center + vec4(x, y, 0.0, 0.0));"
+    + EOL"    EmitVertex();"
+    + EOL"    gl_Position = occProjectionMatrix * (center + vec4(x, -y, 0.0, 0.0));"
+    + EOL"    EmitVertex();"
+    + EOL"  }"
+    + EOL"  gl_Position = occProjectionMatrix * (center + vec4(-pRadius, 0.0, 0.0, 0.0));"
+    + EOL"  EmitVertex();"
+    + EOL""
+    + EOL"  EndPrimitive();";
+
+    theNbOutputPoints = THE_NB_POINT_CIRCLE_SEGMENTS * 2 - 2;
+    theInputArrayType = Graphic3d_TOPA_POINTS;
+    theNbInputPoints = 1;
+  }
+
+  if ((theBits & Graphic3d_ShaderFlags_LineWidth) != 0)
+  {
+    theUnifoms.Append (Graphic3d_ShaderObject::ShaderVariable ("vec4 occViewport",       Graphic3d_TOS_GEOMETRY));
+    theUnifoms.Append (Graphic3d_ShaderObject::ShaderVariable ("float occLineWidth",     Graphic3d_TOS_GEOMETRY));
+
+    aSrcMainGeom = TCollection_AsciiString()
+    + EOL"vec3 ToViewPortTransform (vec4 theVec)"
+      EOL"{"
+      EOL"  vec3 aWinCoord = theVec.xyz / theVec.w;"
+      EOL"  aWinCoord    = aWinCoord * 0.5 + 0.5;"
+      EOL"  aWinCoord.xy = aWinCoord.xy * occViewport.zw + occViewport.xy;"
+      EOL"  return aWinCoord;"
+      EOL"}"
+    + EOL"vec4 FromViewPortTransform (vec3 theVec)"
+      EOL"{"
+      EOL"  vec3 aNdcCoord = vec3(theVec.xy / (occViewport.zw + occViewport.xy), theVec.z);"
+      EOL"  aNdcCoord      = aNdcCoord * 2.0 - 1.0;"
+      EOL"  return vec4(aNdcCoord, 1.0);"
+      EOL"}"
+    + aSrcMainGeom
+    + EOL"  vec3 aLineA = ToViewPortTransform(gl_in[0].gl_Position);"
+    + EOL"  vec3 aLineB = ToViewPortTransform(gl_in[1].gl_Position);"
+    + EOL""
+    + EOL"  vec3 aLineDir = normalize(aLineB - aLineA);"
+    + EOL"  vec3 aLinePerpPosDir = vec3(-aLineDir.y, aLineDir.x, 0.0);"
+    + EOL""
+    + EOL"  const int nbSegments = " + THE_LINE_END_CAP_SEGMENTS + ";"
+    + genGeomPassthroughCode(theStageInOuts, 0)
+    + EOL"  float aLineSideWidth = occLineWidth / 2.0;"
+    + EOL"  gl_Position = FromViewPortTransform(aLineA - aLineDir * aLineSideWidth);"
+    + EOL"  EmitVertex();"
+    + EOL"  for (int i = 1; i < nbSegments - 1; ++i) {"
+    + EOL"    float phi = (i / float(nbSegments - 1)) * PI_DIV_2;"
+    + EOL""
+    + EOL"    float x = aLineSideWidth * sin(phi);"
+    + EOL"    float y = aLineSideWidth * cos(phi);"
+    + EOL""
+    + EOL"    gl_Position = FromViewPortTransform(aLineA + y * -aLineDir + x * aLinePerpPosDir);"
+    + EOL"    EmitVertex();"
+    + EOL"    gl_Position = FromViewPortTransform(aLineA + y * -aLineDir + -x * aLinePerpPosDir);"
+    + EOL"    EmitVertex();"
+    + EOL"  }"
+    + EOL""
+    + EOL"  gl_Position = FromViewPortTransform(aLineA + aLineSideWidth * aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + EOL"  gl_Position = FromViewPortTransform(aLineA + aLineSideWidth * -aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + genGeomPassthroughCode(theStageInOuts, 1)
+    + EOL"  gl_Position = FromViewPortTransform(aLineB + aLineSideWidth * aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + EOL"  gl_Position = FromViewPortTransform(aLineB + aLineSideWidth * -aLinePerpPosDir);"
+    + EOL"  EmitVertex();"
+    + EOL""
+    + EOL"  for (int i = 1; i < nbSegments - 1; ++i) {"
+    + EOL"    float phi = PI_DIV_2 + (i / float(nbSegments - 1)) * PI_DIV_2;"
+    + EOL""
+    + EOL"    float x = aLineSideWidth * sin(phi);"
+    + EOL"    float y = aLineSideWidth * cos(phi);"
+    + EOL""
+    + EOL"    gl_Position = FromViewPortTransform(aLineB + y * -aLineDir + x * aLinePerpPosDir);"
+    + EOL"    EmitVertex();"
+    + EOL"    gl_Position = FromViewPortTransform(aLineB + y * -aLineDir + -x * aLinePerpPosDir);"
+    + EOL"    EmitVertex();"
+    + EOL"  }"
+    + EOL"  gl_Position = FromViewPortTransform(aLineB + aLineDir * aLineSideWidth);"
+    + EOL"  EmitVertex();"
+    + EOL""
+    + EOL"  EndPrimitive();";
+
+    theNbOutputPoints = 4 + ((Max(THE_LINE_END_CAP_SEGMENTS, 2) - 2) * 2 + 1) * 2;
+    theInputArrayType = Graphic3d_TOPA_POLYLINES;
+    theNbInputPoints = 2;
+  }
+
+  aSrcMainGeom += EOL"}";
 
   return aSrcMainGeom;
 }
@@ -1111,16 +1257,25 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramUnlit (Sta
     }
   }
 
+    aSrcVertExtraMain += ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+    ? THE_VERT_gl_ViewPosition
+    : THE_VERT_gl_Position;
+
   aSrcVert =
       aSrcVertExtraFunc
     + EOL"void main()"
       EOL"{"
     + aSrcVertExtraMain
-    + THE_VERT_gl_Position
     + aSrcVertEndMain
     + EOL"}";
 
-  TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits);
+  Standard_Integer aNbGeomInputVerts = 0;
+  Standard_Integer aNbGeomOutputVerts = 0;
+
+  Graphic3d_TypeOfPrimitiveArray aGeomInputType;
+
+  TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits, aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType);
+  
   aSrcFragGetColor += (theBits & Graphic3d_ShaderFlags_MeshEdges) != 0
     ? THE_FRAG_WIREFRAME_COLOR
     : EOL"#define getFinalColor getColor";
@@ -1141,10 +1296,9 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramUnlit (Sta
   aProgramSrc->SetNbShadowMaps (0);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & Graphic3d_ShaderFlags_AlphaTest) != 0);
-  const Standard_Integer aNbGeomInputVerts = !aSrcGeom.IsEmpty() ? 3 : 0;
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts, "", "", aNbGeomInputVerts));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcGeom, Graphic3d_TOS_GEOMETRY, aUniforms, aStageInOuts, "geomIn", "geomOut", aNbGeomInputVerts));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts, "", "", aNbGeomInputVerts));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts, "", "", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcGeom, Graphic3d_TOS_GEOMETRY, aUniforms, aStageInOuts, "geomIn", "geomOut", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts, "", "", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
   return aProgramSrc;
 }
 
@@ -1478,6 +1632,11 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud (c
 
   Standard_Integer aNbLights = 0;
   const TCollection_AsciiString aLights = stdComputeLighting (aNbLights, theLights, !aSrcVertColor.IsEmpty(), false, toUseTexColor, 0);
+
+  aSrcVertExtraMain += ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+    ? THE_VERT_gl_ViewPosition
+    : THE_VERT_gl_Position;
+
   aSrcVert = TCollection_AsciiString()
     + THE_FUNC_transformNormal_world
     + EOL
@@ -1500,10 +1659,13 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud (c
       EOL"  FrontColor  = computeLighting (aNormal, aView, aPositionWorld, true);"
       EOL"  BackColor   = computeLighting (aNormal, aView, aPositionWorld, false);"
     + aSrcVertExtraMain
-    + THE_VERT_gl_Position
     + EOL"}";
 
-  TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits);
+  Standard_Integer aNbGeomInputVerts = 0;
+  Standard_Integer aNbGeomOutputVerts = 0;
+  Graphic3d_TypeOfPrimitiveArray aGeomInputType;
+
+  TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits, aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType);
   aSrcFragGetColor += (theBits & Graphic3d_ShaderFlags_MeshEdges) != 0
     ? THE_FRAG_WIREFRAME_COLOR
     : EOL"#define getFinalColor getColor";
@@ -1524,10 +1686,9 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramGouraud (c
   aProgramSrc->SetNbShadowMaps (0);
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & Graphic3d_ShaderFlags_AlphaTest) != 0);
-  const Standard_Integer aNbGeomInputVerts = !aSrcGeom.IsEmpty() ? 3 : 0;
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts, "", "", aNbGeomInputVerts));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcGeom, Graphic3d_TOS_GEOMETRY, aUniforms, aStageInOuts, "geomIn", "geomOut", aNbGeomInputVerts));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts, "", "", aNbGeomInputVerts));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts, "", "", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcGeom, Graphic3d_TOS_GEOMETRY, aUniforms, aStageInOuts, "geomIn", "geomOut", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts, "", "", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
   return aProgramSrc;
 }
 
@@ -1706,6 +1867,10 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
       EOL"  }";
   }
 
+  aSrcVertExtraMain += ((theBits & Graphic3d_ShaderFlags_PointCircle) != 0)
+    ? THE_VERT_gl_ViewPosition
+    : THE_VERT_gl_Position;
+
   aSrcVert = TCollection_AsciiString()
     + aSrcVertExtraFunc
     + EOL"void main()"
@@ -1721,10 +1886,13 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
       EOL"    View = normalize (anEye - PositionWorld.xyz);"
       EOL"  }"
     + aSrcVertExtraMain
-    + THE_VERT_gl_Position
     + EOL"}";
 
-  TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits);
+  Standard_Integer aNbGeomInputVerts = 0;
+  Standard_Integer aNbGeomOutputVerts = 0;
+  Graphic3d_TypeOfPrimitiveArray aGeomInputType;
+
+  TCollection_AsciiString aSrcGeom = prepareGeomMainSrc (aUniforms, aStageInOuts, theBits, aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType);
   aSrcFragGetColor += (theBits & Graphic3d_ShaderFlags_MeshEdges) != 0
     ? THE_FRAG_WIREFRAME_COLOR
     : EOL"#define getFinalColor getColor";
@@ -1755,10 +1923,10 @@ Handle(Graphic3d_ShaderProgram) Graphic3d_ShaderManager::getStdProgramPhong (con
   aProgramSrc->SetNbClipPlanesMax (aNbClipPlanes);
   aProgramSrc->SetAlphaTest ((theBits & Graphic3d_ShaderFlags_AlphaTest) != 0);
 
-  const Standard_Integer aNbGeomInputVerts = !aSrcGeom.IsEmpty() ? 3 : 0;
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts, "", "", aNbGeomInputVerts));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcGeom, Graphic3d_TOS_GEOMETRY, aUniforms, aStageInOuts, "geomIn", "geomOut", aNbGeomInputVerts));
-  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts, "", "", aNbGeomInputVerts));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts, "", "", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcGeom, Graphic3d_TOS_GEOMETRY, aUniforms, aStageInOuts, "geomIn", "geomOut", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+  aProgramSrc->AttachShader (Graphic3d_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts, "", "", aNbGeomInputVerts, aNbGeomOutputVerts, aGeomInputType));
+
   return aProgramSrc;
 }
 

@@ -31,6 +31,8 @@ public:
 
   Standard_ShortReal MarkerSize() const { return myMarkerSize; }
 
+  Standard_Boolean MarkerPhysical() const { return myMarkerPhysical; }
+
   //! Return TRUE if resource is up-to-date.
   bool IsReady() const { return myIsSpriteReady; }
 
@@ -63,6 +65,7 @@ private:
                               const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                               Aspect_TypeOfMarker theType,
                               Standard_ShortReal theScale,
+                              Standard_Boolean thePhysicalScale,
                               const Graphic3d_Vec4& theColor,
                               Standard_ShortReal& theMarkerSize);
 
@@ -70,6 +73,7 @@ private:
   static void spriteKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
                           Aspect_TypeOfMarker theType,
                           Standard_ShortReal theScale,
+                          Standard_Boolean thePhysicalScale,
                           const Graphic3d_Vec4& theColor,
                           TCollection_AsciiString& theKey,
                           TCollection_AsciiString& theKeyA);
@@ -78,8 +82,10 @@ private:
 
   Handle(OpenGl_PointSprite) mySprite;
   Handle(OpenGl_PointSprite) mySpriteA;
+  
   Standard_ShortReal myMarkerSize;
   Standard_Boolean myIsSpriteReady;
+  Standard_Boolean myMarkerPhysical;
 
 };
 

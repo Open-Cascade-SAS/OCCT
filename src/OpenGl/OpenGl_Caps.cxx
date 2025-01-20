@@ -29,6 +29,7 @@ OpenGl_Caps::OpenGl_Caps()
   keepArrayData     (Standard_False),
   ffpEnable         (Standard_False),
   usePolygonMode    (Standard_False),
+  lineGeomDisable   (Standard_False),
   useSystemBuffer   (Standard_False),
   swapInterval      (1),
   useZeroToOneDepth (Standard_False),
@@ -71,6 +72,7 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
   ffpEnable         = theCopy.ffpEnable;
   useSystemBuffer   = theCopy.useSystemBuffer;
   swapInterval      = theCopy.swapInterval;
+  lineGeomDisable   = theCopy.lineGeomDisable;
   useZeroToOneDepth = theCopy.useZeroToOneDepth;
   buffersNoSwap     = theCopy.buffersNoSwap;
   buffersOpaqueAlpha= theCopy.buffersOpaqueAlpha;
