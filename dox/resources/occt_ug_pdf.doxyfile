@@ -1,0 +1,52 @@
+DOXYFILE_ENCODING      = UTF-8
+PROJECT_NAME           = "Open CASCADE Technology"
+PROJECT_BRIEF          = 
+CREATE_SUBDIRS         = NO
+OUTPUT_LANGUAGE        = English
+ABBREVIATE_BRIEF       = 
+FULL_PATH_NAMES        = YES
+INHERIT_DOCS           = YES
+TAB_SIZE               = 4
+MARKDOWN_SUPPORT       = YES
+EXTRACT_ALL            = YES
+CASE_SENSE_NAMES       = NO
+INLINE_INFO            = YES
+SORT_MEMBER_DOCS       = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = NO
+INPUT_ENCODING         = UTF-8
+FILE_PATTERNS          = *.md *.dox 
+RECURSIVE              = YES
+SOURCE_BROWSER         = NO
+INLINE_SOURCES         = YES
+GENERATE_DOCSET        = NO
+GENERATE_CHI           = NO
+GENERATE_QHP           = NO
+GENERATE_ECLIPSEHELP   = NO
+GENERATE_RTF           = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO
+GENERATE_DOCBOOK       = NO
+GENERATE_AUTOGEN_DEF   = NO
+GENERATE_PERLMOD       = NO
+STRIP_CODE_COMMENTS    = NO
+GENERATE_HTMLHELP      = NO
+GENERATE_HTML          = NO
+DISABLE_INDEX          = YES
+GENERATE_TREEVIEW      = NO
+PREDEFINED             = PDF_ONLY
+GENERATE_LATEX         = YES
+COMPACT_LATEX          = YES
+PDF_HYPERLINKS         = YES
+USE_PDFLATEX           = YES
+LATEX_BATCHMODE        = YES
+LATEX_OUTPUT           = latex
+LATEX_CMD_NAME         = latex
+MAKEINDEX_CMD_NAME     = makeindex
+
+# Define alias for inserting images in uniform way (both HTML and PDF)
+ALIASES += figure{1}="\image latex \1 \n"
+ALIASES += figure{2}="\image latex \1 \2 \n"
+ALIASES += figure{3}="\image latex \1 \2 width=\3 \n"

@@ -1,0 +1,59 @@
+DOXYFILE_ENCODING      = UTF-8
+PROJECT_NAME           = "Open CASCADE Technology"
+PROJECT_BRIEF          = 
+CREATE_SUBDIRS         = NO
+OUTPUT_LANGUAGE        = English
+ABBREVIATE_BRIEF       = 
+FULL_PATH_NAMES        = YES
+INHERIT_DOCS           = YES
+TAB_SIZE               = 4
+MARKDOWN_SUPPORT       = YES
+EXTRACT_ALL            = YES
+CASE_SENSE_NAMES       = NO
+INLINE_INFO            = YES
+SORT_MEMBER_DOCS       = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = NO
+INPUT_ENCODING         = UTF-8
+FILE_PATTERNS          = *.md *.dox 
+RECURSIVE              = YES
+SOURCE_BROWSER         = NO
+INLINE_SOURCES         = YES
+GENERATE_DOCSET        = NO
+GENERATE_CHI           = NO
+GENERATE_QHP           = NO
+GENERATE_ECLIPSEHELP   = NO
+GENERATE_RTF           = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO
+GENERATE_DOCBOOK       = NO
+GENERATE_AUTOGEN_DEF   = NO
+GENERATE_PERLMOD       = NO
+STRIP_CODE_COMMENTS    = NO
+GENERATE_LATEX         = NO
+GENERATE_HTMLHELP      = NO
+GENERATE_HTML          = YES
+HTML_COLORSTYLE_HUE    = 220
+HTML_COLORSTYLE_SAT    = 100
+HTML_COLORSTYLE_GAMMA  = 80
+HTML_TIMESTAMP         = YES
+HTML_DYNAMIC_SECTIONS  = YES
+HTML_INDEX_NUM_ENTRIES = 100
+DISABLE_INDEX          = YES
+GENERATE_TREEVIEW      = YES
+ENUM_VALUES_PER_LINE   = 8
+TREEVIEW_WIDTH         = 250
+EXTERNAL_PAGES         = NO
+SEARCHDATA_FILE        = searchdata.xml
+SKIP_FUNCTION_MACROS   = YES
+FORMULA_FONTSIZE       = 12
+FORMULA_TRANSPARENT    = YES
+USE_MATHJAX            = YES
+MATHJAX_FORMAT         = HTML-CSS
+
+# Define alias for inserting images in uniform way (both HTML and PDF)
+ALIASES += figure{1}="\image html \1"
+ALIASES += figure{2}="\image html \1 \2"
+ALIASES += figure{3}="\image html \1 \2"
