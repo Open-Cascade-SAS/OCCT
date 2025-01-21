@@ -144,7 +144,7 @@ This class may be  instantiated as follows:
 
 ~~~~{.cpp}
 Geom2dAPI_Interpolate 
-(const  Handle_TColgp_HArray1OfPnt2d& Points, 
+(const  Handle(TColgp_HArray1OfPnt2d)& Points, 
 const  Standard_Boolean PeriodicFlag, 
 const Standard_Real  Tolerance); 
 
@@ -174,7 +174,7 @@ This class may be  instantiated as follows:
 
 ~~~~{.cpp}
 GeomAPI_Interpolate 
-(const  Handle_TColgp_HArray1OfPnt& Points, 
+(const  Handle(TColgp_HArray1OfPnt)& Points, 
 const  Standard_Boolean PeriodicFlag, 
 const Standard_Real  Tolerance); 
 

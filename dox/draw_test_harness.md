@@ -849,7 +849,7 @@ DBRep::Set(char*,B);
 #### In DrawTrSurf package:
 
 ~~~~{.php}
-Handle_Geom_Geometry Get(Standard_CString& Name) ; 
+Handle(Geom_Geometry) Get(Standard_CString& Name) ; 
 ~~~~
 
 #### In DBRep package:

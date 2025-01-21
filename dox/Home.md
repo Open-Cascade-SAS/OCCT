@@ -622,11 +622,6 @@ CMake is used to control the software compilation process using simple platform 
 OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. 
 See more at https://cmake.org/
 
-**Cotire** (compile time reducer) is a CMake module that speeds up the build process of CMake based build systems 
-by fully automating techniques as precompiled header usage and single compilation unit builds for C and C++.
-Cotire is included in OCCT repository and used optionally by OCCT CMake scripts to accelerate builds by use of precompiled headers.
-Cotire is licensed under the MIT license (https://github.com/sakra/cotire/blob/master/license).
-
 **MikTEX** is up-to-date implementation of TeX/LaTeX and related programs for Windows. It is used 
 for generation of User and Developer Guides in PDF format. See https://miktex.org for information
 on this tool.
