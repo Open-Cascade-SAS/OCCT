@@ -5,9 +5,9 @@
 # The order of files in this list determines order of top-level pages
 # in the generated documentation.
 
-introduction/introduction.md
+home.md
 
-samples/samples.md
+samples.md
 ../samples/mfc/standard/ReadMe.md
 ../samples/CSharp/ReadMe.md
 ../samples/CSharp/ReadMe_D3D.md
@@ -19,48 +19,48 @@ samples/samples.md
 ../samples/ios/UIKitSample/ReadMe.md
 ../samples/webgl/ReadMe.md
 ../samples/glfw/readme.md
-samples/ocaf.md
-samples/ocaf_func.md
-samples/draw_scripts.md
-samples/ais_object.md
+ocaf.md
+ocaf_func.md
+draw_scripts.md
+ais_object.md
 
-samples/novice_guide.md
-tutorial/tutorial.md
+novice_guide.md
+tutorial.md
 
-build/build_upgrade.md
-build/build_occt/building_occt.md
-build/build_3rdparty/building_3rdparty.md
-build/build_documentation/building_documentation.md
+build_upgrade.md
+building_occt.md
+building_3rdparty.md
+building_documentation.md
 
-debug/debug.md
-upgrade/upgrade.md
+debug.md
+upgrade.md
 
-user_guides/user_guides.md
-user_guides/foundation_classes/foundation_classes.md
-user_guides/modeling_data/modeling_data.md
-user_guides/modeling_algos/modeling_algos.md
-user_guides/mesh/mesh.md
-user_guides/shape_healing/shape_healing.md
-user_guides/visualization/visualization.md
-user_guides/iges/iges.md
-user_guides/step/step.md
-user_guides/xde/xde.md
-user_guides/de_wrapper/de_wrapper.md
-user_guides/ocaf/ocaf.md
-user_guides/draw_test_harness/draw_test_harness.md
-user_guides/inspector/inspector.md
-user_guides/vis/vis.md
+user_guides.md
+foundation_classes.md
+modeling_data.md
+modeling_algos.md
+mesh.md
+shape_healing.md
+visualization.md
+iges.md
+step.md
+xde.md
+de_wrapper.md
+ocaf.md
+draw_test_harness.md
+inspector.md
+vis.md
 
-specification/specification.md
-specification/boolean_operations/boolean_operations.md
-specification/brep_format.md
-specification/pbr_math.md
+specification.md
+boolean_operations.md
+brep_format.md
+pbr_math.md
 
-contribution/contribution.md
-contribution/documentation/documentation.md
-contribution/coding_rules.md
-contribution/contribution_workflow/contribution_workflow.md
-contribution/git_guide/git_guide.md
-contribution/tests/tests.md
+contribution.md
+documentation.md
+coding_rules.md
+contribution_workflow.md
+git_guide.md
+tests.md
 
 license.md
