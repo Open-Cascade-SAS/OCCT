@@ -35,5 +35,5 @@ Handle(Standard_Type)& atype) const
 	else    return 0;
 }
 
-Standard_CString HeaderSection_Protocol::SchemaName() const
+Standard_CString HeaderSection_Protocol::SchemaName(const Handle(Interface_InterfaceModel)&) const
 	{	return schemaName; }

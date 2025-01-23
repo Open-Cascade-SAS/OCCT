@@ -42,13 +42,13 @@ static TCollection_AsciiString lastvalue;
   thelib.AddProtocol (theproto);
   thename.Clear();
   thename.AssignCat ("Step Type (Schema ");
-  thename.AssignCat (theproto->SchemaName());
+  thename.AssignCat (theproto->SchemaName(nullptr));
   thename.AssignCat (")");
 }
 
     Standard_CString  StepSelect_StepType::Value
   (const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& /*model*/) const
+   const Handle(Interface_InterfaceModel)& model) const
 {
   static Standard_Mutex aMutex;
   Standard_Mutex::Sentry aSentry(aMutex);
@@ -58,7 +58,7 @@ static TCollection_AsciiString lastvalue;
   Standard_Boolean ok = thelib.Select (ent,module,CN);
   if (!ok) {
     lastvalue.AssignCat ("..NOT FROM SCHEMA ");
-    lastvalue.AssignCat (theproto->SchemaName());
+    lastvalue.AssignCat (theproto->SchemaName(model));
     lastvalue.AssignCat ("..");
   } else {
     Standard_Boolean plex = module->IsComplex(CN);

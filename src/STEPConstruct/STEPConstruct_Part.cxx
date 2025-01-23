@@ -16,7 +16,6 @@
 //:j4 gka 16.03.99 S4134
 //    abv 20.11.99 renamed from StepPDR_SDRtool
 
-#include <Interface_Static.hxx>
 #include <StepBasic_ApplicationContext.hxx>
 #include <StepBasic_DesignContext.hxx>
 #include <StepBasic_MechanicalContext.hxx>

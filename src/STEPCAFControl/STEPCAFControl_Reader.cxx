@@ -22,7 +22,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <StepData_StepModel.hxx>
 #include <HeaderSection_FileSchema.hxx>
-#include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_Path.hxx>

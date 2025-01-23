@@ -126,7 +126,7 @@ provider.STEP.OCC.read.metadata :	 1
 provider.STEP.OCC.write.precision.mode :	 0
 provider.STEP.OCC.write.precision.val :	 0.0001
 provider.STEP.OCC.write.assembly :	 2
-provider.STEP.OCC.write.schema :	 1
+provider.STEP.OCC.write.schema :	 4
 provider.STEP.OCC.write.tessellated :	 2
 provider.STEP.OCC.write.product.name :	 
 provider.STEP.OCC.write.surfacecurve.mode :	 1

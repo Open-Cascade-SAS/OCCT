@@ -186,7 +186,7 @@ public:
   WriteMode_PrecisionMode WritePrecisionMode = WriteMode_PrecisionMode_Average; //<! Specifies the mode of writing the resolution value into the STEP file
   double WritePrecisionVal = 0.0001; //<! Resolution value for an STEP file when WriteMode_PrecisionMode is Greatest
   WriteMode_Assembly WriteAssembly = WriteMode_Assembly_Auto; //<! Writing assembly mode
-  WriteMode_StepSchema WriteSchema = WriteMode_StepSchema_AP214CD; //<! Defines the version of schema used for the output STEP file
+  WriteMode_StepSchema WriteSchema = WriteMode_StepSchema_AP214IS; //<! Defines the version of schema used for the output STEP file
   RWMode_Tessellated WriteTessellated = RWMode_Tessellated_OnNoBRep; //!< Defines whether tessellated shapes should be translated
   TCollection_AsciiString WriteProductName; //<! Defines the text string that will be used for field 'name' of PRODUCT entities written to the STEP file
   bool WriteSurfaceCurMode = true; //<! Indicates whether parametric curves (curves in parametric space of surface) should be written into the STEP file

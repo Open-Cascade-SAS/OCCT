@@ -207,7 +207,7 @@ private:
   Standard_EXPORT TopoDS_Shape TransferRelatedSRR(const Handle(Transfer_TransientProcess)& theTP,
                                                   const Handle(StepShape_ShapeRepresentation)& theRep,
                                                   const Standard_Boolean theUseTrsf,
-                                                  const Standard_Integer theReadConstructiveGeomRR,
+                                                  const Standard_Boolean theReadConstructiveGeomRR,
                                                   const StepData_Factors& theLocalFactors,
                                                   TopoDS_Compound& theCund,
                                                   Message_ProgressScope& thePS);

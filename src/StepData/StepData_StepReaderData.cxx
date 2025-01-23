@@ -17,7 +17,6 @@
 #include <Interface_Check.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_Static.hxx>
 #include <Interface_ParamList.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>

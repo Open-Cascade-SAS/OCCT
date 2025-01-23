@@ -28,7 +28,6 @@
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_MSG.hxx>
-#include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <ShapeAnalysis_ShapeTolerance.hxx>
 #include <ShapeProcess_ShapeContext.hxx>

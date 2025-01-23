@@ -27,7 +27,6 @@
 #include <Interface_Graph.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <OSD_Timer.hxx>
@@ -549,9 +548,9 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
   // Flag indicating whether SDRs associated with the product`s main SDR
   // by SRRs (which correspond to hybrid model representation in AP203 since 1998) 
   // should be taken into account 
-  Standard_Integer readSRR = aStepModel->InternalParameters.ReadRelationship;
+  const bool readSRR = aStepModel->InternalParameters.ReadRelationship;
   
-  Standard_Integer readConstructiveGeomRR = aStepModel->InternalParameters.ReadConstrRelation;
+  const bool readConstructiveGeomRR = aStepModel->InternalParameters.ReadConstrRelation;
   // Flag indicating whether SDRs associated with the product`s main SDR
   // by SAs (which correspond to hybrid model representation in AP203 before 1998) 
   // should be taken into account 
@@ -1656,18 +1655,18 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity
     aResult = TransferBRep::ShapeResult(shbinder);
     aBuilder.Add(aCund, aResult);
   }
+
   // translate possible shapes related by SRRs, which corresponds to
   // way of writing hybrid models in AP203 since 1998, and AP209
-  Standard_Integer aReadSRR = Interface_Static::IVal("read.step.shape.relationship");
-  Standard_Integer aReadConstructiveGeomRR = Interface_Static::IVal("read.step.constructivegeom.relationship");
-  if (aReadSRR)
+  Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
+  if (aStepModel->InternalParameters.ReadRelationship)
   {
     const Interface_Graph& aGraph = TP->Graph();
     Standard_Integer aSRRnum = 0;
     for (Interface_EntityIterator aSubsIt(aGraph.Sharings(maprep)); aSubsIt.More(); aSubsIt.Next())
       ++aSRRnum;
     Message_ProgressScope aPS(aPSRoot.Next(), "Part", aSRRnum);
-    TopoDS_Shape aNewResult = TransferRelatedSRR(TP, maprep, Standard_False, aReadConstructiveGeomRR, theLocalFactors, aCund, aPS);
+    TopoDS_Shape aNewResult = TransferRelatedSRR(TP, maprep, Standard_False, aStepModel->InternalParameters.ReadConstrRelation, theLocalFactors, aCund, aPS);
     if (!aNewResult.IsNull())
     {
       aResult = aNewResult;
@@ -2176,7 +2175,7 @@ void STEPControl_ActorRead::SetModel(const Handle(Interface_InterfaceModel)& the
 TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(const Handle(Transfer_TransientProcess)& theTP,
                                                        const Handle(StepShape_ShapeRepresentation)& theRep,
                                                        const Standard_Boolean theUseTrsf,
-                                                       const Standard_Integer theReadConstructiveGeomRR,
+                                                       const Standard_Boolean theReadConstructiveGeomRR,
                                                        const StepData_Factors& theLocalFactors,
                                                        TopoDS_Compound& theCund,
                                                        Message_ProgressScope& thePS)

@@ -32,7 +32,6 @@
 #include <Message_ProgressScope.hxx>
 #include <MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx>
 #include <OSD_Path.hxx>
-#include <StepAP214_Protocol.hxx>
 #include <StepAP242_DraughtingModelItemAssociation.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepBasic_ConversionBasedUnitAndLengthUnit.hxx>

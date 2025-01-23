@@ -63,5 +63,5 @@ Standard_Boolean StepData_FileProtocol::GlobalCheck(const Interface_Graph& G,
 }
 
 
-    Standard_CString StepData_FileProtocol::SchemaName () const
+    Standard_CString StepData_FileProtocol::SchemaName (const Handle(Interface_InterfaceModel)&) const
       {  return thename;  }

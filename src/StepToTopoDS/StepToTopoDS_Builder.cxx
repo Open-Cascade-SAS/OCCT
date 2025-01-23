@@ -29,7 +29,6 @@
 #include <Geom_Curve.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
-#include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
 #include <Precision.hxx>

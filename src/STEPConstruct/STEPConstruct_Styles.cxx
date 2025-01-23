@@ -17,7 +17,6 @@
 
 #include <APIHeaderSection_MakeHeader.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <Interface_Static.hxx>
 #include <Quantity_Color.hxx>
 #include <StepBasic_MeasureValueMember.hxx>
 #include <STEPConstruct.hxx>

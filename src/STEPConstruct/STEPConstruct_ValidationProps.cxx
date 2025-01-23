@@ -19,7 +19,6 @@
 #include <gp_Pnt.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
-#include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <StepBasic_DerivedUnit.hxx>
 #include <StepBasic_DerivedUnitElement.hxx>

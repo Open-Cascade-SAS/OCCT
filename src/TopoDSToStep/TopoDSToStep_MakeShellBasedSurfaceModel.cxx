@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 
-#include <Interface_Static.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>

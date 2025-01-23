@@ -26,6 +26,7 @@ static Standard_CString schemaAP203    = "CONFIG_CONTROL_DESIGN";
 static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF. {1 0 10303 442 1 1 4 }";
 
 #include <HeaderSection_Protocol.hxx>
+#include <StepData_StepModel.hxx>
 
 #include <StepShape_AdvancedBrepShapeRepresentation.hxx>
 #include <StepShape_AdvancedFace.hxx>
@@ -399,7 +400,6 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepShape_ExtrudedFaceSolid.hxx>
 #include <StepShape_RevolvedFaceSolid.hxx>
 #include <StepShape_SweptFaceSolid.hxx>
-#include <Interface_Static.hxx>
 #include <StepBasic_AreaUnit.hxx>
 #include <StepBasic_VolumeUnit.hxx>
 #include <StepBasic_SiUnitAndAreaUnit.hxx>
@@ -1592,18 +1592,28 @@ Handle(Standard_Type)& atype) const
 //purpose  : 
 //=======================================================================
 
-Standard_CString StepAP214_Protocol::SchemaName() const
-{	
-  switch (Interface_Static::IVal("write.step.schema")) { //:j4
-  default:
-  case 1 : return schemaAP214CD;  break; 
-  case 2 : return schemaAP214DIS; break; 
-  case 3 : return schemaAP203;    break;
-  case 4:  return schemaAP214IS; break;
-  case 5 : return schemaAP242DIS; break;
+Standard_CString StepAP214_Protocol::SchemaName(
+  const Handle(Interface_InterfaceModel)& theModel) const
+{
+  Handle(StepData_StepModel) aModel1 = Handle(StepData_StepModel)::DownCast(theModel);
+  const DESTEP_Parameters::WriteMode_StepSchema aSchema =
+    aModel1.IsNull() ? DESTEP_Parameters::WriteMode_StepSchema_AP214IS
+                     : aModel1->InternalParameters.WriteSchema;
+  switch (aSchema)
+  {
+    case DESTEP_Parameters::WriteMode_StepSchema_AP203:
+      return schemaAP203;
+    case DESTEP_Parameters::WriteMode_StepSchema_AP214IS:
+      return schemaAP214IS;
+    case DESTEP_Parameters::WriteMode_StepSchema_AP242DIS:
+      return schemaAP242DIS;
+    case DESTEP_Parameters::WriteMode_StepSchema_AP214CD:
+      return schemaAP214CD;
+    case DESTEP_Parameters::WriteMode_StepSchema_AP214DIS:
+    default:
+      return schemaAP214DIS;
   }
 }
-
 
 //=======================================================================
 //function : NbResources

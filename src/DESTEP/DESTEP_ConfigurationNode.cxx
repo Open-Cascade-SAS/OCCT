@@ -461,7 +461,7 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Defines the version of schema used for the output STEP file\n";
   aResult +=
-    "!Default value: 1 or AP214CD. Available values: 1 or AP214CD, 2 or AP214DIS, 3 or AP203, ";
+    "!Default value: 4 or AP214IS. Available values: 1 or AP214CD, 2 or AP214DIS, 3 or AP203, ";
   aResult += "4 or AP214IS, 5 or AP242DIS\n";
   aResult += aScope + "write.schema :\t " + InternalParameters.WriteSchema + "\n";
   aResult += "!\n";

@@ -15,7 +15,6 @@
 #include <IFSelect_WorkLibrary.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Graph.hxx>
-#include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <StepBasic_ApplicationContext.hxx>

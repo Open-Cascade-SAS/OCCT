@@ -18,7 +18,6 @@
 #include <BRep_Tool.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
 #include <gp_Pnt.hxx>
-#include <Interface_Static.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_CartesianPoint.hxx>

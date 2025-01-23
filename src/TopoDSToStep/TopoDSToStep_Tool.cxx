@@ -16,7 +16,6 @@
 
 
 #include <BRep_Tool.hxx>
-#include <Interface_Static.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepShape_TopologicalRepresentationItem.hxx>
 #include <TopoDSToStep_Tool.hxx>

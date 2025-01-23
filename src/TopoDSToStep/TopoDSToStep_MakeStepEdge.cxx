@@ -27,7 +27,6 @@
 #include <GeomToStep_MakeCurve.hxx>
 #include <GeomToStep_MakeLine.hxx>
 #include <gp_Vec.hxx>
-#include <Interface_Static.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>
 #include <StepData_StepModel.hxx>

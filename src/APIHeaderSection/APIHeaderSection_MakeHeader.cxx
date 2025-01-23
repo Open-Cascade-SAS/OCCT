@@ -164,7 +164,7 @@ void APIHeaderSection_MakeHeader::Apply
       Handle(StepData_Protocol) stepro = Handle(StepData_Protocol)::DownCast
 	( model->Protocol());
       if (!stepro.IsNull()) sch = new TCollection_HAsciiString
-	(stepro->SchemaName());
+	(stepro->SchemaName(model));
       if (!sch.IsNull()) schid->SetValue (1,sch);
     }
     header.AddItem(fs);

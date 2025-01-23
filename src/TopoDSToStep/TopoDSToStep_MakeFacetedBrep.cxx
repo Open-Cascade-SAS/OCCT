@@ -16,7 +16,6 @@
 
 
 #include <BRepClass3d.hxx>
-#include <Interface_Static.hxx>
 #include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepData_Factors.hxx>

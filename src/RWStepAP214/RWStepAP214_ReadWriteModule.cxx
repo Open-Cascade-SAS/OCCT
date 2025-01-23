@@ -22,7 +22,6 @@
 #include "RWStepAP214_ReadWriteModule.pxx"
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
-#include <StepAP214_Protocol.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepData_WriterLib.hxx>
@@ -2375,9 +2374,6 @@ static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> typeshor;
 
 RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
 {
-//  Handle(StepAP214_Protocol) protocol = new StepAP214_Protocol;
-//  StepData_WriterLib::SetGlobal(Handle(RWStepAP214_ReadWriteModule)::DownCast(This()),protocol);
-//  Interface_ReaderLib::SetGlobal(Handle(RWStepAP214_ReadWriteModule)::DownCast(This()),protocol);
   if (!typenums.IsEmpty()) return;
   typenums.Bind (Reco_CartesianPoint, 59);
   typenums.Bind (Reco_VertexPoint, 316);
