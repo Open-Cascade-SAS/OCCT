@@ -39,7 +39,8 @@ DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode()
 
 DE_ShapeFixConfigurationNode::DE_ShapeFixConfigurationNode(
   const Handle(DE_ShapeFixConfigurationNode)& theNode)
-    : DE_ConfigurationNode(theNode)
+    : DE_ConfigurationNode(theNode),
+      ShapeFixParameters(theNode->ShapeFixParameters)
 {
 }
 
@@ -50,219 +51,220 @@ bool DE_ShapeFixConfigurationNode::Load(const Handle(DE_ConfigurationContext)& t
   TCollection_AsciiString aScope =
     THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".healing";
 
-  HealingParameters.Tolerance3d =
-    theResource->RealVal("tolerance3d", HealingParameters.Tolerance3d, aScope);
-  HealingParameters.MaxTolerance3d =
-    theResource->RealVal("max.tolerance3d", HealingParameters.MaxTolerance3d, aScope);
-  HealingParameters.MinTolerance3d =
-    theResource->RealVal("min.tolerance3d", HealingParameters.MinTolerance3d, aScope);
-  HealingParameters.FixFreeShellMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("free.shell",
-                                                            (int)HealingParameters.FixFreeShellMode,
-                                                            aScope);
-  HealingParameters.FixFreeFaceMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("free.face",
-                                                            (int)HealingParameters.FixFreeFaceMode,
-                                                            aScope);
-  HealingParameters.FixFreeWireMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("free.wire",
-                                                            (int)HealingParameters.FixFreeWireMode,
-                                                            aScope);
-  HealingParameters.FixSameParameterMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
-    "same.parameter",
-    (int)HealingParameters.FixSameParameterMode,
+  ShapeFixParameters.Tolerance3d =
+    theResource->RealVal("tolerance3d", ShapeFixParameters.Tolerance3d, aScope);
+  ShapeFixParameters.MaxTolerance3d =
+    theResource->RealVal("max.tolerance3d", ShapeFixParameters.MaxTolerance3d, aScope);
+  ShapeFixParameters.MinTolerance3d =
+    theResource->RealVal("min.tolerance3d", ShapeFixParameters.MinTolerance3d, aScope);
+  ShapeFixParameters.FixFreeShellMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+    "free.shell",
+    (int)ShapeFixParameters.FixFreeShellMode,
     aScope);
-  HealingParameters.FixSolidMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("solid",
-                                                            (int)HealingParameters.FixSolidMode,
+  ShapeFixParameters.FixFreeFaceMode =
+    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("free.face",
+                                                            (int)ShapeFixParameters.FixFreeFaceMode,
                                                             aScope);
-  HealingParameters.FixShellOrientationMode =
+  ShapeFixParameters.FixFreeWireMode =
+    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("free.wire",
+                                                            (int)ShapeFixParameters.FixFreeWireMode,
+                                                            aScope);
+  ShapeFixParameters.FixSameParameterMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+    "same.parameter",
+    (int)ShapeFixParameters.FixSameParameterMode,
+    aScope);
+  ShapeFixParameters.FixSolidMode =
+    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("solid",
+                                                            (int)ShapeFixParameters.FixSolidMode,
+                                                            aScope);
+  ShapeFixParameters.FixShellOrientationMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "shell.orientation",
-      (int)HealingParameters.FixShellOrientationMode,
+      (int)ShapeFixParameters.FixShellOrientationMode,
       aScope);
-  HealingParameters.CreateOpenSolidMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.CreateOpenSolidMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "create.open.solid",
-    (int)HealingParameters.CreateOpenSolidMode,
+    (int)ShapeFixParameters.CreateOpenSolidMode,
     aScope);
-  HealingParameters.FixShellMode =
+  ShapeFixParameters.FixShellMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("shell",
-                                                            (int)HealingParameters.FixShellMode,
+                                                            (int)ShapeFixParameters.FixShellMode,
                                                             aScope);
-  HealingParameters.FixFaceOrientationMode =
+  ShapeFixParameters.FixFaceOrientationMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "face.orientation",
-      (int)HealingParameters.FixFaceOrientationMode,
+      (int)ShapeFixParameters.FixFaceOrientationMode,
       aScope);
-  HealingParameters.FixFaceMode =
+  ShapeFixParameters.FixFaceMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("face",
-                                                            (int)HealingParameters.FixFaceMode,
+                                                            (int)ShapeFixParameters.FixFaceMode,
                                                             aScope);
-  HealingParameters.FixWireMode =
+  ShapeFixParameters.FixWireMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("wire",
-                                                            (int)HealingParameters.FixWireMode,
+                                                            (int)ShapeFixParameters.FixWireMode,
                                                             aScope);
-  HealingParameters.FixOrientationMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixOrientationMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "orientation",
-    (int)HealingParameters.FixOrientationMode,
+    (int)ShapeFixParameters.FixOrientationMode,
     aScope);
-  HealingParameters.FixAddNaturalBoundMode =
+  ShapeFixParameters.FixAddNaturalBoundMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "add.natural.bound",
-      (int)HealingParameters.FixAddNaturalBoundMode,
+      (int)ShapeFixParameters.FixAddNaturalBoundMode,
       aScope);
-  HealingParameters.FixMissingSeamMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixMissingSeamMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "missing.seam",
-    (int)HealingParameters.FixMissingSeamMode,
+    (int)ShapeFixParameters.FixMissingSeamMode,
     aScope);
-  HealingParameters.FixSmallAreaWireMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixSmallAreaWireMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "small.area.wire",
-    (int)HealingParameters.FixSmallAreaWireMode,
+    (int)ShapeFixParameters.FixSmallAreaWireMode,
     aScope);
-  HealingParameters.RemoveSmallAreaFaceMode =
+  ShapeFixParameters.RemoveSmallAreaFaceMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "remove.small.area.face",
-      (int)HealingParameters.RemoveSmallAreaFaceMode,
+      (int)ShapeFixParameters.RemoveSmallAreaFaceMode,
       aScope);
-  HealingParameters.FixIntersectingWiresMode =
+  ShapeFixParameters.FixIntersectingWiresMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "intersecting.wires",
-      (int)HealingParameters.FixIntersectingWiresMode,
+      (int)ShapeFixParameters.FixIntersectingWiresMode,
       aScope);
-  HealingParameters.FixLoopWiresMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("loop.wires",
-                                                            (int)HealingParameters.FixLoopWiresMode,
-                                                            aScope);
-  HealingParameters.FixSplitFaceMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("split.face",
-                                                            (int)HealingParameters.FixSplitFaceMode,
-                                                            aScope);
-  HealingParameters.AutoCorrectPrecisionMode =
+  ShapeFixParameters.FixLoopWiresMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+    "loop.wires",
+    (int)ShapeFixParameters.FixLoopWiresMode,
+    aScope);
+  ShapeFixParameters.FixSplitFaceMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+    "split.face",
+    (int)ShapeFixParameters.FixSplitFaceMode,
+    aScope);
+  ShapeFixParameters.AutoCorrectPrecisionMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "auto.correct.precision",
-      (int)HealingParameters.AutoCorrectPrecisionMode,
+      (int)ShapeFixParameters.AutoCorrectPrecisionMode,
       aScope);
-  HealingParameters.ModifyTopologyMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.ModifyTopologyMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "modify.topology",
-    (int)HealingParameters.ModifyTopologyMode,
+    (int)ShapeFixParameters.ModifyTopologyMode,
     aScope);
-  HealingParameters.ModifyGeometryMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.ModifyGeometryMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "modify.geometry",
-    (int)HealingParameters.ModifyGeometryMode,
+    (int)ShapeFixParameters.ModifyGeometryMode,
     aScope);
-  HealingParameters.ClosedWireMode =
+  ShapeFixParameters.ClosedWireMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("closed.wire",
-                                                            (int)HealingParameters.ClosedWireMode,
+                                                            (int)ShapeFixParameters.ClosedWireMode,
                                                             aScope);
-  HealingParameters.PreferencePCurveMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.PreferencePCurveMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "preference.pcurve",
-    (int)HealingParameters.PreferencePCurveMode,
+    (int)ShapeFixParameters.PreferencePCurveMode,
     aScope);
-  HealingParameters.FixReorderMode =
+  ShapeFixParameters.FixReorderMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("reorder.edges",
-                                                            (int)HealingParameters.FixReorderMode,
+                                                            (int)ShapeFixParameters.FixReorderMode,
                                                             aScope);
-  HealingParameters.FixSmallMode =
+  ShapeFixParameters.FixSmallMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("remove.small.edges",
-                                                            (int)HealingParameters.FixSmallMode,
+                                                            (int)ShapeFixParameters.FixSmallMode,
                                                             aScope);
-  HealingParameters.FixConnectedMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("connected.edges",
-                                                            (int)HealingParameters.FixConnectedMode,
-                                                            aScope);
-  HealingParameters.FixEdgeCurvesMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixConnectedMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+    "connected.edges",
+    (int)ShapeFixParameters.FixConnectedMode,
+    aScope);
+  ShapeFixParameters.FixEdgeCurvesMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "edge.curves",
-    (int)HealingParameters.FixEdgeCurvesMode,
+    (int)ShapeFixParameters.FixEdgeCurvesMode,
     aScope);
-  HealingParameters.FixDegeneratedMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixDegeneratedMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "add.degenerated.edges",
-    (int)HealingParameters.FixDegeneratedMode,
+    (int)ShapeFixParameters.FixDegeneratedMode,
     aScope);
-  HealingParameters.FixLackingMode =
+  ShapeFixParameters.FixLackingMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("add.lacking.edges",
-                                                            (int)HealingParameters.FixLackingMode,
+                                                            (int)ShapeFixParameters.FixLackingMode,
                                                             aScope);
-  HealingParameters.FixSelfIntersectionMode =
+  ShapeFixParameters.FixSelfIntersectionMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "selfintersection",
-      (int)HealingParameters.FixSelfIntersectionMode,
+      (int)ShapeFixParameters.FixSelfIntersectionMode,
       aScope);
-  HealingParameters.RemoveLoopMode =
+  ShapeFixParameters.RemoveLoopMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("remove.loop",
-                                                            (int)HealingParameters.RemoveLoopMode,
+                                                            (int)ShapeFixParameters.RemoveLoopMode,
                                                             aScope);
-  HealingParameters.FixReversed2dMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixReversed2dMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "reversed2d",
-    (int)HealingParameters.FixReversed2dMode,
+    (int)ShapeFixParameters.FixReversed2dMode,
     aScope);
-  HealingParameters.FixRemovePCurveMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixRemovePCurveMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "remove.pcurve",
-    (int)HealingParameters.FixRemovePCurveMode,
+    (int)ShapeFixParameters.FixRemovePCurveMode,
     aScope);
-  HealingParameters.FixRemoveCurve3dMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixRemoveCurve3dMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "remove.curve3d",
-    (int)HealingParameters.FixRemoveCurve3dMode,
+    (int)ShapeFixParameters.FixRemoveCurve3dMode,
     aScope);
-  HealingParameters.FixAddPCurveMode =
-    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("add.pcurve",
-                                                            (int)HealingParameters.FixAddPCurveMode,
-                                                            aScope);
-  HealingParameters.FixAddCurve3dMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixAddPCurveMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+    "add.pcurve",
+    (int)ShapeFixParameters.FixAddPCurveMode,
+    aScope);
+  ShapeFixParameters.FixAddCurve3dMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "add.curve3d",
-    (int)HealingParameters.FixAddCurve3dMode,
+    (int)ShapeFixParameters.FixAddCurve3dMode,
     aScope);
-  HealingParameters.FixSeamMode =
+  ShapeFixParameters.FixSeamMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("correct.order.in.seam",
-                                                            (int)HealingParameters.FixSeamMode,
+                                                            (int)ShapeFixParameters.FixSeamMode,
                                                             aScope);
-  HealingParameters.FixShiftedMode =
+  ShapeFixParameters.FixShiftedMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("shifted",
-                                                            (int)HealingParameters.FixShiftedMode,
+                                                            (int)ShapeFixParameters.FixShiftedMode,
                                                             aScope);
-  HealingParameters.FixEdgeSameParameterMode =
+  ShapeFixParameters.FixEdgeSameParameterMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "edge.same.parameter",
-      (int)HealingParameters.FixEdgeSameParameterMode,
+      (int)ShapeFixParameters.FixEdgeSameParameterMode,
       aScope);
-  HealingParameters.FixNotchedEdgesMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+  ShapeFixParameters.FixNotchedEdgesMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
     "notched.edges",
-    (int)HealingParameters.FixNotchedEdgesMode,
+    (int)ShapeFixParameters.FixNotchedEdgesMode,
     aScope);
-  HealingParameters.FixTailMode =
+  ShapeFixParameters.FixTailMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("tail",
-                                                            (int)HealingParameters.FixTailMode,
+                                                            (int)ShapeFixParameters.FixTailMode,
                                                             aScope);
-  HealingParameters.MaxTailAngle =
+  ShapeFixParameters.MaxTailAngle =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("max.tail.angle",
-                                                            (int)HealingParameters.MaxTailAngle,
+                                                            (int)ShapeFixParameters.MaxTailAngle,
                                                             aScope);
-  HealingParameters.MaxTailWidth =
+  ShapeFixParameters.MaxTailWidth =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal("max.tail.width",
-                                                            (int)HealingParameters.MaxTailWidth,
+                                                            (int)ShapeFixParameters.MaxTailWidth,
                                                             aScope);
-  HealingParameters.FixSelfIntersectingEdgeMode =
+  ShapeFixParameters.FixSelfIntersectingEdgeMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "selfintersecting.edge",
-      (int)HealingParameters.FixSelfIntersectingEdgeMode,
+      (int)ShapeFixParameters.FixSelfIntersectingEdgeMode,
       aScope);
-  HealingParameters.FixIntersectingEdgesMode =
+  ShapeFixParameters.FixIntersectingEdgesMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "intersecting.edges",
-      (int)HealingParameters.FixIntersectingEdgesMode,
+      (int)ShapeFixParameters.FixIntersectingEdgesMode,
       aScope);
-  HealingParameters.FixNonAdjacentIntersectingEdgesMode =
+  ShapeFixParameters.FixNonAdjacentIntersectingEdgesMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "nonadjacent.intersecting.edges",
-      (int)HealingParameters.FixNonAdjacentIntersectingEdgesMode,
+      (int)ShapeFixParameters.FixNonAdjacentIntersectingEdgesMode,
       aScope);
-  HealingParameters.FixVertexPositionMode = (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
-    "vertex.position",
-    (int)HealingParameters.FixVertexPositionMode,
-    aScope);
-  HealingParameters.FixVertexToleranceMode =
+  ShapeFixParameters.FixVertexPositionMode =
+    (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
+      "vertex.position",
+      (int)ShapeFixParameters.FixVertexPositionMode,
+      aScope);
+  ShapeFixParameters.FixVertexToleranceMode =
     (DE_ShapeFixParameters::FixMode)theResource->IntegerVal(
       "vertex.tolerance",
-      (int)HealingParameters.FixVertexToleranceMode,
+      (int)ShapeFixParameters.FixVertexToleranceMode,
       aScope);
 
   return true;
@@ -274,7 +276,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
 {
   TCollection_AsciiString aResult;
   TCollection_AsciiString aScope =
-    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".healing";
+    THE_CONFIGURATION_SCOPE() + "." + GetFormat() + "." + GetVendor() + ".healing.";
 
   aResult += "!\n";
   aResult += "!Shape healing parameters:\n";
@@ -283,54 +285,54 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!\n";
   aResult += "!Defines the maximum allowable tolerance\n";
   aResult += "!Default value: 1.e-6. Available values: any real positive (non null) value\n";
-  aResult += aScope + "tolerance3d :\t " + HealingParameters.Tolerance3d + "\n";
+  aResult += aScope + "tolerance3d :\t " + ShapeFixParameters.Tolerance3d + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the maximum allowable tolerance\n";
   aResult += "!Default value: 1.0. Available values: any real positive (non null) value\n";
-  aResult += aScope + "max.tolerance3d :\t " + HealingParameters.MaxTolerance3d + "\n";
+  aResult += aScope + "max.tolerance3d :\t " + ShapeFixParameters.MaxTolerance3d + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the minimum allowable tolerance\n";
   aResult += "!Default value: 1.e-7. Available values: any real positive (non null) value\n";
-  aResult += aScope + "min.tolerance3d :\t " + HealingParameters.MinTolerance3d + "\n";
+  aResult += aScope + "min.tolerance3d :\t " + ShapeFixParameters.MinTolerance3d + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Shell for ShapeFix_Shape\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "free.shell :\t " + (int)HealingParameters.FixFreeShellMode + "\n";
+  aResult += aScope + "free.shell :\t " + (int)ShapeFixParameters.FixFreeShellMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Face for ShapeFix_Shape\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "free.face :\t " + (int)HealingParameters.FixFreeFaceMode + "\n";
+  aResult += aScope + "free.face :\t " + (int)ShapeFixParameters.FixFreeFaceMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Wire for ShapeFix_Shape\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "free.wire :\t " + (int)HealingParameters.FixFreeWireMode + "\n";
+  aResult += aScope + "free.wire :\t " + (int)ShapeFixParameters.FixFreeWireMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying ShapeFix::SameParameter after all fixes\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "same.parameter :\t " + (int)HealingParameters.FixSameParameterMode + "\n";
+  aResult += aScope + "same.parameter :\t " + (int)ShapeFixParameters.FixSameParameterMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Solid\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "solid :\t " + (int)HealingParameters.FixSolidMode + "\n";
+  aResult += aScope + "solid :\t " + (int)ShapeFixParameters.FixSolidMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -339,7 +341,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "shell.orientation :\t " + (int)HealingParameters.FixShellOrientationMode + "\n";
+    aScope + "shell.orientation :\t " + (int)ShapeFixParameters.FixShellOrientationMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -348,14 +350,14 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "else solids are created from closed shells only\n";
   aResult += "!Default value: \"NotFix\"(0). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "create.open.solid :\t " + (int)HealingParameters.CreateOpenSolidMode + "\n";
+  aResult += aScope + "create.open.solid :\t " + (int)ShapeFixParameters.CreateOpenSolidMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Shell for ShapeFix_Solid\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "shell :\t " + (int)HealingParameters.FixShellMode + "\n";
+  aResult += aScope + "shell :\t " + (int)ShapeFixParameters.FixShellMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -364,28 +366,28 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "face.orientation :\t " + (int)HealingParameters.FixFaceOrientationMode + "\n";
+    aScope + "face.orientation :\t " + (int)ShapeFixParameters.FixFaceOrientationMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Face\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "face :\t " + (int)HealingParameters.FixFaceMode + "\n";
+  aResult += aScope + "face :\t " + (int)ShapeFixParameters.FixFaceMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying fixes of ShapeFix_Wire\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "wire :\t " + (int)HealingParameters.FixWireMode + "\n";
+  aResult += aScope + "wire :\t " + (int)ShapeFixParameters.FixWireMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying a fix for the orientation of faces in the shell\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "orientation :\t " + (int)HealingParameters.FixOrientationMode + "\n";
+  aResult += aScope + "orientation :\t " + (int)ShapeFixParameters.FixOrientationMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -394,21 +396,21 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "add.natural.bound :\t " + (int)HealingParameters.FixAddNaturalBoundMode + "\n";
+    aScope + "add.natural.bound :\t " + (int)ShapeFixParameters.FixAddNaturalBoundMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the fix missing seam mode (tries to insert seam is missed)\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "missing.seam :\t " + (int)HealingParameters.FixMissingSeamMode + "\n";
+  aResult += aScope + "missing.seam :\t " + (int)ShapeFixParameters.FixMissingSeamMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the fix small area wire mode (drops small wires)\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "small.area.wire :\t " + (int)HealingParameters.FixSmallAreaWireMode + "\n";
+  aResult += aScope + "small.area.wire :\t " + (int)ShapeFixParameters.FixSmallAreaWireMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -416,7 +418,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "remove.small.area.face :\t " + (int)HealingParameters.RemoveSmallAreaFaceMode + "\n";
+    aScope + "remove.small.area.face :\t " + (int)ShapeFixParameters.RemoveSmallAreaFaceMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -424,29 +426,29 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "intersecting.wires :\t " + (int)HealingParameters.FixIntersectingWiresMode + "\n";
+    aScope + "intersecting.wires :\t " + (int)ShapeFixParameters.FixIntersectingWiresMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the fix loop wires mode in ShapeFix_Face\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "loop.wires :\t " + (int)HealingParameters.FixLoopWiresMode + "\n";
+  aResult += aScope + "loop.wires :\t " + (int)ShapeFixParameters.FixLoopWiresMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the fix split face mode in ShapeFix_Face\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "split.face :\t " + (int)HealingParameters.FixSplitFaceMode + "\n";
+  aResult += aScope + "split.face :\t " + (int)ShapeFixParameters.FixSplitFaceMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the auto-correct precision mode in ShapeFix_Face\n";
   aResult +=
     "!Default value: \"Fix\"(1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), \"Fix\"(1)\n";
-  aResult +=
-    aScope + "auto.correct.precision :\t " + (int)HealingParameters.AutoCorrectPrecisionMode + "\n";
+  aResult += aScope + "auto.correct.precision :\t "
+             + (int)ShapeFixParameters.AutoCorrectPrecisionMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -454,14 +456,14 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
              "(adding/removing edges etc.)\n";
   aResult += "!Default value: \"NotFix\"(0). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "modify.topology :\t " + (int)HealingParameters.ModifyTopologyMode + "\n";
+  aResult += aScope + "modify.topology :\t " + (int)ShapeFixParameters.ModifyTopologyMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode allowed to modify geometry of the edges and vertices\n";
   aResult +=
     "!Default value: \"Fix\"(1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), \"Fix\"(1)\n";
-  aResult += aScope + "modify.geometry :\t " + (int)HealingParameters.ModifyGeometryMode + "\n";
+  aResult += aScope + "modify.geometry :\t " + (int)ShapeFixParameters.ModifyGeometryMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -470,7 +472,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!and FixConnected() for lastand first edges\n";
   aResult +=
     "!Default value: \"Fix\"(1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), \"Fix\"(1)\n";
-  aResult += aScope + "closed.wire :\t " + (int)HealingParameters.ClosedWireMode + "\n";
+  aResult += aScope + "closed.wire :\t " + (int)ShapeFixParameters.ClosedWireMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -480,35 +482,36 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!and FixConnected() for lastand first edges\n";
   aResult +=
     "!Default value: \"Fix\"(1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), \"Fix\"(1)\n";
-  aResult += aScope + "preference.pcurve :\t " + (int)HealingParameters.PreferencePCurveMode + "\n";
+  aResult +=
+    aScope + "preference.pcurve :\t " + (int)ShapeFixParameters.PreferencePCurveMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode allowed to reorder edges in the wire\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "reorder.edges :\t " + (int)HealingParameters.FixReorderMode + "\n";
+  aResult += aScope + "reorder.edges :\t " + (int)ShapeFixParameters.FixReorderMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode allowed to remove small edges\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "remove.small.edges :\t " + (int)HealingParameters.FixSmallMode + "\n";
+  aResult += aScope + "remove.small.edges :\t " + (int)ShapeFixParameters.FixSmallMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for fix connecting edges in the wire\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "connected.edges :\t " + (int)HealingParameters.FixConnectedMode + "\n";
+  aResult += aScope + "connected.edges :\t " + (int)ShapeFixParameters.FixConnectedMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for fix edges (3Dcurves and 2D curves)\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "edge.curves :\t " + (int)HealingParameters.FixEdgeCurvesMode + "\n";
+  aResult += aScope + "edge.curves :\t " + (int)ShapeFixParameters.FixEdgeCurvesMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -516,14 +519,14 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "add.degenerated.edges :\t " + (int)HealingParameters.FixDegeneratedMode + "\n";
+    aScope + "add.degenerated.edges :\t " + (int)ShapeFixParameters.FixDegeneratedMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for add lacking edges\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "add.lacking.edges :\t " + (int)HealingParameters.FixLackingMode + "\n";
+  aResult += aScope + "add.lacking.edges :\t " + (int)ShapeFixParameters.FixLackingMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -531,21 +534,21 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "selfintersection :\t " + (int)HealingParameters.FixSelfIntersectionMode + "\n";
+    aScope + "selfintersection :\t " + (int)ShapeFixParameters.FixSelfIntersectionMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode allowed to remove loop\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "remove.loop :\t " + (int)HealingParameters.RemoveLoopMode + "\n";
+  aResult += aScope + "remove.loop :\t " + (int)ShapeFixParameters.RemoveLoopMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode allowed to fix edge if pcurve is directed opposite to 3d curve\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "reversed2d :\t " + (int)HealingParameters.FixReversed2dMode + "\n";
+  aResult += aScope + "reversed2d :\t " + (int)ShapeFixParameters.FixReversed2dMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -553,7 +556,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
              "the vertices\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "remove.pcurve :\t " + (int)HealingParameters.FixRemovePCurveMode + "\n";
+  aResult += aScope + "remove.pcurve :\t " + (int)ShapeFixParameters.FixRemovePCurveMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -561,7 +564,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
     "!Defines the mode allowed to remove 3d curve of the edge if it does not match the vertices\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "remove.curve3d :\t " + (int)HealingParameters.FixRemoveCurve3dMode + "\n";
+  aResult += aScope + "remove.curve3d :\t " + (int)ShapeFixParameters.FixRemoveCurve3dMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -569,14 +572,14 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
     "!Defines the mode allowed to add pcurve(s) of the edge if missing (by projecting 3d curve)\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "add.pcurve :\t " + (int)HealingParameters.FixAddPCurveMode + "\n";
+  aResult += aScope + "add.pcurve :\t " + (int)ShapeFixParameters.FixAddPCurveMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode allowed to build 3d curve of the edge if missing\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "add.curve3d :\t " + (int)HealingParameters.FixAddCurve3dMode + "\n";
+  aResult += aScope + "add.curve3d :\t " + (int)ShapeFixParameters.FixAddCurve3dMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -584,7 +587,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
              "its orientation\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "correct.order.in.seam :\t " + (int)HealingParameters.FixSeamMode + "\n";
+  aResult += aScope + "correct.order.in.seam :\t " + (int)ShapeFixParameters.FixSeamMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -592,7 +595,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
              "curves of the edges in the wire are connected\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "shifted :\t " + (int)HealingParameters.FixShiftedMode + "\n";
+  aResult += aScope + "shifted :\t " + (int)ShapeFixParameters.FixShiftedMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -600,35 +603,35 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"NotFix\"(0). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "edge.same.parameter :\t " + (int)HealingParameters.FixEdgeSameParameterMode + "\n";
+    aScope + "edge.same.parameter :\t " + (int)ShapeFixParameters.FixEdgeSameParameterMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for fix notched edges\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "notched.edges :\t " + (int)HealingParameters.FixNotchedEdgesMode + "\n";
+  aResult += aScope + "notched.edges :\t " + (int)ShapeFixParameters.FixNotchedEdgesMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for fix tail in wire\n";
   aResult += "!Default value: \"NotFix\"(0). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "tail :\t " + (int)HealingParameters.FixTailMode + "\n";
+  aResult += aScope + "tail :\t " + (int)ShapeFixParameters.FixTailMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for max angle of the tails\n";
   aResult += "!Default value: \"NotFix\"(0). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "max.tail.angle :\t " + (int)HealingParameters.MaxTailAngle + "\n";
+  aResult += aScope + "max.tail.angle :\t " + (int)ShapeFixParameters.MaxTailAngle + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for max tail width\n";
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "max.tail.width :\t " + (int)HealingParameters.MaxTailWidth + "\n";
+  aResult += aScope + "max.tail.width :\t " + (int)ShapeFixParameters.MaxTailWidth + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -636,7 +639,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult += aScope + "selfintersecting.edge :\t "
-             + (int)HealingParameters.FixSelfIntersectingEdgeMode + "\n";
+             + (int)ShapeFixParameters.FixSelfIntersectingEdgeMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -644,7 +647,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "intersecting.edges :\t " + (int)HealingParameters.FixIntersectingEdgesMode + "\n";
+    aScope + "intersecting.edges :\t " + (int)ShapeFixParameters.FixIntersectingEdgesMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -652,14 +655,14 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult += aScope + "nonadjacent.intersecting.edges :\t "
-             + (int)HealingParameters.FixNonAdjacentIntersectingEdgesMode + "\n";
+             + (int)ShapeFixParameters.FixNonAdjacentIntersectingEdgesMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
   aResult += "!Defines the mode for applying ShapeFix::FixVertexPosition before all fixes\n";
   aResult += "!Default value: \"NotFix\"(0). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
-  aResult += aScope + "vertex.position :\t " + (int)HealingParameters.FixVertexPositionMode + "\n";
+  aResult += aScope + "vertex.position :\t " + (int)ShapeFixParameters.FixVertexPositionMode + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -669,7 +672,7 @@ TCollection_AsciiString DE_ShapeFixConfigurationNode::Save() const
   aResult += "!Default value: \"FixOrNot\"(-1). Available values: \"FixOrNot\"(-1), \"NotFix\"(0), "
              "\"Fix\"(1)\n";
   aResult +=
-    aScope + "vertex.tolerance :\t " + (int)HealingParameters.FixVertexToleranceMode + "\n";
+    aScope + "vertex.tolerance :\t " + (int)ShapeFixParameters.FixVertexToleranceMode + "\n";
   aResult += "!\n";
 
   return aResult;

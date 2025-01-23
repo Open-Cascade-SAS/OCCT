@@ -80,7 +80,7 @@ Handle(Transfer_Binder)  IGESControl_ActorWrite::Transfer
       return NullResult();
     }
 
-    XSAlgo_ShapeProcessor aShapeProcessor(GetParameters());
+    XSAlgo_ShapeProcessor aShapeProcessor(GetShapeFixParameters());
     shape = aShapeProcessor.ProcessShape(shape, GetShapeProcessFlags().first, theProgress);
 
     BRepToIGES_BREntity   BR0; BR0.SetModel(modl);  BR0.SetTransferProcess(FP);

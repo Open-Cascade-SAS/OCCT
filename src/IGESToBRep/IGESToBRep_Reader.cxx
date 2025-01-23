@@ -579,21 +579,21 @@ TopoDS_Shape IGESToBRep_Reader::OneShape() const
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetParameters(const ParameterMap& theParameters)
+void IGESToBRep_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetParameters(ParameterMap&& theParameters)
+void IGESToBRep_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
 
 //=============================================================================
 
-void IGESToBRep_Reader::SetParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
+void IGESToBRep_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
 {
   myShapeProcParams.clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
@@ -618,9 +618,9 @@ void IGESToBRep_Reader::SetShapeProcessFlags(const ShapeProcess::OperationsFlags
 
 void IGESToBRep_Reader::InitializeMissingParameters()
 {
-  if (GetParameters().empty())
+  if (GetShapeFixParameters().empty())
   {
-    SetParameters(DEIGES_Parameters::GetDefaultReadingParamsIGES());
+    SetShapeFixParameters(DEIGES_Parameters::GetDefaultShapeFixParameters());
   }
 
   if (!myShapeProcFlags.second)

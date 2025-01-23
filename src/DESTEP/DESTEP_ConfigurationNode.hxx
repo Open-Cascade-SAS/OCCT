@@ -15,7 +15,7 @@
 #define _DESTEP_ConfigurationNode_HeaderFile
 
 #include <DESTEP_Parameters.hxx>
-#include <DE_ConfigurationNode.hxx>
+#include <DE_ShapeFixConfigurationNode.hxx>
 #include <Resource_FormatType.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <UnitsMethods_LengthUnit.hxx>
@@ -30,9 +30,9 @@
 //! The supported CAD extensions are ".stp", ".step", ".stpz"
 //! The import process is supported.
 //! The export process is supported.
-class DESTEP_ConfigurationNode : public DE_ConfigurationNode
+class DESTEP_ConfigurationNode : public DE_ShapeFixConfigurationNode
 {
-  DEFINE_STANDARD_RTTIEXT(DESTEP_ConfigurationNode, DE_ConfigurationNode)
+  DEFINE_STANDARD_RTTIEXT(DESTEP_ConfigurationNode, DE_ShapeFixConfigurationNode)
 public:
   //! Initializes all field by default
   Standard_EXPORT DESTEP_ConfigurationNode();

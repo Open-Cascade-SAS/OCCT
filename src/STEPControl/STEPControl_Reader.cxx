@@ -654,9 +654,9 @@ inline static TCollection_AsciiString getSiName(const Handle(StepBasic_SiUnit)& 
 
 //=================================================================================================
 
-DE_ShapeFixParameters STEPControl_Reader::GetDefaultParameters() const
+DE_ShapeFixParameters STEPControl_Reader::GetDefaultShapeFixParameters() const
 {
-  return DESTEP_Parameters::GetDefaultReadingParamsSTEP();
+  return DESTEP_Parameters::GetDefaultShapeFixParameters();
 }
 
 //=================================================================================================

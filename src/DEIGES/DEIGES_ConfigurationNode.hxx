@@ -15,7 +15,7 @@
 #define _DEIGES_ConfigurationNode_HeaderFile
 
 #include <DEIGES_Parameters.hxx>
-#include <DE_ConfigurationNode.hxx>
+#include <DE_ShapeFixConfigurationNode.hxx>
 #include <UnitsMethods_LengthUnit.hxx>
 
 //! The purpose of this class is to configure the transfer process for IGES format
@@ -28,9 +28,9 @@
 //! The supported CAD extensions are ".igs", ".iges"
 //! The import process is supported.
 //! The export process is supported.
-class DEIGES_ConfigurationNode : public DE_ConfigurationNode
+class DEIGES_ConfigurationNode : public DE_ShapeFixConfigurationNode
 {
-  DEFINE_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ConfigurationNode)
+  DEFINE_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ShapeFixConfigurationNode)
 public:
   //! Initializes all fields by default
   Standard_EXPORT DEIGES_ConfigurationNode();

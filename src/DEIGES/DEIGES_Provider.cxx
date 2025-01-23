@@ -80,8 +80,6 @@ void DEIGES_Provider::initStatic(const Handle(DE_ConfigurationNode)& theNode)
   myOldValues.EncodeRegAngle = Interface_Static::RVal("read.encoderegularity.angle") * 180.0 / M_PI;
 
   myOldValues.ReadApproxd1       = Interface_Static::IVal("read.iges.bspline.approxd1.mode") == 1;
-  myOldValues.ReadResourceName   = Interface_Static::CVal("read.iges.resource.name");
-  myOldValues.ReadSequence       = Interface_Static::CVal("read.iges.sequence");
   myOldValues.ReadFaultyEntities = Interface_Static::IVal("read.iges.faulty.entities") == 1;
   myOldValues.ReadOnlyVisible    = Interface_Static::IVal("read.iges.onlyvisible") == 1;
 
@@ -94,8 +92,6 @@ void DEIGES_Provider::initStatic(const Handle(DE_ConfigurationNode)& theNode)
   myOldValues.WriteHeaderCompany  = Interface_Static::CVal("write.iges.header.company");
   myOldValues.WriteHeaderProduct  = Interface_Static::CVal("write.iges.header.product");
   myOldValues.WriteHeaderReciever = Interface_Static::CVal("write.iges.header.receiver");
-  myOldValues.WriteResourceName   = Interface_Static::CVal("write.iges.resource.name");
-  myOldValues.WriteSequence       = Interface_Static::CVal("write.iges.sequence");
   myOldValues.WritePrecisionMode =
     (DEIGES_Parameters::WriteMode_PrecisionMode)Interface_Static::IVal("write.precision.mode");
   myOldValues.WritePrecisionVal = Interface_Static::RVal("write.precision.val");
@@ -130,8 +126,6 @@ void DEIGES_Provider::setStatic(const DEIGES_Parameters& theParameter)
                             theParameter.EncodeRegAngle * M_PI / 180.0);
 
   Interface_Static::SetIVal("read.iges.bspline.approxd1.mode", theParameter.ReadApproxd1);
-  Interface_Static::SetCVal("read.iges.resource.name", theParameter.ReadResourceName.ToCString());
-  Interface_Static::SetCVal("read.iges.sequence", theParameter.ReadSequence.ToCString());
   Interface_Static::SetIVal("read.iges.faulty.entities", theParameter.ReadFaultyEntities);
   Interface_Static::SetIVal("read.iges.onlyvisible", theParameter.ReadOnlyVisible);
 
@@ -144,8 +138,6 @@ void DEIGES_Provider::setStatic(const DEIGES_Parameters& theParameter)
                             theParameter.WriteHeaderProduct.ToCString());
   Interface_Static::SetCVal("write.iges.header.receiver",
                             theParameter.WriteHeaderReciever.ToCString());
-  Interface_Static::SetCVal("write.iges.resource.name", theParameter.WriteResourceName.ToCString());
-  Interface_Static::SetCVal("write.iges.sequence", theParameter.WriteSequence.ToCString());
   Interface_Static::SetIVal("write.precision.mode", theParameter.WritePrecisionMode);
   Interface_Static::SetRVal("write.precision.val", theParameter.WritePrecisionVal);
   Interface_Static::SetIVal("write.iges.plane.mode", theParameter.WritePlaneMode);
@@ -194,7 +186,7 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString&  thePath,
   aReader.SetColorMode(aNode->InternalParameters.ReadColor);
   aReader.SetNameMode(aNode->InternalParameters.ReadName);
   aReader.SetLayerMode(aNode->InternalParameters.ReadLayer);
-
+  aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
   aReadStat                       = aReader.ReadFile(thePath.ToCString());
   if (aReadStat != IFSelect_RetDone)
@@ -260,7 +252,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetColorMode(aNode->InternalParameters.WriteColor);
   aWriter.SetNameMode(aNode->InternalParameters.WriteName);
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
-
+  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
   if (!aWriter.Transfer(theDocument, theProgress))
   {
     Message::SendFail() << "Error in the DEIGES_Provider during reading the file " << thePath
@@ -319,6 +311,8 @@ bool DEIGES_Provider::Read(const TCollection_AsciiString& thePath,
   IGESControl_Reader aReader;
   aReader.SetWS(theWS);
   aReader.SetReadVisible(aNode->InternalParameters.ReadOnlyVisible);
+  aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
+
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
   aReadStat                       = aReader.ReadFile(thePath.ToCString());
   if (aReadStat != IFSelect_RetDone)
@@ -367,6 +361,7 @@ bool DEIGES_Provider::Write(const TCollection_AsciiString& thePath,
     aGS.SetScale(aNode->GlobalParameters.LengthUnit);
   }
   aWriter.Model()->SetGlobalSection(aGS);
+  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
   Standard_Boolean aIsOk = aWriter.AddShape(theShape);
   if (!aIsOk)
   {

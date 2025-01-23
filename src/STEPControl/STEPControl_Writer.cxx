@@ -219,42 +219,42 @@ void STEPControl_Writer::PrintStatsTransfer
 }
 //=============================================================================
 
-void STEPControl_Writer::SetParameters(const ParameterMap& theParameters)
+void STEPControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters)
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
-    anActor->SetParameters(theParameters);
+    anActor->SetShapeFixParameters(theParameters);
   }
 }
 
 //=============================================================================
 
-void STEPControl_Writer::SetParameters(ParameterMap&& theParameters)
+void STEPControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
-    anActor->SetParameters(std::move(theParameters));
+    anActor->SetShapeFixParameters(std::move(theParameters));
   }
 }
 
 //=============================================================================
 
-void STEPControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters,
+void STEPControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
                                        const ParameterMap& theAdditionalParameters)
 {
   if (Handle(Transfer_ActorOfFinderProcess) anActor = GetActor())
   {
-    anActor->SetParameters(theParameters, theAdditionalParameters);
+    anActor->SetShapeFixParameters(theParameters, theAdditionalParameters);
   }
 }
 
 //=============================================================================
 
-const STEPControl_Writer::ParameterMap& STEPControl_Writer::GetParameters() const
+const STEPControl_Writer::ParameterMap& STEPControl_Writer::GetShapeFixParameters() const
 {
   static const ParameterMap                   anEmptyMap;
   const Handle(Transfer_ActorOfFinderProcess) anActor = GetActor();
-  return anActor.IsNull() ? anEmptyMap : anActor->GetParameters();
+  return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
 //=============================================================================
@@ -299,9 +299,9 @@ Handle(Transfer_ActorOfFinderProcess) STEPControl_Writer::GetActor() const
 
 void STEPControl_Writer::InitializeMissingParameters()
 {
-  if (GetParameters().empty())
+  if (GetShapeFixParameters().empty())
   {
-    SetParameters(DESTEP_Parameters::GetDefaultWritingParamsSTEP());
+    SetShapeFixParameters(DESTEP_Parameters::GetDefaultShapeFixParameters());
   }
   if (GetShapeProcessFlags().second == false)
   {

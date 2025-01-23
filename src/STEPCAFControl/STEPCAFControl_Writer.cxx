@@ -565,31 +565,31 @@ Standard_Boolean STEPCAFControl_Writer::ExternFile(const Standard_CString theNam
 
 //=============================================================================
 
-void STEPCAFControl_Writer::SetParameters(const ParameterMap& theParameters)
+void STEPCAFControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters)
 {
-  myWriter.SetParameters(theParameters);
+  myWriter.SetShapeFixParameters(theParameters);
 }
 
 //=============================================================================
 
-void STEPCAFControl_Writer::SetParameters(ParameterMap&& theParameters)
+void STEPCAFControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
 {
-  myWriter.SetParameters(std::move(theParameters));
+  myWriter.SetShapeFixParameters(std::move(theParameters));
 }
 
 //=============================================================================
 
-void STEPCAFControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters,
+void STEPCAFControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
                                           const ParameterMap&          theAdditionalParameters)
 {
-  myWriter.SetParameters(theParameters, theAdditionalParameters);
+  myWriter.SetShapeFixParameters(theParameters, theAdditionalParameters);
 }
 
 //=============================================================================
 
-const STEPCAFControl_Writer::ParameterMap& STEPCAFControl_Writer::GetParameters() const
+const STEPCAFControl_Writer::ParameterMap& STEPCAFControl_Writer::GetShapeFixParameters() const
 {
-  return myWriter.GetParameters();
+  return myWriter.GetShapeFixParameters();
 }
 
 //=============================================================================

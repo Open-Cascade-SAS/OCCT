@@ -86,11 +86,8 @@ public:
   //! Reset used parameters
   Standard_EXPORT void Reset();
 
-  //! Returns default parameters for reading STEP files.
-  Standard_EXPORT static DE_ShapeFixParameters GetDefaultReadingParamsIGES();
-
-  //! Returns default parameters for writing STEP files.
-  Standard_EXPORT static DE_ShapeFixParameters GetDefaultWritingParamsIGES();
+  //! Returns default shape fix parameters for transferring IGES files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultShapeFixParameters();
 
 public:
   // Common
@@ -106,8 +103,6 @@ public:
 
   //Read
   bool ReadApproxd1 = false; //<! Flag to split bspline curves of degree 1
-  TCollection_AsciiString ReadResourceName = "IGES"; //<! Defines the name of the resource file to read
-  TCollection_AsciiString ReadSequence = "FromIGES"; //<! Defines the name of the sequence of operators to read
   bool ReadFaultyEntities = false; //<! Parameter for reading failed entities
   bool ReadOnlyVisible = false; //<! Parameter for reading invisible entities
   bool ReadColor = true; //<! ColorMode is used to indicate read Colors or not
@@ -121,8 +116,6 @@ public:
   TCollection_AsciiString WriteHeaderCompany; //<! Name of the sending company
   TCollection_AsciiString WriteHeaderProduct; //<! Name of the sending product
   TCollection_AsciiString WriteHeaderReciever; //<! Name of the receiving company
-  TCollection_AsciiString WriteResourceName = "IGES"; //<! Defines the name of the resource file to write
-  TCollection_AsciiString WriteSequence = "ToIGES"; //<! Defines the name of the sequence of operators to write
   WriteMode_PrecisionMode WritePrecisionMode = WriteMode_PrecisionMode_Average; //<! Specifies the mode of writing the resolution value into the IGES file
   double WritePrecisionVal = 0.0001; //<! Resolution value for an IGES file when WriteMode_PrecisionMode is Greatest
   WriteMode_PlaneMode WritePlaneMode = WriteMode_PlaneMode_Plane; //<! Flag to convert plane to the BSline

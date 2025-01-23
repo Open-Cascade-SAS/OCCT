@@ -191,7 +191,7 @@ Handle(Transfer_Binder) IGESToBRep_Actor::Transfer
 
     // Set tolerances for shape processing.
     // These parameters are calculated inside IGESToBRep_Actor::Transfer() and cannot be set from outside.
-    Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetParameters();
+    Transfer_ActorOfTransientProcess::ParameterMap aParameters = GetShapeFixParameters();
     XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", theeps, true, aParameters);
     XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", CAS.GetMaxTol(), true, aParameters);
 

@@ -18,7 +18,7 @@
 #include <DE_PluginHolder.hxx>
 #include <NCollection_Buffer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DEIGES_ConfigurationNode, DE_ShapeFixConfigurationNode)
 
 namespace
 {
@@ -35,14 +35,16 @@ DE_PluginHolder<DEIGES_ConfigurationNode> THE_OCCT_IGES_COMPONENT_PLUGIN;
 //=================================================================================================
 
 DEIGES_ConfigurationNode::DEIGES_ConfigurationNode()
-    : DE_ConfigurationNode()
+    : DE_ShapeFixConfigurationNode()
 {
+  DE_ShapeFixConfigurationNode::ShapeFixParameters =
+    DEIGES_Parameters::GetDefaultShapeFixParameters();
 }
 
 //=================================================================================================
 
 DEIGES_ConfigurationNode::DEIGES_ConfigurationNode(const Handle(DEIGES_ConfigurationNode)& theNode)
-    : DE_ConfigurationNode(theNode)
+    : DE_ShapeFixConfigurationNode(theNode)
 {
   InternalParameters = theNode->InternalParameters;
 }
@@ -85,10 +87,6 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
 
   InternalParameters.ReadApproxd1 =
     theResource->BooleanVal("read.bspline.approxd1.mode", InternalParameters.ReadApproxd1, aScope);
-  InternalParameters.ReadResourceName =
-    theResource->StringVal("read.resource.name", InternalParameters.ReadResourceName, aScope);
-  InternalParameters.ReadSequence =
-    theResource->StringVal("read.sequence", InternalParameters.ReadSequence, aScope);
   InternalParameters.ReadFaultyEntities =
     theResource->BooleanVal("read.fau_lty.entities", InternalParameters.ReadFaultyEntities, aScope);
   InternalParameters.ReadOnlyVisible =
@@ -117,10 +115,6 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->StringVal("write.header.product", InternalParameters.WriteHeaderProduct, aScope);
   InternalParameters.WriteHeaderReciever =
     theResource->StringVal("write.header.receiver", InternalParameters.WriteHeaderReciever, aScope);
-  InternalParameters.WriteResourceName =
-    theResource->StringVal("write.resource.name", InternalParameters.WriteResourceName, aScope);
-  InternalParameters.WriteSequence =
-    theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
   InternalParameters.WritePrecisionMode =
     (DEIGES_Parameters::WriteMode_PrecisionMode)theResource->IntegerVal(
       "write.precision.mode",
@@ -139,8 +133,7 @@ bool DEIGES_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     theResource->BooleanVal("write.name", InternalParameters.WriteName, aScope);
   InternalParameters.WriteLayer =
     theResource->BooleanVal("write.layer", InternalParameters.WriteLayer, aScope);
-
-  return true;
+  return DE_ShapeFixConfigurationNode::Load(theResource);
 }
 
 //=================================================================================================
@@ -240,18 +233,6 @@ TCollection_AsciiString DEIGES_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the name of the resource file\n";
-  aResult += "!Default value: \"IGES\". Available values: <string>\n";
-  aResult += aScope + "read.resource.name :\t " + InternalParameters.ReadResourceName + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Defines the name of the sequence of operators\n";
-  aResult += "!Default value: \"FromIGES\". Available values: <string>\n";
-  aResult += aScope + "read.sequence :\t " + InternalParameters.ReadSequence + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
   aResult += "!Parameter for reading fa-iled entities\n";
   aResult += "!Default value: \"Off\"(0). Available values: \"Off\"(0), \"On\"(1)\n";
   aResult += aScope + "read.fau_lty.entities :\t " + InternalParameters.ReadFaultyEntities + "\n";
@@ -333,18 +314,6 @@ TCollection_AsciiString DEIGES_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the name of the resource file\n";
-  aResult += "!Default value: \"IGES\". Available values: <string>\n";
-  aResult += aScope + "write.resource.name :\t " + InternalParameters.WriteResourceName + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Defines the name of the sequence of operators\n";
-  aResult += "!Default value: \"To\". Available values: <string>\n";
-  aResult += aScope + "write.sequence :\t " + InternalParameters.WriteSequence + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
   aResult += "!Specifies the mode of writing the resolution value into the IGES file\n";
   aResult += "!Default value: Average(0). Available values: \"Least\"(-1), \"Average\"(0), ";
   aResult += "\"Greatest\"(1), \"Session\"(2)\n";
@@ -388,6 +357,7 @@ TCollection_AsciiString DEIGES_ConfigurationNode::Save() const
   aResult += aScope + "write.layer :\t " + InternalParameters.WriteLayer + "\n";
   aResult += "!\n";
 
+  aResult += DE_ShapeFixConfigurationNode::Save();
   aResult += "!*****************************************************************************\n";
   return aResult;
 }

@@ -37,9 +37,7 @@ void DESTEP_Parameters::InitFromStatic()
   EncodeRegAngle = Interface_Static::RVal("read.encoderegularity.angle") * 180.0 / M_PI;
   AngleUnit      = (DESTEP_Parameters::AngleUnitMode)Interface_Static::IVal("step.angleunit.mode");
 
-  ReadResourceName = Interface_Static::CVal("read.step.resource.name");
-  ReadSequence     = Interface_Static::CVal("read.step.sequence");
-  ReadProductMode  = Interface_Static::IVal("read.step.product.mode") == 1;
+  ReadProductMode = Interface_Static::IVal("read.step.product.mode") == 1;
   ReadProductContext =
     (DESTEP_Parameters::ReadMode_ProductContext)Interface_Static::IVal("read.step.product.context");
   ReadShapeRepr =
@@ -75,8 +73,6 @@ void DESTEP_Parameters::InitFromStatic()
   WriteProductName    = Interface_Static::CVal("write.step.product.name");
   WriteSurfaceCurMode = Interface_Static::IVal("write.surfacecurve.mode") == 1;
   WriteUnit           = (UnitsMethods_LengthUnit)Interface_Static::IVal("write.step.unit");
-  WriteResourceName   = Interface_Static::CVal("write.step.resource.name");
-  WriteSequence       = Interface_Static::CVal("write.step.sequence");
   WriteVertexMode =
     (DESTEP_Parameters::WriteMode_VertexMode)Interface_Static::IVal("write.step.vertex.mode");
   WriteSubshapeNames = Interface_Static::IVal("write.stepcaf.subshapes.name") == 1;
@@ -98,14 +94,7 @@ void DESTEP_Parameters::Reset()
 
 //=================================================================================================
 
-DE_ShapeFixParameters DESTEP_Parameters::GetDefaultReadingParamsSTEP()
-{
-  return DE_ShapeFixParameters();
-}
-
-//=================================================================================================
-
-DE_ShapeFixParameters DESTEP_Parameters::GetDefaultWritingParamsSTEP()
+DE_ShapeFixParameters DESTEP_Parameters::GetDefaultShapeFixParameters()
 {
   return DE_ShapeFixParameters();
 }

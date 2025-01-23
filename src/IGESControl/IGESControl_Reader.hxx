@@ -94,7 +94,7 @@ public:
 protected:
   //! Returns default parameters for shape fixing.
   //! @return default parameters for shape fixing.
-  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultParameters() const Standard_OVERRIDE;
+  Standard_EXPORT virtual DE_ShapeFixParameters GetDefaultShapeFixParameters() const Standard_OVERRIDE;
 
   //! Returns default flags for shape processing.
   //! @return Default flags for shape processing.

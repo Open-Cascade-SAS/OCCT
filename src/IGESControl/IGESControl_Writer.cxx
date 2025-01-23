@@ -271,21 +271,21 @@ Standard_Boolean IGESControl_Writer::Write
 
 //=============================================================================
 
-void IGESControl_Writer::SetParameters(const ParameterMap& theParameters)
+void IGESControl_Writer::SetShapeFixParameters(const ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void IGESControl_Writer::SetParameters(ParameterMap&& theParameters)
+void IGESControl_Writer::SetShapeFixParameters(ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
 
 //=============================================================================
 
-void IGESControl_Writer::SetParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
+void IGESControl_Writer::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
 {
   myShapeProcParams.clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);
@@ -310,9 +310,9 @@ void IGESControl_Writer::SetShapeProcessFlags(const ShapeProcess::OperationsFlag
 
 void IGESControl_Writer::InitializeMissingParameters()
 {
-  if (GetParameters().empty())
+  if (GetShapeFixParameters().empty())
   {
-    SetParameters(DEIGES_Parameters::GetDefaultWritingParamsIGES());
+    SetShapeFixParameters(DEIGES_Parameters::GetDefaultShapeFixParameters());
   }
 
   if (!myShapeProcFlags.second)

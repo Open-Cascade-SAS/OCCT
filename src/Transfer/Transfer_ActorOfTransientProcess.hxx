@@ -62,12 +62,12 @@ public:
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.
-  Standard_EXPORT void SetParameters(const ParameterMap& theParameters);
+  Standard_EXPORT void SetShapeFixParameters(const ParameterMap& theParameters);
 
   //! Sets parameters for shape processing.
   //! Parameters are moved from the input map.
   //! @param theParameters the parameters for shape processing.
-  Standard_EXPORT void SetParameters(ParameterMap&& theParameters);
+  Standard_EXPORT void SetShapeFixParameters(ParameterMap&& theParameters);
 
   //! Sets parameters for shape processing.
   //! Parameters from @p theParameters are copied to the internal map.
@@ -75,12 +75,12 @@ public:
   //! if they are not present in @p theParameters.
   //! @param theParameters the parameters for shape processing.
   //! @param theAdditionalParameters the additional parameters for shape processing.
-  Standard_EXPORT void SetParameters(const DE_ShapeFixParameters& theParameters,
-                                     const ParameterMap&          theAdditionalParameters = {});
+  Standard_EXPORT void SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
+                                             const ParameterMap&          theAdditionalParameters = {});
 
   //! Returns parameters for shape processing that was set by SetParameters() method.
   //! @return the parameters for shape processing. Empty map if no parameters were set.
-  inline const ParameterMap& GetParameters() const { return myShapeProcParams; }
+  inline const ParameterMap& GetShapeFixParameters() const { return myShapeProcParams; }
 
   //! Sets flags defining operations to be performed on shapes.
   //! @param theFlags The flags defining operations to be performed on shapes.

@@ -18,7 +18,7 @@
 #include <DE_PluginHolder.hxx>
 #include <NCollection_Buffer.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DESTEP_ConfigurationNode, DE_ConfigurationNode)
+IMPLEMENT_STANDARD_RTTIEXT(DESTEP_ConfigurationNode, DE_ShapeFixConfigurationNode)
 
 namespace
 {
@@ -35,14 +35,16 @@ DE_PluginHolder<DESTEP_ConfigurationNode> THE_OCCT_STEP_COMPONENT_PLUGIN;
 //=================================================================================================
 
 DESTEP_ConfigurationNode::DESTEP_ConfigurationNode()
-    : DE_ConfigurationNode()
+    : DE_ShapeFixConfigurationNode()
 {
+  DE_ShapeFixConfigurationNode::ShapeFixParameters =
+    DESTEP_Parameters::GetDefaultShapeFixParameters();
 }
 
 //=================================================================================================
 
 DESTEP_ConfigurationNode::DESTEP_ConfigurationNode(const Handle(DESTEP_ConfigurationNode)& theNode)
-    : DE_ConfigurationNode(theNode),
+    : DE_ShapeFixConfigurationNode(theNode),
       InternalParameters(theNode->InternalParameters)
 {
 }
@@ -87,10 +89,6 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                                                               InternalParameters.AngleUnit,
                                                               aScope);
 
-  InternalParameters.ReadResourceName =
-    theResource->StringVal("read.resource.name", InternalParameters.ReadResourceName, aScope);
-  InternalParameters.ReadSequence =
-    theResource->StringVal("read.sequence", InternalParameters.ReadSequence, aScope);
   InternalParameters.ReadProductMode =
     theResource->BooleanVal("read.product.mode", InternalParameters.ReadProductMode, aScope);
   InternalParameters.ReadProductContext =
@@ -173,10 +171,6 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
     (UnitsMethods_LengthUnit)theResource->IntegerVal("write.unit",
                                                      InternalParameters.WriteUnit,
                                                      aScope);
-  InternalParameters.WriteResourceName =
-    theResource->StringVal("write.resource.name", InternalParameters.WriteResourceName, aScope);
-  InternalParameters.WriteSequence =
-    theResource->StringVal("write.sequence", InternalParameters.WriteSequence, aScope);
   InternalParameters.WriteVertexMode =
     (DESTEP_Parameters::WriteMode_VertexMode)
       theResource->IntegerVal("write.vertex.mode", InternalParameters.WriteVertexMode, aScope);
@@ -197,7 +191,7 @@ bool DESTEP_ConfigurationNode::Load(const Handle(DE_ConfigurationContext)& theRe
                                                        InternalParameters.WriteModelType,
                                                        aScope);
 
-  return true;
+  return DE_ShapeFixConfigurationNode::Load(theResource);
 }
 
 //=================================================================================================
@@ -290,18 +284,6 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Read Parameters:\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Defines the name of the resource file\n";
-  aResult += "!Default value: \"STEP\". Available values: <string>\n";
-  aResult += aScope + "read.resource.name :\t " + InternalParameters.ReadResourceName + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Defines name of the sequence of operators\n";
-  aResult += "!Default value: \"FromSTEP\". Available values: <string>\n";
-  aResult += aScope + "read.sequence :\t " + InternalParameters.ReadSequence + "\n";
   aResult += "!\n";
 
   aResult += "!\n";
@@ -515,18 +497,6 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "!\n";
 
   aResult += "!\n";
-  aResult += "!Defines the name of the resource file\n";
-  aResult += "!Default value: \"STEP\". Available values: <string>\n";
-  aResult += aScope + "write.resource.name :\t " + InternalParameters.WriteResourceName + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
-  aResult += "!Defines name of the sequence of operators\n";
-  aResult += "!Default value: \"ToSTEP\". Available values: <string>\n";
-  aResult += aScope + "write.sequence :\t " + InternalParameters.WriteSequence + "\n";
-  aResult += "!\n";
-
-  aResult += "!\n";
   aResult += "!This parameter indicates which of free vertices writing mode is switch on\n";
   aResult += "!Default value: 0(\"One Compound\"). Available values: 0(\"One Compound\"), "
              "1(\"Signle Vertex\")\n";
@@ -574,6 +544,8 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
   aResult += "!Default value: 0. Available values: 0, 1, 2, 3, 4\n";
   aResult += aScope + "write.model.type :\t " + InternalParameters.WriteModelType + "\n";
   aResult += "!\n";
+
+  aResult += DE_ShapeFixConfigurationNode::Save();
 
   aResult += "!*****************************************************************************\n";
 

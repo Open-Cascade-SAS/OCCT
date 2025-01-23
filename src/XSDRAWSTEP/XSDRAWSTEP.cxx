@@ -128,7 +128,7 @@ static Standard_Integer stepread(Draw_Interpretor& theDI,
   sr.SetSystemLengthUnit(XSDRAW::GetLengthUnit());
   XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
     XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
-  sr.SetParameters(std::move(aProcessingData.first));
+  sr.SetShapeFixParameters(std::move(aProcessingData.first));
   sr.SetShapeProcessFlags(aProcessingData.second);
 
   //   nom = "." -> fichier deja lu
@@ -299,7 +299,7 @@ static Standard_Integer testreadstep(Draw_Interpretor& theDI,
     STEPControl_Reader                    aReader;
     XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
       XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
-    aReader.SetParameters(std::move(aProcessingData.first));
+    aReader.SetShapeFixParameters(std::move(aProcessingData.first));
     aReader.SetShapeProcessFlags(aProcessingData.second);
       aReader.SetSystemLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
       if (useStream)
@@ -436,7 +436,7 @@ static Standard_Integer stepwrite(Draw_Interpretor& theDI,
 
   XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
     XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");
-  sw.SetParameters(std::move(aProcessingData.first));
+  sw.SetShapeFixParameters(std::move(aProcessingData.first));
   sw.SetShapeProcessFlags(aProcessingData.second);
   Standard_Integer stat = sw.Transfer(shape, mode, Standard_True, aPSRoot.Next(90));
   if (stat == IFSelect_RetDone)
@@ -520,7 +520,7 @@ static Standard_Integer testwrite(Draw_Interpretor& theDI,
     STEPControl_Writer                    aWriter;
     XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
       XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");
-    aWriter.SetParameters(std::move(aProcessingData.first));
+    aWriter.SetShapeFixParameters(std::move(aProcessingData.first));
     aWriter.SetShapeProcessFlags(aProcessingData.second);
 
       if (aWriter.Transfer(aShape, STEPControl_AsIs, aParameters) != IFSelect_RetDone)
@@ -800,7 +800,7 @@ static Standard_Integer ReadStep(Draw_Interpretor& theDI,
 
   XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
   XSAlgo_ShapeProcessor::ReadProcessingData("read.step.resource.name", "read.step.sequence");
-  aReader.SetParameters(std::move(aProcessingData.first));
+  aReader.SetShapeFixParameters(std::move(aProcessingData.first));
   aReader.SetShapeProcessFlags(aProcessingData.second);
 
   if (!aReader.Transfer(aDocument, aRootScope.Next()))
@@ -967,7 +967,7 @@ static Standard_Integer WriteStep(Draw_Interpretor& theDI,
 
   XSAlgo_ShapeProcessor::ProcessingData aProcessingData =
   XSAlgo_ShapeProcessor::ReadProcessingData("write.step.resource.name", "write.step.sequence");
-  aWriter.SetParameters(std::move(aProcessingData.first));
+  aWriter.SetShapeFixParameters(std::move(aProcessingData.first));
   aWriter.SetShapeProcessFlags(aProcessingData.second);
 
   if (!aLabel.IsNull())

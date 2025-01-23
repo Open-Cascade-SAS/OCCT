@@ -69,7 +69,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString&  thePath,
   aReader.SetLayerMode(aNode->InternalParameters.ReadLayer);
   aReader.SetPropsMode(aNode->InternalParameters.ReadProps);
   aReader.SetMetaMode(aNode->InternalParameters.ReadMetadata);
-
+  aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
   IFSelect_ReturnStatus aReadStat = IFSelect_RetVoid;
   DESTEP_Parameters     aParams   = aNode->InternalParameters;
   aReadStat                       = aReader.ReadFile(thePath.ToCString(), aParams);
@@ -114,6 +114,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString&  thePath,
   aWriter.SetNameMode(aNode->InternalParameters.WriteName);
   aWriter.SetLayerMode(aNode->InternalParameters.WriteLayer);
   aWriter.SetPropsMode(aNode->InternalParameters.WriteProps);
+  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
   DESTEP_Parameters aParams        = aNode->InternalParameters;
   Standard_Real     aScaleFactorMM = 1.;
   if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument,
@@ -200,6 +201,7 @@ bool DESTEP_Provider::Read(const TCollection_AsciiString& thePath,
   personizeWS(theWS);
   STEPControl_Reader aReader;
   aReader.SetWS(theWS);
+  aReader.SetShapeFixParameters(aNode->ShapeFixParameters);
   IFSelect_ReturnStatus aReadstat   = IFSelect_RetVoid;
   DESTEP_Parameters     aParams     = aNode->InternalParameters;
   aReadstat                         = aReader.ReadFile(thePath.ToCString(), aParams);
@@ -259,6 +261,7 @@ bool DESTEP_Provider::Write(const TCollection_AsciiString& thePath,
   {
     aModel->SetWriteLengthUnit(aNode->GlobalParameters.LengthUnit);
   }
+  aWriter.SetShapeFixParameters(aNode->ShapeFixParameters);
   aWritestat = aWriter.Transfer(theShape,
                                 aNode->InternalParameters.WriteModelType,
                                 aParams,

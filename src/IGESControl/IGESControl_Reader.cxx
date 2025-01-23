@@ -318,9 +318,9 @@ void  IGESControl_Reader::PrintTransferInfo
 
 //=================================================================================================
 
-DE_ShapeFixParameters IGESControl_Reader::GetDefaultParameters() const
+DE_ShapeFixParameters IGESControl_Reader::GetDefaultShapeFixParameters() const
 {
-  return DEIGES_Parameters::GetDefaultReadingParamsIGES();
+  return DEIGES_Parameters::GetDefaultShapeFixParameters();
 }
 
 //=================================================================================================

@@ -59,22 +59,22 @@ Handle(Standard_Transient)  Transfer_ActorOfTransientProcess::TransferTransient
 
 //=============================================================================
 
-void Transfer_ActorOfTransientProcess::SetParameters(const ParameterMap& theParameters)
+void Transfer_ActorOfTransientProcess::SetShapeFixParameters(const ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void Transfer_ActorOfTransientProcess::SetParameters(ParameterMap&& theParameters)
+void Transfer_ActorOfTransientProcess::SetShapeFixParameters(ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
 
 //=============================================================================
 
-void Transfer_ActorOfTransientProcess::SetParameters(const DE_ShapeFixParameters& theParameters,
-                                                     const ParameterMap&          theAdditionalParameters)
+void Transfer_ActorOfTransientProcess::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
+                                                             const ParameterMap&          theAdditionalParameters)
 {
   myShapeProcParams.clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);

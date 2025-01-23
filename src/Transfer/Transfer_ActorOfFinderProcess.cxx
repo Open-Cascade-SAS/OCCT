@@ -70,22 +70,22 @@ Handle(Standard_Transient)  Transfer_ActorOfFinderProcess::TransferTransient
 
 //=============================================================================
 
-void Transfer_ActorOfFinderProcess::SetParameters(const ParameterMap& theParameters)
+void Transfer_ActorOfFinderProcess::SetShapeFixParameters(const ParameterMap& theParameters)
 {
   myShapeProcParams = theParameters;
 }
 
 //=============================================================================
 
-void Transfer_ActorOfFinderProcess::SetParameters(ParameterMap&& theParameters)
+void Transfer_ActorOfFinderProcess::SetShapeFixParameters(ParameterMap&& theParameters)
 {
   myShapeProcParams = std::move(theParameters);
 }
 
 //=============================================================================
 
-void Transfer_ActorOfFinderProcess::SetParameters(const DE_ShapeFixParameters& theParameters,
-                                                  const ParameterMap&          theAdditionalParameters)
+void Transfer_ActorOfFinderProcess::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
+                                                          const ParameterMap&          theAdditionalParameters)
 {
   myShapeProcParams.clear();
   XSAlgo_ShapeProcessor::FillParameterMap(theParameters, true, myShapeProcParams);

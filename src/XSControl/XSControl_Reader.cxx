@@ -490,41 +490,41 @@ void XSControl_Reader::GetStatsTransfer (const Handle(TColStd_HSequenceOfTransie
 
 //=============================================================================
 
-void XSControl_Reader::SetParameters(const ParameterMap& theParameters)
+void XSControl_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
-    anActor->SetParameters(theParameters);
+    anActor->SetShapeFixParameters(theParameters);
   }
 }
 
 //=============================================================================
 
-void XSControl_Reader::SetParameters(ParameterMap&& theParameters)
+void XSControl_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
-    anActor->SetParameters(std::move(theParameters));
+    anActor->SetShapeFixParameters(std::move(theParameters));
   }
 }
 
 //=============================================================================
 
-void XSControl_Reader::SetParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
+void XSControl_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters, const ParameterMap& theAdditionalParameters)
 {
   if (Handle(Transfer_ActorOfTransientProcess) anActor = GetActor())
   {
-    anActor->SetParameters(theParameters, theAdditionalParameters);
+    anActor->SetShapeFixParameters(theParameters, theAdditionalParameters);
   }
 }
 
 //=============================================================================
 
-const XSControl_Reader::ParameterMap& XSControl_Reader::GetParameters() const
+const XSControl_Reader::ParameterMap& XSControl_Reader::GetShapeFixParameters() const
 {
   static const ParameterMap anEmptyMap;
   const Handle(Transfer_ActorOfTransientProcess) anActor = GetActor();
-  return anActor.IsNull() ? anEmptyMap : anActor->GetParameters();
+  return anActor.IsNull() ? anEmptyMap : anActor->GetShapeFixParameters();
 }
 
 //=============================================================================
@@ -569,9 +569,9 @@ Handle(Transfer_ActorOfTransientProcess) XSControl_Reader::GetActor() const
 
 void XSControl_Reader::InitializeMissingParameters()
 {
-  if (GetParameters().empty())
+  if (GetShapeFixParameters().empty())
   {
-    SetParameters(GetDefaultParameters());
+    SetShapeFixParameters(GetDefaultShapeFixParameters());
   }
   if (!GetShapeProcessFlags().second)
   {

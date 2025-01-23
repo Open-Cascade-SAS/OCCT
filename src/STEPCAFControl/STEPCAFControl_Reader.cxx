@@ -5370,31 +5370,31 @@ Standard_Boolean STEPCAFControl_Reader::GetViewMode() const
 
 //=============================================================================
 
-void STEPCAFControl_Reader::SetParameters(const ParameterMap& theParameters)
+void STEPCAFControl_Reader::SetShapeFixParameters(const ParameterMap& theParameters)
 {
-  myReader.SetParameters(theParameters);
+  myReader.SetShapeFixParameters(theParameters);
 }
 
 //=============================================================================
 
-void STEPCAFControl_Reader::SetParameters(ParameterMap&& theParameters)
+void STEPCAFControl_Reader::SetShapeFixParameters(ParameterMap&& theParameters)
 {
-  myReader.SetParameters(std::move(theParameters));
+  myReader.SetShapeFixParameters(std::move(theParameters));
 }
 
 //=============================================================================
 
-void STEPCAFControl_Reader::SetParameters(const DE_ShapeFixParameters& theParameters,
+void STEPCAFControl_Reader::SetShapeFixParameters(const DE_ShapeFixParameters& theParameters,
                                           const ParameterMap&          theAdditionalParameters)
 {
-  myReader.SetParameters(theParameters, theAdditionalParameters);
+  myReader.SetShapeFixParameters(theParameters, theAdditionalParameters);
 }
 
 //=============================================================================
 
-const STEPCAFControl_Reader::ParameterMap& STEPCAFControl_Reader::GetParameters() const
+const STEPCAFControl_Reader::ParameterMap& STEPCAFControl_Reader::GetShapeFixParameters() const
 {
-  return myReader.GetParameters();
+  return myReader.GetShapeFixParameters();
 }
 
 //=============================================================================

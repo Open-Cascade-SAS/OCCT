@@ -44,7 +44,7 @@ public:
   Standard_EXPORT virtual TCollection_AsciiString Save() const Standard_OVERRIDE;
 
 public:
-  DE_ShapeFixParameters HealingParameters; //!< Shape healing parameters
+  DE_ShapeFixParameters ShapeFixParameters; //!< Shape healing parameters
 };
 
 #endif // _DE_ShapeFixConfigurationNode_HeaderFile

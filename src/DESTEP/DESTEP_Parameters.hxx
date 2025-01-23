@@ -145,11 +145,8 @@ public:
     }
   }
 
-  //! Returns default parameters for reading STEP files.
-  Standard_EXPORT static DE_ShapeFixParameters GetDefaultReadingParamsSTEP();
-
-  //! Returns default parameters for writing STEP files.
-  Standard_EXPORT static DE_ShapeFixParameters GetDefaultWritingParamsSTEP();
+  //! Returns default shape fix parameters for transferring STEP files.
+  Standard_EXPORT static DE_ShapeFixParameters GetDefaultShapeFixParameters();
 
 public:
   // Common
@@ -165,8 +162,6 @@ public:
   AngleUnitMode AngleUnit = AngleUnitMode_File; //<! Indicates what angle units should be used when a STEP file is read
 
   // Read
-  TCollection_AsciiString ReadResourceName = "STEP"; //<! Defines the name of the resource file to read
-  TCollection_AsciiString ReadSequence = "FromSTEP"; //<! Defines the name of the sequence of operators to read
   bool ReadProductMode = true; //<! Defines the approach used for selection of top-level STEP entities for translation, and for recognition of assembly structures
   ReadMode_ProductContext ReadProductContext = ReadMode_ProductContext_All; //<! When reading AP 209 STEP files, allows selecting either only 'design' or 'analysis', or both types of products for translation
   ReadMode_ShapeRepr ReadShapeRepr = ReadMode_ShapeRepr_All; //<! Specifies preferred type of representation of the shape of the product
@@ -196,8 +191,6 @@ public:
   TCollection_AsciiString WriteProductName; //<! Defines the text string that will be used for field 'name' of PRODUCT entities written to the STEP file
   bool WriteSurfaceCurMode = true; //<! Indicates whether parametric curves (curves in parametric space of surface) should be written into the STEP file
   UnitsMethods_LengthUnit WriteUnit = UnitsMethods_LengthUnit_Millimeter; //<! Defines a unit in which the STEP file should be written
-  TCollection_AsciiString WriteResourceName = "STEP"; //<! Defines the name of the resource file to write
-  TCollection_AsciiString WriteSequence = "ToSTEP"; //<! Defines the name of the sequence of operators to write
   WriteMode_VertexMode WriteVertexMode = WriteMode_VertexMode_OneCompound; //<! Indicates which of free vertices writing mode is switch on
   bool WriteSubshapeNames = false; //<! Indicates whether to write sub-shape names to 'Name' attributes of STEP Representation Items
   bool WriteColor = true; //<! ColorMode is used to indicate write Colors or not
