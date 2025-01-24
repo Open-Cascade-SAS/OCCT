@@ -302,14 +302,17 @@ Selection change:
 <h4><a id="occt_inspector_2_3_4">VInspector tree view columns</a></h4>
 
 Use context pop-up menu on the tree view header to select, which columns should be displayed.
+
 <img src="images/vinspector_tree_columns.png" alt="Vinspector tree header context menu" width="360">
 
 Use the setting Lights (position, color) in the view.
+
 <img src="images/vinspector_light_setting.png" alt="Vinspector light setting" width="360">
 
 <h4><a id="occt_inspector_2_3_5">VInspector property panel</a></h4>
 
 Property panel shows the result of <b>AIS_InteractiveContext::Dump()</b> or <b>AIS_InteractiveObject::Dump()</b>.
+
 <img src="images/vinspector_property_panel.png" alt="Vinspector property panel" width="360">
 
 <h3><a id="occt_inspector_2_4">ShapeView Plugin</a></h3>
@@ -356,6 +359,7 @@ Selection of one or several items in *TopoDS_Shape* View creates its *AIS_Shape*
 <h4><a id="occt_inspector_2_4_5">ShapeView tree view columns</a></h4>
 
 Use context pop-up menu on the tree view header to select, which columns should be displayed.
+
 <img src="images/shapeview_tree_columns.png" alt="ShapeView tree header context menu" width="360">
 
 <h3><a id="occt_inspector_2_5">MessageView Plugin</a></h3>
@@ -385,16 +389,19 @@ Context pop-up menu in message report tree view:
 <h4><a id="occt_inspector_2_5_2">3D View</a></h4>
 
 3D View shows the selected item (TopoDS_Shape) in message report tree view.
+
 <img src="images/messageview_view.png" alt="MessageView 3D View" width="360">
 
 <h4><a id="occt_inspector_2_5_3">Dump panel</a></h4>
 
 Shows Dump() information of the selected item if the item has Dump().
+
 <img src="images/messageview_dump_panel.png" alt="MessageView 3D View" width="360">
 
 <h4><a id="occt_inspector_2_5_4">Property panel (custom)</a></h4>
 
 Shows the table for WallClock Metric statistic option.
+
 <img src="images/messageview_property_panel_custom.png" alt="MessageView 3D View" width="360">
 
 <h4><a id="occt_inspector_2_5_5">Elements</a></h4>
@@ -485,10 +492,10 @@ Use *inspector.bat* script file placed in a binary directory of OCCT to launch i
 
 This script accepts the names of plugin's DLL that should be loaded. By default it loads all plugins described above.
 
-
 <img src="images/TStandaloneEXE.png" alt="TStandaloneEXE" width="360">
 
 Click on the Open button shows the dialog to select a file.
+
 <img src="images/TStandaloneEXE_open.png" alt="" width="360">
 
 Depending on the active plugin, it is possible to select the following files in the dialog:<br>

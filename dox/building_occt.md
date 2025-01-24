@@ -112,16 +112,16 @@ The following table gives the full list of environment variables used at the con
 | BUILD_CPP_STANDARD | String | Employ corresponding c++ standard (C++11, C++14, ..C++23) for building OCCT |
 | CMAKE_CONFIGURATION_TYPES | String | Semicolon-separated CMake configurations |
 | INSTALL_DIR          | Path | Points to the installation directory. *INSTALL_DIR* is a synonym of *CMAKE_INSTALL_PREFIX*. The user can specify both *INSTALL_DIR* or *CMAKE_INSTALL_PREFIX* |
-| INSTALL_DIR_BIN      | Path | Relative path to the binaries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_BIN}) |
-| INSTALL_DIR_SCRIPT   | Path | Relative path to the scripts installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SCRIPT}) |
-| INSTALL_DIR_LIB      | Path | Relative path to the libraries installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
-| INSTALL_DIR_INCLUDE  | Path | Relative path to the includes installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
-| INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
+| INSTALL_DIR_BIN      | Path | Relative path to the binaries installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_BIN}) |
+| INSTALL_DIR_SCRIPT   | Path | Relative path to the scripts installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_SCRIPT}) |
+| INSTALL_DIR_LIB      | Path | Relative path to the libraries installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_LIB}) |
+| INSTALL_DIR_INCLUDE  | Path | Relative path to the includes installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_INCLUDE}) |
+| INSTALL_DIR_RESOURCE | Path | Relative path to the resources installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_RESOURCE}) |
 | INSTALL_DIR_LAYOUT   | String | Defines the structure of OCCT files (binaries, resources, headers, etc.) for the install directory. Two variants are predefined: for Windows (standard OCCT layout) and for Unix operating systems (standard Linux layout). If needed, the layout can be customized with INSTALL_DIR_* variables |
-| INSTALL_DIR_DATA     | Path | Relative path to the data files installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
-| INSTALL_DIR_SAMPLES  | Path | Relative path to the samples installation directory. Note that only "samples/tcl" folder will be installed. (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}) |
-| INSTALL_DIR_TESTS    | Path | Relative path to the tests installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
-| INSTALL_DIR_DOC      | Path | Relative path to the documentation installation directory (absolute path is ${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
+| INSTALL_DIR_DATA     | Path | Relative path to the data files installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_DATA}) |
+| INSTALL_DIR_SAMPLES  | Path | Relative path to the samples installation directory. Note that only "samples/tcl" folder will be installed. (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_SAMPLES}) |
+| INSTALL_DIR_TESTS    | Path | Relative path to the tests installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_TESTS}) |
+| INSTALL_DIR_DOC      | Path | Relative path to the documentation installation directory (absolute path is \${INSTALL_DIR}/${INSTALL_DIR_DOC}) |
 | INSTALL_FREETYPE     | Boolean | Indicates whether FreeType binaries should be installed into the installation directory |
 | INSTALL_FREEIMAGE    | Boolean | Indicates whether FreeImage binaries should be installed into the installation directory |
 | INSTALL_TBB          | Boolean | Indicates whether TBB binaries should be installed into the installation directory |

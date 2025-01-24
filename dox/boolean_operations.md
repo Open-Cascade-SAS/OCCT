@@ -165,7 +165,7 @@ The coordinates of *Pn* and the value <i>Tol(Vn)</i> are computed as the center 
 
 For a vertex *Vi* and an edge *Ej*, the distance *D* between 3D point of the vertex and its projection on the 3D curve of edge *Ej* is less or equal than sum of tolerances of vertex *Tol(Vi)* and edge *Tol(Ej)*.
 
-<img src="images/operationsss_image003.svg" alt="Vertex/edge interference" width="420">
+<img src="images/operations_image003.svg" alt="Vertex/edge interference" width="420">
 
 The result is vertex *Vi* with the corresponding tolerance value <i>Tol(Vi)=Max(Tol(Vi), D+Tol(Ej))</i>, where <i>D = distance (Pi, PPi)</i>; 
 
@@ -2129,33 +2129,41 @@ The result of *Section* operation is the compound that contains a new vertex *Vn
 <h4><a id="specification__boolean_10a_3_19">Case 19: Two intersecting Solids</a></h4>
 
 Let us consider two intersecting solids *Z1* and *Z2*:
+
 <img src="images/boolean_image113.png" alt="" width="230">
 
 The result of *Section* operation is the compound that contains new edges.
+
 <img src="images/boolean_image114.png" alt="" width="230">
 
 <h4><a id="specification__boolean_10a_3_20">Case 20: Two Solids that have overlapping faces</a></h4>
 
 Let us consider two solids *Z1* and *Z2* that have a common part on face:
+
 <img src="images/boolean_image115.png" alt="" width="230">
 
 The result of *Section* operation is the compound that contains new edges.
+
 <img src="images/boolean_image116.png" alt="" width="230">
  
 <h4><a id="specification__boolean_10a_3_21">Case 21: Two Solids that have overlapping edges</a></h4>
 
 Let us consider two solids *Z1* and *Z2* that have overlapping edges:
+
 <img src="images/boolean_image117.png" alt="" width="230">
  
 The result of *Section* operation is the compound that contains a new edge *Enew*.
+
 <img src="images/boolean_image118.png" alt="" width="230">
 
 <h4><a id="specification__boolean_10a_3_22">Case 22: Two Solids that have overlapping vertices</a></h4>
 
 Let us consider two solids *Z1* and *Z2* that have overlapping vertices: 
+
 <img src="images/boolean_image119.png" alt="" width="230">
 
 The result of *Section* operation is the compound that contains a new vertex *Vnew*.
+
 <img src="images/boolean_image120.png" alt="" width="230">
 
 <h3><a id="specification__boolean_10a_4">Class BOPAlgo_Section</a></h3>

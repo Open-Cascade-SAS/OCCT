@@ -9,6 +9,7 @@ libraries. OCCT can be best applied in development of software dealing with 3D
 modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 
 https://www.opencascade.com
+
 <img src="images/occ_logo.png" alt="">
 
 <h2><a id="intro_overview">Overview</a></h2>
@@ -136,7 +137,7 @@ Top-level API provides the following functionality:
    * Pipes -- general-form sweeps;
    * Lofting.
 
-<img src="images/0001.png" alt="Shapes containing pipes with variable radius produced by sweeping">
+    <img src="images/0001.png" alt="Shapes containing pipes with variable radius produced by sweeping">
 
  * Boolean Operations, which allow creating new shapes from the combinations of source shapes. For two shapes *S1* and *S2*:
    * *Common* contains all points that are in *S1* and *S2*;
@@ -196,17 +197,21 @@ Here are a few examples of OCCT Visualization features:
 * Definition of clipping planes through the plane equation coefficients.
   Ability to define visual attributes for cross-section at the level or individual clipping planes.
   In the image below different parts of the rocket are clipped with different planes and hatched.
-<img src="images/0008.png" alt="Display of shape cross-section and dimensions">
+
+  <img src="images/0008.png" alt="Display of shape cross-section and dimensions">
 
 * Support of built-in and application-specific GLSL shaders.
-<img src="images/0013.png" alt="Fragment shader implementing custom clipping surface">
+
+  <img src="images/0013.png" alt="Fragment shader implementing custom clipping surface">
 
 * Optimization of rendering performance through the algorithms of:
   * View frustum culling, which skips the presentation outside camera at the rendering stage;
   * Back face culling, which reduces the rendered number of triangles and eliminates artifacts at shape boundaries.
 * Real-time ray tracing technique using recursive Whitted's algorithm and Bounded Volume Hierarchy effective optimization structure.
-<img src="images/0002.png" alt="Real time visualization by ray tracing method">
-<img src="images/0012.png" alt="Simulation of a glass cover">
+
+  <img src="images/0002.png" alt="Real time visualization by ray tracing method">
+
+  <img src="images/0012.png" alt="Simulation of a glass cover">
 
 For more details, see [Visualization User's Guide](visualization#occt_user_guides__visualization).
 

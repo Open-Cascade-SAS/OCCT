@@ -67,8 +67,7 @@ Remarks:
 Experimenting with Draw Test Harness
 ------------------------------------
 
- Running Draw
-------------
+ ### Running Draw
 
 **On Linux:**
 
