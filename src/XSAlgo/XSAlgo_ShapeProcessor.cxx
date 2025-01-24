@@ -160,24 +160,22 @@ void XSAlgo_ShapeProcessor::addMessages(const Handle(ShapeExtend_MsgRegistrator)
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_TransientProcess)& theTransientProcess,
-                                              const Standard_Integer                   theFirstTPItemIndex) const
+void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
+  const Handle(Transfer_TransientProcess)& theTransientProcess,
+  const TopTools_DataMapOfShapeShape&      theModifiedShapesMap,
+  const Standard_Integer                   theFirstTPItemIndex,
+  Handle(ShapeExtend_MsgRegistrator)       theMessages)
 {
-  if (myContext.IsNull())
+  if (theModifiedShapesMap.IsEmpty())
   {
     return;
   }
-
-  const TopTools_DataMapOfShapeShape& aShapesMap = myContext->Map();
-  Handle(ShapeExtend_MsgRegistrator)  aMessages  = myContext->Messages();
-  if (aShapesMap.IsEmpty() && (aMessages.IsNull() || aMessages->MapShape().IsEmpty()))
+  const bool aToPrint = !theMessages.IsNull() && !theMessages->MapShape().IsEmpty();
+  for (Standard_Integer i = std::max(theFirstTPItemIndex, 1); i <= theTransientProcess->NbMapped();
+       ++i)
   {
-    return;
-  }
-
-  for (Standard_Integer i = std::max(theFirstTPItemIndex, 1); i <= theTransientProcess->NbMapped(); ++i)
-  {
-    Handle(TransferBRep_ShapeBinder) aShapeBinder = Handle(TransferBRep_ShapeBinder)::DownCast(theTransientProcess->MapItem(i));
+    Handle(TransferBRep_ShapeBinder) aShapeBinder =
+      Handle(TransferBRep_ShapeBinder)::DownCast(theTransientProcess->MapItem(i));
     if (aShapeBinder.IsNull() || aShapeBinder->Result().IsNull())
     {
       continue;
@@ -185,17 +183,17 @@ void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_TransientPro
 
     const TopoDS_Shape anOriginalShape = aShapeBinder->Result();
 
-    if (aShapesMap.IsBound(anOriginalShape))
+    if (theModifiedShapesMap.IsBound(anOriginalShape))
     {
-      aShapeBinder->SetResult(aShapesMap.Find(anOriginalShape));
+      aShapeBinder->SetResult(theModifiedShapesMap.Find(anOriginalShape));
     }
     else if (!anOriginalShape.Location().IsIdentity())
     {
       TopLoc_Location aNullLoc;
       TopoDS_Shape    aTemporaryShape = anOriginalShape.Located(aNullLoc);
-      if (aShapesMap.IsBound(aTemporaryShape))
+      if (theModifiedShapesMap.IsBound(aTemporaryShape))
       {
-        aShapeBinder->SetResult(aShapesMap.Find(aTemporaryShape));
+        aShapeBinder->SetResult(theModifiedShapesMap.Find(aTemporaryShape));
       }
     }
     else
@@ -206,10 +204,10 @@ void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_TransientPro
       // Remember modifications.
       for (TopExp_Explorer anExpSE(anOriginalShape, TopAbs_EDGE); anExpSE.More(); anExpSE.Next())
       {
-        if (aShapesMap.IsBound(anExpSE.Current()))
+        if (theModifiedShapesMap.IsBound(anExpSE.Current()))
         {
           aHasModifiedEdges           = Standard_True;
-          TopoDS_Shape aModifiedShape = aShapesMap.Find(anExpSE.Current());
+          TopoDS_Shape aModifiedShape = theModifiedShapesMap.Find(anExpSE.Current());
           aReShaper.Replace(anExpSE.Current(), aModifiedShape);
         }
       }
@@ -222,50 +220,76 @@ void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_TransientPro
     }
 
     // update messages
-    addMessages(aMessages, anOriginalShape, aShapeBinder);
+    if (aToPrint)
+    {
+      addMessages(theMessages, anOriginalShape, aShapeBinder);
+    }
   }
 }
 
 //=============================================================================
 
-void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_FinderProcess)& theFinderProcess) const
+void XSAlgo_ShapeProcessor::MergeTransferInfo(
+  const Handle(Transfer_TransientProcess)& theTransientProcess,
+  const Standard_Integer                   theFirstTPItemIndex) const
 {
   if (myContext.IsNull())
   {
     return;
   }
+  return MergeShapeTransferInfo(theTransientProcess,
+                                myContext->Map(),
+                                theFirstTPItemIndex,
+                                myContext->Messages());
+}
 
-  const TopTools_DataMapOfShapeShape& aShapesMap = myContext->Map();
-  Handle(ShapeExtend_MsgRegistrator)  aMessages  = myContext->Messages();
+//=============================================================================
 
-  for (TopTools_DataMapIteratorOfDataMapOfShapeShape ShapeShapeIterator(aShapesMap); ShapeShapeIterator.More();
+void XSAlgo_ShapeProcessor::MergeShapeTransferInfo(
+  const Handle(Transfer_FinderProcess)& theFinderProcess,
+  const TopTools_DataMapOfShapeShape&   theModifiedShapesMap,
+  Handle(ShapeExtend_MsgRegistrator)    theMessages)
+{
+  if (theModifiedShapesMap.IsEmpty())
+  {
+    return;
+  }
+  const bool aToPrint = !theMessages.IsNull() && !theMessages->MapShape().IsEmpty();
+
+  for (TopTools_DataMapIteratorOfDataMapOfShapeShape ShapeShapeIterator(theModifiedShapesMap);
+       ShapeShapeIterator.More();
        ShapeShapeIterator.Next())
   {
-    const TopoDS_Shape anOriginalShape             = ShapeShapeIterator.Key();
-    const TopoDS_Shape aResultShape                = ShapeShapeIterator.Value();
+    const TopoDS_Shape anOriginalShape = ShapeShapeIterator.Key();
+    const TopoDS_Shape aResultShape    = ShapeShapeIterator.Value();
 
-    Handle(TransferBRep_ShapeMapper) aResultMapper = TransferBRep::ShapeMapper(theFinderProcess, aResultShape);
-    Handle(Transfer_Binder)          aResultBinder = theFinderProcess->Find(aResultMapper);
+    Handle(TransferBRep_ShapeMapper) aResultMapper =
+      TransferBRep::ShapeMapper(theFinderProcess, aResultShape);
+    Handle(Transfer_Binder) aResultBinder = theFinderProcess->Find(aResultMapper);
 
     if (aResultBinder.IsNull())
     {
       aResultBinder = new TransferBRep_ShapeBinder(aResultShape);
-      //if <orig> shape was split, put entities corresponding to new shapes
-      // into Transfer_TransientListBinder.
+      // if <orig> shape was split, put entities corresponding to new shapes
+      //  into Transfer_TransientListBinder.
       if (anOriginalShape.ShapeType() > aResultShape.ShapeType())
       {
         TopoDS_Shape                         aSubShape;
-        Handle(Transfer_TransientListBinder) aTransientListBinder = new Transfer_TransientListBinder;
-        for (TopoDS_Iterator aSubShapeIter(aResultShape); aSubShapeIter.More(); aSubShapeIter.Next())
+        Handle(Transfer_TransientListBinder) aTransientListBinder =
+          new Transfer_TransientListBinder;
+        for (TopoDS_Iterator aSubShapeIter(aResultShape); aSubShapeIter.More();
+             aSubShapeIter.Next())
         {
           const TopoDS_Shape      aCurrentSubShape = aSubShapeIter.Value();
-          Handle(Transfer_Finder) aSubShapeMapper  = TransferBRep::ShapeMapper(theFinderProcess, aCurrentSubShape);
+          Handle(Transfer_Finder) aSubShapeMapper =
+            TransferBRep::ShapeMapper(theFinderProcess, aCurrentSubShape);
           if (aSubShapeMapper.IsNull())
           {
             continue;
           }
 
-          Handle(Standard_Transient) aTransientResult = theFinderProcess->FindTransient(aSubShapeMapper);
+          Handle(Standard_Transient) aTransientResult =
+            theFinderProcess->FindTransient(aSubShapeMapper);
           if (aTransientResult.IsNull())
           {
             continue;
@@ -284,8 +308,9 @@ void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_FinderProces
       }
     }
 
-    Handle(TransferBRep_ShapeMapper) anOriginalMapper = TransferBRep::ShapeMapper(theFinderProcess, anOriginalShape);
-    Handle(Transfer_Binder)          anOriginalBinder = theFinderProcess->Find(anOriginalMapper);
+    Handle(TransferBRep_ShapeMapper) anOriginalMapper =
+      TransferBRep::ShapeMapper(theFinderProcess, anOriginalShape);
+    Handle(Transfer_Binder) anOriginalBinder = theFinderProcess->Find(anOriginalMapper);
     if (anOriginalBinder.IsNull())
     {
       theFinderProcess->Bind(anOriginalMapper, aResultBinder);
@@ -296,8 +321,22 @@ void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_FinderProces
     }
 
     // update messages
-    addMessages(aMessages, anOriginalShape, aResultBinder);
+    if (aToPrint)
+    {
+      addMessages(theMessages, anOriginalShape, aResultBinder);
+    }
   }
+}
+
+//=============================================================================
+
+void XSAlgo_ShapeProcessor::MergeTransferInfo(const Handle(Transfer_FinderProcess)& theFinderProcess) const
+{
+  if (myContext.IsNull())
+  {
+    return;
+  }
+  return MergeShapeTransferInfo(theFinderProcess, myContext->Map(), myContext->Messages());
 }
 
 //=============================================================================

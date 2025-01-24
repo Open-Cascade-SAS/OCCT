@@ -1,0 +1,30 @@
+puts "===================================="
+puts "0033815: Data Exchange, Step Export - No names in STEP file when writing in non-manifold mode"
+puts "===================================="
+puts ""
+
+pload OCAF
+Close D -silent
+
+XNewDoc D
+box box 1 1 1
+XAddShape D box
+
+param write.step.nonmanifold 1
+
+SetName D 0:1:1:1 "a'''\\b\n\t\\c\\\\\\\\"
+set original_name [GetName D 0:1:1:1]
+
+WriteStep D "$imagedir/${casename}.stp"
+Close D
+
+ReadStep D "$imagedir/${casename}.stp"
+set imported_name [GetName D 0:1:1:1]
+
+file delete "$imagedir/${casename}.stp"
+
+if {$original_name != $imported_name} {
+  puts "Error: 'Incorrect exporting name: $original_name != $imported_name"
+}
+
+Close D

@@ -57,24 +57,21 @@ public:
   //! Returns modified shape obtained from initial shape.
     TopoDS_Shape ModifiedShape (const TopoDS_Shape& theInitShape) const;
 
+  //! Returns map of modified shapes.
+  const TopTools_DataMapOfShapeShape& GetModifiedShapesMap() const { return myMapNewShapes; }
 
+    DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations, Standard_Transient)
 
+  protected:
+  private:
+    Standard_EXPORT Standard_Boolean MakeNewShape(const TopoDS_Shape&    theShape,
+                                                  const TopoDS_Shape&    theAncShape,
+                                                  TopoDS_Shape&          theNewShape,
+                                                  const Standard_Boolean theRemoveLoc);
 
-  DEFINE_STANDARD_RTTIEXT(ShapeUpgrade_RemoveLocations,Standard_Transient)
-
-protected:
-
-
-
-
-private:
-
-  
-  Standard_EXPORT Standard_Boolean MakeNewShape (const TopoDS_Shape& theShape, const TopoDS_Shape& theAncShape, TopoDS_Shape& theNewShape, const Standard_Boolean theRemoveLoc);
-
-  TopAbs_ShapeEnum myLevelRemoving;
-  TopoDS_Shape myShape;
-  TopTools_DataMapOfShapeShape myMapNewShapes;
+    TopAbs_ShapeEnum             myLevelRemoving;
+    TopoDS_Shape                 myShape;
+    TopTools_DataMapOfShapeShape myMapNewShapes;
 
 
 };

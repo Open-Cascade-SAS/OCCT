@@ -45,9 +45,11 @@
 #include <STEPSelections_SelectForTransfer.hxx>
 #include <STEPSelections_SelectGSCurves.hxx>
 #include <STEPSelections_SelectInstances.hxx>
+#include <ShapeUpgrade_RemoveLocations.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <XSAlgo.hxx>
+#include <XSAlgo_ShapeProcessor.hxx>
 #include <XSControl_WorkSession.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_Controller,XSControl_Controller)
@@ -437,10 +439,22 @@ IFSelect_ReturnStatus  STEPControl_Controller::TransferWriteShape
   Handle(STEPControl_ActorWrite) ActWrite =
     Handle(STEPControl_ActorWrite)::DownCast(myAdaptorWrite);
 //    A PRESENT ON PASSE PAR LE PROFILE
+  Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(model);
   if (!ActWrite.IsNull()) 
-    ActWrite->SetGroupMode (Handle(StepData_StepModel)::DownCast(model)->InternalParameters.WriteAssembly);
-
-  return XSControl_Controller::TransferWriteShape(shape, FP, model, modeshape, theProgress);
+    ActWrite->SetGroupMode (aModel->InternalParameters.WriteAssembly);
+  TopoDS_Shape aShape = shape;
+  TopTools_DataMapOfShapeShape aModifedMap;
+  if (aModel->InternalParameters.WriteNonmanifold)
+  {
+    ShapeUpgrade_RemoveLocations aRemLoc;
+    aRemLoc.SetRemoveLevel(TopAbs_COMPOUND);
+    aRemLoc.Remove(aShape);
+    aShape = aRemLoc.GetResult();
+    aModifedMap = aRemLoc.GetModifiedShapesMap();
+  }
+  const IFSelect_ReturnStatus aStatus = XSControl_Controller::TransferWriteShape(aShape, FP, model, modeshape, theProgress);
+  XSAlgo_ShapeProcessor::MergeShapeTransferInfo(FP, aModifedMap, Handle(ShapeExtend_MsgRegistrator)());
+  return aStatus;
 }
 
 Standard_Boolean STEPControl_Controller::Init ()

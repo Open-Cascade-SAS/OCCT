@@ -26,7 +26,6 @@
 #include <XSControl_Controller.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_Utils.hxx>
-#include <ShapeUpgrade_RemoveLocations.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter,Standard_Transient)
 
@@ -141,14 +140,6 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape
   if (theModel.IsNull()) return IFSelect_RetVoid;
 
   TopoDS_Shape aShape = theShape;
-  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
-  if (isNMMode)
-  {
-    ShapeUpgrade_RemoveLocations aRemLoc;
-    aRemLoc.SetRemoveLevel(TopAbs_COMPOUND);
-    aRemLoc.Remove(aShape);
-    aShape = aRemLoc.GetResult();
-  }
 
   if (myTransferWriter.IsNull()) myTransferWriter = new Transfer_FinderProcess;
 //  effacer l actor : Controller s en charge

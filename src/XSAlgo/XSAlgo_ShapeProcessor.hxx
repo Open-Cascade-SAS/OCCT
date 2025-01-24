@@ -17,6 +17,7 @@
 #include <DE_ShapeFixParameters.hxx>
 #include <ShapeProcess.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 
@@ -133,6 +134,27 @@ public:
   //! transfer operation. It ensures that the length unit is correctly configured based on the
   //! value associated with the key "xstep.cascade.unit".
   Standard_EXPORT static void PrepareForTransfer();
+
+  //! Merge the results of the shape processing with the finder process.
+  //! @param theTransientProcess Transfer process to merge with.
+  //! @param theModifiedShapesMap Map of modified shapes.
+  //! @param theFirstTPItemIndex Index of the first item in the transfer process to merge with.
+  //! @param theMessages Messages to add.
+  Standard_EXPORT static void MergeShapeTransferInfo(
+    const Handle(Transfer_TransientProcess)& theFinderProcess,
+    const TopTools_DataMapOfShapeShape&   theModifiedShapesMap,
+    const Standard_Integer                theFirstTPItemIndex,
+    Handle(ShapeExtend_MsgRegistrator)    theMessages);
+
+  //! Merge the results of the shape processing with the transfer process.
+  //! @param theTransientProcess Transfer process to merge with.
+  //! @param theModifiedShapesMap Map of modified shapes.
+  //! @param theFirstTPItemIndex Index of the first item in the transfer process to merge with.
+  //! @param theMessages Messages to add.
+  Standard_EXPORT static void MergeShapeTransferInfo(
+    const Handle(Transfer_FinderProcess)& theTransientProcess,
+    const TopTools_DataMapOfShapeShape&   theModifiedShapesMap,
+    Handle(ShapeExtend_MsgRegistrator)    theMessages);
 
 private:
   //! Initialize the context with the specified shape.
