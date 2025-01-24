@@ -106,7 +106,9 @@ The following low level services are provided:
 
   * Definition of an array of point constraints:<br>
     The class *MultiLine* allows defining a given number of multi-point constraints in order to build the multi-line, multiple lines passing through ordered multiple point constraints.<br>
+    
     <img src="images/modeling_data_image004.png" alt="Definition of a MultiLine using Multiple Point Constraints" width="240"><br>
+    
     In this image:<br>
     * *Pi*, *Qi*, *Ri* ... *Si* can be 2D or 3D points.
     * Defined as a group: *Pn*, *Qn*, *Rn,* ... *Sn* form a MultipointConstraint. They possess the same passage, tangency and curvature constraints.
@@ -646,6 +648,7 @@ It cannot be extended but a subset can be used. For example, the notion of solid
 
 The terms of the enumeration appear in order from the most complex to the most simple, because objects can contain simpler objects in their description.
 For example, a face references its wires, edges, and vertices.
+
 <img src="images/modeling_data_image006.png" alt="ShapeEnum" width="420">
 
 <h4><a id="occt_modat_5_2_2">Orientation</a></h4>
@@ -824,6 +827,7 @@ The second version presents a series of identical holes bored at different posit
 The data structure is compact and yet keeps all information on the sub-elements.
 
 The three references from *TSh2* to the underlying face *TFcyl* have associated local coordinate systems, which correspond to the successive positions of the hole.
+
 <img src="images/modeling_data_image013.png" alt="Data structure containing two versions of a solid" width="420">
 
 Classes inheriting TopoDS_Shape

@@ -3163,18 +3163,24 @@ prism s f 0 5 0
 
 Making this shape periodic in X, Y and Z directions with the periods matching the shape's extensions should make the splits of negative X and Z sides of the shape. The shape is already similar on opposite sides of Y directions, thus no new splits is expected.
 Here is the shape after making it periodic:
+
 <img src="images/modeling_algos_mkperiodic_im002.png" alt="Periodic shape" width="220">
+
 And here is the repetition of the shape once in X and Z directions:
+
 <img src="images/modeling_algos_mkperiodic_im003.png" alt="Repeated shape" width="220">
 
 The OCCT Shape Periodicity tools also allows making the shape periodic with the period not matching the shape's extensions. Let's make the shape periodic with 11, 6 and 11 for X, Y, Z periods accordingly.
 Such values of periods mean that there will be a gap between repeated shapes, and since during repetition the opposite sides do not touch the shape will not be split at all.
 Here is the repetition of the shape once in X and Z directions:
+
 <img src="images/modeling_algos_mkperiodic_im004.png" alt="Repeated shape" width="220">
+
 As expected, the shape is not split and the repeated elements do not touch.
 
 If necessary the algorithm will trim the shape to fit into the requested period by splitting it with the planes limiting the shape's requested periods.
 E.g. let's make the L-shape periodic only in X direction with the period 2 starting at X parameter 4:
+
 <img src="images/modeling_algos_mkperiodic_im005.png" alt="Periodic trimmed shape" width="220">
 
 <h4><a id="occt_modalg_makeperiodic_how_it_works">How the shape is made periodic</a></h4>
