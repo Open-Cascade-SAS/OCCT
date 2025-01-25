@@ -5,6 +5,9 @@
 name: MinGW build validation
 
 on:
+  pull_request:
+    branches:
+      - '**'
   push:
     branches:
       - 'master'
@@ -27,7 +30,7 @@ jobs:
               cxx: "x86_64-w64-mingw32-g++",
               package: "mingw-w64-x86_64-toolchain",
               thirdparty_dir: "/mingw64",
-              dependencies: "mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-rapidjson mingw-w64-x86_64-freetype mingw-w64-x86_64-draco mingw-w64-x86_64-freeimage mingw-w64-x86_64-tbb mingw-w64-x86_64-tk mingw-w64-x86_64-tcl mingw-w64-x86_64-openvr mingw-w64-x86_64-jemalloc mingw-w64-x86_64-mesa mingw-w64-x86_64-angleproject mingw-w64-x86_64-llvm-openmp mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+              dependencies: "mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-rapidjson mingw-w64-x86_64-freetype mingw-w64-x86_64-draco mingw-w64-x86_64-freeimage mingw-w64-x86_64-tbb mingw-w64-x86_64-tk mingw-w64-x86_64-tcl mingw-w64-x86_64-openvr mingw-w64-x86_64-jemalloc mingw-w64-x86_64-mesa mingw-w64-x86_64-angleproject mingw-w64-x86_64-llvm-openmp mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads mingw-w64-x86_64-qt5-base"
             }
           - {
               name: "Clang",
@@ -35,7 +38,7 @@ jobs:
               cxx: "clang++",
               package: "mingw-w64-clang-x86_64-toolchain",
               thirdparty_dir: "/clang64",
-              dependencies: "mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja mingw-w64-clang-x86_64-rapidjson mingw-w64-clang-x86_64-freetype mingw-w64-clang-x86_64-draco mingw-w64-clang-x86_64-freeimage mingw-w64-clang-x86_64-tbb mingw-w64-clang-x86_64-tk mingw-w64-clang-x86_64-tcl mingw-w64-clang-x86_64-openvr mingw-w64-clang-x86_64-jemalloc mingw-w64-clang-x86_64-mesa mingw-w64-clang-x86_64-angleproject mingw-w64-clang-x86_64-llvm-openmp mingw-w64-clang-x86_64-winpthreads-git mingw-w64-clang-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+              dependencies: "mingw-w64-clang-x86_64-cmake mingw-w64-clang-x86_64-ninja mingw-w64-clang-x86_64-rapidjson mingw-w64-clang-x86_64-freetype mingw-w64-clang-x86_64-draco mingw-w64-clang-x86_64-freeimage mingw-w64-clang-x86_64-tbb mingw-w64-clang-x86_64-tk mingw-w64-clang-x86_64-tcl mingw-w64-clang-x86_64-openvr mingw-w64-clang-x86_64-jemalloc mingw-w64-clang-x86_64-mesa mingw-w64-clang-x86_64-angleproject mingw-w64-clang-x86_64-llvm-openmp mingw-w64-clang-x86_64-winpthreads-git mingw-w64-clang-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads mingw-w64-clang-x86_64-qt5-base"
             }
           - {
               name: "UCRT",
@@ -43,7 +46,7 @@ jobs:
               cxx: "x86_64-w64-mingw32-g++",
               package: "mingw-w64-ucrt-x86_64-toolchain",
               thirdparty_dir: "/ucrt64",
-              dependencies: "mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gcc-libs mingw-w64-ucrt-x86_64-omp mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-rapidjson mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-draco mingw-w64-ucrt-x86_64-freeimage mingw-w64-ucrt-x86_64-tbb mingw-w64-ucrt-x86_64-tk mingw-w64-ucrt-x86_64-tcl mingw-w64-ucrt-x86_64-openvr mingw-w64-ucrt-x86_64-jemalloc mingw-w64-ucrt-x86_64-mesa mingw-w64-ucrt-x86_64-angleproject mingw-w64-ucrt-x86_64-llvm-openmp mingw-w64-ucrt-x86_64-winpthreads-git mingw-w64-ucrt-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads"
+              dependencies: "mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gcc-libs mingw-w64-ucrt-x86_64-omp mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-rapidjson mingw-w64-ucrt-x86_64-freetype mingw-w64-ucrt-x86_64-draco mingw-w64-ucrt-x86_64-freeimage mingw-w64-ucrt-x86_64-tbb mingw-w64-ucrt-x86_64-tk mingw-w64-ucrt-x86_64-tcl mingw-w64-ucrt-x86_64-openvr mingw-w64-ucrt-x86_64-jemalloc mingw-w64-ucrt-x86_64-mesa mingw-w64-ucrt-x86_64-angleproject mingw-w64-ucrt-x86_64-llvm-openmp mingw-w64-ucrt-x86_64-winpthreads-git mingw-w64-ucrt-x86_64-libwinpthread-git mingw-w64-cross-mingwarm64-winpthreads mingw-w64-ucrt-x86_64-qt5-base"
             }
 
     steps:
@@ -68,28 +71,28 @@ jobs:
         echo "$MSYSTEM_PREFIX/bin" >> $GITHUB_PATH
         echo "CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX" >> $GITHUB_ENV
 
-    - name: Configure basic
-      shell: msys2 {0}
-      run: |
-        mkdir -p build
-        cd build
-        cmake -G "Ninja" \
-              -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
-              -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
-              -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
-              -D CMAKE_CXX_FLAGS="-Wall -Wextra" \
-              -D CMAKE_C_FLAGS="-Wall -Wextra" ..
+    # - name: Configure basic
+    #   shell: msys2 {0}
+    #   run: |
+    #     mkdir -p build
+    #     cd build
+    #     cmake -G "Ninja" \
+    #           -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
+    #           -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+    #           -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
+    #           -D CMAKE_CXX_FLAGS="-Wall -Wextra" \
+    #           -D CMAKE_C_FLAGS="-Wall -Wextra" ..
 
-    - name: Build basic
-      shell: msys2 {0}
-      run: |
-        cd build
-        cmake --build . -- -j 4
+    # - name: Build basic
+    #   shell: msys2 {0}
+    #   run: |
+    #     cd build
+    #     cmake --build . -- -j 4
 
-    - name: Clear up after build
-      shell: pwsh
-      run: |
-        Remove-Item -Recurse -Force build
+    # - name: Clear up after build
+    #   shell: pwsh
+    #   run: |
+    #     Remove-Item -Recurse -Force build
 
     - name: Configure full shared
       shell: msys2 {0}
@@ -100,6 +103,7 @@ jobs:
               -D CMAKE_C_COMPILER=${{ matrix.config.cc }} \
               -D CMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
               -D CMAKE_PREFIX_PATH=$MSYSTEM_PREFIX \
+              -D BUILD_Inspector=ON \
               -D BUILD_USE_PCH=OFF \
               -D BUILD_INCLUDE_SYMLINK=ON \
               -D BUILD_OPT_PROFILE=Production \
